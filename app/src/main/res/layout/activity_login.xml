@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.shanchain.mvp.view.activity.LoginActivity">
+
+<com.shanchain.widgits.toolBar.ArthurToolBar
+    android:id="@+id/toolbar_login"
+    android:layout_width="match_parent"
+    android:background="@color/colorTheme"
+    app:leftImage="@mipmap/login_icon_back_default"
+    app:titleColor="@color/colorWhite"
+    android:layout_height="48dp">
+
+</com.shanchain.widgits.toolBar.ArthurToolBar>
+
+</LinearLayout>

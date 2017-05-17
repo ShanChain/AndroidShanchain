@@ -1,0 +1,32 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="arthur_navigation_elevation">8dp</dimen>
+    <dimen name="arthur_navigation_height">56dp</dimen>
+    <dimen name="arthur_navigation_icon">24dp</dimen>
+
+    <dimen name="navigation_icon_24_size">24dp</dimen>
+    <dimen name="navigation_icon_36_size">36dp</dimen>
+    <dimen name="navigation_icon_40_size">40dp</dimen>
+    <dimen name="navigation_icon_44_size">44dp</dimen>
+    <dimen name="navigation_icon_48_size">48dp</dimen>
+    <dimen name="navigation_icon_50_size">50dp</dimen>
+    <!-- 选中/非选中 字体大小 -->
+    <dimen name="sizeNavigationActive">12sp</dimen>
+    <dimen name="sizeNavigationInactive">10sp</dimen>
+    <!-- 间隔 -->
+    <dimen name="navigation_active_interval">4dp</dimen>
+    <dimen name="navigation_inactive_interval">2dp</dimen>
+
+
+    <dimen name="arthur_toolbar_padding">16dp</dimen>
+    <dimen name="arthur_toolbar_title_text_size">18sp</dimen>
+    <dimen name="arthur_toolbar_button_text_size">15sp</dimen>
+
+    <dimen name="sizeToolbarActive">17sp</dimen>
+    <dimen name="sizeToolbarInactive">15sp</dimen>
+
+</resources>

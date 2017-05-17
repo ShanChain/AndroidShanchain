@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true"
+    tools:context="com.shanchain.mvp.view.activity.MainActivity">
+
+   <RelativeLayout
+       android:gravity="center_vertical"
+       android:layout_width="match_parent"
+       android:layout_height="48dp">
+
+       <TextView
+           android:id="@+id/tv_title"
+           android:textSize="18sp"
+           android:layout_centerInParent="true"
+           android:text="标题栏"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"/>
+   </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_main_container"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"></FrameLayout>
+
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:layout_width="match_parent"
+        android:id="@+id/bnb"
+        android:layout_height="wrap_content"></com.ashokvarma.bottomnavigation.BottomNavigationBar>
+</LinearLayout>
