@@ -5,7 +5,7 @@
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -17,6 +17,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvp.view.activity.MainActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.PhoneRegistActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ChooseAreaCodeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ForgetPwdActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ResetPwdActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.InviteCodeRegistActivity">
         </activity>
     </application>
 

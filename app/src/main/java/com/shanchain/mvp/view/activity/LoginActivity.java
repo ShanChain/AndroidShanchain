@@ -148,7 +148,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
         Button btnRegistPhone = (Button) view.findViewById(R.id.btn_dialog_regist_phone);
         Button btnRegistInvite = (Button) view.findViewById(R.id.btn_dialog_regist_invite);
         builder.setView(view);
-        builder.setCancelable(false);
         final AlertDialog dialog = builder.show();
         btnRegistPhone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,6 +237,5 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
             et.setHint(hint);
         }
     }
-
 
 }

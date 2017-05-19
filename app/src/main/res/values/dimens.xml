@@ -28,5 +28,7 @@
 
     <dimen name="sizeToolbarActive">17sp</dimen>
     <dimen name="sizeToolbarInactive">15sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
 
 </resources>

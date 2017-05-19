@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.shanchain.manager.ActivityManager;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -76,11 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         initAttribute();
         // 初始化布局
         initLayout();
-
-        //设置状态栏透明
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //设置导航栏透明
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         // 初始化View和事件
         initViewsAndEvents();

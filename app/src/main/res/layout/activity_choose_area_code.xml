@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_choose_area_code"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.shanchain.mvp.view.activity.ChooseAreaCodeActivity">
+
+    <!--顶部工具栏，可设置沉浸式效果-->
+    <com.shanchain.widgits.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_area"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorTheme"
+        app:leftImage="@mipmap/regsitre_icon_back_default"
+        app:titleColor="@color/colorWhite"
+        app:titleText="注册"
+        app:titleTextSize="16"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

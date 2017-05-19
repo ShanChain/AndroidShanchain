@@ -8,4 +8,46 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--分割线样式-->
+    <style name="style_text_line">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:background">#dcdcdc</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+    </style>
+
+    <!--左边距为75的输入框样式-->
+    <style name="style_et_marginleft_75dp">
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/colorHint</item>
+        <item name="android:textSize">@dimen/text_size_14sp</item>
+        <item name="android:layout_marginLeft">75dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">42dp</item>
+    </style>
+
+    <!--左边距为50的输入框样式-->
+    <style name="style_et_marginleft_50dp">
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/colorHint</item>
+        <item name="android:textSize">@dimen/text_size_14sp</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">42dp</item>
+    </style>
+
+    <style name="style_btn_common">
+        <item name="android:textSize">@dimen/text_size_14sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:background">@drawable/shap_btn_regist</item>
+        <item name="android:textColor">@color/colorBtn</item>
+    </style>
+
 </resources>

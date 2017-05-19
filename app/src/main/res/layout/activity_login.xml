@@ -4,19 +4,181 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.shanchain.mvp.view.activity.LoginActivity">
 
-<com.shanchain.widgits.toolBar.ArthurToolBar
-    android:id="@+id/toolbar_login"
-    android:layout_width="match_parent"
-    android:background="@color/colorTheme"
-    app:leftImage="@mipmap/login_icon_back_default"
-    app:titleColor="@color/colorWhite"
-    android:layout_height="48dp">
+    <!--顶部工具栏，有沉浸式效果-->
+    <com.shanchain.widgits.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_login"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorTheme"
+        app:titleColor="@color/colorWhite"
+        app:titleTextSize="16">
 
-</com.shanchain.widgits.toolBar.ArthurToolBar>
+    </com.shanchain.widgits.toolBar.ArthurToolBar>
+    <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"></LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:text="账号"
+            android:textColor="@color/colorBtn"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/et_login_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="请输入账号"
+            android:lines="1"
+            android:padding="10dp"
+            android:textColorHint="@color/colorHint"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:text="密码"
+            android:textColor="#666666"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/et_login_pwd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="请输入密码"
+            android:lines="1"
+            android:padding="10dp"
+            android:textColorHint="@color/colorHint"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <TextView
+        android:id="@+id/tv_login_forget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:text="忘记密码?"
+        android:textColor="#9d9d9d"/>
+
+
+    <Button
+        style="@style/style_btn_common"
+        android:id="@+id/btn_login_login"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/shap_btn_login"
+        android:text="登录"
+        android:textColor="@color/colorWhite"/>
+
+    <Button
+        android:id="@+id/btn_login_regist"
+        android:text="注册"
+        style="@style/style_btn_common"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="-30dp"
+        android:id="@+id/ll_login_other_login"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:clickable="true"
+                android:id="@+id/tv_other_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="社交账号登录"
+                android:textColor="#220"/>
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dp"
+                android:layout_toLeftOf="@id/tv_other_login"
+                android:background="#220"/>
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dp"
+                android:layout_toRightOf="@id/tv_other_login"
+                android:background="#220"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+            <ImageView
+                android:id="@+id/iv_login_wechat"
+                android:src="@mipmap/login_icon_wechat_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_login_qq"
+                android:src="@mipmap/login_icon_qq_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_login_weibo"
+                android:src="@mipmap/login_icon_weibo_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

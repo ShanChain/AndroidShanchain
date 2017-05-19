@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_phone_regist"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.shanchain.mvp.view.activity.PhoneRegistActivity">
+
+    <!--顶部工具栏，可设置沉浸式效果-->
+    <com.shanchain.widgits.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_login"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorTheme"
+        app:leftImage="@mipmap/regsitre_icon_back_default"
+        app:titleColor="@color/colorWhite"
+        app:titleText="手机邮箱注册"
+        app:titleTextSize="16"/>
+    <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"></LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_phone_regist_areacode"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:drawableRight="@mipmap/regsiter_btn_down_default"
+            android:text="+86"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <EditText
+            android:background="@null"
+            android:id="@+id/et_phone_regist_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:hint="请输入手机/邮箱号码"
+            android:textColorHint="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:background="@null"
+            android:id="@+id/et_phone_regist_checkcode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_weight="1"
+            android:hint="请输入验证码"
+            android:textColorHint="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <Button
+            android:id="@+id/btn_phone_regist_checkcode"
+            android:layout_width="100dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/shap_btn_login"
+            android:text="获取验证码"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <EditText
+        android:id="@+id/et_phone_regist_nickname"
+        style="@style/style_et_marginleft_75dp"
+        android:layout_marginLeft="80dp"
+        android:hint="请输入昵称"/>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <EditText
+        android:id="@+id/et_phone_regist_pwd"
+        style="@style/style_et_marginleft_75dp"
+        android:layout_marginLeft="80dp"
+        android:hint="请输入密码 (至少6位)"/>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+    <EditText
+        android:id="@+id/et_phone_regist_pwdconfirm"
+        style="@style/style_et_marginleft_75dp"
+        android:layout_marginLeft="80dp"
+        android:hint="请再次输入密码 (至少6位)"/>
+
+    <TextView
+        style="@style/style_text_line"/>
+
+
+    <Button
+        android:id="@+id/btn_phone_regist_agree"
+        style="@style/style_btn_common"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shap_btn_login"
+        android:text="同意服务条款并注册"
+        android:textColor="@color/colorWhite"/>
+
+    <TextView
+        android:id="@+id/tv_phone_regist_terms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        android:text="《善数者服务条款》"
+        android:textColor="#3bbbca"
+        android:textSize="@dimen/text_size_12sp"/>
+</LinearLayout>
