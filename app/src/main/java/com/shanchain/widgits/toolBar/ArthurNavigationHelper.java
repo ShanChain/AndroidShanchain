@@ -254,7 +254,6 @@ public class ArthurNavigationHelper {
         if ((flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) == WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) {
             return true;
         }
-
         return false;
     }
 

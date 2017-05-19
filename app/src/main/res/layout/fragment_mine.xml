@@ -3,13 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
-
-    <TextView
-        android:background="#e2d4a1"
-        android:textSize="18sp"
-        android:layout_gravity="center"
-        android:id="@+id/tv_con"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+<TextView
+    android:background="#6abd99"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 </LinearLayout>

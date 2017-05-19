@@ -10,6 +10,10 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.view.fragment.DynamicFragment;
+import com.shanchain.mvp.view.fragment.FoundFragment;
+import com.shanchain.mvp.view.fragment.HomeFragment;
+import com.shanchain.mvp.view.fragment.MineFragment;
 
 import butterknife.Bind;
 
@@ -57,16 +61,23 @@ public class MainActivity extends BaseActivity {
                 .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "动态"))
                 .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "发现"))
                 .addItem(new BottomNavigationItem(R.mipmap.ic_launcher, "我的"))
+                .setFirstSelectedPosition(1)
                 .initialise();
-        /*mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+        mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
                 switch (position) {
+                    case 0:
+                        setFragment(new HomeFragment());
+                        break;
                     case 1:
-
+                        setFragment(new DynamicFragment());
                         break;
                     case 2:
-
+                        setFragment(new FoundFragment());
+                        break;
+                    case 3:
+                        setFragment(new MineFragment());
                         break;
                 }
             }
@@ -80,7 +91,8 @@ public class MainActivity extends BaseActivity {
             public void onTabReselected(int position) {
 
             }
-        });*/
+        });
+        setFragment(new DynamicFragment());
     }
 
 

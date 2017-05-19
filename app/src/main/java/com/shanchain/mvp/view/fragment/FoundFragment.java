@@ -2,6 +2,7 @@ package com.shanchain.mvp.view.fragment;
 
 import android.view.View;
 
+import com.shanchain.R;
 import com.shanchain.base.LazyFragment;
 
 /**
@@ -11,7 +12,8 @@ import com.shanchain.base.LazyFragment;
 public class FoundFragment extends LazyFragment {
     @Override
     public View initView() {
-        return null;
+        View view = View.inflate(mActivity, R.layout.fragment_found,null);
+        return view;
     }
 
     @Override

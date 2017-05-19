@@ -39,6 +39,7 @@
         <item name="android:layout_height">42dp</item>
     </style>
 
+    <!--大按钮通用样式-->
     <style name="style_btn_common">
         <item name="android:textSize">@dimen/text_size_14sp</item>
         <item name="android:layout_width">match_parent</item>
@@ -48,6 +49,14 @@
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:background">@drawable/shap_btn_regist</item>
         <item name="android:textColor">@color/colorBtn</item>
+    </style>
+
+    <!--定义布局抢占焦点,为的是当进入activity时不让输入框获取焦点-->
+    <style name="style_obtain_focus">
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
     </style>
 
 </resources>

@@ -7,6 +7,9 @@ import android.widget.LinearLayout;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.utils.AccountUtils;
+import com.shanchain.utils.CountDownTimeUtils;
+import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgits.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -14,27 +17,43 @@ import butterknife.OnClick;
 
 public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnFocusChangeListener {
 
-    /** 描述：顶部工具栏*/
+    /**
+     * 描述：顶部工具栏
+     */
     @Bind(R.id.toolbar_forget)
     ArthurToolBar mToolbarForget;
-    /** 描述：账号输入框*/
+    /**
+     * 描述：账号输入框
+     */
     @Bind(R.id.et_forget_account)
     EditText mEtForgetAccount;
-    /** 描述：验证码输入框*/
+    /**
+     * 描述：验证码输入框
+     */
     @Bind(R.id.et_forget_checkcode)
     EditText mEtForgetCheckcode;
-    /** 描述：获取验证码按钮*/
+    /**
+     * 描述：获取验证码按钮
+     */
     @Bind(R.id.btn_forget_checkcode)
     Button mBtnForgetCheckcode;
-    /** 描述：下一步按钮*/
+    /**
+     * 描述：下一步按钮
+     */
     @Bind(R.id.btn_forget_next)
     Button mBtnForgetNext;
-    /** 描述：整体布局*/
+    /**
+     * 描述：整体布局
+     */
     @Bind(R.id.activity_forget_pwd)
     LinearLayout mActivityForgetPwd;
-    /** 描述：账号输入框提示文字*/
+    /**
+     * 描述：账号输入框提示文字
+     */
     private CharSequence mAccountHint;
-    /** 描述：验证码输入框提示文字*/
+    /**
+     * 描述：验证码输入框提示文字
+     */
     private CharSequence mCheckcodeHint;
 
     @Override
@@ -49,8 +68,6 @@ public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnL
         //初始化输入框
         initEditText();
     }
-
-
 
 
     @OnClick({R.id.btn_forget_checkcode, R.id.btn_forget_next})
@@ -81,26 +98,53 @@ public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnL
     }
 
     /**
-     *  2017/5/18
-     *  描述：下一步
-     *
+     * 2017/5/18
+     * 描述：下一步
      */
     private void next() {
         readyGo(ResetPwdActivity.class);
     }
 
     /**
-     *  2017/5/18
-     *  描述：获取验证码
-     *
+     * 2017/5/18
+     * 描述：获取验证码
      */
     private void obtainCheckCode() {
+        CountDownTimeUtils mTimeUtils = new CountDownTimeUtils(mBtnForgetCheckcode,60000,1000);
+        if (!AccountUtils.isEmpty(mEtForgetAccount)){
+            String text = mEtForgetAccount.getText().toString().trim();
+            if (AccountUtils.isPhone(text)){
+                //发送验证码到手机操作
+
+
+
+                //更新UI
+                ToastUtils.showToast(this,"已发送验证码到手机,请注意查收");
+                mTimeUtils.start();
+            }else if (AccountUtils.isEmail(text)){
+                //发送验证码到邮箱操作
+
+
+
+                //更新ui
+                ToastUtils.showToast(this,"已发送验证码到邮箱,请注意查收");
+
+                mTimeUtils.start();
+            }else {
+                //非电话号码,非邮箱
+                ToastUtils.showToast(this,"输入的账号有误");
+            }
+
+        }else {
+            //输入内容为空
+            ToastUtils.showToast(this,"输入的账号有误");
+        }
+
     }
 
     /**
-     *  2017/5/18
-     *  描述：回退按钮的点击事件
-     *
+     * 2017/5/18
+     * 描述：回退按钮的点击事件
      */
     @Override
     public void onLeftClick(View v) {
@@ -108,9 +152,8 @@ public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnL
     }
 
     /**
-     *  2017/5/18
-     *  描述：初始化输入框，给输入框添加焦点监听事件
-     *
+     * 2017/5/18
+     * 描述：初始化输入框，给输入框添加焦点监听事件
      */
     private void initEditText() {
         mAccountHint = mEtForgetAccount.getHint();
@@ -120,21 +163,21 @@ public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnL
     }
 
     /**
-     *  2017/5/18
-     *  描述：输入框焦点变化监听
-     *
+     * 2017/5/18
+     * 描述：输入框焦点变化监听
      */
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.et_forget_account:
-                changeHint(mEtForgetAccount,hasFocus,mAccountHint);
+                changeHint(mEtForgetAccount, hasFocus, mAccountHint);
                 break;
             case R.id.et_forget_checkcode:
-                changeHint(mEtForgetCheckcode,hasFocus,mCheckcodeHint);
-            break;
+                changeHint(mEtForgetCheckcode, hasFocus, mCheckcodeHint);
+                break;
         }
     }
+
 
 
     /**

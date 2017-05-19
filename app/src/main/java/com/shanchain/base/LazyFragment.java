@@ -1,12 +1,13 @@
 package com.shanchain.base;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.shanchain.utils.LogUtils;
 
 import butterknife.ButterKnife;
 
@@ -20,7 +21,7 @@ public abstract class LazyFragment extends Fragment {
     protected boolean isVisible;
 
     /** 描述：fragment所依赖的activity*/
-    public Activity mActivity;
+    public BaseActivity mActivity;
 
     /**
      *  2017/5/16
@@ -30,8 +31,16 @@ public abstract class LazyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+        mActivity = (BaseActivity) getActivity();
+
     }
+
+   /* @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (BaseActivity) context;
+
+    }*/
 
     /**
      *  2017/5/16
@@ -42,6 +51,7 @@ public abstract class LazyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = initView();
+
         return view;
     }
 
@@ -55,6 +65,8 @@ public abstract class LazyFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // 注册ButterKnife
         ButterKnife.bind(this, view);
+        LogUtils.d("这一句总执行了吧");
+        onVisible();
     }
 
     /**
@@ -65,23 +77,6 @@ public abstract class LazyFragment extends Fragment {
     public abstract View initView();
 
 
-    /**
-     * fragment是否可见
-     * 在这里实现Fragment数据的缓加载.
-     *
-     * @param isVisibleToUser
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            isVisible = true;
-            onVisible();
-        } else {
-            isVisible = false;
-            onInvisible();
-        }
-    }
 
     /**
      * fragment可见
@@ -95,12 +90,6 @@ public abstract class LazyFragment extends Fragment {
      */
     protected abstract void lazyLoad();
 
-    /**
-     * fragment不可见
-     */
-    protected void onInvisible() {
-
-    }
 
     /**
      * 日期: 2017/1/8 10:13
