@@ -3,6 +3,7 @@ package com.shanchain.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -41,7 +42,10 @@ public class AreaAdapter<T> extends RecyclerView.Adapter<AreaAdapter.MyViewHolde
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(mContext, R.layout.item_area,null);
+      //  View view = View.inflate(mContext, R.layout.item_area,parent);
+
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_area, parent, false);
+
         MyViewHolder viewHolder = new MyViewHolder(view);
         return viewHolder;
     }

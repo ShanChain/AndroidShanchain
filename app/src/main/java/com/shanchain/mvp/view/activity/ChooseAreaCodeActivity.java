@@ -1,5 +1,6 @@
 package com.shanchain.mvp.view.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -72,7 +73,7 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
         mRvArea.setLayoutManager(layoutManager);
         AreaAdapter<String> adapter = new AreaAdapter<>(ChooseAreaCodeActivity.this,areaList);
         mRvArea.setAdapter(adapter);
-        /*adapter.setOnItemClickListener(new AreaAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new AreaAdapter.OnItemClickListener() {
             @Override
             public void OnItemClickListener(View view, int position) {
                 String area = areaList.get(position);
@@ -86,7 +87,7 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
                 }
 
             }
-        });*/
+        });
     }
 
     /**

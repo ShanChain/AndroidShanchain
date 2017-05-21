@@ -41,7 +41,7 @@ public class DynamicFragment extends LazyFragment {
      */
     private void init() {
         LogUtils.d("init=================");
-        DynamicPagerAdapter adapter = new DynamicPagerAdapter(mActivity.getSupportFragmentManager());
+        DynamicPagerAdapter adapter = new DynamicPagerAdapter(getChildFragmentManager());
         if (adapter == null){
             LogUtils.d("??????????????");
         }
