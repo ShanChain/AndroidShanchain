@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -100,6 +100,8 @@ public class InviteCodeRegistActivity extends BaseActivity implements ArthurTool
      * 描述：初始化工具栏,沉浸式和按钮事件
      */
     private void initToolBar() {
+        //没图标时,右侧设置为不可用
+        mToolbarInvite.setBtnEnabled(true,false);
         //设置沉浸式
         mToolbarInvite.setImmersive(this, true);
         mToolbarInvite.setBackgroundColor(getResources().getColor(R.color.colorTheme));

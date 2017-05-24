@@ -4,28 +4,28 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shanchain.R;
-import com.shanchain.base.LazyFragment;
+import com.shanchain.base.BaseFragment;
 
 import butterknife.Bind;
 
 /**
  * Created by zhoujian on 2017/5/16.
+ * 主页页面
  */
 
-public class HomeFragment extends LazyFragment {
+public class HomeFragment extends BaseFragment {
     @Bind(R.id.tv_con)
     TextView mTvCon;
 
     @Override
     public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_home, null);
-        return view;
+        return View.inflate(mActivity, R.layout.fragment_home, null);
     }
-
 
     @Override
-    protected void lazyLoad() {
+    public void initData() {
         mTvCon.setText("小王");
     }
+
 
 }

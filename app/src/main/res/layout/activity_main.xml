@@ -2,27 +2,21 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:clipToPadding="true"
     tools:context="com.shanchain.mvp.view.activity.MainActivity">
 
-   <RelativeLayout
-       android:gravity="center_vertical"
-       android:layout_width="match_parent"
-       android:layout_height="48dp">
+       <!--顶部工具栏，可设置沉浸式效果-->
+       <com.shanchain.widgets.toolBar.ArthurToolBar
+           android:id="@+id/toolbar_main"
+           app:titleColor="@color/colorWhite"
+           app:titleText="动态"
+           app:titleTextSize="16"
+           style="@style/style_toolbar"/>
 
-       <TextView
-           android:id="@+id/tv_title"
-           android:textSize="18sp"
-           android:layout_centerInParent="true"
-           android:text="标题栏"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"/>
-   </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fl_main_container"

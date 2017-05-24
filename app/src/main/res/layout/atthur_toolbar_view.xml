@@ -6,7 +6,7 @@
     android:layout_height="@dimen/arthur_navigation_height">
 
     <!-- 左侧按钮 -->
-    <com.shanchain.widgits.toolBar.DrawableCenterTextView
+    <com.shanchain.widgets.toolBar.DrawableCenterTextView
         style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
         android:id="@+id/mLeftText"
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:text="title"/>
 
     <!--  右侧按钮 -->
-    <com.shanchain.widgits.toolBar.DrawableCenterTextView
+    <com.shanchain.widgets.toolBar.DrawableCenterTextView
         style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
         android:id="@+id/mRightText"
         android:layout_width="wrap_content"

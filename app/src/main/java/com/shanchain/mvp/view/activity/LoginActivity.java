@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.utils.DensityUtils;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -80,10 +81,11 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     /**
      *  2017/5/18
      *  描述：初始化工具栏，设置沉浸式
-     *
      */
     private void initTooBar() {
         mToolbarLogin.setTitleText("登录");
+        //没图标时,左右侧设置为不可用
+        mToolbarLogin.setBtnEnabled(false);
 
         //设置沉浸式
         mToolbarLogin.setImmersive(this, true);
@@ -189,7 +191,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      */
     private void showOtherLogin(boolean show) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(mLlLoginOtherLogin, "translationY",
-                show ? -220 : 0
+                show ? DensityUtils.dip2px(this,-85) : 0
         );
         animator.setDuration(500);
         animator.start();

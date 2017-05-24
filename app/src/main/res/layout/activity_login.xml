@@ -10,15 +10,12 @@
     tools:context="com.shanchain.mvp.view.activity.LoginActivity">
 
     <!--顶部工具栏，有沉浸式效果-->
-    <com.shanchain.widgits.toolBar.ArthurToolBar
+    <com.shanchain.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_login"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/colorTheme"
+        style="@style/style_toolbar"
         app:titleColor="@color/colorWhite"
-        app:titleTextSize="16">
+        app:titleTextSize="16"/>
 
-    </com.shanchain.widgits.toolBar.ArthurToolBar>
     <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
     <LinearLayout
         style="@style/style_obtain_focus"></LinearLayout>
@@ -134,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="社交账号登录"
-                android:textColor="#220"/>
+                android:textColor="#666666"/>
 
             <TextView
                 android:layout_width="80dp"
@@ -142,7 +139,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="14dp"
                 android:layout_toLeftOf="@id/tv_other_login"
-                android:background="#220"/>
+                android:background="#666666"/>
 
             <TextView
                 android:layout_width="80dp"
@@ -150,7 +147,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="14dp"
                 android:layout_toRightOf="@id/tv_other_login"
-                android:background="#220"/>
+                android:background="#666666"/>
 
         </RelativeLayout>
 

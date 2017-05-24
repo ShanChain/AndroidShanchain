@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.shanchain.mvp.view.fragment.FirstFragment;
-import com.shanchain.mvp.view.fragment.SecendFragment;
-import com.shanchain.mvp.view.fragment.ThreadFragment;
+import com.shanchain.mvp.view.fragment.HotFragment;
+import com.shanchain.mvp.view.fragment.AttentionFragment;
+import com.shanchain.mvp.view.fragment.SameCityFragment;
 
 /**
  * Created by zhoujian on 2017/5/19.
@@ -23,13 +23,13 @@ public class DynamicPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = new FirstFragment();
+                fragment = new HotFragment();
                 break;
             case 1:
-                fragment = new SecendFragment();
+                fragment = new AttentionFragment();
                 break;
             case 2:
-                fragment = new ThreadFragment();
+                fragment = new SameCityFragment();
                 break;
         }
         return fragment;

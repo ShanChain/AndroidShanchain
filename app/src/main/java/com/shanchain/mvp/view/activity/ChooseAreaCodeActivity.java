@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.shanchain.R;
 import com.shanchain.adapter.AreaAdapter;
 import com.shanchain.base.BaseActivity;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,6 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
     @Bind(R.id.activity_choose_area_code)
     LinearLayout mActivityChooseAreaCode;
 
-
     static ArrayList<String> areaList = new ArrayList<>();
     @Override
     protected int getContentViewLayoutID() {
@@ -39,7 +38,6 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
     protected void initViewsAndEvents() {
         //初始化数据
         initData();
-
         //初始化工具栏
         initToolBar();
         initRecycleView();
@@ -69,7 +67,7 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
      */
     private void initRecycleView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvArea.setLayoutManager(layoutManager);
         AreaAdapter<String> adapter = new AreaAdapter<>(ChooseAreaCodeActivity.this,areaList);
         mRvArea.setAdapter(adapter);
@@ -96,6 +94,9 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
      *
      */
     private void initToolBar() {
+        //没图标时,右侧设置为不可用
+        mToolbarArea.setBtnEnabled(true,false);
+
         //设置沉浸式
         mToolbarArea.setImmersive(this, true);
         mToolbarArea.setBackgroundColor(getResources().getColor(R.color.colorTheme));
@@ -107,6 +108,5 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
     public void onLeftClick(View v) {
         finish();
     }
-
 
 }

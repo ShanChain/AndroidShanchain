@@ -10,7 +10,7 @@ import com.shanchain.base.BaseActivity;
 import com.shanchain.utils.AccountUtils;
 import com.shanchain.utils.CountDownTimeUtils;
 import com.shanchain.utils.ToastUtils;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -89,6 +89,10 @@ public class ForgetPwdActivity extends BaseActivity implements ArthurToolBar.OnL
      * 描述：初始化工具栏,沉浸式和按钮事件
      */
     private void initToolBar() {
+
+        //没图标时,右侧设置为不可用
+        mToolbarForget.setBtnEnabled(true,false);
+
         //设置沉浸式
         mToolbarForget.setImmersive(this, true);
         mToolbarForget.setBackgroundColor(getResources().getColor(R.color.colorTheme));

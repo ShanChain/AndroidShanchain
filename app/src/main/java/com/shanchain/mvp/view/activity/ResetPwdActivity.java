@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -30,7 +30,9 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     Button mBtnResetComfirm;
     @Bind(R.id.activity_reset_pwd)
     LinearLayout mActivityResetPwd;
+    /** 描述：取出的pwd提示值*/
     private CharSequence mPwdHint;
+    /** 描述：取出的pwd确认的提示值*/
     private CharSequence mPwdConfirmHint;
 
     @Override
@@ -60,6 +62,8 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
      * 描述：初始化工具栏,沉浸式和按钮事件
      */
     private void initToolBar() {
+        //没图标时,左右侧设置为不可用
+        mToolbarReset.setBtnEnabled(true,false);
         //设置沉浸式
         mToolbarReset.setImmersive(this, true);
         mToolbarReset.setBackgroundColor(getResources().getColor(R.color.colorTheme));

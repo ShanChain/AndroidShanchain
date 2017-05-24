@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
 import com.shanchain.utils.LogUtils;
-import com.shanchain.widgits.toolBar.ArthurToolBar;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -113,7 +113,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
         mEtPhoneRegistNickname.setOnFocusChangeListener(this);
         mEtPhoneRegistPwd.setOnFocusChangeListener(this);
         mEtPhoneRegistPwdconfirm.setOnFocusChangeListener(this);
-
     }
 
     /**
@@ -121,6 +120,9 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
      * 描述：初始化工具栏,沉浸式和按钮事件
      */
     private void initToolBar() {
+
+        //没图标时,左右侧设置为不可用
+        mToolbarLogin.setBtnEnabled(true,false);
         //设置沉浸式
         mToolbarLogin.setImmersive(this, true);
         mToolbarLogin.setBackgroundColor(getResources().getColor(R.color.colorTheme));

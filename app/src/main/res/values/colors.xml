@@ -4,12 +4,22 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-
+    <!--主题颜色-->
     <color name="colorTheme">#3bbbca</color>
+    <!--白色-->
     <color name="colorWhite">#fff</color>
     <!--白色背景按钮文字颜色-->
     <color name="colorBtn">#666666</color>
     <!--输入框提示文字颜色-->
     <color name="colorHint">#b3b3b3</color>
-    <color name="colorBlack">#000000</color>
+    <!--黑色-->
+    <color name="colorBlack">#000</color>
+
+    <!--底部导航按钮被选中的颜色-->
+    <color name="colorActive">#3bbac8</color>
+    <!--底部导航按钮未被选中的颜色-->
+    <color name="colorInactive">#808080</color>
+    <!--列表间隔颜色-->
+    <color name="colorListDivider">#f6f6f6</color>
+
 </resources>

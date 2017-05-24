@@ -6,16 +6,16 @@ import android.view.View;
 
 import com.shanchain.R;
 import com.shanchain.adapter.DynamicPagerAdapter;
-import com.shanchain.base.LazyFragment;
-import com.shanchain.utils.LogUtils;
+import com.shanchain.base.BaseFragment;
 
 import butterknife.Bind;
 
 /**
  * Created by zhoujian on 2017/5/19.
+ * 动态页面
  */
 
-public class DynamicFragment extends LazyFragment {
+public class DynamicFragment extends BaseFragment {
     @Bind(R.id.tab)
     TabLayout mTab;
     @Bind(R.id.vp_dynamic)
@@ -23,16 +23,14 @@ public class DynamicFragment extends LazyFragment {
 
     @Override
     public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_dynamic
-                , null);
-
-        return view;
+        return View.inflate(mActivity, R.layout.fragment_dynamic, null);
     }
 
     @Override
-    protected void lazyLoad() {
+    public void initData() {
         init();
     }
+
 
     /**
      *  2017/5/19
@@ -40,14 +38,7 @@ public class DynamicFragment extends LazyFragment {
      *
      */
     private void init() {
-        LogUtils.d("init=================");
         DynamicPagerAdapter adapter = new DynamicPagerAdapter(getChildFragmentManager());
-        if (adapter == null){
-            LogUtils.d("??????????????");
-        }
-        if (mVpDynamic == null){
-            LogUtils.d("不会吧");
-        }
         mVpDynamic.setAdapter(adapter);
         mTab.setupWithViewPager(mVpDynamic);
 

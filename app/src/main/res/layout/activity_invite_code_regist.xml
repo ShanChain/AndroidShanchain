@@ -10,11 +10,9 @@
     tools:context="com.shanchain.mvp.view.activity.InviteCodeRegistActivity">
 
     <!--顶部工具栏，可设置沉浸式效果-->
-    <com.shanchain.widgits.toolBar.ArthurToolBar
+    <com.shanchain.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_invite"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/colorTheme"
+        style="@style/style_toolbar"
         app:leftImage="@mipmap/regsitre_icon_back_default"
         app:titleColor="@color/colorWhite"
         app:titleText="邀请码注册"

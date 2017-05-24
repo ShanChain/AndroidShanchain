@@ -3,21 +3,22 @@ package com.shanchain.mvp.view.fragment;
 import android.view.View;
 
 import com.shanchain.R;
-import com.shanchain.base.LazyFragment;
+import com.shanchain.base.BaseFragment;
 
 /**
  * Created by zhoujian on 2017/5/19.
+ * 发现页面
  */
 
-public class FoundFragment extends LazyFragment {
+public class FoundFragment extends BaseFragment {
     @Override
     public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_found,null);
-        return view;
+        return View.inflate(mActivity, R.layout.fragment_found,null);
     }
 
     @Override
-    protected void lazyLoad() {
+    public void initData() {
 
     }
+
 }

@@ -3,13 +3,14 @@ package com.shanchain.mvp.view.fragment;
 import android.view.View;
 
 import com.shanchain.R;
-import com.shanchain.base.LazyFragment;
+import com.shanchain.base.BaseFragment;
 
 /**
  * Created by zhoujian on 2017/5/19.
+ * 我的页面
  */
 
-public class MineFragment extends LazyFragment{
+public class MineFragment extends BaseFragment {
 
 
     @Override
@@ -19,7 +20,8 @@ public class MineFragment extends LazyFragment{
     }
 
     @Override
-    protected void lazyLoad() {
+    public void initData() {
 
     }
+
 }
