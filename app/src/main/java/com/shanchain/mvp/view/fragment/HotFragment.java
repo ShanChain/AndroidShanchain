@@ -17,6 +17,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 
@@ -111,12 +112,56 @@ public class HotFragment extends BaseFragment {
         for (int i = 0; i < 30; i ++) {
             PublisherInfo publisherInfo = new PublisherInfo();
             publisherInfo.setName("张建 " + i);
-            publisherInfo.setTime("1" + i);
-            publisherInfo.setLikes(i);
-            publisherInfo.setComments(i*5-3);
+            publisherInfo.setTime(i + "分钟前");
+            publisherInfo.setDes("今天很开心!");
+            publisherInfo.setLikes(new Random().nextInt(1000));
+
+            publisherInfo.setComments(new Random().nextInt(400));
             publisherInfo.setImages(mImages);
+            publisherInfo.setType(1);
             mDatas.add(publisherInfo);
         }
+
+        for (int i = 0; i < 10; i ++) {
+            PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setName("石家海" + i);
+            publisherInfo.setTime("2" + i + "分钟前");
+            publisherInfo.setDes("哈哈哈哈哈!");
+            if (i == 3) {
+                publisherInfo.setStroyImgUrl("");
+            }else {
+                publisherInfo.setStroyImgUrl(i+".png");
+            }
+            publisherInfo.setLikes(new Random().nextInt(1000));
+
+            publisherInfo.setComments(new Random().nextInt(400));
+            publisherInfo.setType(3);
+            publisherInfo.setIconUrl(i+"icon.png");
+            publisherInfo.setTitle("故事标题" + i);
+            publisherInfo.setActiveDes("活动描述信息" + i);
+            publisherInfo.setOtherDes("今天有" + i *2 + 3 + "人也在愉快的玩耍");
+            mDatas.add(publisherInfo);
+        }
+
+
+        for (int i = 0; i < 6; i ++) {
+            PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setType(2);
+            publisherInfo.setName("李江宇" + i);
+            publisherInfo.setTime("3"+i + "分钟前");
+            publisherInfo.setDes("#善数者正式发布#" + i+"我自定义了一个挑战任务,要不要和我一起来?");
+            publisherInfo.setIconUrl(i+".png");
+            publisherInfo.setTitle("寻找神秘点" );
+            publisherInfo.setLikes(new Random().nextInt(1000));
+
+            publisherInfo.setComments(new Random().nextInt(400));
+            publisherInfo.setChallegeTime("5月" + i + "r日");
+            publisherInfo.setAddr("深圳市");
+            publisherInfo.setActiveDes("假期放松一下,率先找到神秘地点打卡者获胜。");
+            publisherInfo.setOtherDes("一起来试试吧");
+            mDatas.add(publisherInfo);
+        }
+
     }
 
     /**

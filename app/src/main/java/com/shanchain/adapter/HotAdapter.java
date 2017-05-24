@@ -19,9 +19,6 @@ import java.util.List;
 
 public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
 
-    private List<PublisherInfo> mDatas;
-    private RecyclerView mRvImages;
-    private PublisherInfo mInfo;
 
 
     public HotAdapter(Context context, int layoutId, List<PublisherInfo> datas) {
@@ -32,23 +29,52 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
     @Override
     public void bindDatas(final ViewHolder holder, PublisherInfo publisherInfo, int position) {
 
-        mInfo = publisherInfo;
-
-
         String name = publisherInfo.getName();
         String time = publisherInfo.getTime();
         final int likes = publisherInfo.getLikes();
         List<String> images = publisherInfo.getImages();
         int comments = publisherInfo.getComments();
-
-
+        int type = publisherInfo.getType();
 
         holder.setText(R.id.tv_publisher_name, name);
         holder.setText(R.id.tv_publisher_time, time);
         holder.setText(R.id.tv_like, likes + "");
         holder.setText(R.id.tv_comments, comments + "");
-        mRvImages = holder.getView(R.id.rv_images);
 
+        switch (type){
+            case 1:
+                //普通条目
+
+                RecyclerView mRvImages = holder.getView(R.id.rv_images);
+                GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
+                layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+                mRvImages.setLayoutManager(layoutManager);
+                ImageAdapter adapter = new ImageAdapter(mContext, R.layout.item_images, images);
+                mRvImages.setAdapter(adapter);
+                adapter.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                        ToastUtils.showToast(mContext, "点击了第" + position + "张图片");
+                    }
+
+                    @Override
+                    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                        return false;
+                    }
+                });
+
+                break;
+            case 2:
+                //挑战条目
+
+                break;
+            case 3:
+                //故事条目
+
+
+                break;
+
+        }
         //喜欢图标的点击事件
         holder.setOnClickListener(R.id.iv_like, new View.OnClickListener() {
             @Override
@@ -90,22 +116,6 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
 
 
 
-        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
-        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRvImages.setLayoutManager(layoutManager);
-        ImageAdapter adapter = new ImageAdapter(mContext, R.layout.item_images, images);
-        mRvImages.setAdapter(adapter);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast(mContext, "点击了第" + position + "张图片");
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
-            }
-        });
     }
 
 }
