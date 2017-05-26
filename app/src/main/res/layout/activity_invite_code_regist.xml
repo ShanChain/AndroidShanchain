@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.shanchain.mvp.view.activity.InviteCodeRegistActivity">
+    tools:context="com.shanchain.mvp.view.activity.login.InviteCodeRegistActivity">
 
     <!--顶部工具栏，可设置沉浸式效果-->
     <com.shanchain.widgets.toolBar.ArthurToolBar

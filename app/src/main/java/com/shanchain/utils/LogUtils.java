@@ -95,4 +95,26 @@ public final class LogUtils {
         className = className.substring(className.lastIndexOf(".") + 1);
         return className;
     }
+
+    /**
+     *  2017/5/25
+     *  描述：日志内容多的时候(超过4k)需要打印全时
+     *
+     */
+    public static void showLog(String str) {
+        str = str.trim();
+        int index = 0;
+        int maxLength = 4000;
+        String finalString;
+        while (index < str.length()) {
+            if (str.length() <= index + maxLength) {
+                finalString = str.substring(index);
+            } else {
+                finalString = str.substring(index, maxLength);
+            }
+            index += maxLength;
+            i(getCallerName(), finalString.trim());
+        }
+    }
+    
 }

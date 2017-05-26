@@ -1,4 +1,4 @@
-package com.shanchain.mvp.view.activity;
+package com.shanchain.mvp.view.activity.login;
 
 import android.view.View;
 import android.widget.Button;

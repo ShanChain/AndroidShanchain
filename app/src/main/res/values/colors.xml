@@ -22,4 +22,6 @@
     <!--列表间隔颜色-->
     <color name="colorListDivider">#f6f6f6</color>
 
+    <color name="colorAddFriendDivider">#e8e8e8</color>
+
 </resources>

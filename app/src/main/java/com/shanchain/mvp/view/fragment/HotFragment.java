@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.shanchain.R;
@@ -16,6 +17,7 @@ import com.shanchain.utils.ToastUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -41,15 +43,13 @@ public class HotFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mImages = new ArrayList<>();
-        mImages.add("1");
-        mImages.add("2");
-        mImages.add("3");
-        mImages.add("4");
-        mImages.add("5");
-        mImages.add("6");
-        mImages.add("7");
+
         getDatas();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(mDatas);
+        LogUtils.showLog(json);
+
         initRecycleView();
         bindData();
     }
@@ -60,6 +60,7 @@ public class HotFragment extends BaseFragment {
      *
      */
     private void bindData() {
+        Collections.shuffle(mDatas);
 
         HotAdapter adapter = new HotAdapter(mActivity,R.layout.item_hot,mDatas);
         mXrvHot.setAdapter(adapter);
@@ -108,8 +109,17 @@ public class HotFragment extends BaseFragment {
      *
      */
     private void getDatas() {
+
+
         mDatas = new ArrayList<>();
-        for (int i = 0; i < 30; i ++) {
+        for (int i = 0; i < 20; i ++) {
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                mImages.add("" + j);
+            }
+
             PublisherInfo publisherInfo = new PublisherInfo();
             publisherInfo.setName("张建 " + i);
             publisherInfo.setTime(i + "分钟前");
@@ -155,12 +165,13 @@ public class HotFragment extends BaseFragment {
             publisherInfo.setLikes(new Random().nextInt(1000));
 
             publisherInfo.setComments(new Random().nextInt(400));
-            publisherInfo.setChallegeTime("5月" + i + "r日");
+            publisherInfo.setChallegeTime("5月" + i + "日");
             publisherInfo.setAddr("深圳市");
             publisherInfo.setActiveDes("假期放松一下,率先找到神秘地点打卡者获胜。");
             publisherInfo.setOtherDes("一起来试试吧");
             mDatas.add(publisherInfo);
         }
+
 
     }
 

@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.view.activity.LoginActivity">
+        <activity android:name=".mvp.view.activity.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -18,15 +18,21 @@
         </activity>
         <activity android:name=".mvp.view.activity.MainActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.PhoneRegistActivity">
+        <activity android:name=".mvp.view.activity.login.PhoneRegistActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.ChooseAreaCodeActivity">
+        <activity android:name=".mvp.view.activity.login.ChooseAreaCodeActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.ForgetPwdActivity">
+        <activity android:name=".mvp.view.activity.login.ForgetPwdActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.ResetPwdActivity">
+        <activity android:name=".mvp.view.activity.login.ResetPwdActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.InviteCodeRegistActivity">
+        <activity android:name=".mvp.view.activity.login.InviteCodeRegistActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.AddFriendActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.SearchNickActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ReportActivity">
         </activity>
     </application>
 

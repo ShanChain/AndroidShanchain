@@ -3,6 +3,7 @@ package com.shanchain.mvp.view.activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -14,6 +15,7 @@ import com.shanchain.mvp.view.fragment.DynamicFragment;
 import com.shanchain.mvp.view.fragment.FoundFragment;
 import com.shanchain.mvp.view.fragment.HomeFragment;
 import com.shanchain.mvp.view.fragment.MineFragment;
+import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -41,7 +43,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
      */
     private int currentPage;
 
-    private String[] toolBarTitles = {"首页", "动态", "发现", "我的"};
+    private String[] navigationBarTitles;
+
+    private boolean isExit;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -50,12 +54,12 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
     @Override
     protected void initViewsAndEvents() {
-        mToolbarMain = (ArthurToolBar) findViewById(R.id.toolbar_main);
+
+        navigationBarTitles = getResources().getStringArray(R.array.main_tab_name);
         initTooBar();
 
         //初始化底部导航栏
         initBottomNavigationBar();
-
 
     }
 
@@ -65,8 +69,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
      * 描述：初始化工具栏，设置沉浸式
      */
     private void initTooBar() {
-        currentPage = 1;
-        mToolbarMain.setTitleText(toolBarTitles[currentPage]);
+        mToolbarMain = (ArthurToolBar) findViewById(R.id.toolbar_main);
+        currentPage = 0;
+        mToolbarMain.setTitleText(navigationBarTitles[currentPage]);
         //设置沉浸式
         mToolbarMain.setImmersive(this, true);
         mToolbarMain.setBackgroundColor(getResources().getColor(R.color.colorTheme));
@@ -77,15 +82,16 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
      * 描述：初始化底部导航栏
      */
     private void initBottomNavigationBar() {
+
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
                 .setInActiveColor(R.color.colorInactive)
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_homepager, toolBarTitles[0]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_dynamic, toolBarTitles[1]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_find, toolBarTitles[2]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_mine, toolBarTitles[3]))
-                .setFirstSelectedPosition(1)
+                .addItem(new BottomNavigationItem(R.drawable.selector_tab_homepager, navigationBarTitles[0]))
+                .addItem(new BottomNavigationItem(R.drawable.selector_tab_dynamic, navigationBarTitles[1]))
+                .addItem(new BottomNavigationItem(R.drawable.selector_tab_find, navigationBarTitles[2]))
+                .addItem(new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]))
+                .setFirstSelectedPosition(0)
                 .initialise();
 
         mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -123,7 +129,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
         });
         //默认选中动态页
-        setFragment(new DynamicFragment());
+        setFragment(new HomeFragment());
         setToolBar(currentPage);
     }
 
@@ -134,10 +140,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
     private void setToolBar(int position) {
         switch (position) {
             case 0:
-                mToolbarMain.setTitleText(toolBarTitles[position]);
+                mToolbarMain.setTitleText(navigationBarTitles[position]);
+
                 break;
             case 1:
-                mToolbarMain.setTitleText(toolBarTitles[position]);
+                mToolbarMain.setTitleText(navigationBarTitles[position]);
                 mToolbarMain.setBtnEnabled(true);
                 mToolbarMain.setLeftImage(R.mipmap.nav_button_addfriend_default);
                 mToolbarMain.setRightImage(R.mipmap.nav_button_publish_dynamic_default);
@@ -145,10 +152,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 mToolbarMain.setOnRightClickListener(this);
                 break;
             case 2:
-                mToolbarMain.setTitleText(toolBarTitles[position]);
+                mToolbarMain.setTitleText(navigationBarTitles[position]);
+
                 break;
             case 3:
-                mToolbarMain.setTitleText(toolBarTitles[position]);
+                mToolbarMain.setTitleText(navigationBarTitles[position]);
                 break;
         }
     }
@@ -179,7 +187,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 break;
             case 1:
                 //当前页为动态
-
+                readyGo(AddFriendActivity.class);
                 break;
             case 2:
                 //当前页为发现
@@ -217,5 +225,25 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isExit = false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if (isExit){
+                finish();
+            }else {
+                isExit = true;
+                ToastUtils.showToast(MainActivity.this,"再按一次退出程序");
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

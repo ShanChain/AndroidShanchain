@@ -24,12 +24,7 @@ import com.shanchain.utils.SystemUtils;
 
 
 /**
- * 姓名: 肖光勇
- * 邮箱: 497874424@qq.com
- * 日期: 2017/1/10
  * 描述: 自定义标题栏
- * 当前版本：V1.0.0
- * 历史版本：V1.0.0 ------ 2017/1/10
  */
 public class ArthurToolBar extends LinearLayout implements View.OnClickListener {
 

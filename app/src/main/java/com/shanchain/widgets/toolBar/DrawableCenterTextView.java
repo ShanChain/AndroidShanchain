@@ -8,9 +8,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * 姓名: 肖光勇
- * 邮箱: 497874424@qq.com
- * 日期: 2017/1/10
  * 描述: 自定义TextView 实现 Drawable 居中显示
  */
 public class DrawableCenterTextView extends TextView {

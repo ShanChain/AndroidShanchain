@@ -13,9 +13,10 @@ import com.shanchain.mvp.view.fragment.SameCityFragment;
  */
 
 public class DynamicPagerAdapter extends FragmentPagerAdapter {
-    String[] titles = {"动态","热门","关注"};
-    public DynamicPagerAdapter(FragmentManager fm) {
+    String[] titles ;
+    public DynamicPagerAdapter(FragmentManager fm , String[] tabName) {
         super(fm);
+        titles = tabName;
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.shanchain.mvp.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by zhoujian on 2017/5/23.
  */
 
-public class PublisherInfo {
+public class PublisherInfo implements Serializable{
     /** 描述：头像url*/
     private String avatarUrl;
     /** 描述：姓名*/

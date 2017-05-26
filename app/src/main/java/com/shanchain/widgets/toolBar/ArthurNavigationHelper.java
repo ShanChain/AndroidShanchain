@@ -23,9 +23,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * 姓名: 肖光勇
- * 邮箱: 497874424@qq.com
- * 日期: 2017/1/8
  * 描述: 属性动画帮助类
  */
 public class ArthurNavigationHelper {

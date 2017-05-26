@@ -1,4 +1,4 @@
-package com.shanchain.mvp.view.activity;
+package com.shanchain.mvp.view.activity.login;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.view.activity.MainActivity;
 import com.shanchain.utils.DensityUtils;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
