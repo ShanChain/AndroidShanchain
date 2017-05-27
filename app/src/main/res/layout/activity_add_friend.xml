@@ -61,7 +61,7 @@
         <ImageView
             android:layout_marginRight="12dp"
             android:layout_marginLeft="12dp"
-            android:src="@mipmap/icom_image_contacts_default"
+            android:src="@mipmap/icon_image_add_default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     <LinearLayout

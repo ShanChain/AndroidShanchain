@@ -47,6 +47,8 @@
                 android:textColor="@color/colorHint"
                 android:textSize="@dimen/text_size_12sp"/>
         </LinearLayout>
+
+
     </LinearLayout>
 
     <TextView
@@ -206,10 +208,10 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
-            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/iv_more"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:clickable="true"
             android:layout_marginRight="12dp"
             android:src="@mipmap/icon_btn_more_default"/>

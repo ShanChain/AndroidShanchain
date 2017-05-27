@@ -214,7 +214,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 break;
             case 1:
                 //当前页为动态
-
+                readyGo(ReleaseDynamicActivity.class);
                 break;
             case 2:
                 //当前页为发现

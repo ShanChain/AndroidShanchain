@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_friends"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--顶部工具栏，有沉浸式效果-->
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_friends"
+        style="@style/style_toolbar"
+        app:titleText="通讯录好友"
+        app:leftImage="@mipmap/nav_btn_back_default"
+        app:titleColor="@color/colorWhite"
+        app:titleTextSize="16"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_marginTop="46dp"
+            android:src="@mipmap/icon_image_contacts_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:textColor="@color/colorBtn"
+            android:layout_marginTop="38dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="找到通讯录中的善数者好友"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"/>
+
+        <TextView
+            android:textColor="@color/colorHint"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="通讯录中信息仅用于查找好友并会得到严格保密"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <Button
+            android:id="@+id/btn_friends_start"
+            android:layout_marginTop="48dp"
+            android:textColor="@color/colorWhite"
+            android:text="启用"
+            android:background="@mipmap/friends_btn_enabled_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>

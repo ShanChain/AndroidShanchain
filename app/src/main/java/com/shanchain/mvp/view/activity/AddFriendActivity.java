@@ -73,30 +73,11 @@ public class AddFriendActivity extends BaseActivity implements ArthurToolBar.OnL
                 readyGo(SearchNickActivity.class);
                 break;
             case R.id.ll_add_contacts:
+                readyGo(FriendsActivity.class);
                 break;
             case R.id.ll_add_wechat:
                 break;
             case R.id.ll_add_sharecode:
-
-               /* pop = new BottomPop(DealActivity.this, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        switch (v.getId()) {
-                            case R.id.tv_take_photo:
-                                //拍照
-                                takePhoto();
-                                pop.dismiss();
-                                break;
-                            case R.id.tv_pick_photo:
-                                //从相册中选择图片
-                                pickPhoto();
-                                pop.dismiss();
-                                break;
-                        }
-                    }
-                });
-                pop.showAtLocation(findViewById(R.id.view_main), Gravity.BOTTOM, 0, 0);
-                */
                 BottomReportPop pop = new BottomReportPop(AddFriendActivity.this, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

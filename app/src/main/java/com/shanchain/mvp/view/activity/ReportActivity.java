@@ -1,21 +1,39 @@
 package com.shanchain.mvp.view.activity;
 
 import android.content.Intent;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
 import com.shanchain.mvp.model.PublisherInfo;
+import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
-public class ReportActivity extends BaseActivity {
+public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
-    @Bind(R.id.tv_info)
-    TextView mTvInfo;
+
+    ArthurToolBar mToolbarReport;
+    @Bind(R.id.rb_pornographic)
+    RadioButton mRbPornographic;
+    @Bind(R.id.rb_harmful_info)
+    RadioButton mRbHarmfulInfo;
+    @Bind(R.id.rb_sham_content)
+    RadioButton mRbShamContent;
+    @Bind(R.id.rb_personal_attack)
+    RadioButton mRbPersonalAttack;
+    @Bind(R.id.rb_break_law)
+    RadioButton mRbBreakLaw;
+    @Bind(R.id.rb_other)
+    RadioButton mRbOther;
     @Bind(R.id.activity_report)
-    RelativeLayout mActivityReport;
+    LinearLayout mActivityReport;
+    @Bind(R.id.btn_report)
+    Button mBtnReport;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -24,11 +42,74 @@ public class ReportActivity extends BaseActivity {
 
     @Override
     protected void initViewsAndEvents() {
+        initToolBar();
         Intent intent = getIntent();
         PublisherInfo publishInfo = (PublisherInfo) intent.getSerializableExtra("publishInfo");
         int comments = publishInfo.getComments();
-        mTvInfo.setText(comments+"");
+
+
     }
+
+    private void initToolBar() {
+        mToolbarReport = (ArthurToolBar) findViewById(R.id.toolbar_report);
+        mToolbarReport.setOnLeftClickListener(this);
+        mToolbarReport.setBtnEnabled(true,false);
+    }
+
+
+    @OnClick({R.id.rb_pornographic, R.id.rb_harmful_info, R.id.rb_sham_content, R.id.rb_personal_attack, R.id.rb_break_law, R.id.rb_other,R.id.btn_report})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.rb_pornographic:
+                setRadioButtonChecked(0);
+                break;
+            case R.id.rb_harmful_info:
+                setRadioButtonChecked(1);
+                break;
+            case R.id.rb_sham_content:
+                setRadioButtonChecked(2);
+                break;
+            case R.id.rb_personal_attack:
+                setRadioButtonChecked(3);
+                break;
+            case R.id.rb_break_law:
+                setRadioButtonChecked(4);
+                break;
+            case R.id.rb_other:
+                setRadioButtonChecked(5);
+                break;
+            case R.id.btn_report:
+                finish();
+                break;
+
+        }
+    }
+
+    boolean[] isChecked = {false, false, false, false, false, false};
+
+    private void setRadioButtonChecked(int position) {
+        for (int i = 0; i < isChecked.length; i++) {
+            if (i == position) {
+                isChecked[i] = true;
+            } else {
+                isChecked[i] = false;
+            }
+        }
+        mRbPornographic.setChecked(isChecked[0]);
+        mRbHarmfulInfo.setChecked(isChecked[1]);
+        mRbShamContent.setChecked(isChecked[2]);
+        mRbPersonalAttack.setChecked(isChecked[3]);
+        mRbBreakLaw.setChecked(isChecked[4]);
+        mRbOther.setChecked(isChecked[5]);
+        mBtnReport.setTextColor(getResources().getColor(R.color.colorWhite));
+        mBtnReport.setEnabled(true);
+    }
+
+    @Override
+    public void onLeftClick(View v) {
+        finish();
+    }
+
 
 
 }
