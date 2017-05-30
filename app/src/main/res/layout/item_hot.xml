@@ -62,14 +62,14 @@
         android:text="今天玩的很开心.#善数者正式发布#祝善数者越来越好."
         android:textSize="@dimen/text_size_14sp"/>
 
-    <!--图片网格列表-->
+    <!--&lt;!&ndash;图片网格列表&ndash;&gt;
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:id="@+id/rv_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>-->
 
     <!--挑战和故事布局,故事比挑战多一个imageview-->
     <ImageView
@@ -213,7 +213,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:layout_marginRight="12dp"
+            android:layout_marginRight="20dp"
             android:src="@mipmap/icon_btn_more_default"/>
     </LinearLayout>
 
