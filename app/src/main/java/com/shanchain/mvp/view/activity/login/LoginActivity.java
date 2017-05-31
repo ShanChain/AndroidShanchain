@@ -1,7 +1,6 @@
 package com.shanchain.mvp.view.activity.login;
 
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +14,7 @@ import com.shanchain.mvp.view.activity.MainActivity;
 import com.shanchain.utils.DensityUtils;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
+import com.shanchain.widgets.dialog.CustomDialog;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -146,30 +146,24 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      * 描述：注册逻辑,弹出注册选择对话框
      */
     private void regist() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = View.inflate(this, R.layout.dialog_regist, null);
-        Button btnRegistPhone = (Button) view.findViewById(R.id.btn_dialog_regist_phone);
-        Button btnRegistInvite = (Button) view.findViewById(R.id.btn_dialog_regist_invite);
-        builder.setView(view);
-        final AlertDialog dialog = builder.show();
-        btnRegistPhone.setOnClickListener(new View.OnClickListener() {
+
+        CustomDialog dialog = new CustomDialog(this,false,0.8,R.layout.dialog_regist,new int[]{R.id.btn_dialog_regist_phone,R.id.btn_dialog_regist_invite});
+        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                //手机邮箱注册
-                readyGo(PhoneRegistActivity.class);
-                dialog.dismiss();
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()){
+                    case R.id.btn_dialog_regist_invite:
+                        //邀请码注册
+                        readyGo(InviteCodeRegistActivity.class);
+                        break;
+                    case R.id.btn_dialog_regist_phone:
+                        //手机邮箱注册
+                        readyGo(PhoneRegistActivity.class);
+                        break;
+                }
             }
         });
-
-        btnRegistInvite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //邀请码注册
-                readyGo(InviteCodeRegistActivity.class);
-                dialog.dismiss();
-            }
-        });
-
+        dialog.show();
 
     }
 

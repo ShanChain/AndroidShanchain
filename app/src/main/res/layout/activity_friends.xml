@@ -14,6 +14,7 @@
         app:titleText="通讯录好友"
         app:leftImage="@mipmap/nav_btn_back_default"
         app:titleColor="@color/colorWhite"
+        app:rightImage="@mipmap/nav_btn_more_default"
         app:titleTextSize="16"/>
 
     <LinearLayout

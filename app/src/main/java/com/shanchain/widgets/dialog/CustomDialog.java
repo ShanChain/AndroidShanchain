@@ -20,14 +20,26 @@ import java.util.List;
  * Created by 周建 on 2017/5/30.
  */
 
-public class BottomDialog extends AlertDialog implements View.OnClickListener {
+public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private Context context;      // 上下文
+    private boolean isBottom;     //是否在底部
+    private double ratio = 1;      //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
 
-    public BottomDialog(Context context, int layoutResID, int[] listenedItems) {
+    public CustomDialog(Context context, boolean isBottom , int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
+        this.isBottom = isBottom;
+        this.layoutResID = layoutResID;
+        this.listenedItems = listenedItems;
+    }
+
+    public CustomDialog(Context context, boolean isBottom , double ratio, int layoutResID, int[] listenedItems) {
+        super(context, R.style.dialog_custom); //dialog的样式
+        this.context = context;
+        this.isBottom = isBottom;
+        this.ratio = ratio;
         this.layoutResID = layoutResID;
         this.listenedItems = listenedItems;
     }
@@ -35,13 +47,19 @@ public class BottomDialog extends AlertDialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
-        window.setGravity(Gravity.BOTTOM); // 此处可以设置dialog显示的位置为居中
+        if (isBottom){
+            window.setGravity(Gravity.BOTTOM); // 此处可以设置dialog显示的位置为底部
+        }else {
+            window.setGravity(Gravity.CENTER); // 此处可以设置dialog显示的位置为居中
+        }
+
         window.setWindowAnimations(R.style.bottom_menu_animation); // 添加动画效果
         setContentView(layoutResID);
         WindowManager windowManager = ((Activity) context).getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = display.getWidth(); // 设置dialog宽度为屏幕的多少
+
+        lp.width = (int) (display.getWidth()*ratio); // 设置dialog宽度为屏幕的多少
 
         getWindow().setAttributes(lp);
         setCanceledOnTouchOutside(true);// 点击Dialog外部消失
@@ -52,23 +70,23 @@ public class BottomDialog extends AlertDialog implements View.OnClickListener {
 
     }
 
-    private OnBottomItemClickListener listener;
+    private OnItemClickListener listener;
 
     @Override
     public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
 
     }
 
-    public interface OnBottomItemClickListener {
-        void OnBottomItemClick(BottomDialog dialog, View view);
+    public interface OnItemClickListener {
+        void OnItemClick(CustomDialog dialog, View view);
     }
-    public void setOnBottomItemClickListener(OnBottomItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
     @Override
     public void onClick(View view) {
-        dismiss();//注意：我在这里加了这句话，表示只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
-        listener.OnBottomItemClick(this, view);
+        dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
+        listener.OnItemClick(this, view);
     }
 }

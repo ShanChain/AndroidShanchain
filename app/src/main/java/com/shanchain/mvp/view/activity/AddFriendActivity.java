@@ -1,15 +1,12 @@
 package com.shanchain.mvp.view.activity;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
-import com.shanchain.utils.ToastUtils;
-import com.shanchain.widgets.bottomPop.BottomReportPop;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -78,15 +75,7 @@ public class AddFriendActivity extends BaseActivity implements ArthurToolBar.OnL
             case R.id.ll_add_wechat:
                 break;
             case R.id.ll_add_sharecode:
-                BottomReportPop pop = new BottomReportPop(AddFriendActivity.this, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (v.getId() == R.id.btn_pop_report){
-                            ToastUtils.showToast(AddFriendActivity.this,"举报");
-                        }
-                    }
-                });
-                pop.showAtLocation(findViewById(R.id.activity_add_friend), Gravity.BOTTOM,0,0);
+
                 break;
         }
     }

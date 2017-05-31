@@ -2,6 +2,8 @@ package com.shanchain.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,9 +13,11 @@ import com.bumptech.glide.Glide;
 import com.shanchain.R;
 import com.shanchain.base.BaseCommonAdapter;
 import com.shanchain.mvp.model.PublisherInfo;
+import com.shanchain.mvp.view.activity.DetailsActivity;
 import com.shanchain.mvp.view.activity.ReportActivity;
+import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.bottomPop.BottomReportPop;
-import com.shanchain.widgets.dialog.BottomDialog;
+import com.shanchain.widgets.dialog.CustomDialog;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -49,7 +53,7 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
         holder.setText(R.id.tv_des, publisherInfo.getDes());
         switch (type) {
             case 1:
-               /* //普通条目
+                //普通条目
                 holder.setVisible(R.id.rv_images, true);
                 holder.setVisible(R.id.iv_story, false);
                 holder.setVisible(R.id.ll_challenge, false);
@@ -78,11 +82,11 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                         return false;
                     }
                 });
-*/
+
                 break;
             case 2:
                 //挑战条目
-    //            holder.setVisible(R.id.rv_images, false);
+                holder.setVisible(R.id.rv_images, false);
                 holder.setVisible(R.id.iv_story, false);
                 holder.setVisible(R.id.ll_challenge, true);
 
@@ -101,7 +105,7 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                 break;
             case 3:
                 //故事条目
-        //        holder.setVisible(R.id.rv_images, false);
+                holder.setVisible(R.id.rv_images, false);
 
                 holder.setVisible(R.id.ll_challenge, true);
                 if (TextUtils.isEmpty(publisherInfo.getStroyImgUrl())) {
@@ -158,38 +162,26 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
         holder.setOnClickListener(R.id.iv_comments, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, DetailsActivity.class);
+                mContext.startActivity(intent);
             }
         });
         //评论文字的点击事件
         holder.setOnClickListener(R.id.tv_comments, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, DetailsActivity.class);
+                mContext.startActivity(intent);
             }
         });
         //更多图标的点击事件
         holder.setOnClickListener(R.id.iv_more, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* mPop = new BottomReportPop(mContext, new View.OnClickListener() {
+                CustomDialog dialog = new CustomDialog(mContext,true,R.layout.pop_report,new int[]{R.id.btn_pop_report,R.id.btn_pop_cancle});
+                dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        if (v.getId() == R.id.btn_pop_report){
-                            Intent intent = new Intent(mContext, ReportActivity.class);
-                            intent.putExtra("publishInfo",publisherInfo);
-                            mContext.startActivity(intent);
-                            mPop.dismiss();
-                        }
-                    }
-                });
-                LinearLayout rootView= holder.getView(R.id.ll_fragment_hot);
-                mPop.showAtLocation(rootView, Gravity.BOTTOM,0,0);*/
-
-                BottomDialog dialog = new BottomDialog(mContext,R.layout.pop_report,new int[]{R.id.btn_pop_report,R.id.btn_pop_cancle});
-                dialog.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-                    @Override
-                    public void OnBottomItemClick(BottomDialog dialog, View view) {
+                    public void OnItemClick(CustomDialog dialog, View view) {
                         switch (view.getId()){
                             case R.id.btn_pop_report:
                                 Intent intent = new Intent(mContext, ReportActivity.class);

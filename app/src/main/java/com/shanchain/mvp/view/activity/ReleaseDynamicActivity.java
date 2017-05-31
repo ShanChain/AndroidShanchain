@@ -1,5 +1,9 @@
 package com.shanchain.mvp.view.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -8,10 +12,14 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.utils.LogUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import me.iwf.photopicker.PhotoPicker;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
@@ -32,6 +40,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     ImageView mIvPublishExpression;
     @Bind(R.id.activity_release_dynamic)
     LinearLayout mActivityReleaseDynamic;
+
+    /** 描述：选择图片的路径集合*/
+    private ArrayList<String> images;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -60,7 +71,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
                 break;
             case R.id.iv_publish_image:
-
+                //选择图片
+                selectImages();
                 break;
             case R.id.iv_publish_aite:
 
@@ -71,6 +83,43 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             case R.id.iv_publish_expression:
 
                 break;
+        }
+    }
+
+    private void selectImages() {
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.M){
+            //6.权限申请
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == 1){
+
+            }
+        }
+        pickImages();
+    }
+
+    private void pickImages() {
+        PhotoPicker.builder()
+                .setPhotoCount(9)
+                .setShowCamera(true)
+                .setShowGif(true)
+                .setPreviewEnabled(false)
+                .start(this, PhotoPicker.REQUEST_CODE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PhotoPicker.REQUEST_CODE) {
+            if (data != null) {
+                ArrayList<String> photos =
+                        data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                    images = new ArrayList<>();
+                for (int i = 0; i < photos.size(); i++) {
+                    String path = photos.get(i);
+                    LogUtils.d(TAG, "onActivityResult: " + path);
+                    images.add(path);
+                }
+            }
         }
     }
 

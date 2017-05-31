@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.shanchain">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -39,6 +43,16 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".mvp.view.activity.FriendsActivity">
+        </activity>
+
+        <!-- 图片选择页面 -->
+        <activity
+            android:name="me.iwf.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".mvp.view.activity.DetailsActivity">
         </activity>
     </application>
 

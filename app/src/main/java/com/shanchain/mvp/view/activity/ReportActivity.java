@@ -1,6 +1,7 @@
 package com.shanchain.mvp.view.activity;
 
-import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -8,7 +9,8 @@ import android.widget.RadioButton;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
-import com.shanchain.mvp.model.PublisherInfo;
+import com.shanchain.utils.LogUtils;
+import com.shanchain.utils.SystemUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -42,18 +44,38 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
 
     @Override
     protected void initViewsAndEvents() {
+
+        String brand = Build.BRAND;
+        LogUtils.d("当前版本为:"+brand);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            //6.0以上
+            SystemUtils.setImmersiveStatusBar_API21(this, Color.WHITE);
+            SystemUtils.setStatusBarLightMode_API23(this);
+            if (brand.contains("Xiaomi")){
+                SystemUtils.MIUISetStatusBarLightMode(getWindow(),true);
+            }
+        }
+
         initToolBar();
-        Intent intent = getIntent();
-        PublisherInfo publishInfo = (PublisherInfo) intent.getSerializableExtra("publishInfo");
-        int comments = publishInfo.getComments();
+
+//        Intent intent = getIntent();
+//        PublisherInfo publishInfo = (PublisherInfo) intent.getSerializableExtra("publishInfo");
+//        int comments = publishInfo.getComments();
 
 
     }
 
     private void initToolBar() {
+
+
+
+
         mToolbarReport = (ArthurToolBar) findViewById(R.id.toolbar_report);
+
         mToolbarReport.setOnLeftClickListener(this);
         mToolbarReport.setBtnEnabled(true,false);
+
     }
 
 
@@ -109,7 +131,5 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     public void onLeftClick(View v) {
         finish();
     }
-
-
 
 }

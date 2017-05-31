@@ -1,5 +1,6 @@
 package com.shanchain.mvp.view.fragment;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import com.shanchain.R;
 import com.shanchain.adapter.HotAdapter;
 import com.shanchain.base.BaseFragment;
 import com.shanchain.mvp.model.PublisherInfo;
+import com.shanchain.mvp.view.activity.DetailsActivity;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -93,6 +95,8 @@ public class HotFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 ToastUtils.showToast(mActivity,"点击了列表的第" +position+"个条目");
+                Intent intent = new Intent(mActivity, DetailsActivity.class);
+                mActivity.startActivity(intent);
             }
 
             @Override

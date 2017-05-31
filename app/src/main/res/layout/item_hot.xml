@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
         android:layout_marginTop="14dp"
         android:orientation="horizontal">
 
@@ -24,7 +24,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="14dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
             android:orientation="vertical">
 
             <TextView
@@ -55,29 +55,29 @@
         android:id="@+id/tv_des"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="22dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
         android:layout_marginTop="8dp"
         android:lineSpacingExtra="3dp"
         android:text="今天玩的很开心.#善数者正式发布#祝善数者越来越好."
         android:textSize="@dimen/text_size_14sp"/>
 
-    <!--&lt;!&ndash;图片网格列表&ndash;&gt;
+    <!--图片网格列表-->
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:id="@+id/rv_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>-->
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
     <!--挑战和故事布局,故事比挑战多一个imageview-->
     <ImageView
         android:id="@+id/iv_story"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
         android:layout_marginTop="6dp"
         android:maxWidth="300dp"
         android:maxHeight="300dp"
@@ -166,7 +166,7 @@
         android:id="@+id/ll_comments"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginLeft="14dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
         android:orientation="horizontal">
 
         <ImageView
