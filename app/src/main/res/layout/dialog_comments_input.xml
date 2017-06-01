@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:background="@color/colorWhite"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_margin="@dimen/margin_15dp"
+        android:id="@+id/iv_dialog_publish"
+        android:layout_gravity="bottom"
+        android:src="@mipmap/text_btn_comment_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:hint="在这里说点什么吧"
+        android:id="@+id/et_comments_input"
+        android:background="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+</LinearLayout>

@@ -121,6 +121,7 @@ public class HotFragment extends BaseFragment {
             mImages = new ArrayList<>();
             Random random = new Random();
             for (int j = 0; j <random.nextInt(9) ; j ++) {
+                LogUtils.d("随机图片的数量 :" + j);
                 mImages.add("" + j);
             }
 

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:id="@+id/ll_fragment_hot"
               android:background="@color/colorWhite"
               android:orientation="vertical">
@@ -62,17 +63,29 @@
         android:text="今天玩的很开心.#善数者正式发布#祝善数者越来越好."
         android:textSize="@dimen/text_size_14sp"/>
 
-    <!--图片网格列表-->
+   <!-- &lt;!&ndash;图片网格列表&ndash;&gt;
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:id="@+id/rv_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>-->
+
+    <com.jaeger.ninegridimageview.NineGridImageView
+        android:id="@+id/nine_grid_layout"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_15dp"
+        android:layout_width="match_parent"
+        app:imgGap="4dp"
+        app:showStyle="grid"
+        app:maxSize="9"
+        app:singleImgSize="220dp"/>
+
 
     <!--挑战和故事布局,故事比挑战多一个imageview-->
     <ImageView
+        android:clickable="true"
         android:id="@+id/iv_story"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,6 +98,7 @@
         android:src="@drawable/photo"/>
 
     <LinearLayout
+        android:clickable="true"
         android:layout_marginTop="12dp"
         android:background="#fafafa"
         android:id="@+id/ll_challenge"

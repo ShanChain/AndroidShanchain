@@ -6,5 +6,6 @@ package com.shanchain.global;
  */
 
 public interface Constans {
+    String BASE_URL = "";
 
 }

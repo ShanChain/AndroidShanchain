@@ -26,10 +26,15 @@ public class ContactInfoUtils {
         List<ContactInfo> infos = new ArrayList<ContactInfo>();
         ContentResolver resolver = context.getContentResolver();
         // 查询raw_contact表
+
         Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
         Uri datauri = Uri.parse("content://com.android.contacts/data");
         Cursor cursor = resolver.query(uri, new String[] { "contact_id" },
                 null, null, null);
+        if (cursor == null){
+            LogUtils.d("没有联系人,或无法读取联系人");
+            return null;
+        }
         while (cursor.moveToNext()) {
             String id = cursor.getString(0);
             System.out.println("Id:" + id);

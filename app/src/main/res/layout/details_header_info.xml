@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_margin="@dimen/margin_15dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="42dp">
+
+        <ImageView
+            android:id="@+id/iv_details_info_avatar"
+            android:src="@mipmap/logo"
+            android:layout_width="42dp"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_marginLeft="18dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:textColor="@color/colorBtn"
+                android:gravity="center_vertical"
+                android:text="张建"
+                android:textSize="@dimen/text_size_14sp"
+                android:id="@+id/tv_details_info_name"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+
+            <TextView
+                android:textColor="@color/colorHint"
+                android:gravity="center_vertical"
+                android:text="15分钟前"
+                android:textSize="@dimen/text_size_12sp"
+                android:id="@+id/tv_details_info_time"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:textSize="@dimen/text_size_14sp"
+        android:text="今天玩的很开心.#善数者正式发布#祝善数者越来越好"
+        android:id="@+id/tv_details_info_des"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"/>
+
+    <com.jaeger.ninegridimageview.NineGridImageView
+        android:id="@+id/ngiv_details_info_images"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_15dp"
+        android:layout_width="match_parent"
+        app:imgGap="4dp"
+        app:showStyle="grid"
+        app:maxSize="9"
+        app:singleImgSize="220dp"/>
+
+    <TextView
+        android:background="@color/colorListDivider"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+</LinearLayout>

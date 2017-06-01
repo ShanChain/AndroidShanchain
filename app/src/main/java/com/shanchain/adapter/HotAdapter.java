@@ -2,21 +2,19 @@ package com.shanchain.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jaeger.ninegridimageview.NineGridImageView;
+import com.jaeger.ninegridimageview.NineGridImageViewAdapter;
 import com.shanchain.R;
 import com.shanchain.base.BaseCommonAdapter;
 import com.shanchain.mvp.model.PublisherInfo;
 import com.shanchain.mvp.view.activity.DetailsActivity;
 import com.shanchain.mvp.view.activity.ReportActivity;
-import com.shanchain.utils.ToastUtils;
-import com.shanchain.widgets.bottomPop.BottomReportPop;
 import com.shanchain.widgets.dialog.CustomDialog;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -29,7 +27,6 @@ import java.util.List;
 public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
 
 
-    private BottomReportPop mPop;
 
     public HotAdapter(Context context, int layoutId, List<PublisherInfo> datas) {
         super(context, layoutId, datas);
@@ -54,12 +51,12 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
         switch (type) {
             case 1:
                 //普通条目
-                holder.setVisible(R.id.rv_images, true);
-                holder.setVisible(R.id.iv_story, false);
-                holder.setVisible(R.id.ll_challenge, false);
+              //  holder.setVisible(R.id.rv_images, true);
+           //     holder.setVisible(R.id.iv_story, false);
+              //  holder.setVisible(R.id.ll_challenge, false);
                 //只有一张图片的时候
-                if (images.size() == 1) {
-                    holder.setVisible(R.id.rv_images, false);
+    /*            if (images.size() == 1) {
+                  //  holder.setVisible(R.id.rv_images, false);
                     holder.setVisible(R.id.iv_story, true);
                     Glide.with(mContext).load(R.drawable.photo2).into((ImageView) holder.getView(R.id.iv_story));
                 }
@@ -81,15 +78,26 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                         return false;
                     }
-                });
+                });*/
 
+                holder.setVisible(R.id.nine_grid_layout,true);
+                holder.setVisible(R.id.iv_story, false);
+                holder.setVisible(R.id.ll_challenge, false);
+                NineGridImageView nineGridImageView = holder.getView(R.id.nine_grid_layout);
+
+                NineGridImageViewAdapter nineGridAdapter = new NineGridAdapter();
+
+                nineGridImageView.setAdapter(nineGridAdapter);
+                nineGridImageView.setImagesData(images);
+
+            //    nineGridLayout.setImagesData();
                 break;
             case 2:
                 //挑战条目
-                holder.setVisible(R.id.rv_images, false);
+           //     holder.setVisible(R.id.rv_images, false);
                 holder.setVisible(R.id.iv_story, false);
                 holder.setVisible(R.id.ll_challenge, true);
-
+                holder.setVisible(R.id.nine_grid_layout,false);
                 holder.setText(R.id.tv_challenge, publisherInfo.getTitle());
                 if (TextUtils.isEmpty(publisherInfo.getAddr())) {
                     holder.setVisible(R.id.tv_time_addr, false);
@@ -105,8 +113,8 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                 break;
             case 3:
                 //故事条目
-                holder.setVisible(R.id.rv_images, false);
-
+       //         holder.setVisible(R.id.rv_images, false);
+                holder.setVisible(R.id.nine_grid_layout,false);
                 holder.setVisible(R.id.ll_challenge, true);
                 if (TextUtils.isEmpty(publisherInfo.getStroyImgUrl())) {
                     holder.setVisible(R.id.iv_story, false);

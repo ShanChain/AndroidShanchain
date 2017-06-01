@@ -1,83 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_marginTop="@dimen/margin_15dp"
-            android:layout_marginLeft="@dimen/margin_15dp"
-            android:layout_marginRight="@dimen/margin_15dp"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_15dp">
+
+        <ImageView
+            android:id="@+id/iv_item_comments_avatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@mipmap/popular_image_story_default"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/iv_comments_avatar"
-                android:src="@mipmap/popular_image_story_default"
-                android:layout_width="30dp"
-                android:layout_height="30dp"/>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_item_comments_name"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="高晓华"
+                    android:textColor="#3ab9c7"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:layout_marginRight="25dp"
+                    android:id="@+id/tv_item_comments_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="20分钟前"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_item_comments_counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:gravity="center_vertical"
+                    android:text="22"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_12sp"/>
+
+                <ImageView
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/iv_item_comments_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/text_btn_thumbsup_default"/>
+
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/tv_comments_name"
-                android:textColor="#3ab9c7"
-                android:text="高晓华"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/iv_comments_avatar"
-                android:textSize="@dimen/text_size_14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <ImageView
-
-                android:layout_marginTop="3dp"
-                android:layout_alignParentRight="true"
-                android:id="@+id/iv_comments_like"
-                android:src="@mipmap/text_btn_thumbsup_default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:layout_marginTop="1dp"
-                android:id="@+id/tv_comments_counts"
-                android:textColor="@color/colorHint"
-                android:textSize="@dimen/text_size_12sp"
-                android:layout_marginRight="5dp"
-                android:text="22"
-                android:layout_toLeftOf="@id/iv_comments_like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:layout_marginTop="1dp"
-                android:textColor="@color/colorHint"
-                android:textSize="@dimen/text_size_12sp"
-                android:text="20分钟前"
-                android:layout_marginLeft="150dp"
-                android:layout_toRightOf="@id/tv_comments_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:textColor="@color/colorHint"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="深圳"
-                android:textSize="@dimen/text_size_12sp"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/iv_comments_avatar"
-                android:layout_below="@id/tv_comments_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </RelativeLayout>
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/text_size_12sp"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
     <TextView
-        android:textColor="@color/colorBtn"
-        android:text="还是卡好点的哦啊湖大不舒,服了娃哈哈短裤给娃  大红大好的我但我电话"
-        android:lineSpacingExtra="1.6dp"
-        android:layout_marginRight="28dp"
-        android:textSize="@dimen/text_size_14sp"
         android:id="@+id/tv_comments_content"
-        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="55dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_marginRight="28dp"
+        android:lineSpacingExtra="1.6dp"
+        android:text="还是卡好点的哦啊湖大不舒,服了娃哈哈短裤给娃  大红大好的我但我电话"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"/>
+
     <TextView
-        android:layout_marginTop="12dp"
-        android:background="@color/colorListDivider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorListDivider"/>
 </LinearLayout>
