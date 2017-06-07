@@ -15,6 +15,8 @@ import com.shanchain.mvp.view.fragment.DynamicFragment;
 import com.shanchain.mvp.view.fragment.FoundFragment;
 import com.shanchain.mvp.view.fragment.HomeFragment;
 import com.shanchain.mvp.view.fragment.MineFragment;
+import com.shanchain.utils.DensityUtils;
+import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
@@ -54,7 +56,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
     @Override
     protected void initViewsAndEvents() {
-
+        int height = getWindowManager().getDefaultDisplay().getHeight();
+        int i = DensityUtils.px2dip(this, height);
+        LogUtils.d("屏幕高度为;" + i);
         navigationBarTitles = getResources().getStringArray(R.array.main_tab_name);
         initTooBar();
 

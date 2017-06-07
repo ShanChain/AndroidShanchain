@@ -18,6 +18,8 @@
         app:titleTextSize="16"/>
 
     <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_friends_open"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
@@ -59,5 +61,12 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/xrv_friends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
 </LinearLayout>

@@ -14,7 +14,6 @@
     <color name="colorHint">#b3b3b3</color>
     <!--黑色-->
     <color name="colorBlack">#000</color>
-
     <!--底部导航按钮被选中的颜色-->
     <color name="colorActive">#3bbac8</color>
     <!--底部导航按钮未被选中的颜色-->

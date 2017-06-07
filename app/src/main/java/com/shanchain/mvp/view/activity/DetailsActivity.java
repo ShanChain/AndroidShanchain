@@ -2,7 +2,9 @@ package com.shanchain.mvp.view.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,8 +33,10 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Bind(R.id.activity_details)
     LinearLayout mActivityDetails;
 
-    @Bind(R.id.ll_details_comments)
-    LinearLayout mLlDetailsComments;
+    @Bind(R.id.iv_details_comment)
+    ImageView mIvDetailsComment;
+    @Bind(R.id.et_details_content_comments)
+    EditText mEtDetailsContentComments;
     private ArrayList<String> mDatas;
     private View mHeader_info;
     private View mHeader_comments;
@@ -128,17 +132,16 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
 
-
-
-    @OnClick(R.id.ll_details_comments)
+    @OnClick(R.id.iv_details_comment)
     public void onClick() {
-        CustomDialog customDialog = new CustomDialog(this,true,R.layout.dialog_comments_input,new int[]{R.id.iv_dialog_publish});
-        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                ToastUtils.showToast(DetailsActivity.this,"发表评论");
-            }
-        });
-        customDialog.show();
+        String commentsDetails = mEtDetailsContentComments.getText().toString().trim();
+        if (TextUtils.isEmpty(commentsDetails)){
+            ToastUtils.showToast(DetailsActivity.this,"您还没写点什么呢");
+        }else {
+
+
+        }
+
     }
+
 }

@@ -2,7 +2,10 @@ package com.shanchain.mvp.view.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
@@ -12,7 +15,9 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.model.PositionInfo;
 import com.shanchain.utils.LogUtils;
+import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
@@ -26,8 +31,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     ArthurToolBar mToolbarReleaseDynamic;
     @Bind(R.id.et_publish_content)
     EditText mEtPublishContent;
-    @Bind(R.id.ll_publish_position)
-    LinearLayout mLlPublishPosition;
+    @Bind(R.id.tv_publish_position)
+    TextView mLlPublishPosition;
     @Bind(R.id.tv_public)
     TextView mTvPublic;
     @Bind(R.id.iv_publish_image)
@@ -41,8 +46,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     @Bind(R.id.activity_release_dynamic)
     LinearLayout mActivityReleaseDynamic;
 
-    /** 描述：选择图片的路径集合*/
+    /**
+     * 描述：选择图片的路径集合
+     */
     private ArrayList<String> images;
+    private static final int POSITION_REQUSET_CODE = 10;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -61,10 +69,12 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     }
 
 
-    @OnClick({R.id.ll_publish_position, R.id.tv_public, R.id.iv_publish_image, R.id.iv_publish_aite, R.id.iv_publish_theme, R.id.iv_publish_expression})
+    @OnClick({R.id.tv_publish_position, R.id.tv_public, R.id.iv_publish_image, R.id.iv_publish_aite, R.id.iv_publish_theme, R.id.iv_publish_expression})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ll_publish_position:
+            case R.id.tv_publish_position:
+                //获取位置信息
+                selectPosition();
 
                 break;
             case R.id.tv_public:
@@ -86,14 +96,49 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         }
     }
 
-    private void selectImages() {
-        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.M){
-            //6.权限申请
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == 1){
-
+    private void selectPosition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //6.0权限申请
+            LogUtils.d("版本6.0");
+            int checkSelfPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+            if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
+                LogUtils.d("未申请权限,正在申请");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 200);
+            } else {
+                LogUtils.d("已经申请权限");
+                getPosition();
             }
+        } else {
+            LogUtils.d("版本低于6.0");
+            getPosition();
         }
-        pickImages();
+
+    }
+
+    private void getPosition() {
+        //ToastUtils.showToast(this, "获取位置信息");
+        readyGoForResult(PositionActivity.class,POSITION_REQUSET_CODE);
+//        Intent intent = new Intent(this,PositionActivity.class);
+//        startActivityForResult(intent,POSITION_REQUSET_CODE);
+    }
+
+    private void selectImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //6.0权限申请
+            LogUtils.d("版本6.0");
+            int checkSelfPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
+                LogUtils.d("未申请权限,正在申请");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+            } else {
+                LogUtils.d("已经申请权限");
+                pickImages();
+            }
+        } else {
+            LogUtils.d("版本低于6.0");
+            pickImages();
+        }
+
     }
 
     private void pickImages() {
@@ -105,6 +150,29 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 .start(this, PhotoPicker.REQUEST_CODE);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 100:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //授权了
+                    pickImages();
+                } else {
+                    ToastUtils.showToast(ReleaseDynamicActivity.this, "未授权");
+                }
+                break;
+            case 200:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //授权了
+                    getPosition();
+                } else {
+                    ToastUtils.showToast(ReleaseDynamicActivity.this, "未授权");
+                }
+                break;
+
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -113,12 +181,21 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             if (data != null) {
                 ArrayList<String> photos =
                         data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                    images = new ArrayList<>();
+                images = new ArrayList<>();
                 for (int i = 0; i < photos.size(); i++) {
                     String path = photos.get(i);
                     LogUtils.d(TAG, "onActivityResult: " + path);
                     images.add(path);
+
                 }
+            }
+        }
+
+        else if (requestCode == POSITION_REQUSET_CODE){
+            if (data != null) {
+                PositionInfo positionInfo = (PositionInfo) data.getSerializableExtra("positionInfo");
+                LogUtils.d(positionInfo.getAddress());
+                mLlPublishPosition.setText(positionInfo.getAddress());
             }
         }
     }
@@ -132,4 +209,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     public void onLeftClick(View v) {
         finish();
     }
+
+
 }

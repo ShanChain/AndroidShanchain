@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_visible_range"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--顶部工具栏，可设置沉浸式效果-->
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_visible_range"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/colorWhite"
+        app:leftText="取消"
+        app:leftTextColor="@color/colorBtn"
+        app:leftTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="选择可见范围"
+        app:titleTextSize="18"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+    <LinearLayout
+        android:id="@+id/ll_visible_public"
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+
+        <RadioButton
+            android:id="@+id/rb_visible_public"
+            style="@style/style_radiobutton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+         />
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="公开"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="所有人可见"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/text_size_10sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+    <LinearLayout
+        android:id="@+id/ll_visible_friends"
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+
+        <RadioButton
+            android:id="@+id/rb_visible_friends"
+            style="@style/style_radiobutton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            />
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="好友圈"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="互相关注好友可见"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/text_size_10sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+    <LinearLayout
+        android:id="@+id/ll_visible_ownself"
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+
+        <RadioButton
+            android:id="@+id/rb_visible_ownself"
+            style="@style/style_radiobutton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+           />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:text="仅自己可见"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorHint"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:gravity="center_vertical"
+        android:text="指定部分好友可见"
+        android:background="@color/colorListDivider"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"/>
+
+    <TextView
+        android:drawablePadding="12dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:drawableLeft="@mipmap/icon_btn_addto_default"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"
+        android:gravity="center_vertical"
+        android:text="选择好友"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:id="@+id/tv_visiable_select_friends"/>
+
+</LinearLayout>

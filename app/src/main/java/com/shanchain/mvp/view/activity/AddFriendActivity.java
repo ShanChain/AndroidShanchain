@@ -1,13 +1,21 @@
 package com.shanchain.mvp.view.activity;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.shanchain.R;
+import com.shanchain.adapter.AddFriendAdapter;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.model.InterestedPersonInfo;
+import com.shanchain.utils.DensityUtils;
+import com.shanchain.widgets.other.RecyclerViewDivider;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -31,6 +39,7 @@ public class AddFriendActivity extends BaseActivity implements ArthurToolBar.OnL
     LinearLayout mLlAddSharecode;
     @Bind(R.id.rv_addfriend)
     RecyclerView mRvAddfriend;
+    private List<InterestedPersonInfo> datas;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -40,6 +49,34 @@ public class AddFriendActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     protected void initViewsAndEvents() {
         initTooBar();
+        initDatas();
+        initRecyclerView();
+    }
+
+    private void initDatas() {
+        if (datas == null) {
+            datas = new ArrayList<>();
+            for (int i = 0; i < 12; i ++) {
+                InterestedPersonInfo interestedPersonInfo = new InterestedPersonInfo();
+                interestedPersonInfo.setAvatarUrl("" + i);
+                interestedPersonInfo.setNickName("一个学霸" + i);
+                interestedPersonInfo.setSignature("有时候,同一件事,我们可以有不同的处理方式");
+                interestedPersonInfo.setReason("经常出现在同一个位置");
+                datas.add(interestedPersonInfo);
+            }
+
+        }
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRvAddfriend.setLayoutManager(linearLayoutManager);
+        mRvAddfriend.addItemDecoration(new RecyclerViewDivider(AddFriendActivity.this,
+                LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(AddFriendActivity.this,1),
+                getResources().getColor(R.color.colorAddFriendDivider)));
+        AddFriendAdapter adapter = new AddFriendAdapter(AddFriendActivity.this,R.layout.item_interested_person,datas);
+        mRvAddfriend.setAdapter(adapter);
     }
 
     private void initTooBar() {

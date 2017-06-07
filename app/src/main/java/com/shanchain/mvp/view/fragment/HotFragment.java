@@ -36,6 +36,7 @@ public class HotFragment extends BaseFragment {
     XRecyclerView mXrvHot;
     private ArrayList<PublisherInfo> mDatas;
     private List<String> mImages;
+    private boolean loadSuccess;
 
     @Override
     public View initView() {
@@ -46,7 +47,12 @@ public class HotFragment extends BaseFragment {
     @Override
     public void initData() {
 
-        getDatas();
+        if (loadSuccess){
+            LogUtils.d("加载成功" + loadSuccess);
+        }else {
+            LogUtils.d("还未加载" + loadSuccess);
+            getDatas();
+        }
 
         Gson gson = new Gson();
         String json = gson.toJson(mDatas);
@@ -177,7 +183,7 @@ public class HotFragment extends BaseFragment {
             mDatas.add(publisherInfo);
         }
 
-
+        loadSuccess = true;
     }
 
     /**

@@ -6,22 +6,29 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.shanchain.R;
+import com.shanchain.adapter.FriendsAdapter;
 import com.shanchain.base.BaseActivity;
 import com.shanchain.mvp.model.ContactInfo;
+import com.shanchain.mvp.model.FriendsInfo;
 import com.shanchain.utils.ContactsUtils;
+import com.shanchain.utils.DensityUtils;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.PrefUtils;
 import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.dialog.CustomDialog;
+import com.shanchain.widgets.other.RecyclerViewDivider;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -36,18 +43,91 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
     LinearLayout mActivityFriends;
     @Bind(R.id.btn_friends_start)
     Button mBtnFriendsStart;
+    @Bind(R.id.ll_friends_open)
+    LinearLayout mLlFriendsOpen;
+    @Bind(R.id.xrv_friends)
+    XRecyclerView mXrvFriends;
+    private List<FriendsInfo> datas;
 
+    private List<FriendsInfo> isShanchainer;
+    private List<FriendsInfo> notShanchainer;
     @Override
     protected int getContentViewLayoutID() {
+        PrefUtils.putBoolean(this, "isOpen", false);
         return R.layout.activity_friends;
     }
 
     @Override
     protected void initViewsAndEvents() {
-        PrefUtils.putBoolean(this, "isOpen", true);
-        boolean isOpen = PrefUtils.getBoolean(this, "isOpen", true);
-        initToolBar(isOpen);
+        long t0 = System.currentTimeMillis();
 
+        boolean isOpen = PrefUtils.getBoolean(this, "isOpen", false);
+        initToolBar(isOpen);
+        long t1 = System.currentTimeMillis();
+        initDatas(isOpen);
+        long t2 = System.currentTimeMillis();
+        initRecyclerView(isOpen);
+        long t3 = System.currentTimeMillis();
+
+        LogUtils.d( "初始化时间:" + (t1-t0) );
+
+        LogUtils.d( "初始化数据时间:" + (t2-t1) );
+
+        LogUtils.d( "初始化列表时间:" + (t3-t2) );
+    }
+
+    private void initDatas(boolean isOpen) {
+        if (isOpen){
+            if (datas == null) {
+                datas = new ArrayList<>();
+                isShanchainer = new ArrayList<>();
+                notShanchainer = new ArrayList<>();
+
+                //读取联系人
+
+
+
+                for (int i = 0; i < 16; i ++) {
+                    FriendsInfo friendsInfo = new FriendsInfo();
+                    friendsInfo.setAvatarUrl("");
+                    friendsInfo.setName("杨志" + i);
+                    friendsInfo.setNickName("杨大志");
+                    friendsInfo.setFocus(i%2 == 0 ?true:false);
+                    friendsInfo.setShanChainer(i%3==0?true:false);
+                    if (i%3 == 0) {
+                        isShanchainer.add(friendsInfo);
+                    }else {
+                        notShanchainer.add(friendsInfo);
+                    }
+                }
+
+                datas.addAll(isShanchainer);
+                datas.addAll(notShanchainer);
+
+            }
+
+        }else {
+
+        }
+    }
+
+    private void initRecyclerView(boolean isOpen) {
+        if (isOpen){
+            mLlFriendsOpen.setVisibility(View.GONE);
+            mXrvFriends.setVisibility(View.VISIBLE);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mXrvFriends.setLayoutManager(linearLayoutManager);
+            FriendsAdapter friendsAdapter = new FriendsAdapter(this,R.layout.item_friends,datas);
+            mXrvFriends.setAdapter(friendsAdapter);
+            mXrvFriends.addItemDecoration(new RecyclerViewDivider(FriendsActivity.this,
+                    LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(FriendsActivity.this,1),
+                    getResources().getColor(R.color.colorAddFriendDivider)));
+
+        }else {
+            mLlFriendsOpen.setVisibility(View.VISIBLE);
+            mXrvFriends.setVisibility(View.GONE);
+        }
     }
 
     private void initToolBar(boolean isOpen) {
@@ -60,6 +140,8 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             mToolbarFriends.setOnLeftClickListener(this);
             mToolbarFriends.setOnRightClickListener(this);
             mToolbarFriends.setImmersive(this, true);
+
+
         } else {
             //未开启通讯录好友
             mToolbarFriends.setBtnVisibility(true, false);
@@ -68,7 +150,6 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             mToolbarFriends.setImmersive(this, true);
         }
     }
-
 
 
     @Override
@@ -99,6 +180,7 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
         for (int i = 0; i < allCallRecords.size(); i++) {
             ContactInfo info = allCallRecords.get(i);
             LogUtils.d(info.getName() + ":" + info.getPhone());
+
         }
     }
 
@@ -144,10 +226,15 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             } else {
                 LogUtils.d("已经申请权限");
                 readContacts();
+
             }
         } else {
             LogUtils.d("版本低于6.0");
             readContacts();
         }
+
+        PrefUtils.putBoolean(this, "isOpen", true);
+        initViewsAndEvents();
     }
+
 }

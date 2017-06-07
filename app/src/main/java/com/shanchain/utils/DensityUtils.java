@@ -59,4 +59,6 @@ public class DensityUtils {
         wm.getDefaultDisplay().getMetrics( outMetrics);
         return outMetrics .widthPixels ;
     }
+
+
 }
