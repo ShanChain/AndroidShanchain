@@ -16,7 +16,7 @@ public class DynamicPagerAdapter extends FragmentPagerAdapter {
     String[] titles ;
     public DynamicPagerAdapter(FragmentManager fm , String[] tabName) {
         super(fm);
-        titles = tabName;
+        this.titles = tabName;
     }
 
     @Override
@@ -30,7 +30,11 @@ public class DynamicPagerAdapter extends FragmentPagerAdapter {
                 fragment = new AttentionFragment();
                 break;
             case 2:
+
                 fragment = new SameCityFragment();
+                break;
+            default:
+
                 break;
         }
         return fragment;

@@ -145,11 +145,15 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         switch (position) {
             case 0:
                 mToolbarMain.setTitleText(navigationBarTitles[position]);
-
+                mToolbarMain.setRightImage(R.mipmap.home_nav_icon_default);
+                mToolbarMain.setBtnEnabled(false,true);
+                mToolbarMain.setBtnVisibility(false,true);
+                mToolbarMain.setOnRightClickListener(this);
                 break;
             case 1:
                 mToolbarMain.setTitleText(navigationBarTitles[position]);
                 mToolbarMain.setBtnEnabled(true);
+                mToolbarMain.setBtnVisibility(true,true);
                 mToolbarMain.setLeftImage(R.mipmap.nav_button_addfriend_default);
                 mToolbarMain.setRightImage(R.mipmap.nav_button_publish_dynamic_default);
                 mToolbarMain.setOnLeftClickListener(this);
@@ -214,7 +218,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         switch (currentPage) {
             case 0:
                 //当前页为首页
-
+                ToastUtils.showToast(this,"首页。。。");
                 break;
             case 1:
                 //当前页为动态

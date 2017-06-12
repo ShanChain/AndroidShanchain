@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_choise_contacts"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--顶部工具栏，可设置沉浸式效果-->
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_choise_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/colorWhite"
+        app:leftText="取消"
+        app:leftTextColor="@color/colorBtn"
+        app:leftTextSize="14"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorBtn"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="选择联系人"
+        app:titleTextSize="16"/>
+    <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+    <TextView
+        android:background="@color/colorAddFriendDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <EditText
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:id="@+id/et_choise_search"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:background="@drawable/shap_edit_search_pressed"
+        android:drawableLeft="@mipmap/search_button_search_default"
+        android:drawablePadding="32dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:hint="搜索"
+        android:textColorHint="#c0c0c0"
+        android:textSize="@dimen/text_size_14sp"/>
+    <TextView
+        android:paddingLeft="@dimen/margin_15dp"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/text_size_10sp"
+        android:gravity="center_vertical"
+        android:text="最近联系人"
+        android:background="@color/colorListDivider"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_choise_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

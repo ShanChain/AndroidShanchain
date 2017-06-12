@@ -63,6 +63,24 @@
         </activity>
         <activity android:name=".mvp.view.activity.VisibleRangeActivity">
         </activity>
+        <activity android:name=".mvp.view.activity.TopicActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ChooseContactsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.PersonalHomePagerActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.AiteContactsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.PersonalStoryActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.PersonalChallengeActivity">
+        </activity>
+        <activity
+            android:name=".mvp.view.activity.ImageActivity"
+            android:theme="@style/FullScreenTheme">
+        </activity>
+        <activity android:name=".mvp.view.activity.ShanYuanActivity">
+        </activity>
     </application>
 
 </manifest>

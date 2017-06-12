@@ -11,10 +11,10 @@
         android:padding="@dimen/margin_15dp">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/iv_item_comments_avatar"
             android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@mipmap/popular_image_story_default"/>
+            android:layout_height="36dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +69,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_item_comments_address"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

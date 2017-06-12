@@ -17,6 +17,10 @@ public class PublisherInfo implements Serializable{
     /** 描述：动态描述*/
     private String des;
 
+    private int vote;
+
+    private boolean isVoted;
+
     /** 描述：发表的图片集合url*/
     private List<String> images;
     /** 描述：点赞数*/
@@ -43,6 +47,22 @@ public class PublisherInfo implements Serializable{
     private String activeDes;
 
     private String otherDes;
+
+    public boolean isVoted() {
+        return isVoted;
+    }
+
+    public void setVoted(boolean voted) {
+        isVoted = voted;
+    }
+
+    public int getVote() {
+        return vote;
+    }
+
+    public void setVote(int vote) {
+        this.vote = vote;
+    }
 
     public String getDes() {
         return des;

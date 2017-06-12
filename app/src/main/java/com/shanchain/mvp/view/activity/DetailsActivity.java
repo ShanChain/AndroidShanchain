@@ -9,22 +9,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.shanchain.R;
 import com.shanchain.adapter.CommentsAdapter;
 import com.shanchain.adapter.NineGridDetailsAdapter;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.model.CommentsInfo;
+import com.shanchain.utils.GlideCircleTransform;
 import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.dialog.CustomDialog;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
-public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
 
 
     ArthurToolBar mToolbarDetails;
@@ -38,9 +42,23 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Bind(R.id.et_details_content_comments)
     EditText mEtDetailsContentComments;
     private ArrayList<String> mDatas;
+    private ArrayList<CommentsInfo> mCommentsInfos;
     private View mHeader_info;
-    private View mHeader_comments;
     private ArrayList<String> mImagesUrl;
+
+    private ImageView mIvDetailsInfoAvatar;
+    private TextView mTvDetailsInfoName;
+    private TextView mTvDetailsInfoTime;
+    private TextView mTvDetailsInfoDes;
+    private NineGridImageView mNgivDetailsInfoImages;
+    private LinearLayout mLlDetailHeaderChallenge;
+    private ImageView mIvDetailsHeaderIcon;
+    private TextView mTvDetailsHeaderChallenge;
+    private TextView mTvDetailsHeaderTimeAddr;
+    private TextView mTvDetailsHeaderChallengeDes;
+    private TextView mTvDetailsHeaderChallengeCall;
+    private TextView mTvHeaderComments;
+    private TextView mTvHeaderPraise;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -52,12 +70,21 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
         initToolBar();
         initDatas();
         initRecyclerView();
+        initListener();
+    }
+
+    private void initListener() {
+        mIvDetailsInfoAvatar.setOnClickListener(this);
+        mTvDetailsInfoName.setOnClickListener(this);
     }
 
     private void initDatas() {
-        mDatas = new ArrayList<>();
+        mCommentsInfos = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            mDatas.add("" + i);
+            CommentsInfo commentsInfo = new CommentsInfo();
+            commentsInfo.setLike(new Random().nextInt(300));
+            commentsInfo.setTime(new Random().nextInt(60) + "分钟前");
+            mCommentsInfos.add(commentsInfo);
         }
 
         mImagesUrl = new ArrayList<>();
@@ -74,31 +101,45 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
         //动态信息头布局
         mHeader_info = View.inflate(this, R.layout.details_header_info, null);
         initHeaderInfo();
-        //评论信息头布局
-        mHeader_comments = View.inflate(this, R.layout.details_header_comments, null);
-        initHeaderComments();
         mXrlDetails.addHeaderView(mHeader_info);
-        mXrlDetails.addHeaderView(mHeader_comments);
         //评论内容列表
-        RecyclerView.Adapter adapter = new CommentsAdapter(this, R.layout.item_comments, mDatas);
+        RecyclerView.Adapter adapter = new CommentsAdapter(this, R.layout.item_comments, mCommentsInfos);
         mXrlDetails.setAdapter(adapter);
     }
 
 
-    private void initHeaderComments() {
-        TextView tvHeaderComments = (TextView) mHeader_comments.findViewById(R.id.tv_header_comments);
-        TextView tvHeaderPraise = (TextView) mHeader_comments.findViewById(R.id.tv_header_praise);
-    }
 
     private void initHeaderInfo() {
-        ImageView ivDetailsInfoAvatar = (ImageView) mHeader_info.findViewById(R.id.iv_details_info_avatar);
-        TextView tvDetailsInfoName = (TextView) mHeader_info.findViewById(R.id.tv_details_info_name);
-        TextView tvDetailsInfoTime = (TextView) mHeader_info.findViewById(R.id.tv_details_info_time);
-        TextView tvDetailsInfoDes = (TextView) mHeader_info.findViewById(R.id.tv_details_info_des);
-        NineGridImageView<String> nineGridImageView = (NineGridImageView<String>) mHeader_info.findViewById(R.id.ngiv_details_info_images);
+
+
+        mIvDetailsInfoAvatar = (ImageView) mHeader_info.findViewById(R.id.iv_details_info_avatar);
+        mTvDetailsInfoName = (TextView) mHeader_info.findViewById(R.id.tv_details_info_name);
+        mTvDetailsInfoTime = (TextView) mHeader_info.findViewById(R.id.tv_details_info_time);
+        mTvDetailsInfoDes = (TextView) mHeader_info.findViewById(R.id.tv_details_info_des);
+        mNgivDetailsInfoImages = (NineGridImageView) mHeader_info.findViewById(R.id.ngiv_details_info_images);
+        mLlDetailHeaderChallenge = (LinearLayout) mHeader_info.findViewById(R.id.ll_detail_header_challenge);
+        mIvDetailsHeaderIcon = (ImageView) mHeader_info.findViewById(R.id.iv_details_header_icon);
+        mTvDetailsHeaderChallenge = (TextView) mHeader_info.findViewById(R.id.tv_details_header_challenge);
+        mTvDetailsHeaderTimeAddr = (TextView) mHeader_info.findViewById(R.id.tv_details_header_time_addr);
+        mTvDetailsHeaderChallengeDes = (TextView) mHeader_info.findViewById(R.id.tv_details_header_challenge_des);
+        mTvDetailsHeaderChallengeCall = (TextView) mHeader_info.findViewById(R.id.tv_details_header_challenge_call);
+        mTvHeaderComments = (TextView) mHeader_info.findViewById(R.id.tv_header_comments);
+        mTvHeaderPraise = (TextView) mHeader_info.findViewById(R.id.tv_header_praise);
+
+
+        Glide.with(this).load(R.mipmap.logo)
+                .transform(new GlideCircleTransform(DetailsActivity.this))
+                .into(mIvDetailsInfoAvatar);
+        mTvDetailsInfoName.setText("张建");
+        mTvDetailsInfoTime.setText("15分钟前");
+        mTvDetailsInfoDes.setText("今天玩的很开心。#善数者正式发布#祝善数者越办越好");
+
         NineGridDetailsAdapter adapter = new NineGridDetailsAdapter();
-        nineGridImageView.setAdapter(adapter);
-        nineGridImageView.setImagesData(mImagesUrl);
+        mNgivDetailsInfoImages.setAdapter(adapter);
+        mNgivDetailsInfoImages.setImagesData(mImagesUrl);
+
+
+
     }
 
     private void initToolBar() {
@@ -139,9 +180,20 @@ public class DetailsActivity extends BaseActivity implements ArthurToolBar.OnLef
             ToastUtils.showToast(DetailsActivity.this,"您还没写点什么呢");
         }else {
 
-
         }
 
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.iv_details_info_avatar:
+                readyGo(PersonalHomePagerActivity.class);
+                break;
+            case R.id.tv_details_info_name:
+                readyGo(PersonalHomePagerActivity.class);
+                break;
+        }
+    }
 }

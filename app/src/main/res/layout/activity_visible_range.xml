@@ -18,11 +18,11 @@
         app:leftTextSize="14"
         app:titleColor="@color/colorBtn"
         app:titleText="选择可见范围"
-        app:titleTextSize="18"/>
+        app:titleTextSize="16"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
 
     <LinearLayout
@@ -31,6 +31,8 @@
         android:layout_height="46dp">
 
         <RadioButton
+            android:clickable="false"
+            android:checked="true"
             android:id="@+id/rb_visible_public"
             style="@style/style_radiobutton"
             android:layout_width="wrap_content"
@@ -69,7 +71,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
 
     <LinearLayout
@@ -78,6 +80,7 @@
         android:layout_height="46dp">
 
         <RadioButton
+            android:clickable="false"
             android:id="@+id/rb_visible_friends"
             style="@style/style_radiobutton"
             android:layout_width="wrap_content"
@@ -116,7 +119,7 @@
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
 
     <LinearLayout
@@ -125,6 +128,7 @@
         android:layout_height="46dp">
 
         <RadioButton
+            android:clickable="false"
             android:id="@+id/rb_visible_ownself"
             style="@style/style_radiobutton"
             android:layout_width="wrap_content"
@@ -150,7 +154,7 @@
         </LinearLayout>
     </LinearLayout>
     <TextView
-        android:textSize="@dimen/text_size_14sp"
+        android:textSize="@dimen/text_size_12sp"
         android:textColor="@color/colorHint"
         android:paddingLeft="@dimen/margin_15dp"
         android:gravity="center_vertical"
@@ -170,5 +174,8 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:id="@+id/tv_visiable_select_friends"/>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorAddFriendDivider"/>
 </LinearLayout>

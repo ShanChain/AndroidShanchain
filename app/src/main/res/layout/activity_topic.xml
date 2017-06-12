@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_topic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+    <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/et_topic_search"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_weight="1"
+            android:background="@drawable/shap_edit_search_pressed"
+            android:drawableLeft="@mipmap/topic_icon_topic_disabled"
+            android:drawablePadding="32dp"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:hint="话题"
+            android:textColorHint="#c0c0c0"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            android:id="@+id/tv_topic_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:paddingRight="@dimen/margin_15dp"
+            android:text="取消"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_12sp"/>
+    </LinearLayout>
+<TextView
+    android:textSize="@dimen/text_size_12sp"
+    android:textColor="@color/colorHint"
+    android:paddingLeft="@dimen/margin_15dp"
+    android:gravity="center_vertical"
+    android:text="推荐"
+    android:background="@color/colorListDivider"
+    android:layout_width="match_parent"
+    android:layout_height="28dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_topic_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

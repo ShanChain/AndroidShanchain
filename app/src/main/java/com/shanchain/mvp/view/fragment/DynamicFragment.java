@@ -39,7 +39,6 @@ public class DynamicFragment extends BaseFragment {
      */
     private void init() {
         String[] tabName = mActivity.getResources().getStringArray(R.array.dynamic_tab_name);
-
         DynamicPagerAdapter adapter = new DynamicPagerAdapter(getChildFragmentManager(),tabName);
         mVpDynamic.setAdapter(adapter);
         mTab.setupWithViewPager(mVpDynamic);

@@ -35,7 +35,6 @@ import butterknife.OnClick;
 
 public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
-
     ArthurToolBar mToolbarFriends;
     @Bind(R.id.textView)
     TextView mTextView;
@@ -53,7 +52,6 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
     private List<FriendsInfo> notShanchainer;
     @Override
     protected int getContentViewLayoutID() {
-        PrefUtils.putBoolean(this, "isOpen", false);
         return R.layout.activity_friends;
     }
 

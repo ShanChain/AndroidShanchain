@@ -1,8 +1,17 @@
 package com.shanchain.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.shanchain.R;
 import com.shanchain.base.BaseCommonAdapter;
+import com.shanchain.mvp.model.CommentsInfo;
+import com.shanchain.mvp.view.activity.PersonalHomePagerActivity;
+import com.shanchain.utils.GlideCircleTransform;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -11,15 +20,47 @@ import java.util.List;
  * Created by zhoujian on 2017/5/31.
  */
 
-public class CommentsAdapter extends BaseCommonAdapter<String> {
+public class CommentsAdapter extends BaseCommonAdapter<CommentsInfo> {
 
 
-    public CommentsAdapter(Context context, int layoutId, List<String> datas) {
+    public CommentsAdapter(Context context, int layoutId, List<CommentsInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, String s, int position) {
+    public void bindDatas(final ViewHolder holder, CommentsInfo commentsInfo, int position) {
+        final int likes = commentsInfo.getLike();
+        holder.setText(R.id.tv_item_comments_counts,commentsInfo.getLike()+"");
+        holder.setText(R.id.tv_item_comments_time,commentsInfo.getTime());
+        Glide.with(mContext)
+                .load(R.mipmap.popular_image_story_default)
+                .transform(new GlideCircleTransform(mContext)).
+                into((ImageView) holder.getView(R.id.iv_item_comments_avatar));
+
+        holder.setOnClickListener(R.id.iv_item_comments_like, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView tvLike = holder.getView(R.id.tv_item_comments_counts);
+                if (Integer.parseInt(tvLike.getText().toString().trim()) == likes) {
+                    //点赞
+                    holder.setImageResource(R.id.iv_item_comments_like, R.mipmap.text_btn_thumbsup_selected);
+                    holder.setText(R.id.tv_item_comments_counts, likes + 1 + "");
+                } else {
+                    //取消赞
+                    holder.setImageResource(R.id.iv_item_comments_like, R.mipmap.text_btn_thumbsup_default);
+                    holder.setText(R.id.tv_item_comments_counts, likes + "");
+                }
+            }
+        });
+
+
+        holder.setOnClickListener(R.id.iv_item_comments_avatar, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PersonalHomePagerActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 }

@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import com.shanchain.R;
 import com.shanchain.base.BaseActivity;
+import com.shanchain.mvp.model.ContactInfo;
 import com.shanchain.mvp.model.PositionInfo;
+import com.shanchain.mvp.model.TopicInfo;
 import com.shanchain.utils.LogUtils;
 import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.toolBar.ArthurToolBar;
@@ -27,6 +29,7 @@ import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
+
 
     ArthurToolBar mToolbarReleaseDynamic;
     @Bind(R.id.et_publish_content)
@@ -51,6 +54,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
      */
     private ArrayList<String> images;
     private static final int POSITION_REQUSET_CODE = 10;
+    private static final int VISIABLE_RANGE_CODE = 20;
+    private static final int TOPIC_REQUEST_CODE = 30;
+    private static final int CHOOSE_CONTACTS_REQUESTCODE = 40;
+    private static final int AITE_CONTACTS_REQUESTCODE = 50;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -78,22 +85,30 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
                 break;
             case R.id.tv_public:
-
+                selectVisibleRange();
                 break;
             case R.id.iv_publish_image:
                 //选择图片
                 selectImages();
                 break;
             case R.id.iv_publish_aite:
-
+                readyGoForResult(AiteContactsActivity.class, AITE_CONTACTS_REQUESTCODE);
                 break;
             case R.id.iv_publish_theme:
-
+                selectTopic();
                 break;
             case R.id.iv_publish_expression:
 
                 break;
         }
+    }
+
+    private void selectTopic() {
+        readyGoForResult(TopicActivity.class, TOPIC_REQUEST_CODE);
+    }
+
+    private void selectVisibleRange() {
+        readyGoForResult(VisibleRangeActivity.class, VISIABLE_RANGE_CODE);
     }
 
     private void selectPosition() {
@@ -116,10 +131,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void getPosition() {
-        //ToastUtils.showToast(this, "获取位置信息");
-        readyGoForResult(PositionActivity.class,POSITION_REQUSET_CODE);
-//        Intent intent = new Intent(this,PositionActivity.class);
-//        startActivityForResult(intent,POSITION_REQUSET_CODE);
+        readyGoForResult(PositionActivity.class, POSITION_REQUSET_CODE);
     }
 
     private void selectImages() {
@@ -138,7 +150,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             LogUtils.d("版本低于6.0");
             pickImages();
         }
-
     }
 
     private void pickImages() {
@@ -186,16 +197,34 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     String path = photos.get(i);
                     LogUtils.d(TAG, "onActivityResult: " + path);
                     images.add(path);
-
                 }
             }
-        }
-
-        else if (requestCode == POSITION_REQUSET_CODE){
+        } else if (requestCode == POSITION_REQUSET_CODE) {
             if (data != null) {
                 PositionInfo positionInfo = (PositionInfo) data.getSerializableExtra("positionInfo");
                 LogUtils.d(positionInfo.getAddress());
                 mLlPublishPosition.setText(positionInfo.getAddress());
+            }
+        } else if (requestCode == VISIABLE_RANGE_CODE) {
+            if (data != null) {
+                String visible = data.getStringExtra("visible");
+                LogUtils.d(visible);
+                mTvPublic.setText(visible);
+            }
+        } else if (requestCode == TOPIC_REQUEST_CODE) {
+            if (data != null){
+                TopicInfo topicInfo = (TopicInfo) data.getSerializableExtra("topicReturn");
+                String topic = topicInfo.getTopic();
+                LogUtils.d(topic);
+
+            }
+        } else if (requestCode == CHOOSE_CONTACTS_REQUESTCODE) {
+
+        } else if (requestCode == AITE_CONTACTS_REQUESTCODE) {
+            if (data != null) {
+                ContactInfo contactInfo =
+                        (ContactInfo) data.getSerializableExtra("aiteReturn");
+                LogUtils.d(contactInfo.getName());
             }
         }
     }

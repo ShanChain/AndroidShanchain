@@ -1,14 +1,26 @@
 package com.shanchain.mvp.model;
 
+import java.io.Serializable;
+
 /**
  * Created by 周建 on 2017/5/31.
  */
 
-public class ContactInfo {
+public class ContactInfo implements Serializable{
+    private String avatar;
     private String name;
     private String phone;
     private String email;
     private String qq;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getName() {
         return name;
     }

@@ -14,7 +14,10 @@ import com.shanchain.R;
 import com.shanchain.base.BaseCommonAdapter;
 import com.shanchain.mvp.model.PublisherInfo;
 import com.shanchain.mvp.view.activity.DetailsActivity;
+import com.shanchain.mvp.view.activity.PersonalHomePagerActivity;
 import com.shanchain.mvp.view.activity.ReportActivity;
+import com.shanchain.utils.GlideCircleTransform;
+import com.shanchain.utils.ToastUtils;
 import com.shanchain.widgets.dialog.CustomDialog;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -40,64 +43,38 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
         String time = publisherInfo.getTime();
         final int likes = publisherInfo.getLikes();
         List<String> images = publisherInfo.getImages();
-        int comments = publisherInfo.getComments();
+        final int comments = publisherInfo.getComments();
         int type = publisherInfo.getType();
-
+        Glide.with(mContext).load(R.mipmap.logo)
+                .transform(new GlideCircleTransform(mContext))
+                .into((ImageView) holder.getView(R.id.iv_publisher_avatar));
         holder.setText(R.id.tv_publisher_name, name);
         holder.setText(R.id.tv_publisher_time, time);
         holder.setText(R.id.tv_like, likes + "");
         holder.setText(R.id.tv_comments, comments + "");
         holder.setText(R.id.tv_des, publisherInfo.getDes());
+
+        NineGridImageView nineGridImageView = holder.getView(R.id.nine_grid_layout);
+        NineGridImageViewAdapter nineGridAdapter = new NineGridAdapter();
+        nineGridImageView.setAdapter(nineGridAdapter);
+        nineGridImageView.setImagesData(images);
+
         switch (type) {
             case 1:
-                //普通条目
-              //  holder.setVisible(R.id.rv_images, true);
-           //     holder.setVisible(R.id.iv_story, false);
-              //  holder.setVisible(R.id.ll_challenge, false);
-                //只有一张图片的时候
-    /*            if (images.size() == 1) {
-                  //  holder.setVisible(R.id.rv_images, false);
-                    holder.setVisible(R.id.iv_story, true);
-                    Glide.with(mContext).load(R.drawable.photo2).into((ImageView) holder.getView(R.id.iv_story));
-                }
-
-                RecyclerView mRvImages = holder.getView(R.id.rv_images);
-                GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3);
-                layoutManager.setOrientation(GridLayoutManager.VERTICAL);
-                mRvImages.setLayoutManager(layoutManager);
-                ImageAdapter adapter = new ImageAdapter(mContext, R.layout.item_images, images);
-
-                mRvImages.setAdapter(adapter);
-                adapter.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                        ToastUtils.showToast(mContext, "点击了第" + position + "张图片");
-                    }
-
-                    @Override
-                    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                        return false;
-                    }
-                });*/
-
-                holder.setVisible(R.id.nine_grid_layout,true);
-                holder.setVisible(R.id.iv_story, false);
+                holder.setVisible(R.id.iv_item_hot_vote,false);
+                holder.setVisible(R.id.tv_item_hot_vote,false);
+        //        holder.setVisible(R.id.nine_grid_layout,true);
+        //        holder.setVisible(R.id.iv_story, false);
                 holder.setVisible(R.id.ll_challenge, false);
-                NineGridImageView nineGridImageView = holder.getView(R.id.nine_grid_layout);
 
-                NineGridImageViewAdapter nineGridAdapter = new NineGridAdapter();
-
-                nineGridImageView.setAdapter(nineGridAdapter);
-                nineGridImageView.setImagesData(images);
-
-            //    nineGridLayout.setImagesData();
                 break;
             case 2:
                 //挑战条目
-           //     holder.setVisible(R.id.rv_images, false);
-                holder.setVisible(R.id.iv_story, false);
+           //     holder.setVisible(R.id.iv_story, false);
                 holder.setVisible(R.id.ll_challenge, true);
-                holder.setVisible(R.id.nine_grid_layout,false);
+            //    holder.setVisible(R.id.nine_grid_layout,false);
+                holder.setVisible(R.id.iv_item_hot_vote,false);
+                holder.setVisible(R.id.tv_item_hot_vote,false);
                 holder.setText(R.id.tv_challenge, publisherInfo.getTitle());
                 if (TextUtils.isEmpty(publisherInfo.getAddr())) {
                     holder.setVisible(R.id.tv_time_addr, false);
@@ -109,18 +86,53 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                 holder.setText(R.id.tv_challenge_des, publisherInfo.getActiveDes());
                 holder.setText(R.id.tv_challenge_call, publisherInfo.getOtherDes());
 
-
                 break;
             case 3:
                 //故事条目
-       //         holder.setVisible(R.id.rv_images, false);
-                holder.setVisible(R.id.nine_grid_layout,false);
+            //    holder.setVisible(R.id.nine_grid_layout,false);
                 holder.setVisible(R.id.ll_challenge, true);
+                holder.setVisible(R.id.iv_item_hot_vote,true);
+                holder.setVisible(R.id.tv_item_hot_vote,true);
+                holder.setText(R.id.tv_item_hot_vote,publisherInfo.getVote()+"");
+                if (publisherInfo.isVoted()){
+                   // holder.getView(R.id.iv_item_hot_vote).setEnabled(false);
+                    ToastUtils.showToast(mContext,"你已经投过票了");
+                    holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_selected);
+                }else {
+                  //  holder.getView(R.id.iv_item_hot_vote).setEnabled(true);
+                    holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_default);
+
+                    holder.setOnClickListener(R.id.iv_item_hot_vote, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            final CustomDialog customDialog = new CustomDialog(mContext,false,0.8,R.layout.dialog_vote,new int[]{R.id.tv_dialog_vote_cancle,R.id.tv_dialog_vote_sure});
+                            customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                                @Override
+                                public void OnItemClick(CustomDialog dialog, View view) {
+                                    if (view.getId() == R.id.tv_dialog_vote_sure){
+                                        holder.setText(R.id.tv_item_hot_vote,publisherInfo.getVote() + 1 + "");
+                                        holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_selected);
+                                        publisherInfo.setVoted(true);
+
+                                        //   holder.getView(R.id.iv_item_hot_vote).setEnabled(false);
+                                    }else if (view.getId() == R.id.tv_dialog_vote_cancle){
+
+                                    }
+                                }
+                            });
+                            customDialog.show();
+                        }
+                    });
+
+
+                }
+
                 if (TextUtils.isEmpty(publisherInfo.getStroyImgUrl())) {
-                    holder.setVisible(R.id.iv_story, false);
+         //           holder.setVisible(R.id.iv_story, false);
                 } else {
-                    holder.setVisible(R.id.iv_story, true);
-                    Glide.with(mContext).load(R.drawable.photo).into((ImageView) holder.getView(R.id.iv_story));
+          //          holder.setVisible(R.id.iv_story, true);
+          //          Glide.with(mContext).load(R.drawable.photo).into((ImageView) holder.getView(R.id.iv_story));
                 }
 
                 Glide.with(mContext).load(R.mipmap.popular_image_story_default).into((ImageView) holder.getView(R.id.iv_icon));
@@ -128,6 +140,8 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                 holder.setText(R.id.tv_challenge, publisherInfo.getTitle());
                 holder.setText(R.id.tv_challenge_des, publisherInfo.getActiveDes());
                 holder.setText(R.id.tv_challenge_call, publisherInfo.getOtherDes());
+                break;
+            default:
                 break;
 
         }
@@ -186,7 +200,7 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
         holder.setOnClickListener(R.id.iv_more, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = new CustomDialog(mContext,true,R.layout.pop_report,new int[]{R.id.btn_pop_report,R.id.btn_pop_cancle});
+                CustomDialog dialog = new CustomDialog(mContext,true,true,1,R.layout.pop_report,new int[]{R.id.btn_pop_report,R.id.btn_pop_cancle});
                 dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                     @Override
                     public void OnItemClick(CustomDialog dialog, View view) {
@@ -205,6 +219,27 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
             }
         });
 
+        holder.setOnClickListener(R.id.iv_publisher_avatar, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPersonalHomePager(publisherInfo);
+            }
+        });
+
+        holder.setOnClickListener(R.id.tv_publisher_name, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPersonalHomePager(publisherInfo);
+            }
+        });
+
+
+    }
+
+    private void toPersonalHomePager(PublisherInfo publisherInfo){
+        Intent intent = new Intent(mContext, PersonalHomePagerActivity.class);
+        intent.putExtra("publisherInfo",publisherInfo);
+        mContext.startActivity(intent);
     }
 
 }

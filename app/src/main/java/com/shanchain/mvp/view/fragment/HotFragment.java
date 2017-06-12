@@ -148,13 +148,23 @@ public class HotFragment extends BaseFragment {
             publisherInfo.setName("石家海" + i);
             publisherInfo.setTime("2" + i + "分钟前");
             publisherInfo.setDes("哈哈哈哈哈!");
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                LogUtils.d("随机图片的数量 :" + j);
+                mImages.add("" + j);
+            }
+
             if (i == 3) {
                 publisherInfo.setStroyImgUrl("");
+                publisherInfo.setVoted(true);
             }else {
                 publisherInfo.setStroyImgUrl(i+".png");
+                publisherInfo.setVoted(false);
             }
             publisherInfo.setLikes(new Random().nextInt(1000));
-
+            publisherInfo.setVote(new Random().nextInt(80));
             publisherInfo.setComments(new Random().nextInt(400));
             publisherInfo.setType(3);
             publisherInfo.setIconUrl(i+"icon.png");
@@ -174,6 +184,13 @@ public class HotFragment extends BaseFragment {
             publisherInfo.setIconUrl(i+".png");
             publisherInfo.setTitle("寻找神秘点" );
             publisherInfo.setLikes(new Random().nextInt(1000));
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                LogUtils.d("随机图片的数量 :" + j);
+                mImages.add("" + j);
+            }
 
             publisherInfo.setComments(new Random().nextInt(400));
             publisherInfo.setChallegeTime("5月" + i + "日");

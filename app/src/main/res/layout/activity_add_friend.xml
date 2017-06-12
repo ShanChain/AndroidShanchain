@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/colorListDivider"
+    android:background="@color/colorWhite"
     android:id="@+id/activity_add_friend"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -24,37 +24,34 @@
     <LinearLayout
         android:id="@+id/ll_add_search"
         android:layout_marginBottom="6dp"
-        android:background="@drawable/selector_bg_add_search"
+        android:background="@color/colorListDivider"
         android:orientation="horizontal"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="6dp"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="28dp">
-        <ImageView
-            android:layout_marginLeft="12dp"
-            android:src="@mipmap/search_button_search_default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:layout_height="42dp">
 
         <TextView
+            android:paddingLeft="@dimen/margin_15dp"
+            android:background="@drawable/shap_edit_search"
+            android:drawableLeft="@mipmap/search_button_search_default"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_size_14sp"
             android:textColor="#c0c0c0"
             android:lines="1"
             android:text="搜索昵称"
-            android:layout_marginLeft="28dp"
+            android:drawablePadding="28dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="28dp"/>
     </LinearLayout>
 
     <LinearLayout
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:id="@+id/ll_add_contacts"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@drawable/selector_bg_addfriend"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
@@ -70,6 +67,7 @@
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent">
+
         <TextView
             android:textColor="@color/colorBtn"
             android:gravity="center_vertical"
@@ -78,7 +76,8 @@
             android:textSize="@dimen/text_size_14sp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_width="wrap_content"/>
+            android:layout_width="wrap_content"
+            android:id="@+id/textView2"/>
 
         <TextView
             android:textColor="@color/colorHint"
@@ -101,10 +100,11 @@
     </LinearLayout>
 
     <TextView
+
         style="@style/style_addfriend_divider"/>
 
     <LinearLayout
-        android:background="@drawable/selector_bg_addfriend"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:id="@+id/ll_add_wechat"
         android:orientation="horizontal"
@@ -162,7 +162,7 @@
         android:clickable="true"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@drawable/selector_bg_addfriend"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
@@ -210,9 +210,14 @@
     </LinearLayout>
 
     <TextView
-        android:layout_marginTop="3dp"
+        android:background="@color/colorListDivider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+
+    <TextView
         android:textColor="@color/colorBtn"
         android:textSize="@dimen/text_size_12sp"
+
         android:paddingLeft="12dp"
         android:gravity="center_vertical"
         android:text="你可能感兴趣的人"

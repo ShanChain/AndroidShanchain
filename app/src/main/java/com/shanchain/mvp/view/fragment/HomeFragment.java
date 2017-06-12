@@ -1,9 +1,11 @@
 package com.shanchain.mvp.view.fragment;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.TextView;
 
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.shanchain.R;
+import com.shanchain.adapter.HomeAdapter;
 import com.shanchain.base.BaseFragment;
 
 import butterknife.Bind;
@@ -14,8 +16,9 @@ import butterknife.Bind;
  */
 
 public class HomeFragment extends BaseFragment {
-    @Bind(R.id.tv_con)
-    TextView mTvCon;
+
+    @Bind(R.id.xrv_home)
+    XRecyclerView mXrvHome;
 
     @Override
     public View initView() {
@@ -24,7 +27,12 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mTvCon.setText("小王");
+        mXrvHome.setLayoutManager(new LinearLayoutManager(mActivity));
+        View headView = View.inflate(mActivity,R.layout.headview_home,null);
+        mXrvHome.addHeaderView(headView);
+        HomeAdapter homeAdapter = new HomeAdapter(mActivity,R.layout.item_home,datas);
+        mXrvHome.setAdapter();
+
     }
 
 

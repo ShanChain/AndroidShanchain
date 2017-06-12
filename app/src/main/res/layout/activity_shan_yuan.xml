@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:line="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/activity_shan_yuan"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <tech.linjiang.suitlines.SuitLines
+        android:id="@+id/sl_shan_yuan"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        line:xySize="8"
+        line:xyColor="@color/colorAccent"
+        line:lineType="segment"
+        line:needEdgeEffect="false"
+        line:colorEdgeEffect="@color/colorPrimaryDark"
+        line:needClickHint="true"
+        line:colorHint="@color/colorPrimary"
+        line:maxOfVisible="7"
+        line:countOfY="6"/>
+
+
+</LinearLayout>
