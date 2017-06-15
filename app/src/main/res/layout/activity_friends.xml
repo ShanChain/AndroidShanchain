@@ -10,7 +10,7 @@
     <!--顶部工具栏，有沉浸式效果-->
     <com.shanchain.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_friends"
-        style="@style/style_toolbar"
+        style="@style/style_toolbar_color_theme"
         app:titleText="通讯录好友"
         app:leftImage="@mipmap/nav_btn_back_default"
         app:titleColor="@color/colorWhite"

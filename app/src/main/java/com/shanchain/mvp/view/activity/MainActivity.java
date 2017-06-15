@@ -1,5 +1,6 @@
 package com.shanchain.mvp.view.activity;
 
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -7,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.R;
@@ -48,6 +50,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
     private String[] navigationBarTitles;
 
     private boolean isExit;
+    private BadgeItem mBadgeItem;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -86,7 +89,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
      * 描述：初始化底部导航栏
      */
     private void initBottomNavigationBar() {
-
+        BottomNavigationItem itemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
+        mBadgeItem = new BadgeItem();
+        mBadgeItem.setBackgroundColor(Color.RED)
+                .setText("5")
+                .setBorderWidth(DensityUtils.dip2px(this,1));
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
@@ -94,7 +101,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_homepager, navigationBarTitles[0]))
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_dynamic, navigationBarTitles[1]))
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_find, navigationBarTitles[2]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]))
+                .addItem(itemMine.setBadgeItem(mBadgeItem))
                 .setFirstSelectedPosition(0)
                 .initialise();
 
@@ -115,6 +122,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                         break;
                     case 3:
                         setFragment(new MineFragment());
+                        mBadgeItem.hide(true);
                         break;
                 }
             }

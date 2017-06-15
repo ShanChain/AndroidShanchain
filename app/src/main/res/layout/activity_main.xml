@@ -15,7 +15,7 @@
            app:titleColor="@color/colorWhite"
            app:titleText="动态"
            app:titleTextSize="16"
-           style="@style/style_toolbar"/>
+           style="@style/style_toolbar_color_theme"/>
 
 
     <FrameLayout

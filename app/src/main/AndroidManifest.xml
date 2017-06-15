@@ -81,6 +81,18 @@
         </activity>
         <activity android:name=".mvp.view.activity.ShanYuanActivity">
         </activity>
+        <activity android:name=".mvp.view.activity.challenge.HappierActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.SleepEarlierActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.RankActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.ChallengeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.WalkMoreActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.NoBowActivity">
+        </activity>
     </application>
 
 </manifest>

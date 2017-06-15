@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_challenge"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_challenge"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="挑战"
+        app:titleTextSize="16"/>
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/colorListDivider">
+
+        <EditText
+            android:id="@+id/et_challenge_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/shap_edit_search"
+            android:drawableLeft="@mipmap/challenge_btn_search_default"
+            android:drawablePadding="28dp"
+            android:hint="搜索"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:textColorHint="@color/colorHint"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="28dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_icon1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_walkmore_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_challenge_type1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="多走走"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_state1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="正在进行    "
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="28dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_happy_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_challenge_type2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开心点"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_state2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="即将开始    "
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_gravity="right"
+        android:id="@+id/tv_challenge_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:gravity="right"
+        android:text="更多>>"
+        android:textColor="#0076ff"
+        android:textSize="@dimen/text_size_12sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:background="@color/colorListDivider"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_happy_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_happy_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开心点"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"
+                    android:id="@+id/textView3"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_happy_counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="你参加过3次"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_focuson_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_focuson_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="别低头"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_focuson_counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="你参加过4次"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_walk_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_walkmore_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="多走走"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_walk_counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="你参加过5次"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/iv_challenge_sleep_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_sleep_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="早点睡"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_challenge_sleep_counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="你参加过6次"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right">
+
+        <TextView
+            android:id="@+id/btn_challenge_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/challenge_icon_round_default"
+            android:gravity="center"
+            android:text="全新挑战"
+            android:textColor="#39bbca"
+            android:textSize="@dimen/text_size_10sp"/>
+
+        <TextView
+            android:id="@+id/tv_challenge_new"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="15dp"
+            android:text="全新挑战"
+            android:textColor="@color/colorBtn"/>
+    </LinearLayout>
+</LinearLayout>

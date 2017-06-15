@@ -12,7 +12,7 @@
     <!--顶部工具栏，可设置沉浸式效果-->
     <com.shanchain.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_forget"
-        style="@style/style_toolbar"
+        style="@style/style_toolbar_color_theme"
         app:leftImage="@mipmap/regsitre_icon_back_default"
         app:titleColor="@color/colorWhite"
         app:titleText="忘记密码"

@@ -116,6 +116,8 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mXrvFriends.setLayoutManager(linearLayoutManager);
+            mXrvFriends.setPullRefreshEnabled(false);
+            mXrvFriends.setLoadingMoreEnabled(false);
             FriendsAdapter friendsAdapter = new FriendsAdapter(this,R.layout.item_friends,datas);
             mXrvFriends.setAdapter(friendsAdapter);
             mXrvFriends.addItemDecoration(new RecyclerViewDivider(FriendsActivity.this,

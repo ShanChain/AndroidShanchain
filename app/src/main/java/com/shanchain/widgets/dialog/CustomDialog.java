@@ -81,9 +81,12 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         //点击Dialog外部消失
         setCanceledOnTouchOutside(true);
         //遍历控件id,添加点击事件
-        for (int id : listenedItems) {
-            findViewById(id).setOnClickListener(this);
+        if (listenedItems != null){
+            for (int id : listenedItems) {
+                findViewById(id).setOnClickListener(this);
+            }
         }
+
 
     }
 

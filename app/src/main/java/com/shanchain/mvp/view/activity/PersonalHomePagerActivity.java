@@ -2,7 +2,9 @@ package com.shanchain.mvp.view.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,7 +76,8 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
     }
 
     private void initHeadView() {
-        mHeadView = View.inflate(this, R.layout.headview_personal_homepager, null);
+        mHeadView = LayoutInflater.from(this)
+                .inflate(R.layout.headview_personal_homepager,(ViewGroup)findViewById(android.R.id.content),false);
 
         mIvHeaderPersonalAvatar = (ImageView) mHeadView.findViewById(R.id.iv_header_personal_avatar);
         mTvHeaderPersonalName = (TextView) mHeadView.findViewById(R.id.tv_header_personal_name);
@@ -94,12 +97,12 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
         mTvPersonalChallenge = (TextView) mHeadView.findViewById(R.id.tv_personal_challenge);
 
         initheadData();
-        initheadXrecyclerView();
-        initheadListener();
+        initHeadXrecyclerView();
+        initHeadListener();
 
     }
 
-    private void initheadListener() {
+    private void initHeadListener() {
         mBtnHeaderPersonalFocus.setOnClickListener(this);
         mRlHeaderPersonalStory.setOnClickListener(this);
         mLlHeaderPersonalShanyuan.setOnClickListener(this);
@@ -108,7 +111,7 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
         mLlHeaderPersonalChallenge.setOnClickListener(this);
     }
 
-    private void initheadXrecyclerView() {
+    private void initHeadXrecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mXrvImagesStory.setLayoutManager(linearLayoutManager);
@@ -246,6 +249,7 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
             case R.id.btn_header_personal_focus:
 
                 ToastUtils.showToast(this, "关注");
+
                 break;
             case R.id.rl_header_personal_story:
                 readyGo(PersonalStoryActivity.class);

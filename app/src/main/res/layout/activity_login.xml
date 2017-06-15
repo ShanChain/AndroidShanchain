@@ -12,7 +12,7 @@
     <!--顶部工具栏，有沉浸式效果-->
     <com.shanchain.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_login"
-        style="@style/style_toolbar"
+        style="@style/style_toolbar_color_theme"
         app:titleColor="@color/colorWhite"
         app:titleTextSize="16"/>
 
