@@ -39,7 +39,7 @@
 
         <RadioButton
             android:id="@+id/rb_pornographic"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -52,7 +52,7 @@
 
         <RadioButton
             android:id="@+id/rb_harmful_info"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -71,7 +71,7 @@
 
         <RadioButton
             android:id="@+id/rb_sham_content"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -84,7 +84,7 @@
 
         <RadioButton
             android:id="@+id/rb_personal_attack"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -103,7 +103,7 @@
 
         <RadioButton
             android:id="@+id/rb_break_law"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -116,7 +116,7 @@
 
         <RadioButton
             android:id="@+id/rb_other"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"

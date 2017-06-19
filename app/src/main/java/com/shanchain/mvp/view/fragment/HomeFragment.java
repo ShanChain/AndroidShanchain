@@ -63,6 +63,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
         mVpHeadHome.setImageLoader(new BannerImageAdapter());
         mVpHeadHome.setImages(imgs);
+
         mVpHeadHome.setDelayTime(3000);
         mVpHeadHome.start();
 

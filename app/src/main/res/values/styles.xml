@@ -12,9 +12,13 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-   <style name="style_radiobutton">
+   <style name="style_radiobutton_report">
        <item name="android:button">@drawable/selector_rediobutton</item>
    </style>
+
+    <style name="style_radiobutton_repeat">
+        <item name="android:button">@drawable/selector_rediobutton_repeat</item>
+    </style>
 
     <!--分割线样式-->
     <style name="style_text_line">
@@ -104,5 +108,7 @@
         <item name="@android:windowEnterAnimation">@anim/bottom_menu_enter</item>
         <item name="@android:windowExitAnimation">@anim/bottom_menu_exit</item>
     </style>
+
+
 
 </resources>

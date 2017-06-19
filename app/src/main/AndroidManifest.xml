@@ -93,6 +93,18 @@
         </activity>
         <activity android:name=".mvp.view.activity.challenge.NoBowActivity">
         </activity>
+        <activity android:name=".mvp.view.activity.challenge.ChooseChallengeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.WalkMoreSettingActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.ChallengeDynamicActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.ShareActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.SleepEarlierSettingActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.challenge.RepeatSettingActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.shanchain.mvp.view.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -51,17 +52,19 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
     private boolean isExit;
     private BadgeItem mBadgeItem;
+    private int mFragmentId;
 
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_main;
     }
 
+
     @Override
     protected void initViewsAndEvents() {
-        int height = getWindowManager().getDefaultDisplay().getHeight();
-        int i = DensityUtils.px2dip(this, height);
-        LogUtils.d("屏幕高度为;" + i);
+        Intent intent = getIntent();
+        mFragmentId = intent.getIntExtra("fragmentId",0);
+        LogUtils.d("当前页" +mFragmentId);
         navigationBarTitles = getResources().getStringArray(R.array.main_tab_name);
         initTooBar();
 
@@ -102,7 +105,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_dynamic, navigationBarTitles[1]))
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_find, navigationBarTitles[2]))
                 .addItem(itemMine.setBadgeItem(mBadgeItem))
-                .setFirstSelectedPosition(0)
+                .setFirstSelectedPosition(mFragmentId)
                 .initialise();
 
         mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -141,8 +144,24 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
 
         });
         //默认选中动态页
-        setFragment(new HomeFragment());
-        setToolBar(currentPage);
+        /*setFragment(new HomeFragment());
+        setToolBar(currentPage);*/
+
+        setSelectedPager();
+
+    }
+
+    private void setSelectedPager() {
+        switch (mFragmentId){
+            case 0:
+                setFragment(new HomeFragment());
+                setToolBar(mFragmentId);
+                break;
+            case 1:
+                setFragment(new DynamicFragment());
+                setToolBar(mFragmentId);
+                break;
+        }
     }
 
     /**

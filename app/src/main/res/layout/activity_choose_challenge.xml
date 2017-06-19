@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_choose_challenge"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent">
+
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_choose_challenge"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorBtn"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="选择"
+        app:titleTextSize="16"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+
+    <EditText
+        android:textColor="@color/colorBtn"
+        android:layout_marginTop="56dp"
+        android:lines="1"
+        android:textSize="@dimen/text_size_14sp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:hint="多走走"
+        android:textColorHint="@color/colorHint"
+        android:id="@+id/et_choose_challenge"
+        android:background="@drawable/shap_bg_edit_choose"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"/>
+
+    <EditText
+        android:textColor="@color/colorBtn"
+        android:paddingTop="10dp"
+        android:gravity="top"
+        android:layout_marginTop="38dp"
+        android:textSize="@dimen/text_size_14sp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:hint="找个好天气，看谁走的步数多！"
+        android:textColorHint="@color/colorHint"
+        android:id="@+id/et_choose_content"
+        android:background="@drawable/shap_bg_edit_choose"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="192dp"/>
+
+
+    <LinearLayout
+        android:layout_marginTop="118dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_choose_walk"
+            android:clickable="true"
+            android:src="@mipmap/setup_icon_walkmore_default"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/iv_choose_sleep"
+            android:src="@mipmap/select_icon_sleep_default"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+
+    
+</LinearLayout>

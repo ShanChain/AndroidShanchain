@@ -101,7 +101,7 @@ public class ChallengeActivity extends BaseActivity implements ArthurToolBar.OnL
                 readyGo(SleepEarlierActivity.class);
                 break;
             case R.id.btn_challenge_new:
-
+                readyGo(ChooseChallengeActivity.class);
                 break;
         }
     }

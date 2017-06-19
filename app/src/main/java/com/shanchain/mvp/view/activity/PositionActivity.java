@@ -21,7 +21,7 @@ import butterknife.Bind;
 
 public class PositionActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
-    public static final int RESULT_CODE = 20;
+    private static final int RESULT_CODE = 20;
     @Bind(R.id.et_position_search)
     EditText mEtPositionSearch;
     @Bind(R.id.rv_position_list)

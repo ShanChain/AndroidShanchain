@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_challenge_dynamic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_challenge_dynamic"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorBtn"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="挑战动态"
+        app:titleTextSize="16"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp">
+
+        <ImageView
+            android:id="@+id/iv_challenge_dynamic_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:src="@mipmap/home_icon_walkmore_default"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="38dp"
+            android:layout_marginTop="1dp"
+            android:text="你已发起挑战!"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"
+            android:id="@+id/textView4"/>
+
+        <TextView
+            android:layout_marginTop="3dp"
+            android:id="@+id/tv_challenge_dynamic_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="46dp"
+            android:text="多走走"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_12sp"
+            android:layout_alignBottom="@+id/textView4"
+            android:layout_toRightOf="@+id/iv_challenge_dynamic_type"
+            android:layout_toEndOf="@+id/iv_challenge_dynamic_type"
+            android:layout_marginStart="46dp"/>
+
+    </RelativeLayout>
+
+    <EditText
+        android:paddingRight="@dimen/margin_15dp"
+        android:id="@+id/et_challenge_dynamic_content"
+        android:gravity="top"
+        android:paddingTop="10dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:hint="我发起了挑战“多走走，诚请各位前来挑战"
+        android:textColorHint="@color/colorHint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/shap_bg_edit_choose"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/iv_challenge_dynamic_aite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/challengethedynamics_icon_aite_default"/>
+
+        <ImageView
+            android:id="@+id/iv_challenge_dynamic_theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:src="@mipmap/challengethedynamics_icon_theme_default"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

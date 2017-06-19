@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_sleep_earlier_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.shanchain.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_sleep_earlier_setting"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorBtn"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="设定"
+        app:titleTextSize="16"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorAddFriendDivider"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:src="@mipmap/select_icon_sleep_selected"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="早点睡"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            android:id="@+id/tv_sleep_set_rules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="28dp"
+            android:text="详细规则"
+            android:textColor="@color/colorActive"
+            android:textSize="@dimen/text_size_12sp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="28dp">
+
+        <com.weigan.loopview.LoopView
+            android:id="@+id/lv_sleep_set_hours"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            app:awv_centerTextColor="@color/colorBtn"
+            app:awv_dividerTextColor="@color/colorAddFriendDivider"
+            app:awv_itemsVisibleCount="5"
+            app:awv_outerTextColor="@color/colorHint"
+            app:awv_textsize="18"/>
+
+        <com.weigan.loopview.LoopView
+            android:id="@+id/lv_sleep_set_mins"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:awv_centerTextColor="@color/colorBtn"
+            app:awv_dividerTextColor="@color/colorAddFriendDivider"
+            app:awv_itemsVisibleCount="5"
+            app:awv_outerTextColor="@color/colorHint"
+            app:awv_textsize="18"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="28dp"
+        android:background="@color/colorListDivider"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="重复"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            android:id="@+id/tv_sleep_set_repeat"
+            android:textSize="@dimen/margin_15dp"
+            android:textColor="@color/colorBtn"
+            android:drawablePadding="10dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:gravity="center"
+            android:drawableRight="@mipmap/setup_icon_enter_default"
+            android:text="永不"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorListDivider"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="28dp"
+        android:text="我的信心"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/text_size_14sp"/>
+
+    <com.shanchain.widgets.other.CustomSeekBar
+        android:id="@+id/csb_sleep_set"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="@dimen/margin_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

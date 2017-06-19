@@ -34,7 +34,7 @@
             android:clickable="false"
             android:checked="true"
             android:id="@+id/rb_visible_public"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_15dp"
@@ -82,7 +82,7 @@
         <RadioButton
             android:clickable="false"
             android:id="@+id/rb_visible_friends"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_15dp"
@@ -130,7 +130,7 @@
         <RadioButton
             android:clickable="false"
             android:id="@+id/rb_visible_ownself"
-            style="@style/style_radiobutton"
+            style="@style/style_radiobutton_report"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_15dp"

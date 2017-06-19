@@ -24,11 +24,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static com.shanchain.mvp.view.activity.PositionActivity.RESULT_CODE;
 
 public class TopicActivity extends BaseActivity {
 
 
+    private static final int RESULT_CODE = 10;
     @Bind(R.id.et_topic_search)
     EditText mEtTopicSearch;
     @Bind(R.id.tv_topic_cancle)

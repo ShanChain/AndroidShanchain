@@ -24,6 +24,7 @@
         android:background="@color/colorListDivider">
 
         <EditText
+            android:textSize="@dimen/text_size_14sp"
             android:id="@+id/et_challenge_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

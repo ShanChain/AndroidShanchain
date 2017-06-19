@@ -499,6 +499,8 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         this.isOpenAnim = open;
     }
 
+
+
     /* ===================================================================
      *                             回调接口
      * ===================================================================

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <SeekBar
+        android:thumb="@mipmap/setup_btn_round_default"
+        android:progressDrawable="@drawable/seekbar_color"
+        android:id="@+id/seek_bar"
+        android:maxHeight="10dp"
+        android:minHeight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <TextView
+        android:textColor="@color/colorHint"
+        android:text="100%"
+        android:textSize="@dimen/text_size_14sp"
+        android:id="@+id/tv_progress"
+        android:layout_width="42dp"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

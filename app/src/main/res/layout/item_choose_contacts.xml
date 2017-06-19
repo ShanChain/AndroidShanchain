@@ -11,7 +11,7 @@
         android:id="@+id/rb_item_choose_contacts"
         android:layout_marginLeft="@dimen/margin_15dp"
         android:checked="true"
-        style="@style/style_radiobutton"
+        style="@style/style_radiobutton_report"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
     

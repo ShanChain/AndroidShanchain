@@ -22,11 +22,18 @@ import java.util.List;
 
 public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private Context context;      // 上下文
-    private boolean isBottom;     //是否在底部
-    private boolean isAnimator;   //是否有动画效果
-    private double ratio = 1;     //屏幕宽度占比
+    private boolean isBottom = false;     //是否在底部
+    private boolean isAnimator = false;   //是否有动画效果
+    private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
+
+    public CustomDialog(Context context,int layoutResID, int[] listenedItems){
+        super(context, R.style.dialog_custom); //dialog的样式
+        this.context = context;
+        this.layoutResID = layoutResID;
+        this.listenedItems = listenedItems;
+    }
 
     public CustomDialog(Context context, boolean isBottom , int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
