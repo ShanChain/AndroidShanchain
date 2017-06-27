@@ -9,7 +9,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_walk_more_setting"
         style="@style/style_toolbar_color_white"
         android:background="@color/colorWhite"
@@ -171,7 +171,7 @@
         app:bsb_show_section_text="false"
         app:bsb_show_thumb_text="true"
         app:bsb_track_color="@color/colorHint"/>-->
-    <com.shanchain.widgets.other.CustomSeekBar
+    <com.shanchain.shandata.widgets.other.CustomSeekBar
         android:id="@+id/csb_walk_more_set"
         android:layout_marginLeft="22dp"
         android:layout_marginRight="28dp"

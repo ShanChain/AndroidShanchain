@@ -9,7 +9,9 @@
                 android:width="2dp"
                 android:color="@color/colorWhite"/>
             <size android:height="6dp"/>
-            <corners android:radius="5dp"/>
+            <corners android:bottomRightRadius="3dp"
+                     android:topRightRadius="3dp"
+                />
             <solid android:color="@color/colorHint"/>
         </shape>
     </item>
@@ -21,7 +23,10 @@
                 <stroke
                     android:width="2dp"
                     android:color="@color/colorWhite"/>
-                <corners android:radius="5dp"/>
+                <corners
+                    android:bottomLeftRadius="3dp"
+                         android:topLeftRadius="3dp"
+                    />
                 <solid android:color="@color/colorTheme"/>
                 <size android:height="10dp"/>
             </shape>

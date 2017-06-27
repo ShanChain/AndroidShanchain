@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <!--顶部工具栏，可设置沉浸式效果-->
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_release_dynamic"
         android:layout_width="match_parent"
         android:layout_height="42dp"

@@ -4,13 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_reset_pwd"
+    android:background="@color/colorWhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.shanchain.mvp.view.activity.login.ResetPwdActivity">
+    tools:context=".shandata.mvp.view.activity.login.ResetPwdActivity">
 
     <!--顶部工具栏，可设置沉浸式效果-->
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_reset"
         style="@style/style_toolbar_color_theme"
         app:leftImage="@mipmap/regsitre_icon_back_default"
@@ -18,7 +19,6 @@
         app:titleText="重置密码"
         app:titleTextSize="16"/>
 
-    <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
     <LinearLayout
         style="@style/style_obtain_focus"></LinearLayout>
 

@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_no_bow"
         style="@style/style_toolbar_color_white"
         android:background="@color/colorWhite"

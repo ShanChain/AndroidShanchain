@@ -9,7 +9,7 @@
     android:layout_height="match_parent">
 
     <!--顶部工具栏，有沉浸式效果-->
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_details"
         android:layout_height="42dp"
         android:layout_width="match_parent"
@@ -30,7 +30,9 @@
         android:id="@+id/xrl_details"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"></com.jcodecraeer.xrecyclerview.XRecyclerView>
+        android:layout_height="0dp">
+
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
 
 

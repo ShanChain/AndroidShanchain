@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+
+    <ImageView
+        android:id="@+id/iv_item_sleep_result_img"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="28dp"
+        android:src="@mipmap/home_icon_sleep_default"/>
+
+    <TextView
+        android:id="@+id/tv_item_sleep_result_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/iv_item_sleep_result_img"
+        android:text="我"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_10sp"/>
+
+    <TextView
+        android:id="@+id/tv_item_sleep_result_confidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="82dp"
+        android:layout_toRightOf="@id/iv_item_sleep_result_img"
+        android:text="信心70%"
+        android:textColor="@color/colorActive"
+        android:textSize="@dimen/text_size_12sp"/>
+
+    <TextView
+        android:id="@+id/tv_item_sleep_result_shanyuan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="152dp"
+        android:layout_marginRight="28dp"
+        android:layout_toRightOf="@id/iv_item_sleep_result_img"
+        android:text="善圆+3"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_12sp"/>
+
+    <TextView
+        android:id="@+id/tv_item_sleep_result_shanquan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="210dp"
+        android:layout_marginRight="28dp"
+        android:layout_toRightOf="@id/iv_item_sleep_result_img"
+        android:text="善圆+3"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_12sp"/>
+</RelativeLayout>

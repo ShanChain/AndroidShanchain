@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_choose_area_code"
+    android:background="@color/colorWhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.shanchain.mvp.view.activity.login.ChooseAreaCodeActivity">
+    tools:context=".shandata.mvp.view.activity.login.ChooseAreaCodeActivity">
 
     <!--顶部工具栏，可设置沉浸式效果-->
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_area"
         style="@style/style_toolbar_color_theme"
         app:leftImage="@mipmap/regsitre_icon_back_default"

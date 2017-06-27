@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <TextView
+        android:id="@+id/view_focus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:src="@mipmap/home_icon_sleep_default"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="25dp"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="早点睡"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="年轻人不要老熬夜，过了这个点就休息吧"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/text_size_12sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="7dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_has_part_sleep_counts"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="你参加过3次"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_has_part_sleep_rules"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:gravity="center_vertical"
+                    android:text="详细规则"
+                    android:textColor="@color/colorActive"
+                    android:textSize="@dimen/text_size_12sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/colorListDivider"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:text="开始挑战"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"/>
+
+    <Button
+        android:id="@+id/btn_has_part_sleep_start"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginBottom="@dimen/margin_15dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:background="@drawable/shap_btn_login"
+        android:text="现在休息"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_14sp"/>
+
+    <TextView
+        android:id="@+id/tv_has_part_in_sleep_rank"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/colorListDivider"
+        android:drawableRight="@mipmap/cheerup_btn_return_default"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp"
+        android:text="今日排名"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_12sp"/>
+</LinearLayout>

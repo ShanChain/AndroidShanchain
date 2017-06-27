@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_challenge_search"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/ll_add_search"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shap_edit_search_pressed"
+            android:orientation="horizontal"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="28dp">
+            <ImageView
+                android:layout_marginLeft="12dp"
+                android:src="@mipmap/search_button_search_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/et_challenge_search_search"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_size_14sp"
+                android:lines="1"
+                android:textColorHint="#c0c0c0"
+                android:hint="搜索"
+                android:layout_marginLeft="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_challenge_search_cancel"
+            android:gravity="center"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"
+            android:text="取消"
+            android:layout_marginRight="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/colorListDivider"
+        android:text="推荐"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_15dp"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_challenge_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

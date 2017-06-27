@@ -9,7 +9,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_sleep_earlier_setting"
         style="@style/style_toolbar_color_white"
         android:background="@color/colorWhite"
@@ -70,7 +70,6 @@
             android:id="@+id/lv_sleep_set_hours"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
             android:layout_weight="1"
             app:awv_centerTextColor="@color/colorBtn"
             app:awv_dividerTextColor="@color/colorAddFriendDivider"
@@ -139,7 +138,7 @@
         android:textColor="@color/colorHint"
         android:textSize="@dimen/text_size_14sp"/>
 
-    <com.shanchain.widgets.other.CustomSeekBar
+    <com.shanchain.shandata.widgets.other.CustomSeekBar
         android:id="@+id/csb_sleep_set"
         android:layout_marginLeft="22dp"
         android:layout_marginRight="28dp"

@@ -8,7 +8,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_share"
         style="@style/style_toolbar_color_white"
         android:background="@color/colorWhite"
