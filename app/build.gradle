@@ -12,8 +12,18 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'zj'
+            keyPassword '123456'
+            storeFile file('C:/Users/zhoujian/Desktop/youdao/keystore/shanchain.jks')
+            storePassword 'shanchain'
+        }
+    }
     buildTypes {
         release {
+            // 指定签名
+         //   signingConfig signingConfig.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -61,5 +71,17 @@ dependencies {
 
     //时间滚轮
     compile 'com.weigan:loopView:0.1.2'
+
+    //social sdk
+    compile files('libs/social_sdk_v1.7.0.jar')
+    compile files('libs/weixin_sdk_v3.1.1.jar')
+    compile files('libs/qq_mta-sdk-1.6.2.jar')
+    compile files('libs/qq_sdk_v3.1.0.jar')
+    //compile 'com.sina.weibo.sdk:core:1.0.0:openDefaultRelease@aar'
+    //生日时间选择器
+    compile 'com.contrarywind:Android-PickerView:3.2.5'
+
+    //togglebutton
+    compile 'com.7heaven.ioswidget:iosswitch:0.6'
 
 }

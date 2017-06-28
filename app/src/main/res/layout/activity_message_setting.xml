@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/activity_message_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_message_setting"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="消息设置"
+        app:titleTextSize="16"/>
+    <TextView
+        style="@style/style_text_line_match"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="自动收藏参加过的故事"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_story"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+        </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="推送消息"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_push"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="挑战开始前提醒"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_challenge_start_notify"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="挑战完成后通知挑战结果"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_challenge_complement_notify"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="有人评论时通知"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_comment_notify"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="有人@时通知"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_aite_notify"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="影响故事路线成功后通知"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_msg_setting_story_change"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+</LinearLayout>

@@ -15,46 +15,77 @@ import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.tsy.sdk.social.PlatformConfig;
+import com.tsy.sdk.social.SocialApi;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity implements View.OnFocusChangeListener {
 
-    /** 描述：顶部工具栏*/
+    private static final String WX_APPID = "your wx appid";    //申请的wx appid
+    private static final String QQ_APPID = "your qq appid";    //申请的qq appid
+    private static final String SINA_WB_APPKEY = "your sina wb appkey";       //申请的新浪微博 appkey
+    private SocialApi mSocialApi;
+
+    /**
+     * 描述：顶部工具栏
+     */
     @Bind(R.id.toolbar_login)
     ArthurToolBar mToolbarLogin;
-    /** 描述：整体布局*/
+    /**
+     * 描述：整体布局
+     */
     @Bind(R.id.activity_login)
     LinearLayout mActivityLogin;
-    /** 描述：账号输入框*/
+    /**
+     * 描述：账号输入框
+     */
     @Bind(R.id.et_login_account)
     EditText mEtLoginAccount;
-    /** 描述：密码输入框*/
+    /**
+     * 描述：密码输入框
+     */
     @Bind(R.id.et_login_pwd)
     EditText mEtLoginPwd;
-    /** 描述：忘记密码点击按钮*/
+    /**
+     * 描述：忘记密码点击按钮
+     */
     @Bind(R.id.tv_login_forget)
     TextView mTvLoginForget;
-    /** 描述：登陆按钮*/
+    /**
+     * 描述：登陆按钮
+     */
     @Bind(R.id.btn_login_login)
     Button mBtnLoginLogin;
-    /** 描述：注册按钮*/
+    /**
+     * 描述：注册按钮
+     */
     @Bind(R.id.btn_login_regist)
     Button mBtnLoginRegist;
-    /** 描述：其他注册方式按钮*/
+    /**
+     * 描述：其他注册方式按钮
+     */
     @Bind(R.id.tv_other_login)
     TextView mTvOtherLogin;
-    /** 描述：微信第三方登陆*/
+    /**
+     * 描述：微信第三方登陆
+     */
     @Bind(R.id.iv_login_wechat)
     ImageView mIvLoginWechat;
-    /** 描述：qq第三方登陆*/
+    /**
+     * 描述：qq第三方登陆
+     */
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
-    /** 描述：微博第三方登陆*/
+    /**
+     * 描述：微博第三方登陆
+     */
     @Bind(R.id.iv_login_weibo)
     ImageView mIvLoginWeibo;
-    /** 描述：整体布局*/
+    /**
+     * 描述：整体布局
+     */
     @Bind(R.id.ll_login_other_login)
     LinearLayout mLlLoginOtherLogin;
     /**
@@ -64,7 +95,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     private CharSequence mAccountHint;
     private CharSequence mPwdHint;
 
-
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_login;
@@ -72,6 +102,13 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
 
     @Override
     protected void initViewsAndEvents() {
+
+        PlatformConfig.setWeixin(WX_APPID);
+        PlatformConfig.setQQ(QQ_APPID);
+        PlatformConfig.setSinaWB(SINA_WB_APPKEY);
+
+        mSocialApi = SocialApi.get(getApplicationContext());
+
         //初始化工具栏
         initTooBar();
         //初始化输入框
@@ -79,8 +116,8 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     }
 
     /**
-     *  2017/5/18
-     *  描述：初始化工具栏，设置沉浸式
+     * 2017/5/18
+     * 描述：初始化工具栏，设置沉浸式
      */
     private void initTooBar() {
         mToolbarLogin.setTitleText("登录");
@@ -112,13 +149,16 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                 otherLogin();
                 break;
             case R.id.iv_login_wechat:
-                ToastUtils.showToast(this,"微信登陆");
+                ToastUtils.showToast(this, "微信登陆");
+              //  mSocialApi.doOauthVerify(this, PlatformType.WEIXIN, new MyAuthListener());
                 break;
             case R.id.iv_login_qq:
-                ToastUtils.showToast(this,"qq登陆");
+                ToastUtils.showToast(this, "qq登陆");
+              //  mSocialApi.doOauthVerify(this, PlatformType.QQ, new MyAuthListener());
                 break;
             case R.id.iv_login_weibo:
-                ToastUtils.showToast(this,"微博登陆");
+                ToastUtils.showToast(this, "微博登陆");
+              //  mSocialApi.doOauthVerify(this, PlatformType.SINA_WB, new MyAuthListener());
                 break;
         }
     }
@@ -145,11 +185,11 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      */
     private void regist() {
 
-        CustomDialog dialog = new CustomDialog(this,false,0.8,R.layout.dialog_regist,new int[]{R.id.btn_dialog_regist_phone,R.id.btn_dialog_regist_invite});
+        CustomDialog dialog = new CustomDialog(this, false, 0.8, R.layout.dialog_regist, new int[]{R.id.btn_dialog_regist_phone, R.id.btn_dialog_regist_invite});
         dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()){
+                switch (view.getId()) {
                     case R.id.btn_dialog_regist_invite:
                         //邀请码注册
                         readyGo(InviteCodeRegistActivity.class);
@@ -184,7 +224,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      */
     private void showOtherLogin(boolean show) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(mLlLoginOtherLogin, "translationY",
-                show ? DensityUtils.dip2px(this,-85) : 0
+                show ? DensityUtils.dip2px(this, -85) : 0
         );
         animator.setDuration(500);
         animator.start();
@@ -192,9 +232,8 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
 
 
     /**
-     *  2017/5/18
-     *  描述：初始化输入框，给输入框添加焦点监听事件
-     *
+     * 2017/5/18
+     * 描述：初始化输入框，给输入框添加焦点监听事件
      */
     private void initEditText() {
         mAccountHint = mEtLoginAccount.getHint();
@@ -204,18 +243,17 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     }
 
     /**
-     *  2017/5/18
-     *  描述：输入框焦点变化监听
-     *
+     * 2017/5/18
+     * 描述：输入框焦点变化监听
      */
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.et_login_account:
-                changeHint(mEtLoginAccount,hasFocus,mAccountHint);
+                changeHint(mEtLoginAccount, hasFocus, mAccountHint);
                 break;
             case R.id.et_login_pwd:
-                changeHint(mEtLoginPwd,hasFocus,mPwdHint);
+                changeHint(mEtLoginPwd, hasFocus, mPwdHint);
                 break;
         }
     }
@@ -232,5 +270,25 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
             et.setHint(hint);
         }
     }
+
+   /* public class MyAuthListener implements AuthListener {
+        @Override
+        public void onComplete(PlatformType platform_type, Map<String, String> map) {
+            Toast.makeText(LoginActivity.this, platform_type + " login onComplete", Toast.LENGTH_SHORT).show();
+            Log.i("tsy", "login onComplete:" + map);
+        }
+
+        @Override
+        public void onError(PlatformType platform_type, String err_msg) {
+            Toast.makeText(LoginActivity.this, platform_type + " login onError:" + err_msg, Toast.LENGTH_SHORT).show();
+            Log.i("tsy", "login onError:" + err_msg);
+        }
+
+        @Override
+        public void onCancel(PlatformType platform_type) {
+            Toast.makeText(LoginActivity.this, platform_type + " login onCancel", Toast.LENGTH_SHORT).show();
+            Log.i("tsy", "login onCancel");
+        }
+    }*/
 
 }

@@ -13,42 +13,42 @@
 
     <!-- 屏蔽HOME键需要的权限 -->
     <application
-        android:name="com.shanchain.shandata.base.MyApplication"
+        android:name=".base.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.LoginActivity">
+        <activity android:name=".mvp.view.activity.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.MainActivity">
+        <activity android:name=".mvp.view.activity.MainActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.PhoneRegistActivity">
+        <activity android:name=".mvp.view.activity.login.PhoneRegistActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.ChooseAreaCodeActivity">
+        <activity android:name=".mvp.view.activity.login.ChooseAreaCodeActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.ForgetPwdActivity">
+        <activity android:name=".mvp.view.activity.login.ForgetPwdActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.ResetPwdActivity">
+        <activity android:name=".mvp.view.activity.login.ResetPwdActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.login.InviteCodeRegistActivity">
+        <activity android:name=".mvp.view.activity.login.InviteCodeRegistActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.AddFriendActivity">
+        <activity android:name=".mvp.view.activity.AddFriendActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.SearchNickActivity">
+        <activity android:name=".mvp.view.activity.SearchNickActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.ReportActivity">
+        <activity android:name=".mvp.view.activity.ReportActivity">
         </activity>
         <activity
-            android:name="com.shanchain.shandata.mvp.view.activity.ReleaseDynamicActivity"
+            android:name=".mvp.view.activity.ReleaseDynamicActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.FriendsActivity">
+        <activity android:name=".mvp.view.activity.FriendsActivity">
         </activity>
 
         <!-- 图片选择页面 -->
@@ -59,79 +59,89 @@
             android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
-            android:name="com.shanchain.shandata.mvp.view.activity.DetailsActivity"
+            android:name=".mvp.view.activity.DetailsActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.PositionActivity">
+        <activity android:name=".mvp.view.activity.PositionActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.VisibleRangeActivity">
+        <activity android:name=".mvp.view.activity.VisibleRangeActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.TopicActivity">
+        <activity android:name=".mvp.view.activity.TopicActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.ChooseContactsActivity">
+        <activity android:name=".mvp.view.activity.ChooseContactsActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.PersonalHomePagerActivity">
+        <activity android:name=".mvp.view.activity.PersonalHomePagerActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.AiteContactsActivity">
+        <activity android:name=".mvp.view.activity.AiteContactsActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.PersonalStoryActivity">
+        <activity android:name=".mvp.view.activity.PersonalStoryActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.PersonalChallengeActivity">
+        <activity android:name=".mvp.view.activity.PersonalChallengeActivity">
         </activity>
         <activity
-            android:name="com.shanchain.shandata.mvp.view.activity.ImageActivity"
+            android:name=".mvp.view.activity.ImageActivity"
             android:theme="@style/FullScreenTheme">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.ShanYuanActivity">
+        <activity android:name=".mvp.view.activity.ShanYuanActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.HappierActivity">
+        <activity android:name=".mvp.view.activity.challenge.HappierActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.SleepEarlierActivity">
+        <activity android:name=".mvp.view.activity.challenge.SleepEarlierActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.RankActivity">
+        <activity android:name=".mvp.view.activity.challenge.RankActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ChallengeActivity">
+        <activity android:name=".mvp.view.activity.challenge.ChallengeActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.WalkedMoreActivity">
+        <activity android:name=".mvp.view.activity.challenge.WalkedMoreActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.NoBowActivity">
+        <activity android:name=".mvp.view.activity.challenge.NoBowActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ChooseChallengeActivity">
+        <activity android:name=".mvp.view.activity.challenge.ChooseChallengeActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.WalkMoreSettingActivity">
+        <activity android:name=".mvp.view.activity.challenge.WalkMoreSettingActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ChallengeDynamicActivity">
+        <activity android:name=".mvp.view.activity.challenge.ChallengeDynamicActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ShareActivity">
+        <activity android:name=".mvp.view.activity.challenge.ShareActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.SleepEarlierSettingActivity">
+        <activity android:name=".mvp.view.activity.challenge.SleepEarlierSettingActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.RepeatSettingActivity">
+        <activity android:name=".mvp.view.activity.challenge.RepeatSettingActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.WalkingMoreActivity">
+        <activity android:name=".mvp.view.activity.challenge.WalkingMoreActivity">
         </activity>
         <activity
-            android:name="com.shanchain.shandata.mvp.view.activity.challenge.CountdownActivity"
+            android:name=".mvp.view.activity.challenge.CountdownActivity"
             android:theme="@style/FullScreenTheme">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ChallengeOnGoingActivity">
+        <activity android:name=".mvp.view.activity.challenge.ChallengeOnGoingActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.NotPartInSleepEarlierActivity">
+        <activity android:name=".mvp.view.activity.challenge.NotPartInSleepEarlierActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.HasPartInSleepEarlierActivity">
+        <activity android:name=".mvp.view.activity.challenge.HasPartInSleepEarlierActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.ChallengeSearchActivity">
+        <activity android:name=".mvp.view.activity.challenge.ChallengeSearchActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.PartInWalkMoreActivity">
+        <activity android:name=".mvp.view.activity.challenge.PartInWalkMoreActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.NoBowResultActivity">
+        <activity android:name=".mvp.view.activity.challenge.NoBowResultActivity">
         </activity>
         <activity
-            android:name="com.shanchain.shandata.mvp.view.activity.challenge.WalkMoreResultActivity"
+            android:name=".mvp.view.activity.challenge.WalkMoreResultActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.SleepEarlierResultActivity">
+        <activity android:name=".mvp.view.activity.challenge.SleepEarlierResultActivity">
         </activity>
-        <activity android:name="com.shanchain.shandata.mvp.view.activity.challenge.HappierCompleteActivity">
+        <activity android:name=".mvp.view.activity.challenge.HappierCompleteActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.PersonalDataActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.BackgroundActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.SettingActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.MessageSettingActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.AccountAndSafeActivity">
         </activity>
     </application>
 

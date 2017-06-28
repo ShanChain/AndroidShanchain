@@ -25,6 +25,8 @@
 
     <color name="colorTransparent">#00000000</color>
 
+    <color name="colorDialogBtn">#0076ff</color>
+
     <color name="colorHint2">#cbcbcb</color>
 
 </resources>

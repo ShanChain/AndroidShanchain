@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_account_and_safe"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_account_safe"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="账号与安全"
+        app:titleTextSize="16"/>
+    <TextView
+        style="@style/style_text_line_match"/>
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_modify_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="更改密码"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_bind_phone"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="绑定手机号码"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:id="@+id/iv_account_safe_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+        <TextView
+            android:text="15374326832"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_toLeftOf="@id/iv_account_safe_phone"
+            android:id="@+id/tv_account_safe_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_bind_email"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="绑定邮箱"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:id="@+id/iv_account_safe_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+        <TextView
+            android:text="溜溜溜溜溜感"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_toLeftOf="@id/iv_account_safe_email"
+            android:id="@+id/tv_account_safe_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_bind_wechat"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="绑定微信"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:id="@+id/iv_account_safe_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+        <TextView
+            android:text="。。。"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_toLeftOf="@id/iv_account_safe_wechat"
+            android:id="@+id/tv_account_safe_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_bind_qq"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="绑定QQ"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:id="@+id/iv_account_safe_qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+        <TextView
+            android:text="未绑定"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_toLeftOf="@id/iv_account_safe_qq"
+            android:id="@+id/tv_account_safe_qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_account_safe_bind_weibo"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="绑定微博"
+            android:textColor="@color/colorBtn"/>
+
+        <ImageView
+            android:id="@+id/iv_account_safe_weibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/personalinformation_btn_enter_default"/>
+
+        <TextView
+            android:text="未绑定"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_toLeftOf="@id/iv_account_safe_weibo"
+            android:id="@+id/tv_account_safe_weibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+</LinearLayout>

@@ -30,4 +30,20 @@
         <item>发现</item>
         <item>我的</item>
     </string-array>
+
+    <string-array name="des_background">
+        <item>春天仿佛爱情在酝酿</item>
+        <item>火一般的太阳在脸上</item>
+        <item>秋风即使带凉 亦漂亮</item>
+        <item>天空多灰 我们亦放亮</item>
+    </string-array>
+
+    <string-array name="type_background">
+        <item>春</item>
+        <item>夏</item>
+        <item>秋</item>
+        <item>冬</item>
+    </string-array>
+
+
 </resources>

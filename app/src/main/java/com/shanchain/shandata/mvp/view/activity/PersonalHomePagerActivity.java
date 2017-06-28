@@ -1,5 +1,6 @@
 package com.shanchain.shandata.mvp.view.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,6 +62,7 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
     private LinearLayout mLlHeaderPersonalChallenge;
     private TextView mTvPersonalChallenge;
     private List<StoryInfo> storyDatas;
+    private boolean mIsFriend;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -69,6 +71,9 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
 
     @Override
     protected void initViewsAndEvents() {
+
+        Intent intent = getIntent();
+        mIsFriend = intent.getBooleanExtra("isFriend",true);
         initToolBar();
         initData();
         initHeadView();
@@ -95,7 +100,7 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
         mTvPersonalStory = (TextView) mHeadView.findViewById(R.id.tv_personal_story);
         mLlHeaderPersonalChallenge = (LinearLayout) mHeadView.findViewById(R.id.ll_header_personal_challenge);
         mTvPersonalChallenge = (TextView) mHeadView.findViewById(R.id.tv_personal_challenge);
-
+        mBtnHeaderPersonalFocus.setVisibility(mIsFriend?View.VISIBLE:View.GONE);
         initheadData();
         initHeadXrecyclerView();
         initHeadListener();
@@ -234,7 +239,9 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
 
     private void initToolBar() {
         mPersonalToolBar = (ArthurToolBar) findViewById(R.id.toolbar_personal_homepager);
+        mPersonalToolBar.setBtnVisibility(true,false);
         mPersonalToolBar.setBtnEnabled(true, false);
+        mPersonalToolBar.setTitleText(mIsFriend?"个人主页":"我的主页");
         mPersonalToolBar.setOnLeftClickListener(this);
     }
 

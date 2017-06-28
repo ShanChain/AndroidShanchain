@@ -29,6 +29,12 @@
         <item name="android:layout_height">0.5dp</item>
     </style>
 
+    <style name="style_text_line_match">
+        <item name="android:background">@color/colorListDivider</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+    </style>
+
     <!--左边距为75的输入框样式-->
     <style name="style_et_marginleft_75dp">
         <item name="android:background">@null</item>

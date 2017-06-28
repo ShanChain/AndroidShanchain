@@ -62,8 +62,6 @@ public class ChallengeActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     protected void initViewsAndEvents() {
-        typeFace = Typeface.createFromAsset(getAssets(), "font/hanzipen_sc.ttf");
-        mBtnChallengeNew.setTypeface(typeFace);
         initToolBar();
     }
 
