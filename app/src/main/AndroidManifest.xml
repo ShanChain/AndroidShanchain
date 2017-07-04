@@ -32,12 +32,6 @@
         </activity>
         <activity android:name=".mvp.view.activity.login.ChooseAreaCodeActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.login.ForgetPwdActivity">
-        </activity>
-        <activity android:name=".mvp.view.activity.login.ResetPwdActivity">
-        </activity>
-        <activity android:name=".mvp.view.activity.login.InviteCodeRegistActivity">
-        </activity>
         <activity android:name=".mvp.view.activity.AddFriendActivity">
         </activity>
         <activity android:name=".mvp.view.activity.SearchNickActivity">
@@ -142,6 +136,34 @@
         <activity android:name=".mvp.view.activity.mine.MessageSettingActivity">
         </activity>
         <activity android:name=".mvp.view.activity.mine.AccountAndSafeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.login.ResetPasswordActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.BindResultActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.ShieldActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.FeedbackActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.AboutActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.MyStoryActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.MyChallengeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.MyPublicWelfareActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.CommonProblemActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.MyReservationActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.DynamicActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.ShanCoinsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.FocusActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.mine.FansActivity">
         </activity>
     </application>
 

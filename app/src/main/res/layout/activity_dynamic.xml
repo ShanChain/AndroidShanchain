@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_dynamic"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_messages"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="消息"
+        app:rightImage="@mipmap/icon_btn_more_default"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/smlv_messages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.baoyz.swipemenulistview.SwipeMenuListView>
+
+
+</LinearLayout>

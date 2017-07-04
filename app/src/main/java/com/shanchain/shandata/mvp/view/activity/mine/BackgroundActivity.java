@@ -29,16 +29,7 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
     ArthurToolBar mToolbarBackground;
     @Bind(R.id.xrv_background)
     XRecyclerView mXrvBackground;
-    /*@Bind(R.id.rl_background_spring)
-    RelativeLayout mRlBackgroundSpring;
-    @Bind(R.id.rl_background_summer)
-    RelativeLayout mRlBackgroundSummer;
-    @Bind(R.id.rl_background_fall)
-    RelativeLayout mRlBackgroundFall;
-    @Bind(R.id.rl_background_winter)
-    RelativeLayout mRlBackgroundWinter;
-    @Bind(R.id.activity_background)
-    LinearLayout mActivityBackground;*/
+
 
     private int[] resBackgrounds = {R.drawable.mine_bg_spring_default,R.drawable.mine_bg_summer_default,R.drawable.mine_bg_fall_default,R.drawable.mine_bg_winter_default};
     private ArrayList<BackgroundInfo> mDatas;
@@ -77,7 +68,7 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
         mXrvBackground.addItemDecoration(new RecyclerViewDivider(this,
                 LinearLayoutManager.HORIZONTAL,
                 DensityUtils.dip2px(this,10),
-                getResources().getColor(R.color.colorTransparent)));
+                getResources().getColor(R.color.colorWhite)));
         backgroundAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -103,37 +94,6 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
         mToolbarBackground.setOnLeftClickListener(this);
     }
 
-
-   /* @OnClick({R.id.rl_background_spring, R.id.rl_background_summer, R.id.rl_background_fall, R.id.rl_background_winter})
-    public void onClick(View view) {
-        Intent intent = new Intent();
-        switch (view.getId()) {
-            case R.id.rl_background_spring:
-                PrefUtils.putInt(this, "bgPath", R.drawable.mine_bg_spring_default);
-                intent.putExtra("bg", R.drawable.mine_bg_spring_default);
-                setResult(RESULT_CODE_SPRING, intent);
-                finish();
-                break;
-            case R.id.rl_background_summer:
-                PrefUtils.putInt(this, "bgPath", R.drawable.mine_bg_summer_default);
-                intent.putExtra("bg", R.drawable.mine_bg_summer_default);
-                setResult(RESULT_CODE_SUMMER, intent);
-                finish();
-                break;
-            case R.id.rl_background_fall:
-                PrefUtils.putInt(this, "bgPath", R.drawable.mine_bg_fall_default);
-                intent.putExtra("bg", R.drawable.mine_bg_fall_default);
-                setResult(RESULT_CODE_FALL, intent);
-                finish();
-                break;
-            case R.id.rl_background_winter:
-                PrefUtils.putInt(this, "bgPath", R.drawable.mine_bg_winter_default);
-                intent.putExtra("bg", R.drawable.mine_bg_winter_default);
-                setResult(RESULT_CODE_WINTER, intent);
-                finish();
-                break;
-        }
-    }*/
 
     @Override
     public void onLeftClick(View v) {

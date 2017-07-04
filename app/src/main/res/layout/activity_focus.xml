@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_focus"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_focus"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="我的关注"
+        app:titleTextSize="16"/>
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/colorListDivider"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/et_focus_search"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_weight="1"
+            android:background="@drawable/shap_edit_search"
+            android:drawableLeft="@mipmap/search_button_search_default"
+            android:drawablePadding="3dp"
+            android:gravity="center_vertical"
+            android:hint="搜索关注的好友"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:textColor="@color/colorBtn"
+            android:textColorHint="@color/colorHint"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_focus_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:text="取消"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+    </LinearLayout>
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/xrv_focus"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
+
+</LinearLayout>

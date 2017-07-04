@@ -14,6 +14,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.DynamicActivity;
 import com.shanchain.shandata.mvp.view.fragment.DynamicFragment;
 import com.shanchain.shandata.mvp.view.fragment.FoundFragment;
 import com.shanchain.shandata.mvp.view.fragment.HomeFragment;
@@ -259,7 +260,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 break;
             case 3:
                 //当前页为我的
-                ToastUtils.showToast(this,"消息");
+                readyGo(DynamicActivity.class);
                 break;
         }
     }

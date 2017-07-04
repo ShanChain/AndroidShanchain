@@ -1,5 +1,6 @@
 package com.shanchain.shandata.mvp.view.activity.mine;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -8,13 +9,23 @@ import android.widget.TextView;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.mvp.view.activity.login.ResetPasswordActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
 public class AccountAndSafeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
+    private static final int BIND_TYPE_WEIBO = 10;
+    private static final int BIND_TYPE_WECHAT = 20;
+    private static final int BIND_TYPE_QQ = 30;
+    private static final int BIND_TYPE_PHONE=40;
+    private static final int BIND_TYPE_EMAIL=50;
 
+    private static final int OPERATION_PHONE_BIND = 100;
+    private static final int OPERATION_PHONE_RESET_PWD = 200;
+    private static final int OPERATION_EMAIL_BIND = 300;
+    private static final int OPERATION_EMAIL_RESET_PWD = 400;
     ArthurToolBar mToolbarAccountSafe;
     @Bind(R.id.ll_account_safe_modify_pwd)
     RelativeLayout mLlAccountSafeModifyPwd;
@@ -70,19 +81,40 @@ public class AccountAndSafeActivity extends BaseActivity implements ArthurToolBa
 
     @OnClick({R.id.ll_account_safe_modify_pwd, R.id.ll_account_safe_bind_phone, R.id.ll_account_safe_bind_email, R.id.ll_account_safe_bind_wechat, R.id.ll_account_safe_bind_qq, R.id.ll_account_safe_bind_weibo})
     public void onClick(View view) {
+        Intent intent;
         switch (view.getId()) {
+
             case R.id.ll_account_safe_modify_pwd:
+                intent = new Intent(this, ResetPasswordActivity.class);
+                intent.putExtra("operationType",OPERATION_PHONE_RESET_PWD);
+                startActivity(intent);
                 break;
             case R.id.ll_account_safe_bind_phone:
+                intent = new Intent(this,BindResultActivity.class);
+                intent.putExtra("bindType",BIND_TYPE_PHONE);
+                startActivity(intent);
                 break;
             case R.id.ll_account_safe_bind_email:
+                intent = new Intent(this,BindResultActivity.class);
+                intent.putExtra("bindType",BIND_TYPE_EMAIL);
+                startActivity(intent);
                 break;
             case R.id.ll_account_safe_bind_wechat:
+                intent = new Intent(this,BindResultActivity.class);
+                intent.putExtra("bindType",BIND_TYPE_WECHAT);
+                startActivity(intent);
                 break;
             case R.id.ll_account_safe_bind_qq:
+                intent = new Intent(this,BindResultActivity.class);
+                intent.putExtra("bindType",BIND_TYPE_QQ);
+                startActivity(intent);
                 break;
             case R.id.ll_account_safe_bind_weibo:
+                intent = new Intent(this,BindResultActivity.class);
+                intent.putExtra("bindType",BIND_TYPE_WEIBO);
+                startActivity(intent);
                 break;
+
         }
     }
 

@@ -84,9 +84,9 @@ public class RankActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         mXrvRank.setLayoutManager(linearLayoutManager);
         mXrvRank.setPullRefreshEnabled(false);
         mXrvRank.setLoadingMoreEnabled(false);
-        mXrvRank.addItemDecoration(new RecyclerViewDivider(RankActivity.this,
+        mXrvRank.addItemDecoration(new RecyclerViewDivider(this,
                 LinearLayoutManager.HORIZONTAL,
-                DensityUtils.dip2px(RankActivity.this,1),
+                DensityUtils.dip2px(this,1),
                 getResources().getColor(R.color.colorListDivider)));
 
         RankAdapter adapter = new RankAdapter(this,R.layout.item_happier_rank,datas);

@@ -11,8 +11,17 @@ import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.view.activity.PersonalHomePagerActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.BackgroundActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.CommonProblemActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.FansActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.FocusActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.MyChallengeActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.MyPublicWelfareActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.MyReservationActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.MyStoryActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.PersonalDataActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.SettingActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.ShanCoinsActivity;
 import com.shanchain.shandata.utils.GlideCircleTransform;
 import com.shanchain.shandata.utils.PrefUtils;
 
@@ -104,37 +113,43 @@ public class MineFragment extends BaseFragment {
                 modifyInfo();
                 break;
             case R.id.btn_mine_focus:
-
+                startActivity(new Intent(mActivity, FocusActivity.class));
                 break;
             case R.id.btn_mine_fans:
-
+                startActivity(new Intent(mActivity, FansActivity.class));
                 break;
             case R.id.ll_mine_story:
-
+                intent = new Intent(mActivity, MyStoryActivity.class);
+                startActivity(intent);
                 break;
             case R.id.ll_mine_challenge:
-
+                startActivity(new Intent(mActivity, MyChallengeActivity.class));
                 break;
             case R.id.ll_mine_cards:
-
+                startActivity(new Intent(mActivity, BackgroundActivity.class));
                 break;
             case R.id.tv_mine_shancurrency:
-
+                Intent intentShancoins = new Intent(mActivity,ShanCoinsActivity.class);
+                intentShancoins.putExtra("isShanCoins",true);
+                startActivity(intentShancoins);
                 break;
             case R.id.tv_mine_shanvoucher:
-
+                Intent intentShanvoucher = new Intent(mActivity,ShanCoinsActivity.class);
+                intentShanvoucher.putExtra("isShanCoins",false);
+                startActivity(intentShanvoucher);
                 break;
             case R.id.tv_mine_publicwelfare:
+                startActivity(new Intent(mActivity, MyPublicWelfareActivity.class));
 
                 break;
             case R.id.tv_mine_reservation:
-
+                startActivity(new Intent(mActivity, MyReservationActivity.class));
                 break;
             case R.id.tv_mine_setup:
                 startActivity(new Intent(mActivity, SettingActivity.class));
                 break;
             case R.id.tv_mine_commonprobler:
-
+                startActivity(new Intent(mActivity, CommonProblemActivity.class));
                 break;
         }
     }

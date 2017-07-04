@@ -15,7 +15,6 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.model.PublisherInfo;
 import com.shanchain.shandata.mvp.view.activity.DetailsActivity;
 import com.shanchain.shandata.utils.LogUtils;
-import com.shanchain.shandata.utils.ToastUtils;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class AttentionFragment extends BaseFragment {
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                ToastUtils.showToast(mActivity,"点击了列表的第" +position+"个条目");
+                //ToastUtils.showToast(mActivity,"点击了列表的第" +position+"个条目");
                 Intent intent = new Intent(mActivity, DetailsActivity.class);
                 mActivity.startActivity(intent);
             }

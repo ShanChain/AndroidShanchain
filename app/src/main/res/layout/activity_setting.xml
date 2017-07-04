@@ -131,6 +131,7 @@
             android:src="@mipmap/personalinformation_btn_enter_default"/>
 
         <TextView
+
             android:text="3.3M"
             android:textColor="@color/colorBtn"
             android:textSize="@dimen/text_size_14sp"
@@ -189,34 +190,6 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="关于善数者"
-            android:textColor="@color/colorBtn"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/personalinformation_btn_enter_default"/>
-    </RelativeLayout>
-
-    <TextView
-        style="@style/style_text_line_match"/>
-
-    <RelativeLayout
-        android:id="@+id/ll_setting_nice_praise"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:paddingLeft="@dimen/margin_15dp"
-        android:paddingRight="@dimen/margin_15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="给善数者一个好评"
             android:textColor="@color/colorBtn"/>
 
         <ImageView

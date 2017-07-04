@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/colorWhite"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/combined_shape"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_head_coins_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/coins"
+            android:drawablePadding="@dimen/margin_15dp"
+            android:gravity="center_vertical"
+            android:text="123"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="总收入"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_12sp"/>
+
+
+            <TextView
+                android:id="@+id/tv_head_coins_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_head_coins_des1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="善圆   总支出"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_12sp"/>
+
+            <TextView
+                android:id="@+id/tv_head_coins_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="4"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_head_coins_des2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="善圆"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_12sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="18dp"/>
+
+</LinearLayout>

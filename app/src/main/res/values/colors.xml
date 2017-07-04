@@ -29,4 +29,6 @@
 
     <color name="colorHint2">#cbcbcb</color>
 
+    <color name="colorDialogText">#030303</color>
+
 </resources>

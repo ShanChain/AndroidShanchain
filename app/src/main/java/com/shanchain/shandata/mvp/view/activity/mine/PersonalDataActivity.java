@@ -24,7 +24,10 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.ClearEditText;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -63,6 +66,7 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
     LinearLayout mLlPersonalDataBirth;
     private String mAvatarPath;
     TimePickerView pvTime;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_personal_data;
@@ -99,7 +103,7 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
     }
 
 
-    @OnClick({R.id.ll_personal_data_sex, R.id.ll_personal_data_birth,R.id.ll_personal_data_avatar, R.id.ll_personal_data_bg, R.id.tv_personal_data_sex, R.id.tv_personal_data_birth})
+    @OnClick({R.id.ll_personal_data_sex, R.id.ll_personal_data_birth, R.id.ll_personal_data_avatar, R.id.ll_personal_data_bg, R.id.tv_personal_data_sex, R.id.tv_personal_data_birth})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_personal_data_avatar:
@@ -115,11 +119,32 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
             case R.id.ll_personal_data_birth:
                 selectBirth();
                 break;
+            case R.id.tv_personal_data_birth:
+                selectBirth();
+                break;
+
         }
     }
 
     private void selectBirth() {
-
+        TimePickerView pickerView = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                mTvPersonalDataBirth.setText(simpleDateFormat.format(date));
+            }
+        })
+                .setType(new boolean[]{true, true, true, false, false, false})
+                .isCenterLabel(false)
+                .setCancelText("取消")
+                .setCancelColor(getResources().getColor(R.color.colorDialogBtn))
+                .setSubmitText("完成")
+                .setSubCalSize(14)
+                .setTitleBgColor(getResources().getColor(R.color.colorWhite))
+                .setSubmitColor(getResources().getColor(R.color.colorDialogBtn))
+                .build();
+        pickerView.setDate(Calendar.getInstance());
+        pickerView.show();
     }
 
     private void selectSex() {
@@ -129,15 +154,15 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
                     case R.id.tv_dialog_male:
-                        PrefUtils.putString(PersonalDataActivity.this,"sex","男");
+                        PrefUtils.putString(PersonalDataActivity.this, "sex", "男");
                         mTvPersonalDataSex.setText("男");
                         break;
                     case R.id.tv_dialog_female:
-                        PrefUtils.putString(PersonalDataActivity.this,"sex","女");
+                        PrefUtils.putString(PersonalDataActivity.this, "sex", "女");
                         mTvPersonalDataSex.setText("女");
                         break;
                     case R.id.tv_dialog_secret:
-                        PrefUtils.putString(PersonalDataActivity.this,"sex","保密");
+                        PrefUtils.putString(PersonalDataActivity.this, "sex", "保密");
                         mTvPersonalDataSex.setText("保密");
                         break;
                     case R.id.tv_dialog_cancel:
@@ -233,14 +258,16 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
     public void onRightClick(View v) {
 
         String nickName = mEtPersonalDataNick.getText().toString().trim();
-        PrefUtils.putString(this,"nickname",nickName);
+        PrefUtils.putString(this, "nickname", nickName);
         String signature = mEtPersonalDataSignature.getText().toString().trim();
-        PrefUtils.putString(this,"signature",signature);
+        PrefUtils.putString(this, "signature", signature);
+        String birthDay = mTvPersonalDataBirth.getText().toString().trim();
+        LogUtils.d("生日："+birthDay);
         Intent intent = new Intent();
-        intent.putExtra("signature",signature);
-        intent.putExtra("nickname",nickName);
+        intent.putExtra("signature", signature);
+        intent.putExtra("nickname", nickName);
         intent.putExtra("avatarPath", mAvatarPath);
-        intent.putExtra("bgPath",PrefUtils.getInt(this, "bgPath", R.drawable.mine_bg_spring_default));
+        intent.putExtra("bgPath", PrefUtils.getInt(this, "bgPath", R.drawable.mine_bg_spring_default));
         setResult(RESULT_CODE, intent);
         finish();
     }

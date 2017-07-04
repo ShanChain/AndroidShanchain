@@ -60,7 +60,7 @@ public class AiteContactsActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString();
+                String input = s.toString().trim();
                 show.clear();
                 for (int i = 0; i < datas.size(); i ++) {
                     if (datas.get(i).getName().contains(input)){

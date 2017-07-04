@@ -13,10 +13,14 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by 周建 on 2017/5/13.
- * 程序入口,全局单利
  */
 
 public class MyApplication extends Application {
+
+    private static final String QQ_ID = "1106258060";
+    private static final String WX_ID = "wx0c49828919e7fd03";
+    private static final String WEIBO_ID = "2099719405";
+    private static final String REDIRECT_URL = "";
 
     private PatchManager patchManager;
 
@@ -36,6 +40,7 @@ public class MyApplication extends Application {
         initOkhttpUtils();
 
         initAndFix();
+     //   initShareAndLogin();
 
     }
 
@@ -70,4 +75,20 @@ public class MyApplication extends Application {
                 .build();
         OkHttpUtils.initClient(okHttpClient);
     }
+
+
+    /**
+     *  初始化第三方登录和分享
+     */
+   /*  public void initShareAndLogin(){
+         ShareConfig config = ShareConfig.instance()
+                 .qqId(QQ_ID)
+                 .wxId(WX_ID)
+                 .weiboId(WEIBO_ID)
+                 // 下面两个，如果不需要登录功能，可不填写
+                 .weiboRedirectUrl(REDIRECT_URL)
+                 .wxSecret(WX_ID);
+         ShareManager.init(config);
+     }*/
+
 }

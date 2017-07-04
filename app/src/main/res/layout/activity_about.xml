@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_about"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_shielded_persons"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="关于善数者"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="28dp"
+        android:src="@mipmap/logo"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:text="善数者"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"/>
+
+    <TextView
+        android:id="@+id/tv_about"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:text="1.1.0"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/text_size_14sp"/>
+
+
+    <TextView
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:id="@+id/tv_about_weibo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingTop="20dp"
+        android:text="官方微博"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/margin_15dp"/>
+
+    <TextView
+        style="@style/style_line_margin_15dp"/>
+
+    <TextView
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:id="@+id/tv_about_wechat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingTop="20dp"
+        android:text="官方微信"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/margin_15dp"/>
+
+    <TextView
+        style="@style/style_line_margin_15dp"/>
+
+    <TextView
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:id="@+id/tv_about_web"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingTop="20dp"
+        android:text="官方网站"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/margin_15dp"/>
+
+    <TextView
+        style="@style/style_line_margin_15dp"/>
+
+
+    <TextView
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:id="@+id/tv_about_introduce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingTop="20dp"
+        android:text="官方介绍"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/margin_15dp"/>
+
+    <TextView
+        style="@style/style_line_margin_15dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_about_version"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="10dp"
+            android:paddingTop="20dp"
+            android:text="检查新版本"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            android:id="@+id/tv_about_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.1.0"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"/>
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/style_line_margin_15dp"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="版权所有@2017深圳善圆区块链科技有限公司"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/text_size_12sp"/>
+
+    <TextView
+        android:id="@+id/tv_about_user_agreement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="用户协议和隐私政策"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="@dimen/text_size_12sp"/>
+
+</LinearLayout>

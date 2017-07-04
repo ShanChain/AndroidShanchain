@@ -131,7 +131,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
         mToolbarLogin.setOnLeftClickListener(this);
     }
 
-
     @OnClick({R.id.tv_phone_regist_areacode, R.id.btn_phone_regist_checkcode, R.id.btn_phone_regist_agree, R.id.tv_phone_regist_terms})
     public void onClick(View view) {
         switch (view.getId()) {

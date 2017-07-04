@@ -13,20 +13,16 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.view.activity.MainActivity;
 import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.utils.ToastUtils;
-import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.tsy.sdk.social.PlatformConfig;
-import com.tsy.sdk.social.SocialApi;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity implements View.OnFocusChangeListener {
 
-    private static final String WX_APPID = "your wx appid";    //申请的wx appid
-    private static final String QQ_APPID = "your qq appid";    //申请的qq appid
-    private static final String SINA_WB_APPKEY = "your sina wb appkey";       //申请的新浪微博 appkey
-    private SocialApi mSocialApi;
+    private static final String WX_APPID = "wx0c49828919e7fd03";    //申请的wx appid
+    private static final String QQ_APPID = "1106258018";    //申请的qq appid
+    private static final String SINA_WB_APPKEY = "2099719405";       //申请的新浪微博 appkey
 
     /**
      * 描述：顶部工具栏
@@ -103,12 +99,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     @Override
     protected void initViewsAndEvents() {
 
-        PlatformConfig.setWeixin(WX_APPID);
-        PlatformConfig.setQQ(QQ_APPID);
-        PlatformConfig.setSinaWB(SINA_WB_APPKEY);
-
-        mSocialApi = SocialApi.get(getApplicationContext());
-
         //初始化工具栏
         initTooBar();
         //初始化输入框
@@ -150,15 +140,15 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                 break;
             case R.id.iv_login_wechat:
                 ToastUtils.showToast(this, "微信登陆");
-              //  mSocialApi.doOauthVerify(this, PlatformType.WEIXIN, new MyAuthListener());
+//                LoginUtil.login(this, LoginPlatform.WX, listener,true);
                 break;
             case R.id.iv_login_qq:
                 ToastUtils.showToast(this, "qq登陆");
-              //  mSocialApi.doOauthVerify(this, PlatformType.QQ, new MyAuthListener());
+//                LoginUtil.login(this, LoginPlatform.QQ, listener,true);
                 break;
             case R.id.iv_login_weibo:
                 ToastUtils.showToast(this, "微博登陆");
-              //  mSocialApi.doOauthVerify(this, PlatformType.SINA_WB, new MyAuthListener());
+//                LoginUtil.login(this, LoginPlatform.WEIBO, listener,true);
                 break;
         }
     }
@@ -176,7 +166,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      * 描述：忘记密码的点击事件
      */
     private void forget() {
-        readyGo(ForgetPwdActivity.class);
+        readyGo(ResetPasswordActivity.class);
     }
 
     /**
@@ -184,25 +174,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      * 描述：注册逻辑,弹出注册选择对话框
      */
     private void regist() {
-
-        CustomDialog dialog = new CustomDialog(this, false, 0.8, R.layout.dialog_regist, new int[]{R.id.btn_dialog_regist_phone, R.id.btn_dialog_regist_invite});
-        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.btn_dialog_regist_invite:
-                        //邀请码注册
-                        readyGo(InviteCodeRegistActivity.class);
-                        break;
-                    case R.id.btn_dialog_regist_phone:
-                        //手机邮箱注册
-                        readyGo(PhoneRegistActivity.class);
-                        break;
-                }
-            }
-        });
-        dialog.show();
-
+        readyGo(PhoneRegistActivity.class);
     }
 
     /**
@@ -270,25 +242,49 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
             et.setHint(hint);
         }
     }
-
-   /* public class MyAuthListener implements AuthListener {
+   /* final LoginListener listener = new LoginListener() {
         @Override
-        public void onComplete(PlatformType platform_type, Map<String, String> map) {
-            Toast.makeText(LoginActivity.this, platform_type + " login onComplete", Toast.LENGTH_SHORT).show();
-            Log.i("tsy", "login onComplete:" + map);
+        public void loginSuccess(LoginResult result) {
+            //登录成功， 如果你选择了获取用户信息，可以通过
+
+            LogUtils.d("登录","success");
+
+
+            int platform = result.getPlatform();
+            BaseToken token = result.getToken();
+            BaseUser userInfo = result.getUserInfo();
+            String nickname = userInfo.getNickname();
+            int sex = userInfo.getSex();
+            switch (platform) {
+                case LoginPlatform.QQ:
+
+
+                    LogUtils.d("QQ登录成功 ！！！" + "token = " + token + " >< " + "昵称=" + nickname + ";性别 = " + (sex==1?"男":"女"));
+
+                    break;
+                case LoginPlatform.WX:
+
+                    LogUtils.d("微信登录成功 ！！！" + "token = " + token + " >< " + "昵称=" + nickname + ";性别 = " + (sex==1?"男":"女"));
+
+                    break;
+                case LoginPlatform.WEIBO:
+                    LogUtils.d("微博登录成功 ！！！" + "token = " + token + " >< " + "昵称=" + nickname + ";性别 = " + (sex==1?"男":"女"));
+                    break;
+            }
+
+            LogUtils.d("登录"," platform ="+platform+" ！！！" + "token = " + token + " >< " + "昵称=" + nickname + ";性别 = " + (sex==1?"男":"女"));
+
         }
 
         @Override
-        public void onError(PlatformType platform_type, String err_msg) {
-            Toast.makeText(LoginActivity.this, platform_type + " login onError:" + err_msg, Toast.LENGTH_SHORT).show();
-            Log.i("tsy", "login onError:" + err_msg);
+        public void loginFailure(Exception e) {
+            Log.i("TAG", "登录失败:"  );
         }
 
         @Override
-        public void onCancel(PlatformType platform_type) {
-            Toast.makeText(LoginActivity.this, platform_type + " login onCancel", Toast.LENGTH_SHORT).show();
-            Log.i("tsy", "login onCancel");
+        public void loginCancel() {
+            Log.i("TAG", "登录取消");
         }
-    }*/
+    };*/
 
 }
