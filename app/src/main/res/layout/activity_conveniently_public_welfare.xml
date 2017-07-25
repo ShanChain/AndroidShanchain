@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_conveniently_public_welfare"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_conveniently_public_welfare"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="随手公益"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="87dp">
+
+                <LinearLayout
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:id="@+id/ll_conveniently_vouchers"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_conveniently_vouchers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="231"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="善券"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:id="@+id/ll_conveniently_my_welfare"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_conveniently_my_welfare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="我的公益"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:id="@+id/ll_conveniently_my_wait"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_conveniently_wait"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="等待捐赠"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:textSize="@dimen/text_size_14sp"
+                android:text="公益项目"
+                android:textColor="@color/colorBtn"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="172dp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vp_conveniently"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2017净水活动"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_15dp"
+                android:id="@+id/tv_conveniently_title"/>
+
+            <TextView
+                android:id="@+id/tv_conveniently_des"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_12sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:maxLines="2"
+                android:text="全世界还有xxx万人喝不上干净的饮用水，让我们一起来改变现在这困境。"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:layout_marginTop="@dimen/margin_15dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:text="确认捐赠善券"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_14sp"
+                android:id="@+id/btn_conveniently_donate"
+                android:background="@drawable/shape_btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:text="合作机构"
+                android:textSize="@dimen/text_size_14sp"
+                android:textColor="@color/colorBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp">
+
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/photo_public"
+                    android:id="@+id/iv_conveniently_agency"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_conveniently_agency"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="42dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:textSize="@dimen/text_size_14sp"
+                        android:textColor="@color/colorBtn"
+                        android:text="湖南慈善机构"
+                        android:id="@+id/tv_conveniently_agency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:ellipsize="end"
+                        android:id="@+id/tv_conveniently_agency_des"
+                        android:layout_marginTop="13dp"
+                        android:textSize="@dimen/text_size_12sp"
+                        android:textColor="@color/colorBtn"
+                        android:lines="2"
+                        android:lineSpacingExtra="3dp"
+                        android:text="湖南慈善机构是一家慈善机构，致力于世界和平。"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+

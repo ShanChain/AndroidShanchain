@@ -2,16 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.shanchain.shandata">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
 
-    <!-- 屏蔽HOME键需要的权限 -->
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- SD卡读取权限，用户写入离线定位数据 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <!-- 时间控件,振动权限 -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -19,6 +35,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- 百度地图key -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE"/>
+
         <activity android:name=".mvp.view.activity.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -74,8 +96,6 @@
         <activity
             android:name=".mvp.view.activity.ImageActivity"
             android:theme="@style/FullScreenTheme">
-        </activity>
-        <activity android:name=".mvp.view.activity.ShanYuanActivity">
         </activity>
         <activity android:name=".mvp.view.activity.challenge.HappierActivity">
         </activity>
@@ -165,6 +185,77 @@
         </activity>
         <activity android:name=".mvp.view.activity.mine.FansActivity">
         </activity>
+        <activity android:name=".mvp.view.activity.found.ExploreStarsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.NightMarketActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.MarketSearchActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.GoodsListActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.GoodsDetailsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.ConfirmExchangeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.ExchangeCodeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.HotNewsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.SwitchCityActivity">
+        </activity>
+        <!-- 百度地图定位服务 -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+        </service>
+
+        <activity android:name=".mvp.view.activity.found.PublicWelfareProjectsActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.ConvenientlyPublicWelfareActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.WaitDonateActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.DonateSuccessActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.DonateActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.found.ExchangeRecordActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.StoryActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.StoryListActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.TagActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.AllStoryActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.WebActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.StoryHomePagerActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.CurrentRouteActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.JoinRouteActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.RecordStoryFragmentActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.ThingsRecordActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.ParticipantsInfoActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.SelectTimeActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.CreationActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.CreateSuccessActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.ShareStoryActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.story.CollectionStoryActivity"/>
+        <activity android:name=".mvp.view.activity.story.NewRouteActivity"
+                  android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>

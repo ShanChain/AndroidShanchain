@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:background="@drawable/shap_bg_edit_report"
+        android:background="@drawable/shape_bg_edit_report"
         android:gravity="top"
         android:hint="请详细填写,以确保举报能够被受理"
         android:lines="3"
@@ -149,7 +149,7 @@
         android:id="@+id/btn_report"
         style="@style/style_btn_common"
         android:layout_marginTop="34dp"
-        android:background="@drawable/shap_btn_login"
+        android:background="@drawable/shape_btn_login"
         android:enabled="false"
         android:text="举报"
         android:textColor="#cbcbcb"/>

@@ -12,7 +12,7 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_forget"
         style="@style/style_toolbar_color_theme"
-        app:leftImage="@mipmap/regsitre_icon_back_default"
+        app:leftImage="@mipmap/login_btn_back_default"
         app:titleColor="@color/colorWhite"
         app:titleText="忘记密码"
         app:titleTextSize="16"/>
@@ -83,7 +83,7 @@
             android:layout_width="100dp"
             android:layout_height="28dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shap_btn_login"
+            android:background="@drawable/shape_btn_login"
             android:text="获取验证码"
             android:textColor="@color/colorWhite"
             android:textSize="12sp"/>
@@ -98,7 +98,7 @@
         android:id="@+id/btn_forget_next"
         style="@style/style_btn_common"
         android:layout_marginTop="35dp"
-        android:background="@drawable/shap_btn_login"
+        android:background="@drawable/shape_btn_login"
         android:text="下一步"
         android:textColor="@color/colorWhite"/>
 

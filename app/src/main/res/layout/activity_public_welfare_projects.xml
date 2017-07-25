@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_public_welfare_projects"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_public_welfare_projects"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="公益项目"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <ImageView
+        android:id="@+id/iv_public_welfare_img"
+        android:scaleType="centerCrop"
+        android:src="@drawable/photo_public"
+        android:layout_width="match_parent"
+        android:layout_height="172dp"/>
+
+    <TextView
+        android:id="@+id/tv_public_welfare_title"
+        android:textColor="@color/colorBtn"
+        android:textSize="@dimen/text_size_14sp"
+        android:text="2017净水行动"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:id="@+id/tv_public_welfare_charity"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/text_size_14sp"
+        android:text="湖南慈善机构"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_public_welfare_des"
+        android:lineSpacingExtra="2dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="15dp"
+        android:text="全世界还有xx万人喝不上干净的饮用水。为了让更多人喝上干净的饮用水，今年我们计划在a地、b地和c地共计开凿20口水井，添置10台净水设备，办四家净水工厂。有您的支持，我们走的更远。"
+        android:lines="4"
+        android:layout_marginTop="19dp"
+        android:ellipsize="end"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="@dimen/text_size_14sp"
+            android:textColor="@color/colorHint"
+            android:id="@+id/tv_public_welfare_extra"
+            android:ellipsize="end"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:text="6月30日 2017净水计划全面启动"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:text="查看详情>>"
+            android:textColor="@color/colorDialogBtn"
+            android:textSize="@dimen/text_size_14sp"
+            android:id="@+id/tv_public_welfare_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_public_welfare_donate"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="@drawable/shape_btn_login"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:text="确认捐赠善款"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_14sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_public_welfare_start"
+        android:text="2017年6月1日开始捐赠善券"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_gravity="center_horizontal"
+        android:lines="1"
+        android:layout_marginTop="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_public_welfare_num"
+        android:text="已有2321人捐赠了89379善券"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_gravity="center_horizontal"
+        android:lines="1"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_public_welfare_total"
+        android:text="共计善款≥38261元"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_gravity="center_horizontal"
+        android:lines="1"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -12,6 +12,7 @@ import com.shanchain.shandata.adapter.HomeAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.model.DynamicInfo;
 import com.shanchain.shandata.mvp.view.activity.challenge.ChallengeActivity;
+import com.shanchain.shandata.mvp.view.activity.story.StoryActivity;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
         mVpHeadHome.setDelayTime(3000);
         mVpHeadHome.start();
-
         mTvHeadHomeChallenge.setOnClickListener(this);
         mTvHeadHomeStory.setOnClickListener(this);
     }
@@ -103,11 +103,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_head_home_challenge:
-                mActivity.startActivity(new Intent(mActivity,ChallengeActivity.class));
+                startActivity(new Intent(mActivity,ChallengeActivity.class));
 
                 break;
             case R.id.tv_head_home_story:
-
+                startActivity(new Intent(mActivity, StoryActivity.class));
                 break;
         }
     }

@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Created by zhoujian on 2017/7/1.
- */
-
 public class MessagesAdapter extends BaseAdapter {
 
     private ArrayList<DynamicMessageInfo> mDatas;

@@ -6,11 +6,12 @@ package com.shanchain.shandata.mvp.model;
 
 public class ReservationInfo {
 
-    String avatarUrl;
-    String goods;
-    String orderNum;
-    boolean isCancel;
-    boolean isPayed;
+    private String avatarUrl;
+    private String goods;
+    private String orderNum;
+    private String exchangeCode;
+    private boolean isCancel;
+    private boolean isPayed;
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -50,5 +51,13 @@ public class ReservationInfo {
 
     public void setPayed(boolean payed) {
         isPayed = payed;
+    }
+
+    public String getExchangeCode() {
+        return exchangeCode;
+    }
+
+    public void setExchangeCode(String exchangeCode) {
+        this.exchangeCode = exchangeCode;
     }
 }

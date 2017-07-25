@@ -12,10 +12,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/1.
- */
-
 public class NineGridAdapter extends NineGridImageViewAdapter<String> {
     @Override
     protected void onDisplayImage(Context context, ImageView imageView, String imageurl) {

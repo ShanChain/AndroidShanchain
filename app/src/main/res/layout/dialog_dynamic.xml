@@ -7,24 +7,24 @@
 
     <TextView
         android:id="@+id/tv_dialog_delete"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/colorDialogBtn"
         android:gravity="center"
         android:text="一键删除"
-        android:background="@drawable/shap_bg_edit_report"
+        android:background="@drawable/shape_bg_edit_report"
         android:layout_width="match_parent"
-        android:layout_height="54dp"/>
+        android:layout_height="42dp"/>
 
     <TextView
         android:id="@+id/tv_dialog_cancel"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/colorDialogBtn"
         android:gravity="center"
         android:layout_marginBottom="9dp"
         android:text="取消"
         android:layout_marginTop="9dp"
-        android:background="@drawable/shap_bg_edit_report"
+        android:background="@drawable/shape_bg_edit_report"
         android:layout_width="match_parent"
-        android:layout_height="54dp"/>
+        android:layout_height="42dp"/>
 
 </LinearLayout>

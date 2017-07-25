@@ -15,10 +15,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/12.
- */
-
 public class HomeAdapter extends BaseCommonAdapter<DynamicInfo> {
 
     private List<DynamicInfo> datas;
@@ -29,7 +25,7 @@ public class HomeAdapter extends BaseCommonAdapter<DynamicInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, DynamicInfo dynamicInfo, int position) {
+    public void bindData(ViewHolder holder, DynamicInfo dynamicInfo, int position) {
         holder.setText(R.id.tv_item_home_left1,dynamicInfo.getLeft1());
         if (position == datas.size() +1 ){
             LogUtils.d("position = " + position);

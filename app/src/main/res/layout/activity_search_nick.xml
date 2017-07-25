@@ -19,7 +19,7 @@
     <LinearLayout
         android:id="@+id/ll_add_search"
         android:layout_marginBottom="6dp"
-        android:background="@drawable/shap_edit_search_pressed"
+        android:background="@drawable/shape_edit_search_pressed"
         android:orientation="horizontal"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"

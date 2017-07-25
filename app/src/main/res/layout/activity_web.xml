@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_web"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ZoomControls
+        android:id="@+id/zc_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_web"
+            android:gravity="center"
+            android:text="web页面"
+            android:textSize="28sp"
+            android:textColor="@color/colorDialogBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.shanchain.shandata.widgets.other.CustomView
+            android:id="@+id/cv_web"
+            android:layout_marginTop="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </ZoomControls>
+
+</LinearLayout>

@@ -85,9 +85,9 @@ public class MineFragment extends BaseFragment {
         mIvMineBg.setImageResource(bgPath);
 
         String nickname = PrefUtils.getString(mActivity, "nickname", "");
-        if (!TextUtils.isEmpty(nickname)){
+        if (!TextUtils.isEmpty(nickname)) {
             mTvMineNickname.setText(nickname);
-        }else {
+        } else {
             mTvMineNickname.setText("默认签名");
         }
 
@@ -95,9 +95,13 @@ public class MineFragment extends BaseFragment {
         String signature = PrefUtils.getString(mActivity, "signature", "");
         if (!TextUtils.isEmpty(signature)) {
             mTvMineSignature.setText(signature);
-        }else {
+        } else {
             mTvMineSignature.setText("因为太个性所以没签名");
         }
+        String headImageUrlLarge = "http://q.qlogo.cn/qqapp/1106258060/D74BE50E6729D32C37164B5CA9C47BF7/100";
+        Glide.with(this).load(headImageUrlLarge)
+                .transform(new GlideCircleTransform(mActivity))
+                .into(mIvMineAvatar);
 
     }
 
@@ -126,16 +130,18 @@ public class MineFragment extends BaseFragment {
                 startActivity(new Intent(mActivity, MyChallengeActivity.class));
                 break;
             case R.id.ll_mine_cards:
-                startActivity(new Intent(mActivity, BackgroundActivity.class));
+                Intent intentCards = new Intent(mActivity,BackgroundActivity.class);
+                intentCards.putExtra("isBg",false);
+                startActivity(intentCards);
                 break;
             case R.id.tv_mine_shancurrency:
-                Intent intentShancoins = new Intent(mActivity,ShanCoinsActivity.class);
-                intentShancoins.putExtra("isShanCoins",true);
+                Intent intentShancoins = new Intent(mActivity, ShanCoinsActivity.class);
+                intentShancoins.putExtra("isShanCoins", true);
                 startActivity(intentShancoins);
                 break;
             case R.id.tv_mine_shanvoucher:
-                Intent intentShanvoucher = new Intent(mActivity,ShanCoinsActivity.class);
-                intentShanvoucher.putExtra("isShanCoins",false);
+                Intent intentShanvoucher = new Intent(mActivity, ShanCoinsActivity.class);
+                intentShanvoucher.putExtra("isShanCoins", false);
                 startActivity(intentShanvoucher);
                 break;
             case R.id.tv_mine_publicwelfare:
@@ -182,7 +188,7 @@ public class MineFragment extends BaseFragment {
                 }
 
                 int bgPath = data.getIntExtra("bgPath", 0);
-                if (bgPath != 0){
+                if (bgPath != 0) {
                     Glide.with(this).load(bgPath).into(mIvMineBg);
                 }
 

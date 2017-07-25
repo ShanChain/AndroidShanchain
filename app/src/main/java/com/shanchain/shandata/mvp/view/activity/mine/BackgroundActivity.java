@@ -33,6 +33,7 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
 
     private int[] resBackgrounds = {R.drawable.mine_bg_spring_default,R.drawable.mine_bg_summer_default,R.drawable.mine_bg_fall_default,R.drawable.mine_bg_winter_default};
     private ArrayList<BackgroundInfo> mDatas;
+    private boolean mIsBg;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -41,6 +42,7 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
+        mIsBg = getIntent().getBooleanExtra("isBg", true);
         initToolBar();
         initData();
         initRecycler();
@@ -72,11 +74,15 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
         backgroundAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                Intent intent = new Intent();
-                PrefUtils.putInt(BackgroundActivity.this, "bgPath", resBackgrounds[position-1]);
-                intent.putExtra("bg", resBackgrounds[position-1]);
-                setResult(RESULT_CODE_SPRING, intent);
-                finish();
+                if (mIsBg){
+                    Intent intent = new Intent();
+                    PrefUtils.putInt(BackgroundActivity.this, "bgPath", resBackgrounds[position-1]);
+                    intent.putExtra("bg", resBackgrounds[position-1]);
+                    setResult(RESULT_CODE_SPRING, intent);
+                    finish();
+                }else {
+
+                }
             }
 
             @Override
@@ -89,6 +95,7 @@ public class BackgroundActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initToolBar() {
         mToolbarBackground = (ArthurToolBar) findViewById(R.id.toolbar_background);
+        mToolbarBackground.setTitleText(mIsBg?"背景图":"卡片夹");
         mToolbarBackground.setBtnVisibility(true, false);
         mToolbarBackground.setBtnEnabled(true, false);
         mToolbarBackground.setOnLeftClickListener(this);

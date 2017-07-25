@@ -11,10 +11,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/28.
- */
-
 public class BackgroundAdapter extends BaseCommonAdapter<BackgroundInfo> {
 
     public BackgroundAdapter(Context context, int layoutId, List<BackgroundInfo> datas) {
@@ -22,7 +18,7 @@ public class BackgroundAdapter extends BaseCommonAdapter<BackgroundInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, BackgroundInfo backgroundInfo, int position) {
+    public void bindData(ViewHolder holder, BackgroundInfo backgroundInfo, int position) {
         Glide.with(mContext)
                 .load(backgroundInfo.getRes())
                 .into((ImageView) holder.getView(R.id.iv_item_background));

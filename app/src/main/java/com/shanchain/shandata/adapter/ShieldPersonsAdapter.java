@@ -13,17 +13,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/29.
- */
-
 public class ShieldPersonsAdapter extends BaseCommonAdapter<ShieldPersonInfo> {
     public ShieldPersonsAdapter(Context context, int layoutId, List<ShieldPersonInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(final ViewHolder holder, final ShieldPersonInfo shieldPersonInfo, int position) {
+    public void bindData(final ViewHolder holder, final ShieldPersonInfo shieldPersonInfo, int position) {
         Glide.with(mContext)
                 .load(R.mipmap.bing_link_wechat_default)
                 .transform(new GlideCircleTransform(mContext))

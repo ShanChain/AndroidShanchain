@@ -12,7 +12,7 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_invite"
         style="@style/style_toolbar_color_theme"
-        app:leftImage="@mipmap/regsitre_icon_back_default"
+        app:leftImage="@mipmap/login_btn_back_default"
         app:titleColor="@color/colorWhite"
         app:titleText="邀请码注册"
         app:titleTextSize="16"/>
@@ -57,7 +57,7 @@
         android:id="@+id/btn_invite_agree"
         style="@style/style_btn_common"
         android:layout_marginTop="20dp"
-        android:background="@drawable/shap_btn_login"
+        android:background="@drawable/shape_btn_login"
         android:text="同意服务条款并注册"
         android:textColor="@color/colorWhite"/>
 

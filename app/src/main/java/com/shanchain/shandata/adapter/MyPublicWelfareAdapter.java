@@ -12,17 +12,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/30.
- */
-
 public class MyPublicWelfareAdapter extends BaseCommonAdapter<MyPublicWelfareInfo> {
     public MyPublicWelfareAdapter(Context context, int layoutId, List<MyPublicWelfareInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, MyPublicWelfareInfo myPublicWelfareInfo, int position) {
+    public void bindData(ViewHolder holder, MyPublicWelfareInfo myPublicWelfareInfo, int position) {
 
         Glide.with(mContext)
                 .load(R.drawable.photo6)

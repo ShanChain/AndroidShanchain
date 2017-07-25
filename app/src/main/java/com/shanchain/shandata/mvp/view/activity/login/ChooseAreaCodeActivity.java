@@ -98,8 +98,8 @@ public class ChooseAreaCodeActivity extends BaseActivity implements ArthurToolBa
         mToolbarArea.setBtnEnabled(true,false);
 
         //设置沉浸式
-        mToolbarArea.setImmersive(this, true);
-        mToolbarArea.setBackgroundColor(getResources().getColor(R.color.colorTheme));
+//        mToolbarArea.setImmersive(this, true);
+//        mToolbarArea.setBackgroundColor(getResources().getColor(R.color.colorTheme));
         //顶部工具栏左侧按钮点击事件
         mToolbarArea.setOnLeftClickListener(this);
     }

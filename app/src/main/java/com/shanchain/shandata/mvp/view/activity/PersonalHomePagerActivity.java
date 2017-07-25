@@ -20,6 +20,7 @@ import com.shanchain.shandata.adapter.PersonalStoryImagesAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.model.PublisherInfo;
 import com.shanchain.shandata.mvp.model.StoryInfo;
+import com.shanchain.shandata.mvp.view.activity.mine.ShanCoinsActivity;
 import com.shanchain.shandata.utils.GlideCircleTransform;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.SpanUtils;
@@ -120,11 +121,6 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mXrvImagesStory.setLayoutManager(linearLayoutManager);
-
-
-       /* mXrvImagesStory.addItemDecoration(new RecyclerViewDivider(PersonalHomePagerActivity.this,
-                LinearLayoutManager.VERTICAL, DensityUtils.dip2px(PersonalHomePagerActivity.this,10),
-                getResources().getColor(R.color.colorAddFriendDivider)));*/
 
 
         PersonalStoryImagesAdapter personalStoryImagesAdapter = new PersonalStoryImagesAdapter(this, R.layout.item_story_images, storyDatas);
@@ -262,10 +258,14 @@ public class PersonalHomePagerActivity extends BaseActivity implements ArthurToo
                 readyGo(PersonalStoryActivity.class);
                 break;
             case R.id.ll_header_personal_shanyuan:
-                readyGo(ShanYuanActivity.class);
+                Intent intent = new Intent(mActivity,ShanCoinsActivity.class);
+                intent.putExtra("isShanCoins",true);
+                startActivity(intent);
                 break;
             case R.id.ll_header_personal_shanquan:
-                ToastUtils.showToast(this, "善券");
+                Intent shanquanIntent = new Intent(mActivity,ShanCoinsActivity.class);
+                shanquanIntent.putExtra("isShanCoins",false);
+                startActivity(shanquanIntent);
                 break;
             case R.id.ll_header_personal_story:
                 readyGo(PersonalStoryActivity.class);

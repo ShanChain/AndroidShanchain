@@ -2,13 +2,17 @@ package com.shanchain.shandata.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Vibrator;
 
 import com.alipay.euler.andfix.patch.PatchManager;
+import com.shanchain.shandata.utils.LocationService;
 import com.shanchain.shandata.utils.VersionUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import me.shaohui.shareutil.ShareConfig;
+import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
 /**
@@ -19,8 +23,10 @@ public class MyApplication extends Application {
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
-    private static final String WEIBO_ID = "2099719405";
-    private static final String REDIRECT_URL = "";
+    
+    private static final String WEIBO_ID = "2916880440";
+    private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
+    private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
 
     private PatchManager patchManager;
 
@@ -29,6 +35,9 @@ public class MyApplication extends Application {
     }
 
     public static Context mContext;
+
+    public LocationService locationService;
+    public Vibrator mVibrator;
 
 
     @Override
@@ -40,13 +49,13 @@ public class MyApplication extends Application {
         initOkhttpUtils();
 
         initAndFix();
-     //   initShareAndLogin();
-
+        initShareAndLogin();
     }
 
     private void initAndFix() {
         patchManager = new PatchManager(mContext);
-        patchManager.init(VersionUtils.getVersionName(mContext));//current version
+        //current version
+        patchManager.init(VersionUtils.getVersionName(mContext));
         // 加载已经添加到PatchManager中的patch
         patchManager.loadPatch();
     /*
@@ -69,8 +78,8 @@ public class MyApplication extends Application {
     private void initOkhttpUtils() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //                .addInterceptor(new LoggerInterceptor("TAG"))
-                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
-                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .connectTimeout(100000L, TimeUnit.MILLISECONDS)
+                .readTimeout(100000L, TimeUnit.MILLISECONDS)
                 //其他配置
                 .build();
         OkHttpUtils.initClient(okHttpClient);
@@ -80,15 +89,15 @@ public class MyApplication extends Application {
     /**
      *  初始化第三方登录和分享
      */
-   /*  public void initShareAndLogin(){
+     public void initShareAndLogin(){
          ShareConfig config = ShareConfig.instance()
                  .qqId(QQ_ID)
                  .wxId(WX_ID)
                  .weiboId(WEIBO_ID)
                  // 下面两个，如果不需要登录功能，可不填写
                  .weiboRedirectUrl(REDIRECT_URL)
-                 .wxSecret(WX_ID);
+                 .wxSecret(WX_SECRET);
          ShareManager.init(config);
-     }*/
+     }
 
 }

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_story_home_pager"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_story_home_pager"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="故事主页"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <ScrollView
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="106dp">
+
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/photo_public"
+                    android:id="@+id/iv_story_home_icon"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_home_name"
+                    android:textSize="@dimen/text_size_14sp"
+                    android:textColor="@color/colorBtn"
+                    android:layout_toRightOf="@id/iv_story_home_icon"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginTop="19dp"
+                    android:text="逃离北上广"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:lines="1"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:id="@+id/tv_story_home_des"
+                    android:textSize="@dimen/text_size_12sp"
+                    android:textColor="@color/colorBtn"
+                    android:layout_below="@id/tv_story_home_name"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@id/iv_story_home_icon"
+                    android:text="垂死病中惊坐起，这里步数我的家"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_story_home_result"
+                    android:textSize="@dimen/text_size_12sp"
+                    android:textColor="@color/colorBtn"
+                    android:layout_toRightOf="@id/iv_story_home_icon"
+                    android:text="5条路线"
+                    android:layout_marginLeft="26dp"
+                    android:layout_below="@id/tv_story_home_des"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:id="@+id/iv_story_home_collection"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:src="@mipmap/storyhomepage_btn_collection_selected"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
+            <View
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:id="@+id/tv_story_home_route"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:text="当前路线"
+                android:gravity="center_vertical"
+                android:paddingRight="@dimen/margin_15dp"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:textSize="@dimen/text_size_14sp"
+                android:textColor="@color/colorBtn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"/>
+            <View
+                style="@style/style_text_line_match"/>
+
+            <FrameLayout
+                android:paddingTop="19dp"
+                android:paddingBottom="19dp"
+                android:clipChildren="false"
+                android:layout_width="match_parent"
+                android:layout_height="432dp">
+
+                <android.support.v4.view.ViewPager
+                    android:clipChildren="false"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:id="@+id/vp_story_home_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </FrameLayout>
+
+            <View
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:id="@+id/tv_story_home_things_record"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:text="大事记"
+                android:gravity="center_vertical"
+                android:paddingRight="@dimen/margin_15dp"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:textSize="@dimen/text_size_14sp"
+                android:textColor="@color/colorBtn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"/>
+            
+            <View
+                style="@style/style_text_line_match"/>
+
+            <com.shanchain.shandata.widgets.other.AutoHeightListView
+                android:id="@+id/lv_story_home_pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.shanchain.shandata.widgets.other.AutoHeightListView>
+
+            <View
+                android:background="@color/colorListDivider"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_story_home_roadmap"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:text="路线图"
+                android:gravity="center_vertical"
+                android:paddingRight="@dimen/margin_15dp"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:textSize="@dimen/text_size_14sp"
+                android:textColor="@color/colorBtn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"/>
+
+            <View
+                style="@style/style_text_line_match"/>
+
+            <ImageView
+                android:id="@+id/iv_story_home_roadmap"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_stars"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginBottom="19dp"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"/>
+           
+            <View
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:text="主人公"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:textSize="@dimen/text_size_14sp"
+                android:textColor="@color/colorBtn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"/>
+
+            <View
+                style="@style/style_text_line_match"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp">
+                
+                <ImageView
+                    android:id="@+id/iv_story_home_protagonist"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/photo_str"
+                    android:layout_width="96dp"
+                    android:layout_height="58dp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_home_protagonist"
+                    android:text="小浪"
+                    android:textSize="@dimen/text_size_14sp"
+                    android:textColor="@color/colorBtn"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginTop="19dp"
+                    android:layout_toRightOf="@id/iv_story_home_protagonist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:id="@+id/tv_story_home_protagonist_des"
+                    android:text="小船儿飘向家乡，那是我生长的地方啊~"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="@dimen/text_size_12sp"
+                    android:textColor="@color/colorBtn"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_marginBottom="19dp"
+                    android:layout_toRightOf="@id/iv_story_home_protagonist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+            
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

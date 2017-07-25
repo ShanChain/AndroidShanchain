@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/activity_select_time"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_select_time"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="完成"
+        app:rightTextColor="@color/colorBtn"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorBtn"
+        app:titleText="选择时间"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mcv_select_time"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        app:mcv_showOtherDates="all"
+        app:mcv_selectionColor="@color/colorTheme"/>
+
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_marginRight="56dp"
+            android:id="@+id/btn_select_time_start"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_14sp"
+            android:text="开始时间"
+            android:background="@drawable/shape_btn_login"
+            android:layout_width="116dp"
+            android:layout_height="38dp"/>
+
+        <Button
+            android:id="@+id/btn_select_time_end"
+            android:textColor="@color/colorTheme"
+            android:textSize="@dimen/text_size_14sp"
+            android:text="结束时间"
+            android:background="@drawable/shape_btn_regist"
+            android:layout_width="116dp"
+            android:layout_height="38dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

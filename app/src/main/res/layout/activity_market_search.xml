@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_market_search"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_search_market"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="搜索"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"></LinearLayout>
+
+    <EditText
+        android:id="@+id/et_market_search"
+        android:drawablePadding="28dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:hint="搜索"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:textColorHint="@color/colorHint"
+        android:drawableLeft="@mipmap/search_button_search_default"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/shape_edit_search_pressed"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/xrv_market_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
+
+</LinearLayout>

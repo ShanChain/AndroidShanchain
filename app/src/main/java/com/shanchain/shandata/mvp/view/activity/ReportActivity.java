@@ -47,7 +47,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
 
         String brand = Build.BRAND;
         LogUtils.d("当前版本为:"+brand);
-
+        SystemUtils.MIUISetStatusBarLightMode(getWindow(),true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             //6.0以上
             SystemUtils.setImmersiveStatusBar_API21(this, Color.WHITE);
@@ -56,6 +56,8 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                 SystemUtils.MIUISetStatusBarLightMode(getWindow(),true);
             }
         }
+
+       // if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.)
 
         initToolBar();
 

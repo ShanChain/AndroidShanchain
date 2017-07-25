@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:background="@color/colorWhite"
+              android:layout_width="match_parent"
+              android:layout_height="75dp">
+
+    <ImageView
+        android:src="@drawable/photo_str"
+        android:scaleType="centerCrop"
+        android:id="@+id/iv_item_collection_story_img"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_centerVertical="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+    <TextView
+        android:id="@+id/tv_item_collection_story_name"
+        android:layout_marginTop="7dp"
+        android:text="纸帆船"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:layout_toRightOf="@id/iv_item_collection_story_img"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_item_collection_story_des"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="早睡几点起，梦想是什么"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_toRightOf="@id/iv_item_collection_story_img"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginTop="29dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/tv_item_collection_story_result"
+        android:text="30条路线"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="7dp"
+        android:layout_toRightOf="@id/iv_item_collection_story_img"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/tv_item_collection_story_update"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/text_size_12sp"
+        android:text="曾世春更新于今天"
+        android:textColor="@color/colorHint"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_marginBottom="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

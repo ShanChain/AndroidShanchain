@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:zhy="http://schemas.android.com/tools"
+    android:id="@+id/activity_story"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_story"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightImage="@mipmap/story_btn_rule_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="故事"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <FrameLayout
+
+        android:background="@color/colorListDivider"
+        android:layout_width="match_parent"
+        android:layout_height="42dp">
+
+
+        <TextView
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="@drawable/shape_edit_search"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:drawableLeft="@mipmap/search_button_search_default"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:drawablePadding="28dp"
+            android:text="搜索"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/text_size_14sp"
+            android:id="@+id/tv_story_search"
+            />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="28dp">
+
+            <ImageView
+                android:id="@+id/iv_story_icon1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_walkmore_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_name1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="梦想闹钟"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_state1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="已收藏"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="28dp">
+
+            <ImageView
+                android:id="@+id/iv_story_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_sleep_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_name2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时光流年"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_state2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="已收藏"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_gravity="right"
+        android:id="@+id/tv_story_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:gravity="right"
+        android:text="更多>>"
+        android:textColor="#0076ff"
+        android:textSize="@dimen/text_size_12sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="@dimen/margin_15dp"
+        android:background="@color/colorListDivider"/>
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/flowlayout_story"
+        zhy:max_select="-1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+    </com.zhy.view.flowlayout.TagFlowLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_story_hot_icon1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_walkmore_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_hot_name1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="城市坐标"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_hot_state1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="22条路线"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_story_hot_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_sleep_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_hot_name2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="梦想闹钟"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_hot_state2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="33条路线"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_story_hot_icon3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_walkmore_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_hot_name3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时光流年"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_hot_state3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="11条路线"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:paddingBottom="17dp"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_story_hot_icon4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/challenge_icon_sleep_default"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_story_hot_name4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="山高路远"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_story_hot_state4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="1条路线"
+                    android:textColor="@color/colorHint"
+                    android:textSize="@dimen/text_size_10sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btn_story_new"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@mipmap/challenge_icon_round_default"
+                android:gravity="center"
+                android:text="全新故事"
+                android:textColor="#39bbca"
+                android:textSize="@dimen/text_size_10sp"/>
+
+            <TextView
+                android:id="@+id/tv_story_new"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="15dp"
+                android:text="全新故事"
+                android:textColor="@color/colorBtn"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btn_story_all"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/shape_bg_story_all"
+                android:gravity="center"
+                android:text="全部故事"
+                android:textColor="#c7623a"
+                android:textSize="@dimen/text_size_10sp"/>
+
+            <TextView
+                android:id="@+id/tv_story_all"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="15dp"
+                android:text="全部故事"
+                android:textColor="@color/colorBtn"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

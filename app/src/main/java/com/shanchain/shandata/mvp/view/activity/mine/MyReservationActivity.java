@@ -11,12 +11,14 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MyReservationAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.model.ReservationInfo;
+import com.shanchain.shandata.mvp.view.activity.found.NightMarketActivity;
 import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 
@@ -80,7 +82,8 @@ public class MyReservationActivity extends BaseActivity implements ArthurToolBar
         for (int i = 0; i < 5; i ++) {
             ReservationInfo reservationInfo = new ReservationInfo();
             reservationInfo.setGoods("啤酒");
-            reservationInfo.setOrderNum("4324872648264823");
+            reservationInfo.setOrderNum(new Random().nextInt(50000)*123 + "");
+            reservationInfo.setExchangeCode(new Random().nextInt(60000)*543 + "");
             datas.add(reservationInfo);
         }
 
@@ -102,5 +105,6 @@ public class MyReservationActivity extends BaseActivity implements ArthurToolBar
     @Override
     public void onRightClick(View v) {
         //夜市
+        readyGo(NightMarketActivity.class);
     }
 }

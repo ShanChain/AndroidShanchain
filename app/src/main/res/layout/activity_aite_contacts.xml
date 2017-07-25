@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="28dp"
         android:layout_marginLeft="@dimen/margin_15dp"
-        android:background="@drawable/shap_edit_search_pressed"
+        android:background="@drawable/shape_edit_search_pressed"
         android:drawableLeft="@mipmap/search_button_search_default"
         android:drawablePadding="32dp"
         android:paddingLeft="@dimen/margin_15dp"

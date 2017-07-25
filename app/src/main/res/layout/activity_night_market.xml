@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_night_market"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_night_market"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightImage="@mipmap/search_button_search_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="夜市"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="86dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_market_shan_coins"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_market_shan_coins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="23"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="善圆"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_market_shan_exchange_record"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_market_exchange_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="28"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="兑换记录"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_market_shan_my_subscribe"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_market_my_subscribe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:text="我的预约"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_15dp"
+                        android:drawableLeft="@mipmap/nightmarket_btn_positioning_default"
+                        android:drawablePadding="8dp"
+                        android:text="上饶市"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_12sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:text="合作商家"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="86dp">
+
+                <ImageView
+                    android:id="@+id/iv_market_cooperation_merchants"
+                    android:layout_width="66dp"
+                    android:layout_height="66dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:src="@mipmap/bing_link_phone_default"/>
+
+                <TextView
+                    android:id="@+id/tv_market_merchants"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="42dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/iv_market_cooperation_merchants"
+                    android:text="碳原子"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_market_merchants_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_market_merchants"
+                    android:layout_marginLeft="42dp"
+                    android:layout_marginRight="28dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/iv_market_cooperation_merchants"
+                    android:lineSpacingExtra="3dp"
+                    android:maxLines="2"
+                    android:text="碳原子是一家精良串吧，致力于为您提供更好的用餐体验。"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_12sp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_market_merchants_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="38dp"
+                android:text="地址: 江西省上饶市某某区某某街某某号"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_12sp"/>
+
+            <TextView
+                android:id="@+id/tv_market_merchants_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_15dp"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="38dp"
+                android:text="联系电话: 400-1242-14246"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_12sp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:id="@+id/tv_market_merchants_bear"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:text="啤酒"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/xrv_market_bear"
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:id="@+id/tv_market_merchants_barbecue"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:text="烤串"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/xrv_market_barbecue"
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <TextView
+                android:id="@+id/tv_market_merchants_other"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@mipmap/cheerup_btn_return_default"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:text="其他"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/xrv_market_other"
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                style="@style/style_text_line_match"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

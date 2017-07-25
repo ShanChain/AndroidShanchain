@@ -15,10 +15,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/6.
- */
-
 public class AddFriendAdapter extends BaseCommonAdapter<InterestedPersonInfo> {
 
     public AddFriendAdapter(Context context, int layoutId, List<InterestedPersonInfo> datas) {
@@ -26,7 +22,7 @@ public class AddFriendAdapter extends BaseCommonAdapter<InterestedPersonInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, final InterestedPersonInfo interestedPersonInfo, int position) {
+    public void bindData(ViewHolder holder, final InterestedPersonInfo interestedPersonInfo, int position) {
         Glide.with(mContext).load(R.drawable.photo5)
                 .transform(new GlideCircleTransform(mContext))
                 .into((ImageView) holder.getView(R.id.iv_item_interested_avatarUrl));

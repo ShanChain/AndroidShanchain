@@ -13,10 +13,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/7.
- */
-
 public class ChooseContactsAdapter extends BaseCommonAdapter<ChooseContactsInfo> {
 
     public ChooseContactsAdapter(Context context, int layoutId, List<ChooseContactsInfo> datas) {
@@ -24,7 +20,7 @@ public class ChooseContactsAdapter extends BaseCommonAdapter<ChooseContactsInfo>
     }
 
     @Override
-    public void bindDatas(final ViewHolder holder, final ChooseContactsInfo chooseContactsInfo, int position) {
+    public void bindData(final ViewHolder holder, final ChooseContactsInfo chooseContactsInfo, int position) {
 
         Glide.with(mContext).load(R.drawable.photo6)
                 .transform(new GlideCircleTransform(mContext))

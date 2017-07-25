@@ -31,7 +31,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_15dp"
-        android:background="@drawable/shap_bg_box_shield"
+        android:background="@drawable/shape_bg_box_shield"
         android:layout_width="68dp"
         android:layout_height="24dp"/>
 

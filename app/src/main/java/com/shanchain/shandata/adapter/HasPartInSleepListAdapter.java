@@ -19,10 +19,6 @@ import java.util.List;
 
 import static com.shanchain.shandata.base.MyApplication.mContext;
 
-/**
- * Created by zhoujian on 2017/6/26.
- */
-
 public class HasPartInSleepListAdapter extends BaseAdapter {
     private BaseActivity mActivity;
     private List<HappierRankInfo> mDatas;
@@ -52,8 +48,6 @@ public class HasPartInSleepListAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            //convertView = View.inflate(MyApplication.getContext(),R.layout.item_happier_rank,null);
-            // convertView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.footview_has_part_in_sleep, (ViewGroup) MyApplication.getContext().findViewById(android.R.id.content), false);
             convertView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.item_happier_rank, (ViewGroup)mActivity.findViewById(android.R.id.content),false);
             holder.mTvItemHappierRank = (TextView) convertView.findViewById(R.id.tv_item_happier_rank);
             holder.mIvItemHappierImg = (ImageView) convertView.findViewById(R.id.iv_item_happier_img);

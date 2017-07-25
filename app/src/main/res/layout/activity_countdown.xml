@@ -33,7 +33,7 @@
         android:layout_height="28dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="180dp"
-        android:background="@drawable/shap_btn_login"
+        android:background="@drawable/shape_btn_login"
         android:text="长按退出"
         android:textColor="@color/colorWhite"/>
 </LinearLayout>

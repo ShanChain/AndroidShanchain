@@ -11,17 +11,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/7.
- */
-
 public class TopicAdapter extends BaseCommonAdapter<TopicInfo> {
     public TopicAdapter(Context context, int layoutId, List<TopicInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, TopicInfo topicInfo, int position) {
+    public void bindData(ViewHolder holder, TopicInfo topicInfo, int position) {
         holder.setText(R.id.tv_item_topic,topicInfo.getTopic());
         TextView tvTopicNew = holder.getView(R.id.tv_item_topic_new);
         if (topicInfo.isNew()){

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/shap_bg_edit_report"
+              android:background="@drawable/shape_bg_edit_report"
               android:orientation="vertical">
 
     <TextView
@@ -26,7 +26,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0.3dp"
+        android:layout_height="1dp"
         android:background="#554d4d4d"/>
 
     <LinearLayout
@@ -43,10 +43,9 @@
             android:textColor="#0076ff"
             android:textSize="@dimen/text_size_16sp"/>
 
-        <TextView
-            android:layout_width="0dp"
+        <View
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.3"
             android:background="#554d4d4d"/>
 
         <TextView

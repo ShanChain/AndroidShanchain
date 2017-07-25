@@ -12,7 +12,7 @@ import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.mvp.model.HappierRankInfo;
 import com.shanchain.shandata.mvp.view.activity.MainActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
-import com.shanchain.shandata.widgets.other.AutoHightListView;
+import com.shanchain.shandata.widgets.other.AutoHeightListView;
 import com.shanchain.shandata.widgets.other.CustomSeekBar;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -34,7 +34,7 @@ public class HasPartInSleepEarlierActivity extends BaseActivity implements Arthu
     @Bind(R.id.tv_has_part_in_sleep_rank)
     TextView mTvHasPartInSleepRank;
     @Bind(R.id.lv_has_sleep)
-    AutoHightListView mLvHasSleep;
+    AutoHeightListView mLvHasSleep;
     @Bind(R.id.iv_has_part_sleep_img)
     ImageView mIvHasPartSleepImg;
     @Bind(R.id.tv_has_part_sleep_name1)

@@ -11,9 +11,9 @@
     <!--顶部工具栏，可设置沉浸式效果-->
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_area"
-        style="@style/style_toolbar_color_theme"
-        app:leftImage="@mipmap/regsitre_icon_back_default"
-        app:titleColor="@color/colorWhite"
+        style="@style/style_toolbar_color_white"
+        app:leftImage="@mipmap/login_btn_back_default"
+        app:titleColor="@color/colorBtn"
         app:titleText="注册"
         app:titleTextSize="16"/>
 

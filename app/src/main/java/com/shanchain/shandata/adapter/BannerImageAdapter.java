@@ -6,10 +6,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.youth.banner.loader.ImageLoader;
 
-/**
- * Created by zhoujian on 2017/6/13.
- */
-
 public class BannerImageAdapter extends ImageLoader {
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {

@@ -14,10 +14,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/16.
- */
-
 public class NoBowRankAdapter extends BaseCommonAdapter<NoBowRankInfo> {
 
     public NoBowRankAdapter(Context context, int layoutId, List<NoBowRankInfo> datas) {
@@ -25,7 +21,7 @@ public class NoBowRankAdapter extends BaseCommonAdapter<NoBowRankInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, NoBowRankInfo noBowRankInfo, int position) {
+    public void bindData(ViewHolder holder, NoBowRankInfo noBowRankInfo, int position) {
 
         holder.setText(R.id.tv_item_happier_name,noBowRankInfo.getNickName());
         holder.setText(R.id.tv_item_happier_prise_counts,noBowRankInfo.getTime());

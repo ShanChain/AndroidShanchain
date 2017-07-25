@@ -9,10 +9,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/20.
- */
-
 public class ChallengeOnGoingAdapter extends BaseCommonAdapter<ChallengeOnGoingInfo> {
 
     public ChallengeOnGoingAdapter(Context context, int layoutId, List<ChallengeOnGoingInfo> datas) {
@@ -20,7 +16,7 @@ public class ChallengeOnGoingAdapter extends BaseCommonAdapter<ChallengeOnGoingI
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, ChallengeOnGoingInfo challengeOnGoingInfo, int position) {
+    public void bindData(ViewHolder holder, ChallengeOnGoingInfo challengeOnGoingInfo, int position) {
         holder.setText(R.id.tv_item_challenge_going_des, challengeOnGoingInfo.getDes());
         switch (challengeOnGoingInfo.getType()) {
             case 1:

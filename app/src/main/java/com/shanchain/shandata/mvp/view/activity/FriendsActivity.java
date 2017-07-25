@@ -116,13 +116,16 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mXrvFriends.setLayoutManager(linearLayoutManager);
+
+            mXrvFriends.addItemDecoration(new RecyclerViewDivider(FriendsActivity.this,
+                    LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(FriendsActivity.this,1),
+                    getResources().getColor(R.color.colorAddFriendDivider)));
+
             mXrvFriends.setPullRefreshEnabled(false);
             mXrvFriends.setLoadingMoreEnabled(false);
             FriendsAdapter friendsAdapter = new FriendsAdapter(this,R.layout.item_friends,datas);
             mXrvFriends.setAdapter(friendsAdapter);
-            mXrvFriends.addItemDecoration(new RecyclerViewDivider(FriendsActivity.this,
-                    LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(FriendsActivity.this,1),
-                    getResources().getColor(R.color.colorAddFriendDivider)));
+
 
         }else {
             mLlFriendsOpen.setVisibility(View.VISIBLE);
@@ -132,14 +135,14 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private void initToolBar(boolean isOpen) {
         mToolbarFriends = (ArthurToolBar) findViewById(R.id.toolbar_friends);
-        mToolbarFriends.setBackgroundColor(getResources().getColor(R.color.colorTheme));
+        //mToolbarFriends.setBackgroundColor(getResources().getColor(R.color.colorTheme));
         if (isOpen) {
             //开启通讯录好友
             mToolbarFriends.setBtnEnabled(true);
             mToolbarFriends.setBtnVisibility(true, true);
             mToolbarFriends.setOnLeftClickListener(this);
             mToolbarFriends.setOnRightClickListener(this);
-            mToolbarFriends.setImmersive(this, true);
+           // mToolbarFriends.setImmersive(this, true);
 
 
         } else {
@@ -147,7 +150,7 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             mToolbarFriends.setBtnVisibility(true, false);
             mToolbarFriends.setBtnEnabled(true, false);
             mToolbarFriends.setOnLeftClickListener(this);
-            mToolbarFriends.setImmersive(this, true);
+            //mToolbarFriends.setImmersive(this, true);
         }
     }
 

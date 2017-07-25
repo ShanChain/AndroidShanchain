@@ -12,17 +12,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/30.
- */
-
 public class MyStorysAdapter extends BaseCommonAdapter<MyStoryInfo> {
     public MyStorysAdapter(Context context, int layoutId, List<MyStoryInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, MyStoryInfo myStoryInfo, int position) {
+    public void bindData(ViewHolder holder, MyStoryInfo myStoryInfo, int position) {
 
 
         Glide.with(mContext)

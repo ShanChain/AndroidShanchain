@@ -8,10 +8,6 @@ import com.shanchain.shandata.mvp.view.fragment.HotFragment;
 import com.shanchain.shandata.mvp.view.fragment.AttentionFragment;
 import com.shanchain.shandata.mvp.view.fragment.SameCityFragment;
 
-/**
- * Created by zhoujian on 2017/5/19.
- */
-
 public class DynamicPagerAdapter extends FragmentPagerAdapter {
     String[] titles ;
     public DynamicPagerAdapter(FragmentManager fm , String[] tabName) {

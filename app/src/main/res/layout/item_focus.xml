@@ -25,7 +25,7 @@
     
     <TextView
         android:id="@+id/tv_item_focus_btn"
-        android:background="@drawable/shap_btn_regist"
+        android:background="@drawable/shape_btn_regist"
         android:gravity="center"
         android:text="关注"
         android:textSize="@dimen/text_size_12sp"

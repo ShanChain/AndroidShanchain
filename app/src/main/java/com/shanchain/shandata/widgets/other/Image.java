@@ -13,7 +13,6 @@ public class Image {
         this.url = url;
         this.width = width;
         this.height = height;
-
     }
 
     public String getUrl() {

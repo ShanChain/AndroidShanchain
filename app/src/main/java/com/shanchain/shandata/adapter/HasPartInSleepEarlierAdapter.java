@@ -14,17 +14,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/20.
- */
-
 public class HasPartInSleepEarlierAdapter extends BaseCommonAdapter<HappierRankInfo> {
     public HasPartInSleepEarlierAdapter(Context context, int layoutId, List<HappierRankInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, HappierRankInfo happierRankInfo, int position) {
+    public void bindData(ViewHolder holder, HappierRankInfo happierRankInfo, int position) {
         holder.setText(R.id.tv_item_happier_name, happierRankInfo.getNickName());
         holder.setText(R.id.tv_item_happier_prise_counts, happierRankInfo.getPriseCount() + "赞");
         TextView tvRank = holder.getView(R.id.tv_item_happier_rank);

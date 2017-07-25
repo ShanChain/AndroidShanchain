@@ -9,10 +9,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/7.
- */
-
 public class PositionAdapter extends BaseCommonAdapter<PositionInfo> {
 
     public PositionAdapter(Context context, int layoutId, List<PositionInfo> datas) {
@@ -20,7 +16,7 @@ public class PositionAdapter extends BaseCommonAdapter<PositionInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, PositionInfo positionInfo, int position) {
+    public void bindData(ViewHolder holder, PositionInfo positionInfo, int position) {
         holder.setText(R.id.tv_item_position_address,positionInfo.getAddress());
         holder.setText(R.id.tv_item_position_details,positionInfo.getDetails());
     }

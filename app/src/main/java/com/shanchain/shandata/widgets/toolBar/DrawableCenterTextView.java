@@ -12,6 +12,8 @@ import android.widget.TextView;
  */
 public class DrawableCenterTextView extends TextView {
 
+    private Rect mRect;
+
     /** 描述：构造方法 */
     public DrawableCenterTextView(Context context) {
         super(context);
@@ -48,9 +50,11 @@ public class DrawableCenterTextView extends TextView {
                 canvas.translate((getWidth() - bodyWidth) / 2, 0);
             } else if ((drawable = drawables[1]) != null) {
                 // 否则如果上边的Drawable不为空时，获取文本的高度
-                Rect rect = new Rect();
-                getPaint().getTextBounds(getText().toString(), 0, getText().toString().length(), rect);
-                float textHeight = rect.height();
+                if (mRect == null){
+                    mRect = new Rect();
+                }
+                getPaint().getTextBounds(getText().toString(), 0, getText().toString().length(), mRect);
+                float textHeight = mRect.height();
                 int drawablePadding = getCompoundDrawablePadding();
                 int drawableHeight = drawable.getIntrinsicHeight();
                 // 计算总高度（文本高度 + drawablePadding + drawableHeight）

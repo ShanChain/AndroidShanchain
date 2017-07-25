@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="80dp">
+
+    <ImageView
+        android:id="@+id/iv_item_search_market_img"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+
+    <TextView
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginTop="16dp"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:id="@+id/tv_item_search_market_name"
+        android:text="矿泉水"
+        android:layout_toRightOf="@id/iv_item_search_market_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_item_search_market_price"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_15dp"
+        android:text="2善圆"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_toRightOf="@id/iv_item_search_market_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_item_search_market_des"
+        android:text="由碳原子提供"
+        android:textSize="@dimen/text_size_12sp"
+        android:textColor="@color/colorHint"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

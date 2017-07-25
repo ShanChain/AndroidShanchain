@@ -2,18 +2,23 @@ package com.shanchain.shandata.mvp.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.mvp.view.activity.found.ExploreStarsActivity;
+import com.shanchain.shandata.mvp.view.activity.found.SwitchCityActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.DynamicActivity;
 import com.shanchain.shandata.mvp.view.fragment.DynamicFragment;
 import com.shanchain.shandata.mvp.view.fragment.FoundFragment;
@@ -83,8 +88,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         mToolbarMain = (ArthurToolBar) findViewById(R.id.toolbar_main);
         mToolbarMain.setTitleText(navigationBarTitles[mFragmentId]);
         //设置沉浸式
-        mToolbarMain.setImmersive(this, true);
-        mToolbarMain.setBackgroundColor(getResources().getColor(R.color.colorTheme));
+//        mToolbarMain.setImmersive(this, true);
+//        mToolbarMain.setBackgroundColor(getResources().getColor(R.color.colorTheme));
     }
 
     /**
@@ -160,6 +165,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 setFragment(new DynamicFragment());
                 setToolBar(mFragmentId);
                 break;
+            case 2:
+                setFragment(new FoundFragment());
+                setToolBar(mFragmentId);
+                break;
+            case 3:
+                setFragment(new MineFragment());
+                setToolBar(mFragmentId);
+                break;
         }
     }
 
@@ -187,7 +200,21 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 break;
             case 2:
                 mToolbarMain.setTitleText(navigationBarTitles[position]);
+                mToolbarMain.setBtnVisibility(true,false);
+                mToolbarMain.setBtnEnabled(true,false);
+                mToolbarMain.setLeftText("深圳");
+                TextView leftView = mToolbarMain.getLeftView();
 
+                Drawable drawable= getResources().getDrawable(R.mipmap.find_btn_down_default);
+                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                leftView.setCompoundDrawables(null,null,drawable,null);
+                leftView.setTextColor(getResources().getColor(R.color.colorBtn));
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.
+                        WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.gravity = Gravity.CENTER_VERTICAL;
+                layoutParams.leftMargin = DensityUtils.dip2px(this,10);
+                leftView.setLayoutParams(layoutParams);
+                mToolbarMain.setOnLeftClickListener(this);
                 break;
             case 3:
                 mToolbarMain.setTitleText(navigationBarTitles[position]);
@@ -228,8 +255,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 readyGo(AddFriendActivity.class);
                 break;
             case 2:
-                //当前页为发现
-
+                //当前页为发现,获取定位信息
+                Intent intent = new Intent(this, SwitchCityActivity.class);
+                startActivity(intent);
                 break;
             case 3:
                 //当前页为我的
@@ -248,7 +276,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         switch (mFragmentId) {
             case 0:
                 //当前页为首页
-                ToastUtils.showToast(this, "首页。。。");
+                readyGo(ExploreStarsActivity.class);
                 break;
             case 1:
                 //当前页为动态

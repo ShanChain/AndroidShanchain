@@ -12,9 +12,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/7.
- */
+
 
 public class AiteContactsAdapter extends BaseCommonAdapter<ContactInfo> {
 
@@ -23,7 +21,7 @@ public class AiteContactsAdapter extends BaseCommonAdapter<ContactInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, ContactInfo contactInfo, int position) {
+    public void bindData(ViewHolder holder, ContactInfo contactInfo, int position) {
 
         Glide.with(mContext).load(R.drawable.photo6)
                 .transform(new GlideCircleTransform(mContext))

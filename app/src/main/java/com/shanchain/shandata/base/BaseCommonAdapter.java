@@ -7,14 +7,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-
-/**
- * Created by zhoujian on 2017/5/23.
- */
-
 public abstract class BaseCommonAdapter<T> extends CommonAdapter<T> {
-
-
 
     public BaseCommonAdapter(Context context, int layoutId, List<T> datas) {
         super(context, layoutId, datas);
@@ -22,10 +15,10 @@ public abstract class BaseCommonAdapter<T> extends CommonAdapter<T> {
 
     @Override
     protected void convert(ViewHolder holder, T t, int position) {
-        bindDatas(holder,t,position);
+        bindData(holder,t,position);
     }
 
-    public abstract void bindDatas(ViewHolder holder, T t, int position);
+    public abstract void bindData(ViewHolder holder, T t, int position);
 
 
 }

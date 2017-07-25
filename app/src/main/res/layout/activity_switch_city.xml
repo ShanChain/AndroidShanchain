@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_switch_city"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_switch_city"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="切换城市"
+        app:titleTextSize="16"/>
+
+    <View
+        android:layout_below="@id/toolbar_switch_city"
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <EditText
+        android:id="@+id/et_switch_city_search"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_below="@id/toolbar_switch_city"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/margin_15dp"
+        android:layout_marginRight="@dimen/margin_15dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_edit_search_pressed"
+        android:drawableLeft="@mipmap/search_button_search_default"
+        android:drawablePadding="28dp"
+        android:gravity="center_vertical"
+        android:hint="输入城市名称或首字母"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp"
+        android:textColor="@color/colorBtn"
+        android:textColorHint="@color/colorHint"
+        android:textSize="@dimen/text_size_14sp"/>
+
+
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/xrv_switch_city"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/et_switch_city_search"/>
+
+    <View
+        android:layout_above="@id/xrv_switch_city"
+        style="@style/style_text_line_match"/>
+
+    <com.gjiazhe.wavesidebar.WaveSideBar
+        android:id="@+id/side_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/et_switch_city_search"
+        android:paddingRight="8dp"
+        app:sidebar_lazy_respond="false"
+        app:sidebar_max_offset="80dp"
+        app:sidebar_position="right"
+        app:sidebar_text_alignment="center"
+        app:sidebar_text_color="#8D6E63"
+        app:sidebar_text_size="14sp"/>
+
+</RelativeLayout>

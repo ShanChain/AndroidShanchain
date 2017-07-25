@@ -10,13 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 
+import com.jaeger.library.StatusBarUtil;
+import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import butterknife.ButterKnife;
 
 /**
- * Created by 周建 on 2017/5/13.
  * activity基类
  */
 
@@ -55,7 +56,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     /**
-     * 日期: 2017/1/5 11:14
      * 描述: onCreate 初始化
      */
     @Override
@@ -76,12 +76,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 初始化布局
         initLayout();
 
+
+
         // 初始化View和事件
         initViewsAndEvents();
+        StatusBarUtil.setColor(this,getResources().getColor(R.color.colorWhite));
     }
 
     /**
-     * 日期: 2017/1/5 11:14
      * 描述: 初始化Intent传值
      */
     private void initIntent() {
@@ -94,7 +96,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 11:22
      * 描述: 初始化属性
      */
     private void initAttribute() {
@@ -114,7 +115,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 11:26
      * 描述: 初始化布局
      */
     private void initLayout() {
@@ -139,7 +139,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 12:01
      * 描述: 重写onOptionsItemSelected 监听手机HOME键（硬件及虚拟）
      */
     @Override
@@ -152,7 +151,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 //    /**
-//     * 日期: 2017/1/5 14:10
 //     * 描述: 接收EventBus通知
 //     */
 //    @Subscribe
@@ -161,7 +159,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 //    }
 
     /**
-     * 日期: 2017/1/5 11:38
      * 描述: 重写finish使Activity出栈
      */
     @Override
@@ -190,7 +187,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     /**
-     * 日期: 2017/1/5 11:16
      * 描述: 获取Bundle数据
      *
      * @param extras
@@ -252,7 +248,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 14:52
      * 描述: Activity跳转 关闭当前Activity
      *
      * @param clazz
@@ -264,7 +259,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 14:52
      * 描述: Activity跳转 传参且关闭当前Activity
      *
      * @param clazz
@@ -280,7 +274,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 14:52
      * 描述: Activity跳转 回调
      *
      * @param clazz
@@ -292,7 +285,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 14:52
      * 描述: Activity跳转 传参且回调
      *
      * @param clazz

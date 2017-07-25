@@ -81,9 +81,6 @@ public class AddFriendActivity extends BaseActivity implements ArthurToolBar.OnL
 
     private void initTooBar() {
         mToolbarAddfriend = (ArthurToolBar) findViewById(R.id.toolbar_addfriend);
-        //设置沉浸式
-        mToolbarAddfriend.setImmersive(this, true);
-        mToolbarAddfriend.setBackgroundColor(getResources().getColor(R.color.colorTheme));
         mToolbarAddfriend.setBtnEnabled(true);
         mToolbarAddfriend.setOnLeftClickListener(this);
         mToolbarAddfriend.setOnRightClickListener(this);

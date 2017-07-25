@@ -15,10 +15,6 @@ import com.shanchain.shandata.utils.SpanUtils;
 import java.util.List;
 
 
-/**
- * Created by zhoujian on 2017/5/17.
- */
-
 public class AreaAdapter<T> extends RecyclerView.Adapter<AreaAdapter.MyViewHolder> {
 
     private List<T> dataList;

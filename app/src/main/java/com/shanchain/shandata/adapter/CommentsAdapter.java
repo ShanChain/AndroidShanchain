@@ -16,10 +16,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/5/31.
- */
-
 public class CommentsAdapter extends BaseCommonAdapter<CommentsInfo> {
 
 
@@ -28,7 +24,7 @@ public class CommentsAdapter extends BaseCommonAdapter<CommentsInfo> {
     }
 
     @Override
-    public void bindDatas(final ViewHolder holder, CommentsInfo commentsInfo, int position) {
+    public void bindData(final ViewHolder holder, CommentsInfo commentsInfo, int position) {
         final int likes = commentsInfo.getLike();
         holder.setText(R.id.tv_item_comments_counts,commentsInfo.getLike()+"");
         holder.setText(R.id.tv_item_comments_time,commentsInfo.getTime());

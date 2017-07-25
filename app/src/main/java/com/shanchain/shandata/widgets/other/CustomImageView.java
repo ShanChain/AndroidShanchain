@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 /**
- * Created by zhoujian on 2017/6/1.
+ * 九宫格图片控件
  */
 public class CustomImageView extends ImageView {
     private String url;
@@ -25,7 +25,6 @@ public class CustomImageView extends ImageView {
     public CustomImageView(Context context) {
         super(context);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

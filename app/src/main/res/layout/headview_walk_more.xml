@@ -86,7 +86,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_15dp"
-            android:background="@drawable/shap_btn_login"
+            android:background="@drawable/shape_btn_login"
             android:text="发起挑战"
             android:textColor="@color/colorWhite"/>
 

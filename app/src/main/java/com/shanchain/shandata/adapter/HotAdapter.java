@@ -23,10 +23,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/5/23.
- */
-
 public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
 
 
@@ -37,7 +33,7 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
     }
 
     @Override
-    public void bindDatas(final ViewHolder holder, final PublisherInfo publisherInfo, int position) {
+    public void bindData(final ViewHolder holder, final PublisherInfo publisherInfo, int position) {
 
         String name = publisherInfo.getName();
         String time = publisherInfo.getTime();

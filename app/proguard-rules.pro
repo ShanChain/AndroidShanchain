@@ -16,3 +16,20 @@
 #   public *;
 #}
 -keepattributes EnclosingMethod
+
+#okhttputils
+-dontwarn com.zhy.http.**
+-keep class com.zhy.http.**{*;}
+
+#okhttp
+-dontwarn okhttp3.**
+-keep class okhttp3.**{*;}
+
+#okio
+-dontwarn okio.**
+-keep class okio.**{*;}
+
+#百度地图混淆
+#-libraryjars libs/BaiduLBS_Android.jar
+#-keep class com.baidu.** { *; }
+#-keep class vi.com.gdi.bgl.android.**{*;}

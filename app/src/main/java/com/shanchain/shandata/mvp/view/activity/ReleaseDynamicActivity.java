@@ -31,7 +31,6 @@ import me.iwf.photopicker.PhotoPicker;
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
 
-    ArthurToolBar mToolbarReleaseDynamic;
     @Bind(R.id.et_publish_content)
     EditText mEtPublishContent;
     @Bind(R.id.tv_publish_position)
@@ -70,9 +69,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void initToolBar() {
-        mToolbarReleaseDynamic = (ArthurToolBar) findViewById(R.id.toolbar_release_dynamic);
-        mToolbarReleaseDynamic.setOnLeftClickListener(this);
-        mToolbarReleaseDynamic.setOnRightClickListener(this);
+        ArthurToolBar toolbarReleaseDynamic = (ArthurToolBar) findViewById(R.id.toolbar_release_dynamic);
+        toolbarReleaseDynamic.setOnLeftClickListener(this);
+        toolbarReleaseDynamic.setOnRightClickListener(this);
     }
 
 

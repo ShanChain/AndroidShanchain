@@ -22,7 +22,7 @@ public class ImageAdapter extends BaseCommonAdapter<String> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, String s, int position) {
+    public void bindData(ViewHolder holder, String s, int position) {
 
         Glide.with(mContext).load(R.mipmap.popular_image_story_default).
                 into((ImageView) holder.itemView.findViewById(R.id.iv_image));

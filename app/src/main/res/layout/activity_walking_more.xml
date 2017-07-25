@@ -288,7 +288,7 @@
                 android:layout_marginLeft="@dimen/margin_15dp"
                 android:layout_marginRight="@dimen/margin_15dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/shap_btn_login"
+                android:background="@drawable/shape_btn_login"
                 android:text="退出挑战"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_14sp"/>

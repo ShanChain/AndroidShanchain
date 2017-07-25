@@ -12,10 +12,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/22.
- */
-
 public class SleepEarlierResultAdapter extends BaseCommonAdapter<SleepEarlierResultInfo> {
 
     public SleepEarlierResultAdapter(Context context, int layoutId, List<SleepEarlierResultInfo> datas) {
@@ -23,7 +19,7 @@ public class SleepEarlierResultAdapter extends BaseCommonAdapter<SleepEarlierRes
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, SleepEarlierResultInfo sleepEarlierResultInfo, int position) {
+    public void bindData(ViewHolder holder, SleepEarlierResultInfo sleepEarlierResultInfo, int position) {
         holder.setText(R.id.tv_item_sleep_result_name, sleepEarlierResultInfo.getName());
         holder.setText(R.id.tv_item_sleep_result_confidence, sleepEarlierResultInfo.getConfidence());
         holder.setText(R.id.tv_item_sleep_result_shanquan, sleepEarlierResultInfo.getShanquan());

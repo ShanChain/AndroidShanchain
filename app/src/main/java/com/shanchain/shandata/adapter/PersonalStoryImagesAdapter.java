@@ -11,17 +11,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/8.
- */
-
 public class PersonalStoryImagesAdapter extends BaseCommonAdapter<StoryInfo> {
     public PersonalStoryImagesAdapter(Context context, int layoutId, List<StoryInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, StoryInfo storyInfo, int position) {
+    public void bindData(ViewHolder holder, StoryInfo storyInfo, int position) {
 
         Glide.with(mContext)
                 .load(R.drawable.photo)

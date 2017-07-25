@@ -241,7 +241,7 @@ public class SystemUtils {
     }
     /**
      *  2017/5/31
-     *  描述：android6.0以上设置状态栏字体深色
+     *  描述：android6.0以上设置状态栏字体深色模式
      *
      */
     public static void setStatusBarLightMode_API23(AppCompatActivity activity){

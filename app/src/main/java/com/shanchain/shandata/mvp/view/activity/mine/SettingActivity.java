@@ -10,6 +10,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.manager.DataCleanManager;
 import com.shanchain.shandata.utils.LogUtils;
+import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.io.File;
@@ -84,8 +85,7 @@ public class SettingActivity extends BaseActivity implements ArthurToolBar.OnLef
                 readyGo(ShieldActivity.class);
                 break;
             case R.id.ll_setting_clear_cache:
-                DataCleanManager.deleteFolderFile(getCacheDir().getAbsolutePath(),true);
-                initData();
+                clearDiskCache();
                 break;
             case R.id.ll_setting_feedback:
                 readyGo(FeedbackActivity.class);
@@ -97,6 +97,25 @@ public class SettingActivity extends BaseActivity implements ArthurToolBar.OnLef
                 loginOut();
                 break;
         }
+    }
+
+    private void clearDiskCache() {
+        CustomDialog customDialog = new CustomDialog(this,true,true,0.95,R.layout.dialog_clear_cache,new int[]{R.id.btn_dialog_clear_cache,R.id.btn_dialog_cancel});
+        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.btn_dialog_clear_cache:
+                        DataCleanManager.deleteFolderFile(getCacheDir().getAbsolutePath(),true);
+                        initData();
+                        break;
+                    case R.id.btn_dialog_cancel:
+                        break;
+                }
+            }
+        });
+
+        customDialog.show();
     }
 
     private void loginOut() {

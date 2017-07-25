@@ -128,10 +128,10 @@ public class BindResultActivity extends BaseActivity implements ArthurToolBar.On
                 customDialog = new CustomDialog(this, false, 0.8, R.layout.dialog_bind_account_qq, new int[]{R.id.tv_dialog_account_cancel, R.id.tv_dialog_account_sure});
                 break;
             case BIND_TYPE_PHONE:
-                customDialog = new CustomDialog(this, true, true, 0.9, R.layout.dialog_bind_account_phone, new int[]{R.id.tv_dialog_account_cancel, R.id.tv_dialog_account_sure});
+                customDialog = new CustomDialog(this, true, true, 0.95, R.layout.dialog_bind_account_phone, new int[]{R.id.tv_dialog_account_cancel, R.id.tv_dialog_account_sure});
                 break;
             case BIND_TYPE_EMAIL:
-                customDialog = new CustomDialog(this, true, true, 0.9, R.layout.dialog_bind_account_phone, new int[]{R.id.tv_dialog_account_cancel, R.id.tv_dialog_account_sure});
+                customDialog = new CustomDialog(this, true, true, 0.95, R.layout.dialog_bind_account_phone, new int[]{R.id.tv_dialog_account_cancel, R.id.tv_dialog_account_sure});
                 break;
         }
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {

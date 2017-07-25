@@ -12,10 +12,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/7/3.
- */
-
 public class CoinsAdapter extends BaseCommonAdapter<ShanCoinsInfo> {
 
     public CoinsAdapter(Context context, int layoutId, List<ShanCoinsInfo> datas) {
@@ -23,7 +19,7 @@ public class CoinsAdapter extends BaseCommonAdapter<ShanCoinsInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, ShanCoinsInfo shanCoinsInfo, int position) {
+    public void bindData(ViewHolder holder, ShanCoinsInfo shanCoinsInfo, int position) {
         holder.setText(R.id.tv_item_coins_type,shanCoinsInfo.getType());
         Glide.with(mContext)
                 .load(R.drawable.photo6)

@@ -68,7 +68,7 @@
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name="android:background">@drawable/shap_btn_regist</item>
+        <item name="android:background">@drawable/shape_btn_regist</item>
         <item name="android:textColor">@color/colorBtn</item>
     </style>
 
@@ -80,7 +80,7 @@
         <item name="android:layout_height">0dp</item>
     </style>
 
-    <!--出题颜色工具栏样式-->
+    <!--主题颜色工具栏样式-->
     <style name="style_toolbar_color_theme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">56dp</item>
@@ -143,5 +143,38 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="style_text_14sp_color_btn">
+        <item name="android:textSize">@dimen/text_size_14sp</item>
+        <item name="android:textColor">@color/colorBtn</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- ######### 时间控件  -->
+
+    <style name="time_label">
+        <item name="android:textSize">@dimen/time_label_size</item>
+        <item name="android:textColor">@color/numbers_text_color</item>
+    </style>
+
+    <style name="ampm_label">
+        <item name="android:textSize">@dimen/ampm_label_size</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ampm_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="day_of_week_label_condensed" />
+
+    <style name="style_text_creation">
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@mipmap/creation_btn_bubble_default</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!--   时间控件 ####### -->
 
 </resources>

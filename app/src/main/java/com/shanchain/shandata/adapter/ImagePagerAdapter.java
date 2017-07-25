@@ -12,10 +12,6 @@ import com.shanchain.shandata.utils.DensityUtils;
 
 import java.util.ArrayList;
 
-/**
- * Created by zhoujian on 2017/6/9.
- */
-
 public class ImagePagerAdapter extends PagerAdapter {
     private ArrayList mArrayList;
 

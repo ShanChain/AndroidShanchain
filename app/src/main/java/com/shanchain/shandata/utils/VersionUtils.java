@@ -2,6 +2,12 @@ package com.shanchain.shandata.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+
+import com.shanchain.shandata.utils.encryption.Base64Utils;
+
+import java.nio.ByteBuffer;
+import java.util.UUID;
 
 /**
  * Created by zhoujian on 2017/5/16.
@@ -82,6 +88,83 @@ public class VersionUtils {
             }
         }
         return false;
+    }
+
+
+    public static String getApiVersion(){
+        int sdkInt = Build.VERSION.SDK_INT;
+        String version = "android ";
+        switch (sdkInt) {
+
+            case 8:
+                version = version + "2.2";
+                break;
+            case 9:
+                version = version + "2.3";
+                break;
+            case 10:
+                version = version + "2.3.3";
+                break;
+            case 11:
+                version = version + "3.0";
+                break;
+            case 12:
+                version = version + "3.1";
+                break;
+            case 13:
+                version = version + "3.2";
+                break;
+            case 14:
+                version = version + "4.0";
+                break;
+            case 15:
+                version = version + "4.0.4";
+                break;
+            case 16:
+                version = version + "4.1";
+                break;
+            case 17:
+                version = version + "4.2";
+                break;
+            case 18:
+                version = version + "4.3";
+                break;
+            case 19:
+                version = version + "4.4";
+                break;
+            case 20:
+                version = version + "4.4w";
+                break;
+            case 21:
+                version = version + "5.0";
+                break;
+            case 22:
+                version = version + "5.1";
+                break;
+            case 23:
+                version = version + "6.0";
+                break;
+            case 24:
+                version = version + "7.0";
+                break;
+            case 25:
+                version = version + "7.1";
+                break;
+        }
+        return version;
+    }
+
+    public String getRequestId() {
+
+        UUID uid = UUID.randomUUID();
+
+        long hBits = uid.getLeastSignificantBits();
+
+        long lBits = uid.getMostSignificantBits();
+
+        byte[] bytes = ByteBuffer.allocate(16).putLong(hBits).putLong(lBits).array();
+
+        return Base64Utils.encode(bytes);
     }
 
 }

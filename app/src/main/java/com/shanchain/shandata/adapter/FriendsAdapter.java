@@ -16,10 +16,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/6.
- */
-
 public class FriendsAdapter extends BaseCommonAdapter<FriendsInfo> {
 
     private List<FriendsInfo> mDatas;
@@ -30,7 +26,7 @@ public class FriendsAdapter extends BaseCommonAdapter<FriendsInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, FriendsInfo friendsInfo, int position) {
+    public void bindData(ViewHolder holder, FriendsInfo friendsInfo, int position) {
         Glide.with(mContext).load(R.drawable.photo2)
                 .transform(new GlideCircleTransform(mContext))
                 .into((ImageView) holder.getView(R.id.iv_friends_avatar));

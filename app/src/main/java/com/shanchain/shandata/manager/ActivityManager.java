@@ -7,10 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-/**
- * Created by 周建 on 2017/5/13.
- */
-
 public class ActivityManager {
     /** 描述：管理器对象 */
     private static ActivityManager mActivityManager;

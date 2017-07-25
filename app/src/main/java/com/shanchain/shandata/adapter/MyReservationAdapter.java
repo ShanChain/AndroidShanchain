@@ -1,27 +1,23 @@
 package com.shanchain.shandata.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseCommonAdapter;
 import com.shanchain.shandata.mvp.model.ReservationInfo;
+import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.utils.GlideCircleTransform;
-import com.shanchain.shandata.widgets.dialog.CustomDialog;
+import com.shanchain.shandata.utils.QrCodeUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
-
-/**
- * Created by zhoujian on 2017/6/30.
- */
 
 public class MyReservationAdapter extends BaseCommonAdapter<ReservationInfo> {
 
@@ -33,7 +29,7 @@ public class MyReservationAdapter extends BaseCommonAdapter<ReservationInfo> {
     }
 
     @Override
-    public void bindDatas(final ViewHolder holder, ReservationInfo reservationInfo, final int position) {
+    public void bindData(final ViewHolder holder, final ReservationInfo reservationInfo, final int position) {
         holder.setText(R.id.tv_item_reservation_goods,reservationInfo.getGoods());
         holder.setText(R.id.tv_item_reservation_order,"单号:"+reservationInfo.getOrderNum());
         Glide.with(mContext)
@@ -55,9 +51,21 @@ public class MyReservationAdapter extends BaseCommonAdapter<ReservationInfo> {
             @Override
             public void onClick(View v) {
 
-                CustomDialog customDialog = new CustomDialog(mContext,R.layout.dialog_code_qr,null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-                customDialog.show();
+                View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_code_qr,null);
+
+                ImageView ivDialogQr = (ImageView) view.findViewById(R.id.iv_dialog_qr);
+                TextView tvExchangeCode = (TextView) view.findViewById(R.id.tv_dialog_exchange_code);
+                tvExchangeCode.setText("兑换码:  " + reservationInfo.getExchangeCode());
+                Bitmap qrImage = QrCodeUtils.createQRImage(reservationInfo.getExchangeCode(),
+                        DensityUtils.dip2px(mContext, 180),
+                        DensityUtils.dip2px(mContext, 180));
+                if (qrImage != null) {
+                    ivDialogQr.setImageBitmap(qrImage);
+                }
+                builder.setView(view);
+                builder.show();
 
             }
         });
@@ -65,25 +73,4 @@ public class MyReservationAdapter extends BaseCommonAdapter<ReservationInfo> {
     }
 
 
-    public Bitmap Create2DCode(String str) throws WriterException {
-        //生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
-        BitMatrix matrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, 300, 300);
-        int width = matrix.getWidth();
-        int height = matrix.getHeight();
-        //二维矩阵转为一维像素数组,也就是一直横着排了
-        int[] pixels = new int[width * height];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if(matrix.get(x, y)){
-                    pixels[y * width + x] = 0xff000000;
-                }
-
-            }
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        //通过像素数组生成bitmap,具体参考api
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bitmap;
-    }
 }

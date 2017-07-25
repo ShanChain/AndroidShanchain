@@ -3,7 +3,7 @@ package com.shanchain.shandata.widgets.other;
 import android.widget.PopupWindow;
 
 /**
- * Created by zhoujian on 2017/5/25.
+ * d
  */
 
 public class BottomPop extends PopupWindow {

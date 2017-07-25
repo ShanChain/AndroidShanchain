@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_new_route"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_new_route"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorBtn"
+        app:titleColor="@color/colorBtn"
+        app:titleText="新路线"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:layout_marginTop="13dp">
+
+                <TextView
+                    android:id="@+id/tv_new_route_story_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:layout_marginTop="@dimen/margin_15dp"
+                    android:text="回家"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:id="@+id/tv_new_route_story_des"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="2dp"
+                    android:lines="2"
+                    android:text="在那样一个小城市，才会明白真正的生活。"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <ImageView
+                    android:id="@+id/iv_new_route_author_avatar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:layout_marginTop="@dimen/margin_15dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/photo_bear"/>
+
+                <TextView
+                    android:id="@+id/tv_new_route_author_nick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:layout_marginTop="5dp"
+                    android:text="路人甲"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_new_route_dynamic"
+                android:layout_width="match_parent"
+                android:layout_height="238dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_marginTop="36dp"
+                android:background="@drawable/shape_bg_box_found_gray">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tv_new_route_dynamic_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_15dp"
+                        android:layout_weight="1"
+                        android:text="2017年5月29日16:50"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_new_route_dynamic_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_15dp"
+                        android:text="深圳市"
+                        android:textColor="@color/colorBtn"
+                        android:textSize="@dimen/text_size_14sp"/>
+
+                    <ImageView
+                        android:id="@+id/iv_new_route_vote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_15dp"
+                        android:src="@mipmap/icon_btn_vote_default"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_new_route_dynamic"
+                    android:layout_width="116dp"
+                    android:layout_height="116dp"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:layout_marginTop="55dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/photo_water"/>
+
+                <TextView
+                    android:id="@+id/tv_new_route_dynamic_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="38dp"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:layout_marginTop="55dp"
+                    android:layout_toRightOf="@id/iv_new_route_dynamic"
+                    android:ellipsize="end"
+                    android:maxLines="5"
+                    android:text="这是深圳的普通的一天，这一天很特别"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_new_route_dynamic_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="13dp"
+                    android:layout_marginLeft="@dimen/margin_15dp"
+                    android:text="空巢天数 7天"
+                    android:textColor="@color/colorBtn"
+                    android:textSize="@dimen/text_size_14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_new_route_look_dynamic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="@dimen/margin_15dp"
+                    android:layout_marginRight="@dimen/margin_15dp"
+                    android:text="查看动态"
+                    android:textColor="@color/colorDialogBtn"
+                    android:textSize="@dimen/text_size_12sp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_new_route_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_marginTop="18dp"
+                android:text="17代"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/text_size_12sp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:background="#7fd8d8d8"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/et_new_route_Introduction"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"
+                android:gravity="top"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingTop="10dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:paddingBottom="10dp"
+                android:hint="新路线简介"
+                android:textColorHint="@color/colorHint"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/shape_bg_edit_new_route"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"/>
+
+            <EditText
+                android:lines="1"
+                android:layout_above="@id/et_new_route_Introduction"
+                android:id="@+id/et_new_route_name"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:hint="新路线的名称"
+                android:textColorHint="@color/colorHint"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/shape_bg_edit_new_route"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

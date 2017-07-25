@@ -9,17 +9,13 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/6/14.
- */
-
 public class SleepEarlierAdapter extends BaseCommonAdapter<SleepEarlierListInfo> {
     public SleepEarlierAdapter(Context context, int layoutId, List<SleepEarlierListInfo> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, SleepEarlierListInfo sleepEarierListInfo, int position) {
+    public void bindData(ViewHolder holder, SleepEarlierListInfo sleepEarierListInfo, int position) {
         holder.setText(R.id.tv_item_sleep_title,sleepEarierListInfo.getTitle());
         holder.setText(R.id.tv_item_sleep_des,sleepEarierListInfo.getDes());
         holder.setText(R.id.tv_item_sleep_active,sleepEarierListInfo.getActive() + "人参加");

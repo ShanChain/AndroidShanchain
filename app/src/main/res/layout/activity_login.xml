@@ -11,10 +11,12 @@
     <!--顶部工具栏，有沉浸式效果-->
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_login"
-        style="@style/style_toolbar_color_theme"
-        app:titleColor="@color/colorWhite"
+        style="@style/style_toolbar_color_white"
+        app:titleColor="@color/colorBtn"
+        app:titleText="登录"
         app:titleTextSize="16"/>
-
+<View
+    style="@style/style_text_line_match"/>
     <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
     <LinearLayout
         style="@style/style_obtain_focus"></LinearLayout>
@@ -35,6 +37,7 @@
             android:textSize="14sp"/>
 
         <EditText
+            android:textColor="@color/colorBtn"
             android:id="@+id/et_login_account"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,6 +69,8 @@
             android:textSize="14sp"/>
 
         <EditText
+            android:inputType="textPassword"
+            android:textColor="@color/colorBtn"
             android:id="@+id/et_login_pwd"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -98,7 +103,7 @@
         style="@style/style_btn_common"
         android:id="@+id/btn_login_login"
         android:layout_marginTop="34dp"
-        android:background="@drawable/shap_btn_login"
+        android:background="@drawable/shape_btn_login"
         android:text="登录"
         android:textColor="@color/colorWhite"/>
 

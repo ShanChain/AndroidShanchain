@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_confirm_exchange"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_confirm_exchange"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:titleColor="@color/colorBtn"
+        app:titleText="确认兑换"
+        app:titleTextSize="16"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+<TextView
+    android:layout_marginLeft="28dp"
+    android:textColor="@color/colorBtn"
+    android:layout_marginTop="38dp"
+    android:textSize="18sp"
+    android:text="你将要兑换:"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+<ImageView
+    android:scaleType="centerCrop"
+    android:src="@drawable/photo_bear"
+    android:id="@+id/iv_exchange_goods"
+    android:layout_marginTop="28dp"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="115dp"
+    android:layout_height="115dp"/>
+
+    <TextView
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/colorBtn"
+        android:id="@+id/tv_exchange_goods_name"
+        android:text="青岛啤酒"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_marginTop="52dp"
+        android:layout_marginLeft="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:text="数量:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/text_size_14sp"
+            android:textColor="@color/colorBtn"
+            android:id="@+id/btn_exchange_goods_add"
+            android:background="@color/colorAddFriendDivider"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:text="+"
+            android:layout_width="22dp"
+            android:layout_height="22dp"/>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_exchange_goods_add"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"
+            android:id="@+id/tv_exchange_goods_counts"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btn_exchange_goods_subtract"
+            android:layout_toLeftOf="@id/tv_exchange_goods_counts"
+            android:text="—"
+            android:textColor="@color/colorBtn"
+            android:background="@color/colorAddFriendDivider"
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_centerVertical="true"
+            android:layout_width="22dp"
+            android:layout_height="22dp"/>
+
+    </RelativeLayout>
+
+
+<TextView
+    android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"/>
+
+    <TextView
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        
+        <TextView
+            android:id="@+id/tv_exchange_total"
+            android:textSize="@dimen/text_size_14sp"
+            android:textColor="@color/colorTheme"
+            android:gravity="right"
+            android:text="合计:34善圆"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:text="提交"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_14sp"
+            android:id="@+id/btn_exchange_goods_commit"
+            android:background="@color/colorTheme"
+            android:layout_width="115dp"
+            android:layout_height="match_parent"/>
+        
+    </LinearLayout>
+    
+</LinearLayout>

@@ -13,10 +13,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
-/**
- * Created by zhoujian on 2017/7/3.
- */
-
 public class FocusAdapter extends BaseCommonAdapter<FocusInfo> {
 
     public FocusAdapter(Context context, int layoutId, List<FocusInfo> datas) {
@@ -24,7 +20,7 @@ public class FocusAdapter extends BaseCommonAdapter<FocusInfo> {
     }
 
     @Override
-    public void bindDatas(ViewHolder holder, final FocusInfo focusInfo, int position) {
+    public void bindData(ViewHolder holder, final FocusInfo focusInfo, int position) {
 
         Glide.with(mContext)
                 .load(R.drawable.photo_bear)
@@ -34,10 +30,10 @@ public class FocusAdapter extends BaseCommonAdapter<FocusInfo> {
         holder.setText(R.id.tv_item_focus_name,focusInfo.getName());
 
         if (focusInfo.isFocused()){
-            holder.setBackgroundRes(R.id.tv_item_focus_btn,R.drawable.shap_btn_regist_hint);
+            holder.setBackgroundRes(R.id.tv_item_focus_btn,R.drawable.shape_btn_regist_hint);
             holder.setText(R.id.tv_item_focus_btn,"已关注");
         }else {
-            holder.setBackgroundRes(R.id.tv_item_focus_btn,R.drawable.shap_btn_regist);
+            holder.setBackgroundRes(R.id.tv_item_focus_btn,R.drawable.shape_btn_regist);
             holder.setText(R.id.tv_item_focus_btn,"关注");
         }
 

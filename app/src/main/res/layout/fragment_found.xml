@@ -1,11 +1,375 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:scrollbars="none">
 
-<TextView
-    android:background="#e185aa"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp">
+
+            <ImageView
+                android:id="@+id/iv_found_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_shenzhen"/>
+
+            <TextView
+                android:id="@+id/tv_found_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginTop="10dp"
+                android:text="一座城"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_des"
+                android:layout_width="164dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:text="夜深了，这座城市还有25%的人和你一起醒着"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_12sp"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_found_good_story"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableRight="@mipmap/cheerup_btn_return_default"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:paddingRight="@dimen/margin_15dp"
+            android:text="好故事"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/xrv_found_good_story"
+            android:layout_width="match_parent"
+            android:layout_height="134dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/margin_15dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/colorListDivider"/>
+
+        <TextView
+            android:id="@+id/tv_found_hot_news"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableRight="@mipmap/cheerup_btn_return_default"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:paddingRight="@dimen/margin_15dp"
+            android:text="头条"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <LinearLayout
+            android:id="@+id/ll_found_hot_item1"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_found_hot_item1"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:background="@drawable/shape_bg_box_found"
+                android:gravity="center"
+                android:text="故事"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_hot_item1_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:text="深圳市经常积水的路段"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <LinearLayout
+            android:id="@+id/ll_found_hot_item2"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_found_hot_item2"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:background="@drawable/shape_bg_box_found"
+                android:gravity="center"
+                android:text="挑战"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_hot_item2_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:text="是什么让你迟迟不睡？"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <LinearLayout
+            android:id="@+id/ll_found_hot_item3"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_found_hot_item3"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:background="@drawable/shape_bg_box_found"
+                android:gravity="center"
+                android:text="故事"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_hot_item3_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:text="孩子到底应该怎么样？"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <LinearLayout
+            android:id="@+id/ll_found_hot_item4"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_found_hot_item4"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:background="@drawable/shape_bg_box_found"
+                android:gravity="center"
+                android:text="快报"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_hot_item4_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:text="自定义挑战隆重上线！"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <LinearLayout
+            android:id="@+id/ll_found_hot_item5"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_found_hot_item5"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:background="@drawable/shape_bg_box_found"
+                android:gravity="center"
+                android:text="推广"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:id="@+id/tv_found_hot_item5_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:text="某某汽车邀您一起来战！"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/colorListDivider"/>
+
+        <TextView
+            android:id="@+id/tv_found_public_welfare"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableRight="@mipmap/cheerup_btn_return_default"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:paddingRight="@dimen/margin_15dp"
+            android:text="随手公益"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_fragment_public_welfare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:orientation="vertical">
+
+
+
+
+            <ImageView
+                android:id="@+id/iv_found_public_welfare"
+                android:layout_width="match_parent"
+                android:layout_height="154dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_public"/>
+
+            <TextView
+                android:id="@+id/tv_found_public_welfare_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:text="2017净水活动"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_14sp"/>
+
+            <TextView
+                android:lines="2"
+                android:ellipsize="end"
+                android:id="@+id/tv_found_public_welfare_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:text="全世界还有1000万人喝不上干净水，让我们一起来改变现在这困境。"
+                android:textColor="@color/colorBtn"
+                android:textSize="@dimen/text_size_12sp"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/colorListDivider"/>
+
+
+        <TextView
+            android:id="@+id/tv_found_night_market"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableRight="@mipmap/cheerup_btn_return_default"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/margin_15dp"
+            android:paddingRight="@dimen/margin_15dp"
+            android:text="夜市"
+            android:textColor="@color/colorBtn"
+            android:textSize="@dimen/text_size_14sp"/>
+
+        <TextView
+            style="@style/style_text_line_match"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/xrv_found_night_market"
+            android:layout_width="match_parent"
+            android:layout_height="192dp"
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/colorListDivider"/>
+    </LinearLayout>
+
+</ScrollView>

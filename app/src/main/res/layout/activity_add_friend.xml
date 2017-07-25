@@ -11,11 +11,11 @@
     <!--顶部工具栏，有沉浸式效果-->
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_addfriend"
-        style="@style/style_toolbar_color_theme"
+        style="@style/style_toolbar_color_white"
         app:titleText="添加好友"
-        app:leftImage="@mipmap/nav_btn_back_default"
-        app:rightImage="@mipmap/nav_btn_more_default"
-        app:titleColor="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_back_selected"
+        app:rightImage="@mipmap/icon_btn_more_default"
+        app:titleColor="@color/colorBtn"
         app:titleTextSize="16"/>
 
     <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
@@ -32,7 +32,7 @@
 
         <TextView
             android:paddingLeft="@dimen/margin_15dp"
-            android:background="@drawable/shap_edit_search"
+            android:background="@drawable/shape_edit_search"
             android:drawableLeft="@mipmap/search_button_search_default"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_size_14sp"
