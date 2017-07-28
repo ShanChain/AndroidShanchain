@@ -50,14 +50,8 @@ captures/
 google-services.json
 
 # Freeline
+
 freeline.py
 freeline/
 freeline_project_description.json
-.idea/compiler.xml
-.idea/runConfigurations.xml
-.idea/misc.xml
-.idea/encodings.xml
-.idea/modules.xml
-.idea/modules.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/inspectionProfiles/Project_Default.xml
+.idea/

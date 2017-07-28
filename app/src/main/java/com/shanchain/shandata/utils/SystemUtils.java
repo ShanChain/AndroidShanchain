@@ -1,7 +1,11 @@
 package com.shanchain.shandata.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.annotation.IntRange;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -10,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -20,6 +25,11 @@ import java.lang.reflect.Method;
  */
 
 public class SystemUtils {
+
+    public static final int DEFAULT_STATUS_BAR_ALPHA = 112;
+    private static final int FAKE_STATUS_BAR_VIEW_ID = com.jaeger.library.R.id.statusbarutil_fake_status_bar_view;
+    private static final int FAKE_TRANSLUCENT_VIEW_ID = com.jaeger.library.R.id.statusbarutil_translucent_view;
+    private static final int TAG_KEY_HAVE_SET_OFFSET = -123;
 
     /**
      * 获取系统状态栏高度
@@ -42,7 +52,6 @@ public class SystemUtils {
 
     /**
      * 获取系统唯一标识
-     *
      * @param context
      * @return 设备id
      */
@@ -247,7 +256,91 @@ public class SystemUtils {
     public static void setStatusBarLightMode_API23(AppCompatActivity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity.getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         }
     }
 
+
+
+    /**
+     * 生成一个和状态栏大小相同的半透明矩形条
+     *
+     * @param activity 需要设置的activity
+     * @param color    状态栏颜色值
+     * @param alpha    透明值
+     * @return 状态栏矩形条
+     */
+    public static View createStatusBarView(Activity activity, @ColorInt int color, int alpha) {
+        // 绘制一个和状态栏一样高的矩形
+        View statusBarView = new View(activity);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
+        statusBarView.setLayoutParams(params);
+        statusBarView.setBackgroundColor(calculateStatusColor(color, alpha));
+        statusBarView.setId(FAKE_STATUS_BAR_VIEW_ID);
+        return statusBarView;
+    }
+
+
+    /**
+     * 添加半透明矩形条
+     *
+     * @param activity       需要设置的 activity
+     * @param statusBarAlpha 透明值
+     */
+    public static void addTranslucentView(Activity activity, @IntRange(from = 0, to = 255) int statusBarAlpha) {
+        ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
+        View fakeTranslucentView = contentView.findViewById(FAKE_TRANSLUCENT_VIEW_ID);
+            if (fakeTranslucentView != null) {
+                if (fakeTranslucentView.getVisibility() == View.GONE) {
+                    fakeTranslucentView.setVisibility(View.VISIBLE);
+                }
+                fakeTranslucentView.setBackgroundColor(Color.argb(statusBarAlpha, 0, 0, 0));
+            } else {
+            contentView.addView(createTranslucentStatusBarView(activity, statusBarAlpha));
+        }
+    }
+
+    public static void addView(Activity activity,int color,int statusBarAlpha){
+        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+        decorView.addView(createStatusBarView(activity, color, statusBarAlpha));
+    }
+
+    /**
+     * 创建半透明矩形 View
+     *
+     * @param alpha 透明值
+     * @return 半透明 View
+     */
+    private static View createTranslucentStatusBarView(Activity activity, int alpha) {
+        // 绘制一个和状态栏一样高的矩形
+        View statusBarView = new View(activity);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
+        statusBarView.setLayoutParams(params);
+        statusBarView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+        statusBarView.setId(FAKE_TRANSLUCENT_VIEW_ID);
+        return statusBarView;
+    }
+
+    /**
+     * 计算状态栏颜色
+     *
+     * @param color color值
+     * @param alpha alpha值
+     * @return 最终的状态栏颜色
+     */
+    private static int calculateStatusColor(@ColorInt int color, int alpha) {
+        if (alpha == 0) {
+            return color;
+        }
+        float a = 1 - alpha / 255f;
+        int red = color >> 16 & 0xff;
+        int green = color >> 8 & 0xff;
+        int blue = color & 0xff;
+        red = (int) (red * a + 0.5);
+        green = (int) (green * a + 0.5);
+        blue = (int) (blue * a + 0.5);
+        return 0xff << 24 | red << 16 | green << 8 | blue;
+    }
 }

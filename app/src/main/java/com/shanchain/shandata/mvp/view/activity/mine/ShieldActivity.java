@@ -51,8 +51,10 @@ public class ShieldActivity extends BaseActivity implements ArthurToolBar.OnLeft
                 LinearLayoutManager.HORIZONTAL,
                 DensityUtils.dip2px(this,1),
                 getResources().getColor(R.color.colorListDivider)));
-       // View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_view_shield,(ViewGroup)findViewById(android.R.id.content),false);
+        //View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_view_shield,(ViewGroup)findViewById(android.R.id.content),false);
+
         View emptyView = View.inflate(this,R.layout.empty_view_shield,null);
+
         mRvShieldPersons.setEmptyView(emptyView);
         mRvShieldPersons.setAdapter(personsAdapter);
 
@@ -61,7 +63,7 @@ public class ShieldActivity extends BaseActivity implements ArthurToolBar.OnLeft
     private void initData() {
        datas = new ArrayList<>();
 
-        ShieldPersonInfo shieldPersonInfo1 = new ShieldPersonInfo();
+        /*ShieldPersonInfo shieldPersonInfo1 = new ShieldPersonInfo();
         shieldPersonInfo1.setShielded(true);
         shieldPersonInfo1.setName("韩玉龙");
         datas.add(shieldPersonInfo1);
@@ -84,7 +86,7 @@ public class ShieldActivity extends BaseActivity implements ArthurToolBar.OnLeft
         ShieldPersonInfo shieldPersonInfo5 = new ShieldPersonInfo();
         shieldPersonInfo5.setShielded(true);
         shieldPersonInfo5.setName("张晓阳");
-        datas.add(shieldPersonInfo5);
+        datas.add(shieldPersonInfo5);*/
 
     }
 
@@ -93,7 +95,6 @@ public class ShieldActivity extends BaseActivity implements ArthurToolBar.OnLeft
         mToolbarShieldedPersons.setBtnEnabled(true, false);
         mToolbarShieldedPersons.setBtnVisibility(true, false);
         mToolbarShieldedPersons.setOnLeftClickListener(this);
-
     }
 
     @Override

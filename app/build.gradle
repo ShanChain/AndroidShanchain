@@ -100,5 +100,6 @@ dependencies {
     compile 'com.zhy:flowlayout-lib:1.0.3'
     //时间选择
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
-
+    //百度地图定位sdk
+    compile files('libs/BaiduLBS_Android.jar')
 }

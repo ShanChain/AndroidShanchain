@@ -9,10 +9,6 @@ import android.view.View;
 
 import com.shanchain.shandata.R;
 
-/**
- * Created by zhoujian on 2017/7/25.
- */
-
 public class CustomView extends View {
 
     private Paint mPaint;

@@ -6,7 +6,7 @@
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_item_position_address"
+        android:id="@+id/tv_item_position_details"
         android:layout_marginLeft="@dimen/margin_15dp"
         android:textColor="@color/colorBtn"
         android:textSize="@dimen/text_size_14sp"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
     <TextView
-        android:id="@+id/tv_item_position_details"
+        android:id="@+id/tv_item_position_address"
         android:layout_marginLeft="@dimen/margin_15dp"
         android:textColor="@color/colorHint"
         android:gravity="center_vertical"

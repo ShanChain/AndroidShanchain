@@ -10,7 +10,6 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.BackgroundActivity;
 import com.shanchain.shandata.utils.LogUtils;
-import com.shanchain.shandata.utils.SystemUtils;
 import com.shanchain.shandata.utils.VersionUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -59,7 +58,7 @@ public class ExploreStarsActivity extends BaseActivity implements ArthurToolBar.
             case R.id.tv_explore_stars_collection:
                 //收藏
                 String apiVersion = VersionUtils.getApiVersion();
-                LogUtils.d("安卓版本："+apiVersion + ";设备id:" + SystemUtils.getSystemDeviceId(this));
+                LogUtils.d("安卓版本："+apiVersion );
                 break;
             case R.id.tv_explore_stars_share:
                 //分享

@@ -16,6 +16,11 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.http.HttpApi;
+import com.shanchain.shandata.http.HttpUtils;
+import com.shanchain.shandata.http.MyHttpCallBack;
+import com.shanchain.shandata.mvp.Bean.RegisterUserInfoBean;
+import com.shanchain.shandata.mvp.model.UserBean;
 import com.shanchain.shandata.utils.GlideCircleTransform;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.PrefUtils;
@@ -32,6 +37,7 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
+import okhttp3.Call;
 
 
 public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -248,7 +254,6 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
         }
     }
 
-
     @Override
     public void onLeftClick(View v) {
         finish();
@@ -262,7 +267,33 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
         String signature = mEtPersonalDataSignature.getText().toString().trim();
         PrefUtils.putString(this, "signature", signature);
         String birthDay = mTvPersonalDataBirth.getText().toString().trim();
-        LogUtils.d("生日："+birthDay);
+        LogUtils.d("生日：" + birthDay);
+
+        UserBean userBean = new UserBean();
+        userBean.setNickName(nickName);
+        userBean.setBirthday(Long.valueOf(birthDay));
+        //userBean.set
+
+        String dataString = "";
+
+        HttpUtils.postWithParams()
+                .addParams("dataString", "")
+                .addParams("token", "")
+                .addParams("userId", "")
+                .url(HttpApi.USER_UPDATE_INFO)
+                .build().execute(new MyHttpCallBack<RegisterUserInfoBean>(RegisterUserInfoBean.class) {
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtils.d("更新用户信息失败,错误码" + id);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(RegisterUserInfoBean response, int id) {
+                LogUtils.d(response.toString());
+            }
+        });
         Intent intent = new Intent();
         intent.putExtra("signature", signature);
         intent.putExtra("nickname", nickName);

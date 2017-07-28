@@ -119,16 +119,10 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     @Override
     protected void initViewsAndEvents() {
 
-        //初始化工具栏
         initTooBar();
-        //初始化输入框
         initEditText();
     }
 
-    /**
-     * 2017/5/18
-     * 描述：初始化工具栏，设置沉浸式
-     */
     private void initTooBar() {
         mToolbarLogin.setBtnEnabled(false);
     }

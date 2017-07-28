@@ -14,7 +14,7 @@ public class ResponseRegisteUserBean {
 
     private String account;
     private String token;
-    private RegisteUserInfoBean userInfo;
+    private RegisterUserInfoBean userInfo;
 
     public String getAccount() {
         return account;
@@ -32,11 +32,11 @@ public class ResponseRegisteUserBean {
         this.token = token;
     }
 
-    public RegisteUserInfoBean getUserInfo() {
+    public RegisterUserInfoBean getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(RegisteUserInfoBean userInfo) {
+    public void setUserInfo(RegisterUserInfoBean userInfo) {
         this.userInfo = userInfo;
     }
 }

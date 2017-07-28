@@ -10,12 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 
-import com.jaeger.library.StatusBarUtil;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.utils.SystemUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import butterknife.ButterKnife;
+
 
 /**
  * activity基类
@@ -80,7 +81,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // 初始化View和事件
         initViewsAndEvents();
-        StatusBarUtil.setColor(this,getResources().getColor(R.color.colorWhite));
+        //StatusBarUtil.setColor(this,getResources().getColor(R.color.colorWhite));
+        //SystemUtils.setStatusBarLightMode_API23(this);
+        SystemUtils.setImmersiveStatusBar_API21(this,getResources().getColor(R.color.colorWhite));
+        SystemUtils.setStatusBarLightMode_API23(this);
+        SystemUtils.MIUISetStatusBarLightMode(getWindow(),true);
+        SystemUtils.FlymeSetStatusBarLightMode(getWindow(),true);
     }
 
     /**

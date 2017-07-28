@@ -69,15 +69,9 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     }
 
     private void initToolBar() {
-
-
-
-
         mToolbarReport = (ArthurToolBar) findViewById(R.id.toolbar_report);
-
         mToolbarReport.setOnLeftClickListener(this);
         mToolbarReport.setBtnEnabled(true,false);
-
     }
 
 

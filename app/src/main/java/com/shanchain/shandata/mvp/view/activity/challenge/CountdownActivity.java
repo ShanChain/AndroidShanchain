@@ -12,11 +12,13 @@ import com.shanchain.shandata.global.TimeDown;
 import com.shanchain.shandata.utils.CountDownUtils;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 
+
 public class CountdownActivity extends BaseActivity implements TimeDown {
 
     private TextView mTvCountdownTime;
     private Button mBtnCountdownQuit;
     private CountDownUtils mCountDownUtils;
+    private int mTime;
 
     @Override
     protected void onDestroy() {
@@ -31,10 +33,12 @@ public class CountdownActivity extends BaseActivity implements TimeDown {
 
     @Override
     protected void initViewsAndEvents() {
+        mTime = getIntent().getIntExtra("time", 0);
+
         mTvCountdownTime = (TextView) findViewById(R.id.tv_countdown_time);
         mBtnCountdownQuit = (Button) findViewById(R.id.btn_countdown_quit);
 
-        mCountDownUtils = new CountDownUtils(this, mTvCountdownTime, 1000 * 60 * 1, 1000);
+        mCountDownUtils = new CountDownUtils(this, mTvCountdownTime,  mTime *60 *1000, 1000);
         mCountDownUtils.start();
 
         mBtnCountdownQuit.setOnLongClickListener(new View.OnLongClickListener() {
@@ -66,6 +70,7 @@ public class CountdownActivity extends BaseActivity implements TimeDown {
 
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+
             return true;
         }
         return super.onKeyDown(keyCode, event);

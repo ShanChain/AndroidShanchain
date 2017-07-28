@@ -109,7 +109,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_homepager, navigationBarTitles[0]))
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_dynamic, navigationBarTitles[1]))
                 .addItem(new BottomNavigationItem(R.drawable.selector_tab_find, navigationBarTitles[2]))
-                .addItem(itemMine.setBadgeItem(mBadgeItem))
+                //.addItem(itemMine.setBadgeItem(mBadgeItem))  //消息提示红点
+                .addItem(itemMine)
                 .setFirstSelectedPosition(mFragmentId)
                 .initialise();
 
@@ -304,7 +305,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnLeftCl
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (isExit) {
                 long interval = System.currentTimeMillis() - mCurrentTimeMillis;
-                LogUtils.d("时间间隔：" + interval);
                 if (interval<2000){
                     finish();
                 }else {

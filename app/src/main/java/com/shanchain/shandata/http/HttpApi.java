@@ -49,7 +49,12 @@ public interface HttpApi {
     String USER_RESET_PWD = REAL_BASE_URL + "/v1/user/reset_password";
     //第三方登录
     String USER_THIRD_LOGIN = REAL_BASE_URL + "/v1/user/third_login";
-
+    //绑定其他账号
+    String USER_BIND_OTHER_ACCOUNT = REAL_BASE_URL + "/v1/user/bind_other_account";
+    //用户反馈
+    String USER_FEEDBACK = REAL_BASE_URL + "/v1/user/feedback";
+    //更新用户信息
+    String USER_UPDATE_INFO = REAL_BASE_URL + "/v1/user/update";
 
     /***********  用户相关的接口  》》》》》 ***********/
 
@@ -58,6 +63,8 @@ public interface HttpApi {
 
 
     /************ 《《《《《  挑战相关接口   ************/
+
+
 
 
     /************  挑战相关接口  》》》》》 ************/

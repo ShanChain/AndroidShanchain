@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- SD卡读取权限，用户写入离线定位数据 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
     <!-- 时间控件,振动权限 -->
     <uses-permission android:name="android.permission.VIBRATE"/>
 
@@ -253,8 +254,11 @@
         <activity android:name=".mvp.view.activity.story.ShareStoryActivity">
         </activity>
         <activity android:name=".mvp.view.activity.story.CollectionStoryActivity"/>
-        <activity android:name=".mvp.view.activity.story.NewRouteActivity"
-                  android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".mvp.view.activity.story.NewRouteActivity"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".mvp.view.activity.story.ProtagonistActivity"/>
 
     </application>
 

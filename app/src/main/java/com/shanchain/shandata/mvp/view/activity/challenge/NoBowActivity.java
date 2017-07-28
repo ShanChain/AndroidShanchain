@@ -1,5 +1,6 @@
 package com.shanchain.shandata.mvp.view.activity.challenge;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,8 +179,9 @@ public class NoBowActivity extends BaseActivity implements ArthurToolBar.OnLeftC
                 int progress = mCustomSeekBar.getProgress();
 
                 ToastUtils.showToast(this,hours+":"+mins + ",信心：" + progress);
-
-                readyGo(CountdownActivity.class);
+                Intent intent = new Intent(this,CountdownActivity.class);
+                intent.putExtra("time",Integer.parseInt(hours)*60 + Integer.parseInt(mins));
+                startActivity(intent);
 
                 break;
             case R.id.tv_head_no_bow_rules:

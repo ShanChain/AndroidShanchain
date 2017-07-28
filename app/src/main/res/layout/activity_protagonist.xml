@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_protagonist"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/toolbar_protagonist"
+        style="@style/style_toolbar_color_white"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/nav_btn_return_default"
+        app:rightText="下一步"
+        app:rightTextColor="@color/colorBtn"
+        app:titleColor="@color/colorBtn"
+        app:titleText="主人公"
+        app:titleTextSize="16"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="326dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/story_creation_bg"/>
+
+            <EditText
+                android:id="@+id/et_protagonist_name"
+                android:layout_width="96dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape_btn_regist"
+                android:gravity="center_vertical"
+                android:hint="小浪"
+                android:lines="1"
+                android:maxLength="5"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:textColor="@color/colorBtn"
+                android:textColorHint="@color/colorHint"
+                android:textSize="@dimen/text_size_12sp"/>
+
+            <EditText
+                android:id="@+id/et_protagonist_des"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="@dimen/margin_15dp"
+                android:layout_marginRight="@dimen/margin_15dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape_bg_box_city_default"
+                android:gravity="top"
+                android:hint="@string/text_hint_protagonist"
+                android:lineSpacingExtra="2dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="@dimen/margin_15dp"
+                android:paddingRight="@dimen/margin_15dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorBtn"
+                android:textColorHint="@color/colorHint"
+                android:textSize="@dimen/text_size_12sp"/>
+
+</LinearLayout>

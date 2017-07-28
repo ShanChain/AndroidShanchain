@@ -4,7 +4,7 @@ package com.shanchain.shandata.mvp.Bean;
  * Created by zhoujian on 2017/7/13.
  */
 
-public class RegisteUserInfoBean {
+public class RegisterUserInfoBean {
 
     /**
      * birthday : 1
@@ -148,5 +148,25 @@ public class RegisteUserInfoBean {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterUserInfoBean{" +
+                "birthday='" + birthday + '\'' +
+                ", country='" + country + '\'' +
+                ", created=" + created +
+                ", email='" + email + '\'' +
+                ", headIcon='" + headIcon + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", level=" + level +
+                ", loggedIn='" + loggedIn + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", sex=" + sex +
+                ", title='" + title + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 }

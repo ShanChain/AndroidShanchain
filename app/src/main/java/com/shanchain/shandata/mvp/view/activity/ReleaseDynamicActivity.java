@@ -202,7 +202,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             if (data != null) {
                 PositionInfo positionInfo = (PositionInfo) data.getSerializableExtra("positionInfo");
                 LogUtils.d(positionInfo.getAddress());
-                mLlPublishPosition.setText(positionInfo.getAddress());
+                mLlPublishPosition.setText(positionInfo.getDetails());
             }
         } else if (requestCode == VISIABLE_RANGE_CODE) {
             if (data != null) {
