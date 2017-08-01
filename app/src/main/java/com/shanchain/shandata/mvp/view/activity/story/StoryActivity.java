@@ -1,6 +1,7 @@
 package com.shanchain.shandata.mvp.view.activity.story;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,7 +10,10 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.StoryTagAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.view.activity.WebActivity;
+import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.wooplr.spotlight.SpotlightView;
+import com.wooplr.spotlight.utils.SpotlightListener;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -82,6 +86,41 @@ public class StoryActivity extends BaseActivity implements ArthurToolBar.OnLeftC
         initToolBar();
         initData();
         initListener();
+        show();
+    }
+
+    /**
+     *  描述：新手向导
+     *
+     */
+    private void show() {
+        SpotlightView spotlightView = new SpotlightView.Builder(this)
+                .enableRevalAnimation(true)
+                .introAnimationDuration(400)
+                .performClick(true)
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .targetPadding(DensityUtils.dip2px(this,10))
+                .headingTvText("全新故事")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("这里你可以开始创建你的故事")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(mBtnStoryNew)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#eb273f"))
+                .dismissOnTouch(true)
+                .usageId("more") //UNIQUE ID
+                .show();
+
+        spotlightView.setListener(new SpotlightListener() {
+            @Override
+            public void onUserClicked(String s) {
+
+            }
+        });
+
     }
 
     private void initListener() {

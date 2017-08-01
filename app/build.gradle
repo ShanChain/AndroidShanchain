@@ -22,7 +22,7 @@ android {
         release {
             keyAlias 'zj'
             keyPassword '123456'
-            storeFile file('C:/Users/zhoujian/Desktop/youdao/keystore/shanchain.jks')
+            storeFile file('keystore/shanchain.jks')
             storePassword 'shanchain'
         }
     }
@@ -102,4 +102,7 @@ dependencies {
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     //百度地图定位sdk
     compile files('libs/BaiduLBS_Android.jar')
+    //新手引导
+    compile 'com.github.wooplr:Spotlight:1.0'
+
 }

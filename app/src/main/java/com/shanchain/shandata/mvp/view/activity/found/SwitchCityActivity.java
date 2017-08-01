@@ -11,7 +11,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.baidu.location.LocationClient;
 import com.gjiazhe.wavesidebar.WaveSideBar;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.shanchain.shandata.R;
@@ -22,11 +21,14 @@ import com.shanchain.shandata.global.Constans;
 import com.shanchain.shandata.mvp.model.RecommendedCityInfo;
 import com.shanchain.shandata.mvp.model.SwitchCityInfo;
 import com.shanchain.shandata.utils.LogUtils;
+import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
+
 
 public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
@@ -46,9 +48,7 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
     private TextView mTvHeadCityHistory3;
     private GridView mGvHeadCity;
     private ArrayList<SwitchCityInfo> mDatas;
-    private LocationClient mLocationClient;
     private SwitchCityAdapter mSwitchCityAdapter;
-    private LinearLayoutManager mLayoutManager;
     private ArrayList<RecommendedCityInfo> mGridDatas;
 
     @Override
@@ -64,6 +64,7 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
         initListener();
     }
 
+
     private void initListener() {
         mSideBar.setOnSelectIndexItemListener(new WaveSideBar.OnSelectIndexItemListener() {
             @Override
@@ -71,9 +72,8 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
                 LogUtils.d("选中的条目:" + index);
                 for (int i = 0; i < mDatas.size(); i++) {
                     if (mDatas.get(i).getPinying().equalsIgnoreCase(index)) {
-                        // mXrvSwitchCity.scrollBy(0, i + 1);
-                        //mLayoutManager.scrollToPosition(i+2);
-                        smoothMoveToPosition(mXrvSwitchCity, i);
+                        ((LinearLayoutManager)mXrvSwitchCity.getLayoutManager()).scrollToPositionWithOffset(i + 2,0);
+                        return;
                     }
                 }
 
@@ -83,34 +83,27 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initRecyclerView() {
         initHeadView();
-        mLayoutManager = new LinearLayoutManager(this);
-        mXrvSwitchCity.setLayoutManager(mLayoutManager);
+       LinearLayoutManager LayoutManager = new LinearLayoutManager(this);
+        mXrvSwitchCity.setLayoutManager(LayoutManager);
         mXrvSwitchCity.setPullRefreshEnabled(false);
         mXrvSwitchCity.setLoadingMoreEnabled(false);
         mXrvSwitchCity.addHeaderView(mHeadView);
         mSwitchCityAdapter = new SwitchCityAdapter(this, R.layout.item_city_switch, mDatas);
         mXrvSwitchCity.setAdapter(mSwitchCityAdapter);
-
-        int itemCount = mSwitchCityAdapter.getItemCount();
-        int childCount = mXrvSwitchCity.getChildCount();
-
-        int childCount1 = mLayoutManager.getChildCount();
-        LogUtils.d("adapter总条目数 ： " + itemCount + ";view总条目数 ： " + childCount
-                + "layoutManager 总条目数 ： " + childCount1
-        );
-
-
-        mXrvSwitchCity.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mSwitchCityAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (mShouldScroll) {
-                    mShouldScroll = false;
-                    smoothMoveToPosition(mXrvSwitchCity, mToPosition);
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position>1){
+                    ToastUtils.showToast(SwitchCityActivity.this,mDatas.get(position-2).getAddress());
+
                 }
             }
-        });
 
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
     }
 
     private void initHeadView() {
@@ -144,48 +137,6 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
     }
 
 
-    /**
-     * 目标项是否在最后一个可见项之后
-     */
-    private boolean mShouldScroll;
-    /**
-     * 记录目标项位置
-     */
-    private int mToPosition;
-
-    /**
-     * 滑动到指定位置
-     *
-     * @param mRecyclerView
-     * @param position
-     */
-    private void smoothMoveToPosition(RecyclerView mRecyclerView, final int position) {
-        // 第一个可见位置
-        int firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
-        // 最后一个可见位置
-        int lastItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
-
-        if (position < firstItem) {
-            // 如果跳转位置在第一个可见位置之前，就smoothScrollToPosition可以直接跳转
-            mRecyclerView.smoothScrollToPosition(position);
-        } else if (position <= lastItem) {
-            // 跳转位置在第一个可见项之后，最后一个可见项之前
-            // smoothScrollToPosition根本不会动，此时调用smoothScrollBy来滑动到指定位置
-            int movePosition = position - firstItem;
-            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
-                int top = mRecyclerView.getChildAt(movePosition).getTop();
-                mRecyclerView.smoothScrollBy(0, top);
-            }
-        } else {
-            // 如果要跳转的位置在最后可见项之后，则先调用smoothScrollToPosition将要跳转的位置滚动到可见位置
-            // 再通过onScrollStateChanged控制再次调用smoothMoveToPosition，执行上一个判断中的方法
-            mRecyclerView.smoothScrollToPosition(position);
-            mToPosition = position;
-            mShouldScroll = true;
-        }
-    }
-
-
     private void initData() {
         mGridDatas = new ArrayList<>();
 
@@ -199,10 +150,6 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
 
 
         mDatas = new ArrayList<>();
-        /*for (int i = 0; i < 30; i ++) {
-            SwitchCityInfo cityInfo = new SwitchCityInfo();
-            mDatas.add(cityInfo);
-        }*/
         SwitchCityInfo cityInfo1 = new SwitchCityInfo();
         cityInfo1.setPinying("A");
         cityInfo1.setAddress("阿贝");

@@ -16,11 +16,6 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.http.HttpApi;
-import com.shanchain.shandata.http.HttpUtils;
-import com.shanchain.shandata.http.MyHttpCallBack;
-import com.shanchain.shandata.mvp.Bean.RegisterUserInfoBean;
-import com.shanchain.shandata.mvp.model.UserBean;
 import com.shanchain.shandata.utils.GlideCircleTransform;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.PrefUtils;
@@ -37,7 +32,6 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import okhttp3.Call;
 
 
 public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -268,7 +262,7 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
         PrefUtils.putString(this, "signature", signature);
         String birthDay = mTvPersonalDataBirth.getText().toString().trim();
         LogUtils.d("生日：" + birthDay);
-
+        /*
         UserBean userBean = new UserBean();
         userBean.setNickName(nickName);
         userBean.setBirthday(Long.valueOf(birthDay));
@@ -294,6 +288,7 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
                 LogUtils.d(response.toString());
             }
         });
+        */
         Intent intent = new Intent();
         intent.putExtra("signature", signature);
         intent.putExtra("nickname", nickName);

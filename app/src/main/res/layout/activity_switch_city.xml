@@ -50,7 +50,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/et_switch_city_search"/>
+<!--<ListView
+    android:layout_below="@id/et_switch_city_search"
+    android:id="@+id/lv_switch_city"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+</ListView>
+    -->
     <View
         android:layout_above="@id/xrv_switch_city"
         style="@style/style_text_line_match"/>

@@ -1,6 +1,7 @@
 package com.shanchain.shandata.mvp.view.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +14,9 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.model.DynamicInfo;
 import com.shanchain.shandata.mvp.view.activity.challenge.ChallengeActivity;
 import com.shanchain.shandata.mvp.view.activity.story.StoryActivity;
+import com.shanchain.shandata.utils.DensityUtils;
+import com.wooplr.spotlight.SpotlightView;
+import com.wooplr.spotlight.utils.SpotlightListener;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -21,7 +25,6 @@ import java.util.List;
 import butterknife.Bind;
 
 /**
- * Created by zhoujian on 2017/5/16.
  * 主页页面
  */
 
@@ -53,6 +56,40 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         mXrvHome.setLoadingMoreEnabled(false);
         HomeAdapter homeAdapter = new HomeAdapter(mActivity,R.layout.item_home,datas);
         mXrvHome.setAdapter(homeAdapter);
+        show();
+    }
+
+    /**
+     *  描述：新手向导
+     *
+     */
+    private void show() {
+        SpotlightView spotlightView = new SpotlightView.Builder(mActivity)
+                .enableRevalAnimation(true)
+                .introAnimationDuration(400)
+                .performClick(true)
+                .targetPadding(DensityUtils.dip2px(mActivity,40))
+                .fadeinTextDuration(400)
+                .headingTvColor(Color.parseColor("#eb273f"))
+                .headingTvSize(32)
+                .headingTvText("故事入口")
+                .subHeadingTvColor(Color.parseColor("#ffffff"))
+                .subHeadingTvSize(16)
+                .subHeadingTvText("点击这里，开启你的故事旅程吧~")
+                .maskColor(Color.parseColor("#dc000000"))
+                .target(mTvHeadHomeStory)
+                .lineAnimDuration(400)
+                .lineAndArcColor(Color.parseColor("#eb273f"))
+                .dismissOnTouch(true)
+                .usageId("story") //UNIQUE ID
+                .show();
+
+        spotlightView.setListener(new SpotlightListener() {
+            @Override
+            public void onUserClicked(String s) {
+
+            }
+        });
 
     }
 
