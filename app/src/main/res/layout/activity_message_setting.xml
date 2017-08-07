@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/activity_message_setting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,32 +17,7 @@
         app:titleColor="@color/colorBtn"
         app:titleText="消息设置"
         app:titleTextSize="16"/>
-    <TextView
-        style="@style/style_text_line_match"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:paddingLeft="@dimen/margin_15dp"
-        android:paddingRight="@dimen/margin_15dp">
 
-        <TextView
-            android:textSize="@dimen/text_size_14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="自动收藏参加过的故事"
-            android:textColor="@color/colorBtn"/>
-
-        <com.sevenheaven.iosswitch.ShSwitchView
-            android:id="@+id/shs_msg_setting_story"
-            shSwitch:tintColor="@color/colorTheme"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="48dp"
-            android:layout_height="32dp"/>
-
-        </RelativeLayout>
 
     <TextView
         style="@style/style_text_line_match"/>

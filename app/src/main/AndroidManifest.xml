@@ -41,6 +41,12 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59828961cae7e754170008ab"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}"/>
 
         <activity android:name=".mvp.view.activity.login.LoginActivity">
             <intent-filter>
@@ -52,8 +58,6 @@
         <activity android:name=".mvp.view.activity.MainActivity">
         </activity>
         <activity android:name=".mvp.view.activity.login.PhoneRegistActivity">
-        </activity>
-        <activity android:name=".mvp.view.activity.login.ChooseAreaCodeActivity">
         </activity>
         <activity android:name=".mvp.view.activity.AddFriendActivity">
         </activity>
@@ -257,9 +261,9 @@
         <activity
             android:name=".mvp.view.activity.story.NewRouteActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".mvp.view.activity.story.ProtagonistActivity"/>
-
+        <activity android:name=".mvp.view.activity.story.ProtagonistActivity"/>
+        <activity android:name=".mvp.view.activity.mine.LifeLabelActivity">
+        </activity>
     </application>
 
 </manifest>

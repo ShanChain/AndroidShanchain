@@ -44,69 +44,30 @@ import okhttp3.Call;
 public class LoginActivity extends BaseActivity implements View.OnFocusChangeListener {
 
     private static final int OPERATION_LOGIN_RESET_PWD = 500;
-    /**
-     * 描述：顶部工具栏
-     */
     @Bind(R.id.toolbar_login)
     ArthurToolBar mToolbarLogin;
-    /**
-     * 描述：整体布局
-     */
     @Bind(R.id.activity_login)
     LinearLayout mActivityLogin;
-    /**
-     * 描述：账号输入框
-     */
     @Bind(R.id.et_login_account)
     EditText mEtLoginAccount;
-    /**
-     * 描述：密码输入框
-     */
     @Bind(R.id.et_login_pwd)
     EditText mEtLoginPwd;
-    /**
-     * 描述：忘记密码点击按钮
-     */
     @Bind(R.id.tv_login_forget)
     TextView mTvLoginForget;
-    /**
-     * 描述：登陆按钮
-     */
     @Bind(R.id.btn_login_login)
     Button mBtnLoginLogin;
-    /**
-     * 描述：注册按钮
-     */
     @Bind(R.id.btn_login_regist)
     Button mBtnLoginRegist;
-    /**
-     * 描述：其他注册方式按钮
-     */
     @Bind(R.id.tv_other_login)
     TextView mTvOtherLogin;
-    /**
-     * 描述：微信第三方登陆
-     */
     @Bind(R.id.iv_login_wechat)
     ImageView mIvLoginWechat;
-    /**
-     * 描述：qq第三方登陆
-     */
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
-    /**
-     * 描述：微博第三方登陆
-     */
     @Bind(R.id.iv_login_weibo)
     ImageView mIvLoginWeibo;
-    /**
-     * 描述：整体布局
-     */
     @Bind(R.id.ll_login_other_login)
     LinearLayout mLlLoginOtherLogin;
-    /**
-     * 描述：其他账号登录是否隐藏 默认为隐藏
-     */
     private boolean isHint = true;
     private CharSequence mAccountHint;
     private CharSequence mPwdHint;
@@ -162,7 +123,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     }
 
     /**
-     * 2017/5/18
      * 描述：登陆按钮点击事件，登陆成功到主界面
      */
     private void login() {
@@ -266,7 +226,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     }
 
     /**
-     * 2017/5/17
      * 描述：执行动画
      */
     private void showOtherLogin(boolean show) {
@@ -279,7 +238,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
 
 
     /**
-     * 2017/5/18
      * 描述：初始化输入框，给输入框添加焦点监听事件
      */
     private void initEditText() {
@@ -290,7 +248,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
     }
 
     /**
-     * 2017/5/18
      * 描述：输入框焦点变化监听
      */
     @Override
@@ -307,7 +264,6 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
 
 
     /**
-     * 2017/5/18
      * 描述：控制hint的显示与隐藏
      */
     private void changeHint(EditText et, boolean hasFocus, CharSequence hint) {

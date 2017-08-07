@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shSwitch="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_setting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +18,7 @@
         app:titleText="设置"
         app:titleTextSize="16"/>
 
-    <TextView
+    <View
         style="@style/style_text_line_match"/>
 
     <RelativeLayout
@@ -46,7 +47,7 @@
     </RelativeLayout>
 
 
-    <TextView
+    <View
         style="@style/style_text_line_match"/>
 
     <RelativeLayout
@@ -74,7 +75,7 @@
             android:src="@mipmap/personalinformation_btn_enter_default"/>
     </RelativeLayout>
 
-    <TextView
+    <View
         style="@style/style_text_line_match"/>
 
     <RelativeLayout
@@ -102,7 +103,7 @@
             android:src="@mipmap/personalinformation_btn_enter_default"/>
     </RelativeLayout>
 
-    <TextView
+    <View
         style="@style/style_text_line_match"/>
 
     <RelativeLayout
@@ -144,7 +145,62 @@
 
     </RelativeLayout>
 
-    <TextView
+    <View
+        style="@style/style_text_line_match"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="自动收藏参加过的故事"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_setting_story"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+    <View
+        style="@style/style_text_line_match"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:paddingLeft="@dimen/margin_15dp"
+        android:paddingRight="@dimen/margin_15dp">
+
+        <TextView
+            android:textSize="@dimen/text_size_14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="在“多走走”挑战中显示步行运动方式介绍"
+            android:textColor="@color/colorBtn"/>
+
+        <com.sevenheaven.iosswitch.ShSwitchView
+            android:id="@+id/shs_setting_style_introduce"
+            shSwitch:tintColor="@color/colorTheme"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"/>
+
+    </RelativeLayout>
+
+
+    <View
         style="@style/style_text_line_match"/>
 
     <RelativeLayout
@@ -172,36 +228,9 @@
             android:src="@mipmap/personalinformation_btn_enter_default"/>
     </RelativeLayout>
 
-    <TextView
+    <View
         style="@style/style_text_line_match"/>
 
-    <RelativeLayout
-        android:id="@+id/ll_setting_about"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:paddingLeft="@dimen/margin_15dp"
-        android:paddingRight="@dimen/margin_15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="关于善数者"
-            android:textColor="@color/colorBtn"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/personalinformation_btn_enter_default"/>
-    </RelativeLayout>
-
-    <TextView
-        style="@style/style_text_line_match"/>
 
     <Button
         android:id="@+id/btn_setting_quit"

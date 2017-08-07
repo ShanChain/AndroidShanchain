@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.SystemUtils;
 
 
@@ -202,7 +201,6 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mImmersiveView.setVisibility(GONE);
         //获取系统状态栏高度
         int statusBarHeight = SystemUtils.getStatusBarHeight(mContext);
-        LogUtils.d(statusBarHeight + "statusBarHeight");
         mImmersiveView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,statusBarHeight));
         mTitleLayoutView = LayoutInflater.from(mContext).inflate(R.layout.atthur_toolbar_view,this,false);
         mLeftText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mLeftText);

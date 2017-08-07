@@ -14,8 +14,6 @@ import butterknife.Bind;
 public class MessageSettingActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
     ArthurToolBar mToolbarMessageSetting;
-    @Bind(R.id.shs_msg_setting_story)
-    ShSwitchView mShsMsgSettingStory;
     @Bind(R.id.shs_msg_setting_push)
     ShSwitchView mShsMsgSettingPush;
     @Bind(R.id.shs_msg_setting_challenge_start_notify)
@@ -41,9 +39,7 @@ public class MessageSettingActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void initListener() {
-        //自动收藏参加过的故事
-        boolean mShsMsgSettingStoryOn = PrefUtils.getBoolean(this, "mShsMsgSettingStoryOn", true);
-        mShsMsgSettingStory.setOn(mShsMsgSettingStoryOn);
+
 
         //消息推送
         boolean mShsMsgSettingPushOn = PrefUtils.getBoolean(this, "mShsMsgSettingPushOn", true);
@@ -80,19 +76,22 @@ public class MessageSettingActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onLeftClick(View v) {
-        boolean mShsMsgSettingStoryOn = mShsMsgSettingStory.isOn();
+        saveSettingAndFinish();
+    }
+
+    private void saveSettingAndFinish() {
+
         boolean mShsMsgSettingPushOn = mShsMsgSettingPush.isOn();
         boolean mShsMsgSettingChallengeStartNotifyOn = mShsMsgSettingChallengeStartNotify.isOn();
         boolean mShsMsgSettingChallengeComplementNotifyOn = mShsMsgSettingChallengeComplementNotify.isOn();
         boolean mShsMsgSettingCommentNotifyOn = mShsMsgSettingCommentNotify.isOn();
         boolean mShsMsgSettingAiteNotifyOn = mShsMsgSettingAiteNotify.isOn();
         boolean mShsMsgSettingStoryChangeOn = mShsMsgSettingStoryChange.isOn();
-        LogUtils.d(mShsMsgSettingStoryOn + ":" + mShsMsgSettingPushOn
+        LogUtils.d( mShsMsgSettingPushOn
                 + ":" + mShsMsgSettingChallengeStartNotifyOn + ":" + mShsMsgSettingChallengeComplementNotifyOn
                 + ":" + mShsMsgSettingCommentNotifyOn + ":" + mShsMsgSettingAiteNotifyOn
                 + ":" + mShsMsgSettingStoryChangeOn);
 
-        PrefUtils.putBoolean(this,"mShsMsgSettingStoryOn",mShsMsgSettingStoryOn);
         PrefUtils.putBoolean(this,"mShsMsgSettingPushOn",mShsMsgSettingPushOn);
         PrefUtils.putBoolean(this,"mShsMsgSettingChallengeStartNotifyOn",mShsMsgSettingChallengeStartNotifyOn);
         PrefUtils.putBoolean(this,"mShsMsgSettingChallengeComplementNotifyOn",mShsMsgSettingChallengeComplementNotifyOn);
@@ -102,4 +101,10 @@ public class MessageSettingActivity extends BaseActivity implements ArthurToolBa
         finish();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        saveSettingAndFinish();
+    }
 }

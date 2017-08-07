@@ -154,6 +154,7 @@ public class BindResultActivity extends BaseActivity implements ArthurToolBar.On
 
     private void back() {
         //请求解绑接口
+
         finish();
     }
 

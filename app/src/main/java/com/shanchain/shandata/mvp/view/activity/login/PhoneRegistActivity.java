@@ -115,7 +115,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
 
     @Override
     protected void initViewsAndEvents() {
-        //初始化工具栏
         initToolBar();
         initEditText();
     }
@@ -137,12 +136,7 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
         mEtPhoneRegistPwdconfirm.setOnFocusChangeListener(this);
     }
 
-    /**
-     * 2017/5/17
-     * 描述：初始化工具栏,沉浸式和按钮事件
-     */
     private void initToolBar() {
-
         mToolbarLogin.setBtnEnabled(true, false);
         mToolbarLogin.setOnLeftClickListener(this);
     }
@@ -166,7 +160,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
     }
 
     /**
-     * 2017/5/18
      * 描述：查看条款
      */
     private void lookTerms() {
@@ -174,7 +167,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
     }
 
     /**
-     * 2017/5/18
      * 描述：同意注册
      */
     private void agreeRegist() {
@@ -260,7 +252,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
     }
 
     /**
-     * 2017/5/18
      * 描述：获取验证码
      */
     private void obtainCheckCode() {
@@ -349,7 +340,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
     }
 
     /**
-     * 2017/5/17
      * 描述：顶部工具栏左侧按钮点击事件
      */
     @Override
@@ -383,7 +373,6 @@ public class PhoneRegistActivity extends BaseActivity implements ArthurToolBar.O
     }
 
     /**
-     * 2017/5/18
      * 描述：控制hint的显示与隐藏
      */
     private void changeHint(EditText et, boolean hasFocus, CharSequence hint) {

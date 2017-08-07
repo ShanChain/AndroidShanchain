@@ -1,6 +1,5 @@
 package com.shanchain.shandata.mvp.view.activity.found;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +37,7 @@ public class ExchangeCodeActivity extends BaseActivity implements ArthurToolBar.
     protected void initViewsAndEvents() {
         initToolBar();
         initData();
+
     }
 
     private void initData() {
@@ -65,12 +65,6 @@ public class ExchangeCodeActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     public void onRightClick(View v) {
-        ActivityManager.getInstance().finishAllActivity();
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra("fragmentId",2);
-        startActivity(intent);
-
-        startActivity(new Intent(this,NightMarketActivity.class));
-        finish();
+        ActivityManager.getInstance().finishToActivity(MainActivity.class, true);
     }
 }

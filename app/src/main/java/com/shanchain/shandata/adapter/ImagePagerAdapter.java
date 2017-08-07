@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class ImagePagerAdapter extends PagerAdapter {
     private ArrayList mArrayList;
 
-    private int[] images = {R.drawable.photo,R.drawable.photo2,R.drawable.photo3,R.drawable.photo4,R.drawable.photo5,R.drawable.photo6};
+    private int[] images = {R.drawable.photo,R.drawable.photo2,R.drawable.photo3,R.drawable.photo4,R.drawable.photo5,
+            R.drawable.photo6,R.drawable.photo_yue,R.drawable.photo_bear,R.drawable.photo_str};
 
     public ImagePagerAdapter(ArrayList arrayList) {
         mArrayList = arrayList;

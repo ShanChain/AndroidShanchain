@@ -7,8 +7,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.utils.GlideRoundTransform;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -58,7 +60,7 @@ public class PublicWelfareProjectsActivity extends BaseActivity implements Arthu
     }
 
     private void initData() {
-
+        Glide.with(this).load(R.drawable.photo_public).transform(new GlideRoundTransform(this)).into(mIvPublicWelfareImg);
     }
 
 

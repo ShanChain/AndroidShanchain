@@ -80,8 +80,10 @@ public class CommonProblemActivity extends BaseActivity implements ArthurToolBar
             case R.id.tv_common_problem_shan_use:
                 break;
             case R.id.tv_common_problem_difference:
+
                 break;
             case R.id.tv_common_problem_friend:
+
                 break;
             case R.id.tv_common_problem_invitation:
                 break;

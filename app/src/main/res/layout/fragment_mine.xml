@@ -99,7 +99,7 @@
                 android:textColor="@color/colorBtn"
                 android:textSize="@dimen/text_size_14sp"/>
 
-            <TextView
+            <View
                 android:layout_width="1dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
@@ -123,7 +123,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="72dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -209,7 +209,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
@@ -231,7 +231,7 @@
             android:text="善圆"
             android:textSize="@dimen/text_size_12sp"/>
 
-        <TextView
+        <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/colorAddFriendDivider"/>
@@ -249,7 +249,7 @@
             android:text="善券"
             android:textSize="@dimen/text_size_12sp"/>
 
-        <TextView
+        <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/colorAddFriendDivider"/>
@@ -268,7 +268,7 @@
             android:textSize="@dimen/text_size_12sp"/>
     </LinearLayout>
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
@@ -290,7 +290,7 @@
             android:text="我的预约"
             android:textSize="@dimen/text_size_12sp"/>
 
-        <TextView
+        <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/colorAddFriendDivider"/>
@@ -308,7 +308,7 @@
             android:text="设置"
             android:textSize="@dimen/text_size_12sp"/>
 
-        <TextView
+        <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/colorAddFriendDivider"/>
@@ -327,8 +327,74 @@
             android:textSize="@dimen/text_size_12sp"/>
     </LinearLayout>
 
-    <TextView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorAddFriendDivider"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="86dp">
+
+        <TextView
+            android:id="@+id/tv_mine_life_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableTop="@mipmap/mine_icon_reservation_default"
+            android:gravity="center"
+            android:paddingTop="24dp"
+            android:text="生活日签"
+            android:textSize="@dimen/text_size_12sp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAddFriendDivider"/>
+
+        <TextView
+            android:id="@+id/tv_mine_about"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawableTop="@mipmap/mine_icon_setup_default"
+            android:gravity="center"
+            android:paddingTop="24dp"
+            android:text="关于"
+            android:textSize="@dimen/text_size_12sp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAddFriendDivider"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_12sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+        <View
+            android:layout_marginRight="-1.2dp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="1dp"
+            android:background="@color/colorAddFriendDivider"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="1dp"
+            android:background="@color/colorTransparent"/>
+
+    </LinearLayout>
+
+
+
 </LinearLayout>

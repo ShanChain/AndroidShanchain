@@ -91,7 +91,6 @@ public class StoryActivity extends BaseActivity implements ArthurToolBar.OnLeftC
 
     /**
      *  描述：新手向导
-     *
      */
     private void show() {
         SpotlightView spotlightView = new SpotlightView.Builder(this)
@@ -238,6 +237,5 @@ public class StoryActivity extends BaseActivity implements ArthurToolBar.OnLeftC
         intent = new Intent(this, WebActivity.class);
         startActivity(intent);
     }
-
 
 }

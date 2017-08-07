@@ -33,3 +33,17 @@
 #-libraryjars libs/BaiduLBS_Android.jar
 #-keep class com.baidu.** { *; }
 #-keep class vi.com.gdi.bgl.android.**{*;}
+
+#友盟代码混淆
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+
+-keep public class com.shanchain.shandata.R$*{
+public static final int *;
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

@@ -1,5 +1,6 @@
 package com.shanchain.shandata.mvp.view.activity.mine;
 
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -49,7 +50,13 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this,"总得写点东西吧！亲~");
         }else {
             //提交服务器
-
+            showLoadingDialog();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    closeLoadingDialog();
+                }
+            },1000);
         }
     }
 }

@@ -18,22 +18,41 @@ android {
 
     }
 
+
     signingConfigs {
         release {
             keyAlias 'zj'
             keyPassword '123456'
-            storeFile file('keystore/shanchain.jks')
+            storeFile file('C:\\Users\\zhoujian\\Desktop\\youdao\\keystore\\shanchain.jks')
             storePassword 'shanchain'
         }
     }
     buildTypes {
         release {
             // 指定签名
-            //   signingConfig signingConfig.release
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+
+        wandoujia {}
+        baidu {}
+        c360 {}
+        shanchain {}
+        huawei {}
+        xiaomi {}
+        yingyongbao {}
+
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -49,7 +68,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
-    //常用第三方
     //注解框架
     compile 'com.jakewharton:butterknife:7.0.1'
     //图片加载框架
@@ -94,8 +112,6 @@ dependencies {
     compile files('libs/core-3.3.0.jar')
     //slidebar
     compile 'com.gjiazhe:wavesidebar:1.3'
-    //拼音4j
-    compile files('libs/pinyin4j-2.5.0.jar')
     //标签布局
     compile 'com.zhy:flowlayout-lib:1.0.3'
     //时间选择
@@ -104,5 +120,10 @@ dependencies {
     compile files('libs/BaiduLBS_Android.jar')
     //新手引导
     compile 'com.github.wooplr:Spotlight:1.0'
-
+    //友盟统计
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    //圆角矩形
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    //卡片切换的viewpager
+    compile 'com.github.devlight:infinitecycleviewpager:1.0.2'
 }

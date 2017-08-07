@@ -1,6 +1,7 @@
 package com.shanchain.shandata.widgets.other;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -15,11 +16,13 @@ public class CustomView extends View {
     private Path mPath;
 
     public CustomView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public CustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundCornerImageView);
+        typedArray.getInt(R.styleable.RoundCornerImageView_corner_size,0);
     }
 
 

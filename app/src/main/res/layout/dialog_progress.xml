@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:gravity="center"
+                android:background="@color/colorTransparent">
+        <RelativeLayout
+            android:background="@drawable/shape_bg_progress_dialog"
+            android:gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <com.jcodecraeer.xrecyclerview.progressindicator.AVLoadingIndicatorView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:indicator="LineSpinFadeLoader"
+                app:indicator_color="@color/colorTheme"/>
+
+
+        </RelativeLayout>
+</RelativeLayout>

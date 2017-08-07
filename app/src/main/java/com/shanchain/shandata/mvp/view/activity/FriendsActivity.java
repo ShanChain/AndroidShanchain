@@ -3,6 +3,7 @@ package com.shanchain.shandata.mvp.view.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -50,6 +51,7 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private List<FriendsInfo> isShanchainer;
     private List<FriendsInfo> notShanchainer;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_friends;
@@ -57,44 +59,34 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     protected void initViewsAndEvents() {
-        long t0 = System.currentTimeMillis();
 
         boolean isOpen = PrefUtils.getBoolean(this, "isOpen", false);
         initToolBar(isOpen);
-        long t1 = System.currentTimeMillis();
         initDatas(isOpen);
-        long t2 = System.currentTimeMillis();
         initRecyclerView(isOpen);
-        long t3 = System.currentTimeMillis();
 
-        LogUtils.d( "初始化时间:" + (t1-t0) );
-
-        LogUtils.d( "初始化数据时间:" + (t2-t1) );
-
-        LogUtils.d( "初始化列表时间:" + (t3-t2) );
     }
 
     private void initDatas(boolean isOpen) {
-        if (isOpen){
+        if (isOpen) {
+
             if (datas == null) {
                 datas = new ArrayList<>();
                 isShanchainer = new ArrayList<>();
                 notShanchainer = new ArrayList<>();
-
                 //读取联系人
 
 
-
-                for (int i = 0; i < 16; i ++) {
+                for (int i = 0; i < 16; i++) {
                     FriendsInfo friendsInfo = new FriendsInfo();
                     friendsInfo.setAvatarUrl("");
                     friendsInfo.setName("杨志" + i);
                     friendsInfo.setNickName("杨大志");
-                    friendsInfo.setFocus(i%2 == 0 ?true:false);
-                    friendsInfo.setShanChainer(i%3==0?true:false);
-                    if (i%3 == 0) {
+                    friendsInfo.setFocus(i % 2 == 0 ? true : false);
+                    friendsInfo.setShanChainer(i % 3 == 0 ? true : false);
+                    if (i % 3 == 0) {
                         isShanchainer.add(friendsInfo);
-                    }else {
+                    } else {
                         notShanchainer.add(friendsInfo);
                     }
                 }
@@ -104,13 +96,20 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
             }
 
-        }else {
+        } else {
 
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeLoadingDialog();
+            }
+        }, 1000);
     }
 
     private void initRecyclerView(boolean isOpen) {
-        if (isOpen){
+        if (isOpen) {
             mLlFriendsOpen.setVisibility(View.GONE);
             mXrvFriends.setVisibility(View.VISIBLE);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -118,16 +117,16 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
             mXrvFriends.setLayoutManager(linearLayoutManager);
 
             mXrvFriends.addItemDecoration(new RecyclerViewDivider(FriendsActivity.this,
-                    LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(FriendsActivity.this,1),
+                    LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(FriendsActivity.this, 1),
                     getResources().getColor(R.color.colorAddFriendDivider)));
 
             mXrvFriends.setPullRefreshEnabled(false);
             mXrvFriends.setLoadingMoreEnabled(false);
-            FriendsAdapter friendsAdapter = new FriendsAdapter(this,R.layout.item_friends,datas);
+            FriendsAdapter friendsAdapter = new FriendsAdapter(this, R.layout.item_friends, datas);
             mXrvFriends.setAdapter(friendsAdapter);
 
 
-        }else {
+        } else {
             mLlFriendsOpen.setVisibility(View.VISIBLE);
             mXrvFriends.setVisibility(View.GONE);
         }
@@ -135,22 +134,17 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private void initToolBar(boolean isOpen) {
         mToolbarFriends = (ArthurToolBar) findViewById(R.id.toolbar_friends);
-        //mToolbarFriends.setBackgroundColor(getResources().getColor(R.color.colorTheme));
         if (isOpen) {
             //开启通讯录好友
             mToolbarFriends.setBtnEnabled(true);
             mToolbarFriends.setBtnVisibility(true, true);
             mToolbarFriends.setOnLeftClickListener(this);
             mToolbarFriends.setOnRightClickListener(this);
-           // mToolbarFriends.setImmersive(this, true);
-
-
         } else {
             //未开启通讯录好友
             mToolbarFriends.setBtnVisibility(true, false);
             mToolbarFriends.setBtnEnabled(true, false);
             mToolbarFriends.setOnLeftClickListener(this);
-            //mToolbarFriends.setImmersive(this, true);
         }
     }
 
@@ -172,6 +166,15 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void readContacts() {
+
+        showLoadingDialog();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, 3000);
+
         LogUtils.d("读取联系人信息");
        /* List<ContactInfo> allContactInfos = ContactInfoUtils.getAllContactInfos(this);
         for (int i = 0; i < allContactInfos.size(); i++) {
@@ -219,6 +222,7 @@ public class FriendsActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @OnClick(R.id.btn_friends_start)
     public void onClick() {
+
         System.out.println("=======启用======");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             LogUtils.d("版本6.0");

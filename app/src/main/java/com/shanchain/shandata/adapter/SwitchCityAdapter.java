@@ -22,8 +22,6 @@ public class SwitchCityAdapter extends BaseCommonAdapter<SwitchCityInfo> {
     public void bindData(ViewHolder holder, SwitchCityInfo switchCityInfo, int position) {
         String pinying = switchCityInfo.getPinying();
 
-
-
         holder.setText(R.id.tv_item_city_letter, pinying);
         holder.setText(R.id.tv_item_city_address,switchCityInfo.getAddress());
 

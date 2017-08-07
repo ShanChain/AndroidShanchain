@@ -33,7 +33,7 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
     }
 
     @Override
-    public void bindData(final ViewHolder holder, final PublisherInfo publisherInfo, int position) {
+    public void bindData(final ViewHolder holder, final PublisherInfo publisherInfo, final int position) {
 
         String name = publisherInfo.getName();
         String time = publisherInfo.getTime();
@@ -78,24 +78,24 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                     holder.setVisible(R.id.tv_time_addr, true);
                     holder.setText(R.id.tv_time_addr, publisherInfo.getChallegeTime() + "," + publisherInfo.getAddr());
                 }
-                Glide.with(mContext).load(R.mipmap.popular_image_challenge_default).into((ImageView) holder.getView(R.id.iv_icon));
+                Glide.with(mContext)
+                        .load(R.mipmap.popular_image_challenge_default)
+                        .transform(new GlideCircleTransform(mContext))
+                        .into((ImageView) holder.getView(R.id.iv_icon));
                 holder.setText(R.id.tv_challenge_des, publisherInfo.getActiveDes());
                 holder.setText(R.id.tv_challenge_call, publisherInfo.getOtherDes());
 
                 break;
             case 3:
                 //故事条目
-            //    holder.setVisible(R.id.nine_grid_layout,false);
                 holder.setVisible(R.id.ll_challenge, true);
                 holder.setVisible(R.id.iv_item_hot_vote,true);
                 holder.setVisible(R.id.tv_item_hot_vote,true);
                 holder.setText(R.id.tv_item_hot_vote,publisherInfo.getVote()+"");
                 if (publisherInfo.isVoted()){
-                   // holder.getView(R.id.iv_item_hot_vote).setEnabled(false);
                     ToastUtils.showToast(mContext,"你已经投过票了");
                     holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_selected);
                 }else {
-                  //  holder.getView(R.id.iv_item_hot_vote).setEnabled(true);
                     holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_default);
 
                     holder.setOnClickListener(R.id.iv_item_hot_vote, new View.OnClickListener() {
@@ -108,9 +108,12 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
                                 public void OnItemClick(CustomDialog dialog, View view) {
                                     if (view.getId() == R.id.tv_dialog_vote_sure){
                                         holder.setText(R.id.tv_item_hot_vote,publisherInfo.getVote() + 1 + "");
-                                        holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_selected);
-                                        publisherInfo.setVoted(true);
+                                        publisherInfo.setVote(publisherInfo.getVote() + 1);
 
+                                        holder.setImageResource(R.id.iv_item_hot_vote,R.mipmap.icon_btn_vote_selected);
+
+                                        publisherInfo.setVoted(true);
+                                        notifyItemChanged(position);
                                         //   holder.getView(R.id.iv_item_hot_vote).setEnabled(false);
                                     }else if (view.getId() == R.id.tv_dialog_vote_cancle){
 
@@ -124,20 +127,17 @@ public class HotAdapter extends BaseCommonAdapter<PublisherInfo> {
 
                 }
 
-                if (TextUtils.isEmpty(publisherInfo.getStroyImgUrl())) {
-         //           holder.setVisible(R.id.iv_story, false);
-                } else {
-          //          holder.setVisible(R.id.iv_story, true);
-          //          Glide.with(mContext).load(R.drawable.photo).into((ImageView) holder.getView(R.id.iv_story));
-                }
-
-                Glide.with(mContext).load(R.mipmap.popular_image_story_default).into((ImageView) holder.getView(R.id.iv_icon));
+                Glide.with(mContext)
+                        .load(R.mipmap.popular_image_story_default)
+                        .transform(new GlideCircleTransform(mContext))
+                        .into((ImageView) holder.getView(R.id.iv_icon));
 
                 holder.setText(R.id.tv_challenge, publisherInfo.getTitle());
                 holder.setText(R.id.tv_challenge_des, publisherInfo.getActiveDes());
                 holder.setText(R.id.tv_challenge_call, publisherInfo.getOtherDes());
                 break;
             default:
+
                 break;
 
         }

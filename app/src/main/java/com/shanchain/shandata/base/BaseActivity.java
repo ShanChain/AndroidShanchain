@@ -3,6 +3,8 @@ package com.shanchain.shandata.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -12,7 +14,10 @@ import android.view.MenuItem;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.SystemUtils;
+import com.shanchain.shandata.widgets.dialog.CustomDialog;
+import com.umeng.analytics.MobclickAgent;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import butterknife.ButterKnife;
@@ -54,6 +59,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述：屏幕密度
      */
     protected float mScreenDensity = 0.0f;
+    /**
+     *  描述：加载中。。。对话框
+     *
+     */
+    private CustomDialog mCustomDialog;
 
 
     /**
@@ -69,7 +79,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        }
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
-        // 注册监听网络状态
+        //禁止横竖屏切换
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // 获取Intent数据
         initIntent();
         // 初始化属性
@@ -78,15 +89,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         initLayout();
 
 
-
         // 初始化View和事件
         initViewsAndEvents();
-        //StatusBarUtil.setColor(this,getResources().getColor(R.color.colorWhite));
-        //SystemUtils.setStatusBarLightMode_API23(this);
-        SystemUtils.setImmersiveStatusBar_API21(this,getResources().getColor(R.color.colorWhite));
-        SystemUtils.setStatusBarLightMode_API23(this);
-        SystemUtils.MIUISetStatusBarLightMode(getWindow(),true);
-        SystemUtils.FlymeSetStatusBarLightMode(getWindow(),true);
+        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
+            SystemUtils.setImmersiveStatusBar_API21(this, getResources().getColor(R.color.colorWhite));
+            SystemUtils.setStatusBarLightMode_API23(this);
+        }
+        SystemUtils.MIUISetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
+        SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
     }
 
     /**
@@ -133,7 +143,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 11:36
      * 描述: 重写setContentView 添加注解
      */
     @Override
@@ -150,7 +159,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            //finish();
+            LogUtils.d("click->home");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -176,7 +186,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 日期: 2017/1/5 11:41
      * 描述: 重写onDestroy实现反注册EventBus
      */
     @Override
@@ -186,9 +195,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
-      //  EventBus.getDefault().unregister(this);
+        //  EventBus.getDefault().unregister(this);
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
+    }
+
+    /**
+    *  描述：友盟数据统计埋点
+    */
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(this.getClass().getSimpleName()); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(this.getClass().getSimpleName()); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 
 
@@ -197,7 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      *
      * @param extras
      */
-    public void getBundleExtras(Bundle extras){
+    public void getBundleExtras(Bundle extras) {
 
     }
 
@@ -208,9 +231,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
 
 
-
     /**
-     * 日期: 2017/1/5 11:28
      * 描述: 绑定布局资源文件
      *
      * @return layout ID
@@ -218,7 +239,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract int getContentViewLayoutID();
 
     /**
-     * 日期: 2017/1/5 11:57
      * 描述: 初始化View和Event
      */
     protected abstract void initViewsAndEvents();
@@ -230,7 +250,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
 
     /**
-     * 日期: 2017/1/5 14:52
      * 描述: Activity跳转
      *
      * @param clazz
@@ -305,4 +324,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
+    protected void showLoadingDialog() {
+        mCustomDialog = new CustomDialog(this, 0.4, R.layout.dialog_progress, null);
+        mCustomDialog.show();
+    }
+
+    protected void closeLoadingDialog() {
+        if (mCustomDialog != null) {
+            mCustomDialog.dismiss();
+        }
+    }
 }

@@ -26,9 +26,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-    <TextView
+    <View
         android:layout_marginTop="23dp"
-        android:background="#554d4d4d"
+        android:background="@color/colorDialogDivider"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
@@ -47,9 +47,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
-        <TextView
+        <View
             android:layout_weight="3"
-            android:background="#554d4d4d"
+            android:background="@color/colorDialogDivider"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 

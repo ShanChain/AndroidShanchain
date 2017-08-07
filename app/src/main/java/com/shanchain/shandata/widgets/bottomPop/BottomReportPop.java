@@ -8,10 +8,6 @@ import android.widget.TextView;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.utils.LogUtils;
 
-/**
- * Created by zhoujian on 2017/5/26.
- */
-
 public class BottomReportPop extends BaseBottomPop {
 
     private ViewGroup mView;

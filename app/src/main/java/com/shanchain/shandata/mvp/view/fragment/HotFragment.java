@@ -154,6 +154,8 @@ public class HotFragment extends BaseFragment {
                 mImages.add("" + j);
             }
 
+            publisherInfo.setImages(mImages);
+
             if (i == 3) {
                 publisherInfo.setStroyImgUrl("");
                 publisherInfo.setVoted(true);
@@ -189,7 +191,7 @@ public class HotFragment extends BaseFragment {
                 LogUtils.d("随机图片的数量 :" + j);
                 mImages.add("" + j);
             }
-
+            publisherInfo.setImages(mImages);
             publisherInfo.setComments(new Random().nextInt(400));
             publisherInfo.setChallegeTime("5月" + i + "日");
             publisherInfo.setAddr("深圳市");

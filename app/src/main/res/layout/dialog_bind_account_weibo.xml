@@ -26,9 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <TextView
+    <View
         android:layout_marginTop="23dp"
-        android:background="#554d4d4d"
+        android:background="@color/colorDialogDivider"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
@@ -42,15 +42,14 @@
             android:gravity="center"
             android:textColor="@color/colorDialogBtn"
             android:textSize="@dimen/text_size_16sp"
-            android:layout_weight="1000"
+            android:layout_weight="1"
             android:text="取消"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
-        <TextView
-            android:layout_weight="3"
-            android:background="#554d4d4d"
-            android:layout_width="0dp"
+        <View
+            android:background="@color/colorDialogDivider"
+            android:layout_width="0.3dp"
             android:layout_height="match_parent"/>
 
         <TextView
@@ -58,7 +57,7 @@
             android:gravity="center"
             android:textColor="@color/colorDialogBtn"
             android:textSize="@dimen/text_size_16sp"
-            android:layout_weight="1000"
+            android:layout_weight="1"
             android:text=" 解绑"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>

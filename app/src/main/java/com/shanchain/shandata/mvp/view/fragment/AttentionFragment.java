@@ -113,7 +113,6 @@ public class AttentionFragment extends BaseFragment {
      */
     private void getDatas() {
 
-
         mDatas = new ArrayList<>();
         for (int i = 0; i < 20; i ++) {
 
@@ -136,7 +135,16 @@ public class AttentionFragment extends BaseFragment {
         }
 
         for (int i = 0; i < 10; i ++) {
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                mImages.add("" + j);
+            }
+
+
             PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setImages(mImages);
             publisherInfo.setName("石家海" + i);
             publisherInfo.setTime("2" + i + "分钟前");
             publisherInfo.setDes("哈哈哈哈哈!");
@@ -158,7 +166,15 @@ public class AttentionFragment extends BaseFragment {
 
 
         for (int i = 0; i < 6; i ++) {
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                mImages.add("" + j);
+            }
+
             PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setImages(mImages);
             publisherInfo.setType(2);
             publisherInfo.setName("李江宇" + i);
             publisherInfo.setTime("3"+i + "分钟前");
@@ -175,11 +191,9 @@ public class AttentionFragment extends BaseFragment {
             mDatas.add(publisherInfo);
         }
 
-
     }
 
     /**
-     *  2017/5/23
      *  描述：初始化列表配置
      *
      */

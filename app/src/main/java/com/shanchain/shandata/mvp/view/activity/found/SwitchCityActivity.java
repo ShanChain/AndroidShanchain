@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 
-
 public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
     @Bind(R.id.et_switch_city_search)
@@ -76,14 +75,13 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
                         return;
                     }
                 }
-
             }
         });
     }
 
     private void initRecyclerView() {
         initHeadView();
-       LinearLayoutManager LayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager LayoutManager = new LinearLayoutManager(this);
         mXrvSwitchCity.setLayoutManager(LayoutManager);
         mXrvSwitchCity.setPullRefreshEnabled(false);
         mXrvSwitchCity.setLoadingMoreEnabled(false);
@@ -95,7 +93,6 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (position>1){
                     ToastUtils.showToast(SwitchCityActivity.this,mDatas.get(position-2).getAddress());
-
                 }
             }
 
@@ -135,7 +132,6 @@ public class SwitchCityActivity extends BaseActivity implements ArthurToolBar.On
         });
 
     }
-
 
     private void initData() {
         mGridDatas = new ArrayList<>();

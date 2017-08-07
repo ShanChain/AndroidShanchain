@@ -11,10 +11,12 @@ import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.view.activity.PersonalHomePagerActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.AboutActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.BackgroundActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.CommonProblemActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.FansActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.FocusActivity;
+import com.shanchain.shandata.mvp.view.activity.mine.LifeLabelActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.MyChallengeActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.MyPublicWelfareActivity;
 import com.shanchain.shandata.mvp.view.activity.mine.MyReservationActivity;
@@ -73,6 +75,10 @@ public class MineFragment extends BaseFragment {
     LinearLayout mLlFragmentMine;
     @Bind(R.id.tv_mine_signature)
     TextView mTvMineSignature;
+    @Bind(R.id.tv_mine_life_label)
+    TextView mTvMineLifeLabel;
+    @Bind(R.id.tv_mine_about)
+    TextView mTvMineAbout;
 
     @Override
     public View initView() {
@@ -105,7 +111,10 @@ public class MineFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.iv_mine_avatar, R.id.tv_mine_modify, R.id.btn_mine_focus, R.id.btn_mine_fans, R.id.ll_mine_story, R.id.ll_mine_challenge, R.id.ll_mine_cards, R.id.tv_mine_shancurrency, R.id.tv_mine_shanvoucher, R.id.tv_mine_publicwelfare, R.id.tv_mine_reservation, R.id.tv_mine_setup, R.id.tv_mine_commonprobler})
+    @OnClick({R.id.iv_mine_avatar, R.id.tv_mine_modify, R.id.btn_mine_focus, R.id.btn_mine_fans,
+            R.id.ll_mine_story, R.id.ll_mine_challenge, R.id.ll_mine_cards, R.id.tv_mine_shancurrency,
+            R.id.tv_mine_shanvoucher, R.id.tv_mine_publicwelfare, R.id.tv_mine_reservation,
+            R.id.tv_mine_setup, R.id.tv_mine_commonprobler,R.id.tv_mine_life_label,R.id.tv_mine_about})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_avatar:
@@ -130,8 +139,8 @@ public class MineFragment extends BaseFragment {
                 startActivity(new Intent(mActivity, MyChallengeActivity.class));
                 break;
             case R.id.ll_mine_cards:
-                Intent intentCards = new Intent(mActivity,BackgroundActivity.class);
-                intentCards.putExtra("isBg",false);
+                Intent intentCards = new Intent(mActivity, BackgroundActivity.class);
+                intentCards.putExtra("isBg", false);
                 startActivity(intentCards);
                 break;
             case R.id.tv_mine_shancurrency:
@@ -156,6 +165,12 @@ public class MineFragment extends BaseFragment {
                 break;
             case R.id.tv_mine_commonprobler:
                 startActivity(new Intent(mActivity, CommonProblemActivity.class));
+                break;
+            case R.id.tv_mine_life_label:
+                startActivity(new Intent(mActivity, LifeLabelActivity.class));
+                break;
+            case R.id.tv_mine_about:
+                startActivity(new Intent(mActivity, AboutActivity.class));
                 break;
         }
     }

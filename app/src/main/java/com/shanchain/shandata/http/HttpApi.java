@@ -27,7 +27,7 @@ public interface HttpApi {
     String BASE_MOCKJS_URL = "http://115.29.177.22:18480/mockjs/1";
 
     //真实服务器跟地址
-    String REAL_BASE_URL = "http://192.168.0.143:8080";
+    String REAL_BASE_URL = "https://api.shanchain.com";
 
 
 
@@ -41,7 +41,8 @@ public interface HttpApi {
     String USER_CHECK_SMS = REAL_BASE_URL + "/v1/sms/unlogin/verifycode";
     //邮箱验证码
     String USER_CHECK_EMAIL = REAL_BASE_URL + "/v1/mail/verifycode";
-
+    //获取用户信息
+    String GET_USER_INFO = REAL_BASE_URL + "/v1/userinfo/get";
 
     //登录
     String USER_LOGIN = REAL_BASE_URL + "/v1/user/login";

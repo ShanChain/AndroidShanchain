@@ -26,4 +26,12 @@
         <attr name="btnDisable" format="boolean"/>
     </declare-styleable>
 
+    <!--自定义圆角矩形imageview属性-->
+    <declare-styleable name="RoundCornerImageView">
+        <attr name="corner_size" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CradleBall">
+        <attr name="cradle_ball_color" format="color" />
+    </declare-styleable>
 </resources>

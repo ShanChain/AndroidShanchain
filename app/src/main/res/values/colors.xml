@@ -33,6 +33,8 @@
 
     <color name="colorCreationText">#ffe400</color>
 
+    <color name="colorDialogDivider">#554d4d4d</color>
+
     <!--#########时间控件颜色-->
     <color name="white">#ffffff</color>
     <color name="circle_background">#f2f2f2</color>

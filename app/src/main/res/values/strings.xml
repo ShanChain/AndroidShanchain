@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">善数者</string>
+    <string name="app_name">史书</string>
     <string name="des_dialog_friends">停用后,我们将不能为您找到通讯录中的善数者好友,服务器上关于您的通讯录信息也将被删除</string>
     <string name="text_vote_dialog_title">该投票会影响善圆产生</string>
     <string name="text_dialog_vote_content">1.故事接续越长，越有可能产生善圆。2.获得投票越多，越有可能产生善圆。3.投票者数据特征越分散，越有可能产生善圆。</string>

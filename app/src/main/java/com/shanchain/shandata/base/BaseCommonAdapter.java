@@ -20,5 +20,4 @@ public abstract class BaseCommonAdapter<T> extends CommonAdapter<T> {
 
     public abstract void bindData(ViewHolder holder, T t, int position);
 
-
 }

@@ -8,10 +8,7 @@
     android:layout_height="match_parent">
 
 
-    <ZoomControls
-        android:id="@+id/zc_web"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <TextView
             android:id="@+id/tv_web"
@@ -27,7 +24,5 @@
             android:layout_marginTop="200dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
-    </ZoomControls>
 
 </LinearLayout>

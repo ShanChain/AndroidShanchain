@@ -28,7 +28,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
- * Created by zhoujian on 2017/5/19.
  * 发现页面
  */
 

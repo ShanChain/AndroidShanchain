@@ -26,7 +26,6 @@ import java.util.Random;
 import butterknife.Bind;
 
 /**
- * Created by zhoujian on 2017/5/19.
  * 同城页面
  */
 
@@ -39,7 +38,6 @@ public class SameCityFragment extends BaseFragment {
 
     @Override
     public View initView() {
-
         return View.inflate(mActivity, R.layout.fragment_hot, null);
     }
 
@@ -57,9 +55,7 @@ public class SameCityFragment extends BaseFragment {
     }
 
     /**
-     *  2017/5/23
      *  描述：绑定数据
-     *
      */
     private void bindData() {
         Collections.shuffle(mDatas);
@@ -105,23 +101,19 @@ public class SameCityFragment extends BaseFragment {
                 return false;
             }
         });
-
     }
 
     /**
-     *  2017/5/23
      *  描述：模拟数据
-     *
      */
     private void getDatas() {
-
 
         mDatas = new ArrayList<>();
         for (int i = 0; i < 16; i ++) {
 
             mImages = new ArrayList<>();
             Random random = new Random();
-            for (int j = 0; j <random.nextInt(9) ; j ++) {
+            for (int j = 0; j <=random.nextInt(9) ; j ++) {
                 mImages.add("" + j);
             }
 
@@ -138,7 +130,15 @@ public class SameCityFragment extends BaseFragment {
         }
 
         for (int i = 0; i < 8; i ++) {
+
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                mImages.add("" + j);
+            }
+
             PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setImages(mImages);
             publisherInfo.setName("石家海" + i);
             publisherInfo.setTime("2" + i + "分钟前");
             publisherInfo.setDes("哈哈哈哈哈!");
@@ -152,15 +152,22 @@ public class SameCityFragment extends BaseFragment {
             publisherInfo.setComments(new Random().nextInt(400));
             publisherInfo.setType(3);
             publisherInfo.setIconUrl(i+"icon.png");
+
             publisherInfo.setTitle("故事标题" + i);
             publisherInfo.setActiveDes("活动描述信息" + i);
             publisherInfo.setOtherDes("今天有" + i *2 + 3 + "人也在愉快的玩耍");
             mDatas.add(publisherInfo);
         }
 
-
         for (int i = 0; i < 6; i ++) {
+            mImages = new ArrayList<>();
+            Random random = new Random();
+            for (int j = 0; j <random.nextInt(9) ; j ++) {
+                mImages.add("" + j);
+            }
+
             PublisherInfo publisherInfo = new PublisherInfo();
+            publisherInfo.setImages(mImages);
             publisherInfo.setType(2);
             publisherInfo.setName("李江宇" + i);
             publisherInfo.setTime("3"+i + "分钟前");
@@ -177,13 +184,10 @@ public class SameCityFragment extends BaseFragment {
             mDatas.add(publisherInfo);
         }
 
-
     }
 
     /**
-     *  2017/5/23
      *  描述：初始化列表配置
-     *
      */
     private void initRecycleView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);

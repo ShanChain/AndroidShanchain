@@ -14,10 +14,6 @@ import android.widget.EditText;
 
 import com.shanchain.shandata.R;
 
-/**
- * Created by zhoujian on 2017/6/27.
- */
-
 public class ClearEditText extends EditText implements TextWatcher, View.OnFocusChangeListener {
     /**
      * 删除按钮的引用

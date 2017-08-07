@@ -75,7 +75,6 @@
         style="@style/style_text_common_problem"/>
     <TextView
         style="@style/style_text_line_match"/>
-
     <TextView
         android:id="@+id/tv_common_problem_difference"
         android:text="善圆与善券有什么区别？"
