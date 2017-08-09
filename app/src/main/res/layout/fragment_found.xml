@@ -49,7 +49,6 @@
             android:layout_height="40dp"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
-            android:drawableRight="@mipmap/cheerup_btn_return_default"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/margin_15dp"
             android:paddingRight="@dimen/margin_15dp"
@@ -66,7 +65,7 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <TextView
+        <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="@color/colorListDivider"/>
@@ -84,193 +83,16 @@
             android:text="头条"
             android:textColor="@color/colorBtn"
             android:textSize="@dimen/text_size_14sp"/>
-
-        <TextView
+        <View
             style="@style/style_text_line_match"/>
-
-        <LinearLayout
-            android:id="@+id/ll_found_hot_item1"
+        <com.shanchain.shandata.widgets.other.AutoHeightListView
+            android:id="@+id/ahlv_found"
+            android:divider="@color/colorListDivider"
+            android:dividerHeight="0.5dp"
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical">
+            android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/tv_found_hot_item1"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:background="@drawable/shape_bg_box_found"
-                android:gravity="center"
-                android:text="故事"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-            <TextView
-                android:id="@+id/tv_found_hot_item1_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:layout_marginRight="@dimen/margin_15dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="深圳市经常积水的路段"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-        </LinearLayout>
-
-        <TextView
-            style="@style/style_text_line_match"/>
-
-        <LinearLayout
-            android:id="@+id/ll_found_hot_item2"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tv_found_hot_item2"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:background="@drawable/shape_bg_box_found"
-                android:gravity="center"
-                android:text="挑战"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-            <TextView
-                android:id="@+id/tv_found_hot_item2_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:layout_marginRight="@dimen/margin_15dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="是什么让你迟迟不睡？"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-        </LinearLayout>
-
-        <TextView
-            style="@style/style_text_line_match"/>
-
-        <LinearLayout
-            android:id="@+id/ll_found_hot_item3"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tv_found_hot_item3"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:background="@drawable/shape_bg_box_found"
-                android:gravity="center"
-                android:text="故事"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-            <TextView
-                android:id="@+id/tv_found_hot_item3_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:layout_marginRight="@dimen/margin_15dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="孩子到底应该怎么样？"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-        </LinearLayout>
-
-        <TextView
-            style="@style/style_text_line_match"/>
-
-        <LinearLayout
-            android:id="@+id/ll_found_hot_item4"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tv_found_hot_item4"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:background="@drawable/shape_bg_box_found"
-                android:gravity="center"
-                android:text="快报"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-            <TextView
-                android:id="@+id/tv_found_hot_item4_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:layout_marginRight="@dimen/margin_15dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="自定义挑战隆重上线！"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-        </LinearLayout>
-
-        <TextView
-            style="@style/style_text_line_match"/>
-
-        <LinearLayout
-            android:id="@+id/ll_found_hot_item5"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tv_found_hot_item5"
-                android:layout_width="48dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:background="@drawable/shape_bg_box_found"
-                android:gravity="center"
-                android:text="推广"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-            <TextView
-                android:id="@+id/tv_found_hot_item5_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_15dp"
-                android:layout_marginRight="@dimen/margin_15dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="某某汽车邀您一起来战！"
-                android:textColor="@color/colorBtn"
-                android:textSize="@dimen/text_size_14sp"/>
-
-        </LinearLayout>
-
-        <TextView
+        <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="@color/colorListDivider"/>
@@ -335,7 +157,7 @@
         </LinearLayout>
 
 
-        <TextView
+        <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="@color/colorListDivider"/>
@@ -355,7 +177,7 @@
             android:textColor="@color/colorBtn"
             android:textSize="@dimen/text_size_14sp"/>
 
-        <TextView
+        <View
             style="@style/style_text_line_match"/>
 
         <android.support.v7.widget.RecyclerView
@@ -366,7 +188,7 @@
             android:layout_marginLeft="@dimen/margin_15dp"
             android:layout_marginTop="10dp"/>
 
-        <TextView
+        <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:background="@color/colorListDivider"/>

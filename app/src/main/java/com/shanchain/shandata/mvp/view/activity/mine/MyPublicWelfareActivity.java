@@ -11,6 +11,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MyPublicWelfareAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.model.MyPublicWelfareInfo;
+import com.shanchain.shandata.mvp.view.activity.found.ConvenientlyPublicWelfareActivity;
 import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -104,6 +105,6 @@ public class MyPublicWelfareActivity extends BaseActivity implements ArthurToolB
 
     @Override
     public void onRightClick(View v) {
-
+        readyGo(ConvenientlyPublicWelfareActivity.class);
     }
 }

@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/tv_common_problem_shan"
-        android:text="善数者是什么？"
+        android:text="史书是什么？"
         style="@style/style_text_common_problem"/>
     <TextView
         style="@style/style_text_line_match"/>

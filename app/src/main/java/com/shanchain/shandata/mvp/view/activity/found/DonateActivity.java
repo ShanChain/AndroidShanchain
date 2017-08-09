@@ -52,6 +52,7 @@ public class DonateActivity extends BaseActivity implements ArthurToolBar.OnLeft
         mToolbarDonate.setBtnEnabled(true, false);
         mToolbarDonate.setBtnVisibility(true, false);
         mToolbarDonate.setOnLeftClickListener(this);
+
     }
 
     @OnClick({R.id.iv_donate_increase, R.id.iv_donate_cutback, R.id.btn_donate_sure})

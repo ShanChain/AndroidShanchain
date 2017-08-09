@@ -7,10 +7,6 @@ import android.text.TextUtils;
 import java.io.File;
 import java.math.BigDecimal;
 
-/**
- * Created by zhoujian on 2017/6/29.
- */
-
 public class DataCleanManager {
     /**
      * * 清除本应用内部缓存(/data/data/com.xxx.xxx/cache) * *

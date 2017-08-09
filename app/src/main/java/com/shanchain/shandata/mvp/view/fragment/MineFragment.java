@@ -87,6 +87,7 @@ public class MineFragment extends BaseFragment {
 
     @Override
     public void initData() {
+
         int bgPath = PrefUtils.getInt(mActivity, "bgPath", R.drawable.mine_bg_spring_default);
         mIvMineBg.setImageResource(bgPath);
 

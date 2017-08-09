@@ -128,7 +128,6 @@ public class DynamicActivity extends BaseActivity implements ArthurToolBar.OnLef
             }
         });
 
-
         mSmlvMessages.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
 
     }

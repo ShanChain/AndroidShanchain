@@ -56,7 +56,6 @@ public class CommonProblemActivity extends BaseActivity implements ArthurToolBar
         mToolbarCommonProblem.setBtnEnabled(true,false);
         mToolbarCommonProblem.setBtnVisibility(true,false);
         mToolbarCommonProblem.setOnLeftClickListener(this);
-
     }
 
 
@@ -64,20 +63,28 @@ public class CommonProblemActivity extends BaseActivity implements ArthurToolBar
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_common_problem_shan:
+
                 break;
             case R.id.tv_common_problem_card:
+
                 break;
             case R.id.tv_common_problem_challenge_rule:
+
                 break;
             case R.id.tv_common_problem_custom_challenge:
+
                 break;
             case R.id.tv_common_problem_record_story:
+
                 break;
             case R.id.tv_common_problem_unique_story:
+
                 break;
             case R.id.tv_common_problem_new_story:
+
                 break;
             case R.id.tv_common_problem_shan_use:
+
                 break;
             case R.id.tv_common_problem_difference:
 

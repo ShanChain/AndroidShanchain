@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.mvp.view.activity.DetailsActivity;
 import com.shanchain.shandata.utils.GlideRoundTransform;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -63,12 +64,12 @@ public class PublicWelfareProjectsActivity extends BaseActivity implements Arthu
         Glide.with(this).load(R.drawable.photo_public).transform(new GlideRoundTransform(this)).into(mIvPublicWelfareImg);
     }
 
-
     @OnClick({R.id.tv_public_welfare_detail, R.id.btn_public_welfare_donate})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_public_welfare_detail:
-
+                Intent detailIntent = new Intent(this, DetailsActivity.class);
+                startActivity(detailIntent);
                 break;
             case R.id.btn_public_welfare_donate:
                 Intent intent = new Intent(this,DonateActivity.class);

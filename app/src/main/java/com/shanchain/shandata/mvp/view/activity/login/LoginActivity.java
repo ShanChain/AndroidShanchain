@@ -12,14 +12,12 @@ import android.widget.TextView;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.global.Constans;
 import com.shanchain.shandata.global.GlobalVariable;
 import com.shanchain.shandata.global.UserType;
 import com.shanchain.shandata.http.HttpApi;
 import com.shanchain.shandata.http.HttpUtils;
 import com.shanchain.shandata.http.MyHttpCallBack;
 import com.shanchain.shandata.mvp.Bean.ResponseLoginBean;
-import com.shanchain.shandata.mvp.model.ThirdUserInfo;
 import com.shanchain.shandata.mvp.view.activity.MainActivity;
 import com.shanchain.shandata.utils.AccountUtils;
 import com.shanchain.shandata.utils.DensityUtils;
@@ -187,8 +185,8 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                             int userId = response.getUserInfo().getUserId();
 
                             LogUtils.d("token:" + tokenData + "nickName : " + nickName + "userId" + userId);
-                            PrefUtils.putString(LoginActivity.this, "token", AESUtils.encrypt(tokenData, Constans.ENCRYPT_KEY));
-
+                            //PrefUtils.putString(LoginActivity.this, "token", AESUtils.encrypt(tokenData, Constans.ENCRYPT_KEY));
+                            GlobalVariable.userId = userId;
                             GlobalVariable.token = tokenData;
                             readyGoThenKill(MainActivity.class);
                         }
@@ -282,17 +280,16 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
 
             BaseToken token = result.getToken();
             String accessToken = token.getAccessToken();
-            //String openid = token.getOpenid();
             BaseUser userInfo = result.getUserInfo();
             String nickname = userInfo.getNickname();
             String headImageUrl = userInfo.getHeadImageUrl();
             String openId = userInfo.getOpenId();
             String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
-
+            String userType = UserType.USER_TYPE_WEIXIN;
             int sex = userInfo.getSex();
             switch (platform) {
                 case LoginPlatform.QQ:
-
+                    userType = UserType.USER_TYPE_QQ;
                     LogUtils.d("QQ登录成功 ！！！"
                             + "\r\n token = " + token
                             + ";\r\n >< " + "昵称=" + nickname
@@ -303,29 +300,10 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                             + ";\r\n accessToken = " + accessToken
                     );
 
-                    ThirdUserInfo thirdUserInfo = new ThirdUserInfo();
-                    thirdUserInfo.setHeadIcon(headImageUrlLarge);
-                    thirdUserInfo.setNickName(nickname);
-                    thirdUserInfo.setSex(sex);
-
-                    String time = String.valueOf(System.currentTimeMillis());
-                    //加密后的openid
-                    String encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(UserType.USER_TYPE_QQ + time)));
-                    //加密后的accesstoken
-                    LogUtils.d("accessToken : " + accessToken);
-                    String accesToken = accessToken.substring(0, 16);
-                    LogUtils.d("accesToken截取 : " + accesToken);
-                    String encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(UserType.USER_TYPE_QQ + time + openId)));
-
-                    LogUtils.d("加密后openid：" + encryptOpenId);
-                    LogUtils.d("加密后accesstoken：" + encryptToken16);
-                    LogUtils.d("用户类型：" + UserType.USER_TYPE_QQ);
-
-                    thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", UserType.USER_TYPE_QQ);
 
                     break;
                 case LoginPlatform.WX:
-
+                    userType = UserType.USER_TYPE_WEIXIN;
                     LogUtils.d("微信登录成功 ！！！"
                             + "\r\n token = " + token
                             + ";\r\n  " + "昵称=" + nickname
@@ -338,7 +316,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                     break;
 
                 case LoginPlatform.WEIBO:
-
+                    userType = UserType.USER_TYPE_WEIBO;
                     LogUtils.d("微博登录成功 ！！！"
                             + "\r\n token = " + token
                             + ";\r\n  " + "昵称=" + nickname
@@ -348,8 +326,23 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                             + ";\r\n headImageUrlLarge = " + headImageUrlLarge
                             + ";\r\n accessToken = " + accessToken);
                     break;
-
             }
+
+            String time = String.valueOf(System.currentTimeMillis());
+            //加密后的openid
+            String encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
+            //加密后的accesstoken
+            LogUtils.d("accessToken : " + accessToken);
+            String accesToken = accessToken.substring(0, 16);
+            LogUtils.d("accesToken截取 : " + accesToken);
+            String encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(userType + time + openId)));
+
+            LogUtils.d("加密后openid：" + encryptOpenId);
+            LogUtils.d("加密后accesstoken：" + encryptToken16);
+            LogUtils.d("用户类型：" + UserType.USER_TYPE_QQ);
+
+            thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
+
         }
 
         @Override
@@ -387,14 +380,18 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
                              @Override
                              public void onResponse(ResponseLoginBean response, int id) {
                                  if (response != null) {
+                                     LogUtils.d("三方登录成功");
                                      String nickName1 = response.getUserInfo().getNickName();
                                      String token = response.getToken();
-
+                                     int userId = response.getUserInfo().getUserId();
+                                     GlobalVariable.userId = userId;
                                      GlobalVariable.token = token;
-                                     PrefUtils.putString(LoginActivity.this, "token", AESUtils.encrypt(token, Constans.ENCRYPT_KEY));
-
+                                     //PrefUtils.putString(LoginActivity.this, "token", AESUtils.encrypt(token, Constans.ENCRYPT_KEY));
+                                     PrefUtils.putString(LoginActivity.this,"token",token);
+                                     PrefUtils.putInt(LoginActivity.this,"userId",userId);
                                      LogUtils.d("token   ===  " + token);
                                      LogUtils.d("nickName1 " + nickName1);
+                                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                  }
                              }
                          }

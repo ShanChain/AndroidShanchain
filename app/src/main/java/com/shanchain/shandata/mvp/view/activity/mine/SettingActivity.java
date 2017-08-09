@@ -54,17 +54,9 @@ public class SettingActivity extends BaseActivity implements ArthurToolBar.OnLef
     protected void initViewsAndEvents() {
         initToolBar();
         initData();
-        initListener();
-    }
-
-    private void initListener() {
-
-
-
     }
 
     private void initData() {
-
         //自动收藏参加过的故事
         boolean mShsSettingStoryOn = PrefUtils.getBoolean(this, "mShsSettingStoryOn", true);
         mShsSettingStory.setOn(mShsSettingStoryOn);
@@ -74,10 +66,13 @@ public class SettingActivity extends BaseActivity implements ArthurToolBar.OnLef
 
         try {
             File externalCacheDir = getExternalCacheDir();
-            LogUtils.d("外部缓存目录:" + externalCacheDir.getAbsolutePath());
+            String cacheSizeExternal = DataCleanManager.getCacheSize(externalCacheDir);
+
+            LogUtils.d("外部缓存目录:" + externalCacheDir.getAbsolutePath() + "外部缓存大小 : " + cacheSizeExternal);
             File cacheDir = getCacheDir();
-            LogUtils.d("本地缓存目录:" + cacheDir.getAbsolutePath());
+
             String cacheSize = DataCleanManager.getCacheSize(cacheDir);
+            LogUtils.d("本地缓存目录:" + cacheDir.getAbsolutePath() + "本地缓存大小 : " + cacheSize );
             mTvSettingCache.setText(cacheSize);
         } catch (Exception e) {
             e.printStackTrace();

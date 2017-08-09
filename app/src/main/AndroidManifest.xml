@@ -41,12 +41,24 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE"/>
+        <!--友盟统计-->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="59828961cae7e754170008ab"/>
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}"/>
+
+        <!--友盟消息推送-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59828961cae7e754170008ab">
+        </meta-data>
+
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="dfb65b759f7998b0b69b644d17303224">
+        </meta-data>
 
         <activity android:name=".mvp.view.activity.login.LoginActivity">
             <intent-filter>

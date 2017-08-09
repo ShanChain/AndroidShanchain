@@ -1,12 +1,13 @@
 package com.shanchain.shandata.mvp.view.activity.mine;
 
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.global.GlobalVariable;
+import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -26,6 +27,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
+        LogUtils.d("token:"+GlobalVariable.token);
         initToolBar();
     }
 
@@ -50,13 +52,32 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this,"总得写点东西吧！亲~");
         }else {
             //提交服务器
-            showLoadingDialog();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    closeLoadingDialog();
-                }
-            },1000);
+            /*showLoadingDialog();
+
+            LogUtils.d("token : "+GlobalVariable.token);
+            LogUtils.d("userId : "+GlobalVariable.userId);
+
+            HttpUtils.post()
+                    .addParams("disc",feedback)
+                    .addParams("title","意见反馈")
+                    .addParams("token",GlobalVariable.token)
+                    .addParams("userId",GlobalVariable.userId+"")
+                    .url(HttpApi.USER_FEEDBACK)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(FeedbackActivity.this,"反馈失败，请检查网络~");
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            closeLoadingDialog();
+
+                            ToastUtils.showToast(FeedbackActivity.this,"谢谢您宝贵的意见，我们将尽快处理");
+                        }
+                    });*/
         }
     }
 }

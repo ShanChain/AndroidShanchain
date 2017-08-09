@@ -4,21 +4,25 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.FoundListAdapter;
 import com.shanchain.shandata.adapter.FoundNightMarketAdapter;
 import com.shanchain.shandata.adapter.FoundStoryAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.mvp.model.FoundGoodStoryInfo;
 import com.shanchain.shandata.mvp.model.FoundNightMarketInfo;
+import com.shanchain.shandata.mvp.view.activity.WebActivity;
 import com.shanchain.shandata.mvp.view.activity.found.ConvenientlyPublicWelfareActivity;
 import com.shanchain.shandata.mvp.view.activity.found.GoodsDetailsActivity;
 import com.shanchain.shandata.mvp.view.activity.found.HotNewsActivity;
 import com.shanchain.shandata.mvp.view.activity.found.NightMarketActivity;
 import com.shanchain.shandata.mvp.view.activity.found.PublicWelfareProjectsActivity;
+import com.shanchain.shandata.widgets.other.AutoHeightListView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
@@ -44,26 +48,6 @@ public class FoundFragment extends BaseFragment {
     RecyclerView mXrvFoundGoodStory;
     @Bind(R.id.tv_found_hot_news)
     TextView mTvFoundHotNews;
-    @Bind(R.id.tv_found_hot_item1)
-    TextView mTvFoundHotItem1;
-    @Bind(R.id.tv_found_hot_item1_des)
-    TextView mTvFoundHotItem1Des;
-    @Bind(R.id.tv_found_hot_item2)
-    TextView mTvFoundHotItem2;
-    @Bind(R.id.tv_found_hot_item2_des)
-    TextView mTvFoundHotItem2Des;
-    @Bind(R.id.tv_found_hot_item3)
-    TextView mTvFoundHotItem3;
-    @Bind(R.id.tv_found_hot_item3_des)
-    TextView mTvFoundHotItem3Des;
-    @Bind(R.id.tv_found_hot_item4)
-    TextView mTvFoundHotItem4;
-    @Bind(R.id.tv_found_hot_item4_des)
-    TextView mTvFoundHotItem4Des;
-    @Bind(R.id.tv_found_hot_item5)
-    TextView mTvFoundHotItem5;
-    @Bind(R.id.tv_found_hot_item5_des)
-    TextView mTvFoundHotItem5Des;
     @Bind(R.id.iv_found_public_welfare)
     ImageView mIvFoundPublicWelfare;
     @Bind(R.id.tv_found_public_welfare_title)
@@ -78,16 +62,8 @@ public class FoundFragment extends BaseFragment {
     TextView mTvFoundPublicWelfare;
     @Bind(R.id.ll_fragment_public_welfare)
     LinearLayout mLlFragmentPublicWelfare;
-    @Bind(R.id.ll_found_hot_item1)
-    LinearLayout mLlFoundHotItem1;
-    @Bind(R.id.ll_found_hot_item2)
-    LinearLayout mLlFoundHotItem2;
-    @Bind(R.id.ll_found_hot_item3)
-    LinearLayout mLlFoundHotItem3;
-    @Bind(R.id.ll_found_hot_item4)
-    LinearLayout mLlFoundHotItem4;
-    @Bind(R.id.ll_found_hot_item5)
-    LinearLayout mLlFoundHotItem5;
+    @Bind(R.id.ahlv_found)
+    AutoHeightListView mAhlvFound;
     private List<FoundNightMarketInfo> mMarketDatas;
     private List<FoundGoodStoryInfo> mStoryDatas;
 
@@ -103,7 +79,23 @@ public class FoundFragment extends BaseFragment {
 
         initStoryRecyclerView();
 
+        initListView();
+
         initNightMarketRecyclerView();
+    }
+
+    private void initListView() {
+
+        FoundListAdapter foundListAdapter = new FoundListAdapter();
+
+        mAhlvFound.setAdapter(foundListAdapter);
+
+        mAhlvFound.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(mActivity,WebActivity.class));
+            }
+        });
     }
 
     private void initNightMarketRecyclerView() {
@@ -145,34 +137,11 @@ public class FoundFragment extends BaseFragment {
         });
     }
 
-    @OnClick({R.id.ll_found_hot_item1, R.id.ll_found_hot_item2, R.id.ll_found_hot_item3, R.id.ll_found_hot_item4, R.id.ll_found_hot_item5,R.id.tv_found_public_welfare, R.id.ll_fragment_public_welfare, R.id.tv_found_good_story, R.id.tv_found_hot_news, R.id.tv_found_night_market})
+    @OnClick({R.id.tv_found_public_welfare, R.id.ll_fragment_public_welfare, R.id.tv_found_hot_news, R.id.tv_found_night_market})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_found_good_story:
-
-                break;
             case R.id.tv_found_hot_news:
                 startActivity(new Intent(mActivity, HotNewsActivity.class));
-                break;
-            case R.id.ll_found_hot_item1:
-               //新闻主页
-
-                break;
-            case R.id.ll_found_hot_item2:
-                //新闻主页
-
-                break;
-            case R.id.ll_found_hot_item3:
-                //新闻主页
-
-                break;
-            case R.id.ll_found_hot_item4:
-                //新闻主页
-
-                break;
-            case R.id.ll_found_hot_item5:
-                //新闻主页
-
                 break;
             case R.id.tv_found_public_welfare:
                 Intent intentPublic = new Intent(mActivity, ConvenientlyPublicWelfareActivity.class);

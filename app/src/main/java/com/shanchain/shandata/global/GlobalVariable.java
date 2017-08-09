@@ -5,5 +5,7 @@ package com.shanchain.shandata.global;
  */
 
 public class GlobalVariable {
+
     public static String token = "";
+    public static int userId = 0;
 }
