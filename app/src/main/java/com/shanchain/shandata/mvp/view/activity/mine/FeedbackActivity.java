@@ -7,11 +7,15 @@ import android.widget.EditText;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.global.GlobalVariable;
+import com.shanchain.shandata.http.HttpApi;
+import com.shanchain.shandata.http.HttpUtils;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
+import okhttp3.Call;
 
 public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -27,7 +31,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
-        LogUtils.d("token:"+GlobalVariable.token);
+        LogUtils.d("token:" + GlobalVariable.token);
         initToolBar();
     }
 
@@ -48,36 +52,36 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onRightClick(View v) {
         String feedback = mEtFeedback.getText().toString().trim();
-        if (TextUtils.isEmpty(feedback)){
-            ToastUtils.showToast(this,"总得写点东西吧！亲~");
-        }else {
+        if (TextUtils.isEmpty(feedback)) {
+            ToastUtils.showToast(this, "总得写点东西吧！亲~");
+        } else {
             //提交服务器
-            /*showLoadingDialog();
+            showLoadingDialog();
 
-            LogUtils.d("token : "+GlobalVariable.token);
-            LogUtils.d("userId : "+GlobalVariable.userId);
+            LogUtils.d("token : " + GlobalVariable.token);
+            LogUtils.d("userId : " + GlobalVariable.userId);
 
             HttpUtils.post()
-                    .addParams("disc",feedback)
-                    .addParams("title","意见反馈")
-                    .addParams("token",GlobalVariable.token)
-                    .addParams("userId",GlobalVariable.userId+"")
+                    .addParams("disc", feedback)
+                    .addParams("title", "意见反馈")
+                    .addParams("token", GlobalVariable.userId + "_" + GlobalVariable.token)
+                    .addParams("userId", GlobalVariable.userId + "")
                     .url(HttpApi.USER_FEEDBACK)
                     .build()
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
-                            ToastUtils.showToast(FeedbackActivity.this,"反馈失败，请检查网络~");
+                            e.printStackTrace();
+                            ToastUtils.showToast(FeedbackActivity.this, "反馈失败，请检查网络~");
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
                             closeLoadingDialog();
-
-                            ToastUtils.showToast(FeedbackActivity.this,"谢谢您宝贵的意见，我们将尽快处理");
+                            ToastUtils.showToast(FeedbackActivity.this, "谢谢您宝贵的意见，我们将尽快处理");
                         }
-                    });*/
+                    });
         }
     }
 }

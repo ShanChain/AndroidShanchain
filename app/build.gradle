@@ -134,6 +134,6 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.3.0'
     //卡片切换的viewpager
     compile 'com.github.devlight:infinitecycleviewpager:1.0.2'
-
     compile project(':PushSDK')
+    compile project(':easeui')
 }

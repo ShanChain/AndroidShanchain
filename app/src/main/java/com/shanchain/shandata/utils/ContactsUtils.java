@@ -8,10 +8,6 @@ import com.shanchain.shandata.mvp.model.ContactInfo;
 
 import java.util.ArrayList;
 
-/**
- * Created by zhoujian on 2017/6/1.
- */
-
 public class ContactsUtils {
     public static ArrayList<ContactInfo> getAllCallRecords(Context context) {
 

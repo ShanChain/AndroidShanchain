@@ -2,7 +2,9 @@ package com.shanchain.shandata.mvp.view.activity.mine;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.view.View;
+import android.widget.AbsListView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -28,7 +30,8 @@ public class DynamicActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private ArrayList<DynamicMessageInfo> mdatas;
     private MessagesAdapter mMessagesAdapter;
-
+    private View mFootView;
+    private boolean isLoadingFinish = true;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -60,6 +63,9 @@ public class DynamicActivity extends BaseActivity implements ArthurToolBar.OnLef
             dynamicMessageInfo.setTime("6月30日16:30");
             mdatas.add(dynamicMessageInfo);
         }
+
+
+
     }
 
     private void initListView() {
@@ -67,7 +73,6 @@ public class DynamicActivity extends BaseActivity implements ArthurToolBar.OnLef
         mMessagesAdapter = new MessagesAdapter(mdatas);
         mSmlvMessages.setAdapter(mMessagesAdapter);
         SwipeMenuCreator creator = new SwipeMenuCreator() {
-
             @Override
             public void create(SwipeMenu menu) {
                 // 创建菜单条目
@@ -129,7 +134,46 @@ public class DynamicActivity extends BaseActivity implements ArthurToolBar.OnLef
         });
 
         mSmlvMessages.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+        mFootView = View.inflate(this, R.layout.footview_loading_more,null);
+        mSmlvMessages.addFooterView(mFootView);
+        mSmlvMessages.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (view.getLastVisiblePosition() == mdatas.size() && isLoadingFinish) {
+                    isLoadingFinish = false;
+                    showFootView();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideFootView();
+                            isLoadingFinish = true;
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+    /**
+     *  描述：显示底部加载中视图
+     */
+    private void showFootView(){
+       // mFootView.setPadding(0,0,0,0);
+        mFootView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     *  描述：隐藏底部加载中视图
+     *
+     */
+    private void hideFootView(){
+        //mFootView.setPadding(0,-DensityUtils.dip2px(DynamicActivity.this,62),0,0);
+        mFootView.setVisibility(View.GONE);
     }
 
     @Override

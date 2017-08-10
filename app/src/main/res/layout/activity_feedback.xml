@@ -32,6 +32,7 @@
         android:hint="请描述您的意见或建议，善数者的成长离不开您的支持"
         android:lineSpacingExtra="2dp"
         android:padding="@dimen/margin_15dp"
+        android:maxLength="100"
         android:textColor="@color/colorBtn"
         android:textColorHint="@color/colorHint"
         android:textSize="@dimen/text_size_14sp"/>

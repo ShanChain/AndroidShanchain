@@ -21,20 +21,17 @@ public interface HttpApi {
 
 
     //请求根路径
-    String BASE_URL = "http://115.29.177.22:8080";
-
-    //模拟请求跟地址
-    String BASE_MOCKJS_URL = "http://115.29.177.22:18480/mockjs/1";
+    //String BASE_URL = "http://115.29.177.22:8080";
 
     //真实服务器跟地址
-    String REAL_BASE_URL = "https://api.shanchain.com";
+    //String REAL_BASE_URL = "https://api.shanchain.com";
 
+    //测试服务器跟地址
+    String REAL_BASE_URL = "http://192.168.0.125:8080";
 
 
     /************《《《《《  用户相关的接口  ***************/
 
-    //创建用户
-    String USER_CREATE = BASE_URL + "/v1/user/create";
     //注册用户
     String USER_REGISTER = REAL_BASE_URL + "/v1/user/register";
     //短信验证
