@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.mvp.view.activity.ChatRoomActivity;
 import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -56,7 +57,7 @@ public class AboutActivity extends BaseActivity implements ArthurToolBar.OnLeftC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_about_weibo:
-
+                readyGo(ChatRoomActivity.class);
                 break;
             case R.id.tv_about_wechat:
 

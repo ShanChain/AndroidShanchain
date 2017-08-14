@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hyphenate="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_chat_room"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+   <com.hyphenate.easeui.widget.EaseTitleBar
+       android:id="@+id/etb_chat_room"
+       hyphenate:titleBarTitle="友谊的小船"
+       hyphenate:titleBarLeftImage="@drawable/ease_mm_title_back"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+
+      <com.hyphenate.easeui.widget.EaseChatMessageList
+       android:id="@+id/message_list"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="1"
+       hyphenate:msgListShowUserNick="true"/>
+
+   <com.hyphenate.easeui.widget.EaseChatInputMenu
+       android:id="@+id/input_menu"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true" />
+
+</LinearLayout>

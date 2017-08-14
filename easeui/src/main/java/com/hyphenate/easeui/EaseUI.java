@@ -221,8 +221,7 @@ public final class EaseUI {
     public EaseSettingsProvider getSettingsProvider(){
         return settingsProvider;
     }
-    
-    
+
     /**
      * check the application process name if process name is not qualified, then we think it is a service process and we will not init SDK
      * @param pID

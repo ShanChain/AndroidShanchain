@@ -29,14 +29,11 @@
     <!-- 时间控件,振动权限 -->
     <uses-permission android:name="android.permission.VIBRATE"/>
 
-
-
     <!-- 环信权限 -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".base.MyApplication"
@@ -50,7 +47,7 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE"/>
-        <!--友盟统计-->
+        <!-- 友盟统计 -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="59828961cae7e754170008ab"/>
@@ -58,12 +55,11 @@
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}"/>
 
-        <!--友盟消息推送-->
+        <!-- 友盟消息推送 -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="59828961cae7e754170008ab">
         </meta-data>
-
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
             android:value="dfb65b759f7998b0b69b644d17303224">
@@ -77,29 +73,31 @@
             </intent-filter>
         </activity>
 
-
         <!-- 设置环信应用的AppKey -->
-        <meta-data android:name="EASEMOB_APPKEY"  android:value="1145170810178434#shanchainandroid" />
-        <!-- 声明SDK所需的service SDK核心功能-->
-        <service android:name="com.hyphenate.chat.EMChatService" android:exported="true"/>
-        <service android:name="com.hyphenate.chat.EMJobService"
-                 android:permission="android.permission.BIND_JOB_SERVICE"
-                 android:exported="true"
-            />
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="1145170810178434#shanchainandroid"/>
+        <!-- 声明SDK所需的service SDK核心功能 -->
+        <service
+            android:name="com.hyphenate.chat.EMChatService"
+            android:exported="true"/>
+        <service
+            android:name="com.hyphenate.chat.EMJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <!-- 声明SDK所需的receiver -->
         <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+
                 <data android:scheme="package"/>
             </intent-filter>
             <!-- 可选filter -->
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
-
-
 
         <activity android:name=".mvp.view.activity.MainActivity">
         </activity>
@@ -309,6 +307,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".mvp.view.activity.story.ProtagonistActivity"/>
         <activity android:name=".mvp.view.activity.mine.LifeLabelActivity">
+        </activity>
+        <activity android:name=".mvp.view.activity.ChatRoomActivity">
         </activity>
     </application>
 

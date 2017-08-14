@@ -27,7 +27,6 @@ import com.hyphenate.easeui.widget.emojicon.EaseEmojiconMenuBase.EaseEmojiconMen
 
 /**
  * input menu
- * 
  * including below component:
  *    EaseChatPrimaryMenu: main menu bar, text input, send button
  *    EaseChatExtendMenu: grid menu with image, file, location, etc

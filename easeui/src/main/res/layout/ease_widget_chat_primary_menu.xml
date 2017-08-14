@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:paddingTop="4dp" >
 
-        <Button
+       <!-- <Button
             android:id="@+id/btn_set_mode_voice"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -34,7 +34,7 @@
             android:layout_height="32dp"
             android:layout_marginLeft="6dp"
             android:background="@drawable/ease_chatting_setmode_keyboard_btn"
-            android:visibility="gone" />
+            android:visibility="gone" />-->
 
         <LinearLayout
             android:id="@+id/btn_press_to_speak"

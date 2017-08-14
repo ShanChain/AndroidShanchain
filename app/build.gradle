@@ -31,9 +31,9 @@ android {
     }
     buildTypes {
 
-        debug {
+       /* debug {
             signingConfig signingConfigs.release
-        }
+        }*/
 
         release {
             // 指定签名
@@ -79,7 +79,7 @@ dependencies {
     //注解框架
     compile 'com.jakewharton:butterknife:7.0.1'
     //图片加载框架
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    //compile 'com.github.bumptech.glide:glide:3.7.0'
     //json解析框架
     compile 'com.google.code.gson:gson:2.6.2'
     //事件总线框架
