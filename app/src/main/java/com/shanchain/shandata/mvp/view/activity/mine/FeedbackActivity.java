@@ -52,19 +52,11 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onRightClick(View v) {
         String feedback = mEtFeedback.getText().toString().trim();
-<<<<<<< Updated upstream
-        if (TextUtils.isEmpty(feedback)) {
-            ToastUtils.showToast(this, "总得写点东西吧！亲~");
-        } else {
-=======
         if (TextUtils.isEmpty(feedback)){
             ToastUtils.showToast(this,"总得写点东西吧！亲~");
         }else {
 
-            
 
-
->>>>>>> Stashed changes
             //提交服务器
             showLoadingDialog();
 
