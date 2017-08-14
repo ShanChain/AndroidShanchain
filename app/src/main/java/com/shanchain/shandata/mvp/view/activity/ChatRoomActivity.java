@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.domain.EaseEmojicon;
@@ -19,6 +21,7 @@ import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowText;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
+import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.utils.LogUtils;
@@ -50,6 +53,7 @@ public class ChatRoomActivity extends BaseActivity {
         initMessageList();
         login();
         initListener();
+       // createGroup();
         /*
         ThreadUtils.runOnSubThread(new Runnable() {
             @Override
@@ -65,6 +69,23 @@ public class ChatRoomActivity extends BaseActivity {
             }
         });
         */
+    }
+
+    private void createGroup() {
+        EMGroupOptions options = new EMGroupOptions();
+        options.maxUsers = 200;
+        options.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+        String groupName = "善圆群";
+        String desc = "新建的第一个群";
+        String[] allNums = new String[]{};
+        String reason = "邀请您的加入";
+        try {
+            EMClient.getInstance().groupManager().createGroup(groupName,desc,allNums,reason,options);
+            LogUtils.d("创建群成功");
+        } catch (HyphenateException e) {
+            LogUtils.d("创建群失败");
+            e.printStackTrace();
+        }
     }
 
     private void initListener() {
