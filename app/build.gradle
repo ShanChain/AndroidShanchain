@@ -25,7 +25,7 @@ android {
         release {
             keyAlias 'zj'
             keyPassword '123456'
-            storeFile file('C:\\Users\\zhoujian\\Desktop\\youdao\\keystore\\shanchain.jks')
+            storeFile file('keystore/shanchain.jks')
             storePassword 'shanchain'
         }
     }
