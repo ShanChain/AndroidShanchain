@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMessage;
@@ -16,7 +17,6 @@ import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.widget.EaseChatInputMenu;
 import com.hyphenate.easeui.widget.EaseChatMessageList;
-import com.hyphenate.easeui.widget.EaseChatPrimaryMenu;
 import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRow;
 import com.hyphenate.easeui.widget.chatrow.EaseChatRowText;
@@ -25,7 +25,9 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.utils.LogUtils;
+import com.shanchain.shandata.utils.ThreadUtils;
 import com.shanchain.shandata.utils.ToastUtils;
+import com.shanchain.shandata.widgets.customEaseUI.CustomInputMenu;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class ChatRoomActivity extends BaseActivity {
     @Bind(R.id.input_menu)
     EaseChatInputMenu mInputMenu;
     private String mToChatUserName;
+    private String mUserName = "test1";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -51,10 +54,18 @@ public class ChatRoomActivity extends BaseActivity {
 
         initInputMenu();
         initMessageList();
-        login();
+       // login();
         initListener();
-       // createGroup();
+
+       /* new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                createGroup();
+            }
+        }, 3000);*/
+
         /*
+
         ThreadUtils.runOnSubThread(new Runnable() {
             @Override
             public void run() {
@@ -72,20 +83,29 @@ public class ChatRoomActivity extends BaseActivity {
     }
 
     private void createGroup() {
-        EMGroupOptions options = new EMGroupOptions();
-        options.maxUsers = 200;
-        options.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
-        String groupName = "善圆群";
-        String desc = "新建的第一个群";
-        String[] allNums = new String[]{};
-        String reason = "邀请您的加入";
-        try {
-            EMClient.getInstance().groupManager().createGroup(groupName,desc,allNums,reason,options);
-            LogUtils.d("创建群成功");
-        } catch (HyphenateException e) {
-            LogUtils.d("创建群失败");
-            e.printStackTrace();
-        }
+
+
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                EMGroupOptions options = new EMGroupOptions();
+                options.maxUsers = 100;
+                options.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+                String groupName = "善圆群";
+                String desc = "新建的第一个群";
+                // String[] allNums = new String[]{"test4"};
+                String reason = "邀请您的加入";
+                try {
+                    EMGroup group = EMClient.getInstance().groupManager().createGroup(groupName, desc, new String[]{}, reason, options);
+                    LogUtils.d("创建群成功！" + group);
+                } catch (HyphenateException e) {
+                    LogUtils.d("创建群失败！");
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }
 
     private void initListener() {
@@ -105,17 +125,18 @@ public class ChatRoomActivity extends BaseActivity {
     }
 
     private void login() {
-        EMClient.getInstance().login("test3", "123456", new EMCallBack() {
+        mUserName = "test3";
+        EMClient.getInstance().login(mUserName, "123456", new EMCallBack() {
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
-                ToastUtils.showToast(ChatRoomActivity.this,"登录成功！");
+                ToastUtils.showToast(ChatRoomActivity.this, "登录成功！");
             }
 
             @Override
             public void onError(int i, String s) {
-                ToastUtils.showToast(ChatRoomActivity.this,"登录失败！");
+                ToastUtils.showToast(ChatRoomActivity.this, "登录失败！");
             }
 
             @Override
@@ -126,8 +147,8 @@ public class ChatRoomActivity extends BaseActivity {
     }
 
     private void initMessageList() {
-        mToChatUserName = "test1";
-        int chatType = EaseConstant.CHATTYPE_CHATROOM;
+        mToChatUserName = "24437254586369";
+        int chatType = EaseConstant.CHATTYPE_GROUP;
         mMessageList.init(mToChatUserName, chatType, new CustomChatRowProvider());
         mMessageList.setItemClickListener(new EaseChatMessageList.MessageListItemClickListener() {
             @Override
@@ -163,9 +184,14 @@ public class ChatRoomActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+
+
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 3000);
@@ -175,7 +201,7 @@ public class ChatRoomActivity extends BaseActivity {
     }
 
     private void initInputMenu() {
-        mInputMenu.setCustomPrimaryMenu(new EaseChatPrimaryMenu(this));
+        mInputMenu.setCustomPrimaryMenu(new CustomInputMenu(this));
         mInputMenu.init();
         mInputMenu.setChatInputMenuListener(new EaseChatInputMenu.ChatInputMenuListener() {
             @Override
@@ -183,6 +209,8 @@ public class ChatRoomActivity extends BaseActivity {
                 LogUtils.d(content);
                 //创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
                 EMMessage message = EMMessage.createTxtSendMessage(content, mToChatUserName);
+                //设置为群消息
+                message.setChatType(EMMessage.ChatType.GroupChat);
                 //发送消息
                 EMClient.getInstance().chatManager().sendMessage(message);
                 mMessageList.refresh();
@@ -214,7 +242,7 @@ public class ChatRoomActivity extends BaseActivity {
         public int getCustomChatRowType(EMMessage message) {
             if (message.getType() == EMMessage.Type.TXT) {
                 //这里做个判断    如果能取到扩展字段    就返回消息类型
-                    return message.direct() == EMMessage.Direct.RECEIVE ? MESSAGE_TYPE_RECEIVEDSHAREPIC : MESSAGE_TYPE_SENDSHAREPIC;
+                return message.direct() == EMMessage.Direct.RECEIVE ? MESSAGE_TYPE_RECEIVEDSHAREPIC : MESSAGE_TYPE_SENDSHAREPIC;
             }
             return 0;
         }
@@ -233,11 +261,11 @@ public class ChatRoomActivity extends BaseActivity {
         @Override
         public void onMessageReceived(List<EMMessage> list) {
             //接受到消息
-            for (EMMessage msg : list) {
+         for (EMMessage msg : list) {
                 String msgBody = msg.getBody().toString();
                 LogUtils.d("body :  " + msgBody);
             }
-            mMessageList.refresh();
+            /*   mMessageList.refresh();*/
         }
 
         @Override

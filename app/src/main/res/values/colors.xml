@@ -53,5 +53,10 @@
     <color name="calendar_header">#999999</color>
     <color name="date_picker_view_animator">#f2f2f2</color>
     <color name="calendar_selected_date_text">#FFD1D2D4</color>
+
     <!--时间控件颜色#########-->
+
+    <color name="colorBtnNormal">#3333</color>
+    <color name="colorBtnEnable">#300f</color>
+
 </resources>

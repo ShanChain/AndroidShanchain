@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,8 +30,8 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
    // private View buttonSetModeVoice;
     private View buttonSend;
     private View buttonPressToSpeak;
-    private ImageView faceNormal;
-    private ImageView faceChecked;
+//    private ImageView faceNormal;
+//    private ImageView faceChecked;
     private Button buttonMore;
     private boolean ctrlPress = false;
 
@@ -58,9 +57,9 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         //buttonSetModeVoice = findViewById(R.id.btn_set_mode_voice);
         buttonSend = findViewById(R.id.btn_send);
         buttonPressToSpeak = findViewById(R.id.btn_press_to_speak);
-        faceNormal = (ImageView) findViewById(R.id.iv_face_normal);
-        faceChecked = (ImageView) findViewById(R.id.iv_face_checked);
-        RelativeLayout faceLayout = (RelativeLayout) findViewById(R.id.rl_face);
+//        faceNormal = (ImageView) findViewById(R.id.iv_face_normal);
+//        faceChecked = (ImageView) findViewById(R.id.iv_face_checked);
+//        RelativeLayout faceLayout = (RelativeLayout) findViewById(R.id.rl_face);
         buttonMore = (Button) findViewById(R.id.btn_more);
         edittext_layout.setBackgroundResource(R.drawable.ease_input_bar_bg_normal);
         
@@ -68,7 +67,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
 //        buttonSetModeKeyboard.setOnClickListener(this);
 //        buttonSetModeVoice.setOnClickListener(this);
         buttonMore.setOnClickListener(this);
-        faceLayout.setOnClickListener(this);
+//        faceLayout.setOnClickListener(this);
         editText.setOnClickListener(this);
         editText.requestFocus();
         
@@ -211,21 +210,27 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
            // buttonSetModeKeyboard.setVisibility(View.GONE);
             edittext_layout.setVisibility(View.VISIBLE);
             buttonPressToSpeak.setVisibility(View.GONE);
-            showNormalFaceImage();
+//            showNormalFaceImage();
             if(listener != null)
                 listener.onToggleExtendClicked();
         } else if (id == R.id.et_sendmessage) {
             edittext_layout.setBackgroundResource(R.drawable.ease_input_bar_bg_active);
-            faceNormal.setVisibility(View.VISIBLE);
-            faceChecked.setVisibility(View.INVISIBLE);
+//            faceNormal.setVisibility(View.VISIBLE);
+//            faceChecked.setVisibility(View.INVISIBLE);
             if(listener != null)
                 listener.onEditTextClicked();
-        } else if (id == R.id.rl_face) {
+        }
+
+        /*
+        else if (id == R.id.rl_face) {
             toggleFaceImage();
             if(listener != null){
                 listener.onToggleEmojiconClicked();
             }
-        } else {
+        }
+        */
+        else {
+
         }
     }
     
@@ -242,8 +247,8 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
         buttonSend.setVisibility(View.GONE);
         buttonMore.setVisibility(View.VISIBLE);
         buttonPressToSpeak.setVisibility(View.VISIBLE);
-        faceNormal.setVisibility(View.VISIBLE);
-        faceChecked.setVisibility(View.INVISIBLE);
+//        faceNormal.setVisibility(View.VISIBLE);
+//        faceChecked.setVisibility(View.INVISIBLE);
 
     }
 
@@ -251,6 +256,7 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
      * show keyboard
      */
     protected void setModeKeyboard() {
+
         edittext_layout.setVisibility(View.VISIBLE);
       //  buttonSetModeKeyboard.setVisibility(View.GONE);
         //buttonSetModeVoice.setVisibility(View.VISIBLE);
@@ -270,27 +276,27 @@ public class EaseChatPrimaryMenu extends EaseChatPrimaryMenuBase implements OnCl
     
     
     protected void toggleFaceImage(){
-        if(faceNormal.getVisibility() == View.VISIBLE){
+       /* if(faceNormal.getVisibility() == View.VISIBLE){
             showSelectedFaceImage();
         }else{
             showNormalFaceImage();
-        }
+        }*/
     }
     
-    private void showNormalFaceImage(){
+   /* private void showNormalFaceImage(){
         faceNormal.setVisibility(View.VISIBLE);
         faceChecked.setVisibility(View.INVISIBLE);
     }
-    
-    private void showSelectedFaceImage(){
+    */
+   /* private void showSelectedFaceImage(){
         faceNormal.setVisibility(View.INVISIBLE);
         faceChecked.setVisibility(View.VISIBLE);
-    }
+    }*/
     
 
     @Override
     public void onExtendMenuContainerHide() {
-        showNormalFaceImage();
+//        showNormalFaceImage();
     }
 
     @Override

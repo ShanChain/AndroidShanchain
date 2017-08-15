@@ -5,9 +5,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.view.activity.ChatRoomActivity;
+import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.ToastUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -44,7 +47,33 @@ public class AboutActivity extends BaseActivity implements ArthurToolBar.OnLeftC
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
+        login();
     }
+
+
+    private void login() {
+        String mUserName = "test1";
+        EMClient.getInstance().login(mUserName, "123456", new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+                ToastUtils.showToast(AboutActivity.this, "登录成功！");
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ToastUtils.showToast(AboutActivity.this, "登录失败！");
+                LogUtils.d("登录失败原因：" +s);
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
+    }
+
 
     private void initToolBar() {
         mToolbarShieldedPersons = (ArthurToolBar) findViewById(R.id.toolbar_shielded_persons);
