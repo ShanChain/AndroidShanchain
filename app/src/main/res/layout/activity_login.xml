@@ -115,9 +115,13 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
-
-
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_rn"
+            android:text="RN Test"
+            style="@style/style_btn_common"
+            />
+    </FrameLayout>
     <LinearLayout
         android:layout_marginTop="-30dp"
         android:id="@+id/ll_login_other_login"

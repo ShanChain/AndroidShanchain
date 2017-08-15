@@ -19,6 +19,7 @@ import com.shanchain.shandata.http.HttpUtils;
 import com.shanchain.shandata.http.MyHttpCallBack;
 import com.shanchain.shandata.mvp.Bean.ResponseLoginBean;
 import com.shanchain.shandata.mvp.view.activity.MainActivity;
+import com.shanchain.shandata.rn.RNDemoActivity;
 import com.shanchain.shandata.utils.AccountUtils;
 import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.utils.LogUtils;
@@ -86,7 +87,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
         mToolbarLogin.setBtnEnabled(false);
     }
 
-    @OnClick({R.id.tv_login_forget, R.id.btn_login_login, R.id.btn_login_regist, R.id.tv_other_login, R.id.iv_login_wechat, R.id.iv_login_qq, R.id.iv_login_weibo})
+    @OnClick({R.id.tv_login_forget, R.id.btn_login_login, R.id.btn_login_regist, R.id.tv_other_login, R.id.iv_login_wechat, R.id.iv_login_qq, R.id.iv_login_weibo,R.id.btn_rn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_login_forget:
@@ -100,6 +101,10 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
             case R.id.btn_login_regist:
                 //注册按钮的点击事件
                 regist();
+                break;
+            case R.id.btn_rn:
+                //注册按钮的点击事件
+                openRnDemo();
                 break;
             case R.id.tv_other_login:
                 //其他社交账号登录
@@ -209,6 +214,13 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      */
     private void regist() {
         readyGo(PhoneRegistActivity.class);
+    }
+
+    /**
+     * 描述：注册逻辑,弹出注册选择对话框
+     */
+    private void openRnDemo() {
+        readyGo(RNDemoActivity.class);
     }
 
     /**

@@ -1,1 +1,1 @@
-include ':app', ':PushSDK', ':easeui'
+include ':app', ':PushSDK', ':easeui', ':common', ':thirdparty'

@@ -9,6 +9,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alipay.euler.andfix.patch.PatchManager;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
+import com.facebook.soloader.SoLoader;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
@@ -24,6 +29,7 @@ import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +38,9 @@ import me.shaohui.shareutil.ShareConfig;
 import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
-public class MyApplication extends Application {
+import com.shanchain.shandata.BuildConfig;
+
+public class MyApplication extends Application implements ReactApplication{
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
@@ -50,11 +58,26 @@ public class MyApplication extends Application {
     public static Context mContext;
 
     public Vibrator mVibrator;
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
+
+        @Override
+        protected List<ReactPackage> getPackages() {
+            return Arrays.<ReactPackage>asList(
+                    new MainReactPackage()
+            );
+        }
+    };
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
+
         mContext = getApplicationContext();
 
         initOkhttpUtils();
@@ -197,6 +220,12 @@ public class MyApplication extends Application {
             }
         }
         return processName;
+    }
+
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
     }
 
 }
