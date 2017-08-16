@@ -313,6 +313,8 @@
 
         <activity android:name=".rn.RNDemoActivity">
         </activity>
+        <activity android:name=".rn.RNMainActivity">
+        </activity>
     </application>
 
 </manifest>

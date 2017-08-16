@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.rn.RNManager;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.SystemUtils;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
@@ -77,6 +78,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        if (!EventBus.getDefault().isRegistered(this)) {
 //            EventBus.getDefault().register(this);
 //        }
+        //rn init
+        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
         //禁止横竖屏切换

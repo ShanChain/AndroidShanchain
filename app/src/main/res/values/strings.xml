@@ -30,6 +30,12 @@
         <item>发现</item>
         <item>我的</item>
     </string-array>
+    <string-array name="rn_main_tab_name">
+        <item>故事</item>
+        <item>对话</item>
+        <item>广场</item>
+        <item>我的</item>
+    </string-array>
 
     <string-array name="des_background">
         <item>春天仿佛爱情在酝酿</item>

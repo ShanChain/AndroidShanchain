@@ -20,6 +20,7 @@ import com.shanchain.shandata.http.MyHttpCallBack;
 import com.shanchain.shandata.mvp.Bean.ResponseLoginBean;
 import com.shanchain.shandata.mvp.view.activity.MainActivity;
 import com.shanchain.shandata.rn.RNDemoActivity;
+import com.shanchain.shandata.rn.RNMainActivity;
 import com.shanchain.shandata.utils.AccountUtils;
 import com.shanchain.shandata.utils.DensityUtils;
 import com.shanchain.shandata.utils.LogUtils;
@@ -220,7 +221,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      * 描述：注册逻辑,弹出注册选择对话框
      */
     private void openRnDemo() {
-        readyGo(RNDemoActivity.class);
+        readyGo(RNMainActivity.class);
     }
 
     /**
