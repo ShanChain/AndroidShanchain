@@ -10,6 +10,6 @@ public class RNDemoActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "androidRN";
+        return "App";
     }
 }

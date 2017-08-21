@@ -221,7 +221,7 @@ public class LoginActivity extends BaseActivity implements View.OnFocusChangeLis
      * 描述：注册逻辑,弹出注册选择对话框
      */
     private void openRnDemo() {
-        readyGo(RNMainActivity.class);
+        readyGo(RNDemoActivity.class);
     }
 
     /**
