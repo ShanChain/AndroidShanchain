@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +16,7 @@ import com.facebook.soloader.SoLoader;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
+import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.VersionUtils;
 import com.umeng.analytics.MobclickAgent;
@@ -38,8 +38,6 @@ import me.shaohui.shareutil.ShareConfig;
 import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
-import com.shanchain.shandata.BuildConfig;
-
 public class MyApplication extends Application implements ReactApplication{
 
     private static final String QQ_ID = "1106258060";
@@ -57,7 +55,6 @@ public class MyApplication extends Application implements ReactApplication{
 
     public static Context mContext;
 
-    public Vibrator mVibrator;
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
