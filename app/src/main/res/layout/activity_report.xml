@@ -19,11 +19,10 @@
         app:leftTextSize="14"
         app:titleColor="@color/colorBtn"
         app:titleText="举报"
-        app:titleTextSize="16"
-        />
+        app:titleTextSize="16"/>
     <!--进入activity时让抢占焦点，主要是为了不让输入框获取焦点-->
     <LinearLayout
-        style="@style/style_obtain_focus"></LinearLayout>
+        style="@style/style_obtain_focus"/>
 
     <TextView
         android:layout_width="match_parent"

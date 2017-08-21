@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 /**
- * Created by zhoujian on 2017/5/16.
  * 单例吐司工具类
  */
 
@@ -39,7 +38,6 @@ public class ToastUtils {
 
 
     /**
-     *  2017/5/16
      *  描述：长时间吐司显示
      *  @param context 上下文对象
      *  @param msg 要显示的提示信息

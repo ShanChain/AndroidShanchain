@@ -5,7 +5,6 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 /**
- * Created by zhoujian on 2017/5/16.
  * @des 屏幕像素密度工具类
  */
 
