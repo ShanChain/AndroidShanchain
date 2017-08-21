@@ -6,7 +6,6 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
 /**
- * Created by zhoujian on 2017/5/16.
  * 文字染色工具类
  */
 

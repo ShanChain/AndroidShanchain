@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.mvp.view.activity.DetailsActivity;
-import com.shanchain.shandata.utils.GlideRoundTransform;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
@@ -61,7 +60,12 @@ public class PublicWelfareProjectsActivity extends BaseActivity implements Arthu
     }
 
     private void initData() {
-        Glide.with(this).load(R.drawable.photo_public).transform(new GlideRoundTransform(this)).into(mIvPublicWelfareImg);
+        String s1 = "我的天啊我是第一行。";
+        String s2 = "我是第二行，我好想换行。";
+        String s3 = "我是第三行，真的假的。真的可以换行吗，我这一行好像有点长啊，是不是哦？";
+        String s4 = "上面说的对。";
+        Glide.with(this).load(R.drawable.photo_public).into(mIvPublicWelfareImg);
+        mTvPublicWelfareDes.setText(s1 + "\n" + s2 + "\n"+ s3 + "\n"+ s4 );
     }
 
     @OnClick({R.id.tv_public_welfare_detail, R.id.btn_public_welfare_donate})

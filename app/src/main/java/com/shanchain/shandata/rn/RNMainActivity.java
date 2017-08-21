@@ -178,9 +178,6 @@ public class RNMainActivity extends AppCompatActivity implements ArthurToolBar.O
 
 
         });
-        //默认选中动态页
-        /*setFragment(new HomeFragment());
-        setToolBar(currentPage);*/
 
         setSelectedPager();
 

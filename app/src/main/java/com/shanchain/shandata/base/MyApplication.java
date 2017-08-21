@@ -17,6 +17,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
 import com.shanchain.shandata.BuildConfig;
+import com.shanchain.shandata.rn.module.AppReactPackage;
 import com.shanchain.shandata.utils.LogUtils;
 import com.shanchain.shandata.utils.VersionUtils;
 import com.umeng.analytics.MobclickAgent;
@@ -64,7 +65,8 @@ public class MyApplication extends Application implements ReactApplication{
         @Override
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
-                    new MainReactPackage()
+                    new MainReactPackage(),
+                    new AppReactPackage()
             );
         }
     };
