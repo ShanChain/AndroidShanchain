@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_story_title"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="三体"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <EditText
+        android:textSize="@dimen/sp_14"
+        android:id="@+id/et_story_title_search"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/shape_edit_search_pressed"
+        android:cursorVisible="true"
+        android:drawableLeft="@mipmap/abs_therrbody_icon_search_default"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:hint="搜索标签"
+        android:lines="1"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextDefault"
+        android:textColorHint="@color/colorHint"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_story_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"/>
+
+</LinearLayout>

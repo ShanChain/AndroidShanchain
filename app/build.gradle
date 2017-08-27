@@ -97,7 +97,7 @@ dependencies {
     //图片加载框架
     //compile 'com.github.bumptech.glide:glide:3.7.0'
     //json解析框架
-    compile 'com.google.code.gson:gson:2.6.2'
+    //compile 'com.google.code.gson:gson:2.6.2'
     //事件总线框架
     compile 'org.greenrobot:eventbus:3.0.0'
     //网络请求框架

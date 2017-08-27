@@ -412,6 +412,8 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         return this.mRightText;
     }
 
+
+
     /**
      * 日期: 2017/3/17 9:13
      * 描述: 是否打开沉浸式标题栏

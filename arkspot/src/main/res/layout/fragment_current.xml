@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:text="实时"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.shanchain.arkspot.widgets.other.TextViewExpandableAnimation
+        android:id="@+id/tv_test"
+        app:tvea_textExpand="展开"
+        app:tvea_expandLines="3"
+        app:tvea_textShrink="收起"
+        app:tvea_expandBitmap="@mipmap/abs_home_btn_fulltext_default"
+        app:tvea_shrinkBitmap="@mipmap/abs_home_btn_fulltext_default"
+        app:tvea_textContentColor="@color/colorTextDefault"
+        app:tvea_textContentSize="@dimen/sp_12"
+        app:tvea_textStateColor="@color/colorActive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/colorWhite"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_story_person_info"/>
+
+
+    <TextView
+        android:id="@+id/tv_item_story_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_15dp"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:text="#太空军纪念建军节#不知道你们在说什么，@章北海 其实我也很迷茫，不知道为什么是我。\n好像有什么不对。\n我也谁不上来。\n哈哈"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="@dimen/sp_12"/>
+
+    <View
+       style="@style/style_text_line_match"/>
+
+    <include layout="@layout/layout_story_function"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_floors"
+        android:drawablePadding="@dimen/dimens_5dp"
+        android:drawableRight="@mipmap/abs_home_icon_unfolded_default"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="11dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorActive"
+        android:text="展开余下10层楼"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.shanchain.arkspot.widgets.other.AutoHeightListView
+        android:id="@+id/lv_item_story"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:divider="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

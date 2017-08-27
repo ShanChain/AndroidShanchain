@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/colorWhite"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <include layout="@layout/layout_story_person_info"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_content"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorTextDefault"
+        android:ellipsize="end"
+        android:maxLines="7"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:text="#太空军纪念建军节#\n踏进太空总部。"
+        android:layout_height="wrap_content"/>
+
+    <com.jaeger.ninegridimageview.NineGridImageView
+        android:id="@+id/ngiv_item_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        app:imgGap="8dp"
+        app:maxSize="3"
+        app:showStyle="grid"
+        app:singleImgSize="345dp"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <include layout="@layout/layout_story_function"/>
+
+</LinearLayout>
