@@ -31,6 +31,13 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
 
     @Override
     protected void convert(BaseViewHolder holder, StoryInfo item) {
+
+        holder.addOnClickListener(R.id.iv_item_story_avatar)
+                .addOnClickListener(R.id.iv_item_story_more)
+                .addOnClickListener(R.id.tv_item_story_forwarding)
+                .addOnClickListener(R.id.tv_item_story_comment)
+                .addOnClickListener(R.id.tv_item_story_like);
+
         switch (holder.getItemViewType()) {
             case StoryInfo.type1:
                 AutoHeightListView lvItemStory= holder.getView(R.id.lv_item_story);

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_release_dynamic"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="发送"
+        app:rightTextColor="@color/colorTextDefault"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="发布动态"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <EditText
+        android:visibility="gone"
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_release_dynamic_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_15dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:background="@null"
+        android:hint="标题"
+        android:padding="@dimen/dimens_5dp"
+        android:textColor="@color/colorTextDefault"
+        android:textColorHint="@color/colorHint"
+        android:textSize="@dimen/sp_14"/>
+
+    <EditText
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_release_dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:gravity="top"
+        android:textColor="@color/colorTextDefault"
+        android:hint="以角色的身份，今天的日记是什么内容?"
+        android:padding="@dimen/dimens_5dp"
+        android:textSize="24sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_release_btn_switch"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:src="@mipmap/abs_release_btn_switch_long_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/colorDivider">
+
+        <TextView
+            android:id="@+id/tv_release_long_words"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:text="长文"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp"/>
+
+        <com.shanchain.arkspot.widgets.switchview.SwitchView
+            android:id="@+id/shs_release_dynamic"
+            android:layout_width="51dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:layout_toLeftOf="@id/tv_release_long_words"
+            app:tintColor="@color/colorActive"/>
+
+        <TextView
+            android:id="@+id/tv_release_common"
+            android:layout_toLeftOf="@id/shs_release_dynamic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:text="普通"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_release_function_common"
+            android:layout_marginRight="@dimen/dimens_20dp"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:gravity="center_vertical"
+            android:layout_toLeftOf="@id/tv_release_common"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_release_icon_img"
+                android:src="@mipmap/abs_release_btn_image_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_release_icon_at"
+                android:src="@mipmap/abs_release_btn_at_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_release_icon_topic"
+                android:src="@mipmap/abs_release_btn_yopic_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_release_icon_frame"
+                android:src="@mipmap/abs_release_btn_frame_default"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_release_function_long"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="216dp">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:textColor="@color/colorHint"
+                android:id="@+id/tv_release_img"
+                android:textSize="@dimen/sp_14"
+                android:drawableTop="@mipmap/abs_release_btn_image_long_default"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="图片"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:textColor="@color/colorHint"
+                android:id="@+id/tv_release_at"
+                android:textSize="@dimen/sp_14"
+                android:drawableTop="@mipmap/abs_release_btn_at_long_default"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="提到"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:textColor="@color/colorHint"
+                android:id="@+id/tv_release_topic"
+                android:textSize="@dimen/sp_14"
+                android:drawableTop="@mipmap/abs_release_btn_topic_long_default"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="话题"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:textColor="@color/colorHint"
+                android:id="@+id/tv_release_tail"
+                android:textSize="@dimen/sp_14"
+                android:drawableTop="@mipmap/abs_release_btn_littletail_long_default"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="小尾巴"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:textColor="@color/colorHint"
+                android:id="@+id/tv_release_read"
+                android:textSize="@dimen/sp_14"
+                android:drawableTop="@mipmap/abs_release_btn_read_long_default"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="阅读"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

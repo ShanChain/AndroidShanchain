@@ -61,8 +61,8 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
                     if (datas.get(i).getName().contains(input)){
                         show.add(datas.get(i));
                     }else {
-                    }
 
+                    }
                 }
 
                 mSearchRoleAdapter.notifyDataSetChanged();
@@ -113,10 +113,12 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         mSearchRoleAdapter = new SearchRoleAdapter(R.layout.item_search_role,show);
         mRvSearchRole.setAdapter(mSearchRoleAdapter);
 
+        View emptyView = View.inflate(this,R.layout.empty_search_role,null);
+        mSearchRoleAdapter.setEmptyView(emptyView);
         mSearchRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+                
             }
         });
 
@@ -127,6 +129,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         mTbSearchRole.setOnRightClickListener(this);
     }
 
+
     @Override
     public void onLeftClick(View v) {
         finish();
@@ -134,6 +137,6 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRightClick(View v) {
-
+        readyGo(AddRoleActivity.class);
     }
 }

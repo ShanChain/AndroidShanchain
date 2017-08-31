@@ -128,11 +128,12 @@
     </LinearLayout>
 
     <EditText
-        android:layout_marginTop="12dp"
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/shape_bg_edit_report"
         android:gravity="top"
         android:hint="请详细填写,以确保举报能够被受理"

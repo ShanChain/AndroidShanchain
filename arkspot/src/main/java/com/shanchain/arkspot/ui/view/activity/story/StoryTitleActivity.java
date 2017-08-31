@@ -61,7 +61,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initRecyclerView() {
         initHeadView();
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        //防止位置发生改变
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRvStoryTitle.setLayoutManager(manager);
         initStaggeredData();
@@ -76,6 +77,14 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(StoryTitleActivity.this,ChooseRoleActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        mRvStoryTitle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                //防止第一行顶部有空白
+                manager.invalidateSpanAssignments();
             }
         });
     }

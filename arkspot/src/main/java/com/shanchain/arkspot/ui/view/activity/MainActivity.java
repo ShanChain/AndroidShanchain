@@ -13,6 +13,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.view.activity.story.ReleaseDynamicActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.arkspot.ui.view.fragment.MineFragment;
 import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
@@ -180,6 +181,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     public void onRightClick(View v) {
         switch (mFragmentId) {
             case 0:
+                readyGo(ReleaseDynamicActivity.class);
                 break;
             case 1:
                 break;
@@ -210,7 +212,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             case 0:
                 Intent intent = new Intent(this, StoryTitleActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.activity_enter_alpha,R.anim.activity_exit_alpha);
+                overridePendingTransition(R.anim.activity_enter_alpha,R.anim.activity_anim_default);
                 break;
             case 1:
                 break;

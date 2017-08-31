@@ -21,6 +21,7 @@
         style="@style/style_obtain_focus"/>
 
     <EditText
+        android:textCursorDrawable="@null"
         android:textSize="@dimen/sp_14"
         android:id="@+id/et_story_title_search"
         android:layout_width="match_parent"

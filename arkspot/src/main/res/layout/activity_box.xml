@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_box"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorTextDefault"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="框框"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+    
+    <EditText
+        android:id="@+id/et_box"
+        android:paddingTop="@dimen/dimens_10dp"
+        android:paddingBottom="@dimen/dimens_10dp"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:paddingRight="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextDefault"
+        android:textCursorDrawable="@null"
+        android:textSize="14sp"
+        android:hint="输入内容"
+        android:gravity="top"
+        android:textColorHint="@color/colorHint"
+        android:background="@drawable/shape_bg_edit_report"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
+        <TextView
+            android:layout_marginTop="@dimen/dimens_10dp"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:textSize="12sp"
+            android:textColor="@color/colorHint"
+            android:text="用框框表示无人称的文字说明。包括时间、地点的基本背景，场 景和气氛的说明等。如果内容是语言，可以在框框中写下形象、 动作、表情、心理等描述。"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

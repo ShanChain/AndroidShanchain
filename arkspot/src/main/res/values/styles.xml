@@ -75,5 +75,9 @@
         <attr name="btnDisable" format="boolean"/>
     </declare-styleable>
 
+    <style name="style_radiobutton_report">
+        <item name="android:button">@drawable/selector_rediobutton</item>
+    </style>
+
 
 </resources>

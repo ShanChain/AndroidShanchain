@@ -10,4 +10,10 @@
         <attr name="tvea_textShrink" format="string" />
         <attr name="tvea_textExpand" format="string" />
     </declare-styleable>
+    <declare-styleable name="SwitchView">
+        <attr format="reference|color" name="tintColor"/>
+        <attr format="reference|dimension" name="outerStrokeWidth"/>
+        <attr format="reference|dimension" name="shadowSpace"/>
+    </declare-styleable>
+
 </resources>

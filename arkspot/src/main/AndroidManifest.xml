@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.shanchain.arkspot">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -22,6 +27,34 @@
         <activity android:name=".ui.view.activity.story.ChooseRoleActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.SearchRoleActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.ReportActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.ReportSuccessActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.AddRoleActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.AddResultActivity">
+        </activity>
+
+        <!-- 图片选择页面 -->
+        <activity
+            android:name="me.iwf.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".ui.view.activity.story.ReleaseDynamicActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".ui.view.activity.story.TopicActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.SelectContactActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.BoxActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.ReadModelActivity">
         </activity>
     </application>
 

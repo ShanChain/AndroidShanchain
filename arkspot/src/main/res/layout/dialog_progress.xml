@@ -14,7 +14,7 @@
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 app:indicator="LineSpinFadeLoader"
-                app:indicator_color="@color/colorTheme"/>
+                app:indicator_color="@color/colorActive"/>
 
 
         </RelativeLayout>
