@@ -12,6 +12,8 @@ public class StoryInfo implements MultiItemEntity{
     public static final int type3 = 3;
     public static final int type4 = 4;
 
+    private String time;
+
     private int itemType;
 
     @Override
@@ -21,5 +23,13 @@ public class StoryInfo implements MultiItemEntity{
 
     public void setItemType(int itemType) {
         this.itemType = itemType;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

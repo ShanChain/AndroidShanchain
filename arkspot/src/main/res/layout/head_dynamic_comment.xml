@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_story_person_info"/>
+
+    <TextView
+        android:id="@+id/tv_head_comment_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:text="#太空军纪念建军节# 踏进太红总部，我的心情从未如此忐忑过。 @程心 不合理地出现在主席台上。 好像有什么不太对。说不上来。 突然感到很冷。 主席走了进来我没有看清他的样子，只看出是一个肥胖的中年人。 他拿起话筒，用沙哑的嗓音......"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/tv_head_comment_expend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:gravity="right"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        android:text="展开"
+        android:textColor="@color/colorActive"
+        android:textSize="@dimen/sp_12"/>
+
+    <com.jaeger.ninegridimageview.NineGridImageView
+        android:id="@+id/ngiv_item_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        app:imgGap="8dp"
+        app:maxSize="3"
+        app:showStyle="grid"
+        app:singleImgSize="345dp"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <include layout="@layout/layout_story_function"/>
+
+</LinearLayout>

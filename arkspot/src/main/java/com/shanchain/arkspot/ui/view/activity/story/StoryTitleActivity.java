@@ -2,20 +2,19 @@ package com.shanchain.arkspot.ui.view.activity.story;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.adapter.StoryTitleGridAdapter;
+import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleLikeAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleStagAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
@@ -32,7 +31,7 @@ import utils.DensityUtils;
 import utils.ToastUtils;
 
 
-public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener {
+public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener {
 
 
     @Bind(R.id.et_story_title_search)
@@ -42,7 +41,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Bind(R.id.tb_story_title)
     ArthurToolBar mTbStoryTitle;
     private RecyclerView mRvLike;
-    private GridView mGrid;
+    private RecyclerView mRvTag;
     private String[] mTags;
     private List<StoryTagInfo> mTagDatas;
     private List<StoryTitleStagInfo> mStagDatas;
@@ -114,7 +113,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     private void initHeadView() {
         mHeadView = LayoutInflater.from(this).inflate(R.layout.head_story_title,(ViewGroup)findViewById(android.R.id.content),false);
         mRvLike = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_head);
-        mGrid = (GridView) mHeadView.findViewById(R.id.rv_story_title_grid);
+        mRvTag = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_tag);
 
         LinearLayoutManager likeLayoutManager = new LinearLayoutManager(this);
         likeLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -155,38 +154,46 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             mTagDatas.add(storyTagInfo);
         }
 
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,4);
+        mRvTag.setLayoutManager(gridLayoutManager);
 
-        final StoryTitleGridAdapter gridAdapter = new StoryTitleGridAdapter( mTagDatas);
-        mGrid.setAdapter(gridAdapter);
-        mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final AddRoleAdapter addRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mTagDatas);
+        mRvTag.setAdapter(addRoleAdapter);
+        addRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                boolean selected = mTagDatas.get(position).isSelected();
                 if (position == mTagDatas.size()-1){
                     ToastUtils.showToast(StoryTitleActivity.this,"更多");
                 }else {
-                    StoryTagInfo storyTagInfo = mTagDatas.get(position);
-                    boolean selected = storyTagInfo.isSelected();
-                    storyTagInfo.setSelected(!selected);
-                    gridAdapter.notifyDataSetChanged();
+                    mTagDatas.get(position).setSelected(!selected);
+                    addRoleAdapter.notifyDataSetChanged();
                 }
-
             }
         });
+
     }
 
     private void initToolBar() {
-        mTbStoryTitle.setBtnEnabled(false);
+        mTbStoryTitle.setBtnEnabled(false,true);
         TextView titleView = mTbStoryTitle.getTitleView();
         Drawable drawable = getResources().getDrawable(R.mipmap.abs_therrbody_btn_putaway_default);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         titleView.setCompoundDrawables(null, null, drawable, null);
         titleView.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
         mTbStoryTitle.setOnTitleClickListener(this);
+        mTbStoryTitle.setOnRightClickListener(this);
     }
 
     @Override
     public void onTitleClick(View v) {
         finish();
+    }
+
+    @Override
+    public void onRightClick(View v) {
+        //添加时空
+        Intent intent  = new Intent(this,AddNewSpaceActivity.class);
+        startActivity(intent);
     }
 }

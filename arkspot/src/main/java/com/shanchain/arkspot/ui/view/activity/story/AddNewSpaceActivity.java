@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -32,33 +31,34 @@ import me.iwf.photopicker.PhotoPicker;
 import utils.LogUtils;
 import utils.ToastUtils;
 
+public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
-public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+    @Bind(R.id.tb_add_new_space)
+    ArthurToolBar mTbAddNewSpace;
+    @Bind(R.id.rv_add_new_space)
+    RecyclerView mRvAddNewSpace;
+    @Bind(R.id.iv_add_space_tag)
+    ImageView mIvAddSpaceTag;
+    @Bind(R.id.et_add_space_tag)
+    EditText mEtAddSpaceTag;
+    @Bind(R.id.iv_add_space_img)
+    ImageView mIvAddSpaceImg;
+    @Bind(R.id.et_add_space_nick)
+    EditText mEtAddSpaceNick;
+    @Bind(R.id.et_add_space_slogan)
+    EditText mEtAddSpaceSlogan;
+    @Bind(R.id.et_add_space_introduce)
+    EditText mEtAddSpaceIntroduce;
 
-    @Bind(R.id.tb_add_role)
-    ArthurToolBar mTbAddRole;
-    @Bind(R.id.rv_add_role)
-    RecyclerView mRvAddRole;
-    @Bind(R.id.iv_add_role_tag)
-    ImageView mIvAddRoleTag;
-    @Bind(R.id.et_add_role_tag)
-    EditText mEtAddRoleTag;
-    @Bind(R.id.iv_add_role_img)
-    ImageView mIvAddRoleImg;
-    @Bind(R.id.et_add_role_nick)
-    EditText mEtAddRoleNick;
-    @Bind(R.id.et_add_role_introduce)
-    EditText mEtAddRoleIntroduce;
     private List<StoryTagInfo> mDatas;
     private AddRoleAdapter mAddRoleAdapter;
 
     private List<StoryTagInfo> selectedData;
-    private String mImgPath = "";
-    private boolean mIsRole;
+    private String mImgPath;
 
     @Override
     protected int getContentViewLayoutID() {
-        return R.layout.activity_add_role;
+        return R.layout.activity_add_new_space;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
     private void initRecyclerView() {
         selectedData = new ArrayList<>();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
-        mRvAddRole.setLayoutManager(layoutManager);
+        mRvAddNewSpace.setLayoutManager(layoutManager);
         mDatas = new ArrayList<>();
         String[] tags = {"原创", "历史", "动漫", "游戏", "武侠", "科幻", "玄幻", "悬疑", "小说", "影视", "体育", "校园"};
         for (int i = 0; i < tags.length; i++) {
@@ -80,7 +80,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
             mDatas.add(tagInfo);
         }
         mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mDatas);
-        mRvAddRole.setAdapter(mAddRoleAdapter);
+        mRvAddNewSpace.setAdapter(mAddRoleAdapter);
         mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -91,7 +91,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                     selectedData.remove(mDatas.get(position));
                 } else {
                     if (selectedData.size() >= 5) {
-                        ToastUtils.showToast(AddRoleActivity.this, "最多可以添加五个标签哦~");
+                        ToastUtils.showToast(AddNewSpaceActivity.this, "最多可以添加五个标签哦~");
                         return;
                     }
                     selectedData.add(mDatas.get(position));
@@ -101,26 +101,24 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                 mAddRoleAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
     private void initToolBar() {
-        mTbAddRole.setOnLeftClickListener(this);
-        mTbAddRole.setOnRightClickListener(this);
+        mTbAddNewSpace.setOnLeftClickListener(this);
+        mTbAddNewSpace.setOnRightClickListener(this);
     }
 
-    @OnClick({R.id.iv_add_role_tag, R.id.iv_add_role_img})
+    @OnClick({R.id.iv_add_space_tag, R.id.iv_add_space_img})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_add_role_tag:
+            case R.id.iv_add_space_tag:
                 addTag();
                 break;
-            case R.id.iv_add_role_img:
+            case R.id.iv_add_space_img:
                 selectImg();
                 break;
         }
     }
-
 
     private void selectImg() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -173,7 +171,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                 if (TextUtils.isEmpty(mImgPath)) {
                     return;
                 }
-                Glide.with(this).load(mImgPath).into(mIvAddRoleImg);
+                Glide.with(this).load(mImgPath).into(mIvAddSpaceImg);
             }
         }
     }
@@ -185,11 +183,11 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         }
 
         if (selectedData.size() >= 5) {
-            ToastUtils.showToast(AddRoleActivity.this, "最多可以添加五个标签哦~");
+            ToastUtils.showToast(AddNewSpaceActivity.this, "最多可以添加五个标签哦~");
             return;
         }
 
-        String tag = mEtAddRoleTag.getText().toString().trim();
+        String tag = mEtAddSpaceTag.getText().toString().trim();
         if (TextUtils.isEmpty(tag)) {
             ToastUtils.showToast(this, "不能定义空白标签哦~");
             return;
@@ -206,28 +204,20 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         storyTagInfo.setTag(tag);
         storyTagInfo.setSelected(true);
         selectedData.add(storyTagInfo);
-
         mDatas.add(storyTagInfo);
         mAddRoleAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onRightClick(View v) {
+        Intent intent = new Intent(this,AddResultActivity.class);
+        intent.putExtra("isRole",false);
+        startActivity(intent);
     }
 
     @Override
     public void onLeftClick(View v) {
         finish();
-    }
-
-    @Override
-    public void onRightClick(View v) {
-        showLoadingDialog();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                closeLoadingDialog();
-                Intent intent = new Intent(AddRoleActivity.this,AddResultActivity.class);
-                intent.putExtra("isRole",true);
-                startActivity(intent);
-            }
-        }, 2000);
-
     }
 }

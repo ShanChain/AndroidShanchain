@@ -12,7 +12,10 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AttentionAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
+import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
+import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 
@@ -86,6 +89,35 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             }
         });
 
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                int viewType = adapter.getItemViewType(position);
+                switch (viewType) {
+                    case StoryInfo.type1:
+                        //类型1的条目点击事件
+                        Intent intentType1 = new Intent(mActivity, StoryChainActivity.class);
+                        startActivity(intentType1);
+                        break;
+                    case StoryInfo.type2:
+                        //类型2的条目点击事件
+                        Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                        startActivity(intentType2);
+                        break;
+                    case StoryInfo.type3:
+                        //类型3的条目点击事件
+                        Intent intentType3 = new Intent(mActivity, DynamicDetailsActivity.class);
+                        startActivity(intentType3);
+                        break;
+                    case StoryInfo.type4:
+                        //类型4的条目点击事件
+                        Intent intentType4 = new Intent(mActivity, TopicDetailsActivity.class);
+                        startActivity(intentType4);
+                        break;
+                }
+            }
+        });
+
     }
 
     private void report() {
@@ -145,6 +177,5 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                 mSrlFragmentAttention.setRefreshing(false);
             }
         }, 3000);
-
     }
 }

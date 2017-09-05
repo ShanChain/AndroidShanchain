@@ -137,10 +137,9 @@
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14"/>
 
+
         </LinearLayout>
 
-
     </ScrollView>
-
 
 </LinearLayout>

@@ -22,14 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"/>
 
-    <GridView
-        android:layout_margin="@dimen/dimens_10dp"
-        android:gravity="center"
-        android:numColumns="4"
-        android:horizontalSpacing="@dimen/dimens_20dp"
-        android:verticalSpacing="12dp"
-        android:id="@+id/rv_story_title_grid"
+    <android.support.v7.widget.RecyclerView
+        android:paddingTop="@dimen/dimens_10dp"
+        android:paddingBottom="@dimen/dimens_10dp"
+        android:id="@+id/rv_story_title_tag"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

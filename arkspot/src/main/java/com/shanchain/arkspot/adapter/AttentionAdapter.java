@@ -1,7 +1,10 @@
 package com.shanchain.arkspot.adapter;
 
+import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -9,6 +12,7 @@ import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.FloorsInfo;
 import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.widgets.other.AutoHeightListView;
 
 import java.util.ArrayList;
@@ -51,6 +55,13 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
 
                 StoryItemFloorsAdapter floorsAdapter = new StoryItemFloorsAdapter(datas);
                 lvItemStory.setAdapter(floorsAdapter);
+                lvItemStory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
+                        mContext.startActivity(intent);
+                    }
+                });
                 break;
             case StoryInfo.type2:
                 String str = "<font color='blue' >#送行墨子号#@冯提莫</font>";

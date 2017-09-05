@@ -131,7 +131,7 @@
                 android:layout_marginRight="@dimen/dimens_15dp"
                 android:textColor="@color/colorWhite"
                 android:id="@+id/btn_choose_role"
-                android:text="请做好准备"
+                android:text="我们穿越吧"
                 android:textSize="@dimen/sp_12"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"/>

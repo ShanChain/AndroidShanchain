@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_topic_details"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="话题详情"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_topic_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

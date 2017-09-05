@@ -11,6 +11,7 @@
         android:id="@+id/tb_story_title"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"
+        app:rightImage="@mipmap/abs_find_btn_addto_default"
         app:titleText="三体"
         app:titleTextSize="16"/>
 
