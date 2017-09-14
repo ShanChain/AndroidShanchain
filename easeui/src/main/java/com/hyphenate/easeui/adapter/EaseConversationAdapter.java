@@ -126,24 +126,24 @@ public class EaseConversationAdapter extends ArrayAdapter<EMConversation> {
             holder.motioned.setVisibility(View.GONE);
         }
 
-        EaseAvatarOptions avatarOptions = EaseUI.getInstance().getAvatarOptions();
-        if(avatarOptions != null && holder.avatar instanceof EaseImageView) {
-            EaseImageView avatarView = ((EaseImageView) holder.avatar);
-            if (avatarOptions.getAvatarShape() != 0)
-                avatarView.setShapeType(avatarOptions.getAvatarShape());
-            if (avatarOptions.getAvatarBorderWidth() != 0)
-                avatarView.setBorderWidth(avatarOptions.getAvatarBorderWidth());
-            if (avatarOptions.getAvatarBorderColor() != 0)
-                avatarView.setBorderColor(avatarOptions.getAvatarBorderColor());
-            if (avatarOptions.getAvatarRadius() != 0)
-                avatarView.setRadius(avatarOptions.getAvatarRadius());
-        }
-        if (conversation.getUnreadMsgCount() > 0) {
-            // show unread message count
-            holder.unreadLabel.setText(String.valueOf(conversation.getUnreadMsgCount()));
-            holder.unreadLabel.setVisibility(View.VISIBLE);
-        } else {
-            holder.unreadLabel.setVisibility(View.INVISIBLE);
+                    EaseAvatarOptions avatarOptions = EaseUI.getInstance().getAvatarOptions();
+            if(avatarOptions != null && holder.avatar instanceof EaseImageView) {
+                EaseImageView avatarView = ((EaseImageView) holder.avatar);
+                if (avatarOptions.getAvatarShape() != 0)
+                    avatarView.setShapeType(avatarOptions.getAvatarShape());
+                if (avatarOptions.getAvatarBorderWidth() != 0)
+                    avatarView.setBorderWidth(avatarOptions.getAvatarBorderWidth());
+                if (avatarOptions.getAvatarBorderColor() != 0)
+                    avatarView.setBorderColor(avatarOptions.getAvatarBorderColor());
+                if (avatarOptions.getAvatarRadius() != 0)
+                    avatarView.setRadius(avatarOptions.getAvatarRadius());
+            }
+            if (conversation.getUnreadMsgCount() > 0) {
+                // show unread message count
+                holder.unreadLabel.setText(String.valueOf(conversation.getUnreadMsgCount()));
+                holder.unreadLabel.setVisibility(View.VISIBLE);
+            } else {
+                holder.unreadLabel.setVisibility(View.INVISIBLE);
         }
 
         if (conversation.getAllMsgCount() != 0) {

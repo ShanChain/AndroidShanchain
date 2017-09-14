@@ -16,6 +16,7 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.TopicAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.TopicInfo;
+import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,7 @@ public class TopicActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRvTopic.setLayoutManager(layoutManager);
         mTopicAdapter = new TopicAdapter(R.layout.item_topic, show);
+        mRvTopic.addItemDecoration(new RecyclerViewDivider(this));
         mRvTopic.setAdapter(mTopicAdapter);
         mTopicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override

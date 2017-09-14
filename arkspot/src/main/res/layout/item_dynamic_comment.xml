@@ -20,7 +20,7 @@
             android:src="@drawable/photo_yue"/>
 
         <TextView
-            android:layout_centerVertical="true"
+            android:layout_marginTop="3dp"
             android:id="@+id/tv_item_dynamic_comment_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:layout_toRightOf="@id/iv_item_dynamic_comment_avatar"
             android:text="小李"
             android:textColor="#3ab9c7"
-            android:textSize="12sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:padding="3dp"

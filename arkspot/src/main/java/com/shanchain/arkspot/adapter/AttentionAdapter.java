@@ -35,7 +35,6 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
 
     @Override
     protected void convert(BaseViewHolder holder, StoryInfo item) {
-
         holder.addOnClickListener(R.id.iv_item_story_avatar)
                 .addOnClickListener(R.id.iv_item_story_more)
                 .addOnClickListener(R.id.tv_item_story_forwarding)

@@ -1,10 +1,20 @@
 package com.shanchain.arkspot.ui.view.activity.story;
 
+import android.app.Service;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -22,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import utils.ToastUtils;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
@@ -30,6 +41,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     ArthurToolBar mTbAddRole;
     @Bind(R.id.rv_dynamic_comment)
     RecyclerView mRvDynamicComment;
+    @Bind(R.id.tv_dynamic_details_comment)
+    TextView mTvDynamicDetailsComment;
+    @Bind(R.id.ll_dynamic_details)
+    LinearLayout mLlDynamicDetails;
     private List<CommentInfo> datas;
     private DynamicCommentAdapter mDynamicCommentAdapter;
     private View mHeadView;
@@ -49,15 +64,15 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private void initData() {
         datas = new ArrayList<>();
 
-        for (int i = 0; i < 28; i ++) {
+        for (int i = 0; i < 28; i++) {
             CommentInfo commentInfo = new CommentInfo();
-            if (i%3==0) {
+            if (i % 3 == 0) {
                 commentInfo.setComment("重要的不是这件事情的真相，而是你对这件事情的态度 而已重要的不是这件事情的真相，，而是你对这件事情的态度 而已重要的不是这件事情的真相，而是你对这件事情的态度 而已");
-            }else {
+            } else {
                 commentInfo.setComment("重要的不是这件事情的真相你对这件事情的态度....");
             }
-            commentInfo.setCounts(i*2);
-            commentInfo.setLike(i%3==0?true:false);
+            commentInfo.setCounts(i * 2);
+            commentInfo.setLike(i % 3 == 0 ? true : false);
             commentInfo.setTime(i + "分钟前");
             datas.add(commentInfo);
         }
@@ -67,7 +82,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private void initRecyclerView() {
         initHeadView();
         mRvDynamicComment.setLayoutManager(new LinearLayoutManager(this));
-        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment,datas);
+        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas);
         mRvDynamicComment.addItemDecoration(new RecyclerViewDivider(this));
         mRvDynamicComment.setAdapter(mDynamicCommentAdapter);
         mDynamicCommentAdapter.setHeaderView(mHeadView);
@@ -86,7 +101,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void initHeadView() {
-        mHeadView = View.inflate(this, R.layout.head_dynamic_comment,null);
+        mHeadView = View.inflate(this, R.layout.head_dynamic_comment, null);
         ImageView ivAvatar = (ImageView) mHeadView.findViewById(R.id.iv_item_story_avatar);
         ImageView ivMore = (ImageView) mHeadView.findViewById(R.id.iv_item_story_more);
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
@@ -135,7 +150,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void report() {
-        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_report,
+        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
                 new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
@@ -186,17 +201,92 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_item_story_avatar:
-                ToastUtils.showToast(this,"头像");
+                ToastUtils.showToast(this, "头像");
                 break;
             case R.id.tv_item_story_forwarding:
-                ToastUtils.showToast(this,"转发");
+
                 break;
             case R.id.tv_item_story_comment:
-                ToastUtils.showToast(this,"评论");
+                showPop();
+                popupInputMethodWindow();
                 break;
             case R.id.tv_item_story_like:
-                ToastUtils.showToast(this,"喜欢");
+                ToastUtils.showToast(this, "喜欢");
                 break;
         }
     }
+
+    @OnClick(R.id.tv_dynamic_details_comment)
+    public void onClick() {
+        showPop();
+        popupInputMethodWindow();
+    }
+
+    private void showPop() {
+        View contentView = View.inflate(this, R.layout.pop_comment, null);
+        TextView mTvPopCommentOutside = (TextView) contentView.findViewById(R.id.tv_pop_comment_outside);
+        final EditText mEtPopComment = (EditText) contentView.findViewById(R.id.et_pop_comment);
+        TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
+        ImageView mIvPopCommentAt = (ImageView) contentView.findViewById(R.id.iv_pop_comment_at);
+        ImageView mIvPopCommentTopic = (ImageView) contentView.findViewById(R.id.iv_pop_comment_topic);
+        ImageView mIvPopCommentFrame = (ImageView) contentView.findViewById(R.id.iv_pop_comment_frame);
+
+        final PopupWindow pop = new PopupWindow(contentView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
+
+        mTvPopCommentOutside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pop.dismiss();
+            }
+        });
+
+        mTvPopCommentSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = mEtPopComment.getText().toString();
+                if (TextUtils.isEmpty(comment)){
+                    return;
+                }
+
+                ToastUtils.showToast(DynamicDetailsActivity.this,comment);
+                pop.dismiss();
+            }
+        });
+
+        mIvPopCommentAt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast(DynamicDetailsActivity.this,"艾特");
+            }
+        });
+
+        mIvPopCommentFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast(DynamicDetailsActivity.this,"小尾巴");
+            }
+        });
+
+        mIvPopCommentTopic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast(DynamicDetailsActivity.this,"话题");
+            }
+        });
+        pop.setTouchable(true);
+        pop.setOutsideTouchable(true);
+        pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));
+        pop.showAtLocation(mLlDynamicDetails,0,0, Gravity.BOTTOM);
+    }
+
+    private void popupInputMethodWindow() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Service.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 0);
+    }
+
 }

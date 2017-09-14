@@ -85,6 +85,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // 初始化View和事件
         initViewsAndEvents();
+        initStatusBar();
+    }
+
+    private void initStatusBar() {
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
             SystemUtils.setImmersiveStatusBar_API21(this, getResources().getColor(R.color.colorWhite));
             SystemUtils.setStatusBarLightMode_API23(this);

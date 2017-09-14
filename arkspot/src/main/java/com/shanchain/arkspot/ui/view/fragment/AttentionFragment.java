@@ -71,19 +71,19 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
                     case R.id.iv_item_story_avatar:
-                        ToastUtils.showToast(mActivity, "头像");
+                        clickAvatar(position);
                         break;
                     case R.id.iv_item_story_more:
                         report();
                         break;
                     case R.id.tv_item_story_forwarding:
-                        ToastUtils.showToast(mActivity, "转发");
+                        clickForwarding(position);
                         break;
                     case R.id.tv_item_story_comment:
-                        ToastUtils.showToast(mActivity, "评论");
+                        clickComment(position);
                         break;
                     case R.id.tv_item_story_like:
-                        ToastUtils.showToast(mActivity, "喜欢");
+                        clickLike(position);
                         break;
                 }
             }
@@ -120,8 +120,40 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
     }
 
+    /**
+     *  描述：头像的点击事件
+     *
+     */
+    private void clickAvatar(int position) {
+        ToastUtils.showToast(mActivity, "头像");
+    }
+
+    /**
+     *  描述：转发的点击事件
+     *
+     */
+    private void clickForwarding(int position) {
+        ToastUtils.showToast(mActivity, "转发");
+    }
+
+    /**
+     *  描述：评论的点击事件
+     *
+     */
+    private void clickComment(int position) {
+        Intent intentComment = new Intent(mActivity,DynamicDetailsActivity.class);
+        startActivity(intentComment);
+    }
+
+    /**
+     *  描述：喜欢的点击事件
+     */
+    private void clickLike(int position) {
+
+    }
+
     private void report() {
-        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_report,
+        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
                 new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override

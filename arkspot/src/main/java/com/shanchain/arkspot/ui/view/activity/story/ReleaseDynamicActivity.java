@@ -10,7 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -20,19 +23,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
+import com.shanchain.arkspot.adapter.DynamicImagesAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
+import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 import utils.LogUtils;
 import utils.PrefUtils;
+import utils.ThreadUtils;
 import utils.ToastUtils;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -74,7 +85,17 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     LinearLayout mLlReleaseFunctionLong;
     @Bind(R.id.iv_release_btn_switch)
     ImageView mIvReleaseBtnSwitch;
+    @Bind(R.id.rv_release_dynamic)
+    RecyclerView mRvReleaseDynamic;
+    private List<DynamicImageInfo> imgData;
+    private DynamicImagesAdapter mImagesAdapter;
+    /**
+     * 描述：标记是否是编辑长文状态
+     */
+    private boolean isEditLong;
 
+    private ArrayList<String> replaceAt = new ArrayList<>();
+    private ArrayList<String> replaceTopic = new ArrayList<>();
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_release_dynamic;
@@ -82,14 +103,66 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     protected void initViewsAndEvents() {
+
+        testRegist();
+
         initToolBar();
         initListener();
+        initRecyclerView();
+    }
+
+    private void testRegist() {
+
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().createAccount("test666","123456");
+                    EMClient.getInstance().createAccount("test11","123456");
+                    EMClient.getInstance().createAccount("test111","123456");
+                    LogUtils.d("注册成功~~~");
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                    LogUtils.d("注册失败~~~");
+                }
+            }
+        });
+
+
+    }
+
+    private void initRecyclerView() {
+        imgData = new ArrayList<>();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRvReleaseDynamic.setLayoutManager(linearLayoutManager);
+        mImagesAdapter = new DynamicImagesAdapter(R.layout.item_dynamic_image, imgData);
+
+        mRvReleaseDynamic.setAdapter(mImagesAdapter);
+
+        mImagesAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                imgData.remove(position);
+                imgCounts = 3 - imgData.size();
+                mImagesAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     private void initListener() {
         mSvReleaseDynamic.setOnSwitchStateChangeListener(new SwitchView.OnSwitchStateChangeListener() {
             @Override
             public void onSwitchStateChange(boolean isOn) {
+
+                mEtReleaseDynamicTitle.setText("");
+                mEtReleaseDynamicContent.setText("");
+                imgData.clear();
+                if (mImagesAdapter != null) {
+                    mImagesAdapter.notifyDataSetChanged();
+                }
+
                 if (isOn) {
                     //长文模式
                     mEtReleaseDynamicTitle.setVisibility(View.VISIBLE);
@@ -97,6 +170,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mLlReleaseFunctionCommon.setVisibility(View.GONE);
                     mIvReleaseBtnSwitch.setVisibility(View.VISIBLE);
                     imgCounts = 1;
+                    isEditLong = true;
                 } else {
                     //普通模式
                     mEtReleaseDynamicTitle.setVisibility(View.GONE);
@@ -105,6 +179,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mIvReleaseBtnSwitch.setVisibility(View.GONE);
                     mLlReleaseFunctionLong.setVisibility(View.GONE);
                     imgCounts = 3;
+                    isEditLong = false;
                 }
             }
         });
@@ -119,6 +194,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_release_icon_img:
+                if (imgCounts == 0) {
+                    ToastUtils.showToast(this, "最多可以选三张图片哦~");
+                    return;
+                }
                 selectImage();
                 break;
             case R.id.iv_release_icon_at:
@@ -131,6 +210,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 editBox();
                 break;
             case R.id.tv_release_img:
+
                 selectImage();
                 break;
             case R.id.tv_release_at:
@@ -159,39 +239,41 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     }
 
     /**
-     *  描述：进入阅读模式
+     * 描述：进入阅读模式
      */
     private void readModel() {
-        Intent intent = new Intent(this,ReadModelActivity.class);
+        Intent intent = new Intent(this, ReadModelActivity.class);
         startActivity(intent);
     }
 
     /**
-     *  描述：小尾巴编辑框
-     *
+     * 描述：小尾巴编辑框
      */
     private void tail() {
         final AlertDialog builder = new AlertDialog.Builder(this).create();
-        View view = View.inflate(this,R.layout.dialog_tail,null);
+        View view = View.inflate(this, R.layout.dialog_tail, null);
         builder.setView(view);
-        ImageView ivCancel= (ImageView) view.findViewById(R.id.iv_dialog_tail_cancel);
-        ImageView ivSure= (ImageView) view.findViewById(R.id.iv_dialog_tail_sure);
+        ImageView ivCancel = (ImageView) view.findViewById(R.id.iv_dialog_tail_cancel);
+        ImageView ivSure = (ImageView) view.findViewById(R.id.iv_dialog_tail_sure);
         final EditText etTail = (EditText) view.findViewById(R.id.et_dialog_tail);
         final TextView tvCount = (TextView) view.findViewById(R.id.tv_dialog_tail_count);
-        String spTail = PrefUtils.getString(ReleaseDynamicActivity.this,"tail","");
+        String spTail = PrefUtils.getString(ReleaseDynamicActivity.this, "tail", "");
         etTail.setText(spTail);
         etTail.setSelection(etTail.getText().length());
         etTail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            tvCount.setText(s.length() + "/25");
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvCount.setText(s.length() + "/25");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
         ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,10 +285,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             @Override
             public void onClick(View v) {
                 String tail = etTail.getText().toString().trim();
-                if (TextUtils.isEmpty(tail)){
+                if (TextUtils.isEmpty(tail)) {
 
-                }else {
-                    PrefUtils.putString(ReleaseDynamicActivity.this,"tail",tail);
+                } else {
+                    PrefUtils.putString(ReleaseDynamicActivity.this, "tail", tail);
                 }
                 builder.dismiss();
             }
@@ -217,11 +299,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     }
 
     /**
-     *  描述：进入编辑框框
+     * 描述：进入编辑框框
      */
     private void editBox() {
-        Intent intent = new Intent(this,BoxActivity.class);
-        startActivityForResult(intent,REQUEST_CODE_BOX);
+        Intent intent = new Intent(this, BoxActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_BOX);
     }
 
     /**
@@ -258,6 +340,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         }
     }
 
+    /**
+     * 描述：选择图片的个数
+     */
     private int imgCounts = 3;
 
     private void pickImages() {
@@ -290,28 +375,96 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             if (data != null) {
                 ArrayList<String> photos =
                         data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                if (isEditLong) {
+                    //编辑长文状态
+                    String imagePath = photos.get(0);
+                } else {
+                    //普通编辑状态
+                    for (int i = 0; i < photos.size(); i++) {
+                        DynamicImageInfo imageInfo = new DynamicImageInfo();
+                        imageInfo.setImg(photos.get(i));
+                        imgData.add(imageInfo);
+                    }
+
+                    imgCounts = 3 - imgData.size();
+                    mImagesAdapter.notifyDataSetChanged();
+                }
+
 
             }
         } else if (requestCode == REQUEST_CODE_TOPIC) {
             //话题页面返回的数据
             if (data != null) {
                 TopicInfo topicInfo = (TopicInfo) data.getSerializableExtra("topic");
-                LogUtils.d("返回的话题 : " + topicInfo.getTopic());
+                String topic = topicInfo.getTopic();
+
+                replaceTopic.add("#"+topic+"#");
+
+
+                String content = mEtReleaseDynamicContent.getText().toString();
+                content += "#"+topic+"#";
+
+                for (int i = 0; i < replaceTopic.size(); i++) {
+                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
+                }
+
+                for (int i = 0; i < replaceAt.size(); i++) {
+                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
+                }
+
+                mEtReleaseDynamicContent.setText(Html.fromHtml(content));
+
+                mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
             }
         } else if (requestCode == REQUEST_CODE_AT) {
             //@页面返回的数据
             if (data != null) {
                 ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
-                for (int i = 0; i < contacts.size(); i ++) {
-                    LogUtils.d("@的人"+contacts.get(i));
+                String s = " ";
+                for (int i = 0; i < contacts.size(); i++) {
+                    LogUtils.d("@的人" + contacts.get(i));
+                    s +=  "@"+contacts.get(i) + ", ";
+                    replaceAt.add("@"+contacts.get(i)+", ");
                 }
+                String content = mEtReleaseDynamicContent.getText().toString();
+
+                content += s;
+
+                for (int i = 0; i < replaceAt.size(); i++) {
+                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
+                }
+
+                for (int i = 0; i < replaceTopic.size(); i++) {
+                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
+                }
+
+                mEtReleaseDynamicContent.setText(Html.fromHtml(content));
+                mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
             }
-        }else if (requestCode == REQUEST_CODE_BOX){
+        } else if (requestCode == REQUEST_CODE_BOX) {
             //添加的框框数据
             if (data != null) {
                 String box = data.getStringExtra("box");
                 LogUtils.d("box编辑的内容" + box);
+
+                String content = mEtReleaseDynamicContent.getText().toString();
+
+                content += "【" + box + "】";
+
+                for (int i = 0; i < replaceAt.size(); i++) {
+                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
+                }
+
+                for (int i = 0; i < replaceTopic.size(); i++) {
+                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
+                }
+
+                mEtReleaseDynamicContent.setText(Html.fromHtml(content));
+
+                mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
+
             }
+
         }
     }
 
@@ -370,6 +523,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
+        //发布动态
+
 
     }
+
 }

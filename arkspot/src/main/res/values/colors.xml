@@ -25,4 +25,6 @@
     <color name="colorDivider">#f6f6f6</color>
 
     <color name="colorDialogBtn">#0076ff</color>
+    <!--popup背景色-->
+    <color name="colorPopBg">#5000</color>
 </resources>

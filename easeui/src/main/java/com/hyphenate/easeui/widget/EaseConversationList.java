@@ -58,7 +58,7 @@ public class EaseConversationList extends ListView{
     }
 
     public void init(List<EMConversation> conversationList){
-        this.init(conversationList, null);
+            this.init(conversationList, null);
     }
 
     public void init(List<EMConversation> conversationList, EaseConversationListHelper helper){

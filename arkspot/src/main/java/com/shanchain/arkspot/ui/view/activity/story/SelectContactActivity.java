@@ -14,12 +14,14 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SelectContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import utils.ToastUtils;
 
 
 public class SelectContactActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -37,6 +39,11 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     private List<ContactInfo> show;
     private SelectContactAdapter mContactAdapter;
     private ArrayList<String> selected;
+    /**
+     * 描述：是否是选择艾特好友
+     */
+    private boolean mIsAt;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_select_contact;
@@ -44,6 +51,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
 
     @Override
     protected void initViewsAndEvents() {
+        mIsAt = getIntent().getBooleanExtra("isAt", true);
         initToolBar();
         initData();
         initRecyclerView();
@@ -61,8 +69,8 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String input = s.toString();
                 show.clear();
-                for (int i = 0; i < datas.size(); i ++) {
-                    if (datas.get(i).getName().contains(input)){
+                for (int i = 0; i < datas.size(); i++) {
+                    if (datas.get(i).getName().contains(input)) {
                         show.add(datas.get(i));
                     }
                 }
@@ -81,9 +89,9 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
         mSbSelectContact.setOnSelectIndexItemListener(new WaveSideBar.OnSelectIndexItemListener() {
             @Override
             public void onSelectIndexItem(String index) {
-                for (int i = 0; i < show.size(); i ++) {
-                    if (show.get(i).getLetter().equalsIgnoreCase(index)){
-                        ((LinearLayoutManager)mRvSelectContact.getLayoutManager()).scrollToPositionWithOffset(i,0);
+                for (int i = 0; i < show.size(); i++) {
+                    if (show.get(i).getLetter().equalsIgnoreCase(index)) {
+                        ((LinearLayoutManager) mRvSelectContact.getLayoutManager()).scrollToPositionWithOffset(i, 0);
                         return;
                     }
                 }
@@ -92,15 +100,14 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
 
-
     private void initRecyclerView() {
         mRvSelectContact.setLayoutManager(new LinearLayoutManager(this));
-        mContactAdapter = new SelectContactAdapter(R.layout.item_select_contact,show);
+        mContactAdapter = new SelectContactAdapter(R.layout.item_select_contact, show);
         mRvSelectContact.setAdapter(mContactAdapter);
         mContactAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                if (view.getId() == R.id.rb_item_contact){
+                if (view.getId() == R.id.rb_item_contact) {
                     boolean selected = show.get(position).isSelected();
                     show.get(position).setSelected(!selected);
                     mContactAdapter.notifyDataSetChanged();
@@ -110,6 +117,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initToolBar() {
+        mTbSelectContact.setTitleText(mIsAt ? "选择联系人" : "邀请好友");
         mTbSelectContact.setOnLeftClickListener(this);
         mTbSelectContact.setOnRightClickListener(this);
     }
@@ -230,19 +238,31 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     @Override
     public void onRightClick(View v) {
         selected = new ArrayList<>();
-        for (int i = 0; i < show.size(); i ++) {
-            if (show.get(i).isSelected()){
+        for (int i = 0; i < show.size(); i++) {
+            if (show.get(i).isSelected()) {
                 selected.add(show.get(i).getName());
             }
         }
 
-        if (selected.size() == 0){
-            finish();
-        }else {
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra("contacts",selected);
-            setResult(RESULT_CODE_CONTACTS,intent);
-            finish();
+        if (mIsAt) {
+            if (selected.size() == 0) {
+                finish();
+            } else {
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra("contacts", selected);
+                setResult(RESULT_CODE_CONTACTS, intent);
+                finish();
+            }
+        } else {
+            if (selected.size() == 0) {
+                //没有选择联系人
+                ToastUtils.showToast(this, "还没选择联系人哦~");
+                return;
+            } else {
+                Intent intent = new Intent(this, ChatRoomActivity.class);
+                intent.putStringArrayListExtra("contacts", selected);
+                startActivity(intent);
+            }
         }
     }
 }

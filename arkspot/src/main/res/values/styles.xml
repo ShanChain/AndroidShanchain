@@ -13,6 +13,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+
     <!-- dialog样式 -->
     <style name="dialog_custom" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>    <!--是否浮在界面上-->
