@@ -14,12 +14,13 @@ import android.view.MenuItem;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
+import com.shanchain.data.common.rn.RNManager;
 import com.shanchain.arkspot.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import butterknife.ButterKnife;
-import utils.LogUtils;
+import com.shanchain.data.common.utils.LogUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
     /**
@@ -71,6 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        if (!EventBus.getDefault().isRegistered(this)) {
 //            EventBus.getDefault().register(this);
 //        }
+        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
         //禁止横竖屏切换

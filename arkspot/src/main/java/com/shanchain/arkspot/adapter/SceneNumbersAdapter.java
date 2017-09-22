@@ -11,7 +11,7 @@ import com.shanchain.arkspot.ui.model.SceneNumberInfo;
 
 import java.util.List;
 
-import utils.SpanUtils;
+import com.shanchain.data.common.utils.SpanUtils;
 
 /**
  * Created by zhoujian on 2017/9/14.

@@ -41,10 +41,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import utils.LogUtils;
-import utils.PrefUtils;
-import utils.ThreadUtils;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 

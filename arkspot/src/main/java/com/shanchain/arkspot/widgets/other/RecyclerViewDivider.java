@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.shanchain.arkspot.R;
 
-import utils.DensityUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 
 public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
     private Paint mPaint;

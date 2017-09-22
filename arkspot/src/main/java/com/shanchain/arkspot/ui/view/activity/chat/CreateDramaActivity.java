@@ -13,7 +13,7 @@ import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 
 public class CreateDramaActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {

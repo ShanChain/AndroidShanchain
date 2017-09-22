@@ -37,8 +37,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import utils.LogUtils;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 
 public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ChatView {

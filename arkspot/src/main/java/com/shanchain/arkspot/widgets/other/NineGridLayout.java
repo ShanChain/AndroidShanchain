@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import utils.DensityUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 
 /**
  * Created by zhoujian on 2017/5/31.

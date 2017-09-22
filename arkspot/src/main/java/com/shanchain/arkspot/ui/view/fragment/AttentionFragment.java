@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import utils.DensityUtils;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 /**
  * Created by zhoujian on 2017/8/23.

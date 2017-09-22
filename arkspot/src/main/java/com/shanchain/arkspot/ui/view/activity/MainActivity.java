@@ -12,19 +12,19 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.rn.fragment.RNMineFragment;
+import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReleaseDynamicActivity;
 import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
-import com.shanchain.arkspot.ui.view.fragment.MineFragment;
 import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
-import com.shanchain.arkspot.ui.view.fragment.SquareFragment;
 import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
-import utils.DensityUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 
 
 public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener {
@@ -108,8 +108,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private StoryFragment mStoryFragment;
     private NewsFragment mNewsFragment;
-    private SquareFragment mSquareFragment;
-    private MineFragment mMineFragment;
+    private RNSquareFragment mSquareFragment;
+    private RNMineFragment mMineFragment;
     private void setFragment(int position) {
 
             FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     break;
                 case 2:
                     if (mSquareFragment == null){
-                        mSquareFragment = new SquareFragment();
+                        mSquareFragment = new RNSquareFragment();
                         fragmentTransaction.add(R.id.fl_main_container,mSquareFragment);
                     }else {
                         fragmentTransaction.show(mSquareFragment);
@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     break;
                 case 3:
                     if (mMineFragment == null){
-                        mMineFragment = new MineFragment();
+                        mMineFragment = new RNMineFragment();
                         fragmentTransaction.add(R.id.fl_main_container,mMineFragment);
                     }else {
                         fragmentTransaction.show(mMineFragment);

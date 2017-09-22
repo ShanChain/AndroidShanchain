@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import utils.DensityUtils;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 

@@ -11,7 +11,7 @@ import com.shanchain.arkspot.R;
 
 import java.util.ArrayList;
 
-import utils.DensityUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 
 /**
  * Created by zhoujian on 2017/9/1.

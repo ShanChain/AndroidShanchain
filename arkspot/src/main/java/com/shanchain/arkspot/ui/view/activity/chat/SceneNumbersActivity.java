@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 
 public class SceneNumbersActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {

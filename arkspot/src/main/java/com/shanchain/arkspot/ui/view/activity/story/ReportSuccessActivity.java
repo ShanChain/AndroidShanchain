@@ -10,7 +10,7 @@ import com.shanchain.arkspot.manager.ActivityManager;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
-import utils.SpanUtils;
+import com.shanchain.data.common.utils.SpanUtils;
 
 
 public class ReportSuccessActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener {

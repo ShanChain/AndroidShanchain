@@ -33,7 +33,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
 

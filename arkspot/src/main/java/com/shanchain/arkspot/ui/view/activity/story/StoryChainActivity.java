@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
-import utils.ToastUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 public class StoryChainActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
