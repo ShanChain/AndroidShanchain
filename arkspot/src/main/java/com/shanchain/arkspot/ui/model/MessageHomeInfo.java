@@ -1,10 +1,14 @@
 package com.shanchain.arkspot.ui.model;
 
+import com.hyphenate.chat.EMConversation;
+
+import java.io.Serializable;
+
 /**
  * Created by zhoujian on 2017/9/7.
  */
 
-public class MessageHomeInfo {
+public class MessageHomeInfo implements Serializable{
     private String img;
     private String name;
     private String type;
@@ -12,6 +16,17 @@ public class MessageHomeInfo {
     private String lastMsg;
     private int unRead;
     private boolean isTop;
+
+    private EMConversation mEMConversation;
+
+
+    public EMConversation getEMConversation() {
+        return mEMConversation;
+    }
+
+    public void setEMConversation(EMConversation EMConversation) {
+        mEMConversation = EMConversation;
+    }
 
     public boolean isTop() {
         return isTop;
@@ -68,4 +83,5 @@ public class MessageHomeInfo {
     public void setUnRead(int unRead) {
         this.unRead = unRead;
     }
+
 }

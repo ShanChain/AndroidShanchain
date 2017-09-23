@@ -1,5 +1,6 @@
 package com.shanchain.arkspot.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.data.common.utils.DensityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class ContactAdapter extends BaseExpandableListAdapter {
     public ContactAdapter(List<String> parent, Map<String, ArrayList<ContactInfo>> map) {
         this.parent = parent;
         this.map = map;
+
     }
 
     @Override
@@ -70,12 +73,12 @@ public class ContactAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(parent.getContext(), R.layout.item_contact_group,null);
+            convertView = View.inflate(parent.getContext(), R.layout.item_contact_group, null);
         }
         TextView tvContactGroup = (TextView) convertView.findViewById(R.id.tv_item_contact_group);
         TextView tvContactCount = (TextView) convertView.findViewById(R.id.tv_item_contact_group_count);
         tvContactGroup.setText(this.parent.get(groupPosition));
-        tvContactCount.setText(this.map.get(this.parent.get(groupPosition)).size()+"");
+        tvContactCount.setText(this.map.get(this.parent.get(groupPosition)).size() + "");
         return convertView;
     }
 
@@ -84,18 +87,40 @@ public class ContactAdapter extends BaseExpandableListAdapter {
         ChildViewHolder holder;
         if (convertView == null) {
             holder = new ChildViewHolder();
-            convertView = View.inflate(parent.getContext(),R.layout.item_contact_child,null);
+            convertView = View.inflate(parent.getContext(), R.layout.item_contact_child, null);
             holder.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_item_contact_child_avatar);
             holder.tvName = (TextView) convertView.findViewById(R.id.tv_item_contact_child_name);
             holder.tvDes = (TextView) convertView.findViewById(R.id.tv_item_contact_child_des);
             holder.tvFocus = (TextView) convertView.findViewById(R.id.tv_item_contact_child_focus);
             convertView.setTag(holder);
-        }else {
+        } else {
             holder = (ChildViewHolder) convertView.getTag();
         }
 
         ContactInfo contactInfo = map.get(this.parent.get(groupPosition)).get(childPosition);
         holder.tvName.setText(contactInfo.getName());
+
+        if (this.parent.get(groupPosition).equals("我的关注")) {
+            Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_selected);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
+            holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
+            holder.tvFocus.setText("已关注");
+        } else if (this.parent.get(groupPosition).equals("互相关注")) {
+            Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_selected);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
+            holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
+            holder.tvFocus.setText("已关注");
+        } else if (this.parent.get(groupPosition).equals("我的粉丝")) {
+            Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_default);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
+            holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
+            holder.tvFocus.setText("加关注");
+        } else if (this.parent.get(groupPosition).equals("对话场景")) {
+            holder.tvFocus.setVisibility(View.GONE);
+        }
 
         return convertView;
     }
@@ -105,7 +130,7 @@ public class ContactAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    static class ChildViewHolder{
+    static class ChildViewHolder {
         TextView tvName;
         TextView tvDes;
         TextView tvFocus;

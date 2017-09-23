@@ -19,12 +19,18 @@
 
     <View style="@style/style_text_line_match"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_chat_msg"
-        android:background="@color/colorAccent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_pull_history_msg"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_height="0dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_chat_msg"
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <View style="@style/style_text_line_match"/>
 

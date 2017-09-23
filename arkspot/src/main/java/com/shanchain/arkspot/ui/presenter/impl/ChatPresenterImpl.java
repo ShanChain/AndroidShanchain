@@ -23,7 +23,7 @@ public class ChatPresenterImpl implements ChatPresenter {
     private ChatView mChatView;
     private List<EMMessage> mEMMessageList = new ArrayList<>();
     private List<MsgInfo> mMsgInfoList = new ArrayList<>();
-
+    private List<EMMessage> copyMessageList = new ArrayList();
     public ChatPresenterImpl(ChatView chatView) {
         mChatView = chatView;
     }
@@ -104,6 +104,38 @@ public class ChatPresenterImpl implements ChatPresenter {
         });
 
         EMClient.getInstance().chatManager().sendMessage(txtSendMessage);
+    }
+
+    /**
+     *  描述：拉取聊天记录
+     */
+    @Override
+    public void pullHistoryMsg(String toChatName) {
+        String msgId = mMsgInfoList.get(0).getEMMessage().getMsgId();
+        copyMessageList.clear();
+        copyMessageList.addAll(mEMMessageList);
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(toChatName);
+        if (conversation != null) {
+            List<EMMessage> emMessages = conversation.loadMoreMsgFromDB(msgId, 20);
+            //Collections.reverse(emMessages);
+            mEMMessageList.clear();
+            mEMMessageList.addAll(emMessages);
+            mEMMessageList.addAll(copyMessageList);
+            mMsgInfoList.clear();
+            for (int i = 0; i < mEMMessageList.size(); i++) {
+                MsgInfo msgInfo = new MsgInfo();
+                if (mEMMessageList.get(i).direct() == EMMessage.Direct.SEND) {
+                    msgInfo.setItemType(MsgInfo.MSG_TEXT_SEND);
+                } else {
+                    msgInfo.setItemType(MsgInfo.MSG_TEXT_RECEIVE);
+                }
+                msgInfo.setEMMessage(mEMMessageList.get(i));
+                mMsgInfoList.add(msgInfo);
+            }
+
+            mChatView.onPullHistory(emMessages);
+
+        }
     }
 
     private void updateChatData(String toChatName) {

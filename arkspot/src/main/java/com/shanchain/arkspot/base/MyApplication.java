@@ -6,19 +6,19 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.shanchain.arkspot.db.ContactDao;
 import com.shanchain.arkspot.utils.Utils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +83,42 @@ public class MyApplication extends Application {
         //添加全局消息监听
         initMsgListener();
 
+        //添加全局通讯录监听
+        initContactListener();
+    }
+
+    private void initContactListener() {
+        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+            @Override
+            public void onContactAdded(String s) {
+                //好友请求被同意
+
+            }
+
+            @Override
+            public void onContactDeleted(String s) {
+                //被删除时回调此方法
+
+            }
+
+            @Override
+            public void onContactInvited(String s, String s1) {
+                //收到好友邀请
+
+            }
+
+            @Override
+            public void onFriendRequestAccepted(String s) {
+                //添加好友成功时的回调
+
+            }
+
+            @Override
+            public void onFriendRequestDeclined(String s) {
+                //添加好友呗拒绝的回调
+
+            }
+        });
     }
 
     private void initMsgListener() {
@@ -92,6 +128,7 @@ public class MyApplication extends Application {
                 //当接收到消息的回调
                 if (list != null && list.size() > 0) {
                     EventBus.getDefault().post(list.get(0));
+                    LogUtils.d("接收到消息" + list.get(0).getBody().toString());
                 }
             }
 
@@ -127,11 +164,11 @@ public class MyApplication extends Application {
      */
     private void initOkhttpUtils() {
         try {
-            HttpsUtils.SSLParams sslParams =
-                    HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
+//            HttpsUtils.SSLParams sslParams =
+//                    HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new LoggerInterceptor("TAG"))
-                    .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                    //.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
                     .connectTimeout(60000L, TimeUnit.MILLISECONDS)
                     .readTimeout(60000L, TimeUnit.MILLISECONDS)
                     //其他配置
@@ -162,4 +199,7 @@ public class MyApplication extends Application {
         }
         return processName;
     }
+
+
+
 }

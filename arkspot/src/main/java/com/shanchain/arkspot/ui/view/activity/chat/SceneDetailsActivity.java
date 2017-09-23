@@ -10,23 +10,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SceneDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.http.HttpApi;
 import com.shanchain.arkspot.ui.model.SceneDetailsInfo;
-import com.shanchain.arkspot.ui.view.activity.AnnouncementActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.MarqueeText;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.netrequest.SCHttpUtlis;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.shanchain.data.common.utils.ToastUtils;
+import okhttp3.Call;
 
 public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -64,6 +70,11 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     @Bind(R.id.rv_scene_details_numbers)
     RecyclerView mRvSceneDetailsNumbers;
     private List<SceneDetailsInfo> datas;
+    private boolean mIsGroup;
+    private List<String> mGroupMembers;
+    private List<String> mGroupAdminList;
+    private int mMemberCount;
+    private String mOwner;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -87,10 +98,64 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     private void initData() {
         datas = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            SceneDetailsInfo info = new SceneDetailsInfo();
-            datas.add(info);
+        Intent intent = getIntent();
+        mIsGroup = intent.getBooleanExtra("isGroup", false);
+        String toChatName = intent.getStringExtra("toChatName");
+        LogUtils.d("是否是群组 " + mIsGroup);
+        LogUtils.d("聊天对象 " + toChatName);
+        if (mIsGroup) {
+            //群
+            datas.clear();
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
+            mGroupMembers = group.getMembers();
+            mGroupAdminList = group.getAdminList();
+            mMemberCount = group.getMemberCount();
+            mOwner = group.getOwner();
+
+            SCHttpUtlis.post()
+                    .url(HttpApi.HX_GROUP_QUARY)
+                    .addParams("groupId",toChatName)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.d("服务器获取群信息失败");
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            LogUtils.d("获取群信息成功:" + response);
+                        }
+                    });
+
+
+            LogUtils.d("群成员 " + group.getMembers().size() + "??" + group.getMemberCount());
+            LogUtils.d("群主 " + mOwner);
+            LogUtils.d("群管理员数量" + mGroupAdminList.size());
+            for (int i = 0; i < mGroupMembers.size(); i++) {
+                SceneDetailsInfo info = new SceneDetailsInfo();
+                String memberId = mGroupMembers.get(i);
+                info.setName(memberId);
+                datas.add(info);
+                LogUtils.d("群成员有" + memberId);
+            }
+
+            mTvSceneDetailsNumbers.setText("角色  " + "(" + mGroupMembers.size() + ")");
+        } else {
+            //单聊
+            datas.clear();
+            SceneDetailsInfo infoFriend = new SceneDetailsInfo();
+            infoFriend.setName(toChatName);
+            SceneDetailsInfo infoMine = new SceneDetailsInfo();
+            String userName = EMClient.getInstance().getCurrentUser();
+            LogUtils.d("场景详情中获取当前登录用户" + userName);
+            infoMine.setName(userName);
+            datas.add(infoFriend);
+            datas.add(infoMine);
+            LogUtils.d("当前用户");
+            mTvSceneDetailsNumbers.setText("角色  " + "(2)");
         }
+
     }
 
     private void initToolBar() {
@@ -99,7 +164,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
 
-    @OnClick({R.id.tv_scene_details_announcement,R.id.iv_scene_details_img, R.id.iv_scene_details_code, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
+    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_code, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_scene_details_announcement:
@@ -108,7 +173,8 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                 break;
             case R.id.iv_scene_details_img:
                 //场景图片
-
+                Intent intent = new Intent(this, EditSceneActivity.class);
+                startActivity(intent);
                 break;
             case R.id.iv_scene_details_code:
                 //二维码图片
@@ -134,7 +200,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     /**
-     *  描述：查看公告历史列表
+     * 描述：查看公告历史列表
      */
     private void lookAnnouncement() {
         Intent intent = new Intent(this, AnnouncementActivity.class);
@@ -142,10 +208,10 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     /**
-     *  描述：离开当前群
+     * 描述：离开当前群
      */
     private void leave() {
-        final CustomDialog customDialog = new CustomDialog(this,false,1.0,R.layout.dialog_leave_scene,new int[]{R.id.tv_dialog_leave_cancel,R.id.tv_dialog_leave_sure});
+        final CustomDialog customDialog = new CustomDialog(this, false, 1.0, R.layout.dialog_leave_scene, new int[]{R.id.tv_dialog_leave_cancel, R.id.tv_dialog_leave_sure});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -164,15 +230,15 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     /**
-     *  描述：
+     * 描述：
      */
     private void leaveScene() {
         //退群操作
-        ToastUtils.showToast(this,"退群成功！");
+        ToastUtils.showToast(this, "退群成功！");
     }
 
     private void allNumbers() {
-        Intent intent = new Intent(this,SceneNumbersActivity.class);
+        Intent intent = new Intent(this, SceneNumbersActivity.class);
         startActivity(intent);
     }
 
@@ -189,7 +255,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     private void report() {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_report,
-                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel, R.id.tv_report_dialog_code});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -202,6 +268,11 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                         break;
                     case R.id.tv_report_dialog_cancel:
                         //取消
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_report_dialog_code:
+                        //二维码
+
                         customDialog.dismiss();
                         break;
                 }

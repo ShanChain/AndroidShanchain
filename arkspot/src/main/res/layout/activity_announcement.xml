@@ -13,7 +13,7 @@
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:rightImage="@mipmap/abs_home_btn_more_default"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="大戏"
+        app:titleText="公告"
         app:titleTextSize="16"/>
 
     <View style="@style/style_text_line_match"/>

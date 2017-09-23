@@ -80,6 +80,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/ll_create_drama_time"
         android:layout_width="match_parent"
         android:layout_height="60dp">

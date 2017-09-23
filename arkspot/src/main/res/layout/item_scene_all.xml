@@ -48,13 +48,14 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:ellipsize="end"
         android:layout_toRightOf="@id/iv_item_scene_all_avatar"
         android:layout_marginTop="42dp"
         android:layout_marginRight="70dp"
         android:lines="1"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/colorHint"
-        android:text="请仔细阅读以下说明:1、严禁崩皮。不要..."
+        android:text="请仔细阅读以下说明:1、严禁崩皮。不要不是你的皮就串皮"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

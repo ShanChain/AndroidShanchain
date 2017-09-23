@@ -1,6 +1,7 @@
 package com.shanchain.arkspot.ui.view.activity.chat;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
@@ -27,6 +28,8 @@ import com.shanchain.arkspot.ui.presenter.impl.ChatPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,11 +40,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 
-public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ChatView {
+public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ChatView, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.tb_chat)
     ArthurToolBar mTbChat;
@@ -73,15 +74,18 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     TextView mTvChatSend;
     @Bind(R.id.rv_chat_msg)
     RecyclerView mRvChatMsg;
-    private String mUserName;
+    @Bind(R.id.srl_pull_history_msg)
+    SwipeRefreshLayout mSrlPullHistoryMsg;
     private EMMessage.ChatType mChatType;
-    //private List<MsgInfo> msgList;
     private String toChatName;
 
     private ChatPresenter mChatPresenter;
-    //private ChatMsgAdapter mMsgAdapter;
 
-    private ChatRoomMsgAdapter mChatRoomMsgAdaptere;
+    private ChatRoomMsgAdapter mChatRoomMsgAdapter;
+    private LinearLayoutManager mLayoutManager;
+    //群成员列表
+    List<String> memberList = new ArrayList<>();
+    private boolean mIsGroup;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -90,15 +94,35 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
+        LogUtils.d("当前环信账号 " + EMClient.getInstance().getCurrentUser());
         init();
         initToolBar();
-        login();
         initListener();
+        initGroup();
+    }
 
+    private void initGroup() {
+        if (mChatType == EMMessage.ChatType.GroupChat) {
+            //是群聊
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
+            memberList = group.getMembers();
+            List<String> adminList = group.getAdminList();
+            for (int i = 0; i < memberList.size(); i++) {
+                LogUtils.d("群成员:" + memberList.get(i));
+            }
+
+            for (int i = 0; i < adminList.size(); i++) {
+                LogUtils.d("群管理员:" + adminList.get(i));
+            }
+
+            if (memberList.size() == 0) {
+                LogUtils.d("未获取到群成员");
+            }
+
+        }
     }
 
     private void initListener() {
-
         mShsChat.setOnSwitchStateChangeListener(new SwitchView.OnSwitchStateChangeListener() {
             @Override
             public void onSwitchStateChange(boolean isOn) {
@@ -139,23 +163,28 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
          */
         mChatPresenter.initChat(toChatName);
 
+        mSrlPullHistoryMsg.setOnRefreshListener(this);
+
     }
 
     /**
      * 描述：初始化一些参数，比如 聊天类型，聊天对象等
      */
     private void init() {
+        Intent intent = getIntent();
+        mIsGroup = intent.getBooleanExtra("isGroup", false);
+        String s = intent.getStringExtra("toChatName");
+        if (mIsGroup) {
+            mChatType = EMMessage.ChatType.GroupChat;
+        } else {
+            mChatType = EMMessage.ChatType.Chat;
+        }
         //注册观察者
         EventBus.getDefault().register(this);
-        mUserName = "test666";
-        toChatName = "test111";
-        mChatType = EMMessage.ChatType.Chat;
+        this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
-
-        ArrayList<String> contacts = getIntent().getStringArrayListExtra("contacts");
-        for (int i = 0; i < contacts.size(); i++) {
-            LogUtils.d(contacts.get(i));
-        }
+        mLayoutManager = new LinearLayoutManager(this);
+        mRvChatMsg.setLayoutManager(mLayoutManager);
     }
 
     private void initToolBar() {
@@ -171,8 +200,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         LogUtils.d("收到消息" + message.getBody().toString());
 
         String from = message.getFrom();
+
+        LogUtils.d("消息来自 ： " + from);
         if (from.equals(toChatName)) {
             //是当前聊天对象
+            mChatPresenter.updateData(toChatName);
+        } else if (memberList.contains(from)) {
             mChatPresenter.updateData(toChatName);
         }
 
@@ -182,39 +215,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-    }
-
-    private void login() {
-
-        EMClient.getInstance().login(mUserName, "123456", new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                EMClient.getInstance().groupManager().loadAllGroups();
-                EMClient.getInstance().chatManager().loadAllConversations();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(ChatRoomActivity.this, mUserName + "登录成功！");
-                    }
-                });
-            }
-
-            @Override
-            public void onError(int i, final String s) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(ChatRoomActivity.this, mUserName + "登录失败！");
-                        LogUtils.d("登录失败日志" + s);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
     }
 
 
@@ -232,7 +232,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             case R.id.iv_chat_against_drama:
                 //对戏模式下大戏(只有管理员可以创建)
 
-                Intent intent = new Intent(this,CreateDramaActivity.class);
+                Intent intent = new Intent(this, CreateDramaActivity.class);
                 startActivity(intent);
 
                 break;
@@ -320,7 +320,10 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onRightClick(View v) {
         //群信息或者好友信息
-        readyGo(SceneDetailsActivity.class);
+        Intent intent = new Intent(this, SceneDetailsActivity.class);
+        intent.putExtra("isGroup", mIsGroup);
+        intent.putExtra("toChatName", toChatName);
+        startActivity(intent);
     }
 
 
@@ -329,7 +332,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
      */
     @Override
     public void onUpDate(List<MsgInfo> emMessageList) {
-        mChatRoomMsgAdaptere.notifyDataSetChanged();
+        mChatRoomMsgAdapter.notifyDataSetChanged();
         if (emMessageList.size() != 0) {
             mRvChatMsg.scrollToPosition(emMessageList.size() - 1);
         }
@@ -344,22 +347,22 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
          *  描述：初始化recyclerview
          */
 
-        mRvChatMsg.setLayoutManager(new LinearLayoutManager(this));
-        mChatRoomMsgAdaptere = new ChatRoomMsgAdapter(msgInfoList);
+
+        mChatRoomMsgAdapter = new ChatRoomMsgAdapter(msgInfoList);
         //mMsgAdapter = new ChatMsgAdapter(msgInfoList);
-        mRvChatMsg.setAdapter(mChatRoomMsgAdaptere);
+        mRvChatMsg.setAdapter(mChatRoomMsgAdapter);
         if (msgInfoList.size() != 0) {
             mRvChatMsg.scrollToPosition(msgInfoList.size() - 1);
         }
 
-        mChatRoomMsgAdaptere.setOnBubbleClickListener(new ChatRoomMsgAdapter.OnBubbleClickListener() {
+        mChatRoomMsgAdapter.setOnBubbleClickListener(new ChatRoomMsgAdapter.OnBubbleClickListener() {
             @Override
             public void onBubbleClick(View v, int position) {
                 ToastUtils.showToast(ChatRoomActivity.this, "点击了 " + msgInfoList.get(position).getEMMessage().getBody().toString());
             }
         });
 
-        mChatRoomMsgAdaptere.setOnBubbleLongClickListener(new ChatRoomMsgAdapter.OnBubbleLongClickListener() {
+        mChatRoomMsgAdapter.setOnBubbleLongClickListener(new ChatRoomMsgAdapter.OnBubbleLongClickListener() {
             @Override
             public void onBubbleLongClick(View v, final int position) {
                 ToastUtils.showToast(ChatRoomActivity.this, "长按了 " + msgInfoList.get(position).getEMMessage().getBody().toString());
@@ -377,7 +380,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             }
         });
 
-        mChatRoomMsgAdaptere.setOnAvatarClickListener(new ChatRoomMsgAdapter.OnAvatarClickListener() {
+        mChatRoomMsgAdapter.setOnAvatarClickListener(new ChatRoomMsgAdapter.OnAvatarClickListener() {
             @Override
             public void onAvatarClick(View v, int position) {
                 ToastUtils.showToast(ChatRoomActivity.this, "点击了头像 他的消息是 " + msgInfoList.get(position).getEMMessage().getBody().toString());
@@ -386,5 +389,25 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     }
 
+    /**
+     * 描述： 返回历史记录，更新UI
+     */
+    @Override
+    public void onPullHistory(List<EMMessage> emMessages) {
+        mSrlPullHistoryMsg.setRefreshing(false);
+        mChatRoomMsgAdapter.notifyDataSetChanged();
+        mRvChatMsg.scrollToPosition(emMessages.size() + 2);
+        //mRvChatMsg.setTop(emMessages.size()+1);
+        int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
+    }
+
+
+    /**
+     * 描述：拉取本地聊天历史记录
+     */
+    @Override
+    public void onRefresh() {
+        mChatPresenter.pullHistoryMsg(toChatName);
+    }
 }

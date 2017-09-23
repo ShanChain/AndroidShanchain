@@ -15,6 +15,8 @@ import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
+import com.shanchain.arkspot.ui.view.activity.chat.FindSceneActivity;
+import com.shanchain.arkspot.ui.view.activity.chat.MeetPersonActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReleaseDynamicActivity;
 import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
@@ -22,9 +24,9 @@ import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
 import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.DensityUtils;
 
 import butterknife.Bind;
-import com.shanchain.data.common.utils.DensityUtils;
 
 
 public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener {
@@ -277,11 +279,12 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         break;
                     case R.id.tv_dialog_msg_code:
                         //扫码
-
+                        readyGo(FindSceneActivity.class);
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_cancel:
                         //取消
+                        readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
                 }

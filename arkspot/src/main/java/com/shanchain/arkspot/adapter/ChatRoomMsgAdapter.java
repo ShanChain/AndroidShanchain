@@ -187,7 +187,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 //发送
                 tvSendContent.setText(msg);
                 tvSendTime.setText(timestampString);
-
+                tvSendNick.setText(emMessage.getFrom());
                 if (position == 0) {
                     tvSendTime.setVisibility(View.VISIBLE);
                 } else {
@@ -204,7 +204,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 //接收
                 tvReceiveContent.setText(msg);
                 tvReceiveTime.setText(timestampString);
-
+                tvReceiverNick.setText(emMessage.getFrom());
                 if (position == 0) {
                     tvReceiveTime.setVisibility(View.VISIBLE);
                 } else {

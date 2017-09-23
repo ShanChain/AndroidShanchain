@@ -13,7 +13,7 @@
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:rightImage="@mipmap/abs_home_btn_more_default"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="大戏"
+        app:titleText="场景详情"
         app:titleTextSize="16"/>
 
     <View style="@style/style_text_line_match"/>
@@ -69,13 +69,13 @@
 
         <ImageView
             android:id="@+id/iv_scene_details_code"
-            android:layout_width="@dimen/dimens_22dp"
-            android:layout_height="@dimen/dimens_22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dimens_15dp"
-            android:layout_marginTop="@dimen/dimens_10dp"
+            android:layout_marginTop="@dimen/dimens_15dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/photo_heart"/>
+            android:src="@mipmap/abs_meet_btn_enter_default"/>
 
         <TextView
             android:id="@+id/tv_scene_details_des"

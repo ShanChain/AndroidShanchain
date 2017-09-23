@@ -12,4 +12,7 @@ public interface ChatPresenter {
     void updateData(String toChatName);
 
     void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType);
+
+    void pullHistoryMsg(String toChatName);
+
 }

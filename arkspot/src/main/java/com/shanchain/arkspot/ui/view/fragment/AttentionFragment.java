@@ -210,4 +210,5 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             }
         }, 3000);
     }
+
 }

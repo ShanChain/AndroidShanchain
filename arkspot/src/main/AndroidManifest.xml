@@ -31,7 +31,7 @@
         <!-- 设置环信应用的AppKey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="1145170810178434#shanchainandroid"/>
+            android:value="1145170810178434#shanchain"/>
         <!-- 声明SDK所需的service SDK核心功能 -->
         <service
             android:name="com.hyphenate.chat.EMChatService"
@@ -54,12 +54,14 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.view.activity.MainActivity">
+        <activity android:name=".ui.view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.view.activity.MainActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.StoryTitleActivity">
         </activity>
@@ -109,6 +111,7 @@
         </activity>
         <activity
             android:name=".ui.view.activity.chat.ChatRoomActivity"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".ui.view.activity.chat.ContactActivity">
@@ -119,8 +122,21 @@
         </activity>
         <activity android:name=".ui.view.activity.chat.SceneNumbersActivity">
         </activity>
-        <activity android:name=".ui.view.activity.AnnouncementActivity">
+        <activity android:name=".ui.view.activity.chat.AnnouncementActivity">
         </activity>
+        <activity
+            android:name=".ui.view.activity.chat.AddAnnouncementActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".ui.view.activity.chat.AnnouncementDetailsActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.chat.EditSceneActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.chat.MeetPersonActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.chat.FindSceneActivity">
+        </activity>
+
     </application>
 
 </manifest>
