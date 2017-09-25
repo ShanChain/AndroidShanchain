@@ -7,13 +7,12 @@ import com.hyphenate.chat.EMMessage;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
 
 /**
  * Created by zhoujian on 2017/9/12.
@@ -111,6 +110,10 @@ public class ChatPresenterImpl implements ChatPresenter {
      */
     @Override
     public void pullHistoryMsg(String toChatName) {
+        if (mMsgInfoList.size() == 0){
+            mChatView.onPullHistory(null);
+            return;
+        }
         String msgId = mMsgInfoList.get(0).getEMMessage().getMsgId();
         copyMessageList.clear();
         copyMessageList.addAll(mEMMessageList);

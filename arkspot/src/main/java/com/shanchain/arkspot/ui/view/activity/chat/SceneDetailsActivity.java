@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,11 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SceneDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
 import com.shanchain.arkspot.ui.model.SceneDetailsInfo;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
@@ -23,16 +25,14 @@ import com.shanchain.arkspot.widgets.other.MarqueeText;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.netrequest.SCHttpUtlis;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import okhttp3.Call;
 
 public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -71,10 +71,10 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     RecyclerView mRvSceneDetailsNumbers;
     private List<SceneDetailsInfo> datas;
     private boolean mIsGroup;
-    private List<String> mGroupMembers;
     private List<String> mGroupAdminList;
     private int mMemberCount;
     private String mOwner;
+    private ArrayList<String> memberList = new ArrayList<>();
 
     @Override
     protected int getContentViewLayoutID() {
@@ -85,7 +85,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     protected void initViewsAndEvents() {
         initToolBar();
         initData();
-        initRecyclerView();
+
     }
 
     private void initRecyclerView() {
@@ -100,21 +100,71 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         datas = new ArrayList<>();
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
-        String toChatName = intent.getStringExtra("toChatName");
+        final String toChatName = intent.getStringExtra("toChatName");
         LogUtils.d("是否是群组 " + mIsGroup);
         LogUtils.d("聊天对象 " + toChatName);
         if (mIsGroup) {
             //群
             datas.clear();
+            //添加全局管理员
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
-            mGroupMembers = group.getMembers();
-            mGroupAdminList = group.getAdminList();
-            mMemberCount = group.getMemberCount();
-            mOwner = group.getOwner();
+            memberList.add("admin");
+            //添加群主
+            memberList.add(group.getOwner());
+            //添加管理员
+            List<String> adminList = group.getAdminList();
+            memberList.addAll(adminList);
 
-            SCHttpUtlis.post()
+            for (int i = 0; i < adminList.size(); i++) {
+                LogUtils.d("群管理 : " + adminList.get(i));
+            }
+
+            //从环信服务器拉取群成员列表
+            ThreadUtils.runOnSubThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    EMCursorResult<String> result = null;
+                    final int pageSize = 200;
+                    try {
+                        do {
+                            result = EMClient.getInstance().groupManager().fetchGroupMembers(toChatName,
+                                    result != null ? result.getCursor() : "", pageSize);
+                            memberList.addAll(result.getData());
+                            LogUtils.d("fetchGroupMembers = " + result.getData().size());
+                        }
+                        while (!TextUtils.isEmpty(result.getCursor()) && result.getData().size() == pageSize);
+                    } catch (HyphenateException e) {
+                        LogUtils.d("失败了");
+                        e.printStackTrace();
+                    }
+
+                    for (int i = 0; i < memberList.size(); i++) {
+                        LogUtils.d("群成员有" + memberList.get(i));
+                        SceneDetailsInfo info = new SceneDetailsInfo();
+                        String memberId = memberList.get(i);
+                        info.setName(memberId);
+                        datas.add(info);
+                    }
+
+                    LogUtils.d("群成员列表初始化完成");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTvSceneDetailsNumbers.setText("角色  " + "(" + memberList.size() + ")");
+                            initRecyclerView();
+                        }
+                    });
+                }
+            });
+
+
+
+
+            //自己服务器极客接口获取群信息
+            /*SCHttpUtlis.post()
                     .url(HttpApi.HX_GROUP_QUARY)
-                    .addParams("groupId",toChatName)
+                    .addParams("groupId", toChatName)
                     .build()
                     .execute(new StringCallback() {
                         @Override
@@ -126,10 +176,9 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                         public void onResponse(String response, int id) {
                             LogUtils.d("获取群信息成功:" + response);
                         }
-                    });
+                    });*/
 
-
-            LogUtils.d("群成员 " + group.getMembers().size() + "??" + group.getMemberCount());
+         /*   LogUtils.d("群成员 " + group.getMembers().size() + "??" + group.getMemberCount());
             LogUtils.d("群主 " + mOwner);
             LogUtils.d("群管理员数量" + mGroupAdminList.size());
             for (int i = 0; i < mGroupMembers.size(); i++) {
@@ -138,9 +187,9 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                 info.setName(memberId);
                 datas.add(info);
                 LogUtils.d("群成员有" + memberId);
-            }
+            }*/
 
-            mTvSceneDetailsNumbers.setText("角色  " + "(" + mGroupMembers.size() + ")");
+
         } else {
             //单聊
             datas.clear();
@@ -162,7 +211,6 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         mTbSceneDetails.setOnLeftClickListener(this);
         mTbSceneDetails.setOnRightClickListener(this);
     }
-
 
     @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_code, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
     public void onClick(View view) {

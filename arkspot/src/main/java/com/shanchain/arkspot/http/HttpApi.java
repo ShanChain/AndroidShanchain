@@ -11,7 +11,6 @@ public interface HttpApi {
 
     String BASE_URL_ARTSPOT = "http://115.29.177.22:18480/mockjsdata/1";
 
-
     //注册环信聊天用户
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 

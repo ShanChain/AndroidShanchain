@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
@@ -26,9 +28,11 @@ import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ChatPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;
+import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,6 +48,7 @@ import butterknife.OnClick;
 
 public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ChatView, SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int REQUEST_CODE_AT = 100;
     @Bind(R.id.tb_chat)
     ArthurToolBar mTbChat;
     @Bind(R.id.tv_chat_idle)
@@ -104,6 +109,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void initGroup() {
         if (mChatType == EMMessage.ChatType.GroupChat) {
             //是群聊
+           /*
+            从本地获取群成员列表
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
             memberList = group.getMembers();
             List<String> adminList = group.getAdminList();
@@ -117,7 +124,46 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
             if (memberList.size() == 0) {
                 LogUtils.d("未获取到群成员");
+            }*/
+
+
+            //添加全局管理员
+            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
+            memberList.add("admin");
+            //添加群主
+            memberList.add(group.getOwner());
+            //添加管理员
+            List<String> adminList = group.getAdminList();
+            memberList.addAll(adminList);
+
+            for (int i = 0; i < adminList.size(); i++) {
+                LogUtils.d("群管理 : " + adminList.get(i));
             }
+
+            //从环信服务器拉取群成员列表
+            ThreadUtils.runOnSubThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        EMCursorResult<String> result = null;
+                        final int pageSize = 200;
+                        do {
+                            result = EMClient.getInstance().groupManager().fetchGroupMembers(toChatName,
+                                    result != null ? result.getCursor() : "", pageSize);
+                            memberList.addAll(result.getData());
+                            LogUtils.d("fetchGroupMembers = " + result.getData().size());
+                        }
+                        while (!TextUtils.isEmpty(result.getCursor()) && result.getData().size() == pageSize);
+                    } catch (HyphenateException e) {
+                        LogUtils.d("失败了");
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < memberList.size(); i++) {
+                        LogUtils.d("群成员有" + memberList.get(i));
+                    }
+                    LogUtils.d("群成员列表初始化完成");
+                }
+            });
 
         }
     }
@@ -223,7 +269,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         switch (view.getId()) {
             case R.id.iv_chat_idle_at:
                 //闲聊模式下@群成员
-
+                atMember();
                 break;
             case R.id.iv_chat_idle_frame:
                 //闲聊模式下编辑框框内容
@@ -242,7 +288,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                 break;
             case R.id.iv_chat_against_at:
                 //对戏模式下@好友
-
+                atMember();
                 break;
             case R.id.iv_chat_against_frame:
                 //对戏模式下编辑框框内容
@@ -252,6 +298,30 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                 //发送文本消息
                 sendMsg();
                 break;
+        }
+    }
+
+    /**
+     *  描述：@群成员
+     */
+    private void atMember() {
+        Intent intent = new Intent(this, SelectContactActivity.class);
+        intent.putExtra("isAt",true);
+        startActivityForResult(intent,REQUEST_CODE_AT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null){
+            ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
+            String msg = mEtChatMsg.getText().toString().trim();
+            String at = "";
+            for (int i = 0; i < contacts.size(); i ++) {
+                at += "@"+contacts.get(i)+" ";
+            }
+            mEtChatMsg.setText(msg + at);
+            mEtChatMsg.setSelection((msg+at).length());
         }
     }
 
@@ -394,12 +464,13 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
      */
     @Override
     public void onPullHistory(List<EMMessage> emMessages) {
+        if (emMessages == null){
+            mSrlPullHistoryMsg.setRefreshing(false);
+            return;
+        }
         mSrlPullHistoryMsg.setRefreshing(false);
         mChatRoomMsgAdapter.notifyDataSetChanged();
         mRvChatMsg.scrollToPosition(emMessages.size() + 2);
-        //mRvChatMsg.setTop(emMessages.size()+1);
-        int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
-
     }
 
 

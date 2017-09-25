@@ -6,11 +6,6 @@ package com.shanchain.arkspot.global;
 
 public interface Constants {
 
-
-
-
-
-
         /*************消息类型 ************/
         //默认消息类型（闲聊）
         int attrDefault = 0;
@@ -19,7 +14,7 @@ public interface Constants {
         int attrAgainst = 1;
 
         //公告
-        int attraAnnouncement = 2;
+        int attrAnnouncement = 2;
 
 
 

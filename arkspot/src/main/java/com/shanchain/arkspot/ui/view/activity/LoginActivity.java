@@ -36,7 +36,7 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    String userName = "sc-738727063";
+    String userName = "sc-738726166";
     private String psw = "123456";
 
     @OnClick({R.id.btn_register, R.id.btn_login})
