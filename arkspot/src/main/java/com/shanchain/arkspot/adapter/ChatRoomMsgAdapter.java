@@ -30,7 +30,6 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
         mMsgInfoList = msgInfoList;
     }
 
-
     @Override
     public int getItemCount() {
         return mMsgInfoList.size();
@@ -40,8 +39,15 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     public int getItemViewType(int position) {
         MsgInfo msgInfo = mMsgInfoList.get(position);
         EMMessage emMessage = msgInfo.getEMMessage();
-        //int msgAttr = emMessage.getIntAttribute("msgAttr", 0);
-        return emMessage.direct() == EMMessage.Direct.RECEIVE ? 0 : 1;
+        int msgAttr = emMessage.getIntAttribute("msgAttr", 0);
+        if (msgAttr == 3) {
+            return 3;
+        } else if (emMessage.direct() == EMMessage.Direct.RECEIVE) {
+            return 0;
+        } else if (emMessage.direct() == EMMessage.Direct.SEND) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -51,6 +57,8 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_msg_text_receive, parent, false);
         } else if (viewType == 1) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_msg_text_send, parent, false);
+        } else if (viewType == 3) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_msg_scene, parent, false);
         }
 
         ViewHolder viewHolder = new ViewHolder(view);
@@ -61,6 +69,13 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     public void onBindViewHolder(ViewHolder holder, final int position) {
         MsgInfo msgInfo = mMsgInfoList.get(position);
         holder.bindData(msgInfo, position);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(v,position);
+            }
+        });
 
         //添加一些控件的点击事件
         if (holder.tvSendContent != null) {
@@ -101,7 +116,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             holder.ivReceiverAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    avatarClickListener.onAvatarClick(v,position);
+                    avatarClickListener.onAvatarClick(v, position);
                 }
             });
         }
@@ -110,7 +125,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             holder.ivSendAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    avatarClickListener.onAvatarClick(v,position);
+                    avatarClickListener.onAvatarClick(v, position);
                 }
             });
         }
@@ -132,10 +147,13 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
         TextView tvReceiverNick;
         //群权限
         TextView tvReceiverPer;
+        //场景或者公告的标题
+        TextView tvItemMsgSceneTitle;
+        //场景或者公告的内容
+        TextView getTvItemMsgSceneContent;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             tvSendTime = (TextView) itemView.findViewById(R.id.tv_item_msg_send_time);
             tvReceiveTime = (TextView) itemView.findViewById(R.id.tv_item_msg_receive_time);
             tvSendContent = (TextView) itemView.findViewById(R.id.tv_item_msg_send_content);
@@ -148,15 +166,26 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             tvReceiverNick = (TextView) itemView.findViewById(R.id.tv_item_msg_receive_name);
             tvReceiverPer = (TextView) itemView.findViewById(R.id.tv_item_msg_receive_permissions);
 
+            //公告item
+            tvItemMsgSceneTitle = (TextView) itemView.findViewById(R.id.tv_item_msg_title);
+            getTvItemMsgSceneContent = (TextView) itemView.findViewById(R.id.tv_item_msg_scene_content);
         }
 
         public void bindData(MsgInfo msgInfo, int position) {
             EMMessage emMessage = msgInfo.getEMMessage();
+            EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
+            String msg = body.getMessage();
             int msgAttribute = emMessage.getIntAttribute("msgAttr", 0);
+            if (msgAttribute == Constants.attrScene) {
+                //场景
+                if (tvItemMsgSceneTitle != null){
+                    tvItemMsgSceneTitle.setText("场景");
+                    getTvItemMsgSceneContent.setText(emMessage.getFrom() + " " + msg);
+                }
 
-            if (msgAttribute == Constants.attrDefault ) {
+            } else if (msgAttribute == Constants.attrDefault) {
                 //闲聊(本人说话)
-                if (tvReceiveRole!=null){
+                if (tvReceiveRole != null) {
                     tvReceiveRole.setVisibility(View.VISIBLE);
                     tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_normal);
                     tvReceiveContent.setTextColor(Color.parseColor("#ffffff"));
@@ -165,9 +194,10 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                     tvSendRole.setVisibility(View.VISIBLE);
                     tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_normal);
                 }
-            }else if (msgAttribute == Constants.attrAgainst){
+                setMsgContent(position, emMessage, msg);
+            } else if (msgAttribute == Constants.attrAgainst) {
                 //对戏(角色说话)
-                if (tvReceiveRole!=null){
+                if (tvReceiveRole != null) {
                     tvReceiveRole.setVisibility(View.GONE);
                     tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_white);
                     tvReceiveContent.setTextColor(Color.parseColor("#666666"));
@@ -176,13 +206,18 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                     tvSendRole.setVisibility(View.GONE);
                     tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_theme);
                 }
+                setMsgContent(position, emMessage, msg);
             }
 
+        }
 
+        /**
+         *  描述：设置消息内容
+         */
+        private void setMsgContent(int position, EMMessage emMessage, String msg) {
             long msgTime = emMessage.getMsgTime();
             String timestampString = DateUtils.getTimestampString(new Date(msgTime));
-            EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
-            String msg = body.getMessage();
+
             if (emMessage.direct() == EMMessage.Direct.SEND) {
                 //发送
                 tvSendContent.setText(msg);
@@ -198,7 +233,6 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                         tvSendTime.setVisibility(View.VISIBLE);
                     }
                 }
-
 
             } else {
                 //接收
@@ -216,7 +250,6 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                     }
                 }
             }
-
         }
     }
 
@@ -233,8 +266,19 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     }
 
     private OnAvatarClickListener avatarClickListener;
+
     public interface OnAvatarClickListener {
-        void onAvatarClick(View v,int position);
+        void onAvatarClick(View v, int position);
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(View v,int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
     }
 
     /**
@@ -254,8 +298,10 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     /**
      * 描述：头像的点击事件
      */
-    public void setOnAvatarClickListener(OnAvatarClickListener avatarClickListener){
+    public void setOnAvatarClickListener(OnAvatarClickListener avatarClickListener) {
         this.avatarClickListener = avatarClickListener;
     }
+
+
 
 }

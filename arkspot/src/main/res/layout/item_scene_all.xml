@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/tv_item_all_des"
         android:ellipsize="end"
         android:layout_toRightOf="@id/iv_item_scene_all_avatar"
         android:layout_marginTop="42dp"

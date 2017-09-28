@@ -8,12 +8,16 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.http.HttpApi;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.netrequest.SCHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 
 public class LoginActivity extends BaseActivity {
@@ -35,8 +39,9 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
 
     }
-
-    String userName = "sc-738726166";
+    String userName = "sc-738727063";
+//    String userName = "sc-738726166";
+//    String userName = "sc-738727191";
     private String psw = "123456";
 
     @OnClick({R.id.btn_register, R.id.btn_login})
@@ -44,7 +49,7 @@ public class LoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_register:
                 //添加好友
-               /* SCHttpUtlis.post()
+               /*SCHttpUtils.post()
                         .url(HttpApi.HX_USER_ADD_FRIEND)
                         .addParams("userName", "sc-738727063")
                         .addParams("friendName", "sc-738727124")
@@ -63,6 +68,24 @@ public class LoginActivity extends BaseActivity {
                                 readyGo(MainActivity.class);
                             }
                         });*/
+
+                SCHttpUtils.post()
+                        .url(HttpApi.HX_USER_REGIST)
+                        .addParams("","")
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                LogUtils.e("注册环信失败");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                LogUtils.d("创建环信用户成功" + response);
+                            }
+                        });
+
 
                 break;
             case R.id.btn_login:
@@ -102,7 +125,7 @@ public class LoginActivity extends BaseActivity {
                 });
 
                 //移除群管理员
-                /*SCHttpUtlis.post()
+                /*SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_REMOVE_ADMIN)
                         .addParams("groupId","27697479745538")
                         .addParams("oldadmin","sc-738727190")
@@ -123,7 +146,7 @@ public class LoginActivity extends BaseActivity {
                         });*/
 
                 //添加群管理
-               /* SCHttpUtlis.post()
+               /* SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_ADD_ADMIN)
                         .addParams("groupId","27697479745538")
                         .addParams("newAdmin","sc-738727190")
@@ -150,7 +173,7 @@ public class LoginActivity extends BaseActivity {
                 String array = new Gson().toJson(lists);
 
                 LogUtils.d("======="+array);
-                SCHttpUtlis.post()
+                SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_REMOVE_MEMBERS)
                         .addParams("groupId","27697479745538")
                         .addParams("jArray",array)
@@ -179,7 +202,7 @@ public class LoginActivity extends BaseActivity {
                 String array = new Gson().toJson(lists);
 
                 LogUtils.d("======="+array);
-                SCHttpUtlis.post()
+                SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_ADD_MEMBERS)
                         .addParams("groupId","27697479745538")
                         .addParams("jArray",array)
@@ -199,7 +222,7 @@ public class LoginActivity extends BaseActivity {
                             }
                         });
 */
-                /*SCHttpUtlis.post()
+                /*SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_OWNER)
                         .addParams("groupId", "27697479745538")
                         .addParams("newowner", "sc-738727063")
@@ -220,7 +243,7 @@ public class LoginActivity extends BaseActivity {
                         });*/
 
                 //删除群
-                /*SCHttpUtlis.post()
+                /*SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_DEL)
                         .addParams("groupId","27697459822593")
                         .build()
@@ -244,7 +267,7 @@ public class LoginActivity extends BaseActivity {
                 modifyGroupInfo.setGroupname(trim);
                 modifyGroupInfo.setDescription("hahahaha");
                 String modifyJson = new Gson().toJson(modifyGroupInfo);
-                SCHttpUtlis.post()
+                SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_MODIFY)
                         .addParams("groupId", "27697479745538")
                         .addParams("dataString", modifyJson)
@@ -279,7 +302,7 @@ public class LoginActivity extends BaseActivity {
                 groupInfo.setPublicX(true);
                 Gson gson = new Gson();
                 String json = gson.toJson(groupInfo);
-                SCHttpUtlis.post()
+                SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_CREATE)
                         //.addParams("token","dawdawd")
                         .addParams("dataString",json)

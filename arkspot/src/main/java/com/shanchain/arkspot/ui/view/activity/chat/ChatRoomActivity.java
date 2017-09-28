@@ -29,6 +29,7 @@ import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ChatPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;
 import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
+import com.shanchain.arkspot.utils.KeyboardUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
@@ -90,8 +91,10 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private LinearLayoutManager mLayoutManager;
     //群成员列表
     List<String> memberList = new ArrayList<>();
+    //是否是群聊
     private boolean mIsGroup;
-
+    private boolean move;
+    private boolean isLoadHistory;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_chat;
@@ -184,6 +187,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             }
         });
 
+
         mEtChatMsg.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -230,6 +234,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
         mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setStackFromEnd(true);
         mRvChatMsg.setLayoutManager(mLayoutManager);
     }
 
@@ -353,6 +358,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void onClick(View v) {
                 String sceneContent = etSceneContent.getText().toString().trim();
                 ToastUtils.showToast(ChatRoomActivity.this, sceneContent);
+                int msgAttr = Constants.attrScene;
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType);
                 dialog.dismiss();
             }
         });
@@ -365,7 +372,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     private void sendMsg() {
         String msg = mEtChatMsg.getText().toString();
-        ToastUtils.showToast(this, msg);
         //设置消息类型
         int msgAttr = Constants.attrDefault;
         boolean on = mShsChat.isOn();
@@ -384,7 +390,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onLeftClick(View v) {
         finish();
-
     }
 
     @Override
@@ -416,10 +421,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         /**
          *  描述：初始化recyclerview
          */
-
-
         mChatRoomMsgAdapter = new ChatRoomMsgAdapter(msgInfoList);
-        //mMsgAdapter = new ChatMsgAdapter(msgInfoList);
         mRvChatMsg.setAdapter(mChatRoomMsgAdapter);
         if (msgInfoList.size() != 0) {
             mRvChatMsg.scrollToPosition(msgInfoList.size() - 1);
@@ -432,6 +434,14 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             }
         });
 
+        mChatRoomMsgAdapter.setOnItemClickListener(new ChatRoomMsgAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                //点击空白地方时候隐藏软键盘
+                KeyboardUtils.hideSoftInput(mActivity);
+            }
+        });
+
         mChatRoomMsgAdapter.setOnBubbleLongClickListener(new ChatRoomMsgAdapter.OnBubbleLongClickListener() {
             @Override
             public void onBubbleLongClick(View v, final int position) {
@@ -439,6 +449,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                 if (msgInfoList.get(position).getEMMessage().direct() == EMMessage.Direct.SEND) {
 
                     try {
+                        //消息撤回有问题
                         EMClient.getInstance().chatManager().recallMessage(msgInfoList.get(position).getEMMessage());
                         LogUtils.d("撤回消息成功~~~");
                     } catch (HyphenateException e) {
@@ -464,15 +475,59 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
      */
     @Override
     public void onPullHistory(List<EMMessage> emMessages) {
+        mSrlPullHistoryMsg.setRefreshing(false);
         if (emMessages == null){
-            mSrlPullHistoryMsg.setRefreshing(false);
             return;
         }
-        mSrlPullHistoryMsg.setRefreshing(false);
+        final int index = emMessages.size() -1;
+        if (index < 0 ){
+            return;
+        }
         mChatRoomMsgAdapter.notifyDataSetChanged();
-        mRvChatMsg.scrollToPosition(emMessages.size() + 2);
+        moveToPosition(index);
+        mRvChatMsg.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //在这里进行第二次滚动（最后的100米！）
+                if (move ){
+                    move = false;
+                    //获取要置顶的项在当前屏幕的位置，mIndex是记录的要置顶项在RecyclerView中的位置
+                    int n = index - mLayoutManager.findFirstVisibleItemPosition();
+                    if ( 0 <= n && n < mRvChatMsg.getChildCount()){
+                        //获取要置顶的项顶部离RecyclerView顶部的距离
+                        int top = mRvChatMsg.getChildAt(n).getTop();
+                        //最后的移动
+                        mRvChatMsg.scrollBy(0, top);
+                    }
+                }
+
+            }
+        });
     }
 
+   /**
+    *  描述：配合recyclerview的滚动状态监听来设置recycleview第一个可见条目的位置
+    */
+    private void moveToPosition(int n) {
+        //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
+        int firstItem = mLayoutManager.findFirstVisibleItemPosition();
+        int lastItem = mLayoutManager.findLastVisibleItemPosition();
+        //然后区分情况
+        if (n <= firstItem ){
+            //当要置顶的项在当前显示的第一个项的前面时
+            mRvChatMsg.scrollToPosition(n);
+        }else if ( n <= lastItem ){
+            //当要置顶的项已经在屏幕上显示时
+            int top = mRvChatMsg.getChildAt(n - firstItem).getTop();
+            mRvChatMsg.scrollBy(0, top);
+        }else{
+            //当要置顶的项在当前显示的最后一项的后面时
+            mRvChatMsg.scrollToPosition(n);
+            //这里这个变量是用在RecyclerView滚动监听里面的
+            move = true;
+        }
+    }
 
     /**
      * 描述：拉取本地聊天历史记录

@@ -5,8 +5,14 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by zhoujian on 2017/5/16.
@@ -51,7 +57,7 @@ public class BitmapUtils {
      * @return Bitmap
      * @param  srcPath url
      */
-    public static Bitmap getCompURLImage(String srcPath) {
+    public static Bitmap getCompURLImage(String srcPath,int hh,int ww) {
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         //开始读入图片，此时把options.inJustDecodeBounds 设回true了
         newOpts.inJustDecodeBounds = true;//只读边,不读内容
@@ -60,8 +66,8 @@ public class BitmapUtils {
         int w = newOpts.outWidth;
         int h = newOpts.outHeight;
         //现在主流手机比较多是720*1080分辨率，所以高和宽设置为
-        float hh = 1080f;//这里设置高度为1080f
-        float ww = 720f;//这里设置宽度为720f
+        /*float hh = 1080f;//这里设置高度为1080f
+        float ww = 720f;//这里设置宽度为720f*/
         //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
         int be = 1;//be=1表示不缩放
         if (w > h && w > ww) {//如果宽度大的话根据宽度固定大小缩放
@@ -169,6 +175,39 @@ public class BitmapUtils {
         // 把ByteArrayInputStream数据生成图片
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
         return bitmap;
+    }
+
+
+    /**
+     * 将Bitmap转换成文件
+     * 保存文件
+     * @param bm
+     * @param fileName
+     * @throws IOException
+     */
+    public static File saveFile(Bitmap bm, String path, String fileName) throws IOException {
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File myCaptureFile = new File(path , fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
+        return myCaptureFile;
+    }
+
+    /**
+     * 使用当前时间戳拼接一个唯一的文件名
+     *
+     * @return
+     */
+    public static String getTempFileName() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_SS");
+        String fileName = format.format(new Timestamp(System
+                .currentTimeMillis()));
+        return fileName + ".jpg";
     }
 
 }

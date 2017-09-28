@@ -16,6 +16,7 @@ public interface Constants {
         //公告
         int attrAnnouncement = 2;
 
-
+        //情景
+        int attrScene = 3;
 
 }

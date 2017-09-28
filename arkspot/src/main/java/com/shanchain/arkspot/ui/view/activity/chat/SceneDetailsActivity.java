@@ -1,24 +1,30 @@
 package com.shanchain.arkspot.ui.view.activity.chat;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMCursorResult;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SceneDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.SceneDetailsInfo;
+import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.arkspot.manager.ActivityManager;
+import com.shanchain.arkspot.ui.model.ComUserInfo;
+import com.shanchain.arkspot.ui.model.GroupKeyBenInfo;
+import com.shanchain.arkspot.ui.model.GroupMemberBean;
+import com.shanchain.arkspot.ui.model.SceneImgInfo;
+import com.shanchain.arkspot.ui.model.SceneTotalInfo;
+import com.shanchain.arkspot.ui.model.UserDetailInfo;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.MarqueeText;
@@ -27,12 +33,16 @@ import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.netrequest.SCHttpCallBack;
+import com.shanchain.netrequest.SCHttpUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -47,8 +57,8 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     CardView mCvSceneDetails;
     @Bind(R.id.tv_scene_details_name)
     TextView mTvSceneDetailsName;
-    @Bind(R.id.iv_scene_details_code)
-    ImageView mIvSceneDetailsCode;
+    @Bind(R.id.iv_scene_details_modify)
+    ImageView mIvSceneDetailsModify;
     @Bind(R.id.tv_scene_details_des)
     TextView mTvSceneDetailsDes;
     @Bind(R.id.tv_scene_details_numbers)
@@ -69,12 +79,26 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     Button mBtnSceneDetailsLeave;
     @Bind(R.id.rv_scene_details_numbers)
     RecyclerView mRvSceneDetailsNumbers;
-    private List<SceneDetailsInfo> datas;
+    @Bind(R.id.iv_scene_details_all)
+    ImageView mIvSceneDetailsAll;
+    @Bind(R.id.rl_scene_detail_check)
+    RelativeLayout mRlSceneDetailCheck;
     private boolean mIsGroup;
-    private List<String> mGroupAdminList;
-    private int mMemberCount;
-    private String mOwner;
-    private ArrayList<String> memberList = new ArrayList<>();
+    private String mToChatName;
+
+    private SceneTotalInfo mSceneTotalInfo;
+    private String mCurrentUser;
+    private List<GroupMemberBean> mMembers;
+    private ComUserInfo mGroupOwner;
+    /**
+     * 描述：头像显示的数据集合
+     */
+    private List<SceneImgInfo> mSceneImgInfos = new ArrayList<>();
+    /**
+     * 描述：管理员数据集合
+     */
+    private List<ComUserInfo> mAdmin = new ArrayList<>();
+    private SceneDetailsAdapter mAdapter;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -85,124 +109,185 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     protected void initViewsAndEvents() {
         initToolBar();
         initData();
-
+        initRecyclerView();
     }
 
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvSceneDetailsNumbers.setLayoutManager(layoutManager);
-        SceneDetailsAdapter adapter = new SceneDetailsAdapter(R.layout.item_scene_numbers, datas);
-        mRvSceneDetailsNumbers.setAdapter(adapter);
+        mAdapter = new SceneDetailsAdapter(R.layout.item_scene_numbers, mSceneImgInfos);
+        mRvSceneDetailsNumbers.setAdapter(mAdapter);
+    }
+
+    private void onInitView() {
+
+        if (mMembers == null) {
+            return;
+        }
+        //默认隐藏加群验证设置
+        mRlSceneDetailCheck.setVisibility(View.GONE);
+        //当前用户是群主时，显示加群验证设置
+        if (mCurrentUser.equals(mGroupOwner.getUserName())) {
+            mRlSceneDetailCheck.setVisibility(View.VISIBLE);
+        }
+        //当前用户是群管理时，显示加群验证设置
+        for (int i = 0; i < mAdmin.size(); i++) {
+            if (mCurrentUser.equals(mAdmin.get(i).getUserName())) {
+                mRlSceneDetailCheck.setVisibility(View.VISIBLE);
+            }
+        }
+
+        mTvSceneDetailsName.setText(mSceneTotalInfo.getGroupName());
+
+
+
     }
 
     private void initData() {
-        datas = new ArrayList<>();
+        showLoadingDialog();
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
-        final String toChatName = intent.getStringExtra("toChatName");
+        mToChatName = intent.getStringExtra("toChatName");
+        mCurrentUser = EMClient.getInstance().getCurrentUser();
         LogUtils.d("是否是群组 " + mIsGroup);
-        LogUtils.d("聊天对象 " + toChatName);
+        LogUtils.d("聊天对象 " + mToChatName);
         if (mIsGroup) {
             //群
-            datas.clear();
-            //添加全局管理员
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
-            memberList.add("admin");
-            //添加群主
-            memberList.add(group.getOwner());
-            //添加管理员
-            List<String> adminList = group.getAdminList();
-            memberList.addAll(adminList);
+            mIvSceneDetailsAll.setVisibility(View.VISIBLE);
+            mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
+            mTvSceneDetailsAnnouncement.setVisibility(View.VISIBLE);
 
-            for (int i = 0; i < adminList.size(); i++) {
-                LogUtils.d("群管理 : " + adminList.get(i));
-            }
-
-            //从环信服务器拉取群成员列表
-            ThreadUtils.runOnSubThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    EMCursorResult<String> result = null;
-                    final int pageSize = 200;
-                    try {
-                        do {
-                            result = EMClient.getInstance().groupManager().fetchGroupMembers(toChatName,
-                                    result != null ? result.getCursor() : "", pageSize);
-                            memberList.addAll(result.getData());
-                            LogUtils.d("fetchGroupMembers = " + result.getData().size());
-                        }
-                        while (!TextUtils.isEmpty(result.getCursor()) && result.getData().size() == pageSize);
-                    } catch (HyphenateException e) {
-                        LogUtils.d("失败了");
-                        e.printStackTrace();
-                    }
-
-                    for (int i = 0; i < memberList.size(); i++) {
-                        LogUtils.d("群成员有" + memberList.get(i));
-                        SceneDetailsInfo info = new SceneDetailsInfo();
-                        String memberId = memberList.get(i);
-                        info.setName(memberId);
-                        datas.add(info);
-                    }
-
-                    LogUtils.d("群成员列表初始化完成");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mTvSceneDetailsNumbers.setText("角色  " + "(" + memberList.size() + ")");
-                            initRecyclerView();
-                        }
-                    });
-                }
-            });
-
-
-
-
-            //自己服务器极客接口获取群信息
-            /*SCHttpUtlis.post()
+           //自己服务器极客接口获取群信息
+            SCHttpUtils.post()
                     .url(HttpApi.HX_GROUP_QUARY)
-                    .addParams("groupId", toChatName)
+                    .addParams("groupId", mToChatName)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpCallBack<SceneTotalInfo>(SceneTotalInfo.class) {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            LogUtils.d("服务器获取群信息失败");
+                            LogUtils.e("获取群成员失败");
+                            e.printStackTrace();
+                            closeLoadingDialog();
+                            ToastUtils.showToast(SceneDetailsActivity.this, "获取群信息异常");
+
                         }
 
                         @Override
-                        public void onResponse(String response, int id) {
-                            LogUtils.d("获取群信息成功:" + response);
-                        }
-                    });*/
+                        public void onResponse(SceneTotalInfo response, int id) {
+                            LogUtils.d("获取群成员成功 : " + response.getMembers().size());
+                            closeLoadingDialog();
+                            mSceneTotalInfo = response;
 
-         /*   LogUtils.d("群成员 " + group.getMembers().size() + "??" + group.getMemberCount());
-            LogUtils.d("群主 " + mOwner);
-            LogUtils.d("群管理员数量" + mGroupAdminList.size());
-            for (int i = 0; i < mGroupMembers.size(); i++) {
-                SceneDetailsInfo info = new SceneDetailsInfo();
-                String memberId = mGroupMembers.get(i);
-                info.setName(memberId);
-                datas.add(info);
-                LogUtils.d("群成员有" + memberId);
-            }*/
+                            mGroupOwner = mSceneTotalInfo.getGroupOwner();
+                            GroupMemberBean ownerBean = new GroupMemberBean();
+                            ownerBean.setAdmin(false);
+                            ownerBean.setBlocked(false);
+                            GroupKeyBenInfo groupKeyBenInfo = new GroupKeyBenInfo();
+                            groupKeyBenInfo.setHua(mGroupOwner);
+                            ownerBean.setKey(groupKeyBenInfo);
+                            mMembers = mSceneTotalInfo.getMembers();
+                            //将群主放在集合第一个
+                            mMembers.add(0, ownerBean);
+                            int size = mMembers.size();
+
+                            if (size >= 10) {
+                                size = 10;
+                            }
+
+                            for (int i = 0; i < size; i++) {
+                                GroupMemberBean groupMemberBean = mMembers.get(i);
+                                if (groupMemberBean.isAdmin()) {
+                                    ComUserInfo admin = groupMemberBean.getKey().getHua();
+                                    mAdmin.add(admin);
+                                }
+                                ComUserInfo hua = groupMemberBean.getKey().getHua();
+                                SceneImgInfo sceneImgInfo = new SceneImgInfo();
+                                sceneImgInfo.setImg(hua.getHeadImg());
+                                sceneImgInfo.setUserName(hua.getUserName());
+                                sceneImgInfo.setCharacterId(hua.getInfo().getCharacterId());
+                                mSceneImgInfos.add(sceneImgInfo);
+                            }
+
+                            mAdapter.notifyDataSetChanged();
+                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
+                            onInitView();
+                        }
+                    });
 
 
         } else {
             //单聊
-            datas.clear();
-            SceneDetailsInfo infoFriend = new SceneDetailsInfo();
-            infoFriend.setName(toChatName);
-            SceneDetailsInfo infoMine = new SceneDetailsInfo();
-            String userName = EMClient.getInstance().getCurrentUser();
-            LogUtils.d("场景详情中获取当前登录用户" + userName);
-            infoMine.setName(userName);
-            datas.add(infoFriend);
-            datas.add(infoMine);
-            LogUtils.d("当前用户");
-            mTvSceneDetailsNumbers.setText("角色  " + "(2)");
+            mIvSceneDetailsAll.setVisibility(View.GONE);
+            mRlSceneDetailCheck.setVisibility(View.GONE);
+            mBtnSceneDetailsLeave.setVisibility(View.GONE);
+            mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
+
+
+            //获取对聊人信息
+            SCHttpUtils.post()
+                    .url(HttpApi.HX_USER_DETAIL)
+                    .addParams("userName", "sc-738727063")
+                    .build()
+                    .execute(new SCHttpCallBack<UserDetailInfo>(UserDetailInfo.class) {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.e("获取用户信息失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(UserDetailInfo response, int id) {
+                            closeLoadingDialog();
+                            if (response == null) {
+                                LogUtils.d("..获取...sc-738727191....null.........");
+                                return;
+                            }
+
+
+                            LogUtils.d("????获取到用户信息" + response.getUserInfo().getUserName());
+                            SceneImgInfo sceneImgInfo = new SceneImgInfo();
+                            sceneImgInfo.setCharacterId(response.getCharacterId());
+                            sceneImgInfo.setUserName(response.getName());
+                            sceneImgInfo.setImg(response.getHeadImg());
+                            mSceneImgInfos.add(sceneImgInfo);
+                            mAdapter.notifyDataSetChanged();
+                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
+                        }
+
+                    });
+
+            //获取当前用户信息
+            SCHttpUtils.post()
+                    .url(HttpApi.HX_USER_DETAIL)
+                    .addParams("userName", mCurrentUser)
+                    .build()
+                    .execute(new SCHttpCallBack<UserDetailInfo>(UserDetailInfo.class) {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.e("获取用户信息失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(UserDetailInfo response, int id) {
+                            closeLoadingDialog();
+                            if (response == null) {
+                                LogUtils.d("..获取...mCurrentUser....null.........");
+                                return;
+                            }
+                            LogUtils.d("获取到用户信息" + response.getUserInfo().getUserName());
+                            SceneImgInfo sceneImgInfo = new SceneImgInfo();
+                            sceneImgInfo.setCharacterId(response.getCharacterId());
+                            sceneImgInfo.setUserName(response.getName());
+                            sceneImgInfo.setImg(response.getHeadImg());
+                            mSceneImgInfos.add(sceneImgInfo);
+                            mAdapter.notifyDataSetChanged();
+                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
+                        }
+
+                    });
+            onInitView();
         }
 
     }
@@ -212,7 +297,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         mTbSceneDetails.setOnRightClickListener(this);
     }
 
-    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_code, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
+    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_scene_details_announcement:
@@ -224,13 +309,17 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                 Intent intent = new Intent(this, EditSceneActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.iv_scene_details_code:
-                //二维码图片
+            case R.id.iv_scene_details_modify:
+                //修改群信息
 
                 break;
             case R.id.ll_scene_details_numbers:
                 //所有角色
-                allNumbers();
+                if (mIsGroup) {
+                    allNumbers();
+                } else {
+                    return;
+                }
                 break;
             case R.id.tv_scene_details_all:
                 //全部对戏
@@ -252,6 +341,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
      */
     private void lookAnnouncement() {
         Intent intent = new Intent(this, AnnouncementActivity.class);
+        intent.putExtra("groupId", mToChatName);
         startActivity(intent);
     }
 
@@ -278,15 +368,48 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     /**
-     * 描述：
+     * 描述：退群
      */
     private void leaveScene() {
         //退群操作
+        showLoadingDialog();
         ToastUtils.showToast(this, "退群成功！");
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().leaveGroup(mToChatName);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(SceneDetailsActivity.this, "退群成功");
+                            ActivityManager.getInstance().finishActivity(ChatRoomActivity.class);
+                            ActivityManager.getInstance().finishActivity(ContactActivity.class);
+                            finish();
+                        }
+                    });
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(SceneDetailsActivity.this, "退群失败");
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     private void allNumbers() {
         Intent intent = new Intent(this, SceneNumbersActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("members", (Serializable) mMembers);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

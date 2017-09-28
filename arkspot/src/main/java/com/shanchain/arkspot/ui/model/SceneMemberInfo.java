@@ -4,7 +4,7 @@ package com.shanchain.arkspot.ui.model;
  * Created by zhoujian on 2017/9/14.
  */
 
-public class SceneNumberInfo {
+public class SceneMemberInfo {
     private String avatar;
     private String name;
     private String num;
