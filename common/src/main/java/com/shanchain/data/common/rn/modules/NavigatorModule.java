@@ -14,6 +14,8 @@ import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.rn.SCReactActivity;
 import com.shanchain.data.common.rn.utils.ReactArguments;
 
+import org.json.JSONObject;
+
 /**
  * Created by flyye on 2017/9/20.
  */
@@ -72,9 +74,23 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         context.startActivity(intent);
     }
 
+
+
     @ReactMethod
-    public void startReactPage(String screenName, ReadableMap extra) {
-        startReactPage(getReactApplicationContext(), screenName, ReactArguments.toBundle(extra));
+    public void startReactPage(String screen, String initialProps) {
+        Context context = getReactApplicationContext();
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(initialProps);
+        } catch (Exception e) {
+            jsonObject = null;
+        }
+        if (jsonObject == null) {
+            jsonObject = new JSONObject();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(REACT_INIT_PROPS, jsonObject.toString());
+        startReactPage(context, screen, bundle);
     }
 
     @ReactMethod

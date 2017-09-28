@@ -6,10 +6,12 @@ import com.facebook.react.bridge.ModuleSpec;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.module.model.ReactModuleInfoProvider;
+import com.facebook.react.modules.accessibilityinfo.AccessibilityInfoModule;
 import com.facebook.react.modules.vibration.VibrationModule;
 import com.facebook.react.modules.websocket.WebSocketModule;
 import com.facebook.react.shell.MainReactPackage;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.rn.modules.SCDialogModule;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import javax.inject.Provider;
  * Created by zhoujian on 2017/8/18.
  */
 
-public class AppReactPackage extends MainReactPackage {
+public class AppReactPackage extends LazyReactPackage {
 
 
     private static List<Class<? extends NativeModule>> mNativeModules = new ArrayList<>();
@@ -38,15 +40,20 @@ public class AppReactPackage extends MainReactPackage {
 
     @Override
     public List<ModuleSpec> getNativeModules(final ReactApplicationContext reactContext) {
-        List<ModuleSpec> nativeModules = super.getNativeModules(reactContext);
+        List<ModuleSpec> nativeModules = new ArrayList<>();
+        nativeModules.add(new ModuleSpec(NavigatorModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new NavigatorModule(reactContext);
+            }
+        }));
+        nativeModules.add(new ModuleSpec(SCDialogModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new SCDialogModule(reactContext);
+            }
+        }));
 
-        nativeModules.addAll(Arrays.asList(
-                new ModuleSpec(NavigatorModule.class, new Provider<NativeModule>() {
-                    @Override
-                    public NativeModule get() {
-                        return new NavigatorModule(reactContext);
-                    }
-                })));
 
         for (int i = 0; i < nativeModules.size(); i++) {
             final Object module;
@@ -67,12 +74,14 @@ public class AppReactPackage extends MainReactPackage {
     }
 
     @Override
-    public ReactModuleInfoProvider getReactModuleInfoProvider() {
-        return null;
-    }
-
-    @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
+    }
+
+
+    @Override
+    public ReactModuleInfoProvider getReactModuleInfoProvider() {
+        // This has to be done via reflection or we break open source.
+        return LazyReactPackage.getReactModuleInfoProviderViaReflection(this);
     }
 }

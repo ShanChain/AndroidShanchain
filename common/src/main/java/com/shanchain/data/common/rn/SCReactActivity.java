@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
+import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Iterator;
 
@@ -36,7 +39,7 @@ public class SCReactActivity extends ReactActivity{
             return;
         }
 
-        reactInstanceManager = RNManager.getInstance().getReactInstanceManager();
+        reactInstanceManager = ((BaseApplication) getApplication()).getReactInstanceManager();
         Bundle bundle = getIntent().getBundleExtra(NavigatorModule.REACT_INIT_PROPS);
         if (bundle == null) {
             bundle = new Bundle();
@@ -45,7 +48,7 @@ public class SCReactActivity extends ReactActivity{
         }
         bundle.putString("screen", screenName);
         rootView = new ReactRootView(this);
-        rootView.startReactApplication(reactInstanceManager, "App", bundle);
+        rootView.startReactApplication(reactInstanceManager, screenName, bundle);
         setContentView(rootView);
     }
 
@@ -89,6 +92,11 @@ public class SCReactActivity extends ReactActivity{
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(String event) {
+        Toast.makeText(this, event, Toast.LENGTH_SHORT).show();
     }
 
 

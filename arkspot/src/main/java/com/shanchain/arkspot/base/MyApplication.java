@@ -6,19 +6,28 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
+import com.facebook.soloader.SoLoader;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
+import com.shanchain.arkspot.BuildConfig;
 import com.shanchain.arkspot.db.ContactDao;
 import com.shanchain.arkspot.utils.Utils;
+import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.rn.AppReactPackage;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 
-public class MyApplication extends Application {
+public class MyApplication extends BaseApplication {
 
     public static Context mContext;
 
@@ -34,6 +43,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        SoLoader.init(this, /* native exopackage */ false);
         Utils.init(this);
         initOkhttpUtils();
         initHuanXin();

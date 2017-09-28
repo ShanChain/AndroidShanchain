@@ -259,7 +259,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
      * 描述：离开当前群
      */
     private void leave() {
-        final CustomDialog customDialog = new CustomDialog(this, false, 1.0, R.layout.dialog_leave_scene, new int[]{R.id.tv_dialog_leave_cancel, R.id.tv_dialog_leave_sure});
+        final CustomDialog customDialog = new CustomDialog(this, false, 1.0, R.layout.common_dialog_leave_scene, new int[]{R.id.tv_dialog_leave_cancel, R.id.tv_dialog_leave_sure});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {

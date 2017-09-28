@@ -328,7 +328,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void showLoadingDialog() {
-        mCustomDialog = new CustomDialog(this, 0.4, R.layout.dialog_progress, null);
+        mCustomDialog = new CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
         mCustomDialog.show();
     }
 

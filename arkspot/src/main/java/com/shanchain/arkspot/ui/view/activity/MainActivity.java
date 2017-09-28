@@ -2,18 +2,22 @@ package com.shanchain.arkspot.ui.view.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
+import com.shanchain.arkspot.rn.fragment.RNfragment;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.FindSceneActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.MeetPersonActivity;
@@ -29,7 +33,7 @@ import com.shanchain.data.common.utils.DensityUtils;
 import butterknife.Bind;
 
 
-public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener {
+public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener,DefaultHardwareBackBtnHandler {
 
     ArthurToolBar mTbMain;
     @Bind(R.id.fl_main_container)
@@ -323,5 +327,20 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             case 3:
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        boolean handled = false;
+        Fragment activeFragment = getSupportFragmentManager().findFragmentById(R.id.fl_main_container);
+        if (activeFragment instanceof RNfragment) {
+            handled = ((RNfragment) activeFragment).onKeyUp(keyCode, event);
+        }
+        return handled || super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void invokeDefaultOnBackPressed() {
+        super.onBackPressed();
     }
 }
