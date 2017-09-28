@@ -47,7 +47,6 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     public CustomDialog(Context context, boolean isBottom , double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
-
         this.context = context;
         this.isBottom = isBottom;
         this.ratio = ratio;
@@ -105,8 +104,6 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
                 findViewById(id).setOnClickListener(this);
             }
         }
-
-
     }
 
     private OnItemClickListener listener;

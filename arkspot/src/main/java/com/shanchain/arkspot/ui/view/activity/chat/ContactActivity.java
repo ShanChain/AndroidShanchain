@@ -18,7 +18,7 @@ import com.shanchain.arkspot.ui.model.FansInfo;
 import com.shanchain.arkspot.ui.model.FansListInfo;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.netrequest.SCHttpUtlis;
+import com.shanchain.netrequest.SCHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -128,7 +128,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         map.put("互相关注", eachFocus);
 
         //获取我的关注列表
-        SCHttpUtlis.post()
+        SCHttpUtils.post()
                 .url(HttpApi.FOCUS_MY_FOCUS)
                 .addParams("characterId", currentUser)
                 .build()
@@ -169,7 +169,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         map.put("我的关注", myFocus);
 
         //获取粉丝列表
-        SCHttpUtlis.post()
+        SCHttpUtils.post()
                 .url(HttpApi.FOCUS_FANS)
                 .addParams("characterId", currentUser)
                 .build()

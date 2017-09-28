@@ -11,15 +11,20 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AnnouncementAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.http.HttpApi;
 import com.shanchain.arkspot.ui.model.AnnouncementInfo;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.netrequest.SCHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import okhttp3.Call;
 
 
 public class AnnouncementActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -90,6 +95,29 @@ public class AnnouncementActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
+        Intent intent = getIntent();
+        String groupId = intent.getStringExtra("groupId");
+
+        SCHttpUtils.post()
+                .url(HttpApi.HX_GROUP_GET_NOTICE)
+                .addParams("groupId",groupId)
+                .addParams("page","0")
+                .addParams("size","20")
+                .addParams("sort","desc")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e("获取群公告失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d("获取群公告:" + response);
+                    }
+                });
+
         data = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             AnnouncementInfo announcementInfo = new AnnouncementInfo();

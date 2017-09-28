@@ -3,7 +3,9 @@ package com.shanchain.arkspot.ui.view.activity.chat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,12 +18,16 @@ import com.bumptech.glide.Glide;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.BitmapUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 
@@ -38,6 +44,10 @@ public class EditSceneActivity extends BaseActivity implements ArthurToolBar.OnL
     EditText mEtEditSceneName;
     @Bind(R.id.et_edit_scene_des)
     EditText mEtEditSceneDes;
+    @Bind(R.id.iv_img1)
+    ImageView mIvImg1;
+    @Bind(R.id.iv_img2)
+    ImageView mIvImg2;
     private String mImgPath;
 
     @Override
@@ -116,7 +126,40 @@ public class EditSceneActivity extends BaseActivity implements ArthurToolBar.OnL
 
                 LogUtils.d("选择的图片地址 ：" + mImgPath);
 
-                Glide.with(this).load(mImgPath).into(mIvEditSceneImg);
+                Glide.with(this).load(mImgPath).into(mIvImg1);
+
+                File file = new File(mImgPath);
+                long length = file.length();
+
+                Bitmap bitmap = BitmapUtils.getBitmap(mImgPath);
+
+                int byteCount1 = bitmap.getByteCount();
+
+                LogUtils.d("压缩前图片大小" + length + "，======" + byteCount1 + "，图片宽度" + bitmap.getWidth() + "，图片高度" + bitmap.getHeight());
+
+                //压缩图片
+                Bitmap image = BitmapUtils.getCompURLImage(mImgPath, 500, 500);
+
+                mIvEditSceneImg.setImageBitmap(bitmap);
+
+                int byteCount = image.getByteCount();
+
+                LogUtils.d("压缩后图片大小" + byteCount + "，图片宽度" + image.getWidth() + "，图片高度" + image.getHeight());
+
+                String tempFileName = BitmapUtils.getTempFileName();
+                try {
+                    File file1 = BitmapUtils.saveFile(image, getCacheDir().getPath(), tempFileName);
+                    String filePath = file1.getPath();
+
+                    LogUtils.d("新图片的文件路径" + filePath);
+
+                    LogUtils.d("新图片的大小" + file1.length());
+
+                    Glide.with(mContext).load(filePath).into(mIvImg2);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             } else {
                 LogUtils.d("没有图片返回啊");
             }
@@ -125,4 +168,10 @@ public class EditSceneActivity extends BaseActivity implements ArthurToolBar.OnL
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

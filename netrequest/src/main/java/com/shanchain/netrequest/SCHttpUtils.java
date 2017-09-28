@@ -11,7 +11,7 @@ import java.util.UUID;
  * Created by zhoujian on 2017/8/22.
  */
 
-public class SCHttpUtlis {
+public class SCHttpUtils {
     public static GetBuilder get() {
         return OkHttpUtils.get();
     }

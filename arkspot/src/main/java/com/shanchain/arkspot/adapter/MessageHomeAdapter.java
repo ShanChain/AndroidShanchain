@@ -2,6 +2,7 @@ package com.shanchain.arkspot.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -10,6 +11,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.DateUtils;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.MessageHomeInfo;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -55,8 +57,10 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
             helper.setText(R.id.tv_item_msg_home_name,s);
         } else{
             //会话不是群组
-            helper.setText(R.id.tv_item_msg_home_name,emConversation.getLastMessage().getFrom());
+            helper.setText(R.id.tv_item_msg_home_name,emConversation.getLastMessage().getTo());
         }
+        String img = "http://www.qqbody.com/uploads/allimg/201306/29-173154_455.jpg";
+        GlideUtils.load(mContext,img,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar),R.drawable.photo_yue);
 
     }
 }

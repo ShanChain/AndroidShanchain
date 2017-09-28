@@ -67,6 +67,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/iv_img1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="50dp"
+            android:id="@+id/iv_img2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="46dp">
 
         <TextView
@@ -124,5 +142,7 @@
             android:textSize="14sp"/>
 
     </RelativeLayout>
+
+
 
 </LinearLayout>

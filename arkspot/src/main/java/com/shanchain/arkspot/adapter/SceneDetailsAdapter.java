@@ -2,10 +2,13 @@ package com.shanchain.arkspot.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.shanchain.arkspot.ui.model.SceneDetailsInfo;
+import com.shanchain.arkspot.R;
+import com.shanchain.arkspot.ui.model.SceneImgInfo;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.List;
 
@@ -13,14 +16,15 @@ import java.util.List;
  * Created by zhoujian on 2017/9/14.
  */
 
-public class SceneDetailsAdapter extends BaseQuickAdapter<SceneDetailsInfo,BaseViewHolder> {
+public class SceneDetailsAdapter extends BaseQuickAdapter<SceneImgInfo,BaseViewHolder> {
 
-    public SceneDetailsAdapter(@LayoutRes int layoutResId, @Nullable List<SceneDetailsInfo> data) {
+    public SceneDetailsAdapter(@LayoutRes int layoutResId, @Nullable List<SceneImgInfo> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, SceneDetailsInfo item) {
-
+    protected void convert(BaseViewHolder helper, SceneImgInfo item) {
+        ImageView iv = helper.getView(R.id.iv_item_scene_numbers);
+        GlideUtils.load(mContext,item.getImg(),iv,R.drawable.photo_bear);
     }
 }

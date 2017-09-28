@@ -68,7 +68,7 @@
             android:textSize="@dimen/sp_14"/>
 
         <ImageView
-            android:id="@+id/iv_scene_details_code"
+            android:id="@+id/iv_scene_details_modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -114,10 +114,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_15dp"
             android:layout_weight="1"
-            android:text="角色  (3)"
+            android:text="角色  (0)"
             android:textSize="12sp"/>
 
         <ImageView
+            android:id="@+id/iv_scene_details_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dimens_15dp"
@@ -220,6 +221,7 @@
     <View style="@style/style_text_line_match"/>
 
     <RelativeLayout
+        android:id="@+id/rl_scene_detail_check"
         android:layout_width="match_parent"
         android:layout_height="44dp">
 

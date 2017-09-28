@@ -53,4 +53,9 @@ public interface HttpApi {
     //查看群信息
     String HX_GROUP_QUARY = BASE_URL_IM + "/hx/group/query";
 
+    //获取群公告
+    String HX_GROUP_GET_NOTICE = BASE_URL_IM + "/hx/group/notice/get";
+
+    //通过环信id（username）获取用户详情
+    String HX_USER_DETAIL = BASE_URL_IM + "/hx/user/detail";
 }
