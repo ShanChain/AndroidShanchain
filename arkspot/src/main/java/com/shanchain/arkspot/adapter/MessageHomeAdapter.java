@@ -48,19 +48,19 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         //设置时间
         helper.setText(R.id.tv_item_msg_home_time, DateUtils.getTimestampString(new Date(emConversation.getLastMessage().getMsgTime())));
         //设置最近一条消息
-        helper.setText(R.id.tv_item_msg_home_last,((EMTextMessageBody)emConversation.getLastMessage().getBody()).getMessage());
+        helper.setText(R.id.tv_item_msg_home_last, ((EMTextMessageBody) emConversation.getLastMessage().getBody()).getMessage());
         //设置昵称
         EMConversation.EMConversationType type = emConversation.getType();
-        if (emConversation.isGroup()){
+        if (emConversation.isGroup()) {
             //会话是群组
             String s = emConversation.getLastMessage().conversationId();
-            helper.setText(R.id.tv_item_msg_home_name,s);
-        } else{
+            helper.setText(R.id.tv_item_msg_home_name, s);
+        } else {
             //会话不是群组
-            helper.setText(R.id.tv_item_msg_home_name,emConversation.getLastMessage().getTo());
+            helper.setText(R.id.tv_item_msg_home_name, emConversation.getLastMessage().getTo());
         }
         String img = "http://www.qqbody.com/uploads/allimg/201306/29-173154_455.jpg";
-        GlideUtils.load(mContext,img,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar),R.drawable.photo_yue);
-
+        String headImg = item.getEMConversation().getLastMessage().getStringAttribute("headImg", img);
+        GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar), R.drawable.photo_yue);
     }
 }

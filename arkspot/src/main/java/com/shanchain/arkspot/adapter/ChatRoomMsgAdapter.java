@@ -14,6 +14,7 @@ import com.hyphenate.util.DateUtils;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -223,6 +224,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 tvSendContent.setText(msg);
                 tvSendTime.setText(timestampString);
                 tvSendNick.setText(emMessage.getFrom());
+                GlideUtils.load(ivSendAvatar.getContext(),emMessage.getStringAttribute("headImg","http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg"),ivSendAvatar,R.drawable.photo_yue);
                 if (position == 0) {
                     tvSendTime.setVisibility(View.VISIBLE);
                 } else {
@@ -239,6 +241,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 tvReceiveContent.setText(msg);
                 tvReceiveTime.setText(timestampString);
                 tvReceiverNick.setText(emMessage.getFrom());
+                GlideUtils.load(ivReceiverAvatar.getContext(),emMessage.getStringAttribute("headImg","http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg"),ivReceiverAvatar,R.drawable.photo_yue);
                 if (position == 0) {
                     tvReceiveTime.setVisibility(View.VISIBLE);
                 } else {

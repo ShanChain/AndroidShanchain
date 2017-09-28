@@ -94,7 +94,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     //是否是群聊
     private boolean mIsGroup;
     private boolean move;
-    private boolean isLoadHistory;
+    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_chat;
@@ -128,7 +128,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             if (memberList.size() == 0) {
                 LogUtils.d("未获取到群成员");
             }*/
-
 
             //添加全局管理员
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
@@ -359,7 +358,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                 String sceneContent = etSceneContent.getText().toString().trim();
                 ToastUtils.showToast(ChatRoomActivity.this, sceneContent);
                 int msgAttr = Constants.attrScene;
-                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType);
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType,myHeadImg);
                 dialog.dismiss();
             }
         });
@@ -374,6 +373,10 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         String msg = mEtChatMsg.getText().toString();
         //设置消息类型
         int msgAttr = Constants.attrDefault;
+        //设置消息额外字符串参数（头像）
+        //String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
+
+
         boolean on = mShsChat.isOn();
         if (on) {
             //闲聊
@@ -383,7 +386,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             msgAttr = Constants.attrAgainst;
         }
 
-        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType);
+        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType,myHeadImg);
         mEtChatMsg.getText().clear();
     }
 

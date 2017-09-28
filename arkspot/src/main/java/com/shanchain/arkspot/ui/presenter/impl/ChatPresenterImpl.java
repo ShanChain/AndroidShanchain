@@ -58,10 +58,11 @@ public class ChatPresenterImpl implements ChatPresenter {
      *
      */
     @Override
-    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType) {
+    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg) {
         EMMessage txtSendMessage = EMMessage.createTxtSendMessage(msg, toChatName);
         //设置扩展消息类型
         txtSendMessage.setAttribute("msgAttr",msgAttr);
+        txtSendMessage.setAttribute("headImg",headImg);
         txtSendMessage.setChatType(chatType);
         txtSendMessage.setStatus(EMMessage.Status.INPROGRESS);
         mEMMessageList.add(txtSendMessage);
