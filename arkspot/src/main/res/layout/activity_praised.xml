@@ -16,9 +16,15 @@
 
     <View style="@style/style_text_line_match"/>
 
-    <FrameLayout
-        android:id="@+id/fl_praised_container"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_praised"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_praised"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
