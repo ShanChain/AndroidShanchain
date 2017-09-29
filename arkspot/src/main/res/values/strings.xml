@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">arkspot</string>
+
+    <!-- common -->
+    <string name="cancel">取消</string>
+
+
+    <!-- Square -->
+    <string name="headlines">报社头条</string>
+    <string name="background_img">背景图片</string>
+    <string name="space_introduction">背景介绍</string>
+
+
+
 </resources>

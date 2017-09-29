@@ -19,8 +19,12 @@ public final class NativePages {
 
     public static final String PAGE_FLAG = "page_flag";
     public static final String PAGE_MAIN = "page_main"; //MainActivity
-    public static final String PAGE_WEBVIEW = "page_webview"; //MainActivity
+    public static final String PAGE_WEBVIEW = "page_webview"; //SCWebviewActivity
     public static final String PAGE_CONTACT = "page_contact";//ContactActivity
+    public static final String PAGE_PHOTO_PICKER = "page_photo_picker";//ContactActivity
+    public static final String PAGE_PHOTO_PAGER = "page_photo_pager";//ContactActivity
+    public static final String PAGE_PHOTO_IMAGE = "page_photo_image";//ContactActivity
+
 
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
