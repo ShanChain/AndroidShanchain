@@ -40,7 +40,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     public int getItemViewType(int position) {
         MsgInfo msgInfo = mMsgInfoList.get(position);
         EMMessage emMessage = msgInfo.getEMMessage();
-        int msgAttr = emMessage.getIntAttribute("msgAttr", 0);
+        int msgAttr = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
         if (msgAttr == 3) {
             return 3;
         } else if (emMessage.direct() == EMMessage.Direct.RECEIVE) {
@@ -176,15 +176,15 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             EMMessage emMessage = msgInfo.getEMMessage();
             EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
             String msg = body.getMessage();
-            int msgAttribute = emMessage.getIntAttribute("msgAttr", 0);
-            if (msgAttribute == Constants.attrScene) {
+            int msgAttribute = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
+            if (msgAttribute == Constants.ATTR_SCENE) {
                 //场景
                 if (tvItemMsgSceneTitle != null){
                     tvItemMsgSceneTitle.setText("场景");
                     getTvItemMsgSceneContent.setText(emMessage.getFrom() + " " + msg);
                 }
 
-            } else if (msgAttribute == Constants.attrDefault) {
+            } else if (msgAttribute == Constants.ATTR_DEFAULT) {
                 //闲聊(本人说话)
                 if (tvReceiveRole != null) {
                     tvReceiveRole.setVisibility(View.VISIBLE);
@@ -196,7 +196,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                     tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_normal);
                 }
                 setMsgContent(position, emMessage, msg);
-            } else if (msgAttribute == Constants.attrAgainst) {
+            } else if (msgAttribute == Constants.ATTR_AGAINST) {
                 //对戏(角色说话)
                 if (tvReceiveRole != null) {
                     tvReceiveRole.setVisibility(View.GONE);
@@ -218,13 +218,14 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
         private void setMsgContent(int position, EMMessage emMessage, String msg) {
             long msgTime = emMessage.getMsgTime();
             String timestampString = DateUtils.getTimestampString(new Date(msgTime));
-
+            String headImg = emMessage.getStringAttribute(Constants.MSG_HEAD_IMG, "http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg");
+            String nickName = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
             if (emMessage.direct() == EMMessage.Direct.SEND) {
                 //发送
                 tvSendContent.setText(msg);
                 tvSendTime.setText(timestampString);
-                tvSendNick.setText(emMessage.getFrom());
-                GlideUtils.load(ivSendAvatar.getContext(),emMessage.getStringAttribute("headImg","http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg"),ivSendAvatar,R.drawable.photo_yue);
+                tvSendNick.setText(nickName);
+                GlideUtils.load(ivSendAvatar.getContext(),headImg,ivSendAvatar);
                 if (position == 0) {
                     tvSendTime.setVisibility(View.VISIBLE);
                 } else {
@@ -240,8 +241,8 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 //接收
                 tvReceiveContent.setText(msg);
                 tvReceiveTime.setText(timestampString);
-                tvReceiverNick.setText(emMessage.getFrom());
-                GlideUtils.load(ivReceiverAvatar.getContext(),emMessage.getStringAttribute("headImg","http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg"),ivReceiverAvatar,R.drawable.photo_yue);
+                tvReceiverNick.setText(nickName);
+                GlideUtils.load(ivReceiverAvatar.getContext(),headImg,ivReceiverAvatar);
                 if (position == 0) {
                     tvReceiveTime.setVisibility(View.VISIBLE);
                 } else {
@@ -304,7 +305,5 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     public void setOnAvatarClickListener(OnAvatarClickListener avatarClickListener) {
         this.avatarClickListener = avatarClickListener;
     }
-
-
 
 }

@@ -31,8 +31,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="@dimen/dimens_15dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_yue"/>
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"

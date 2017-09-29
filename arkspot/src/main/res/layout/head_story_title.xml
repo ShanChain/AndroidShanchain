@@ -10,7 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="收藏"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="@dimen/sp_14"
+        />
+
     <android.support.v7.widget.RecyclerView
+        android:layout_marginLeft="@dimen/dimens_5dp"
+        android:layout_marginRight="@dimen/dimens_5dp"
         android:layout_marginTop="@dimen/dimens_10dp"
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:id="@+id/rv_story_title_head"

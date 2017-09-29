@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v4.app.Fragment;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 /**
@@ -25,6 +23,7 @@ public final class NativePages {
     public static final String PAGE_PHOTO_PAGER = "page_photo_pager";//ContactActivity
     public static final String PAGE_PHOTO_IMAGE = "page_photo_image";//ContactActivity
 
+    public static final String PAGE_PRAISED = "page_praised";//PraisedActivity
 
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 

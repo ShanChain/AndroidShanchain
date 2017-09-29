@@ -8,16 +8,13 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.arkspot.ui.view.activity.mine.PraisedActivity;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.netrequest.SCHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import okhttp3.Call;
 
 
 public class LoginActivity extends BaseActivity {
@@ -39,8 +36,8 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
 
     }
-    String userName = "sc-738727063";
-//    String userName = "sc-738726166";
+//    String userName = "sc-738727063";
+    String userName = "sc-738726166";
 //    String userName = "sc-738727191";
     private String psw = "123456";
 
@@ -69,22 +66,7 @@ public class LoginActivity extends BaseActivity {
                             }
                         });*/
 
-                SCHttpUtils.post()
-                        .url(HttpApi.HX_USER_REGIST)
-                        .addParams("","")
-                        .build()
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                LogUtils.e("注册环信失败");
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(String response, int id) {
-                                LogUtils.d("创建环信用户成功" + response);
-                            }
-                        });
+                readyGo(PraisedActivity.class);
 
 
                 break;
