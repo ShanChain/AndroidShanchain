@@ -20,6 +20,7 @@ public final class NativePages {
     public static final String PAGE_FLAG = "page_flag";
     public static final String PAGE_MAIN = "page_main"; //MainActivity
     public static final String PAGE_WEBVIEW = "page_webview"; //MainActivity
+    public static final String PAGE_CONTACT = "page_contact";//ContactActivity
 
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 

@@ -7,6 +7,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.rn.AppReactPackage;
 
 import java.util.Arrays;
@@ -18,6 +19,11 @@ import java.util.List;
 
 public class BaseApplication extends Application implements ReactApplication {
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        NativePages.initAllowJumpPages(this);
+    }
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override

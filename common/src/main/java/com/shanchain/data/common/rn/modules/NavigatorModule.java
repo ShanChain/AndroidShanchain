@@ -48,9 +48,9 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void startActivity(String className, String extras) {
+    public void startActivity(String pageFlag, String extras) {
         Context context = getReactApplicationContext();
-        Intent intent = NativePages.buildIntent(className);
+        Intent intent = NativePages.buildIntent(pageFlag);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (TextUtils.isEmpty(extras)) {
             context.startActivity(intent);
