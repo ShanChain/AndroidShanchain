@@ -4,6 +4,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;
@@ -55,14 +56,18 @@ public class ChatPresenterImpl implements ChatPresenter {
      * @param toChatName 聊天对象
      * @param msgAttr 扩展消息参数
      * @param chatType 聊天类型
-     *
+     * @param headImg 发送消息时附带头像信息
+     * @param nickName 发送消息时附带昵称信息
      */
     @Override
-    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg) {
+    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg,String nickName,boolean isGroup,String groupImg) {
         EMMessage txtSendMessage = EMMessage.createTxtSendMessage(msg, toChatName);
         //设置扩展消息类型
-        txtSendMessage.setAttribute("msgAttr",msgAttr);
-        txtSendMessage.setAttribute("headImg",headImg);
+        txtSendMessage.setAttribute(Constants.MSG_ATTR,msgAttr);
+        txtSendMessage.setAttribute(Constants.MSG_HEAD_IMG,headImg);
+        txtSendMessage.setAttribute(Constants.MSG_NICK_NAME,nickName);
+        txtSendMessage.setAttribute(Constants.MSG_IS_GROUP,isGroup);
+        txtSendMessage.setAttribute(Constants.MSG_GROUP_IMG,groupImg);
         txtSendMessage.setChatType(chatType);
         txtSendMessage.setStatus(EMMessage.Status.INPROGRESS);
         mEMMessageList.add(txtSendMessage);

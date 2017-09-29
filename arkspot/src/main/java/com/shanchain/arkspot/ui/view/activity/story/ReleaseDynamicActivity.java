@@ -34,6 +34,10 @@ import com.shanchain.arkspot.ui.model.TopicInfo;
 import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +45,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.PrefUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -207,7 +207,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 selectTopic();
                 break;
             case R.id.iv_release_icon_frame:
-                editBox();
+                //editBox();
                 break;
             case R.id.tv_release_img:
 

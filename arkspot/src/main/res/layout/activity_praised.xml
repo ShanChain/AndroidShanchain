@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_praised"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleText="我赞过的"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <FrameLayout
+        android:id="@+id/fl_praised_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

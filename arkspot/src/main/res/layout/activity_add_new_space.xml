@@ -15,7 +15,7 @@
         app:rightTextColor="@color/colorTextDefault"
         app:rightTextSize="14"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="添加新时空"
+        app:titleText="添加新世界"
         app:titleTextSize="16"/>
 
     <View
@@ -122,7 +122,7 @@
                         android:layout_marginLeft="30dp"
                         android:background="@drawable/shape_bg_edit_report"
                         android:gravity="center_vertical"
-                        android:hint="请输入时空名称"
+                        android:hint="请输入世界名称"
                         android:lines="1"
                         android:paddingLeft="@dimen/dp_10"
                         android:paddingRight="@dimen/sp_12"
@@ -162,7 +162,7 @@
                 android:layout_marginTop="@dimen/dimens_15dp"
                 android:background="@drawable/shape_bg_edit_report"
                 android:gravity="top"
-                android:hint="简单介绍一下时空吧~"
+                android:hint="简单介绍一下世界吧~"
                 android:padding="@dimen/dimens_10dp"
                 android:textColor="@color/colorTextDefault"
                 android:textColorHint="@color/colorHint"

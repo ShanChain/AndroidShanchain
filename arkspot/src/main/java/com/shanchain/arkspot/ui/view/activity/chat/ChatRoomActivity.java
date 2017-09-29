@@ -94,7 +94,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     //是否是群聊
     private boolean mIsGroup;
     private boolean move;
+    //发消息的头像图片
+//    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/14/2152366361.jpg";
     String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
+    String nickName = "佐助";
+    private String groupHeadImg = "http://img1.2345.com/duoteimg/zixunImg/local/2016/11/16/1479289866985.jpg";
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_chat;
@@ -306,26 +311,26 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     /**
-     *  描述：@群成员
+     * 描述：@群成员
      */
     private void atMember() {
         Intent intent = new Intent(this, SelectContactActivity.class);
-        intent.putExtra("isAt",true);
-        startActivityForResult(intent,REQUEST_CODE_AT);
+        intent.putExtra("isAt", true);
+        startActivityForResult(intent, REQUEST_CODE_AT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data != null){
+        if (data != null) {
             ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
             String msg = mEtChatMsg.getText().toString().trim();
             String at = "";
-            for (int i = 0; i < contacts.size(); i ++) {
-                at += "@"+contacts.get(i)+" ";
+            for (int i = 0; i < contacts.size(); i++) {
+                at += "@" + contacts.get(i) + " ";
             }
             mEtChatMsg.setText(msg + at);
-            mEtChatMsg.setSelection((msg+at).length());
+            mEtChatMsg.setSelection((msg + at).length());
         }
     }
 
@@ -357,8 +362,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void onClick(View v) {
                 String sceneContent = etSceneContent.getText().toString().trim();
                 ToastUtils.showToast(ChatRoomActivity.this, sceneContent);
-                int msgAttr = Constants.attrScene;
-                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType,myHeadImg);
+                int msgAttr = Constants.ATTR_SCENE;
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName,mIsGroup,groupHeadImg);
                 dialog.dismiss();
             }
         });
@@ -372,7 +377,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void sendMsg() {
         String msg = mEtChatMsg.getText().toString();
         //设置消息类型
-        int msgAttr = Constants.attrDefault;
+        int msgAttr = Constants.ATTR_DEFAULT;
         //设置消息额外字符串参数（头像）
         //String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
 
@@ -380,13 +385,15 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         boolean on = mShsChat.isOn();
         if (on) {
             //闲聊
-            msgAttr = Constants.attrDefault;
+            msgAttr = Constants.ATTR_DEFAULT;
+
         } else {
             //对戏
-            msgAttr = Constants.attrAgainst;
+            msgAttr = Constants.ATTR_AGAINST;
         }
 
-        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType,myHeadImg);
+
+        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName,mIsGroup,groupHeadImg);
         mEtChatMsg.getText().clear();
     }
 
@@ -479,11 +486,11 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onPullHistory(List<EMMessage> emMessages) {
         mSrlPullHistoryMsg.setRefreshing(false);
-        if (emMessages == null){
+        if (emMessages == null) {
             return;
         }
-        final int index = emMessages.size() -1;
-        if (index < 0 ){
+        final int index = emMessages.size() - 1;
+        if (index < 0) {
             return;
         }
         mChatRoomMsgAdapter.notifyDataSetChanged();
@@ -493,11 +500,11 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 //在这里进行第二次滚动（最后的100米！）
-                if (move ){
+                if (move) {
                     move = false;
                     //获取要置顶的项在当前屏幕的位置，mIndex是记录的要置顶项在RecyclerView中的位置
                     int n = index - mLayoutManager.findFirstVisibleItemPosition();
-                    if ( 0 <= n && n < mRvChatMsg.getChildCount()){
+                    if (0 <= n && n < mRvChatMsg.getChildCount()) {
                         //获取要置顶的项顶部离RecyclerView顶部的距离
                         int top = mRvChatMsg.getChildAt(n).getTop();
                         //最后的移动
@@ -509,22 +516,22 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         });
     }
 
-   /**
-    *  描述：配合recyclerview的滚动状态监听来设置recycleview第一个可见条目的位置
-    */
+    /**
+     * 描述：配合recyclerview的滚动状态监听来设置recycleview第一个可见条目的位置
+     */
     private void moveToPosition(int n) {
         //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
         int firstItem = mLayoutManager.findFirstVisibleItemPosition();
         int lastItem = mLayoutManager.findLastVisibleItemPosition();
         //然后区分情况
-        if (n <= firstItem ){
+        if (n <= firstItem) {
             //当要置顶的项在当前显示的第一个项的前面时
             mRvChatMsg.scrollToPosition(n);
-        }else if ( n <= lastItem ){
+        } else if (n <= lastItem) {
             //当要置顶的项已经在屏幕上显示时
             int top = mRvChatMsg.getChildAt(n - firstItem).getTop();
             mRvChatMsg.scrollBy(0, top);
-        }else{
+        } else {
             //当要置顶的项在当前显示的最后一项的后面时
             mRvChatMsg.scrollToPosition(n);
             //这里这个变量是用在RecyclerView滚动监听里面的

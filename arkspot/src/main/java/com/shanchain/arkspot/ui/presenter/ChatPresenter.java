@@ -11,7 +11,7 @@ public interface ChatPresenter {
 
     void updateData(String toChatName);
 
-    void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg);
+    void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg,String nickName,boolean isGroup,String groupImg);
 
     void pullHistoryMsg(String toChatName);
 

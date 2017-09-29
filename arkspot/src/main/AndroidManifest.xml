@@ -57,14 +57,14 @@
         <activity android:name=".ui.view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.view.activity.MainActivity">
             <meta-data
                 android:name="page_flag"
-                android:value="page_main" />
+                android:value="page_main"/>
         </activity>
         <activity android:name=".ui.view.activity.story.StoryTitleActivity">
         </activity>
@@ -120,7 +120,7 @@
         <activity android:name=".ui.view.activity.chat.ContactActivity">
             <meta-data
                 android:name="page_flag"
-                android:value="page_contact" />
+                android:value="page_contact"/>
         </activity>
         <activity android:name=".ui.view.activity.chat.CreateDramaActivity">
         </activity>
@@ -142,7 +142,11 @@
         </activity>
         <activity android:name=".ui.view.activity.chat.FindSceneActivity">
         </activity>
-
+        <activity android:name=".ui.view.activity.mine.PraisedActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_praised"/>
+        </activity>
     </application>
 
 </manifest>

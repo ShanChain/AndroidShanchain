@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.DateUtils;
 import com.shanchain.arkspot.R;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.MessageHomeInfo;
 import com.shanchain.data.common.utils.GlideUtils;
 
@@ -21,6 +22,11 @@ import java.util.List;
  */
 
 public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseViewHolder> {
+
+    //默认群头像
+    private String defaultGroupImg = "http://p4.so.qhimgs1.com/bdr/200_200_/t01b1983d340e91c754.png";
+    //默认个人头像
+    private String defaultHeadImg = "http://www.qqbody.com/uploads/allimg/201306/29-173154_455.jpg";
 
     public MessageHomeAdapter(@LayoutRes int layoutResId, @Nullable List<MessageHomeInfo> data) {
         super(layoutResId, data);
@@ -55,12 +61,14 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
             //会话是群组
             String s = emConversation.getLastMessage().conversationId();
             helper.setText(R.id.tv_item_msg_home_name, s);
+            String groupImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_GROUP_IMG, defaultGroupImg);
+            GlideUtils.load(mContext,groupImg,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar));
         } else {
             //会话不是群组
             helper.setText(R.id.tv_item_msg_home_name, emConversation.getLastMessage().getTo());
+            String headImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_HEAD_IMG, defaultHeadImg);
+            GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar));
         }
-        String img = "http://www.qqbody.com/uploads/allimg/201306/29-173154_455.jpg";
-        String headImg = item.getEMConversation().getLastMessage().getStringAttribute("headImg", img);
-        GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar), R.drawable.photo_yue);
+
     }
 }

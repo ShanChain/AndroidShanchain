@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v4.app.Fragment;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 /**
@@ -21,7 +19,7 @@ public final class NativePages {
     public static final String PAGE_MAIN = "page_main"; //MainActivity
     public static final String PAGE_WEBVIEW = "page_webview"; //MainActivity
     public static final String PAGE_CONTACT = "page_contact";//ContactActivity
-
+    public static final String PAGE_PRAISED = "page_praised";//PraisedActivity
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
 

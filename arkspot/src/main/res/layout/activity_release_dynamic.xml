@@ -85,7 +85,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimens_15dp"
-            android:text="长文"
+            android:text="小说"
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
 
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimens_10dp"
-            android:text="普通"
+            android:text="动态"
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
 
@@ -137,6 +137,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:visibility="invisible"
                 android:id="@+id/iv_release_icon_frame"
                 android:src="@mipmap/abs_release_btn_frame_default"
                 android:layout_weight="1"

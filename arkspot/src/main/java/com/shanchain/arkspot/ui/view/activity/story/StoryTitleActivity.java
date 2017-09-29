@@ -22,13 +22,13 @@ import com.shanchain.arkspot.ui.model.StoryLikeInfo;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
 import com.shanchain.arkspot.ui.model.StoryTitleStagInfo;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 
 public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener {
@@ -188,6 +188,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     public void onTitleClick(View v) {
         finish();
+        overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
     }
 
     @Override
