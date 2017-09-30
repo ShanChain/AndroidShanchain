@@ -20,6 +20,7 @@ public final class NativePages {
     public static final String PAGE_WEBVIEW = "page_webview"; //MainActivity
     public static final String PAGE_CONTACT = "page_contact";//ContactActivity
     public static final String PAGE_PRAISED = "page_praised";//PraisedActivity
+    public static final String page_my_comments = "page_my_comments";//MyCommentsActivity
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
 

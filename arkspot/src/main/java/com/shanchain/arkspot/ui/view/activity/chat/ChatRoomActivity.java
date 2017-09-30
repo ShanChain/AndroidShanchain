@@ -95,9 +95,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private boolean mIsGroup;
     private boolean move;
     //发消息的头像图片
-//    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/14/2152366361.jpg";
-    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
-    String nickName = "佐助";
+    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/14/2152366361.jpg";
+//    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
+    String nickName = "鸣人";
     private String groupHeadImg = "http://img1.2345.com/duoteimg/zixunImg/local/2016/11/16/1479289866985.jpg";
 
     @Override

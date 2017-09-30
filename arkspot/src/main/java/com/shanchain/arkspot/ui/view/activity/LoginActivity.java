@@ -36,8 +36,8 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
 
     }
-//    String userName = "sc-738727063";
-    String userName = "sc-738726166";
+    String userName = "sc-738727063";
+//    String userName = "sc-738726166";
 //    String userName = "sc-738727191";
     private String psw = "123456";
 
