@@ -1,6 +1,8 @@
 package com.shanchain.data.common.rn;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -99,6 +101,13 @@ public class SCReactActivity extends ReactActivity{
         Toast.makeText(this, event, Toast.LENGTH_SHORT).show();
     }
 
-
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        Configuration config=new Configuration();
+        config.setToDefaults();
+        res.updateConfiguration(config,res.getDisplayMetrics() );
+        return res;
+    }
 
 }
