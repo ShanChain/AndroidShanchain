@@ -2,6 +2,7 @@ package com.shanchain.arkspot.ui.view.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,6 +29,8 @@ import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
 import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 
 import butterknife.Bind;
@@ -227,15 +230,18 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 break;
             case 2:
                 mTbMain.setTitleText(navigationBarTitles[position]);
+                mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 TextView titleSquare = mTbMain.getTitleView();
                 titleSquare.setCompoundDrawables(null, null, null, null);
-                mTbMain.setBtnVisibility(true, false);
-                mTbMain.setBtnEnabled(true, false);
+                mTbMain.setBtnVisibility(false, true);
+                mTbMain.setBtnEnabled(false, true);
+                mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
                 mTbMain.setTitleText(navigationBarTitles[position]);
                 TextView titleMine = mTbMain.getTitleView();
                 titleMine.setCompoundDrawables(null, null, null, null);
+                mTbMain.setRightImage(R.mipmap.abs_home_btn_comment_default);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setOnRightClickListener(this);
@@ -254,6 +260,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 newsRightClick();
                 break;
             case 2:
+                squareRightClick();
                 break;
             case 3:
                 break;
@@ -288,6 +295,38 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         break;
                     case R.id.tv_dialog_msg_cancel:
                         //取消
+                        readyGo(MeetPersonActivity.class);
+                        customDialog.dismiss();
+                        break;
+                }
+
+            }
+        });
+        customDialog.show();
+    }
+
+    private void squareRightClick() {
+        final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_square_msg_bottom, new int[]{R.id.tv_dialog_msg_headlines,
+                R.id.tv_dialog_msg_background_img, R.id.tv_dialog_msg_intro, R.id.tv_dialog_msg_cancel});
+        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+
+                switch (view.getId()) {
+                    case R.id.tv_dialog_msg_headlines:
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen,new Bundle());
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_dialog_msg_background_img:
+                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                        startActivity(intent);
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_dialog_msg_intro:
+                        readyGo(FindSceneActivity.class);
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_dialog_msg_cancel:
                         readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
