@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;

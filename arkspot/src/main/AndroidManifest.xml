@@ -158,6 +158,11 @@
                 android:name="page_flag"
                 android:value="page_praised"/>
         </activity>
+        <activity android:name=".ui.view.activity.mine.MyCommentsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_my_comments"/>
+        </activity>
     </application>
 
 </manifest>

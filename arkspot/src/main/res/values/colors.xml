@@ -29,4 +29,6 @@
     <color name="colorPopBg">#5000</color>
     <!--黑色-->
     <color name="colorBlack">#000</color>
+    <color name="colorTime">#888888</color>
+    <color name="colorTextBg">#f7f7f7</color>
 </resources>

@@ -18,6 +18,7 @@ import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
+import com.shanchain.arkspot.widgets.other.SCEmptyView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -37,7 +38,8 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Bind(R.id.srl_praised)
     SwipeRefreshLayout mSrlPraised;
     private List<StoryInfo> mDatas;
-
+    private AttentionAdapter mAdapter;
+    private String tbTitle = "";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_praised;
@@ -45,18 +47,27 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     protected void initViewsAndEvents() {
+        Intent intent = getIntent();
+        String reactExtra = intent.getStringExtra("ReactExtra");
+        if (reactExtra.equals("praised")){
+            tbTitle = getString(R.string.str_tb_title_praised);
+        }else if (reactExtra.equals("story")){
+            tbTitle = getString(R.string.str_tb_title_my_stories);
+        }
         initToolBar();
         initData();
         initRecyclerView();
     }
 
     private void initRecyclerView() {
+        View emptyView = new SCEmptyView(this,R.string.str_praised_empty_word,R.mipmap.abs_liked_icon_thumbsup_default);
         mRvPraised.setLayoutManager(new LinearLayoutManager(this));
         mSrlPraised.setOnRefreshListener(this);
-        AttentionAdapter adapter = new AttentionAdapter(mDatas);
+        mAdapter = new AttentionAdapter(mDatas);
         mRvPraised.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
-        mRvPraised.setAdapter(adapter);
-        adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+        mRvPraised.setAdapter(mAdapter);
+        mAdapter.setEmptyView(emptyView);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
@@ -79,7 +90,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
             }
         });
 
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 int viewType = adapter.getItemViewType(position);
@@ -107,6 +118,12 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                 }
             }
         });
+    }
+
+    private void initEmptyView() {
+
+
+
     }
 
     private void initData() {
@@ -213,12 +230,15 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                mDatas.clear();
+                mAdapter.notifyDataSetChanged();
                 mSrlPraised.setRefreshing(false);
             }
         }, 3000);
     }
 
     private void initToolBar() {
+        mTbPraised.setTitleText(tbTitle);
         mTbPraised.setBtnEnabled(true, false);
         mTbPraised.setOnLeftClickListener(this);
     }
