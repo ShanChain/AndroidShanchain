@@ -72,7 +72,7 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btn_login:
                 String trim = mEtInput.getText().toString().trim();
-
+                EMClient.getInstance().logout(true);
                 EMClient.getInstance().login(userName, psw, new EMCallBack() {
                     @Override
                     public void onSuccess() {
