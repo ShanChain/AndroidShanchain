@@ -2,4 +2,6 @@
     <string name="app_name">arkspot</string>
     <string name="str_praised_empty_word">暂时还没赞过别人，可以现在去赞～</string>
     <string name="str_empty_my_comments">暂时还没评论过别人，可以现在去评论～</string>
+    <string name="str_tb_title_praised">我赞过的</string>
+    <string name="str_tb_title_my_stories">我的故事</string>
 </resources>

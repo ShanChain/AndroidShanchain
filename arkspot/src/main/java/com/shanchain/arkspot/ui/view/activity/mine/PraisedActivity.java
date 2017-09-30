@@ -39,7 +39,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     SwipeRefreshLayout mSrlPraised;
     private List<StoryInfo> mDatas;
     private AttentionAdapter mAdapter;
-
+    private String tbTitle = "";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_praised;
@@ -47,6 +47,13 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     protected void initViewsAndEvents() {
+        Intent intent = getIntent();
+        String reactExtra = intent.getStringExtra("ReactExtra");
+        if (reactExtra.equals("praised")){
+            tbTitle = getString(R.string.str_tb_title_praised);
+        }else if (reactExtra.equals("story")){
+            tbTitle = getString(R.string.str_tb_title_my_stories);
+        }
         initToolBar();
         initData();
         initRecyclerView();
@@ -231,6 +238,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initToolBar() {
+        mTbPraised.setTitleText(tbTitle);
         mTbPraised.setBtnEnabled(true, false);
         mTbPraised.setOnLeftClickListener(this);
     }
