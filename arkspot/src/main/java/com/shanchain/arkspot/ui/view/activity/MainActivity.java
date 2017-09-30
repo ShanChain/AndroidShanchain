@@ -319,16 +319,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_background_img:
-                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                        startActivity(intent);
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen,new Bundle());
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_intro:
-                        readyGo(FindSceneActivity.class);
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen,new Bundle());
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_cancel:
-                        readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
                 }
