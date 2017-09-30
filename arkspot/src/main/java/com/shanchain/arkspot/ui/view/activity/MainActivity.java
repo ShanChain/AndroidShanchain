@@ -2,6 +2,7 @@ package com.shanchain.arkspot.ui.view.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
@@ -28,6 +30,8 @@ import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
 import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 
 import butterknife.Bind;
@@ -311,9 +315,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
                 switch (view.getId()) {
                     case R.id.tv_dialog_msg_headlines:
-                        Intent invitationIntent = new Intent(MainActivity.this, SelectContactActivity.class);
-                        invitationIntent.putExtra("isAt",false);
-                        startActivity(invitationIntent);
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen,new Bundle());
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_background_img:
