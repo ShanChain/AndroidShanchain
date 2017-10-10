@@ -1,33 +1,34 @@
 package com.shanchain.arkspot.base;
 
 import android.app.ActivityManager;
-import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
-import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
-import com.shanchain.arkspot.BuildConfig;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.db.ContactDao;
+import com.shanchain.arkspot.ui.view.activity.MainActivity;
+import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.utils.Utils;
 import com.shanchain.data.common.BaseApplication;
-import com.shanchain.data.common.rn.AppReactPackage;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -137,6 +138,11 @@ public class MyApplication extends BaseApplication {
             public void onMessageReceived(List<EMMessage> list) {
                 //当接收到消息的回调
                 if (list != null && list.size() > 0) {
+
+                    if (isRuninBackground()){
+                        sendNotification(list.get(0));
+                    }
+
                     EventBus.getDefault().post(list.get(0));
                     LogUtils.d("接收到消息" + list.get(0).getBody().toString());
                 }
@@ -211,5 +217,44 @@ public class MyApplication extends BaseApplication {
     }
 
 
+    private boolean isRuninBackground() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(100);
+        ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
+        if (runningTaskInfo.topActivity.getPackageName().equals(getPackageName())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void sendNotification(EMMessage message) {
+        EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //延时意图
+        /**
+         * 参数2：请求码 大于1
+         */
+        Intent mainIntent = new Intent(this,MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent chatIntent = new Intent(this, ChatRoomActivity.class);
+        chatIntent.putExtra("toChatName",message.getFrom());
+
+        chatIntent.putExtra("isGroup",message.getChatType() == EMMessage.ChatType.GroupChat?true:false);
+
+        Intent[] intents = {mainIntent,chatIntent};
+        PendingIntent pendingIntent = PendingIntent.getActivities(this,1,intents,PendingIntent.FLAG_UPDATE_CURRENT) ;
+        Notification notification = new Notification.Builder(this)
+                .setAutoCancel(true) //当点击后自动删除
+                .setSmallIcon(R.mipmap.abs_home_btn_comment_default) //必须设置
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.abs_release_btn_switch_long_default))
+                .setContentTitle("您有一条新消息")
+                .setContentText(messageBody.getMessage())
+                .setContentInfo(message.getFrom())
+                .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX)
+                .build();
+        notificationManager.notify(1,notification);
+    }
 
 }

@@ -120,12 +120,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         });
     }
 
-    private void initEmptyView() {
-
-
-
-    }
-
     private void initData() {
         mDatas = new ArrayList<>();
 

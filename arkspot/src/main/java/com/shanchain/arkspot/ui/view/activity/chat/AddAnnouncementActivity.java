@@ -8,23 +8,40 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.common.OSSLog;
+import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
+import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.PutObjectRequest;
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.bumptech.glide.Glide;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.arkspot.ui.model.UpLoadImgBean;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.netrequest.SCHttpCallBack;
+import com.shanchain.netrequest.SCHttpUtils;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
+import okhttp3.Call;
 
 
 public class AddAnnouncementActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -99,8 +116,71 @@ public class AddAnnouncementActivity extends BaseActivity implements ArthurToolB
 
         //提交公告消息
 
+        if(TextUtils.isEmpty(mImgPath)){
+            ToastUtils.showToast(this,"图片为空！");
+            return;
+        }
 
+        SCHttpUtils.post().url(HttpApi.upLoad_file)
+                .addParams("num","1")
+                .build()
+                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e("上传图片失败");
+                        e.printStackTrace();
+                    }
 
+                    @Override
+                    public void onResponse(UpLoadImgBean response, int id) {
+                        if (response == null){
+                            LogUtils.e("上传图片返回为空");
+                            return;
+                        }
+
+                        String endPoint = response.getEndPoint();
+                        String accessKeyId = response.getAccessKeyId();
+                        String accessKeySecret = response.getAccessKeySecret();
+                        String securityToken = response.getSecurityToken();
+                        String bucket = response.getBucket();
+                        String img1 = response.getUuidList().get(0);
+                        String host = response.getHost();
+                        LogUtils.d("response = "+response.toString());
+                        int h  = 120;
+                        int w = 100;
+                        String imgUrl = img1 + ".jpg";
+                        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(accessKeyId, accessKeySecret, securityToken);
+                        OSSLog.enableLog();
+                        OSS oss = new OSSClient(getApplicationContext(), endPoint, credentialProvider);
+
+                        PutObjectRequest put = new PutObjectRequest(bucket,imgUrl,mImgPath);
+
+                        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+                            @Override
+                            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                                Log.d("PutObject", "UploadSuccess");
+                                Log.d("ETag", result.getETag());
+                                Log.d("RequestId", result.getRequestId());
+                                LogUtils.d("objectKey = " + request.getObjectKey());
+                            }
+                            @Override
+                            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                                // 请求异常
+                                if (clientExcepion != null) {
+                                    // 本地异常如网络异常等
+                                    clientExcepion.printStackTrace();
+                                }
+                                if (serviceException != null) {
+                                    // 服务异常
+                                    Log.e("ErrorCode", serviceException.getErrorCode());
+                                    Log.e("RequestId", serviceException.getRequestId());
+                                    Log.e("HostId", serviceException.getHostId());
+                                    Log.e("RawMessage", serviceException.getRawMessage());
+                                }
+                            }
+                        });
+                    }
+                });
     }
 
     private void selectImage() {
@@ -163,4 +243,5 @@ public class AddAnnouncementActivity extends BaseActivity implements ArthurToolB
             LogUtils.d("返回码错误");
         }
     }
+
 }

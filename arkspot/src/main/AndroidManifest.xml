@@ -90,14 +90,14 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_picker" />
+                android:value="page_photo_picker"/>
         </activity>
         <activity
             android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_pager" />
+                android:value="page_photo_pager"/>
         </activity>
         <activity
             android:name=".ui.view.activity.story.ReleaseDynamicActivity"
@@ -120,7 +120,7 @@
             android:theme="@style/FullScreenTheme">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_image" />
+                android:value="page_photo_image"/>
         </activity>
         <activity android:name=".ui.view.activity.story.AddNewSpaceActivity">
         </activity>
@@ -168,6 +168,8 @@
             <meta-data
                 android:name="page_flag"
                 android:value="page_my_comments"/>
+        </activity>
+        <activity android:name=".ui.view.activity.square.AddTopicActivity">
         </activity>
     </application>
 

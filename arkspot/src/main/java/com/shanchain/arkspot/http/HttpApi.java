@@ -58,4 +58,9 @@ public interface HttpApi {
 
     //通过环信id（username）获取用户详情
     String HX_USER_DETAIL = BASE_URL_IM + "/hx/user/detail";
+
+    String url = "http://192.168.0.110:8080";
+
+    String upLoad_file = url + "/v1/upload/app";
+
 }
