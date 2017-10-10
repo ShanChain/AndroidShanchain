@@ -61,6 +61,8 @@ public interface HttpApi {
 
     String url = "http://192.168.0.110:8080";
 
-    String upLoad_file = url + "/v1/upload/app";
+    String test_url = "http://47.91.178.114:8080";
+
+    String UP_LOAD_FILE = test_url + "/v1/upload/app";
 
 }

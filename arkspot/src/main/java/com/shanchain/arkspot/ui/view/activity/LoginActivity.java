@@ -1,5 +1,6 @@
 package com.shanchain.arkspot.ui.view.activity;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.arkspot.ui.view.activity.square.AddTopicActivity;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
@@ -32,6 +35,8 @@ public class LoginActivity extends BaseActivity {
     Button mBtnRegister;
     @Bind(R.id.btn_login)
     Button mBtnLogin;
+    @Bind(R.id.btn_test)
+    Button mBtnTest;
 
 
     @Override
@@ -43,14 +48,19 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
 
     }
-//    String userName = "sc-738727063";
+
+    //    String userName = "sc-738727063";
     String userName = "sc-738726166";
-//    String userName = "sc-738727191";
+    //    String userName = "sc-738727191";
     private String psw = "123456";
 
-    @OnClick({R.id.btn_register, R.id.btn_login})
+    @OnClick({R.id.btn_register, R.id.btn_login,R.id.btn_test})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_test:
+                readyGo(AddTopicActivity.class);
+                break;
+
             case R.id.btn_register:
                 //添加好友
                 String friend = mEtInput.getText().toString().trim();
@@ -82,11 +92,11 @@ public class LoginActivity extends BaseActivity {
 
                 String array = new Gson().toJson(lists);
 
-                LogUtils.d("======="+array);
+                LogUtils.d("=======" + array);
                 SCHttpUtils.post()
                         .url(HttpApi.HX_GROUP_ADD_MEMBERS)
-                        .addParams("groupId",friend)
-                        .addParams("jArray",array)
+                        .addParams("groupId", friend)
+                        .addParams("jArray", array)
                         .build()
                         .execute(new StringCallback() {
                             @Override
@@ -316,5 +326,12 @@ public class LoginActivity extends BaseActivity {
 
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

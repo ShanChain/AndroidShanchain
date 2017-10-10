@@ -79,7 +79,7 @@
         <activity android:name=".ui.view.activity.story.AddRoleActivity">
             <meta-data
                 android:name="page_flag"
-                android:value="page_add_role" />
+                android:value="page_add_role"/>
         </activity>
         <activity android:name=".ui.view.activity.story.AddResultActivity">
         </activity>
@@ -114,6 +114,9 @@
         <activity android:name=".ui.view.activity.story.StoryChainActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.TopicDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_topic_details"/>
         </activity>
         <activity
             android:name=".ui.view.activity.story.ImageActivity"
@@ -170,6 +173,8 @@
                 android:value="page_my_comments"/>
         </activity>
         <activity android:name=".ui.view.activity.square.AddTopicActivity">
+
+            <meta-data android:name="page_flag" android:value="page_add_topic"/>
         </activity>
     </application>
 

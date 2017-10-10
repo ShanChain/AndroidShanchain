@@ -15,7 +15,7 @@
         app:rightTextColor="@color/colorTextDefault"
         app:rightTextSize="14"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="添加角色"
+        app:titleText="添加话题"
         app:titleTextSize="16"/>
 
     <View

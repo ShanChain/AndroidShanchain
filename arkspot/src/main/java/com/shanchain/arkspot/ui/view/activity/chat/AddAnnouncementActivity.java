@@ -121,7 +121,7 @@ public class AddAnnouncementActivity extends BaseActivity implements ArthurToolB
             return;
         }
 
-        SCHttpUtils.post().url(HttpApi.upLoad_file)
+        SCHttpUtils.post().url(HttpApi.UP_LOAD_FILE)
                 .addParams("num","1")
                 .build()
                 .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
