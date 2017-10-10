@@ -77,6 +77,9 @@
         <activity android:name=".ui.view.activity.story.ReportSuccessActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.AddRoleActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_add_role" />
         </activity>
         <activity android:name=".ui.view.activity.story.AddResultActivity">
         </activity>
@@ -146,6 +149,9 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".ui.view.activity.chat.AnnouncementDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_notice"/>
         </activity>
         <activity android:name=".ui.view.activity.chat.EditSceneActivity">
         </activity>

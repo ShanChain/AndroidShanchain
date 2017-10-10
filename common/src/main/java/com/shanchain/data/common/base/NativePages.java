@@ -22,9 +22,11 @@ public final class NativePages {
     public static final String PAGE_PHOTO_PICKER = "page_photo_picker";//ContactActivity
     public static final String PAGE_PHOTO_PAGER = "page_photo_pager";//ContactActivity
     public static final String PAGE_PHOTO_IMAGE = "page_photo_image";//ContactActivity
-
+    public static final String PAGE_NOTICE = "page_notice";//AnnouncementDetailsActivity
     public static final String PAGE_PRAISED = "page_praised";//PraisedActivity
     public static final String page_my_comments = "page_my_comments";//MyCommentsActivity
+    public static final String PAGE_ADD_ROLE = "page_add_role";//MyCommentsActivity
+
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
 

@@ -24,8 +24,8 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     private final static String REACT_CLASS = "SCPageNavigator";
     public final static String REACT_EXTRA = "ReactExtra";
     public final static String REACT_SCREEN = "ReactScreen";
-    public final static String REACT_INIT_PROPS = "ReactInitProps";
-
+    public final static String REACT_INITIAL_PROPS = "activityParams";
+    public static final String REACT_PROPS = "screenProps";
     public NavigatorModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -35,10 +35,11 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     public static void startReactPage(Context context, String screenName, Bundle bundle) {
+
         Intent intent = new Intent(context, SCReactActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(REACT_SCREEN, screenName);
-        intent.putExtra(REACT_INIT_PROPS, bundle);
+        intent.putExtra(REACT_INITIAL_PROPS, bundle);
         context.startActivity(intent);
     }
 
@@ -89,7 +90,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             jsonObject = new JSONObject();
         }
         Bundle bundle = new Bundle();
-        bundle.putString(REACT_INIT_PROPS, jsonObject.toString());
+        bundle.putString(REACT_PROPS, jsonObject.toString());
         startReactPage(context, screen, bundle);
     }
 

@@ -263,10 +263,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 squareRightClick();
                 break;
             case 3:
+                notifyRightClick();
                 break;
         }
     }
 
+    private void notifyRightClick() {
+        NavigatorModule.startReactPage(this, RNPagesConstant.NotificationScreen,new Bundle());
+    }
     private void newsRightClick() {
         final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_msg_bottom, new int[]{R.id.tv_dialog_msg_new,
                 R.id.tv_dialog_msg_focus, R.id.tv_dialog_msg_code, R.id.tv_dialog_msg_cancel});
