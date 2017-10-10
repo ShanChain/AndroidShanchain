@@ -229,10 +229,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 2:
+                TextView squareTitle = mTbMain.getTitleView();
+                Drawable moreDrawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
+                moreDrawable.setBounds(0, 0, moreDrawable.getMinimumWidth(), moreDrawable.getMinimumHeight());
+                squareTitle.setCompoundDrawables(null, null, moreDrawable, null);
+                squareTitle.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
                 mTbMain.setTitleText(navigationBarTitles[position]);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
-                TextView titleSquare = mTbMain.getTitleView();
-                titleSquare.setCompoundDrawables(null, null, null, null);
+                mTbMain.setOnTitleClickListener(this);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setOnRightClickListener(this);
@@ -364,6 +368,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             case 1:
                 break;
             case 2:
+                Intent squareIntent = new Intent(this, StoryTitleActivity.class);
+                startActivity(squareIntent);
+                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 3:
                 break;
