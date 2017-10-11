@@ -79,7 +79,7 @@
         <activity android:name=".ui.view.activity.story.AddRoleActivity">
             <meta-data
                 android:name="page_flag"
-                android:value="page_add_role" />
+                android:value="page_add_role"/>
         </activity>
         <activity android:name=".ui.view.activity.story.AddResultActivity">
         </activity>
@@ -90,14 +90,14 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_picker" />
+                android:value="page_photo_picker"/>
         </activity>
         <activity
             android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_pager" />
+                android:value="page_photo_pager"/>
         </activity>
         <activity
             android:name=".ui.view.activity.story.ReleaseDynamicActivity"
@@ -114,13 +114,16 @@
         <activity android:name=".ui.view.activity.story.StoryChainActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.TopicDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_topic_details"/>
         </activity>
         <activity
             android:name=".ui.view.activity.story.ImageActivity"
             android:theme="@style/FullScreenTheme">
             <meta-data
                 android:name="page_flag"
-                android:value="page_photo_image" />
+                android:value="page_photo_image"/>
         </activity>
         <activity android:name=".ui.view.activity.story.AddNewSpaceActivity">
         </activity>
@@ -168,6 +171,10 @@
             <meta-data
                 android:name="page_flag"
                 android:value="page_my_comments"/>
+        </activity>
+        <activity android:name=".ui.view.activity.square.AddTopicActivity">
+
+            <meta-data android:name="page_flag" android:value="page_add_topic"/>
         </activity>
     </application>
 

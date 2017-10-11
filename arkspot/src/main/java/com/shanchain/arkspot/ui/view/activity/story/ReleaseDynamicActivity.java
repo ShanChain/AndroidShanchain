@@ -77,8 +77,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     TextView mTvReleaseAt;
     @Bind(R.id.tv_release_topic)
     TextView mTvReleaseTopic;
-    @Bind(R.id.tv_release_tail)
-    TextView mTvReleaseTail;
     @Bind(R.id.tv_release_read)
     TextView mTvReleaseRead;
     @Bind(R.id.ll_release_function_long)
@@ -190,7 +188,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         mTbReleaseDynamic.setOnRightClickListener(this);
     }
 
-    @OnClick({R.id.et_release_dynamic_content, R.id.iv_release_btn_switch, R.id.tv_release_img, R.id.tv_release_at, R.id.tv_release_topic, R.id.tv_release_tail, R.id.tv_release_read, R.id.iv_release_icon_img, R.id.iv_release_icon_at, R.id.iv_release_icon_topic, R.id.iv_release_icon_frame})
+    @OnClick({R.id.et_release_dynamic_content, R.id.iv_release_btn_switch, R.id.tv_release_img, R.id.tv_release_at, R.id.tv_release_topic, R.id.tv_release_read, R.id.iv_release_icon_img, R.id.iv_release_icon_at, R.id.iv_release_icon_topic, R.id.iv_release_icon_frame})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_release_icon_img:
@@ -218,10 +216,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 break;
             case R.id.tv_release_topic:
                 selectTopic();
-                break;
-            case R.id.tv_release_tail:
-                //小尾巴
-                tail();
                 break;
             case R.id.tv_release_read:
 

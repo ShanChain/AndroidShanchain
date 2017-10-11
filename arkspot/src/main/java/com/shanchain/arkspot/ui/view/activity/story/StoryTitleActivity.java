@@ -55,7 +55,12 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
+        initData();
         initRecyclerView();
+    }
+
+    private void initData() {
+
     }
 
     private void initRecyclerView() {

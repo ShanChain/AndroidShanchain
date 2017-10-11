@@ -205,17 +205,6 @@
 
             <TextView
                 android:textColor="@color/colorHint"
-                android:id="@+id/tv_release_tail"
-                android:textSize="@dimen/sp_14"
-                android:drawableTop="@mipmap/abs_release_btn_littletail_long_default"
-                android:gravity="center"
-                android:paddingTop="30dp"
-                android:text="小尾巴"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-            <TextView
-                android:textColor="@color/colorHint"
                 android:id="@+id/tv_release_read"
                 android:textSize="@dimen/sp_14"
                 android:drawableTop="@mipmap/abs_release_btn_read_long_default"
@@ -226,7 +215,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"/>
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"/>
 
