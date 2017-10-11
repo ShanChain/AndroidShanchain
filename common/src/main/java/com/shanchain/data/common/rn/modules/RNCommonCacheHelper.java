@@ -33,7 +33,7 @@ public class RNCommonCacheHelper extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void get(String userId,String key,Promise promise) {
+    public void getCache(String userId,String key,Promise promise) {
         promise.resolve(mCommonCacheHelper.getCache(userId, key));
     }
 
