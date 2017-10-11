@@ -31,17 +31,17 @@ public class CommonCacheHelper {
         return mInstance;
     }
 
-    public String getCache(String userId , String url){
+    public String getCache(String userId , String key){
 
-        if (TextUtils.isEmpty(url)){
+        if (TextUtils.isEmpty(key)){
             return null;
         }
-        String value =  mMemoryCache.get(userId + url);
+        String value =  mMemoryCache.get(userId + key);
         if ( !TextUtils.isEmpty(value)){
             return value;
         }
         Map<String, String> wheres = new HashMap<String, String>();
-        wheres.put("cacheKey", MD5Utils.md5(userId + url));
+        wheres.put("cacheKey", MD5Utils.md5(userId + key));
         CacheModel cachemodel = (CacheModel) mBaseDao.selectSingleData(getTableName(userId), wheres, CacheModel.class);
         try {
             if( cachemodel != null && mContext != null){
@@ -57,14 +57,14 @@ public class CommonCacheHelper {
     }
 
 
-    public void setCache(String userId ,String url ,String value){
-        if (TextUtils.isEmpty(url)){
+    public void setCache(String userId ,String key ,String value){
+        if (TextUtils.isEmpty(key)){
                 return;
         }
-        mMemoryCache.put(userId + url,value);
+        mMemoryCache.put(userId + key,value);
         if (mContext != null){
             Map<String, String> items = new HashMap<String, String>();
-            items.put("cacheKey", MD5Utils.md5(userId + url));
+            items.put("cacheKey", MD5Utils.md5(userId + key));
             items.put("cacheTime",String.valueOf(System.currentTimeMillis()));
             items.put("cacheValue", DesUtils.encrypt(value,mDesKey));
             mBaseDao.insertOrUpdate(getTableName(userId), items);
