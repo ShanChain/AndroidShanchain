@@ -7,7 +7,9 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.shanchain.data.common.base.CommonConstants;
 import com.shanchain.data.common.base.NativePages;
+import com.shanchain.data.common.cache.BaseSqlDao;
 import com.shanchain.data.common.rn.AppReactPackage;
 
 import java.util.Arrays;
@@ -23,6 +25,7 @@ public class BaseApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         NativePages.initAllowJumpPages(this);
+        BaseSqlDao.getInstance().init(getApplicationContext(), CommonConstants.APP_CHACHE_DB,1);
     }
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
