@@ -67,7 +67,13 @@ public class CommonCacheHelper {
             items.put("cacheKey", MD5Utils.md5(userId + key));
             items.put("cacheTime",String.valueOf(System.currentTimeMillis()));
             items.put("cacheValue", DesUtils.encrypt(value,mDesKey));
-            mBaseDao.insertOrUpdate(getTableName(userId), items);
+
+           boolean isOk = mBaseDao.insertOrUpdate(getTable(userId), items);
+            if(!isOk){
+                //重试
+                mBaseDao.excuteSql(getCreateUserTableSql(getTableName(userId)));
+                mBaseDao.insertOrUpdate(getTable(userId), items);
+            }
         }
     }
 
@@ -76,6 +82,10 @@ public class CommonCacheHelper {
             String tableName = MD5Utils.md5(userId);
             mBaseDao.dropTable(tableName);
         }
+    }
+
+    public String getTableName(String userId){
+        return "SC_" + MD5Utils.md5(userId);
     }
 
     private CommonCacheHelper(Context context){
@@ -99,31 +109,27 @@ public class CommonCacheHelper {
         }
     }
 
-    private String getTableName(String userId){
+    private String getTable(String userId){
         String mTableName = TABLE;
         if (userId != null && !userId.equals("0")){
-            mTableName = MD5Utils.md5(userId);
+            mTableName = getTableName(userId);
             String tables = SharedPreferencesUtils.getString(mContext,ARKSPOT_CACHE,USER_TABLES,"");
             String [] table = tables.split(",");
             StringBuffer buffer = new StringBuffer();
             buffer.append(mTableName+",");
             boolean exit = false;
-            for (int i = 0;i < table.length && buffer.toString().split(",").length < 5 ;i++ ){
+            for (int i = 0;i < table.length;i++ ){
                 String tableName = table[i];
-                if (!tableName.equals(mTableName)){
+                if (tableName.equals(mTableName)){
                     exit = true;
+                }else {
                     buffer.append(tableName+",");
                 }
-                table[i] = "";
             }
-            String tableLast = table[table.length-1];
-            if (!tableLast.equals(mTableName) && !TextUtils.isEmpty(tableLast)){
-                mBaseDao.dropTable(tableLast);
-            }
-            if (!exit && !tableLast.equals(mTableName)){
+            if (!exit){
                 mBaseDao.excuteSql(getCreateUserTableSql(mTableName));
             }
-            SharedPreferencesUtils.putString(mContext,ARKSPOT_CACHE,USER_TABLES,buffer.substring(0,buffer.length()-1));
+            SharedPreferencesUtils.putString(mContext,ARKSPOT_CACHE,USER_TABLES,buffer.toString());
         }
         return mTableName;
     }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -30,6 +31,7 @@ import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 
@@ -366,6 +368,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 1:
+                CommonCacheHelper.getInstance(this).getCache("569","appName");
+                CommonCacheHelper.getInstance(this).setCache("567899","appName","arkspot");
                 break;
             case 2:
                 Intent squareIntent = new Intent(this, StoryTitleActivity.class);
