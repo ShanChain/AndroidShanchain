@@ -5,6 +5,14 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_head_favorite"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
     <View
         android:background="@color/colorAccent"
         android:layout_width="match_parent"
@@ -28,7 +36,7 @@
         android:id="@+id/rv_story_title_head"
         android:layout_width="match_parent"
         android:layout_height="60dp"/>
-
+    </LinearLayout>
     <View
         android:background="@color/colorAccent"
         android:layout_width="match_parent"

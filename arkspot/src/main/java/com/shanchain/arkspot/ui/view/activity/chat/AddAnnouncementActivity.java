@@ -152,35 +152,37 @@ public class AddAnnouncementActivity extends BaseActivity implements ArthurToolB
                         OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(accessKeyId, accessKeySecret, securityToken);
                         OSSLog.enableLog();
                         OSS oss = new OSSClient(getApplicationContext(), endPoint, credentialProvider);
-
-                        PutObjectRequest put = new PutObjectRequest(bucket,imgUrl,mImgPath);
-
-                        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-                            @Override
-                            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                                Log.d("PutObject", "UploadSuccess");
-                                Log.d("ETag", result.getETag());
-                                Log.d("RequestId", result.getRequestId());
-                                LogUtils.d("objectKey = " + request.getObjectKey());
-                            }
-                            @Override
-                            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                                // 请求异常
-                                if (clientExcepion != null) {
-                                    // 本地异常如网络异常等
-                                    clientExcepion.printStackTrace();
-                                }
-                                if (serviceException != null) {
-                                    // 服务异常
-                                    Log.e("ErrorCode", serviceException.getErrorCode());
-                                    Log.e("RequestId", serviceException.getRequestId());
-                                    Log.e("HostId", serviceException.getHostId());
-                                    Log.e("RawMessage", serviceException.getRawMessage());
-                                }
-                            }
-                        });
+                        ossUpLoad(bucket, imgUrl, oss);
                     }
                 });
+    }
+
+    private void ossUpLoad(String bucket, String imgUrl, OSS oss) {
+        PutObjectRequest put = new PutObjectRequest(bucket,imgUrl,mImgPath);
+        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+            @Override
+            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                Log.d("PutObject", "UploadSuccess");
+                Log.d("ETag", result.getETag());
+                Log.d("RequestId", result.getRequestId());
+                LogUtils.d("objectKey = " + request.getObjectKey());
+            }
+            @Override
+            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                // 请求异常
+                if (clientExcepion != null) {
+                    // 本地异常如网络异常等
+                    clientExcepion.printStackTrace();
+                }
+                if (serviceException != null) {
+                    // 服务异常
+                    Log.e("ErrorCode", serviceException.getErrorCode());
+                    Log.e("RequestId", serviceException.getRequestId());
+                    Log.e("HostId", serviceException.getHostId());
+                    Log.e("RawMessage", serviceException.getRawMessage());
+                }
+            }
+        });
     }
 
     private void selectImage() {

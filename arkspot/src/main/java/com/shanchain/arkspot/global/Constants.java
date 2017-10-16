@@ -37,4 +37,15 @@ public interface Constants {
         String MSG_IS_GROUP = "isGroup";
 
 
+        /*************阿里云文件上传常量************/
+        String OSS_ENDPOINT = "";
+        String OSS_HOST = "";
+        String OSS_BUCKET = "";
+
+
+        /*************本地缓存常量************/
+        String CACHE_USER_INFO = "userInfo";
+        String CACHE_CUR_USER = "curUser";
+        String CACHE_TOKEN = "token";
+
 }

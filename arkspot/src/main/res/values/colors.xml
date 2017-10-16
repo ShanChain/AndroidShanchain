@@ -31,4 +31,5 @@
     <color name="colorBlack">#000</color>
     <color name="colorTime">#888888</color>
     <color name="colorTextBg">#f7f7f7</color>
+    <color name="colorLoginHint">#ddd</color>
 </resources>

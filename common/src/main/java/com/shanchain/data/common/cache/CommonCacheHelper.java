@@ -85,6 +85,9 @@ public class CommonCacheHelper {
     }
 
     public String getTableName(String userId){
+        if(userId.equalsIgnoreCase("0")){
+            return TABLE;
+        }
         return "SC_" + MD5Utils.md5(userId);
     }
 

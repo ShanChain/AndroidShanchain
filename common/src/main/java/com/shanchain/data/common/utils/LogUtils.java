@@ -9,8 +9,8 @@ import android.util.Log;
 
 public final class LogUtils {
     /**
-     *  2017/5/16
-     *  描述：私有构造方法,不能new对象
+     * 2017/5/16
+     * 描述：私有构造方法,不能new对象
      */
     private LogUtils() {
     }
@@ -97,24 +97,22 @@ public final class LogUtils {
     }
 
     /**
-     *  2017/5/25
-     *  描述：日志内容多的时候(超过4k)需要打印全时
-     *
+     * 2017/5/25
+     * 描述：日志内容多的时候(超过4k)需要打印全时
      */
     public static void showLog(String str) {
-        str = str.trim();
-        int index = 0;
-        int maxLength = 4000;
-        String finalString;
-        while (index < str.length()) {
-            if (str.length() <= index + maxLength) {
-                finalString = str.substring(index);
-            } else {
-                finalString = str.substring(index, maxLength);
+        if (str.length() > 4000) {
+            for (int i = 0; i < str.length(); i += 4000) {
+                if (i + 4000 < str.length()) {
+                    i(getCallerName(), str.substring(i, i + 4000));
+                } else {
+                    i(getCallerName(), str.substring(i, str.length()));
+                }
             }
-            index += maxLength;
-            i(getCallerName(), finalString.trim());
+        } else {
+            i(getCallerName(), str);
         }
     }
-    
+
+
 }

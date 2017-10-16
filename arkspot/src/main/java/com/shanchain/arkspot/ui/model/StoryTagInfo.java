@@ -8,6 +8,16 @@ public class StoryTagInfo {
     private boolean isSelected;
     private String tag;
 
+    private TagContentBean tagBean;
+
+    public TagContentBean getTagBean() {
+        return tagBean;
+    }
+
+    public void setTagBean(TagContentBean tagBean) {
+        this.tagBean = tagBean;
+    }
+
     public boolean isSelected() {
         return isSelected;
     }
