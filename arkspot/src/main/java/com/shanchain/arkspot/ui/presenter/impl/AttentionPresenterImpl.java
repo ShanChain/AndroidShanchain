@@ -1,6 +1,8 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
 import com.google.gson.Gson;
+
+import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryListDataBean;
 import com.shanchain.arkspot.ui.model.StoryListInfo;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
@@ -10,6 +12,7 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -48,10 +51,17 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                         LogUtils.d("======"+response);
                         StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
                         List<StoryListDataBean> storyList = storyListInfo.getData();
+                        List<StoryInfo> storyInfoList = new ArrayList<>();
+                        for (int i = 0; i < storyList.size(); i ++) {
+                            StoryInfo info = new StoryInfo();
+                            info.setStoryListDataBean(storyList.get(i));
+                            int type = storyList.get(i).getType();
+                            info.setItemType(type);
+                            storyInfoList.add(info);
+                        }
 
 
-
-                        mAttentionView.initSuccess(storyList);
+                        mAttentionView.initSuccess(storyInfoList);
                     }
                 });
 

@@ -37,5 +37,29 @@
         style="@style/style_text_line_match"/>
 
     <include layout="@layout/layout_story_function"/>
+    <View
+        style="@style/style_text_line_match"/>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_item_story_floors"
+        android:drawablePadding="@dimen/dimens_5dp"
+        android:drawableRight="@mipmap/abs_home_icon_unfolded_default"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="11dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorActive"
+        android:text="展开余下10层楼"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.shanchain.arkspot.widgets.other.AutoHeightListView
+        android:id="@+id/lv_item_story"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:divider="@null"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
