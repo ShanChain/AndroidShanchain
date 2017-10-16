@@ -12,25 +12,29 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AttentionAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryListDataBean;
+import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
+import com.shanchain.arkspot.ui.view.fragment.view.AttentionView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 /**
  * Created by zhoujian on 2017/8/23.
  */
 
-public class AttentionFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class AttentionFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,AttentionView {
     @Bind(R.id.xrv_attention)
     RecyclerView mXrvAttention;
     @Bind(R.id.srl_fragment_attention)
@@ -43,7 +47,17 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void initData() {
+
+        AttentionPresenter presenter = new AttentionPresenterImpl(this);
+
+        mSrlFragmentAttention.setColorSchemeColors(getResources().getColor(R.color.colorDialogBtn));
+        mSrlFragmentAttention.setOnRefreshListener(this);
         mXrvAttention.setLayoutManager(new LinearLayoutManager(mActivity));
+        mSrlFragmentAttention.setRefreshing(true);
+        String characterId = "12";
+        presenter.initData(characterId);
+
+
         final List<StoryInfo> datas = new ArrayList<>();
 
         for (int i = 0; i < 16; i++) {
@@ -59,8 +73,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             }
             datas.add(info);
         }
-        mSrlFragmentAttention.setColorSchemeColors(getResources().getColor(R.color.colorDialogBtn));
-        mSrlFragmentAttention.setOnRefreshListener(this);
+
 
 
         AttentionAdapter adapter = new AttentionAdapter(datas);
@@ -211,4 +224,14 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
         }, 3000);
     }
 
+    @Override
+    public void initSuccess(List<StoryListDataBean> data) {
+
+        mSrlFragmentAttention.setRefreshing(false);
+    }
+
+    @Override
+    public void initError(Exception e) {
+        mSrlFragmentAttention.setRefreshing(false);
+    }
 }

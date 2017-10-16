@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">arkspot</string>
     <string name="str_praised_empty_word">暂时还没赞过别人，可以现在去赞～</string>
     <string name="str_empty_my_comments">暂时还没评论过别人，可以现在去评论～</string>
@@ -12,5 +12,21 @@
     <string name="headlines">报社头条</string>
     <string name="background_img">背景图片</string>
     <string name="space_introduction">背景介绍</string>
+    <string name="str_hint_register_phone">请输入手机号码</string>
+    <string name="str_register_hint_pwd">请输入密码(至少6位)</string>
+    <string name="str_register_hint_pwd_confirm">请再次输入密码(至少6位)</string>
+    <string name="str_register_agree">同意服务条款并注册</string>
+    <string name="str_register_code_input">请输入验证码</string>
+    <string name="str_register_code_obtain">获取验证码</string>
+    <string name="str_title_tb_login">登录魂穿</string>
+    <string name="str_login_pwd">请输入密码</string>
+    <string name="str_login_account">请输入账号</string>
+    <string name="str_login_forget">忘记密码？</string>
+    <string name="str_login_btn_login">登录</string>
+    <string name="str_login_btn_register">注册</string>
+    <string name="str_txt_login_third">第三方登录</string>
+    <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.</string>
+    <string name="str_reset_pwd">请输入新密码</string>
+    <string name="str_sure">确定</string>
 
 </resources>

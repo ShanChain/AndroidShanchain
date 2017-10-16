@@ -54,7 +54,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.view.activity.LoginActivity">
+        <activity android:name=".ui.view.activity.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -173,8 +173,13 @@
                 android:value="page_my_comments"/>
         </activity>
         <activity android:name=".ui.view.activity.square.AddTopicActivity">
-
-            <meta-data android:name="page_flag" android:value="page_add_topic"/>
+            <meta-data
+                android:name="page_flag"
+                android:value="page_add_topic"/>
+        </activity>
+        <activity android:name=".ui.view.activity.login.RegisterActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.login.ResetPwdActivity">
         </activity>
     </application>
 

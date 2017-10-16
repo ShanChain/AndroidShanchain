@@ -308,8 +308,6 @@
         <activity android:name=".mvp.view.activity.story.ProtagonistActivity"/>
         <activity android:name=".mvp.view.activity.mine.LifeLabelActivity">
         </activity>
-        <activity android:name=".mvp.view.activity.ChatRoomActivity">
-        </activity>
 
         <activity android:name=".rn.RNDemoActivity">
         </activity>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="text_ack_msg">Прочитанные</string>
     <string name="text_delivered_msg">Переданные</string>
@@ -57,7 +57,6 @@
     <string name="dissolution_group_hint">Распускать чат при выходе из приложения</string>
     <string name="exit_group">Выйти</string>
     <string name="connect_conflict">В данный момент эта уч.запись используется другим устройством</string>
-    <string name="ease_user_remove">Данный пользователь был удален</string>
     <string name="set">Настройки</string>
     <string name="notify">Уведомление о новом сообщении</string>
     <string name="newnotify">Посылать уведомление при получении сообщения</string>

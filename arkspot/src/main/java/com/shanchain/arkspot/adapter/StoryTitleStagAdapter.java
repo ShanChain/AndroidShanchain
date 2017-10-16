@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.StoryTitleStagInfo;
+import com.shanchain.arkspot.ui.model.SpaceBean;
 
 import java.util.List;
 
@@ -16,20 +16,20 @@ import java.util.List;
  * Created by zhoujian on 2017/8/25.
  */
 
-public class StoryTitleStagAdapter extends BaseQuickAdapter<StoryTitleStagInfo,BaseViewHolder> {
-    public StoryTitleStagAdapter(@LayoutRes int layoutResId, @Nullable List<StoryTitleStagInfo> data) {
+public class StoryTitleStagAdapter extends BaseQuickAdapter<SpaceBean,BaseViewHolder> {
+    public StoryTitleStagAdapter(@LayoutRes int layoutResId, @Nullable List<SpaceBean> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, StoryTitleStagInfo item) {
+    protected void convert(BaseViewHolder helper, SpaceBean item) {
         Glide.with(mContext)
-                .load(item.getImg())
+                .load(item.getBgPic())
                 .into((ImageView) helper.getView(R.id.iv_item_head_stag));
 
-        helper.setText(R.id.tv_item_head_stag_title,item.getTitle());
+        helper.setText(R.id.tv_item_head_stag_title,item.getIntro());
 
-        helper.setText(R.id.tv_item_head_stag_des,item.getDes());
+        helper.setText(R.id.tv_item_head_stag_des,item.getDisc());
 
     }
 }

@@ -11,6 +11,9 @@ public interface HttpApi {
 
     String BASE_URL_ARTSPOT = "http://115.29.177.22:18480/mockjsdata/1";
 
+    //全局接口地址
+    String TEST_URL = "http://47.91.178.114:8080";
+
     //注册环信聊天用户
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 
@@ -59,10 +62,44 @@ public interface HttpApi {
     //通过环信id（username）获取用户详情
     String HX_USER_DETAIL = BASE_URL_IM + "/hx/user/detail";
 
+    //骚阳服务器跟地址
     String url = "http://192.168.0.110:8080";
 
-    String test_url = "http://47.91.178.114:8080";
 
-    String UP_LOAD_FILE = test_url + "/v1/upload/app";
+
+    //获取上传图片的信息
+    String UP_LOAD_FILE = TEST_URL + "/v1/upload/app";
+
+    //查询标签
+    String TAG_QUERY = TEST_URL + "/v1/tag/query";
+
+    //获取热门标签
+    String TAG_QUERY_HOT = TEST_URL + "/v1/tag/query/hot";
+
+    //获取我收藏的时空
+    String SPACE_LIST_FAVORITE = TEST_URL + "/v1/space/list/favorite";
+
+    //查找时空--根据ID
+    String SPACE_LIST = TEST_URL + "/v1/space/list/spaceId";
+
+    //发布动态
+    String STORY_ADD = BASE_URL_ARTSPOT + "/v1/story/add";
+    //第三方登录
+    String USER_THIRD_LOGIN = TEST_URL + "/v1/user/third_login";
+
+    //注册账号
+    String USER_REGISTER = TEST_URL + "/v1/user/register";
+
+    //未登录状态获取短信验证码
+    String SMS_UNLOGIN_VERIFYCODE = TEST_URL + "/v1/sms/unlogin/verifycode";
+
+    //登录
+    String USER_LOGIN = TEST_URL + "/v1/user/login";
+
+    //重置密码
+    String RESET_PWD = TEST_URL + "/v1/user/reset_password";
+
+    //获取主页关注故事列表
+    String STORY_FOCUS_GET = TEST_URL + "/v1/story/focus/get";
 
 }

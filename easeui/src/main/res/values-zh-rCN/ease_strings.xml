@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="text_ack_msg">已读</string>
     <string name="text_delivered_msg">送达</string>
@@ -92,7 +92,6 @@
     <string name="Upload_the_log">上传日志中</string>
     <string name="The_new_group_chat">新建群组</string>
     <string name="add_public_group_chat">添加公开群</string>
-    <string name="add_public_chat_room">添加聊天室</string>
     <string name="group_name">群聊名称</string>
     <string name="Group_chat_profile">群聊简介</string>
     <string name="Whether_the_public">是否公开</string>
@@ -262,16 +261,9 @@
     <string name="Delete_the_contact">删除联系人</string>
     <string name="Move_into_the_blacklist_new">移入到黑名单</string>
     <string name="Change_the_group_name">改变群名称</string>
-    <string name="Sync_Groups_From_Server">从服务器下载群聊信息</string>
-    
-    <string name="update_contact_list">更新联系人列表</string>
-    <string name="update_black_list">更新黑名单</string>
-    <string name="update_groups">更新群聊</string>
-    
-    <string name="update_contact_list_failed">更新联系人列表失败</string>
-    <string name="update_black_list_failed">更新黑名单失败</string>
-    <string name="update_groups_failed">更新群聊失败</string>
-    
+
+
+
     <string name= "no_more_messages">没有更多的消息了</string>
     <string name="gorup_not_found">找不到这个群组</string>
     <string name= "chatroom_allow_owner_leave"> 允许聊天室群主离开</string>

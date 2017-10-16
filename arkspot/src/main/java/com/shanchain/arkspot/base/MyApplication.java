@@ -33,12 +33,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import me.shaohui.shareutil.ShareConfig;
+import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
 
 public class MyApplication extends BaseApplication {
 
-    public static Context mContext;
+    private static Context mContext;
+
+    private static final String QQ_ID = "1106258060";
+    private static final String WX_ID = "wx0c49828919e7fd03";
+
+    private static final String WEIBO_ID = "2916880440";
+    private static final String REDIRECT_URL = "http://api.weibo.com/oauth2/default.html";
+    private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
 
     @Override
     public void onCreate() {
@@ -49,6 +58,7 @@ public class MyApplication extends BaseApplication {
         initOkhttpUtils();
         initHuanXin();
         initDB();
+        initShareAndLogin();
     }
 
     public static Context getAppContext() {
@@ -62,6 +72,21 @@ public class MyApplication extends BaseApplication {
         //初始化联系人数据库
         ContactDao.initContactDao(this);
     }
+
+    /**
+     * 初始化第三方登录和分享
+     */
+    public void initShareAndLogin() {
+        ShareConfig config = ShareConfig.instance()
+                .qqId(QQ_ID)
+                .wxId(WX_ID)
+                .weiboId(WEIBO_ID)
+                // 下面两个，如果不需要登录功能，可不填写
+                .weiboRedirectUrl(REDIRECT_URL)
+                .wxSecret(WX_SECRET);
+        ShareManager.init(config);
+    }
+
 
     /**
      * 描述：初始化环信

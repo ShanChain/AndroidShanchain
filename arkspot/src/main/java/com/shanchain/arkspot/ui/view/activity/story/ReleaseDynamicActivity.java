@@ -24,20 +24,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicImagesAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.http.HttpApi;
 import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
+import com.shanchain.arkspot.ui.model.UpLoadImgBean;
 import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.netrequest.SCHttpCallBack;
+import com.shanchain.netrequest.SCHttpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
+import okhttp3.Call;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -85,7 +87,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     ImageView mIvReleaseBtnSwitch;
     @Bind(R.id.rv_release_dynamic)
     RecyclerView mRvReleaseDynamic;
-    private List<DynamicImageInfo> imgData;
+    private List<DynamicImageInfo> imgData = new ArrayList<>();
     private DynamicImagesAdapter mImagesAdapter;
     /**
      * 描述：标记是否是编辑长文状态
@@ -94,6 +96,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     private ArrayList<String> replaceAt = new ArrayList<>();
     private ArrayList<String> replaceTopic = new ArrayList<>();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_release_dynamic;
@@ -102,35 +105,15 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     @Override
     protected void initViewsAndEvents() {
 
-        testRegist();
 
         initToolBar();
         initListener();
         initRecyclerView();
     }
 
-    private void testRegist() {
-
-        ThreadUtils.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    EMClient.getInstance().createAccount("test666","123456");
-                    EMClient.getInstance().createAccount("test11","123456");
-                    EMClient.getInstance().createAccount("test111","123456");
-                    LogUtils.d("注册成功~~~");
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    LogUtils.d("注册失败~~~");
-                }
-            }
-        });
-
-
-    }
 
     private void initRecyclerView() {
-        imgData = new ArrayList<>();
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvReleaseDynamic.setLayoutManager(linearLayoutManager);
@@ -392,11 +375,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 TopicInfo topicInfo = (TopicInfo) data.getSerializableExtra("topic");
                 String topic = topicInfo.getTopic();
 
-                replaceTopic.add("#"+topic+"#");
+                replaceTopic.add("#" + topic + "#");
 
 
                 String content = mEtReleaseDynamicContent.getText().toString();
-                content += "#"+topic+"#";
+                content += "#" + topic + "#";
 
                 for (int i = 0; i < replaceTopic.size(); i++) {
                     content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
@@ -417,8 +400,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 String s = " ";
                 for (int i = 0; i < contacts.size(); i++) {
                     LogUtils.d("@的人" + contacts.get(i));
-                    s +=  "@"+contacts.get(i) + ", ";
-                    replaceAt.add("@"+contacts.get(i)+", ");
+                    s += "@" + contacts.get(i) + ", ";
+                    replaceAt.add("@" + contacts.get(i) + ", ");
                 }
                 String content = mEtReleaseDynamicContent.getText().toString();
 
@@ -518,7 +501,36 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     @Override
     public void onRightClick(View v) {
         //发布动态
+        String content = mEtReleaseDynamicContent.getText().toString().trim();
+        if (isEditLong) {
+            //编辑小说状态
 
+
+        } else {
+            //普通编辑
+            if (imgData.size() == 0) {
+                //无图片
+
+            } else {
+                //有图片
+                SCHttpUtils.post().url(HttpApi.UP_LOAD_FILE)
+                        .addParams("num", "1")
+                        .build()
+                        .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                LogUtils.e("上传图片失败");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(UpLoadImgBean response, int id) {
+
+                            }
+                        });
+            }
+
+        }
 
     }
 

@@ -10,7 +10,6 @@
     android:orientation="vertical">
 
 
-    <!--顶部工具栏，有沉浸式效果-->
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_login"
         style="@style/style_toolbar_color_white"

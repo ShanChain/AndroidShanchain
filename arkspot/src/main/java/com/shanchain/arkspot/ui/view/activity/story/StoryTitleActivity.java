@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -18,9 +19,13 @@ import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleLikeAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleStagAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.StoryLikeInfo;
+import com.shanchain.arkspot.ui.model.FavoriteSpaceBean;
+import com.shanchain.arkspot.ui.model.SpaceBean;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
-import com.shanchain.arkspot.ui.model.StoryTitleStagInfo;
+import com.shanchain.arkspot.ui.model.TagContentBean;
+import com.shanchain.arkspot.ui.presenter.StoryTitlePresenter;
+import com.shanchain.arkspot.ui.presenter.impl.StoryTitlePresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.story.stroyView.StoryTitleView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -31,7 +36,7 @@ import java.util.List;
 import butterknife.Bind;
 
 
-public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener {
+public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener, StoryTitleView {
 
 
     @Bind(R.id.et_story_title_search)
@@ -42,10 +47,17 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     ArthurToolBar mTbStoryTitle;
     private RecyclerView mRvLike;
     private RecyclerView mRvTag;
-    private String[] mTags;
-    private List<StoryTagInfo> mTagDatas;
-    private List<StoryTitleStagInfo> mStagDatas;
+    private String[] mTags = new String[]{"原创","历史","动漫","游戏","小说","影视","娱乐圈","古风","现代"
+            ,"耽美","百合","商界","体育","校园","玄幻","奇幻","武侠","仙侠","科幻","更多"};
+    private List<StoryTagInfo> mTagDatas = new ArrayList<>();
+    private List<SpaceBean> mStagDatas = new ArrayList<>();
+    List<FavoriteSpaceBean> likeDatas = new ArrayList<>();
     private View mHeadView;
+    private StoryTitleStagAdapter mStagAdapter;
+    private AddRoleAdapter mAddRoleAdapter;
+    private StoryTitleLikeAdapter mStoryTitleLikeAdapter;
+    private StoryTitlePresenter mStoryTitlePresenter;
+    private LinearLayout mLlFavorite;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -55,11 +67,15 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
-        initData();
         initRecyclerView();
+        initData();
     }
 
     private void initData() {
+        mStoryTitlePresenter = new StoryTitlePresenterImpl(this);
+        String userId = "12";
+        mStoryTitlePresenter.initData(userId);
+
 
     }
 
@@ -69,14 +85,18 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         //防止位置发生改变
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRvStoryTitle.setLayoutManager(manager);
-        initStaggeredData();
 
-        StoryTitleStagAdapter stagAdapter = new StoryTitleStagAdapter(R.layout.item_head_stagger,mStagDatas);
-        stagAdapter.addHeaderView(mHeadView);
-
-        mRvStoryTitle.setAdapter(stagAdapter);
-
-        stagAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mStagAdapter = new StoryTitleStagAdapter(R.layout.item_head_stagger,mStagDatas);
+        mStagAdapter.addHeaderView(mHeadView);
+        mStagAdapter.setEnableLoadMore(true);
+        mRvStoryTitle.setAdapter(mStagAdapter);
+        mStagAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                loadMore();
+            }
+        }, mRvStoryTitle);
+        mStagAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(StoryTitleActivity.this,ChooseRoleActivity.class);
@@ -84,87 +104,43 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             }
         });
 
+
+
         mRvStoryTitle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 //防止第一行顶部有空白
                 manager.invalidateSpanAssignments();
+
             }
         });
     }
 
-    private void initStaggeredData() {
-        mStagDatas = new ArrayList<>();
-        for (int i = 0; i < 16; i ++) {
-            StoryTitleStagInfo titleStagInfo = new StoryTitleStagInfo();
-            if (i % 5== 0) {
-                titleStagInfo.setImg(R.drawable.photo_city);
-            }else if (i%5 == 1) {
-                titleStagInfo.setImg(R.drawable.photo_bear);
-            }else if (i%5 == 2) {
-                titleStagInfo.setImg(R.drawable.photo_heart);
-            }else if (i%5 == 3) {
-                titleStagInfo.setImg(R.drawable.photo_public);
-            }else if (i%5 == 4) {
-                titleStagInfo.setImg(R.drawable.photo_yue);
-            }
-            titleStagInfo.setTitle("侠客岛");
-            titleStagInfo.setDes("不是所有的牛奶都叫旺仔牛奶");
-            mStagDatas.add(titleStagInfo);
-        }
-
+    private void loadMore() {
+        String userId = "12";
+        mStoryTitlePresenter.loadMoreData(userId);
     }
+
 
     private void initHeadView() {
         mHeadView = LayoutInflater.from(this).inflate(R.layout.head_story_title,(ViewGroup)findViewById(android.R.id.content),false);
         mRvLike = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_head);
         mRvTag = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_tag);
-
+        mLlFavorite = (LinearLayout) mHeadView.findViewById(R.id.ll_head_favorite);
         LinearLayoutManager likeLayoutManager = new LinearLayoutManager(this);
         likeLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvLike.setLayoutManager(likeLayoutManager);
-        List<StoryLikeInfo> likeDatas = new ArrayList<>();
-        for (int i = 0; i < 16; i ++) {
-            StoryLikeInfo storyLikeInfo = new StoryLikeInfo();
-            if (i%5 == 0) {
-                storyLikeInfo.setImg(R.drawable.photo_yue);
-            }else if (i%5 == 1) {
-                storyLikeInfo.setImg(R.drawable.photo_city);
-            }else if (i%5 == 2) {
-                storyLikeInfo.setImg(R.drawable.photo_heart);
-            }else if (i%5 == 3) {
-                storyLikeInfo.setImg(R.drawable.photo_bear);
-            }else if (i%5 == 4) {
-                storyLikeInfo.setImg(R.drawable.photo_public);
-            }
-            storyLikeInfo.setTitle("最美少年事");
-            likeDatas.add(storyLikeInfo);
-        }
-        StoryTitleLikeAdapter storyTitleLikeAdapter = new StoryTitleLikeAdapter(R.layout.item_head_like,likeDatas);
-        mRvLike.setAdapter(storyTitleLikeAdapter);
 
-        mTagDatas = new ArrayList<>();
+        mStoryTitleLikeAdapter = new StoryTitleLikeAdapter(R.layout.item_head_like,likeDatas);
+        mRvLike.setAdapter(mStoryTitleLikeAdapter);
 
-        mTags = new String[]{"原创","历史","动漫","游戏","小说","影视","娱乐圈","古风","现代"
-                ,"耽美","百合","商界","体育","校园","玄幻","奇幻","武侠","仙侠","科幻","更多"};
-
-        for (int i = 0; i < 20; i ++) {
-            StoryTagInfo storyTagInfo = new StoryTagInfo();
-            if (i == 19){
-                storyTagInfo.setSelected(true);
-            }else {
-                storyTagInfo.setSelected(false);
-            }
-           storyTagInfo.setTag(mTags[i]);
-            mTagDatas.add(storyTagInfo);
-        }
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,4);
         mRvTag.setLayoutManager(gridLayoutManager);
 
-        final AddRoleAdapter addRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mTagDatas);
-        mRvTag.setAdapter(addRoleAdapter);
-        addRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mTagDatas);
+        mRvTag.setAdapter(mAddRoleAdapter);
+        mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 boolean selected = mTagDatas.get(position).isSelected();
@@ -172,7 +148,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
                     ToastUtils.showToast(StoryTitleActivity.this,"更多");
                 }else {
                     mTagDatas.get(position).setSelected(!selected);
-                    addRoleAdapter.notifyDataSetChanged();
+                    mAddRoleAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -201,5 +177,66 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         //添加时空
         Intent intent  = new Intent(this,AddNewSpaceActivity.class);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void getTagSuccess(List<TagContentBean> tagList) {
+        if (tagList == null){
+            return;
+        }
+        int size = tagList.size();
+        if (size>19){
+            size = 19;
+        }
+
+        for (int i = 0; i < size; i ++) {
+            StoryTagInfo storyTagInfo = new StoryTagInfo();
+            storyTagInfo.setTag(tagList.get(i).getTagName());
+            storyTagInfo.setTagBean(tagList.get(i));
+            mTagDatas.add(storyTagInfo);
+        }
+
+        StoryTagInfo storyTagInfo = new StoryTagInfo();
+        storyTagInfo.setTag("更多");
+        storyTagInfo.setSelected(true);
+        mTagDatas.add(storyTagInfo);
+        mAddRoleAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void getSpaceListSuccess(List<SpaceBean> spaceBeanList ) {
+        if (spaceBeanList == null){
+            return;
+        }
+        mStagDatas.addAll(spaceBeanList);
+        mStagAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getMyFavoriteSuccess(List<FavoriteSpaceBean> favoriteSpaceList) {
+        if (favoriteSpaceList == null){
+            hideFavoriteLayout();
+            return;
+        }
+        if (favoriteSpaceList.size() == 0){
+            hideFavoriteLayout();
+        }
+        showFavoriteLayout();
+        likeDatas.addAll(favoriteSpaceList);
+        mStoryTitleLikeAdapter.notifyDataSetChanged();
+    }
+
+    private void hideFavoriteLayout() {
+        if (mLlFavorite != null){
+            mLlFavorite.setVisibility(View.GONE);
+        }
+    }
+
+    private void showFavoriteLayout(){
+        if (mLlFavorite!=null){
+            mLlFavorite.setVisibility(View.VISIBLE);
+        }
     }
 }
