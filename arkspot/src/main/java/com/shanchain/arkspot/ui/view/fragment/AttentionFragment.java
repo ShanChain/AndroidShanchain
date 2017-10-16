@@ -12,7 +12,6 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AttentionAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryInfo;
-import com.shanchain.arkspot.ui.model.StoryListDataBean;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
@@ -39,6 +38,8 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
     RecyclerView mXrvAttention;
     @Bind(R.id.srl_fragment_attention)
     SwipeRefreshLayout mSrlFragmentAttention;
+    List<StoryInfo> datas = new ArrayList<>();
+    private AttentionAdapter mAdapter;
 
     @Override
     public View initView() {
@@ -57,29 +58,10 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
         String characterId = "12";
         presenter.initData(characterId);
 
-
-        final List<StoryInfo> datas = new ArrayList<>();
-
-        for (int i = 0; i < 16; i++) {
-            StoryInfo info = new StoryInfo();
-            if (i % 4 == 0) {
-                info.setItemType(StoryInfo.type1);
-            } else if (i % 4 == 1) {
-                info.setItemType(StoryInfo.type2);
-            } else if (i % 4 == 2) {
-                info.setItemType(StoryInfo.type3);
-            } else if (i % 4 == 3) {
-                info.setItemType(StoryInfo.type4);
-            }
-            datas.add(info);
-        }
-
-
-
-        AttentionAdapter adapter = new AttentionAdapter(datas);
+        mAdapter = new AttentionAdapter(datas);
         mXrvAttention.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
-        mXrvAttention.setAdapter(adapter);
-        adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+        mXrvAttention.setAdapter(mAdapter);
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
@@ -102,7 +84,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             }
         });
 
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 int viewType = adapter.getItemViewType(position);
@@ -117,11 +99,11 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
                         startActivity(intentType2);
                         break;
-                    case StoryInfo.type3:
+                    /*case StoryInfo.type3:
                         //类型3的条目点击事件
                         Intent intentType3 = new Intent(mActivity, DynamicDetailsActivity.class);
                         startActivity(intentType3);
-                        break;
+                        break;*/
                     case StoryInfo.type4:
                         //类型4的条目点击事件
                         Intent intentType4 = new Intent(mActivity, TopicDetailsActivity.class);
@@ -225,8 +207,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     @Override
-    public void initSuccess(List<StoryListDataBean> data) {
-
+    public void initSuccess(List<StoryInfo> storyInfoList) {
+        datas.addAll(storyInfoList);
+        mAdapter.notifyDataSetChanged();
         mSrlFragmentAttention.setRefreshing(false);
     }
 

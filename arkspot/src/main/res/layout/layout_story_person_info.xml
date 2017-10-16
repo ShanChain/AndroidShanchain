@@ -12,7 +12,6 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_item_story_avatar"
         android:scaleType="centerCrop"
-        android:src="@drawable/photo_yue"
         android:layout_width="40dp"
         android:layout_height="40dp"/>
 
@@ -45,11 +44,12 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/iv_item_story_avatar"
         android:layout_marginLeft="@dimen/dimens_20dp"
-        android:text="20分钟前    3楼"
+        android:text="20分钟前"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_item_story_from"
         android:lines="1"
         android:layout_alignParentBottom="true"

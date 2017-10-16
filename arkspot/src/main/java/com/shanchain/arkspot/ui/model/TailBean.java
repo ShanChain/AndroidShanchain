@@ -12,7 +12,7 @@ public class TailBean {
      * tailId : 12
      */
 
-    public String name;
+    private String name;
     private int rate;
     private int tailId;
 
