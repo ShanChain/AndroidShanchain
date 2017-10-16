@@ -11,13 +11,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AnnouncementAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.arkspot.ui.model.AnnouncementInfo;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.netrequest.SCHttpUtils;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;

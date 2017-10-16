@@ -1,4 +1,4 @@
-package com.shanchain.netrequest;
+package com.shanchain.data.common.net;
 
 /**
  * Created by zhoujian on 2017/8/22.

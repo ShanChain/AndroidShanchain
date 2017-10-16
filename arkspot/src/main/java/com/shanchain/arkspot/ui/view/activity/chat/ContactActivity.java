@@ -12,13 +12,13 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.arkspot.ui.model.ContactInfo;
 import com.shanchain.arkspot.ui.model.FansInfo;
 import com.shanchain.arkspot.ui.model.FansListInfo;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.netrequest.SCHttpUtils;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;

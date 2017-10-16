@@ -35,7 +35,6 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     LinearLayout mActivityReport;
     @Bind(R.id.et_report_content)
     EditText mEtReportContent;
-
     private boolean isCommit = false;
 
     @Override

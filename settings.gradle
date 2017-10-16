@@ -1,1 +1,1 @@
-include ':app', ':PushSDK', ':easeui', ':common', ':thirdparty', ':arkspot', ':netrequest'
+include ':app', ':PushSDK', ':easeui', ':common', ':thirdparty', ':arkspot'

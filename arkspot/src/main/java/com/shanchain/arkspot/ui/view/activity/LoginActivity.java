@@ -10,12 +10,13 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.arkspot.ui.view.activity.square.AddTopicActivity;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.netrequest.SCHttpUtils;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -129,6 +130,7 @@ public class LoginActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 ToastUtils.showToast(mContext, "登录成功" + EMClient.getInstance().getCurrentUser());
+                                CommonCacheHelper.getInstance(getApplicationContext()).setCache("0","cur_user_id","8");
                                 readyGo(MainActivity.class);
                             }
                         });

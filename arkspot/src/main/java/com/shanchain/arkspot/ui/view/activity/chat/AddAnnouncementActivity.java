@@ -28,13 +28,13 @@ import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.bumptech.glide.Glide;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.http.HttpApi;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.arkspot.ui.model.UpLoadImgBean;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.netrequest.SCHttpCallBack;
-import com.shanchain.netrequest.SCHttpUtils;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
 
 import java.util.ArrayList;
 

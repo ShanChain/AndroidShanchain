@@ -26,10 +26,13 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.alibaba:fastjson:1.2.39'
     compile 'com.jcodecraeer:xrecyclerview:1.3.2'
     testCompile 'junit:junit:4.12'
     compile project(':thirdparty')
-    compile project(':netrequest')
+    compile 'com.zhy:okhttputils:2.6.2'
+    compile 'com.google.code.gson:gson:2.6.2'
+
 
 }
 

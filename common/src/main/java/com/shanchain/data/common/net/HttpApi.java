@@ -1,4 +1,4 @@
-package com.shanchain.arkspot.http;
+package com.shanchain.data.common.net;
 
 /**
  * Created by zhoujian on 2017/9/18.

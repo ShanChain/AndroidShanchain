@@ -1,4 +1,4 @@
-package com.shanchain.netrequest;
+package com.shanchain.data.common.net;
 
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
