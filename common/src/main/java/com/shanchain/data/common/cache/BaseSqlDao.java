@@ -44,9 +44,7 @@ public class BaseSqlDao{
 				while (mDbHelper.getReadableDatabase().isDbLockedByCurrentThread()) {
 					Thread.sleep(8);
 				}
-				Log.i("flyye_init",dbName);
 				mDb = mDbHelper.getReadableDatabase();
-				Log.i("flyye_init",mDb.toString());
 			}
 		} catch (Exception e) {
 		}
