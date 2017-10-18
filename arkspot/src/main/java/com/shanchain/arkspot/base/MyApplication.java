@@ -23,6 +23,7 @@ import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.utils.Utils;
 import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -58,8 +59,14 @@ public class MyApplication extends BaseApplication {
         initOkhttpUtils();
         initHuanXin();
         initDB();
+        initSCCache();
         initShareAndLogin();
     }
+
+    private void initSCCache() {
+        SCCacheUtils.initCache(this);
+    }
+
 
     public static Context getAppContext() {
         return mContext;

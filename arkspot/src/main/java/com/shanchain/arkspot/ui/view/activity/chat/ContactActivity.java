@@ -199,6 +199,23 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
                 });
         map.put("我的粉丝", myFans);
 
+        //获取群
+        SCHttpUtils.post()
+                .url(HttpApi.GROUP_MY_GROUP)
+                .addParams("CharacterId","12")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
+
     }
 
     private void initToolBar() {

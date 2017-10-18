@@ -30,6 +30,9 @@ import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
 import com.shanchain.arkspot.ui.model.UpLoadImgBean;
+import com.shanchain.arkspot.ui.presenter.ReleaseDynamicPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.ReleaseDynamicPresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.story.stroyView.ReleaseDynamicView;
 import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
@@ -49,7 +52,7 @@ import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 import okhttp3.Call;
 
-public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener,ReleaseDynamicView {
 
     private static final int REQUEST_CODE_TOPIC = 10;
     private static final int REQUEST_CODE_AT = 20;
@@ -97,6 +100,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     private ArrayList<String> replaceAt = new ArrayList<>();
     private ArrayList<String> replaceTopic = new ArrayList<>();
+    private ReleaseDynamicPresenter mPresenter;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -105,13 +109,16 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     protected void initViewsAndEvents() {
-
-
+        init();
         initToolBar();
         initListener();
         initRecyclerView();
     }
 
+
+    private void init(){
+        mPresenter = new ReleaseDynamicPresenterImpl(this);
+    }
 
     private void initRecyclerView() {
 
@@ -501,6 +508,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
+
+
+
         //发布动态
         String content = mEtReleaseDynamicContent.getText().toString().trim();
         if (isEditLong) {
@@ -511,7 +521,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             //普通编辑
             if (imgData.size() == 0) {
                 //无图片
-
+                mPresenter.releaseDynamic(content);
             } else {
                 //有图片
                 SCHttpUtils.post().url(HttpApi.UP_LOAD_FILE)

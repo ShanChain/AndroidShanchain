@@ -1,10 +1,20 @@
 package com.shanchain.arkspot.ui.view.fragment;
 
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.shanchain.arkspot.R;
+import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
-import com.shanchain.arkspot.widgets.other.TextViewExpandableAnimation;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
+import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -12,9 +22,15 @@ import butterknife.Bind;
  * Created by zhoujian on 2017/8/23.
  */
 
-public class CurrentFragment extends BaseFragment {
-    @Bind(R.id.tv_test)
-    TextViewExpandableAnimation mTvTest;
+public class CurrentFragment extends BaseFragment implements CurrentView, SwipeRefreshLayout.OnRefreshListener {
+
+    @Bind(R.id.rv_story_current)
+    RecyclerView mRvStoryCurrent;
+    @Bind(R.id.srl_story_current)
+    SwipeRefreshLayout mSrlStoryCurrent;
+    private CurrentPresenter mCurrentPresenter;
+    List<StoryBeanModel> datas = new ArrayList<>();
+    private CurrentAdapter mAdapter;
 
     @Override
     public View initView() {
@@ -23,8 +39,49 @@ public class CurrentFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mTvTest.setText("是高达回答我你都为奥迪你都晒得和我待温度你咯爱我还得两年多了玩的路径不对了哇卡见不到我来你大冷的逼得我还表白第八代微博低矮五斗柜一把我不丢爱我不 大回屋打我卡的把握比的收看的瓦还能到安徽大开杀戒俺的我吧难道我活动奥委会的扩大未必哦多好玩你到我个活动啊微博的了哇哦ID啊我i");
+        mSrlStoryCurrent.setOnRefreshListener(this);
+        mSrlStoryCurrent.setColorSchemeColors(getResources().getColor(R.color.colorActive));
+        mSrlStoryCurrent.setRefreshing(true);
+        mCurrentPresenter = new CurrentPresenterImpl(this);
+        String characterId = "12";
+        mCurrentPresenter.initData(characterId, 0, 100, "16");
+
+        initRecyclerView();
+
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        mRvStoryCurrent.setLayoutManager(layoutManager);
+        mAdapter = new CurrentAdapter(datas);
+        mRvStoryCurrent.setAdapter(mAdapter);
+
     }
 
 
+    @Override
+    public void initSuccess(List<StoryBeanModel> list) {
+        mSrlStoryCurrent.setRefreshing(false);
+        if (datas == null) {
+
+            return;
+        } else {
+
+            datas.addAll(list);
+            mAdapter.notifyDataSetChanged();
+
+
+        }
+
+    }
+
+    @Override
+    public void onRefresh() {
+        mSrlStoryCurrent.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSrlStoryCurrent.setRefreshing(false);
+            }
+        }, 1000);
+    }
 }

@@ -17,6 +17,7 @@ import com.shanchain.arkspot.ui.model.ResponseLoginBean;
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.cache.CommonCacheHelper;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -68,14 +69,13 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
-        String userId = CommonCacheHelper.getInstance(mContext).getCache("0", Constants.CACHE_CUR_USER);
-        /*String userInfo = CommonCacheHelper.getInstance(mContext).getCache(userId, Constants.CACHE_USER_INFO);
-        String token = CommonCacheHelper.getInstance(mContext).getCache(userId, Constants.CACHE_TOKEN);
-        LogUtils.d("token = " + token);
-        LogUtils.d("userId = " + userId);
-        LogUtils.d("userInfo = " + userInfo);
-        LoginUserInfoBean loginUserInfoBean = new Gson().fromJson(userInfo, LoginUserInfoBean.class);*/
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        LogUtils.d("当前用户id" + userId);
         if (!TextUtils.isEmpty(userId)){
+
+            SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
+            SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"12");
+
             readyGo(MainActivity.class);
             finish();
         }
@@ -159,9 +159,16 @@ public class LoginActivity extends BaseActivity {
                             String account = response.getAccount();
                             LoginUserInfoBean userInfo = response.getUserInfo();
                             int userId = userInfo.getUserId();
-                            CommonCacheHelper.getInstance(mContext).setCache("0", Constants.CACHE_CUR_USER, userId + "");
-                            CommonCacheHelper.getInstance(mContext).setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                            CommonCacheHelper.getInstance(mContext).setCache(userId + "", Constants.CACHE_TOKEN, token);
+                            LogUtils.d("登录成功  uid"  + userId);
+
+                            SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
+                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"12");
+
+                            String cacheid = CommonCacheHelper.getInstance(mContext).getCache("0", Constants.CACHE_CUR_USER);
+                            LogUtils.d("cacheid = " + cacheid);
                             readyGo(MainActivity.class);
                             finish();
                         }
@@ -289,15 +296,18 @@ public class LoginActivity extends BaseActivity {
                                      LoginUserInfoBean userInfo = response.getUserInfo();
 
                                      if (userInfo == null){
-
                                          return;
                                      }
 
                                      int userId = userInfo.getUserId();
+                                     LogUtils.d("登录成功  uid"  + userId);
 
-                                     CommonCacheHelper.getInstance(mContext).setCache("0", Constants.CACHE_CUR_USER, userId + "");
-                                     CommonCacheHelper.getInstance(mContext).setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                                     CommonCacheHelper.getInstance(mContext).setCache(userId + "", Constants.CACHE_TOKEN, token);
+                                     SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
+                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
+                                     SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"12");
+
                                      readyGo(MainActivity.class);
                                      finish();
                                  } else {

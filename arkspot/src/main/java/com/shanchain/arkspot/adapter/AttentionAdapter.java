@@ -1,16 +1,19 @@
 package com.shanchain.arkspot.adapter;
 
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryListDataBean;
 import com.shanchain.arkspot.utils.DateUtils;
 
 import java.util.List;
+
 
 public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseViewHolder> {
     /**
@@ -23,7 +26,7 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
         super(data);
         addItemType(StoryInfo.type1, R.layout.item_story_type3);
         addItemType(StoryInfo.type2, R.layout.item_story_type2);
-        addItemType(StoryInfo.type4, R.layout.item_story_type4);
+        addItemType(StoryInfo.type3, R.layout.item_story_type4);
     }
 
     @Override
@@ -33,7 +36,9 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
         holder.setText(R.id.tv_item_story_name,storyListDataBean.getInfo().getName());
         ImageView ivAvatar = holder.getView(R.id.iv_item_story_avatar);
         Glide.with(mContext).load(storyListDataBean.getInfo().getHeadImg()).into(ivAvatar);
-        String time = DateUtils.getStandardDate(storyListDataBean.getInfo().getCreateTime() + "");
+        String time = DateUtils.getStandardDate(storyListDataBean.getUpdateTime() + "");
+        int commentCount = storyListDataBean.getCommentCount();
+        holder.setText(R.id.tv_item_story_comment,commentCount + "");
         holder.setText(R.id.tv_item_story_time,time);
         holder.addOnClickListener(R.id.iv_item_story_avatar)
                 .addOnClickListener(R.id.iv_item_story_more)
@@ -45,6 +50,8 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
             case StoryInfo.type1:
                 holder.setVisible(R.id.tv_item_story_forwarding,true);
                 String intro = storyListDataBean.getIntro();
+                NineGridImageView nineGridImageView = holder.getView(R.id.ngiv_item_story);
+                nineGridImageView.setVisibility(View.GONE);
                 /*AutoHeightListView lvItemStory = holder.getView(R.id.lv_item_story);
                 ArrayList<FloorsInfo> datas = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
@@ -76,7 +83,7 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
                 holder.setText(R.id.tv_item_story_content,storyListDataBean.getIntro());
                 holder.setVisible(R.id.tv_item_story_forwarding,false);
                 break;
-            case StoryInfo.type4:
+            case StoryInfo.type3:
                 holder.setVisible(R.id.tv_item_story_forwarding,false);
                 break;
         }

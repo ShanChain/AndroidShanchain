@@ -1,5 +1,7 @@
 package com.shanchain.data.common.net;
 
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
@@ -12,12 +14,31 @@ import java.util.UUID;
  */
 
 public class SCHttpUtils {
+
+
     public static GetBuilder get() {
         return OkHttpUtils.get();
     }
 
     public static PostFormBuilder post() {
         return OkHttpUtils.post();
+    }
+
+    public static PostFormBuilder postWithSpaceId() {
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String spaceId = SCCacheUtils.getCache(userId, "spaceId");
+        return OkHttpUtils.post()
+                .addParams("spaceId",spaceId);
+    }
+
+    public static PostFormBuilder postFWhitSpceAndChaId() {
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String spaceId = SCCacheUtils.getCache(userId, "spaceId");
+        String characterId = SCCacheUtils.getCache(userId, "characterId");
+        LogUtils.d("缓存中获取的spaceid" + spaceId);
+        return OkHttpUtils.post()
+                .addParams("spaceId",spaceId)
+                .addParams("characterId",characterId);
     }
 
     /**
@@ -71,6 +92,8 @@ public class SCHttpUtils {
                 .addParams("Signture","");               //签名
 
     }
+
+
 
 
     public static String getRequestId() {

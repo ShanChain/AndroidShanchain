@@ -53,6 +53,9 @@ public interface HttpApi {
     //获取我的粉丝列表
     String FOCUS_FANS = BASE_URL_ARTSPOT + "/v1/focus/funs";
 
+    //查找我所在的群
+    String GROUP_MY_GROUP = BASE_URL_IM + "/hx/group/myGroup";
+
     //查看群信息
     String HX_GROUP_QUARY = BASE_URL_IM + "/hx/group/query";
 
@@ -101,5 +104,11 @@ public interface HttpApi {
 
     //获取主页关注故事列表
     String STORY_FOCUS_GET = TEST_URL + "/v1/story/focus/get";
+
+    //获取实时故事id列表
+    String STORY_RECOMMEND_HOT = TEST_URL + "/v1/recommend/hot";
+
+    //获取故事详情列表
+    String STORY_RECOMMEND_DETAIL = TEST_URL + "/v1/recommend/detail";
 
 }

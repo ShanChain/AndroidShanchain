@@ -16,7 +16,6 @@ import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
-import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.AttentionView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
@@ -51,7 +50,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
         AttentionPresenter presenter = new AttentionPresenterImpl(this);
 
-        mSrlFragmentAttention.setColorSchemeColors(getResources().getColor(R.color.colorDialogBtn));
+        mSrlFragmentAttention.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlFragmentAttention.setOnRefreshListener(this);
         mXrvAttention.setLayoutManager(new LinearLayoutManager(mActivity));
         mSrlFragmentAttention.setRefreshing(true);
@@ -90,24 +89,24 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                 int viewType = adapter.getItemViewType(position);
                 switch (viewType) {
                     case StoryInfo.type1:
-                        //类型1的条目点击事件
-                        Intent intentType1 = new Intent(mActivity, StoryChainActivity.class);
+                        //类型1的条目点击事件 短故事
+                        Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
                         startActivity(intentType1);
                         break;
                     case StoryInfo.type2:
-                        //类型2的条目点击事件
+                        //类型2的条目点击事件    长故事
                         Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
                         startActivity(intentType2);
                         break;
-                    /*case StoryInfo.type3:
-                        //类型3的条目点击事件
-                        Intent intentType3 = new Intent(mActivity, DynamicDetailsActivity.class);
+                    case StoryInfo.type3:
+                        //类型3的条目点击事件    话题
+                        Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                         startActivity(intentType3);
-                        break;*/
+                        break;
                     case StoryInfo.type4:
-                        //类型4的条目点击事件
+                        /*//类型4的条目点击事件
                         Intent intentType4 = new Intent(mActivity, TopicDetailsActivity.class);
-                        startActivity(intentType4);
+                        startActivity(intentType4);*/
                         break;
                 }
             }
@@ -136,7 +135,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      *
      */
     private void clickComment(int position) {
+        StoryInfo info = datas.get(position);
         Intent intentComment = new Intent(mActivity,DynamicDetailsActivity.class);
+        intentComment.putExtra("info",info);
         startActivity(intentComment);
     }
 
@@ -208,6 +209,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void initSuccess(List<StoryInfo> storyInfoList) {
+        if (storyInfoList == null) {
+            return;
+        }
         datas.addAll(storyInfoList);
         mAdapter.notifyDataSetChanged();
         mSrlFragmentAttention.setRefreshing(false);

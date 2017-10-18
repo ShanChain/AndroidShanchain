@@ -47,5 +47,7 @@ public interface Constants {
         String CACHE_USER_INFO = "userInfo";
         String CACHE_CUR_USER = "curUser";
         String CACHE_TOKEN = "token";
+        String CACHE_SPACE_ID = "spaceId";
+        String CACHE_CHARACTER_ID = "characterId";
 
 }

@@ -24,16 +24,17 @@ import com.shanchain.arkspot.adapter.DynamicCommentAdapter;
 import com.shanchain.arkspot.adapter.StoryItemNineAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.CommentInfo;
+import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.shanchain.data.common.utils.ToastUtils;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
 
@@ -56,6 +57,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     protected void initViewsAndEvents() {
+
+        StoryInfo info = (StoryInfo) getIntent().getSerializableExtra("info");
+
         initToolBar();
         initData();
         initRecyclerView();

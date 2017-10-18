@@ -123,19 +123,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     private void initData() {
         mDatas = new ArrayList<>();
 
-        for (int i = 0; i < 16; i++) {
-            StoryInfo info = new StoryInfo();
-            if (i % 4 == 0) {
-                info.setItemType(StoryInfo.type1);
-            } else if (i % 4 == 1) {
-                info.setItemType(StoryInfo.type2);
-            } else if (i % 4 == 2) {
-                info.setItemType(StoryInfo.type3);
-            } else if (i % 4 == 3) {
-                info.setItemType(StoryInfo.type4);
-            }
-            mDatas.add(info);
-        }
     }
 
     /**

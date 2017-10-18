@@ -7,28 +7,45 @@ package com.shanchain.arkspot.utils;
 public class DateUtils {
 
     public static String getStandardDate(String timeStr) {
-        String temp = "";
-        try {
-            long now = System.currentTimeMillis() / 1000;
-            long publish = Long.parseLong(timeStr);
-            long diff = now - publish;
-            long months = diff / (60 * 60 * 24*30);
-            long days = diff / (60 * 60 * 24);
-            long hours = (diff - days * (60 * 60 * 24)) / (60 * 60);
-            long minutes = (diff - days * (60 * 60 * 24) - hours * (60 * 60)) / 60;
-            if (months > 0) {
-                temp = months + "月前";
-            } else if (days > 0) {
-                temp = days + "天前";
-            } else if (hours > 0) {
-                temp = hours + "小时前";
+        StringBuffer sb = new StringBuffer();
+
+        long t = Long.parseLong(timeStr);
+        long time = System.currentTimeMillis() - (t*1000);
+        long mill = (long) Math.ceil(time /1000);//秒前
+
+        long minute = (long) Math.ceil(time/60/1000.0f);// 分钟前
+
+        long hour = (long) Math.ceil(time/60/60/1000.0f);// 小时
+
+        long day = (long) Math.ceil(time/24/60/60/1000.0f);// 天前
+
+        if (day - 1 > 0) {
+            sb.append(day + "天");
+        } else if (hour - 1 > 0) {
+            if (hour >= 24) {
+                sb.append("1天");
             } else {
-                temp = minutes + "分钟前";
+                sb.append(hour + "小时");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else if (minute - 1 > 0) {
+            if (minute == 60) {
+                sb.append("1小时");
+            } else {
+                sb.append(minute + "分钟");
+            }
+        } else if (mill - 1 > 0) {
+            if (mill == 60) {
+                sb.append("1分钟");
+            } else {
+                sb.append(mill + "秒");
+            }
+        } else {
+            sb.append("刚刚");
         }
-        return temp;
+        if (!sb.toString().equals("刚刚")) {
+            sb.append("前");
+        }
+        return sb.toString();
     }
 
 }
