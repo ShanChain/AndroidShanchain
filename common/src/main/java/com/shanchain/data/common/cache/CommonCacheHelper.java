@@ -48,6 +48,7 @@ public class CommonCacheHelper {
                 String cacheValue = cachemodel.getCacheValue();
                 if (!TextUtils.isEmpty(cacheValue)) {
                     value = DesUtils.decrypt(cacheValue, mDesKey);
+                    mMemoryCache.put(userId + key,value);
                 }
             }
         }catch (Exception e){

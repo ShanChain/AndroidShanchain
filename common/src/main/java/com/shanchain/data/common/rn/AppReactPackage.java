@@ -12,6 +12,7 @@ import com.facebook.react.modules.websocket.WebSocketModule;
 import com.facebook.react.shell.MainReactPackage;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.rn.modules.RNCommonCacheHelper;
+import com.shanchain.data.common.rn.modules.RNNetworkModule;
 import com.shanchain.data.common.rn.modules.SCDialogModule;
 
 import java.lang.reflect.Constructor;
@@ -58,6 +59,12 @@ public class AppReactPackage extends LazyReactPackage {
             @Override
             public NativeModule get() {
                 return new RNCommonCacheHelper(reactContext);
+            }
+        }));
+        nativeModules.add(new ModuleSpec(RNNetworkModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new RNNetworkModule(reactContext);
             }
         }));
 
