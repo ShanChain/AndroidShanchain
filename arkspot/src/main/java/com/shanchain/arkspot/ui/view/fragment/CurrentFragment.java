@@ -62,7 +62,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     @Override
     public void initSuccess(List<StoryBeanModel> list) {
         mSrlStoryCurrent.setRefreshing(false);
-        if (datas == null) {
+        if (list == null) {
 
             return;
         } else {

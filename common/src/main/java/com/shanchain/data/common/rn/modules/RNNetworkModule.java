@@ -2,6 +2,7 @@ package com.shanchain.data.common.rn.modules;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -46,6 +47,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void fetch(ReadableMap options,final Callback successCallback,final Callback failCallback ){
+        Log.i("fetch",options.toString());
         if(!NetworkUtils.isNetworkConnected(mContext)){
             failCallback.invoke(NetDataFormatUtils.getNetErrWritableMap(mContext.getString(R.string.request_no_network_connect), NetErrCode.REQUEST_NO_NETWORK,null));
             return;
@@ -115,6 +117,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
 
                                 @Override
                                 public void onResponse(String response, int id) {
+                                    Log.i("fetch_response",response.toString());
                                     try {
                                         JSONObject jsonObject = new JSONObject(response);
                                         if(TextUtils.isEmpty(jsonObject.getString("code"))){

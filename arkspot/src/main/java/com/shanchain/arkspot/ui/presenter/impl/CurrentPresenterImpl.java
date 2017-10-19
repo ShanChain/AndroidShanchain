@@ -2,6 +2,7 @@ package com.shanchain.arkspot.ui.presenter.impl;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.shanchain.arkspot.ui.model.ResponseStoryChainBean;
 import com.shanchain.arkspot.ui.model.ResponseStoryIdBean;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
+
+import static com.shanchain.data.common.net.NetErrCode.COMMON_SUC_CODE;
 
 /**
  * Created by zhoujian on 2017/10/17.
@@ -129,18 +132,21 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.d("故事列表数据 = " + response);
+                        if(JSONObject.parseObject(response).getString("code").equalsIgnoreCase(COMMON_SUC_CODE)){
+                            LogUtils.d("故事列表数据 = " + response);
 
-                        ResponseStoryListInfo storyListInfo = new Gson().fromJson(response, ResponseStoryListInfo.class);
-                        List<StoryModelBean> data = storyListInfo.getData();
-                        for (int i = 0; i < data.size(); i ++) {
-                            StoryModelBean storyBean = data.get(i);
-                            StoryInfo storyInfo = new StoryInfo();
-                            storyInfo.setItemType(storyBean.getType());
+                            ResponseStoryListInfo storyListInfo = new Gson().fromJson(response, ResponseStoryListInfo.class);
+                            List<StoryModelBean> data = storyListInfo.getData();
+                            for (int i = 0; i < data.size(); i ++) {
+                                StoryModelBean storyBean = data.get(i);
+                                StoryInfo storyInfo = new StoryInfo();
+                                storyInfo.setItemType(storyBean.getType());
+                            }
+
+                            setData(data);
+                            builderData();
                         }
 
-                        setData(data);
-                        builderData();
 
                     }
                 });

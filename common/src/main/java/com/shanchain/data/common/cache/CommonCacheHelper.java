@@ -2,10 +2,17 @@ package com.shanchain.data.common.cache;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LruCache;
 
+
+import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.utils.encryption.DesUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
+
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +31,50 @@ public class CommonCacheHelper {
 
     private BaseSqlDao mBaseDao;
 
-    public synchronized static CommonCacheHelper getInstance(Context context) {
+    public synchronized static CommonCacheHelper getInstance() {
         if (mInstance == null){
-            mInstance = new CommonCacheHelper(context.getApplicationContext());
+            mInstance = new CommonCacheHelper(AppManager.getInstance().getContext());
         }
         return mInstance;
     }
 
     public String getCache(String userId , String key){
+
+        if (TextUtils.isEmpty(key)){
+            return null;
+        }
+        String value =  mMemoryCache.get(userId + key);
+        if ( !TextUtils.isEmpty(value)){
+            try{
+                JSONObject object = new JSONObject(value);
+                value = object.getString("value");
+            }catch (Exception e){
+
+            }
+            return value;
+        }
+        Map<String, String> wheres = new HashMap<String, String>();
+        wheres.put("cacheKey", MD5Utils.md5(userId + key));
+        CacheModel cachemodel = (CacheModel) mBaseDao.selectSingleData(getTableName(userId), wheres, CacheModel.class);
+        try {
+            if( cachemodel != null && mContext != null){
+                String cacheValue = cachemodel.getCacheValue();
+                if (!TextUtils.isEmpty(cacheValue)) {
+                    value = DesUtils.decrypt(cacheValue, mDesKey);
+                    JSONObject object = new JSONObject();
+                        object.put("time",cachemodel.getCacheTime());
+                        object.put("value",value);
+                    mMemoryCache.put(userId + key,object.toString());
+                    return value;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return value;
+    }
+
+    public String getCacheAndTime(String userId , String key){
 
         if (TextUtils.isEmpty(key)){
             return null;
@@ -48,7 +91,16 @@ public class CommonCacheHelper {
                 String cacheValue = cachemodel.getCacheValue();
                 if (!TextUtils.isEmpty(cacheValue)) {
                     value = DesUtils.decrypt(cacheValue, mDesKey);
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.put("time",cachemodel.getCacheTime());
+                        object.put("value",value);
+                        value = object.toString();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     mMemoryCache.put(userId + key,value);
+                    return value;
                 }
             }
         }catch (Exception e){
@@ -57,30 +109,36 @@ public class CommonCacheHelper {
         return value;
     }
 
-
     public void setCache(String userId ,String key ,String value){
         if (TextUtils.isEmpty(key)){
                 return;
         }
-        mMemoryCache.put(userId + key,value);
-        if (mContext != null){
-            Map<String, String> items = new HashMap<String, String>();
-            items.put("cacheKey", MD5Utils.md5(userId + key));
-            items.put("cacheTime",String.valueOf(System.currentTimeMillis()));
-            items.put("cacheValue", DesUtils.encrypt(value,mDesKey));
+        JSONObject object = new JSONObject();
+        try {
+            object.put("time",System.currentTimeMillis());
+            object.put("value",value);
+            mMemoryCache.put(userId + key,object.toString());
+            if (mContext != null){
+                Map<String, String> items = new HashMap<String, String>();
+                items.put("cacheKey", MD5Utils.md5(userId + key));
+                items.put("cacheTime",String.valueOf(System.currentTimeMillis()));
+                items.put("cacheValue", DesUtils.encrypt(value,mDesKey));
 
-           boolean isOk = mBaseDao.insertOrUpdate(getTable(userId), items);
-            if(!isOk){
-                //重试
-                mBaseDao.excuteSql(getCreateUserTableSql(getTableName(userId)));
-                mBaseDao.insertOrUpdate(getTable(userId), items);
+                boolean isOk = mBaseDao.insertOrUpdate(getTable(userId), items);
+                if(!isOk){
+                    //重试
+                    mBaseDao.excuteSql(getCreateUserTableSql(getTableName(userId)));
+                    mBaseDao.insertOrUpdate(getTable(userId), items);
+                }
             }
+        }catch (Exception e){
         }
+
     }
 
     public void deleteCache(String userId){
         if (!TextUtils.isEmpty(userId)){
-            String tableName = MD5Utils.md5(userId);
+            String tableName = MD5Utils.md5(getTable(userId));
             mBaseDao.dropTable(tableName);
         }
     }
