@@ -1,5 +1,7 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 
 import com.shanchain.arkspot.ui.model.StoryInfo;
@@ -49,19 +51,24 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.showLog("故事列表数据 = "+response);
                         LogUtils.d("======"+response);
-                        StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
-                        List<StoryListDataBean> storyList = storyListInfo.getData();
-                        List<StoryInfo> storyInfoList = new ArrayList<>();
-                        for (int i = 0; i < storyList.size(); i ++) {
-                            StoryInfo info = new StoryInfo();
-                            info.setStoryListDataBean(storyList.get(i));
-                            int type = storyList.get(i).getType();
-                            info.setItemType(type);
-                            storyInfoList.add(info);
+                        if(!TextUtils.isEmpty(response)){
+                            StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
+                            List<StoryListDataBean> storyList = storyListInfo.getData();
+                            List<StoryInfo> storyInfoList = new ArrayList<>();
+                            for (int i = 0; i < storyList.size(); i ++) {
+                                StoryInfo info = new StoryInfo();
+                                info.setStoryListDataBean(storyList.get(i));
+                                int type = storyList.get(i).getType();
+                                info.setItemType(type);
+                                storyInfoList.add(info);
+                            }
+                            mAttentionView.initSuccess(storyInfoList);
+                        }else {
+                            mAttentionView.initSuccess(null);
                         }
 
 
-                        mAttentionView.initSuccess(storyInfoList);
+
                     }
                 });
 
