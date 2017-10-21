@@ -14,6 +14,7 @@ import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.rn.modules.RNCommonCacheHelper;
 import com.shanchain.data.common.rn.modules.RNNetworkModule;
 import com.shanchain.data.common.rn.modules.SCDialogModule;
+import com.shanchain.data.common.rn.modules.SCInputDialogModule;
 import com.shanchain.data.common.rn.modules.SCToastModule;
 
 import java.lang.reflect.Constructor;
@@ -66,6 +67,12 @@ public class AppReactPackage extends LazyReactPackage {
             @Override
             public NativeModule get() {
                 return new RNNetworkModule(reactContext);
+            }
+        }));
+        nativeModules.add(new ModuleSpec(SCInputDialogModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new SCInputDialogModule(reactContext);
             }
         }));
         nativeModules.add(new ModuleSpec(SCToastModule.class, new Provider<NativeModule>() {

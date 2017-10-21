@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -49,6 +50,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startActivity(String pageFlag, String extras) {
+        Log.i("startAC",extras);
         Context context = getReactApplicationContext();
         Intent intent = NativePages.buildIntent(pageFlag);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
