@@ -24,4 +24,12 @@ public class StoryModelInfo {
     public void setBean(StoryModelBean bean) {
         mBean = bean;
     }
+
+    @Override
+    public String toString() {
+        return "StoryModelInfo{" +
+                "storyId='" + storyId + '\'' +
+                ", mBean=" + mBean +
+                '}';
+    }
 }

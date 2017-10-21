@@ -41,7 +41,6 @@
         style="@style/style_text_line_match"/>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_item_story_floors"
         android:drawablePadding="@dimen/dimens_5dp"
         android:drawableRight="@mipmap/abs_home_icon_unfolded_default"
@@ -59,7 +58,6 @@
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginRight="@dimen/dimens_15dp"
         android:divider="@null"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

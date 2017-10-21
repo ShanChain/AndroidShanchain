@@ -36,18 +36,16 @@ public interface Constants {
         //消息扩展参数是否是群信息key值
         String MSG_IS_GROUP = "isGroup";
 
-
-        /*************阿里云文件上传常量************/
-        String OSS_ENDPOINT = "";
-        String OSS_HOST = "";
-        String OSS_BUCKET = "";
-
-
         /*************本地缓存常量************/
         String CACHE_USER_INFO = "userInfo";
         String CACHE_CUR_USER = "curUser";
         String CACHE_TOKEN = "token";
         String CACHE_SPACE_ID = "spaceId";
         String CACHE_CHARACTER_ID = "characterId";
+        String CACHE_SPACE_INFO = "spaceInfo";
+        String CACHE_CHARACTER_INFO = "characterInfo";
 
+        /*************本地缓存常量************/
+        int TYPE_STORY_SHORT = 1;
+        int TYPE_STORY_LONG = 2;
 }

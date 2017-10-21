@@ -3,7 +3,6 @@ package com.shanchain.arkspot.adapter;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jaeger.ninegridimageview.NineGridImageView;
@@ -11,8 +10,9 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryListDataBean;
 import com.shanchain.arkspot.utils.DateUtils;
+import com.shanchain.data.common.utils.GlideUtils;
 
-
+import java.util.Date;
 import java.util.List;
 
 
@@ -36,8 +36,8 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
 
         holder.setText(R.id.tv_item_story_name,storyListDataBean.getInfo().getName());
         ImageView ivAvatar = holder.getView(R.id.iv_item_story_avatar);
-        Glide.with(mContext).load(storyListDataBean.getInfo().getHeadImg()).into(ivAvatar);
-        String time = DateUtils.getStandardDate(storyListDataBean.getUpdateTime() + "");
+        GlideUtils.load(mContext,storyListDataBean.getInfo().getHeadImg(),ivAvatar,R.mipmap.abs_addanewrole_def_photo_default);
+        String time = DateUtils.formatFriendly(new Date(storyListDataBean.getUpdateTime()));
         int commentCount = storyListDataBean.getCommentCount();
         holder.setText(R.id.tv_item_story_comment,commentCount + "");
         holder.setText(R.id.tv_item_story_time,time);

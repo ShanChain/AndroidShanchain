@@ -27,22 +27,18 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicImagesAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
-import com.shanchain.arkspot.ui.model.UpLoadImgBean;
 import com.shanchain.arkspot.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ReleaseDynamicPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.ReleaseDynamicView;
 import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +46,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import okhttp3.Call;
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener,ReleaseDynamicView {
 
@@ -126,9 +121,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvReleaseDynamic.setLayoutManager(linearLayoutManager);
         mImagesAdapter = new DynamicImagesAdapter(R.layout.item_dynamic_image, imgData);
-
         mRvReleaseDynamic.setAdapter(mImagesAdapter);
-
         mImagesAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
@@ -449,7 +442,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
 
             }
-
         }
     }
 
@@ -508,11 +500,17 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
-
-
+        showLoadingDialog();
+        final List<String> imgPaths = new ArrayList<>();
+        List<Integer> topics = new ArrayList<>();
+        if (imgData!=null && imgData.size()!=0){
+            for (int i = 0; i < imgData.size(); i ++) {
+                imgPaths.add(imgData.get(i).getImg());
+            }
+        }
 
         //发布动态
-        String content = mEtReleaseDynamicContent.getText().toString().trim();
+        String word = mEtReleaseDynamicContent.getText().toString().trim();
         if (isEditLong) {
             //编辑小说状态
 
@@ -521,28 +519,29 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             //普通编辑
             if (imgData.size() == 0) {
                 //无图片
-                mPresenter.releaseDynamic(content);
+                mPresenter.releaseDynamic(word,imgPaths,"","",topics, Constants.TYPE_STORY_SHORT);
+
             } else {
                 //有图片
-                SCHttpUtils.post().url(HttpApi.UP_LOAD_FILE)
-                        .addParams("num", "1")
-                        .build()
-                        .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                LogUtils.e("上传图片失败");
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(UpLoadImgBean response, int id) {
-
-                            }
-                        });
+                mPresenter.upLoadImgs(mContext,word,imgPaths,"","",topics,Constants.TYPE_STORY_SHORT);
             }
-
         }
 
     }
 
+    @Override
+    public void releaseSuccess() {
+        //发布成功
+        ToastUtils.showToast(mContext,"发布成功");
+        closeLoadingDialog();
+        finish();
+    }
+
+    @Override
+    public void releaseFailed(String msg, Exception e) {
+        //发布失败
+        closeLoadingDialog();
+        ToastUtils.showToast(mContext,"发布失败" + msg);
+
+    }
 }

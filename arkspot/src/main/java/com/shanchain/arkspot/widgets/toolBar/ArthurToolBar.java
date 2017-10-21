@@ -302,6 +302,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
             }
         } catch (Exception e) {
             Log.e(TAG, "button == null !!! 按钮执行动画异常");
+            e.printStackTrace();
         }
     }
 

@@ -28,7 +28,7 @@ public class ImageActivity extends BaseActivity {
         Intent intent = getIntent();
         int index = intent.getIntExtra("index", 0);
         //ArrayList<String> arrayList = intent.getStringArrayListExtra("arrayList");
-        ArrayList<Integer> arrayList = intent.getIntegerArrayListExtra("arrayList");
+        ArrayList<String> arrayList = intent.getStringArrayListExtra("arrayList");
         ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(arrayList);
         mVpImages.setAdapter(imagePagerAdapter);
         mVpImages.setCurrentItem(index);

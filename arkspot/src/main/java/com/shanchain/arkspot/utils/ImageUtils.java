@@ -1,16 +1,5 @@
 package com.shanchain.arkspot.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -41,6 +30,18 @@ import android.provider.MediaStore.MediaColumns;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * 图片操作工具包
@@ -872,5 +873,8 @@ public class ImageUtils {
         bos.flush();
         bos.close();
     }
+
+
+
 
 }

@@ -1,5 +1,7 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 
 import com.shanchain.arkspot.ui.model.StoryInfo;
@@ -8,6 +10,7 @@ import com.shanchain.arkspot.ui.model.StoryListInfo;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.view.fragment.view.AttentionView;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -49,7 +52,18 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.showLog("故事列表数据 = "+response);
                         LogUtils.d("======"+response);
+
+                        if (TextUtils.isEmpty(response)){
+                            mAttentionView.initSuccess(null);
+                            return;
+                        }
+
                         StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
+                        if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)){
+                            mAttentionView.initSuccess(null);
+                            return;
+                        }
+
                         List<StoryListDataBean> storyList = storyListInfo.getData();
                         List<StoryInfo> storyInfoList = new ArrayList<>();
                         for (int i = 0; i < storyList.size(); i ++) {
@@ -59,7 +73,6 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                             info.setItemType(type);
                             storyInfoList.add(info);
                         }
-
 
                         mAttentionView.initSuccess(storyInfoList);
                     }

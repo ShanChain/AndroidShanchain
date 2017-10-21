@@ -20,6 +20,7 @@ public class SCCacheUtils {
             return "";
         }
 
+
         return CommonCacheHelper.getInstance(mContext).getCache(userId, key);
     }
 

@@ -14,6 +14,8 @@ import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.global.UserType;
 import com.shanchain.arkspot.ui.model.LoginUserInfoBean;
 import com.shanchain.arkspot.ui.model.ResponseLoginBean;
+import com.shanchain.arkspot.ui.model.ResponseSpaceInfo;
+import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.cache.CommonCacheHelper;
@@ -27,7 +29,11 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -38,6 +44,8 @@ import me.shaohui.shareutil.login.LoginResult;
 import me.shaohui.shareutil.login.result.BaseToken;
 import me.shaohui.shareutil.login.result.BaseUser;
 import okhttp3.Call;
+
+import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
 
 
 public class LoginActivity extends BaseActivity {
@@ -69,16 +77,23 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
-        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String userId = getCache("0", Constants.CACHE_CUR_USER);
         LogUtils.d("当前用户id" + userId);
         if (!TextUtils.isEmpty(userId)){
 
             SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
-            SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"12");
+            SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"9");
+            obtainDetailInfo();
+
+            hxLogin();
 
             readyGo(MainActivity.class);
             finish();
         }
+    }
+
+    private void hxLogin() {
+
     }
 
     @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_wx, R.id.iv_login_wb, R.id.iv_login_qq})
@@ -165,7 +180,7 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"12");
+                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
 
                             String cacheid = CommonCacheHelper.getInstance(mContext).getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
@@ -306,8 +321,8 @@ public class LoginActivity extends BaseActivity {
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                                     SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"12");
-
+                                     SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
+                                     obtainDetailInfo();
                                      readyGo(MainActivity.class);
                                      finish();
                                  } else {
@@ -316,6 +331,56 @@ public class LoginActivity extends BaseActivity {
                              }
                          }
                 );
+    }
+
+    private void obtainDetailInfo() {
+        //获取charactor详情和space详情并缓存
+        SCHttpUtils.post()
+                .url(HttpApi.CHARACTER_QUERY)
+                .addParams("characterId","8")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d("角色详情 = "+response);
+                    }
+                });
+
+        List<String> spaceIds = new ArrayList<>();
+        spaceIds.add("16");
+        String jArr = new Gson().toJson(spaceIds);
+        SCHttpUtils.post()
+                .url(HttpApi.SPACE_LIST_SPACEID)
+                .addParams("jArray",jArr)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d("space详情 = " + response);
+
+                        ResponseSpaceInfo responseSpaceInfo = new Gson().fromJson(response, ResponseSpaceInfo.class);
+                        List<SpaceDetailInfo> data = responseSpaceInfo.getData();
+                        SpaceDetailInfo spaceDetailInfo = data.get(0);
+                        String spaceJson = new Gson().toJson(spaceDetailInfo);
+                        String userId = SCCacheUtils.getCache("0",Constants.CACHE_CUR_USER);
+                        SCCacheUtils.setCache(userId,Constants.CACHE_SPACE_INFO,spaceJson);
+                        String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
+
+                        LogUtils.d("缓存的spaceInfo = "+spaceInfo);
+
+                    }
+                });
+
     }
 
 }

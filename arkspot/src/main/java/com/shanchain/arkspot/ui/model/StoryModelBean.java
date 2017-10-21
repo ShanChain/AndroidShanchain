@@ -200,4 +200,29 @@ public class StoryModelBean {
     public void setTranspond(int transpond) {
         this.transpond = transpond;
     }
+
+    @Override
+    public String toString() {
+        return "StoryModelBean{" +
+                "characterImg='" + characterImg + '\'' +
+                ", img='" + img + '\'' +
+                ", supportCount=" + supportCount +
+                ", rootId=" + rootId +
+                ", detailId='" + detailId + '\'' +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                ", isFav=" + isFav +
+                ", spaceId=" + spaceId +
+                ", tailId=" + tailId +
+                ", commendCount=" + commendCount +
+                ", genNum=" + genNum +
+                ", tailName='" + tailName + '\'' +
+                ", createTime=" + createTime +
+                ", intro='" + intro + '\'' +
+                ", lineNum=" + lineNum +
+                ", characterId=" + characterId +
+                ", status=" + status +
+                ", transpond=" + transpond +
+                '}';
+    }
 }

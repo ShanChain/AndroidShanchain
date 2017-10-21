@@ -28,6 +28,7 @@ public final class NativePages {
     public static final String PAGE_ADD_ROLE = "page_add_role";//MyCommentsActivity
     public static final String PAGE_TOPIC_DETAILS = "page_topic_details";
     public static final String PAGE_ADD_TOPIC = "page_add_topic";
+    public static final String PAGE_LOGIN = "page_login";
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
 

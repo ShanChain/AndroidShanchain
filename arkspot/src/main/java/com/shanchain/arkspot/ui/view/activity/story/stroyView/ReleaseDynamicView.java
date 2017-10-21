@@ -5,4 +5,10 @@ package com.shanchain.arkspot.ui.view.activity.story.stroyView;
  */
 
 public interface ReleaseDynamicView {
+
+    void releaseSuccess();
+
+    void releaseFailed(String msg , Exception e);
+
+
 }

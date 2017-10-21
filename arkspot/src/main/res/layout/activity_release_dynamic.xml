@@ -50,7 +50,7 @@
         android:textColor="@color/colorTextDefault"
         android:hint="以角色的身份，今天的日记是什么内容?"
         android:padding="@dimen/dimens_5dp"
-        android:textSize="24sp"/>
+        android:textSize="14sp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

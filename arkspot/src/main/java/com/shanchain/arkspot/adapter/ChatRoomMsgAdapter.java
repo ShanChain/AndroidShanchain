@@ -178,6 +178,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             String msg = body.getMessage();
             int msgAttribute = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
             if (msgAttribute == Constants.ATTR_SCENE) {
+
                 //场景
                 if (tvItemMsgSceneTitle != null){
                     tvItemMsgSceneTitle.setText("场景");

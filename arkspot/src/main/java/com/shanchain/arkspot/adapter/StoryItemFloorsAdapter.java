@@ -6,9 +6,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.FloorsInfo;
+import com.shanchain.arkspot.ui.model.StoryModelInfo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhoujian on 2017/8/24.
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 public class StoryItemFloorsAdapter extends BaseAdapter {
 
-    private ArrayList<FloorsInfo> datas;
+    private List<StoryModelInfo> datas;
 
-    public StoryItemFloorsAdapter(ArrayList<FloorsInfo> datas) {
+    public StoryItemFloorsAdapter(List<StoryModelInfo> datas) {
         this.datas = datas;
     }
 
@@ -41,9 +41,7 @@ public class StoryItemFloorsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, final ViewGroup parent) {
         View view = View.inflate(parent.getContext(), R.layout.item_floors,null);
         TextView tvContent = (TextView) view.findViewById(R.id.tv_item_floors_content);
-
-
-
+        tvContent.setText(datas.get(position).getBean().getIntro());
         return view;
     }
 }

@@ -1,51 +1,53 @@
 package com.shanchain.arkspot.utils;
 
+import java.util.Date;
+
 /**
  * Created by zhoujian on 2017/10/16.
  */
 
 public class DateUtils {
 
-    public static String getStandardDate(String timeStr) {
-        StringBuffer sb = new StringBuffer();
+    private final static long MINUTE = 60 * 1000;// 1分钟
+    private final static long HOUR = 60 * MINUTE;// 1小时
+    private final static long DAY = 24 * HOUR;// 1天
+    private final static long MONTH = 31 * DAY;// 月
+    private final static long YEAR = 12 * MONTH;// 年
 
-        long t = Long.parseLong(timeStr);
-        long time = System.currentTimeMillis() - (t*1000);
-        long mill = (long) Math.ceil(time /1000);//秒前
 
-        long minute = (long) Math.ceil(time/60/1000.0f);// 分钟前
-
-        long hour = (long) Math.ceil(time/60/60/1000.0f);// 小时
-
-        long day = (long) Math.ceil(time/24/60/60/1000.0f);// 天前
-
-        if (day - 1 > 0) {
-            sb.append(day + "天");
-        } else if (hour - 1 > 0) {
-            if (hour >= 24) {
-                sb.append("1天");
-            } else {
-                sb.append(hour + "小时");
-            }
-        } else if (minute - 1 > 0) {
-            if (minute == 60) {
-                sb.append("1小时");
-            } else {
-                sb.append(minute + "分钟");
-            }
-        } else if (mill - 1 > 0) {
-            if (mill == 60) {
-                sb.append("1分钟");
-            } else {
-                sb.append(mill + "秒");
-            }
-        } else {
-            sb.append("刚刚");
+    /**
+     * 将日期格式化成友好的字符串：几分钟前、几小时前、几天前、几月前、几年前、刚刚
+     *
+     * @param date
+     * @return
+     */
+    public static String formatFriendly(Date date) {
+        if (date == null) {
+            return null;
         }
-        if (!sb.toString().equals("刚刚")) {
-            sb.append("前");
+        long diff = new Date().getTime() - date.getTime();
+        long r = 0;
+        if (diff > YEAR) {
+            r = (diff / YEAR);
+            return r + "年前";
         }
-        return sb.toString();
+        if (diff > MONTH) {
+            r = (diff / MONTH);
+            return r + "个月前";
+        }
+        if (diff > DAY) {
+            r = (diff / DAY);
+            return r + "天前";
+        }
+        if (diff > HOUR) {
+            r = (diff / HOUR);
+            return r + "个小时前";
+        }
+        if (diff > MINUTE) {
+            r = (diff / MINUTE);
+            return r + "分钟前";
+        }
+        return "刚刚";
     }
 
 }

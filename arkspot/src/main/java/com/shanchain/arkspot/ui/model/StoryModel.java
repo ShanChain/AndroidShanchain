@@ -9,7 +9,7 @@ import java.util.List;
 public class StoryModel {
 
     private StoryModelInfo modelInfo;
-    private List<StoryModelInfo> modelInfoList;
+    private List<StoryModelInfo> storyChain;
 
     public StoryModelInfo getModelInfo() {
         return modelInfo;
@@ -19,11 +19,19 @@ public class StoryModel {
         this.modelInfo = modelInfo;
     }
 
-    public List<StoryModelInfo> getModelInfoList() {
-        return modelInfoList;
+    public List<StoryModelInfo> getStoryChain() {
+        return storyChain;
     }
 
-    public void setModelInfoList(List<StoryModelInfo> modelInfoList) {
-        this.modelInfoList = modelInfoList;
+    public void setStoryChain(List<StoryModelInfo> storyChain) {
+        this.storyChain = storyChain;
+    }
+
+    @Override
+    public String toString() {
+        return "StoryModel{" +
+                "modelInfo=" + modelInfo +
+                ", storyChain=" + storyChain +
+                '}';
     }
 }
