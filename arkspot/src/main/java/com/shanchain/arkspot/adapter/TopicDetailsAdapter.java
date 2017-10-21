@@ -36,9 +36,9 @@ public class TopicDetailsAdapter extends BaseQuickAdapter<StoryInfo,BaseViewHold
         NineGridImageView ngiv = helper.getView(R.id.ngiv_item_story);
         StoryItemNineAdapter itemNineAdapter = new StoryItemNineAdapter();
         ngiv.setAdapter(itemNineAdapter);
-        List<Integer> imgs = new ArrayList();
-        imgs.add(R.drawable.photo_bear);
-        imgs.add(R.drawable.photo_yue);
+        List<String> imgs = new ArrayList();
+        imgs.add("https://s-media-cache-ak0.pinimg.com/736x/41/47/ff/4147ff1464ce4fd64d88e7f3f345d6d4.jpg");
+        imgs.add("https://s-media-cache-ak0.pinimg.com/236x/0b/fd/9a/0bfd9af8525ec09263e0ffda06f85c84.jpg");
         ngiv.setImagesData(imgs);
 
     }

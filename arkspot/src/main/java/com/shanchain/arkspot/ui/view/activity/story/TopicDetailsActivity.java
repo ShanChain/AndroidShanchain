@@ -8,20 +8,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.TopicDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.RNTopicDetailExt;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
@@ -41,6 +45,12 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     protected void initViewsAndEvents() {
+
+        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
+        RNTopicDetailExt rnTopicDetailExt = new Gson().fromJson(rnExtra, RNTopicDetailExt.class);
+        String spaceId = rnTopicDetailExt.getgData().getSpaceId();
+        LogUtils.i("spaceId  = "+spaceId);
+
         initToolBar();
         initData();
         initRecyclerView();
