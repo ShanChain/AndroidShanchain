@@ -78,7 +78,7 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
         String userId = getCache("0", Constants.CACHE_CUR_USER);
-        LogUtils.d("当前用户id" + userId);
+        LogUtils.e("当前用户id" + userId);
         if (!TextUtils.isEmpty(userId)){
 
             SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
@@ -127,7 +127,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login() {
-        String userId = CommonCacheHelper.getInstance(mContext).getCache("0", Constants.CACHE_CUR_USER);
+        String userId = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
 
         String account = mEtLoginAccount.getText().toString().trim();
         String pwd = mEtLoginPwd.getText().toString().trim();
@@ -182,7 +182,7 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
                             SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
 
-                            String cacheid = CommonCacheHelper.getInstance(mContext).getCache("0", Constants.CACHE_CUR_USER);
+                            String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
                             readyGo(MainActivity.class);
                             finish();

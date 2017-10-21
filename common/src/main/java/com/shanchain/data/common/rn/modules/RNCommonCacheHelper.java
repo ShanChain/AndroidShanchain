@@ -1,5 +1,7 @@
 package com.shanchain.data.common.rn.modules;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -16,7 +18,7 @@ public class RNCommonCacheHelper extends ReactContextBaseJavaModule {
 
     public RNCommonCacheHelper(ReactApplicationContext reactContext) {
         super(reactContext);
-        mCommonCacheHelper = mCommonCacheHelper.getInstance(reactContext);
+        mCommonCacheHelper = mCommonCacheHelper.getInstance();
 
     }
 
@@ -27,6 +29,7 @@ public class RNCommonCacheHelper extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setCache(String userId,String key,String value){
+        Log.i("RN_save","userId="+userId+","+"key="+","+key+"value="+value);
         if (mCommonCacheHelper != null){
             mCommonCacheHelper.setCache(userId,key,value);
         }
@@ -35,6 +38,10 @@ public class RNCommonCacheHelper extends ReactContextBaseJavaModule {
     @ReactMethod(isBlockingSynchronousMethod = true)
     public String getCache(String userId,String key) {
        return mCommonCacheHelper.getCache(userId, key);
+    }
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    public String getCacheAndTime(String userId,String key) {
+        return mCommonCacheHelper.getCacheAndTime(userId, key);
     }
 
     @ReactMethod

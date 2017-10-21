@@ -175,6 +175,22 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                         setData(data);
                         builderData();
                     }
+/*
+if(JSONObject.parseObject(response).getString("code").equalsIgnoreCase(COMMON_SUC_CODE)){
+                            LogUtils.d("故事列表数据 = " + response);
+
+                            ResponseStoryListInfo storyListInfo = new Gson().fromJson(response, ResponseStoryListInfo.class);
+                            List<StoryModelBean> data = storyListInfo.getData();
+                            for (int i = 0; i < data.size(); i ++) {
+                                StoryModelBean storyBean = data.get(i);
+                                StoryInfo storyInfo = new StoryInfo();
+                                storyInfo.setItemType(storyBean.getType());
+                            }
+
+                            setData(data);
+                            builderData();
+                        }
+*/
                     }
                 });
     }

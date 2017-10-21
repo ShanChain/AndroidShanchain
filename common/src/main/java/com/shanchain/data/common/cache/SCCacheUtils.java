@@ -20,15 +20,14 @@ public class SCCacheUtils {
             return "";
         }
 
-
-        return CommonCacheHelper.getInstance(mContext).getCache(userId, key);
+        return CommonCacheHelper.getInstance().getCache(userId, key);
     }
 
     public static void setCache(String userId ,String key ,String value){
         if (TextUtils.isEmpty(key)){
             return;
         }
-        CommonCacheHelper.getInstance(mContext).setCache(userId,key,value);
+        CommonCacheHelper.getInstance().setCache(userId,key,value);
     }
 
 }
