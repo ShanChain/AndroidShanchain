@@ -2,18 +2,10 @@ package com.shanchain.data.common.utils;
 
 import android.util.Log;
 
-/**
- * Created by zhoujian on 2017/5/16.
- * 日志工具类,通过配置日志等级来显示和隐藏日志的信息
- */
 
 public final class LogUtils {
-    /**
-     * 2017/5/16
-     * 描述：私有构造方法,不能new对象
-     */
-    private LogUtils() {
-    }
+
+    private LogUtils() {}
 
     public static final int LOG_LEVEL = 6;// 如果想屏蔽所有log,可以设置为0
 

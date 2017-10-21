@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
@@ -21,6 +22,7 @@ import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
@@ -30,7 +32,6 @@ import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,33 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void hxLogin() {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.HX_USER_REGIST)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("注册失败");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if (TextUtils.isEmpty(response)){
+                            return;
+                        }
+
+                        LogUtils.i("注册成功 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                            LogUtils.i("返回码错误");
+                        }else {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String hxUserName = JSONObject.parseObject(data).getString("hxUserName");
+                            LogUtils.i("环信用户username = " + hxUserName);
+
+                        }
+                    }
+                });
 
     }
 

@@ -14,6 +14,8 @@ public class SCCacheUtils {
         mContext = context.getApplicationContext();
     }
 
+    private SCCacheUtils(){}
+
     public static String getCache(String userId,String key){
 
         if (TextUtils.isEmpty(userId)){

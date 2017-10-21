@@ -14,14 +14,20 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SelectContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.arkspot.ui.model.RequestContactInfo;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import com.shanchain.data.common.utils.ToastUtils;
+import okhttp3.Call;
 
 
 public class SelectContactActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -35,10 +41,10 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     RecyclerView mRvSelectContact;
     @Bind(R.id.sb_select_contact)
     WaveSideBar mSbSelectContact;
-    private List<ContactInfo> datas;
-    private List<ContactInfo> show;
+    private List<ContactInfo> datas = new ArrayList<>();
+    private List<ContactInfo> show = new ArrayList<>();
     private SelectContactAdapter mContactAdapter;
-    private ArrayList<String> selected;
+    private ArrayList<String> selected = new ArrayList<>();
     /**
      * 描述：是否是选择艾特好友
      */
@@ -53,8 +59,8 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     protected void initViewsAndEvents() {
         mIsAt = getIntent().getBooleanExtra("isAt", true);
         initToolBar();
-        initData();
         initRecyclerView();
+        initData();
         initListener();
     }
 
@@ -123,8 +129,28 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initData() {
-        datas = new ArrayList<>();
-        show = new ArrayList<>();
+
+        SCHttpUtils.postWithSpaceId()
+                .url(HttpApi.SPACE_CONTACT_LIST)
+                .build()
+                .execute(new SCHttpCallBack<RequestContactInfo>(RequestContactInfo.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取联系人失败");
+                    }
+
+                    @Override
+                    public void onResponse(RequestContactInfo response, int id) {
+                        if (response == null){
+                            LogUtils.i("");
+                            return;
+                        }
+
+
+                    }
+                });
+
+
         ContactInfo contactInfo1 = new ContactInfo();
         contactInfo1.setName("阿里");
         contactInfo1.setLetter("A");
@@ -237,7 +263,6 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
 
     @Override
     public void onRightClick(View v) {
-        selected = new ArrayList<>();
         for (int i = 0; i < show.size(); i++) {
             if (show.get(i).isSelected()) {
                 selected.add(show.get(i).getName());

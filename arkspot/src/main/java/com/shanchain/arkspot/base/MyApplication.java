@@ -171,7 +171,7 @@ public class MyApplication extends BaseApplication {
                 //当接收到消息的回调
                 if (list != null && list.size() > 0) {
 
-                    if (isRuninBackground()){
+                    if (isRunningBackground()){
                         sendNotification(list.get(0));
                     }
 
@@ -249,7 +249,7 @@ public class MyApplication extends BaseApplication {
     }
 
 
-    private boolean isRuninBackground() {
+    private boolean isRunningBackground() {
         ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(100);
         ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
@@ -279,7 +279,7 @@ public class MyApplication extends BaseApplication {
         Notification notification = new Notification.Builder(this)
                 .setAutoCancel(true) //当点击后自动删除
                 .setSmallIcon(R.mipmap.abs_home_btn_comment_default) //必须设置
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.abs_release_btn_switch_long_default))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.abs_addanewrole_def_photo_default))
                 .setContentTitle("您有一条新消息")
                 .setContentText(messageBody.getMessage())
                 .setContentInfo(message.getFrom())

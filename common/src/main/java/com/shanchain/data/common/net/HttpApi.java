@@ -120,4 +120,6 @@ public interface HttpApi {
     //给微博点赞
     String STORY_SUPPORT_ADD = BASE_URL + "/v1/story/support/add";
 
+    String SPACE_CONTACT_LIST = BASE_URL + "/v1/character/model/list/spaceId";
+
 }
