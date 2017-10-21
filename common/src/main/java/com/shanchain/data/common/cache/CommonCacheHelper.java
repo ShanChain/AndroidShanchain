@@ -2,15 +2,11 @@ package com.shanchain.data.common.cache;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.LruCache;
 
-
-import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.utils.encryption.DesUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
-
 
 import org.json.JSONObject;
 

@@ -1,24 +1,23 @@
 package com.shanchain.arkspot.ui.view.activity.chat;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import com.google.gson.Gson;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMGroup;
-import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.arkspot.ui.model.ContactInfo;
-import com.shanchain.arkspot.ui.model.FansInfo;
-import com.shanchain.arkspot.ui.model.FansListInfo;
+import com.shanchain.arkspot.ui.model.ContactBean;
+import com.shanchain.arkspot.ui.model.GroupInfo;
+import com.shanchain.arkspot.ui.model.ResponseGroupInfo;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Bind(R.id.elv_contact)
     ExpandableListView mElvContact;
     List<String> parentList;
-    Map<String, ArrayList<ContactInfo>> map;
+    Map<String, ArrayList<ContactBean>> map;
     private ContactAdapter mContactAdapter;
 
 
@@ -63,7 +62,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         mElvContact.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String name = map.get(parentList.get(groupPosition)).get(childPosition).getName();
+                String name = map.get(parentList.get(groupPosition)).get(childPosition).getHxId();
                 //ToastUtils.showToast(mContext, "点击了" + parentList.get(groupPosition) + "的" + name);
                 Intent intent = new Intent(mContext, ChatRoomActivity.class);
                 if (parentList.get(groupPosition).equals("对话场景")) {
@@ -81,8 +80,6 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initData() {
-        //当前登录的环信用户的id
-        String currentUser = EMClient.getInstance().getCurrentUser();
         map = new HashMap<>();
         parentList = new ArrayList<>();
         parentList.add("我的关注");
@@ -90,47 +87,21 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         parentList.add("我的粉丝");
         parentList.add("对话场景");
         //粉丝列表集合
-        final ArrayList<ContactInfo> myFans = new ArrayList<>();
+        final ArrayList<ContactBean> myFans = new ArrayList<>();
         //关注列表集合
-        final ArrayList<ContactInfo> myFocus = new ArrayList<>();
+        final ArrayList<ContactBean> myFocus = new ArrayList<>();
         //对话场景列表集合
-        ArrayList<ContactInfo> conversationScene = new ArrayList<>();
+        final ArrayList<ContactBean> conversationScene = new ArrayList<>();
         //互相关注列表集合
-        ArrayList<ContactInfo> eachFocus = new ArrayList<>();
-        //获取本地所以的群
-        List<EMGroup> allGroups = EMClient.getInstance().groupManager().getAllGroups();
+        ArrayList<ContactBean> eachFocus = new ArrayList<>();
 
-        for (int i = 0; i < allGroups.size(); i++) {
-            String groupId = allGroups.get(i).getGroupId();
-            LogUtils.d("我加入的群组的id" + groupId);
-            ContactInfo contactInfo = new ContactInfo();
-            contactInfo.setName(groupId);
-            conversationScene.add(contactInfo);
-        }
         map.put("对话场景", conversationScene);
-
-        //联系人
-        try {
-            List<String> contactsList = EMClient.getInstance().contactManager().getAllContactsFromServer();
-
-            for (int i = 0; i < contactsList.size(); i++) {
-                String contact = contactsList.get(i);
-                ContactInfo contactInfo = new ContactInfo();
-                contactInfo.setName(contact);
-                eachFocus.add(contactInfo);
-            }
-            LogUtils.d("获取联系人成功");
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-            LogUtils.e("获取联系人失败");
-        }
 
         map.put("互相关注", eachFocus);
 
         //获取我的关注列表
-        SCHttpUtils.post()
+        SCHttpUtils.postWithChaId()
                 .url(HttpApi.FOCUS_MY_FOCUS)
-                .addParams("characterId", currentUser)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -142,25 +113,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.d("获取我的关注的" + response);
-                        Gson gson = new Gson();
-                        FansListInfo fansListInfo = gson.fromJson(response, FansListInfo.class);
-                        if (fansListInfo == null) {
-                            LogUtils.d("json解析失败");
-                            return;
-                        }
-                        String code = fansListInfo.getCode();
-                        LogUtils.d("返回码 + " + code);
-                        LogUtils.d("返回的消息：" + fansListInfo.getMessage());
-                        List<FansInfo> fansInfos = fansListInfo.getFansInfos();
 
-                        LogUtils.d("关注数据集合 ： " + fansInfos.size());
-                        for (int i = 0; i < fansInfos.size(); i++) {
-                            FansInfo fansInfo = fansInfos.get(i);
-                            LogUtils.d("关注环信id = " + fansInfo.getKey().getFunsId());
-                            ContactInfo contactInfo = new ContactInfo();
-                            contactInfo.setName(fansInfo.getKey().getFunsId() + "");
-                            myFocus.add(contactInfo);
-                        }
                         map.put("我的关注", myFocus);
                         mContactAdapter.notifyDataSetChanged();
                     }
@@ -169,9 +122,8 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         map.put("我的关注", myFocus);
 
         //获取粉丝列表
-        SCHttpUtils.post()
+        SCHttpUtils.postWithChaId()
                 .url(HttpApi.FOCUS_FANS)
-                .addParams("characterId", currentUser)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -183,16 +135,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.d("获取我的粉丝列表成功" + response);
-                        Gson gson = new Gson();
-                        FansListInfo fansListInfo = gson.fromJson(response, FansListInfo.class);
-                        List<FansInfo> fansInfos = fansListInfo.getFansInfos();
-                        for (int i = 0; i < fansInfos.size(); i++) {
-                            FansInfo fansInfo = fansInfos.get(i);
-                            int fansId = fansInfo.getKey().getFunsId();
-                            ContactInfo contactInfo = new ContactInfo();
-                            contactInfo.setName("" + fansId);
-                            myFans.add(contactInfo);
-                        }
+
                         map.put("我的粉丝", myFans);
                         mContactAdapter.notifyDataSetChanged();
                     }
@@ -200,19 +143,41 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         map.put("我的粉丝", myFans);
 
         //获取群
-        SCHttpUtils.post()
+        SCHttpUtils.postWithChaId()
                 .url(HttpApi.GROUP_MY_GROUP)
-                .addParams("CharacterId","12")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        LogUtils.e("获取群信息失败");
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        LogUtils.d("获取的群信息 = " + response);
+                        if (TextUtils.isEmpty(response)){
+                            return;
+                        }
+                        ResponseGroupInfo responseGroupInfo = new Gson().fromJson(response, ResponseGroupInfo.class);
+                        if (!TextUtils.equals(responseGroupInfo.getCode(), NetErrCode.COMMON_SUC_CODE)){
+                            return;
+                        }
 
+                        List<GroupInfo> groupInfoList = responseGroupInfo.getData();
+
+                        for (int i = 0; i < groupInfoList.size(); i ++) {
+                            ContactBean contactBean = new ContactBean();
+                            GroupInfo groupInfo = groupInfoList.get(i);
+                            contactBean.setName(groupInfo.getGroupName());
+                            contactBean.setGroup(true);
+                            contactBean.setDes(groupInfo.getGroupDesc());
+                            contactBean.setImg(groupInfo.getIconUrl());
+                            contactBean.setHxId(groupInfo.getGroupId());
+                            conversationScene.add(contactBean);
+                        }
+                        map.put("对话场景",conversationScene);
+                        mContactAdapter.notifyDataSetChanged();
                     }
                 });
 

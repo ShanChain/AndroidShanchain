@@ -2,17 +2,16 @@ package com.shanchain.data.common.rn.modules;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableMap;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.NativePages;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.SCReactActivity;
-import com.shanchain.data.common.rn.utils.ReactArguments;
 
 import org.json.JSONObject;
 
@@ -110,5 +109,36 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         intent.putExtra("title", title);
         intent.putExtra("url", url);
         context.startActivity(intent);
+    }
+
+    @ReactMethod
+    public void Logout(){
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        SCCacheUtils.setCache(userId,"token","");
+        ActivityStackManager.getInstance().appExit();
+    }
+
+    @ReactMethod
+    public void login(){
+        Intent intent = NativePages.buildIntent(NativePages.PAGE_LOGIN);
+        ActivityStackManager.getInstance().finishAllActivity();
+        getReactApplicationContext().startActivity(intent);
+    }
+
+    @ReactMethod
+    public boolean isLogin(){
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        if (TextUtils.isEmpty(userId)) {
+            return false;
+        }
+
+        String token = SCCacheUtils.getCache(userId, "token");
+
+        if (TextUtils.isEmpty(token)){
+            return false;
+        }
+
+        return true;
+
     }
 }

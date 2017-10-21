@@ -12,4 +12,5 @@ public interface CurrentView {
 
     void initSuccess(List<StoryBeanModel> list);
 
+    void supportSuccess(boolean isSuccess);
 }

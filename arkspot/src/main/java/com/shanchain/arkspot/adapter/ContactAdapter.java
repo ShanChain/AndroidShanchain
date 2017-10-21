@@ -8,8 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.arkspot.ui.model.ContactBean;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class ContactAdapter extends BaseExpandableListAdapter {
 
     List<String> parent;
 
-    Map<String, ArrayList<ContactInfo>> map;
+    Map<String, ArrayList<ContactBean>> map;
 
-    public ContactAdapter(List<String> parent, Map<String, ArrayList<ContactInfo>> map) {
+    public ContactAdapter(List<String> parent, Map<String, ArrayList<ContactBean>> map) {
         this.parent = parent;
         this.map = map;
 
@@ -51,7 +52,7 @@ public class ContactAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         String key = parent.get(groupPosition);
-        ContactInfo contactInfo = map.get(key).get(childPosition);
+        ContactBean contactInfo = map.get(key).get(childPosition);
         return contactInfo;
     }
 
@@ -97,8 +98,10 @@ public class ContactAdapter extends BaseExpandableListAdapter {
             holder = (ChildViewHolder) convertView.getTag();
         }
 
-        ContactInfo contactInfo = map.get(this.parent.get(groupPosition)).get(childPosition);
+        ContactBean contactInfo = map.get(this.parent.get(groupPosition)).get(childPosition);
         holder.tvName.setText(contactInfo.getName());
+        holder.tvDes.setText(contactInfo.getDes());
+        GlideUtils.load(convertView.getContext(),contactInfo.getImg(),holder.ivAvatar,R.mipmap.abs_addanewrole_def_photo_default);
 
         if (this.parent.get(groupPosition).equals("我的关注")) {
             Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_selected);

@@ -8,4 +8,5 @@ public interface CurrentPresenter {
 
     void initData(String characterId,int page,int size,String spaceId);
 
+    void storySupport(String storyId);
 }

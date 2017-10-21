@@ -28,5 +28,8 @@
     <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.</string>
     <string name="str_reset_pwd">请输入新密码</string>
     <string name="str_sure">确定</string>
+    <string name="str_friend_home_longtext">长文</string>
+    <string name="str_friend_home_drama">大戏</string>
+    <string name="str_friend_home_conversation">会话</string>
 
 </resources>

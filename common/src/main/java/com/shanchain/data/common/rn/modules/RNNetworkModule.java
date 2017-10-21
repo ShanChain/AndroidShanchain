@@ -70,7 +70,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
 
                 if (method.equalsIgnoreCase("get")) {
                     SCHttpUtils.get()
-                            .url(HttpApi.BSAE_URL + urlPath)
+                            .url(HttpApi.BASE_URL + urlPath)
                             .params(endParams)
                             .build()
                             .execute(new StringCallback() {
@@ -104,7 +104,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             });
                 } else if (method.equalsIgnoreCase("post")) {
                     SCHttpUtils.post()
-                            .url(HttpApi.BSAE_URL + urlPath)
+                            .url(HttpApi.BASE_URL + urlPath)
                             .params(endParams)
                             .build()
                             .execute(new StringCallback() {

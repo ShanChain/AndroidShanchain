@@ -13,8 +13,7 @@ public interface HttpApi {
 
     //全局接口地址
     String TEST_URL = "http://47.91.178.114:8080";
-    String BSAE_URL = "http://47.91.178.114:8080";
-
+    String BASE_URL = "http://47.91.178.114:8080";
     //注册环信聊天用户
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 
@@ -49,10 +48,10 @@ public interface HttpApi {
     String HX_GROUP_REMOVE_ADMIN = BASE_URL_IM + "/hx/group/rmAdmin";
 
     //获取我的关注列表
-    String FOCUS_MY_FOCUS = BASE_URL_ARTSPOT + "/v1/focus/myFocus";
+    String FOCUS_MY_FOCUS = BASE_URL + "/v1/focus/myFocus";
 
     //获取我的粉丝列表
-    String FOCUS_FANS = BASE_URL_ARTSPOT + "/v1/focus/funs";
+    String FOCUS_FANS = BASE_URL + "/v1/focus/funs";
 
     //查找我所在的群
     String GROUP_MY_GROUP = BASE_URL_IM + "/hx/group/myGroup";
@@ -72,7 +71,7 @@ public interface HttpApi {
 
 
     //获取上传图片的信息
-    String UP_LOAD_FILE = TEST_URL + "/v1/upload/app";
+    String UP_LOAD_FILE = "http://115.29.176.143/v1/upload/app";
 
     //查询标签
     String TAG_QUERY = TEST_URL + "/v1/tag/query";
@@ -87,7 +86,7 @@ public interface HttpApi {
     String SPACE_LIST = TEST_URL + "/v1/space/list/spaceId";
 
     //发布动态
-    String STORY_ADD = BASE_URL_ARTSPOT + "/v1/story/add";
+    String STORY_ADD = BASE_URL + "/v1/story/add";
     //第三方登录
     String USER_THIRD_LOGIN = TEST_URL + "/v1/user/third_login";
 
@@ -111,5 +110,14 @@ public interface HttpApi {
 
     //获取故事详情列表
     String STORY_RECOMMEND_DETAIL = TEST_URL + "/v1/recommend/detail";
+
+    //通过角色id查询角色详细信息
+    String CHARACTER_QUERY = BASE_URL + "/v1/character/query";
+
+    //通过世界id查找世界详情
+    String SPACE_LIST_SPACEID = BASE_URL + "/v1/space/list/spaceId";
+
+    //给微博点赞
+    String STORY_SUPPORT_ADD = BASE_URL + "/v1/story/support/add";
 
 }

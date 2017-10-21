@@ -31,7 +31,15 @@ public class SCHttpUtils {
                 .addParams("spaceId",spaceId);
     }
 
-    public static PostFormBuilder postFWhitSpceAndChaId() {
+    public static PostFormBuilder postWithChaId() {
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String characterId = SCCacheUtils.getCache(userId, "characterId");
+        return OkHttpUtils.post()
+                .addParams("characterId", characterId);
+    }
+
+
+    public static PostFormBuilder postWhitSpaceAndChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
@@ -61,7 +69,6 @@ public class SCHttpUtils {
      *  描述：带基础请求参数的post请求
      */
     public static PostFormBuilder postWithParams(){
-
 
         return OkHttpUtils.post()
                 .addParams("AppID", "CHANNEL")          //渠道信息

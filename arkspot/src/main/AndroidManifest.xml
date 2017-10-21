@@ -55,6 +55,10 @@
         </receiver>
 
         <activity android:name=".ui.view.activity.login.LoginActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_login"/>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -180,6 +184,8 @@
         <activity android:name=".ui.view.activity.login.RegisterActivity">
         </activity>
         <activity android:name=".ui.view.activity.login.ResetPwdActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.mine.FriendHomeActivity">
         </activity>
     </application>
 

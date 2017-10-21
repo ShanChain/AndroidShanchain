@@ -10,6 +10,7 @@ import com.shanchain.arkspot.ui.model.StoryListInfo;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.view.fragment.view.AttentionView;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -51,7 +52,30 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.showLog("故事列表数据 = "+response);
                         LogUtils.d("======"+response);
-                        if(!TextUtils.isEmpty(response)){
+
+                        if (TextUtils.isEmpty(response)){
+                            mAttentionView.initSuccess(null);
+                            return;
+                        }
+
+                        StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
+                        if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)){
+                            mAttentionView.initSuccess(null);
+                            return;
+                        }
+
+                        List<StoryListDataBean> storyList = storyListInfo.getData();
+                        List<StoryInfo> storyInfoList = new ArrayList<>();
+                        for (int i = 0; i < storyList.size(); i ++) {
+                            StoryInfo info = new StoryInfo();
+                            info.setStoryListDataBean(storyList.get(i));
+                            int type = storyList.get(i).getType();
+                            info.setItemType(type);
+                            storyInfoList.add(info);
+                        }
+
+                        mAttentionView.initSuccess(storyInfoList);
+                  /*      if(!TextUtils.isEmpty(response)){
                             StoryListInfo storyListInfo = new Gson().fromJson(response, StoryListInfo.class);
                             List<StoryListDataBean> storyList = storyListInfo.getData();
                             List<StoryInfo> storyInfoList = new ArrayList<>();
@@ -65,7 +89,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                             mAttentionView.initSuccess(storyInfoList);
                         }else {
                             mAttentionView.initSuccess(null);
-                        }
+                        }*/
 
 
 
