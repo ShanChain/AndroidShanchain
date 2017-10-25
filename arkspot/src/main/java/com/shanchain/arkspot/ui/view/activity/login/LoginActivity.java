@@ -84,6 +84,7 @@ public class LoginActivity extends BaseActivity {
 
             SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
             SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"9");
+
             hxLogin();
             readyGo(MainActivity.class);
             finish();
@@ -207,7 +208,7 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
+                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"11");
 
                             String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
