@@ -6,19 +6,15 @@ import com.facebook.react.bridge.ModuleSpec;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.module.model.ReactModuleInfoProvider;
-import com.facebook.react.modules.accessibilityinfo.AccessibilityInfoModule;
-import com.facebook.react.modules.vibration.VibrationModule;
-import com.facebook.react.modules.websocket.WebSocketModule;
-import com.facebook.react.shell.MainReactPackage;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.rn.modules.RNCommonCacheHelper;
 import com.shanchain.data.common.rn.modules.RNNetworkModule;
+import com.shanchain.data.common.rn.modules.SCBottomDialogModule;
 import com.shanchain.data.common.rn.modules.SCDialogModule;
 import com.shanchain.data.common.rn.modules.SCToastModule;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +46,14 @@ public class AppReactPackage extends LazyReactPackage {
                 return new NavigatorModule(reactContext);
             }
         }));
+
+        nativeModules.add(new ModuleSpec(SCBottomDialogModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new SCBottomDialogModule(reactContext);
+            }
+        }));
+
         nativeModules.add(new ModuleSpec(SCDialogModule.class, new Provider<NativeModule>() {
             @Override
             public NativeModule get() {

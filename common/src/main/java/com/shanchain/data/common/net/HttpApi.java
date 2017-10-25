@@ -138,5 +138,11 @@ public interface HttpApi {
     
     /** 添加人物模型（添加人物）*/
     String CHARACTER_MODEL_CREATE = BASE_URL + "/v1/character/model/create";
+
+    /** 创建时空*/
+    String SPACE_CREAT = BASE_URL + "/v1/space/create";
+
+    /** 收藏时空 */
+    String SPACE_FAVORITE = BASE_URL + "/v1/space/favorite";
     
 }

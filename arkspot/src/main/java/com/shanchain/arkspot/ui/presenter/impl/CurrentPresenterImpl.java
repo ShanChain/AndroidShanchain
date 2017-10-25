@@ -282,7 +282,6 @@ public class CurrentPresenterImpl implements CurrentPresenter {
             }
         }
 
-
         builderData();
     }
 

@@ -15,10 +15,12 @@ import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ChooseRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.SpaceBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -64,7 +66,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     private SpaceBean mSpaceBean;
     private ChooseRoleAdapter mRoleAdapter;
     private SpaceCharacterModelInfo mSpaceCharacterModelInfo;
-
+    private int selected = -1;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_choose_role;
@@ -134,6 +136,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void setRoleInfo(int position) {
+        selected = position;
         Glide.with(this).load(datas.get(position).getHeadImg()).into(mIvChooseRoleSelect);
         mTvChooseRoleName.setText(datas.get(position).getName());
     }
@@ -147,21 +150,56 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_choose_role_collect:
-
+                //收藏或取消收藏
+                collectSpace();
                 break;
             case R.id.iv_choose_role_select:
-                if (mSpaceCharacterModelInfo != null&& TextUtils.equals(mSpaceCharacterModelInfo.getCode(),NetErrCode.COMMON_SUC_CODE)){
+                if (mSpaceCharacterModelInfo != null && TextUtils.equals(mSpaceCharacterModelInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
                     Intent intent = new Intent(this, SearchRoleActivity.class);
                     intent.putExtra("spaceInfo", mSpaceCharacterModelInfo);
+                    intent.putExtra("spaceId", mSpaceBean.getSpaceId());
                     startActivity(intent);
                 }
                 break;
             case R.id.btn_choose_role:
-
+                //切换角色
+                switchRole();
                 break;
             default:
                 break;
         }
+    }
+
+    private void switchRole() {
+        if (selected == -1){
+            ToastUtils.showToast(mContext,"选一个你喜欢的角色吧~");
+            return;
+        }
+
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String cacheSpaceId = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_ID);
+
+    }
+
+    //收藏时空
+    private void collectSpace() {
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.SPACE_FAVORITE)
+                .addParams("spaceId",mSpaceBean.getSpaceId() +"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("收藏时空失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("收藏时空成功" + response);
+                        ToastUtils.showToast(mContext,"收藏成功");
+                    }
+                });
     }
 
     @Override

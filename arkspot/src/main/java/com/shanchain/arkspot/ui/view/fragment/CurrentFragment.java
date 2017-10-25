@@ -135,6 +135,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickForwarding(int position) {
         ToastUtils.showToast(mActivity, "转发");
+
+
     }
 
     /**

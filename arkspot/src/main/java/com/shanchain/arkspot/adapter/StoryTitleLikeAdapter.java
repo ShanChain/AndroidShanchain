@@ -21,7 +21,7 @@ public class StoryTitleLikeAdapter extends BaseQuickAdapter<SpaceBean,BaseViewHo
 
     @Override
     protected void convert(BaseViewHolder helper, SpaceBean item) {
-        helper.setText(R.id.tv_item_story_like,item.getIntro());
+        helper.setText(R.id.tv_item_story_like,item.getName());
         /*Glide.with(mContext)
                 .load(item.getBgPic())
                 .into((ImageView) helper.getView(R.id.iv_item_head_like));*/

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -21,6 +22,7 @@ import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.rn.fragment.RNfragment;
+import com.shanchain.arkspot.ui.model.RNGDataBean;
 import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.FindSceneActivity;
@@ -36,6 +38,7 @@ import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.LogUtils;
 
 import butterknife.Bind;
 
@@ -60,6 +63,22 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         Intent intent = getIntent();
         mFragmentId = intent.getIntExtra("fragmentId", 0);
+
+        String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
+        String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
+        String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
+
+        RNGDataBean rngDataBean = new RNGDataBean();
+        rngDataBean.setUserId(uId);
+        rngDataBean.setToken(token);
+        rngDataBean.setSpaceId(spaceId);
+        rngDataBean.setCharacterId(characterId);
+        String jsonGData = JSON.toJSONString(rngDataBean);
+        SCCacheUtils.setCache(uId,Constants.CACHE_GDATA,jsonGData);
+        String cacheGData = SCCacheUtils.getCache(uId, Constants.CACHE_GDATA);
+        LogUtils.i("缓存的gdata = " + cacheGData);
+
 
         initToolBar();
         initBottomNavigationBar();

@@ -7,5 +7,4 @@ package com.shanchain.arkspot.ui.model;
 public class MyCommentsInfo {
 
 
-
 }

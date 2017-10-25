@@ -43,6 +43,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
     private List<SpaceCharacterBean> show = new ArrayList<>();
     private SearchRoleAdapter mSearchRoleAdapter;
     private SpaceCharacterModelInfo mSpaceInfo;
+    private int mSpaceId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -51,7 +52,9 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
-        mSpaceInfo = (SpaceCharacterModelInfo) getIntent().getSerializableExtra("spaceInfo");
+        Intent intent = getIntent();
+        mSpaceInfo = (SpaceCharacterModelInfo) intent.getSerializableExtra("spaceInfo");
+        mSpaceId = intent.getIntExtra("spaceId", 0);
         mDatas = mSpaceInfo.getData();
         show.addAll(mDatas);
         initToolBar();
@@ -142,9 +145,8 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRightClick(View v) {
-        int spaceId = mSpaceInfo.getData().get(0).getSpaceId();
         Intent intent = new Intent(mContext,AddRoleActivity.class);
-        intent.putExtra("spaceId",spaceId);
+        intent.putExtra("spaceId",mSpaceId);
         startActivity(intent);
     }
 }

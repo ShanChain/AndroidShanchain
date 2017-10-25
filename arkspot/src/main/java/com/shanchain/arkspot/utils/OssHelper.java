@@ -31,7 +31,7 @@ import java.util.List;
 public class OssHelper {
     public static final String OSS_ENDPOINT = "oss-cn-hongkong.aliyuncs.com";
     public static final String OSS_BUCKET = "shanchain-seller";
-    public static final String OSS_HOST = "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com";
+    public static final String OSS_HOST = "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/";
     private OSS oss;
 
     public OssHelper(Context context, String accessKeyId, String accessKeySecret, String securityToken){
@@ -128,18 +128,10 @@ public class OssHelper {
         this.mListener = listener;
     }
 
-    /**
-     *  描述：上传回调
-     *
-     */
     public interface OnUploadListener{
         void upLoadSuccess(boolean isSuccess);
     }
 
-    /**
-     *  描述：拼接图片url
-     *
-     */
     public String getImgUrl(String imgName){
         return OSS_HOST + imgName + ".jpg";
     }

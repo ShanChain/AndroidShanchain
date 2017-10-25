@@ -84,10 +84,7 @@ public class LoginActivity extends BaseActivity {
 
             SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
             SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"9");
-            obtainDetailInfo();
-
             hxLogin();
-
             readyGo(MainActivity.class);
             finish();
         }
@@ -214,8 +211,7 @@ public class LoginActivity extends BaseActivity {
 
                             String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
-                            readyGo(MainActivity.class);
-                            finish();
+                            obtainDetailInfo();
                         }
                     }
                 });
@@ -280,6 +276,8 @@ public class LoginActivity extends BaseActivity {
                             + ";\r\n openId = " + openId
                             + ";\r\n headImageUrlLarge = " + headImageUrlLarge
                             + ";\r\n accessToken = " + accessToken);
+                    break;
+                default:
                     break;
             }
 
@@ -353,8 +351,7 @@ public class LoginActivity extends BaseActivity {
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
                                      SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
                                      obtainDetailInfo();
-                                     readyGo(MainActivity.class);
-                                     finish();
+
                                  } else {
                                      LogUtils.e("登录返回数据为空");
                                  }
@@ -407,6 +404,9 @@ public class LoginActivity extends BaseActivity {
                         String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
 
                         LogUtils.d("缓存的spaceInfo = "+spaceInfo);
+
+                        readyGo(MainActivity.class);
+                        finish();
 
                     }
                 });
