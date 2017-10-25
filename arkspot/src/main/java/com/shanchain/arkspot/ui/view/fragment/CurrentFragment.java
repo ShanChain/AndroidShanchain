@@ -14,6 +14,7 @@ import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
+import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
@@ -30,7 +31,7 @@ import butterknife.Bind;
  * Created by zhoujian on 2017/8/23.
  */
 
-public class CurrentFragment extends BaseFragment implements CurrentView, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener {
+public class CurrentFragment extends BaseFragment implements CurrentView, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener {
 
     @Bind(R.id.rv_story_current)
     RecyclerView mRvStoryCurrent;
@@ -51,8 +52,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mSrlStoryCurrent.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlStoryCurrent.setRefreshing(true);
         mCurrentPresenter = new CurrentPresenterImpl(this);
-        String characterId = "12";
-        mCurrentPresenter.initData(characterId, 0, 100, "16");
+        mCurrentPresenter.initData(0, 100);
 
         initRecyclerView();
 
@@ -65,7 +65,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mAdapter = new CurrentAdapter(datas);
         mRvStoryCurrent.setAdapter(mAdapter);
         mAdapter.setOnItemChildClickListener(this);
-
+        mAdapter.setOnItemClickListener(this);
     }
 
 
@@ -76,6 +76,9 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
             return;
         } else {
+
+            //测试阶段
+            datas.clear();
 
             datas.addAll(list);
             mAdapter.notifyDataSetChanged();
@@ -92,13 +95,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     @Override
     public void onRefresh() {
-        mSrlStoryCurrent.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSrlStoryCurrent.setRefreshing(false);
-                mAdapter.notifyDataSetChanged();
-            }
-        }, 1000);
+        mCurrentPresenter.refreshData(0, 100);
     }
 
     @Override
@@ -127,7 +124,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickAvatar(int position) {
         ToastUtils.showToast(mActivity, "头像");
-        startActivity(new Intent(mActivity, FriendHomeActivity.class));
+        Intent intent = new Intent(mActivity, FriendHomeActivity.class);
+        int userId = datas.get(position).getStoryModel().getModelInfo().getCharacterBrief().getCharacterId();
+        intent.putExtra("characterId",userId);
+        startActivity(intent);
     }
 
     /**
@@ -141,7 +141,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-
+        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+        StoryBeanModel beanModel = datas.get(position);
+        intent.putExtra("story",beanModel);
+        startActivity(intent);
     }
 
     /**
@@ -200,4 +203,11 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         shieldingDialog.show();
     }
 
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+        StoryBeanModel beanModel = datas.get(position);
+        intent.putExtra("story",beanModel);
+        startActivity(intent);
+    }
 }

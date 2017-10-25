@@ -14,11 +14,14 @@ import android.widget.TextView;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.rn.fragment.RNfragment;
+import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.FindSceneActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.MeetPersonActivity;
@@ -30,7 +33,7 @@ import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.RNPagesConstant;
-import com.shanchain.data.common.cache.CommonCacheHelper;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 
@@ -97,6 +100,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     case 3:
                         setFragment(3);
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -114,6 +119,10 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         setSelectedPager();
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
     }
 
     private StoryFragment mStoryFragment;
@@ -160,6 +169,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         fragmentTransaction.show(mMineFragment);
                     }
                     break;
+                default:
+                    break;
             }
 
             fragmentTransaction.commit();
@@ -202,18 +213,28 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 setFragment(3);
                 setToolBar(mFragmentId);
                 break;
+            default:
+                break;
         }
     }
 
     private void setToolBar(int position) {
+
+        String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String spaceInfo = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_INFO);
+        SpaceDetailInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceDetailInfo.class);
+        String name = spaceDetailInfo.getName();
+
+        mTbMain.setTitleText(name);
+        TextView titleStory = mTbMain.getTitleView();
+        Drawable drawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        titleStory.setCompoundDrawables(null, null, drawable, null);
+        titleStory.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
+
         switch (position) {
             case 0:
-                mTbMain.setTitleText(navigationBarTitles[position]);
-                TextView titleStory = mTbMain.getTitleView();
-                Drawable drawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
-                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                titleStory.setCompoundDrawables(null, null, drawable, null);
-                titleStory.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
+
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_dynamic_default);
                 mTbMain.setOnTitleClickListener(this);
                 mTbMain.setBtnEnabled(false, true);
@@ -221,21 +242,21 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 1:
-                mTbMain.setTitleText(navigationBarTitles[position]);
-                TextView titleNews = mTbMain.getTitleView();
-                titleNews.setCompoundDrawables(null, null, null, null);
+//                mTbMain.setTitleText(navigationBarTitles[position]);
+//                TextView titleNews = mTbMain.getTitleView();
+//                titleNews.setCompoundDrawables(null, null, null, null);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 2:
-                TextView squareTitle = mTbMain.getTitleView();
-                Drawable moreDrawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
-                moreDrawable.setBounds(0, 0, moreDrawable.getMinimumWidth(), moreDrawable.getMinimumHeight());
-                squareTitle.setCompoundDrawables(null, null, moreDrawable, null);
-                squareTitle.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
-                mTbMain.setTitleText(navigationBarTitles[position]);
+//                TextView squareTitle = mTbMain.getTitleView();
+//                Drawable moreDrawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
+//                moreDrawable.setBounds(0, 0, moreDrawable.getMinimumWidth(), moreDrawable.getMinimumHeight());
+//                squareTitle.setCompoundDrawables(null, null, moreDrawable, null);
+//                squareTitle.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
+//                mTbMain.setTitleText(navigationBarTitles[position]);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 mTbMain.setOnTitleClickListener(this);
                 mTbMain.setBtnVisibility(false, true);
@@ -243,13 +264,15 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
-                mTbMain.setTitleText(navigationBarTitles[position]);
-                TextView titleMine = mTbMain.getTitleView();
-                titleMine.setCompoundDrawables(null, null, null, null);
+//                mTbMain.setTitleText(navigationBarTitles[position]);
+//                TextView titleMine = mTbMain.getTitleView();
+//                titleMine.setCompoundDrawables(null, null, null, null);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_comment_default);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setOnRightClickListener(this);
+                break;
+            default:
                 break;
         }
     }
@@ -269,6 +292,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 break;
             case 3:
                 notifyRightClick();
+                break;
+            default:
                 break;
         }
     }
@@ -307,6 +332,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
+                    default:
+                        break;
                 }
 
             }
@@ -337,6 +364,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     case R.id.tv_dialog_msg_cancel:
                         customDialog.dismiss();
                         break;
+                    default:
+                        break;
                 }
 
             }
@@ -355,27 +384,35 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 break;
             case 3:
                 break;
+            default:
+                break;
         }
     }
 
     @Override
     public void onTitleClick(View v) {
+
+        Intent intent = new Intent(this, StoryTitleActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
+
         switch (mFragmentId) {
             case 0:
-                Intent intent = new Intent(this, StoryTitleActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
+//                Intent intent = new Intent(this, StoryTitleActivity.class);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 1:
-                CommonCacheHelper.getInstance().getCache("0","appName");
-                CommonCacheHelper.getInstance().setCache("0","appName","arkspot");
+
                 break;
             case 2:
-                Intent squareIntent = new Intent(this, StoryTitleActivity.class);
-                startActivity(squareIntent);
-                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
+//                Intent squareIntent = new Intent(this, StoryTitleActivity.class);
+//                startActivity(squareIntent);
+//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 3:
+                break;
+            default:
                 break;
         }
     }

@@ -151,6 +151,8 @@ public class LoginActivity extends BaseActivity {
                 //qq登录
                 LoginUtil.login(this, LoginPlatform.QQ, listener, true);
                 break;
+            default:
+                break;
         }
     }
 

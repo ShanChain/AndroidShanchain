@@ -24,6 +24,10 @@ public class SCHttpUtils {
         return OkHttpUtils.post();
     }
 
+    /**
+     *  描述：带当前时空id的post请求
+     *
+     */
     public static PostFormBuilder postWithSpaceId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
@@ -31,6 +35,10 @@ public class SCHttpUtils {
                 .addParams("spaceId",spaceId);
     }
 
+    /**
+     *  描述：带当前角色id的post请求
+     *
+     */
     public static PostFormBuilder postWithChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
@@ -39,6 +47,10 @@ public class SCHttpUtils {
     }
 
 
+    /**
+     *  描述：带当前时空id和当前角色id的post请求
+     *
+     */
     public static PostFormBuilder postWhitSpaceAndChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
@@ -47,6 +59,16 @@ public class SCHttpUtils {
         return OkHttpUtils.post()
                 .addParams("spaceId",spaceId)
                 .addParams("characterId",characterId);
+    }
+
+    /**
+     *  描述：带userid的post请求
+     *
+     */
+    public static PostFormBuilder postWithUserId(){
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        return OkHttpUtils.post()
+                .addParams("userId",userId);
     }
 
     /**

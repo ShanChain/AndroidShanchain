@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,11 +16,25 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.CharacterModel;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
+import com.shanchain.arkspot.ui.model.TagContentBean;
+import com.shanchain.arkspot.ui.model.TagInfo;
+import com.shanchain.arkspot.ui.model.UpLoadImgBean;
+import com.shanchain.arkspot.utils.OssHelper;
+import com.shanchain.arkspot.utils.SCImageUtils;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +42,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
+import okhttp3.Call;
 
 
 public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -49,12 +61,14 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
     EditText mEtAddRoleNick;
     @Bind(R.id.et_add_role_introduce)
     EditText mEtAddRoleIntroduce;
-    private List<StoryTagInfo> mDatas;
+    private List<StoryTagInfo> mDatas = new ArrayList<>();
     private AddRoleAdapter mAddRoleAdapter;
 
     private List<StoryTagInfo> selectedData;
     private String mImgPath = "";
-    private boolean mIsRole;
+    private int mSpaceId;
+    private String mNick;
+    private String mIntro;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -63,22 +77,53 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     protected void initViewsAndEvents() {
+        Intent intent = getIntent();
+        mSpaceId = intent.getIntExtra("spaceId", 0);
         initToolBar();
         initRecyclerView();
+        initData();
+    }
+
+    private void initData() {
+        SCHttpUtils.post()
+                .url(HttpApi.TAG_QUERY)
+                .addParams("type", "model")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取模型标签失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取模型标签成功 = " + response);
+                        TagInfo tagInfo = new Gson().fromJson(response, TagInfo.class);
+                        String code = tagInfo.getCode();
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            List<TagContentBean> tagContentBeanList = tagInfo.getData().getContent();
+                            int size = tagContentBeanList.size() >= 12 ? 12 : tagContentBeanList.size();
+                            for (int i = 0; i < size; i++) {
+                                StoryTagInfo storyTagInfo = new StoryTagInfo();
+                                storyTagInfo.setTag(tagContentBeanList.get(i).getTagName());
+                                storyTagInfo.setTagBean(tagContentBeanList.get(i));
+                                mDatas.add(storyTagInfo);
+                            }
+                            mAddRoleAdapter.notifyDataSetChanged();
+                        } else {
+                            ToastUtils.showToast(mContext, "获取模型标签失败！");
+                        }
+
+
+                    }
+                });
     }
 
     private void initRecyclerView() {
         selectedData = new ArrayList<>();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         mRvAddRole.setLayoutManager(layoutManager);
-        mDatas = new ArrayList<>();
-        String[] tags = {"原创", "历史", "动漫", "游戏", "武侠", "科幻", "玄幻", "悬疑", "小说", "影视", "体育", "校园"};
-        for (int i = 0; i < tags.length; i++) {
-            StoryTagInfo tagInfo = new StoryTagInfo();
-            tagInfo.setTag(tags[i]);
-            tagInfo.setSelected(false);
-            mDatas.add(tagInfo);
-        }
         mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mDatas);
         mRvAddRole.setAdapter(mAddRoleAdapter);
         mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -117,6 +162,8 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                 break;
             case R.id.iv_add_role_img:
                 selectImg();
+                break;
+            default:
                 break;
         }
     }
@@ -218,16 +265,163 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     public void onRightClick(View v) {
-        showLoadingDialog();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                closeLoadingDialog();
-                Intent intent = new Intent(AddRoleActivity.this,AddResultActivity.class);
-                intent.putExtra("isRole",true);
-                startActivity(intent);
-            }
-        }, 2000);
+        addNewRole();
+
 
     }
+
+    private void addNewRole() {
+
+
+        mNick = mEtAddRoleNick.getText().toString().trim();
+        mIntro = mEtAddRoleIntroduce.getText().toString().trim();
+        if (TextUtils.isEmpty(mNick)) {
+            ToastUtils.showToast(mContext, "角色昵称不能为空哦~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mIntro)) {
+            ToastUtils.showToast(mContext, "多少写点角色介绍呗~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mImgPath)) {
+            ToastUtils.showToast(mContext, "角色要有一个属于自己的画像哦~");
+            return;
+        }
+
+        uploadImg();
+
+
+    }
+
+    private void uploadImg() {
+        showLoadingDialog();
+
+        SCHttpUtils.post()
+                .url(HttpApi.UP_LOAD_FILE)
+                .addParams("num", 1 + "")
+                .build()
+                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        closeLoadingDialog();
+                        ToastUtils.showToast(mContext,"上传头像失败");
+                        LogUtils.i("创建角色获取图片名失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(UpLoadImgBean response, int id) {
+                        LogUtils.i("创建角色获取图片名成功 = " + response);
+
+                        if (response != null) {
+                            final String fileName = response.getUuidList().get(0);
+                            String accessKeyId = response.getAccessKeyId();
+                            String accessKeySecret = response.getAccessKeySecret();
+                            String securityToken = response.getSecurityToken();
+
+                            final OssHelper ossHelper = new OssHelper(mContext, accessKeyId, accessKeySecret, securityToken);
+                            ossHelper.setOnUploadListener(new OssHelper.OnUploadListener() {
+                                @Override
+                                public void upLoadSuccess(boolean isSuccess) {
+                                    if (isSuccess) {
+                                        LogUtils.i("oss上传成功");
+                                        String imgUrl = ossHelper.getImgUrl(fileName);
+                                        commitData(imgUrl);
+
+                                    } else {
+                                        closeLoadingDialog();
+                                        ToastUtils.showToast(mContext,"上传头像失败");
+                                        LogUtils.i("oss上传失败");
+                                    }
+                                }
+                            });
+
+                            List<String> objKeys = new ArrayList<>();
+                            objKeys.add(fileName);
+                            List<String> paths = new ArrayList<>();
+                            paths.add(mImgPath);
+                            List<String> comPaths = SCImageUtils.compressImages(mContext, paths);
+                            ossHelper.ossUpload(comPaths, objKeys);
+
+                        } else {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"上传头像失败");
+                            LogUtils.i("=====code不对？=====");
+                        }
+                    }
+                });
+    }
+
+
+    private void commitData(String imgUrl) {
+
+        CharacterModel model = new CharacterModel();
+        model.setName(mNick);
+        model.setIntro(mIntro);
+        model.setHeadImg(imgUrl);
+        Gson gson = new Gson();
+        String data = gson.toJson(model);
+        if (selectedData != null && selectedData.size() != 0) {
+
+            List<Integer> jArray = new ArrayList<>();
+            for (int i = 0; i < selectedData.size(); i++) {
+                int tagId = selectedData.get(i).getTagBean().getTagId();
+                jArray.add(tagId);
+            }
+            String jArr = new Gson().toJson(jArray);
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.CHARACTER_MODEL_CREATE)
+                    .addParams("dataString", data)
+                    .addParams("jArray", jArr)
+                    .addParams("spaceId", mSpaceId + "")
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加角色失败");
+                            LogUtils.i("创建人物模型失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加角色成功");
+                            LogUtils.i("创建人物模型成功 = " + response);
+                            finish();
+                        }
+                    });
+
+        } else {
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.CHARACTER_MODEL_CREATE)
+                    .addParams("dataString", data)
+                    .addParams("spaceId", mSpaceId + "")
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加角色失败");
+                            LogUtils.i("创建人物模型失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加角色成功");
+                            LogUtils.i("创建人物模型成功 = " + response);
+                            finish();
+                        }
+                    });
+        }
+
+    }
+
+
 }

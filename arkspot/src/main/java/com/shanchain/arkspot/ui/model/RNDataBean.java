@@ -6,7 +6,7 @@ import java.util.List;
  * Created by zhoujian on 2017/10/21.
  */
 
-public class RNTopicDataBean {
+public class RNDataBean {
 
     /**
      * updateTime : 1508297253000
@@ -34,7 +34,7 @@ public class RNTopicDataBean {
     private String background;
     private int readNum;
     private int characterId;
-    private List<?> tagMap;
+    private List<TagContentBean> tagMap;
 
 
     public String getUpdateTime() {
@@ -125,11 +125,11 @@ public class RNTopicDataBean {
         this.characterId = characterId;
     }
 
-    public List<?> getTagMap() {
+    public List<TagContentBean> getTagMap() {
         return tagMap;
     }
 
-    public void setTagMap(List<?> tagMap) {
+    public void setTagMap(List<TagContentBean> tagMap) {
         this.tagMap = tagMap;
     }
 }

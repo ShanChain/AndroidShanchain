@@ -83,6 +83,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/tv_choose_role_detail"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_12"
                 android:text="《三体》是刘慈欣创造的系列长篇科幻小说，由《三体》《三 体|| 黑暗森林》《三体||| 死神永生》组成。作品讲述了地球人类 文明和三体文明的信息交流、生死搏杀及两个文明在宇宙中的 兴衰历程。其第一部经过刘雨昆翻译后获得了第73届雨果奖最 佳长篇小说奖。"
@@ -104,18 +105,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"/>
 
-            <de.hdodenhof.circleimageview.CircleImageView
+
+
+            <RelativeLayout
                 android:layout_marginTop="@dimen/dimens_20dp"
-                android:id="@+id/iv_choose_role_select"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                android:src="@drawable/photo_yue"
-                android:layout_width="50dp"
-                android:layout_height="50dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/tv_choose_role_def"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:textColor="@color/colorActive"
+                    android:textSize="@dimen/sp_12"
+                    android:background="@drawable/shape_bg_choose_role"
+                    android:text="我穿越"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_choose_role_select"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+            </RelativeLayout>
 
             <TextView
+
                 android:id="@+id/tv_choose_role_name"
-                android:text="花千骨"
                 android:layout_marginTop="@dimen/dimens_10dp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/colorTextDefault"

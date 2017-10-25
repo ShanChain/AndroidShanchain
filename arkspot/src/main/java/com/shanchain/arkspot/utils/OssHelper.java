@@ -128,12 +128,20 @@ public class OssHelper {
         this.mListener = listener;
     }
 
+    /**
+     *  描述：上传回调
+     *
+     */
     public interface OnUploadListener{
         void upLoadSuccess(boolean isSuccess);
     }
 
+    /**
+     *  描述：拼接图片url
+     *
+     */
     public String getImgUrl(String imgName){
-        return "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/" + imgName + ".jpg";
+        return OSS_HOST + imgName + ".jpg";
     }
 
 }

@@ -1,12 +1,13 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by zhoujian on 2017/10/16.
  */
 
-public class FavoriteSpaceBean {
+public class FavoriteSpaceBean implements Serializable{
 
     /**
      * spaceId : 2

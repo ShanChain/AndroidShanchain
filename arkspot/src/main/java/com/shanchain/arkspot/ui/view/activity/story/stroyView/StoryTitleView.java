@@ -1,6 +1,5 @@
 package com.shanchain.arkspot.ui.view.activity.story.stroyView;
 
-import com.shanchain.arkspot.ui.model.FavoriteSpaceBean;
 import com.shanchain.arkspot.ui.model.SpaceBean;
 import com.shanchain.arkspot.ui.model.TagContentBean;
 
@@ -16,6 +15,6 @@ public interface StoryTitleView {
 
     void getSpaceListSuccess(List<SpaceBean> spaceBeanList );
 
-    void getMyFavoriteSuccess(List<FavoriteSpaceBean> favoriteSpaceList);
+    void getMyFavoriteSuccess(List<SpaceBean> favoriteSpaceList);
 
 }

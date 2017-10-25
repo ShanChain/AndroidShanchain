@@ -1,5 +1,7 @@
 package com.shanchain.arkspot.ui.view.activity.story;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -8,12 +10,20 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SearchRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.RoleInfo;
+import com.shanchain.arkspot.global.Constants;
+import com.shanchain.arkspot.ui.model.RNDetailExt;
+import com.shanchain.arkspot.ui.model.RNGDataBean;
+import com.shanchain.arkspot.ui.model.SpaceCharacterBean;
+import com.shanchain.arkspot.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +39,10 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
     EditText mEtSearchRoleSearch;
     @Bind(R.id.rv_search_role)
     RecyclerView mRvSearchRole;
-    private List<RoleInfo> datas;
-    private List<RoleInfo> show;
+    private List<SpaceCharacterBean> mDatas = new ArrayList<>();
+    private List<SpaceCharacterBean> show = new ArrayList<>();
     private SearchRoleAdapter mSearchRoleAdapter;
+    private SpaceCharacterModelInfo mSpaceInfo;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -40,6 +51,9 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
+        mSpaceInfo = (SpaceCharacterModelInfo) getIntent().getSerializableExtra("spaceInfo");
+        mDatas = mSpaceInfo.getData();
+        show.addAll(mDatas);
         initToolBar();
         initData();
         initRecyclerView();
@@ -57,9 +71,9 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String input = s.toString();
                 show.clear();
-                for (int i = 0; i < datas.size(); i ++) {
-                    if (datas.get(i).getName().contains(input)){
-                        show.add(datas.get(i));
+                for (int i = 0; i < mDatas.size(); i ++) {
+                    if (mDatas.get(i).getName().contains(input)||mDatas.get(i).getIntro().contains(input)){
+                        show.add(mDatas.get(i));
                     }else {
 
                     }
@@ -76,34 +90,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initData() {
-        datas = new ArrayList<>();
-        show = new ArrayList<>();
-        for (int i = 0; i < 32; i ++) {
-            RoleInfo roleInfo = new RoleInfo();
-            if (i % 5== 0) {
-                roleInfo.setImg(R.drawable.photo_city);
-                roleInfo.setName("特朗普" + i);
-                roleInfo.setDes("庄颜，中国科幻小说《三体|| 黑暗森林》中的人 物。“她”是逻辑构思的小说的主人公，是.....");
-            }else if (i%5 == 1) {
-                roleInfo.setImg(R.drawable.photo_bear);
-                roleInfo.setName("庄周" + i);
-                roleInfo.setDes("一壶浊酒喜相逢，古今多少事，都付笑谈中。");
-            }else if (i%5 == 2) {
-                roleInfo.setImg(R.drawable.photo_heart);
-                roleInfo.setName("逗比" + i);
-                roleInfo.setDes("不是每个逗比斗很逗。。。");
-            }else if (i%5 == 3) {
-                roleInfo.setImg(R.drawable.photo_public);
-                roleInfo.setName("曾小贤" + i);
-                roleInfo.setDes("就这些吧，没啥介绍的了");
-            }else if (i%5 == 4) {
-                roleInfo.setImg(R.drawable.photo_yue);
-                roleInfo.setName("曹操" + i);
-                roleInfo.setDes("一壶浊酒喜相逢，古今多少事，都付笑谈中。");
-            }
-            datas.add(roleInfo);
-        }
-        show.addAll(datas);
+
     }
 
     private void initRecyclerView() {
@@ -118,7 +105,25 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         mSearchRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                
+                Bundle bundle = new Bundle();
+
+                RNDetailExt detailExt = new RNDetailExt();
+                RNGDataBean gDataBean = new RNGDataBean();
+                String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+                String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
+                String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
+                String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
+                gDataBean.setCharacterId(characterId);
+                gDataBean.setSpaceId(spaceId);
+                gDataBean.setToken(token);
+                gDataBean.setUserId(uId);
+                detailExt.setgData(gDataBean);
+                detailExt.setModelId(show.get(position).getModelId() + "");
+
+                String json = new Gson().toJson(detailExt);
+
+                bundle.putString(NavigatorModule.REACT_PROPS, json);
+                NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
             }
         });
 
@@ -137,6 +142,9 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRightClick(View v) {
-        readyGo(AddRoleActivity.class);
+        int spaceId = mSpaceInfo.getData().get(0).getSpaceId();
+        Intent intent = new Intent(mContext,AddRoleActivity.class);
+        intent.putExtra("spaceId",spaceId);
+        startActivity(intent);
     }
 }
