@@ -44,6 +44,7 @@ public interface Constants {
         String CACHE_CHARACTER_ID = "characterId";
         String CACHE_SPACE_INFO = "spaceInfo";
         String CACHE_CHARACTER_INFO = "characterInfo";
+        String CACHE_GLOBAL_DATA = "gData";
 
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;
