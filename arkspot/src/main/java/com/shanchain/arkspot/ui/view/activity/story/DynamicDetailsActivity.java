@@ -3,6 +3,7 @@ package com.shanchain.arkspot.ui.view.activity.story;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,24 +18,41 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicCommentAdapter;
 import com.shanchain.arkspot.adapter.StoryItemNineAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.CommentInfo;
-import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.CommentBean;
+import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
+import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
+import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
+import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
 
@@ -46,9 +64,11 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     TextView mTvDynamicDetailsComment;
     @Bind(R.id.ll_dynamic_details)
     LinearLayout mLlDynamicDetails;
-    private List<CommentInfo> datas;
+    private List<CommentBean> datas = new ArrayList<>();
     private DynamicCommentAdapter mDynamicCommentAdapter;
     private View mHeadView;
+    private StoryBeanModel mBeanModel;
+    private StoryModelBean mBean;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -58,7 +78,12 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     @Override
     protected void initViewsAndEvents() {
 
-        StoryInfo info = (StoryInfo) getIntent().getSerializableExtra("info");
+        mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
+        if (mBeanModel == null) {
+            finish();
+        } else {
+            mBean = mBeanModel.getStoryModel().getModelInfo().getBean();
+        }
 
         initToolBar();
         initData();
@@ -66,21 +91,34 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void initData() {
-        datas = new ArrayList<>();
+        datas.clear();
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.COMMENT_QUERY)
+                .addParams("storyId", mBean.getDetailId().substring(1))
+                .addParams("sort", "createTime")
+                .addParams("page", "0")
+                .addParams("size", "100")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取评论列表失败");
+                        e.printStackTrace();
+                    }
 
-        for (int i = 0; i < 28; i++) {
-            CommentInfo commentInfo = new CommentInfo();
-            if (i % 3 == 0) {
-                commentInfo.setComment("重要的不是这件事情的真相，而是你对这件事情的态度 而已重要的不是这件事情的真相，，而是你对这件事情的态度 而已重要的不是这件事情的真相，而是你对这件事情的态度 而已");
-            } else {
-                commentInfo.setComment("重要的不是这件事情的真相你对这件事情的态度....");
-            }
-            commentInfo.setCounts(i * 2);
-            commentInfo.setLike(i % 3 == 0 ? true : false);
-            commentInfo.setTime(i + "分钟前");
-            datas.add(commentInfo);
-        }
-
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取评论列表成功 = " + response);
+                        ResponseCommentInfo responseCommentInfo = new Gson().fromJson(response, ResponseCommentInfo.class);
+                        if (!TextUtils.equals(responseCommentInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                            return;
+                        }
+                        List<CommentBean> commentBeanList = responseCommentInfo.getData();
+                        LogUtils.i("评论数量 = " + commentBeanList.size());
+                        datas.addAll(commentBeanList);
+                        mDynamicCommentAdapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     private void initRecyclerView() {
@@ -95,8 +133,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
                     case R.id.tv_item_comment_like:
-                        boolean like = datas.get(position).isLike();
-                        datas.get(position).setLike(!like);
                         mDynamicCommentAdapter.notifyDataSetChanged();
                         break;
                 }
@@ -110,7 +146,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         ImageView ivMore = (ImageView) mHeadView.findViewById(R.id.iv_item_story_more);
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
-        TextView tvFrom = (TextView) mHeadView.findViewById(R.id.tv_item_story_from);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
         TextView tvExpend = (TextView) mHeadView.findViewById(R.id.tv_head_comment_expend);
 
@@ -119,13 +154,50 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
 
-        StoryItemNineAdapter ngivAdapter = new StoryItemNineAdapter();
-        nineGridImageView.setAdapter(ngivAdapter);
-        List<Integer> imgs = new ArrayList();
-        imgs.add(R.drawable.photo_city);
-        imgs.add(R.drawable.photo_bear);
-        imgs.add(R.drawable.photo_yue);
-        nineGridImageView.setImagesData(imgs);
+        String headUrl = "";
+        String name = "没有名字";
+        ResponseCharacterBrief characterBrief = mBeanModel.getStoryModel().getModelInfo().getCharacterBrief();
+        if (characterBrief != null) {
+            headUrl = characterBrief.getHeadImg();
+            name = characterBrief.getName();
+        }
+        GlideUtils.load(mContext, headUrl, ivAvatar, 0);
+        tvName.setText(name);
+        tvTime.setText(DateUtils.formatFriendly(new Date(mBean.getCreateTime())));
+        tvForwarding.setText(mBean.getTranspond() + "");
+        tvHeadLike.setText(mBean.getSupportCount() + "");
+        tvHeadComment.setText(mBean.getCommendCount() + "");
+        int isFav = mBean.getIsFav();
+        Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+        Drawable like_selected = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+
+        like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
+        like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
+
+        tvHeadLike.setCompoundDrawables(isFav == 1 ? like_selected : like_def, null, null, null);
+        tvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
+
+        String intro = mBean.getIntro();
+        String content = "";
+        List<String> imgList = new ArrayList<>();
+        if (intro.contains("content")) {
+            ReleaseContentInfo contentInfo = new Gson().fromJson(intro, ReleaseContentInfo.class);
+            content = contentInfo.getContent();
+            imgList = contentInfo.getImgs();
+        } else {
+            content = intro;
+        }
+
+        tvContent.setText(content);
+        if (imgList.size() == 0) {
+            nineGridImageView.setVisibility(View.GONE);
+        } else {
+            nineGridImageView.setVisibility(View.VISIBLE);
+            StoryItemNineAdapter adapter = new StoryItemNineAdapter();
+            nineGridImageView.setAdapter(adapter);
+            nineGridImageView.setImagesData(imgList);
+        }
+
 
         ivAvatar.setOnClickListener(this);
         tvForwarding.setOnClickListener(this);
@@ -134,7 +206,15 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         ivMore.setVisibility(View.GONE);
 
         //根据是否是长文来控制是否显示展开，是长文显示，不是则不显示
-        tvExpend.setVisibility(View.GONE);
+        int type = mBean.getType();
+        if (type == 2) { //是长文
+            tvExpend.setVisibility(View.VISIBLE);
+        } else {
+            tvExpend.setVisibility(View.GONE);
+        }
+
+        tvExpend.setOnClickListener(this);
+
     }
 
     private void initToolBar() {
@@ -205,7 +285,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_item_story_avatar:
-                ToastUtils.showToast(this, "头像");
+                int characterId = mBean.getCharacterId();
+                Intent intentAvatar = new Intent(mContext, FriendHomeActivity.class);
+                intentAvatar.putExtra("characterId", characterId);
+                startActivity(intentAvatar);
                 break;
             case R.id.tv_item_story_forwarding:
 
@@ -216,6 +299,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 break;
             case R.id.tv_item_story_like:
                 ToastUtils.showToast(this, "喜欢");
+                break;
+            case R.id.tv_head_comment_expend:
+                //跳到阅读模式
+
                 break;
         }
     }
@@ -248,11 +335,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             @Override
             public void onClick(View v) {
                 String comment = mEtPopComment.getText().toString();
-                if (TextUtils.isEmpty(comment)){
+                if (TextUtils.isEmpty(comment)) {
+                    ToastUtils.showToast(DynamicDetailsActivity.this, "不能提交空评论哦~");
                     return;
                 }
 
-                ToastUtils.showToast(DynamicDetailsActivity.this,comment);
+
+                addComment(comment);
+
                 pop.dismiss();
             }
         });
@@ -260,34 +350,63 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         mIvPopCommentAt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this,"艾特");
+                ToastUtils.showToast(DynamicDetailsActivity.this, "艾特");
             }
         });
 
         mIvPopCommentFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this,"小尾巴");
+                ToastUtils.showToast(DynamicDetailsActivity.this, "小尾巴");
             }
         });
 
         mIvPopCommentTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this,"话题");
+                ToastUtils.showToast(DynamicDetailsActivity.this, "话题");
             }
         });
         pop.setTouchable(true);
         pop.setOutsideTouchable(true);
         pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));
-        pop.showAtLocation(mLlDynamicDetails,0,0, Gravity.BOTTOM);
+        pop.showAtLocation(mLlDynamicDetails, 0, 0, Gravity.BOTTOM);
+    }
+
+    private void addComment(String comment) {
+
+        String dataString = "{\"content\": \"" + comment + "\",\"isAnon\":0}";
+
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_COMMENT_ADD)
+                .addParams("dataString", dataString)
+                .addParams("storyId", mBean.getDetailId().substring(1))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("添加评论失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("添加评论成功 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            initData();
+                        } else {
+                            ToastUtils.showToast(mContext, "评论失败~");
+                        }
+                    }
+                });
     }
 
     private void popupInputMethodWindow() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Service.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }, 0);

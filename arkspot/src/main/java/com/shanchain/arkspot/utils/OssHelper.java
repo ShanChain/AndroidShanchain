@@ -31,7 +31,7 @@ import java.util.List;
 public class OssHelper {
     public static final String OSS_ENDPOINT = "oss-cn-hongkong.aliyuncs.com";
     public static final String OSS_BUCKET = "shanchain-seller";
-    public static final String OSS_HOST = "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com";
+    public static final String OSS_HOST = "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/";
     private OSS oss;
 
     public OssHelper(Context context, String accessKeyId, String accessKeySecret, String securityToken){
@@ -133,7 +133,7 @@ public class OssHelper {
     }
 
     public String getImgUrl(String imgName){
-        return "http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/" + imgName + ".jpg";
+        return OSS_HOST + imgName + ".jpg";
     }
 
 }

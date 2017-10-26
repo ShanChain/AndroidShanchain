@@ -91,7 +91,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             jsonObject = new JSONObject();
         }
         try{
-            jsonObject.put("flyye","sjjds");
             Bundle bundle = new Bundle();
             bundle.putString(REACT_PROPS, jsonObject.toString());
             startReactPage(context, screen, bundle);

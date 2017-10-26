@@ -9,58 +9,58 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="190dp">
-        
+
         <ImageView
             android:id="@+id/iv_friend_home_bg"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_city"
             android:layout_width="match_parent"
-            android:layout_height="170dp"/>
-        
+            android:layout_height="170dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/photo_city"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_friend_home_head"
-            android:src="@drawable/photo_yue"
-            android:scaleType="centerCrop"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dimens_20dp"
-            app:civ_border_width="2dp"
+            android:scaleType="centerCrop"
             app:civ_border_color="@color/colorWhite"
-            android:layout_width="70dp"
-            android:layout_height="70dp"/>
+            app:civ_border_width="2dp"/>
 
         <TextView
             android:id="@+id/tv_friend_home_name"
-            android:layout_marginTop="95dp"
-            android:text="汪淼（No.35）"
-            android:textColor="@color/colorWhite"
-            android:textSize="18sp"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="95dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/tv_friend_home_des"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_12"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="125dp"
-            android:text="人类不需要三体，人类不需要ETO!"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:layout_marginTop="125dp"
+            android:lines="1"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_12"/>
 
         <Button
-            android:textColor="@color/colorTextDefault"
-            android:textSize="14sp"
             android:id="@+id/btn_friend_home_focus"
-            android:elevation="20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/shape_btn_focus"
-            android:layout_marginBottom="2dp"
-            android:text="关注TA"
             android:layout_width="100dp"
-            android:layout_height="36dp"/>
-        
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/shape_btn_focus"
+            android:elevation="20dp"
+            android:text="关注TA"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp"/>
+
     </RelativeLayout>
 
     <LinearLayout

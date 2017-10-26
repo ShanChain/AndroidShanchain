@@ -83,11 +83,9 @@ public class LoginActivity extends BaseActivity {
         if (!TextUtils.isEmpty(userId)){
 
             SCCacheUtils.setCache(userId+"",Constants.CACHE_SPACE_ID,"16");
-            SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"11");
-            obtainDetailInfo();
+            SCCacheUtils.setCache(userId+"",Constants.CACHE_CHARACTER_ID,"9");
 
             hxLogin();
-
             readyGo(MainActivity.class);
             finish();
         }
@@ -151,6 +149,8 @@ public class LoginActivity extends BaseActivity {
                 //qq登录
                 LoginUtil.login(this, LoginPlatform.QQ, listener, true);
                 break;
+            default:
+                break;
         }
     }
 
@@ -208,17 +208,16 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"11");
+                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
                             JSONObject gData = new JSONObject();
                             gData.put("userId",userId);
                             gData.put("token",token);
                             gData.put("spaceId",16);
                             gData.put("characterId","11");
-                            SCCacheUtils.setCache("0", Constants.CACHE_GLOBAL_DATA,gData.toString());
+                            SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
                             String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
-                            readyGo(MainActivity.class);
-                            finish();
+                            obtainDetailInfo();
                         }
                     }
                 });
@@ -283,6 +282,8 @@ public class LoginActivity extends BaseActivity {
                             + ";\r\n openId = " + openId
                             + ";\r\n headImageUrlLarge = " + headImageUrlLarge
                             + ";\r\n accessToken = " + accessToken);
+                    break;
+                default:
                     break;
             }
 
@@ -354,10 +355,9 @@ public class LoginActivity extends BaseActivity {
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                                     SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"11");
+                                     SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
                                      obtainDetailInfo();
-                                     readyGo(MainActivity.class);
-                                     finish();
+
                                  } else {
                                      LogUtils.e("登录返回数据为空");
                                  }
@@ -410,6 +410,9 @@ public class LoginActivity extends BaseActivity {
                         String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
 
                         LogUtils.d("缓存的spaceInfo = "+spaceInfo);
+
+                        readyGo(MainActivity.class);
+                        finish();
 
                     }
                 });

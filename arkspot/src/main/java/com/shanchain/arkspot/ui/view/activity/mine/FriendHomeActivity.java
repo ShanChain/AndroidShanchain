@@ -12,13 +12,20 @@ import android.widget.TextView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.FriendDetailInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import okhttp3.Call;
 
 
 public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnClickListener {
@@ -38,6 +45,8 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private TextView mTvDrama;
     private TextView mTvConversation;
     private TextView mTvLongtext;
+    private int mCharacterId;
+    private FriendDetailInfo mFriendDetailInfo;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -46,8 +55,41 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
+        mCharacterId = getIntent().getIntExtra("characterId", 0);
         initToolBar();
+        initData();
         initRecyclerView();
+
+    }
+
+    private void initData() {
+        SCHttpUtils.post()
+                .url(HttpApi.CHARACTER_QUERY)
+                .addParams("characterId",mCharacterId + "")
+                .build()
+                .execute(new SCHttpCallBack<FriendDetailInfo>(FriendDetailInfo.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(FriendDetailInfo response, int id) {
+                        if (response != null){
+                            mFriendDetailInfo = response;
+                            fillData();
+                        }else {
+                            ToastUtils.showToast(mContext,"获取角色信息失败");
+                        }
+
+                    }
+                });
+    }
+
+    private void fillData() {
+        GlideUtils.load(mContext,mFriendDetailInfo.getHeadImg(),mIvHead,0);
+        mTvName.setText(mFriendDetailInfo.getName() + "(No." + mFriendDetailInfo.getModelNo() + ")");
+        mTvDes.setText(mFriendDetailInfo.getSignature());
     }
 
     private void initRecyclerView() {
@@ -56,7 +98,6 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         mAdapter = new CurrentAdapter(datas);
         mAdapter.setHeaderView(mHeadView);
         mRvFriendHome.setAdapter(mAdapter);
-
 
 
     }
@@ -71,6 +112,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         mTvDrama = (TextView) mHeadView.findViewById(R.id.tv_friend_home_drama);
         mTvConversation = (TextView) mHeadView.findViewById(R.id.tv_friend_home_conversation);
         mTvLongtext = (TextView) mHeadView.findViewById(R.id.tv_friend_home_long);
+
 
         mTvConversation.setOnClickListener(this);
         mTvDrama.setOnClickListener(this);
@@ -92,15 +134,19 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_friend_home_focus:
+                //关注
 
                 break;
             case R.id.tv_friend_home_drama:
+                //大戏
 
                 break;
             case R.id.tv_friend_home_conversation:
+                //发起对话
 
                 break;
             case R.id.tv_friend_home_long:
+                //长文
 
                 break;
 

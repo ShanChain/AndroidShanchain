@@ -19,5 +19,5 @@ public class RNPagesConstant {
     public static final String SpaceIntroScreen = "SpaceIntroScreen";//广场背景图册列表
     public static final String MyNovelsScreen = "MyNovelsScreen";//广场背景图册列表
     public static final String NotificationScreen = "NotificationScreen";//通知和管理
-
+    public static final String RoleDetailScreen = "RoleDetailScreen";//角色详情
 }

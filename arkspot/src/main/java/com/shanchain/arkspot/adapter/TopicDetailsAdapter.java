@@ -33,12 +33,14 @@ public class TopicDetailsAdapter extends BaseQuickAdapter<StoryInfo,BaseViewHold
 
         helper.setText(R.id.tv_item_story_time,item.getTime());
 
+
+
         NineGridImageView ngiv = helper.getView(R.id.ngiv_item_story);
         StoryItemNineAdapter itemNineAdapter = new StoryItemNineAdapter();
         ngiv.setAdapter(itemNineAdapter);
         List<String> imgs = new ArrayList();
-        imgs.add("https://s-media-cache-ak0.pinimg.com/736x/41/47/ff/4147ff1464ce4fd64d88e7f3f345d6d4.jpg");
-        imgs.add("https://s-media-cache-ak0.pinimg.com/236x/0b/fd/9a/0bfd9af8525ec09263e0ffda06f85c84.jpg");
+        imgs.add("http://upload.newhua.com/2012/0113/1326421398485.jpg");
+        imgs.add("http://pic.wenwen.soso.com/p/20080111/20080111184508-1879665860.jpg");
         ngiv.setImagesData(imgs);
 
     }

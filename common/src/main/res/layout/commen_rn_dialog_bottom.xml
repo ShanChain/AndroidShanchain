@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorTransparent"
+              android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_dialog_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_bottom_dialog_3_top"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:background="@drawable/shape_bg_dialog_top"
+            android:gravity="center"
+            android:text="3上"
+            android:textColor="@color/colorDialogBtn"
+            android:textSize="20sp"/>
+
+        <View
+            style="@style/style_text_line_match"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_10dp"/>
+
+        <TextView
+            android:id="@+id/tv_bottom_dialog_3_mid"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:text="3中"
+            android:textColor="@color/colorDialogBtn"
+            android:textSize="20sp"/>
+
+        <View
+            style="@style/style_text_line_match"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_10dp"/>
+
+        <TextView
+            android:id="@+id/tv_bottom_dialog_3_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:background="@drawable/shape_bg_dialog_bottom"
+            android:gravity="center"
+            android:text="3下"
+            android:textColor="@color/colorDialogBtn"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+
+
+
+    <TextView
+        android:id="@+id/tv_bottom_dialog_top"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="扫码"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tv_bottom_dialog_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+</LinearLayout>

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.shanchain.arkspot.R;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 
@@ -20,8 +19,6 @@ public class ImagePagerAdapter extends PagerAdapter {
 
     private ArrayList<String> mArrayList;
 
-    private int[] images = {R.drawable.photo_yue,R.drawable.photo_water,R.drawable.photo_public,R.drawable.photo_heart,
-    R.drawable.photo_city,R.drawable.photo_bear};
 
     public ImagePagerAdapter(ArrayList<String> arrayList) {
         mArrayList = arrayList;
@@ -46,13 +43,14 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imageView = new ImageView(container.getContext());
         LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+
         layoutParams.leftMargin = DensityUtils.dip2px(container.getContext(),DensityUtils.dip2px(container.getContext(),15));
         layoutParams.rightMargin = DensityUtils.dip2px(container.getContext(),DensityUtils.dip2px(container.getContext(),15));
         imageView.setLayoutParams(layoutParams);
 
-        GlideUtils.load(container.getContext(),mArrayList.get(position),imageView,R.mipmap.abs_addanewrole_def_photo_default);
+        GlideUtils.load(container.getContext(),mArrayList.get(position),imageView,0);
         container.addView(imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

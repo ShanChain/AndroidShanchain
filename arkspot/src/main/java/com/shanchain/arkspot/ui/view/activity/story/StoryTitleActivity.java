@@ -14,19 +14,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleLikeAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleStagAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.FavoriteSpaceBean;
+import com.shanchain.arkspot.global.Constants;
 import com.shanchain.arkspot.ui.model.SpaceBean;
+import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;
 import com.shanchain.arkspot.ui.presenter.StoryTitlePresenter;
 import com.shanchain.arkspot.ui.presenter.impl.StoryTitlePresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.StoryTitleView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
@@ -47,11 +50,9 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     ArthurToolBar mTbStoryTitle;
     private RecyclerView mRvLike;
     private RecyclerView mRvTag;
-    private String[] mTags = new String[]{"原创","历史","动漫","游戏","小说","影视","娱乐圈","古风","现代"
-            ,"耽美","百合","商界","体育","校园","玄幻","奇幻","武侠","仙侠","科幻","更多"};
     private List<StoryTagInfo> mTagDatas = new ArrayList<>();
     private List<SpaceBean> mStagDatas = new ArrayList<>();
-    List<FavoriteSpaceBean> likeDatas = new ArrayList<>();
+    private List<SpaceBean> likeDatas = new ArrayList<>();
     private View mHeadView;
     private StoryTitleStagAdapter mStagAdapter;
     private AddRoleAdapter mAddRoleAdapter;
@@ -76,7 +77,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         String userId = "12";
         mStoryTitlePresenter.initData(userId);
 
-
     }
 
     private void initRecyclerView() {
@@ -100,11 +100,11 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(StoryTitleActivity.this,ChooseRoleActivity.class);
+                SpaceBean spaceBean = mStagDatas.get(position);
+                intent.putExtra("spaceInfo",spaceBean);
                 startActivity(intent);
             }
         });
-
-
 
         mRvStoryTitle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -133,7 +133,15 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
         mStoryTitleLikeAdapter = new StoryTitleLikeAdapter(R.layout.item_head_like,likeDatas);
         mRvLike.setAdapter(mStoryTitleLikeAdapter);
-
+        mStoryTitleLikeAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                SpaceBean spaceBean = likeDatas.get(position);
+                Intent intent = new Intent(mContext,ChooseRoleActivity.class);
+                intent.putExtra("spaceInfo",spaceBean);
+                startActivity(intent);
+            }
+        });
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,4);
         mRvTag.setLayoutManager(gridLayoutManager);
@@ -156,6 +164,12 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initToolBar() {
+
+        String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String spaceInfo = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_INFO);
+        SpaceDetailInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceDetailInfo.class);
+        String name = spaceDetailInfo.getName();
+        mTbStoryTitle.setTitleText(name);
         mTbStoryTitle.setBtnEnabled(false,true);
         TextView titleView = mTbStoryTitle.getTitleView();
         Drawable drawable = getResources().getDrawable(R.mipmap.abs_therrbody_btn_putaway_default);
@@ -215,7 +229,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
-    public void getMyFavoriteSuccess(List<FavoriteSpaceBean> favoriteSpaceList) {
+    public void getMyFavoriteSuccess(List<SpaceBean> favoriteSpaceList) {
         if (favoriteSpaceList == null){
             hideFavoriteLayout();
             return;

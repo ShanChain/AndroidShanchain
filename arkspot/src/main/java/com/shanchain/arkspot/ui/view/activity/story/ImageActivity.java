@@ -27,7 +27,6 @@ public class ImageActivity extends BaseActivity {
     protected void initViewsAndEvents() {
         Intent intent = getIntent();
         int index = intent.getIntExtra("index", 0);
-        //ArrayList<String> arrayList = intent.getStringArrayListExtra("arrayList");
         ArrayList<String> arrayList = intent.getStringArrayListExtra("arrayList");
         ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(arrayList);
         mVpImages.setAdapter(imagePagerAdapter);

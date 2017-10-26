@@ -1,26 +1,28 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by zhoujian on 2017/10/13.
  */
 
-public class SpaceBean {
+public class SpaceBean implements Serializable{
+
     /**
-     * spaceId : 2
-     * name : 夏商周
-     * slogan : 文明的少年时代
-     * intro : 夏商周三代英雄辈出，文明的基因逐渐形成
-     * disc : 我的
-     * bgPic : http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/cf174fdcc3d147d29ac253f3634a8230.jpg
-     * status : 0
+     * spaceId : 32
+     * name : 韩娱专区
+     * slogan : 这里是韩星们的家！
+     * intro : 今天开始我可以爱你么，第一次清楚地感觉不想放弃，爱情似乎要降临，我永远要给你最好地，我可以爱你么？
+     * disc :
+     * background : http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/c3a695931ee14c7eb2186feace30d8b6.jpg
+     * status : 1
      * createBy : 1
-     * createTime : 1505876061000
-     * updateTime : 1507620140000
-     * characterModelNum : 0
-     * favoriteNum : 3
-     * tagMap : []
+     * createTime : 1505897091000
+     * updateTime : 1507959637000
+     * characterModelNum : 12
+     * favoriteNum : 2
+     * tagMap : [{"tagId":31,"tagName":"娱乐圈","rate":0}]
      */
 
     private int spaceId;
@@ -28,14 +30,14 @@ public class SpaceBean {
     private String slogan;
     private String intro;
     private String disc;
-    private String bgPic;
+    private String background;
     private int status;
     private int createBy;
     private long createTime;
     private long updateTime;
     private int characterModelNum;
     private int favoriteNum;
-    private List<?> tagMap;
+    private List<TagContentBean> tagMap;
 
     public int getSpaceId() {
         return spaceId;
@@ -77,12 +79,12 @@ public class SpaceBean {
         this.disc = disc;
     }
 
-    public String getBgPic() {
-        return bgPic;
+    public String getBackground() {
+        return background;
     }
 
-    public void setBgPic(String bgPic) {
-        this.bgPic = bgPic;
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public int getStatus() {
@@ -133,11 +135,11 @@ public class SpaceBean {
         this.favoriteNum = favoriteNum;
     }
 
-    public List<?> getTagMap() {
+    public List<TagContentBean> getTagMap() {
         return tagMap;
     }
 
-    public void setTagMap(List<String> tagMap) {
+    public void setTagMap(List<TagContentBean> tagMap) {
         this.tagMap = tagMap;
     }
 }

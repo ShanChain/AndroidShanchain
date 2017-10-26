@@ -4,11 +4,11 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.SpaceBean;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.List;
 
@@ -23,13 +23,12 @@ public class StoryTitleStagAdapter extends BaseQuickAdapter<SpaceBean,BaseViewHo
 
     @Override
     protected void convert(BaseViewHolder helper, SpaceBean item) {
-        Glide.with(mContext)
-                .load(item.getBgPic())
-                .into((ImageView) helper.getView(R.id.iv_item_head_stag));
 
-        helper.setText(R.id.tv_item_head_stag_title,item.getIntro());
+        GlideUtils.load(mContext,item.getBackground(),(ImageView) helper.getView(R.id.iv_item_head_stag),0);
 
-        helper.setText(R.id.tv_item_head_stag_des,item.getDisc());
+        helper.setText(R.id.tv_item_head_stag_title,item.getName());
+
+        helper.setText(R.id.tv_item_head_stag_des,item.getSlogan());
 
     }
 }

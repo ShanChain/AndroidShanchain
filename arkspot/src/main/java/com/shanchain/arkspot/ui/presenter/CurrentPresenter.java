@@ -6,7 +6,9 @@ package com.shanchain.arkspot.ui.presenter;
 
 public interface CurrentPresenter {
 
-    void initData(String characterId,int page,int size,String spaceId);
+    void initData(int page,int size);
 
     void storySupport(String storyId);
+
+    void refreshData(int page , int size);
 }

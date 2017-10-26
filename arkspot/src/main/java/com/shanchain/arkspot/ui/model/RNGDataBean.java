@@ -4,7 +4,7 @@ package com.shanchain.arkspot.ui.model;
  * Created by zhoujian on 2017/10/21.
  */
 
-public class RNTopicGDataBean {
+public class RNGDataBean {
 
     /**
      * userId : 25

@@ -1,13 +1,24 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
+
 /**
  * Created by zhoujian on 2017/10/18.
  */
 
-public class StoryModelInfo {
+public class StoryModelInfo implements Serializable{
 
     private String storyId;
     private StoryModelBean mBean;
+    private ResponseCharacterBrief mCharacterBrief;
+
+    public ResponseCharacterBrief getCharacterBrief() {
+        return mCharacterBrief;
+    }
+
+    public void setCharacterBrief(ResponseCharacterBrief characterBrief) {
+        mCharacterBrief = characterBrief;
+    }
 
     public String getStoryId() {
         return storyId;

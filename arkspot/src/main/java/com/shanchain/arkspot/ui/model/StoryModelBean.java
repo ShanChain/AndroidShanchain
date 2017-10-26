@@ -1,10 +1,12 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
+
 /**
  * Created by zhoujian on 2017/10/18.
  */
 
-public class StoryModelBean {
+public class StoryModelBean implements Serializable{
 
     /**
      * characterImg :

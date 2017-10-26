@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.TopicDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.RNTopicDetailExt;
+import com.shanchain.arkspot.ui.model.RNDetailExt;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
@@ -47,7 +47,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     protected void initViewsAndEvents() {
 
         String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
-        RNTopicDetailExt rnTopicDetailExt = new Gson().fromJson(rnExtra, RNTopicDetailExt.class);
+        RNDetailExt rnTopicDetailExt = new Gson().fromJson(rnExtra, RNDetailExt.class);
         String spaceId = rnTopicDetailExt.getgData().getSpaceId();
         LogUtils.i("spaceId  = "+spaceId);
 

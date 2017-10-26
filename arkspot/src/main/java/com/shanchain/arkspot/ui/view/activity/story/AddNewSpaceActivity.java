@@ -14,13 +14,30 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.global.Constants;
+import com.shanchain.arkspot.ui.model.SpaceModel;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
+import com.shanchain.arkspot.ui.model.TagContentBean;
+import com.shanchain.arkspot.ui.model.TagInfo;
+import com.shanchain.arkspot.ui.model.UpLoadImgBean;
+import com.shanchain.arkspot.utils.OssHelper;
+import com.shanchain.arkspot.utils.SCImageUtils;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +45,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
+import okhttp3.Call;
 
 public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
@@ -50,11 +66,14 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
     @Bind(R.id.et_add_space_introduce)
     EditText mEtAddSpaceIntroduce;
 
-    private List<StoryTagInfo> mDatas;
+    private List<StoryTagInfo> mDatas = new ArrayList<>();
     private AddRoleAdapter mAddRoleAdapter;
 
-    private List<StoryTagInfo> selectedData;
+    private List<StoryTagInfo> selectedData = new ArrayList<>();
     private String mImgPath;
+    private String mSpaceName;
+    private String mSlogan;
+    private String mIntro;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -65,20 +84,48 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
     protected void initViewsAndEvents() {
         initToolBar();
         initRecyclerView();
+        initData();
+    }
+
+    private void initData() {
+        SCHttpUtils.post()
+                .url(HttpApi.TAG_QUERY)
+                .addParams("type", "space")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取模型标签失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取模型标签成功 = " + response);
+                        TagInfo tagInfo = new Gson().fromJson(response, TagInfo.class);
+                        String code = tagInfo.getCode();
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            List<TagContentBean> tagContentBeanList = tagInfo.getData().getContent();
+                            int size = tagContentBeanList.size() >= 12 ? 12 : tagContentBeanList.size();
+                            for (int i = 0; i < size; i++) {
+                                StoryTagInfo storyTagInfo = new StoryTagInfo();
+                                storyTagInfo.setTag(tagContentBeanList.get(i).getTagName());
+                                storyTagInfo.setTagBean(tagContentBeanList.get(i));
+                                mDatas.add(storyTagInfo);
+                            }
+                            mAddRoleAdapter.notifyDataSetChanged();
+                        } else {
+                            ToastUtils.showToast(mContext, "获取模型标签失败！");
+                        }
+
+
+                    }
+                });
     }
 
     private void initRecyclerView() {
-        selectedData = new ArrayList<>();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         mRvAddNewSpace.setLayoutManager(layoutManager);
-        mDatas = new ArrayList<>();
-        String[] tags = {"原创", "历史", "动漫", "游戏", "武侠", "科幻", "玄幻", "悬疑", "小说", "影视", "体育", "校园"};
-        for (int i = 0; i < tags.length; i++) {
-            StoryTagInfo tagInfo = new StoryTagInfo();
-            tagInfo.setTag(tags[i]);
-            tagInfo.setSelected(false);
-            mDatas.add(tagInfo);
-        }
         mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mDatas);
         mRvAddNewSpace.setAdapter(mAddRoleAdapter);
         mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -116,6 +163,8 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                 break;
             case R.id.iv_add_space_img:
                 selectImg();
+                break;
+            default:
                 break;
         }
     }
@@ -211,13 +260,167 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
 
     @Override
     public void onRightClick(View v) {
-        Intent intent = new Intent(this,AddResultActivity.class);
-        intent.putExtra("isRole",false);
-        startActivity(intent);
+        mSpaceName = mEtAddSpaceNick.getText().toString().trim();
+        mSlogan = mEtAddSpaceSlogan.getText().toString().trim();
+        mIntro = mEtAddSpaceIntroduce.getText().toString().trim();
+
+        if (TextUtils.isEmpty(mSpaceName)){
+            ToastUtils.showToast(mContext,"世界名不能为空哦~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mSlogan)){
+            ToastUtils.showToast(mContext,"给你创造的世界加个口号吧~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mIntro)){
+            ToastUtils.showToast(mContext,"简单介绍下你创造的世界吧~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mImgPath)){
+            ToastUtils.showToast(mContext,"快去给你创造的世界添加一张背景图片吧~");
+            return;
+        }
+
+        upLoad();
     }
+
+    private void upLoad() {
+        showLoadingDialog();
+
+        SCHttpUtils.post()
+                .url(HttpApi.UP_LOAD_FILE)
+                .addParams("num", 1 + "")
+                .build()
+                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        closeLoadingDialog();
+                        ToastUtils.showToast(mContext,"上传头像失败");
+                        LogUtils.i("创建时空获取图片名失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(UpLoadImgBean response, int id) {
+                        LogUtils.i("创建时空获取图片名成功 = " + response);
+
+                        if (response != null) {
+                            final String fileName = response.getUuidList().get(0);
+                            String accessKeyId = response.getAccessKeyId();
+                            String accessKeySecret = response.getAccessKeySecret();
+                            String securityToken = response.getSecurityToken();
+
+                            final OssHelper ossHelper = new OssHelper(mContext, accessKeyId, accessKeySecret, securityToken);
+                            ossHelper.setOnUploadListener(new OssHelper.OnUploadListener() {
+                                @Override
+                                public void upLoadSuccess(boolean isSuccess) {
+                                    if (isSuccess) {
+                                        LogUtils.i("oss上传成功");
+                                        String imgUrl = ossHelper.getImgUrl(fileName);
+                                        commitData(imgUrl);
+
+                                    } else {
+                                        closeLoadingDialog();
+                                        ToastUtils.showToast(mContext,"上传时空背景失败");
+                                        LogUtils.i("oss上传失败");
+                                    }
+                                }
+                            });
+
+                            List<String> objKeys = new ArrayList<>();
+                            objKeys.add(fileName);
+                            List<String> paths = new ArrayList<>();
+                            paths.add(mImgPath);
+                            List<String> comPaths = SCImageUtils.compressImages(mContext, paths);
+                            ossHelper.ossUpload(comPaths, objKeys);
+
+                        } else {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"上传时空背景失败");
+                            LogUtils.i("=====code不对？=====");
+                        }
+                    }
+                });
+
+    }
+
+
+    private void commitData(String imgUrl) {
+
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SpaceModel spaceModel = new SpaceModel();
+        spaceModel.setUserId(userId);
+        spaceModel.setIntro(mIntro);
+        spaceModel.setBackground(imgUrl);
+        spaceModel.setSlogan(mSlogan);
+        spaceModel.setName(mSpaceName);
+        String data = JSON.toJSONString(spaceModel);
+
+        if (selectedData != null && selectedData.size() != 0) {
+
+            List<Integer> jArray = new ArrayList<>();
+            for (int i = 0; i < selectedData.size(); i++) {
+                int tagId = selectedData.get(i).getTagBean().getTagId();
+                jArray.add(tagId);
+            }
+            String jArr = new Gson().toJson(jArray);
+            SCHttpUtils.post()
+                    .url(HttpApi.SPACE_CREAT)
+                    .addParams("dataString", data)
+                    .addParams("jArray", jArr)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加时空失败");
+                            LogUtils.i("创建时空模型失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加时空成功");
+                            LogUtils.i("创建时空模型成功 = " + response);
+                            finish();
+                        }
+                    });
+
+        } else {
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.SPACE_CREAT)
+                    .addParams("dataString", data)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加时空失败");
+                            LogUtils.i("创建时空模型失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            closeLoadingDialog();
+                            ToastUtils.showToast(mContext,"添加时空成功");
+                            LogUtils.i("创建时空模型成功 = " + response);
+                            finish();
+                        }
+                    });
+        }
+
+    }
+
 
     @Override
     public void onLeftClick(View v) {
         finish();
     }
+
 }

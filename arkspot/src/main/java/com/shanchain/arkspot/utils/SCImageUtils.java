@@ -1,13 +1,19 @@
 package com.shanchain.arkspot.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.shanchain.data.common.utils.LogUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhoujian on 2017/10/20.
@@ -134,5 +140,40 @@ public class SCImageUtils {
         FileOutputStream os = new FileOutputStream(outPath);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
     }
+
+
+    /**
+     *  描述： 压缩图片
+     */
+    public static List<String> compressImages(Context context, List<String> imgPaths)  {
+        List<String> compressImgPaths = new ArrayList<>();
+
+        for (int i = 0; i < imgPaths.size(); i ++) {
+
+            String imgPath = imgPaths.get(i);
+            File file = new File(imgPath);
+            long length = file.length();
+            LogUtils.d(i + "压缩前图片大小 = " + length);
+
+            Bitmap bitmap = SCImageUtils.getimage(imgPath);
+
+            File filesDir = context.getFilesDir();
+            long curTime = System.currentTimeMillis();
+            String path = filesDir.getPath() + curTime + i;
+            try {
+                SCImageUtils.storeImage(bitmap,path);
+                compressImgPaths.add(path);
+                File file1 = new File(path);
+                LogUtils.d(i + "压缩后图片大小 = " + file1.length());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                LogUtils.d("压缩图片错误");
+            }
+
+        }
+        return compressImgPaths;
+
+    }
+
 
 }

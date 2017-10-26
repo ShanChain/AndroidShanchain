@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
+import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModel;
@@ -36,18 +37,29 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
 
     public CurrentAdapter(List<StoryBeanModel> data) {
         super(data);
-        addItemType(StoryInfo.type1, R.layout.item_story_type3);
-        addItemType(StoryInfo.type2, R.layout.item_story_type2);
-        addItemType(StoryInfo.type3, R.layout.item_story_type4);
+        addItemType(StoryBeanModel.type1, R.layout.item_story_type3);
+        addItemType(StoryBeanModel.type2, R.layout.item_story_type2);
+        addItemType(StoryBeanModel.type3, R.layout.item_story_type4);
         gson = new Gson();
     }
 
     @Override
     protected void convert(BaseViewHolder holder, StoryBeanModel item) {
         StoryModel storyModel = item.getStoryModel();
-        holder.setText(R.id.tv_item_story_name, storyModel.getModelInfo().getBean().getCharacterId() + "");
+        ResponseCharacterBrief characterBrief = storyModel.getModelInfo().getCharacterBrief();
+
+        String headUrl = "";
+        String name = "没有名字";
+        if (characterBrief != null){
+            headUrl = characterBrief.getHeadImg();
+            name = characterBrief.getName();
+        }
+
+
+        holder.setText(R.id.tv_item_story_name, name);
         ImageView ivHeadImg = holder.getView(R.id.iv_item_story_avatar);
-        GlideUtils.load(mContext, storyModel.getModelInfo().getBean().getImg(), ivHeadImg, R.mipmap.abs_addanewrole_def_photo_default);
+
+        GlideUtils.load(mContext, headUrl, ivHeadImg, R.mipmap.abs_addanewrole_def_photo_default);
         String time = DateUtils.formatFriendly(new Date(storyModel.getModelInfo().getBean().getCreateTime()));
         holder.setText(R.id.tv_item_story_time, time);
         holder.setText(R.id.tv_item_story_comment, storyModel.getModelInfo().getBean().getCommendCount() + "");

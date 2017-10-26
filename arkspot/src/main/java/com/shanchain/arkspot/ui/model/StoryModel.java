@@ -1,12 +1,13 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by zhoujian on 2017/10/18.
  */
 
-public class StoryModel {
+public class StoryModel implements Serializable{
 
     private StoryModelInfo modelInfo;
     private List<StoryModelInfo> storyChain;

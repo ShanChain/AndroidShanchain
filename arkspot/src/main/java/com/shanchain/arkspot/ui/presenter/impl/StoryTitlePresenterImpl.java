@@ -1,8 +1,6 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
 import com.google.gson.Gson;
-import com.shanchain.arkspot.ui.model.FavoriteSpaceBean;
-import com.shanchain.arkspot.ui.model.FavoriteSpaceInfo;
 import com.shanchain.arkspot.ui.model.SpaceBean;
 import com.shanchain.arkspot.ui.model.SpaceListInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;
@@ -79,6 +77,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     }
                 });
 
+        //收藏的时空
         SCHttpUtils.post()
                 .url(HttpApi.SPACE_LIST_FAVORITE)
                 .addParams("userId", userId)
@@ -94,9 +93,9 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.d("获取的我收藏的时空数据" + response);
-                        FavoriteSpaceInfo favoriteSpaceInfo = new Gson().fromJson(response, FavoriteSpaceInfo.class);
-                        LogUtils.d("我收藏的 = " + favoriteSpaceInfo.toString());
-                        List<FavoriteSpaceBean> favoriteSpaceList = favoriteSpaceInfo.getData();
+                        SpaceListInfo spaceListInfo = new Gson().fromJson(response, SpaceListInfo.class);
+                        LogUtils.d("我收藏的 = " + spaceListInfo.toString());
+                        List<SpaceBean> favoriteSpaceList = spaceListInfo.getData();
 
                         mStoryTitleView.getMyFavoriteSuccess(favoriteSpaceList);
                     }
