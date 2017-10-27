@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.google.gson.Gson;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ReleaseStoryContentInfo;
 import com.shanchain.arkspot.ui.model.UpLoadImgBean;

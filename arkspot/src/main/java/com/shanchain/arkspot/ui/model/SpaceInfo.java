@@ -7,7 +7,7 @@ import java.util.List;
  * Created by zhoujian on 2017/10/13.
  */
 
-public class SpaceBean implements Serializable{
+public class SpaceInfo implements Serializable{
 
     /**
      * spaceId : 32

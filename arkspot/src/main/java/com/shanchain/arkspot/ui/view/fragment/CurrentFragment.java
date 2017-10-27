@@ -154,7 +154,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickLike(int position) {
         String storyId = datas.get(position).getStoryModel().getModelInfo().getBean().getDetailId();
-        mCurrentPresenter.storySupport(storyId);
+        mCurrentPresenter.storySupport(storyId.substring(1));
     }
 
     private void report() {

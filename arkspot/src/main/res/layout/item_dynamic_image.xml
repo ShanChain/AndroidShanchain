@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/dimens_5dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/photo_yue"/>
+        android:scaleType="centerCrop"/>
 
     <ImageView
         android:id="@+id/iv_item_dynamic_clear"

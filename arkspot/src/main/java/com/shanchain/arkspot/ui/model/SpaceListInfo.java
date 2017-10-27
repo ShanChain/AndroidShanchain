@@ -10,7 +10,7 @@ public class SpaceListInfo {
 
     private String code;
     private String message;
-    private List<SpaceBean> data;
+    private List<SpaceInfo> data;
 
     public String getCode() {
         return code;
@@ -28,11 +28,11 @@ public class SpaceListInfo {
         this.message = message;
     }
 
-    public List<SpaceBean> getData() {
+    public List<SpaceInfo> getData() {
         return data;
     }
 
-    public void setData(List<SpaceBean> data) {
+    public void setData(List<SpaceInfo> data) {
         this.data = data;
     }
 }

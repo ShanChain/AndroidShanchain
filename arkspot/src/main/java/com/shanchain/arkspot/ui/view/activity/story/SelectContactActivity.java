@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gjiazhe.wavesidebar.WaveSideBar;
 import com.shanchain.arkspot.R;
@@ -15,13 +17,16 @@ import com.shanchain.arkspot.adapter.SelectContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.ContactInfo;
 import com.shanchain.arkspot.ui.model.RequestContactInfo;
+import com.shanchain.arkspot.ui.model.ResponseContactArr;
+import com.shanchain.arkspot.ui.model.ResponseContactBean;
+import com.shanchain.arkspot.ui.model.ResponseContactData;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +96,6 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             }
         });
 
-
         mSbSelectContact.setOnSelectIndexItemListener(new WaveSideBar.OnSelectIndexItemListener() {
             @Override
             public void onSelectIndexItem(String index) {
@@ -129,130 +133,61 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initData() {
-
         SCHttpUtils.postWithSpaceId()
                 .url(HttpApi.SPACE_CONTACT_LIST)
                 .build()
-                .execute(new SCHttpCallBack<RequestContactInfo>(RequestContactInfo.class) {
+                .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取联系人失败");
+
                     }
 
                     @Override
-                    public void onResponse(RequestContactInfo response, int id) {
-                        if (response == null){
-                            LogUtils.i("");
+                    public void onResponse(String response, int id) {
+                        if (TextUtils.isEmpty(response)){
+                            return;
+                        }
+                        RequestContactInfo requestContactInfo = JSONObject.parseObject(response, RequestContactInfo.class);
+                        if (requestContactInfo == null){
+                            return;
+                        }
+                        String code = requestContactInfo.getCode();
+                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
                             return;
                         }
 
+                        ResponseContactData data = requestContactInfo.getData();
+
+                        if (data == null){
+                            return;
+                        }
+                        List<ResponseContactArr> contactArrs = data.getArray();
+                        if (contactArrs == null){
+                            return;
+                        }
+                        for (int i = 0; i < contactArrs.size(); i ++) {
+                            String letter = contactArrs.get(i).getLetter();
+                            List<ResponseContactBean> contactBeenList = contactArrs.get(i).getList();
+                            for (int j = 0; j < contactBeenList.size(); j ++) {
+                                String headImg = contactBeenList.get(j).getHeadImg();
+                                int modelId = contactBeenList.get(j).getModelId();
+                                String name = contactBeenList.get(j).getName();
+                                ContactInfo info = new ContactInfo();
+                                info.setName(name);
+                                info.setImg(headImg);
+                                info.setLetter(letter);
+                                info.setModuleId(modelId);
+                                datas.add(info);
+
+                            }
+
+                        }
+
+                        show.addAll(datas);
+                        mContactAdapter.notifyDataSetChanged();
 
                     }
                 });
-
-
-        ContactInfo contactInfo1 = new ContactInfo();
-        contactInfo1.setName("阿里");
-        contactInfo1.setLetter("A");
-        datas.add(contactInfo1);
-        ContactInfo contactInfo2 = new ContactInfo();
-        contactInfo2.setName("阿倍");
-        contactInfo2.setLetter("A");
-        datas.add(contactInfo2);
-        ContactInfo contactInfo3 = new ContactInfo();
-        contactInfo3.setName("阿咯");
-        contactInfo3.setLetter("A");
-        datas.add(contactInfo3);
-        ContactInfo contactInfo4 = new ContactInfo();
-        contactInfo4.setName("北京");
-        contactInfo4.setLetter("B");
-        datas.add(contactInfo4);
-        ContactInfo contactInfo5 = new ContactInfo();
-        contactInfo5.setName("北海");
-        contactInfo5.setLetter("B");
-        datas.add(contactInfo5);
-        ContactInfo contactInfo6 = new ContactInfo();
-        contactInfo6.setName("超市");
-        contactInfo6.setLetter("C");
-        datas.add(contactInfo6);
-        ContactInfo contactInfo7 = new ContactInfo();
-        contactInfo7.setName("潮汕");
-        contactInfo7.setLetter("C");
-        datas.add(contactInfo7);
-        ContactInfo contactInfo8 = new ContactInfo();
-        contactInfo8.setName("大帝");
-        contactInfo8.setLetter("D");
-        datas.add(contactInfo8);
-        ContactInfo contactInfo9 = new ContactInfo();
-        contactInfo9.setName("房子");
-        contactInfo9.setLetter("F");
-        datas.add(contactInfo9);
-        ContactInfo contactInfo10 = new ContactInfo();
-        contactInfo10.setName("哥哥");
-        contactInfo10.setLetter("G");
-        datas.add(contactInfo10);
-        ContactInfo contactInfo11 = new ContactInfo();
-        contactInfo11.setName("咖喱gaygay");
-        contactInfo11.setLetter("G");
-        datas.add(contactInfo11);
-        ContactInfo contactInfo12 = new ContactInfo();
-        contactInfo12.setName("歌姬");
-        contactInfo12.setLetter("G");
-        datas.add(contactInfo12);
-        ContactInfo contactInfo13 = new ContactInfo();
-        contactInfo13.setName("黄了");
-        contactInfo13.setLetter("H");
-        datas.add(contactInfo13);
-        ContactInfo contactInfo14 = new ContactInfo();
-        contactInfo14.setName("极限");
-        contactInfo14.setLetter("J");
-        datas.add(contactInfo14);
-        ContactInfo contactInfo15 = new ContactInfo();
-        contactInfo15.setName("激励");
-        contactInfo15.setLetter("J");
-        datas.add(contactInfo15);
-        ContactInfo contactInfo16 = new ContactInfo();
-        contactInfo16.setName("卡卡");
-        contactInfo16.setLetter("K");
-        datas.add(contactInfo16);
-        ContactInfo contactInfo17 = new ContactInfo();
-        contactInfo17.setName("牛B");
-        contactInfo17.setLetter("N");
-        datas.add(contactInfo17);
-        ContactInfo contactInfo18 = new ContactInfo();
-        contactInfo18.setName("闪现");
-        contactInfo18.setLetter("S");
-        datas.add(contactInfo18);
-        ContactInfo contactInfo19 = new ContactInfo();
-        contactInfo19.setName("是非");
-        contactInfo19.setLetter("S");
-        datas.add(contactInfo19);
-        ContactInfo contactInfo20 = new ContactInfo();
-        contactInfo20.setName("饕餮");
-        contactInfo20.setLetter("T");
-        datas.add(contactInfo20);
-        ContactInfo contactInfo21 = new ContactInfo();
-        contactInfo21.setName("小弟弟");
-        contactInfo21.setLetter("X");
-        datas.add(contactInfo21);
-        ContactInfo contactInfo22 = new ContactInfo();
-        contactInfo22.setName("洋葱");
-        contactInfo22.setLetter("Y");
-        datas.add(contactInfo22);
-        ContactInfo contactInfo23 = new ContactInfo();
-        contactInfo23.setName("颜色");
-        contactInfo23.setLetter("Y");
-        datas.add(contactInfo23);
-        ContactInfo contactInfo24 = new ContactInfo();
-        contactInfo24.setName("亚咩");
-        contactInfo24.setLetter("Y");
-        datas.add(contactInfo24);
-        ContactInfo contactInfo25 = new ContactInfo();
-        contactInfo25.setName("yes");
-        contactInfo25.setLetter("Y");
-        datas.add(contactInfo25);
-
-        show.addAll(datas);
 
     }
 

@@ -11,18 +11,27 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.TopicAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.ResponseTopicContentBean;
+import com.shanchain.arkspot.ui.model.ResponseTopicData;
+import com.shanchain.arkspot.ui.model.ResponseTopicInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 
 public class TopicActivity extends BaseActivity {
@@ -34,8 +43,8 @@ public class TopicActivity extends BaseActivity {
     TextView mTvTopicCancel;
     @Bind(R.id.rv_topic)
     RecyclerView mRvTopic;
-    private List<TopicInfo> datas;
-    private List<TopicInfo> show;
+    private List<TopicInfo> datas = new ArrayList<>();
+    private List<TopicInfo> show = new ArrayList<>();
     private TopicAdapter mTopicAdapter;
 
     @Override
@@ -45,8 +54,8 @@ public class TopicActivity extends BaseActivity {
 
     @Override
     protected void initViewsAndEvents() {
-        initData();
         initRecyclerView();
+        initData();
         initListener();
     }
 
@@ -106,16 +115,53 @@ public class TopicActivity extends BaseActivity {
     }
 
     private void initData() {
-        datas = new ArrayList<>();
-        show = new ArrayList<>();
+        SCHttpUtils.postWithSpaceId()
+                .url(HttpApi.TOPIC_QUERY_SPACEID)
+                .addParams("page","0")
+                .addParams("sort","desc")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取话题失败");
+                    }
 
-        for (int i = 0; i < 10; i++) {
-            TopicInfo topicInfo = new TopicInfo();
-            topicInfo.setTopic("这是什么话题哦" + i);
-            datas.add(topicInfo);
-        }
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取话题成功" + response);
+                        if (response == null){
+                            return;
+                        }
+                        ResponseTopicInfo responseTopicInfo = JSONObject.parseObject(response, ResponseTopicInfo.class);
+                        if (responseTopicInfo ==null){
+                            return;
+                        }
 
-        show.addAll(datas);
+                        ResponseTopicData data = responseTopicInfo.getData();
+                        if (data == null){
+                            return;
+                        }
+
+                        List<ResponseTopicContentBean> topicContentBeanList = data.getContent();
+
+                        if (topicContentBeanList == null) {
+                            return;
+                        }
+
+                        for (int i = 0; i < topicContentBeanList.size(); i ++) {
+                            String topicName = topicContentBeanList.get(i).getTitle();
+                            int topicId = topicContentBeanList.get(i).getTopicId();
+                            TopicInfo topicInfo = new TopicInfo();
+                            topicInfo.setTopic(topicName);
+                            topicInfo.setTopicId(topicId);
+                            datas.add(topicInfo);
+                        }
+                        show.addAll(datas);
+
+                        mTopicAdapter.notifyDataSetChanged();
+                    }
+                });
+
     }
 
     @OnClick(R.id.tv_topic_cancel)

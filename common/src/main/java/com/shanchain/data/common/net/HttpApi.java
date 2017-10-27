@@ -125,7 +125,7 @@ public interface HttpApi {
     String COMMENT_QUERY = BASE_URL + "/v1/storyComment/query";
 
     /**获取角色简要信息*/
-    String CHARACTER_BRIEF = BASE_URL + "/v1/character/brief";
+    String CHARACTER_BRIEF = BASE_URL + "/v1/character/query/brief";
 
     /** 查找角色--通过用户ID*/
     String CHARACTER_QUERY_USER_ID = BASE_URL + "/v1/character/query/userId";
@@ -144,5 +144,17 @@ public interface HttpApi {
 
     /** 收藏时空 */
     String SPACE_FAVORITE = BASE_URL + "/v1/space/favorite";
+
+    /** 取消收藏时空*/
+    String SPACE_UNFAVORITE = BASE_URL + "/v1/space/unFavorite";
+    
+    /** 切换角色*/
+    String CHARACTER_CHANGE = BASE_URL + "/v1/character/change";
+
+    /** 切换时空*/
+    String SPACE_SWITCH = BASE_URL + "/v1/space/switch";
+
+    /** 获取时空的话题列表*/
+    String TOPIC_QUERY_SPACEID = BASE_URL +  "/v1/topic/query/spaceId";
     
 }

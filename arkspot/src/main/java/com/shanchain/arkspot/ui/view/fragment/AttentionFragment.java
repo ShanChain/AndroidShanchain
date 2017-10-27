@@ -209,12 +209,13 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void initSuccess(List<StoryInfo> storyInfoList) {
+        mSrlFragmentAttention.setRefreshing(false);
         if (storyInfoList == null) {
             return;
         }
         datas.addAll(storyInfoList);
         mAdapter.notifyDataSetChanged();
-        mSrlFragmentAttention.setRefreshing(false);
+
     }
 
     @Override

@@ -4,11 +4,11 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.List;
 
@@ -37,6 +37,8 @@ public class SelectContactAdapter extends BaseQuickAdapter<ContactInfo, BaseView
                 helper.setVisible(R.id.ll_item_contact_letter,true);
             }
 
+        }else {
+            helper.setVisible(R.id.ll_item_contact_letter,true);
         }
 
         helper.setText(R.id.tv_item_contact_letter,item.getLetter())
@@ -45,8 +47,6 @@ public class SelectContactAdapter extends BaseQuickAdapter<ContactInfo, BaseView
 
         helper.addOnClickListener(R.id.rb_item_contact);
 
-        Glide.with(mContext)
-                .load(R.drawable.photo_yue)
-                .into((ImageView) helper.getView(R.id.iv_item_contact_avatar));
+        GlideUtils.load(mContext,item.getImg(),(ImageView) helper.getView(R.id.iv_item_contact_avatar),0);
     }
 }

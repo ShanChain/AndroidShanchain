@@ -18,10 +18,10 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
 import com.shanchain.arkspot.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
+import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import butterknife.ButterKnife;
-import com.shanchain.data.common.utils.LogUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
     /**
@@ -328,6 +328,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void showLoadingDialog() {
         mCustomDialog = new CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
         mCustomDialog.show();
+        mCustomDialog.setCancelable(false);
     }
 
     protected void closeLoadingDialog() {

@@ -1,4 +1,4 @@
-package com.shanchain.arkspot.global;
+package com.shanchain.data.common.base;
 
 /**
  * 全局常量
@@ -45,6 +45,7 @@ public interface Constants {
         String CACHE_SPACE_INFO = "spaceInfo";
         String CACHE_CHARACTER_INFO = "characterInfo";
         String CACHE_GDATA = "gData";
+        String CACHE_SPACE_COLLECTION = "spaceCollection";
 
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;

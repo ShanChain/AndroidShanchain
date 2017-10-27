@@ -224,6 +224,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色");
+                        e.printStackTrace();
                     }
 
                     @Override

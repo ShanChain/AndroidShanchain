@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.SpaceModel;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;

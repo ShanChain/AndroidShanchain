@@ -9,6 +9,15 @@ import java.io.Serializable;
 public class TopicInfo implements Serializable{
     private String topic;
     private String tag;
+    private int topicId;
+
+    public int getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
+    }
 
     public String getTopic() {
         return topic;

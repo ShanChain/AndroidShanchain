@@ -10,7 +10,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.DateUtils;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.MessageHomeInfo;
 import com.shanchain.data.common.utils.GlideUtils;
 

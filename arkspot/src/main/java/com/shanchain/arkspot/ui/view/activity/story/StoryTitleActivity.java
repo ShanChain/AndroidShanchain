@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,8 @@ import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleLikeAdapter;
 import com.shanchain.arkspot.adapter.StoryTitleStagAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
-import com.shanchain.arkspot.ui.model.SpaceBean;
-import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;
 import com.shanchain.arkspot.ui.presenter.StoryTitlePresenter;
@@ -51,8 +51,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     private RecyclerView mRvLike;
     private RecyclerView mRvTag;
     private List<StoryTagInfo> mTagDatas = new ArrayList<>();
-    private List<SpaceBean> mStagDatas = new ArrayList<>();
-    private List<SpaceBean> likeDatas = new ArrayList<>();
+    private List<SpaceInfo> mStagDatas = new ArrayList<>();
+    private List<SpaceInfo> likeDatas = new ArrayList<>();
     private View mHeadView;
     private StoryTitleStagAdapter mStagAdapter;
     private AddRoleAdapter mAddRoleAdapter;
@@ -74,8 +74,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initData() {
         mStoryTitlePresenter = new StoryTitlePresenterImpl(this);
-        String userId = "12";
-        mStoryTitlePresenter.initData(userId);
+        mStoryTitlePresenter.initData();
 
     }
 
@@ -100,8 +99,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(StoryTitleActivity.this,ChooseRoleActivity.class);
-                SpaceBean spaceBean = mStagDatas.get(position);
-                intent.putExtra("spaceInfo",spaceBean);
+                SpaceInfo spaceInfo = mStagDatas.get(position);
+                intent.putExtra("spaceInfo", spaceInfo);
                 startActivity(intent);
             }
         });
@@ -136,9 +135,9 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         mStoryTitleLikeAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                SpaceBean spaceBean = likeDatas.get(position);
+                SpaceInfo spaceInfo = likeDatas.get(position);
                 Intent intent = new Intent(mContext,ChooseRoleActivity.class);
-                intent.putExtra("spaceInfo",spaceBean);
+                intent.putExtra("spaceInfo", spaceInfo);
                 startActivity(intent);
             }
         });
@@ -164,11 +163,13 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initToolBar() {
-
+        String name = "千千世界";
         String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String spaceInfo = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_INFO);
-        SpaceDetailInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceDetailInfo.class);
-        String name = spaceDetailInfo.getName();
+        if (!TextUtils.isEmpty(spaceInfo)){
+            SpaceInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceInfo.class);
+            name = spaceDetailInfo.getName();
+        }
         mTbStoryTitle.setTitleText(name);
         mTbStoryTitle.setBtnEnabled(false,true);
         TextView titleView = mTbStoryTitle.getTitleView();
@@ -220,16 +221,16 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
-    public void getSpaceListSuccess(List<SpaceBean> spaceBeanList ) {
-        if (spaceBeanList == null){
+    public void getSpaceListSuccess(List<SpaceInfo> spaceInfoList) {
+        if (spaceInfoList == null){
             return;
         }
-        mStagDatas.addAll(spaceBeanList);
+        mStagDatas.addAll(spaceInfoList);
         mStagAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void getMyFavoriteSuccess(List<SpaceBean> favoriteSpaceList) {
+    public void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList) {
         if (favoriteSpaceList == null){
             hideFavoriteLayout();
             return;

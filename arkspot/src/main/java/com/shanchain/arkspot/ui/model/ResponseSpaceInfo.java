@@ -17,7 +17,7 @@ public class ResponseSpaceInfo {
 
     private String code;
     private String message;
-    private List<SpaceDetailInfo> data;
+    private List<SpaceInfo> data;
 
     public String getCode() {
         return code;
@@ -35,11 +35,11 @@ public class ResponseSpaceInfo {
         this.message = message;
     }
 
-    public List<SpaceDetailInfo> getData() {
+    public List<SpaceInfo> getData() {
         return data;
     }
 
-    public void setData(List<SpaceDetailInfo> data) {
+    public void setData(List<SpaceInfo> data) {
         this.data = data;
     }
 }

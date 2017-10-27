@@ -4,7 +4,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ChatView;

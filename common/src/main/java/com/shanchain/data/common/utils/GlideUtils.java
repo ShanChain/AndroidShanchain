@@ -5,6 +5,9 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.shanchain.common.R;
 
 public class GlideUtils {
@@ -18,11 +21,16 @@ public class GlideUtils {
     /**
      *  描述：带默认图片的图片加载
      */
-    public static void load(Context context,String url,ImageView iv,int placeHolderResId){
+    public static void load(Context context, String url, final ImageView iv, int placeHolderResId){
         if (placeHolderResId == 0){
             placeHolderResId = R.drawable.abs_addanewrole_def_photo_default;
         }
-        Glide.with(context).load(url).placeholder(placeHolderResId).into(iv);
+        Glide.with(context).load(url).placeholder(placeHolderResId).into(new SimpleTarget<GlideDrawable>() {
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                iv.setImageDrawable(resource);
+            }
+        });
     }
 
 

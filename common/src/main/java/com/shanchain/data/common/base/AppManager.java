@@ -1,19 +1,7 @@
 package com.shanchain.data.common.base;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.os.Environment;
-import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
-
-import java.io.File;
-import java.lang.ref.SoftReference;
 
 /**
  * Created by flyye on 2017/10/19.
@@ -58,5 +46,7 @@ public class AppManager {
     public String getOsVersion(){
         return android.os.Build.VERSION.RELEASE;
     }
+
+
 
 }

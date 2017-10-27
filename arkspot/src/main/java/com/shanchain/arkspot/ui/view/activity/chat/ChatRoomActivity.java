@@ -23,7 +23,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ChatRoomMsgAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ChatPresenterImpl;

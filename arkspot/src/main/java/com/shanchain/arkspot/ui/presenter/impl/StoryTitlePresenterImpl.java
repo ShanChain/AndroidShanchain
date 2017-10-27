@@ -1,17 +1,21 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.shanchain.arkspot.ui.model.SpaceBean;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.model.SpaceListInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;
 import com.shanchain.arkspot.ui.model.TagInfo;
 import com.shanchain.arkspot.ui.presenter.StoryTitlePresenter;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.StoryTitleView;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -30,7 +34,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
 
 
     @Override
-    public void initData(String userId) {
+    public void initData() {
         //获取标签列表
         SCHttpUtils.post()
                 .url(HttpApi.TAG_QUERY)
@@ -72,15 +76,14 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.showLog("时空列表数据 " + response);
                         SpaceListInfo spaceListInfo = new Gson().fromJson(response, SpaceListInfo.class);
-                        List<SpaceBean> spaceBeanList = spaceListInfo.getData();
-                        mStoryTitleView.getSpaceListSuccess(spaceBeanList);
+                        List<SpaceInfo> spaceInfoList = spaceListInfo.getData();
+                        mStoryTitleView.getSpaceListSuccess(spaceInfoList);
                     }
                 });
 
         //收藏的时空
-        SCHttpUtils.post()
+        SCHttpUtils.postWithUserId()
                 .url(HttpApi.SPACE_LIST_FAVORITE)
-                .addParams("userId", userId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -95,8 +98,17 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                         LogUtils.d("获取的我收藏的时空数据" + response);
                         SpaceListInfo spaceListInfo = new Gson().fromJson(response, SpaceListInfo.class);
                         LogUtils.d("我收藏的 = " + spaceListInfo.toString());
-                        List<SpaceBean> favoriteSpaceList = spaceListInfo.getData();
-
+                        List<SpaceInfo> favoriteSpaceList = spaceListInfo.getData();
+                        if (favoriteSpaceList != null){
+                            List<String> favoriteSpace = new ArrayList<>();
+                            for (int i = 0; i < favoriteSpaceList.size(); i ++) {
+                                String spaceId = favoriteSpaceList.get(i).getSpaceId() + "";
+                                favoriteSpace.add(spaceId);
+                            }
+                            String favoriteSpaceIds = JSON.toJSONString(favoriteSpace);
+                            String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+                            SCCacheUtils.setCache(userId, Constants.CACHE_SPACE_COLLECTION,favoriteSpaceIds);
+                        }
                         mStoryTitleView.getMyFavoriteSuccess(favoriteSpaceList);
                     }
                 });

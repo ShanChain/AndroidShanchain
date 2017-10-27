@@ -27,7 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicImagesAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
 import com.shanchain.arkspot.ui.presenter.ReleaseDynamicPresenter;
@@ -289,6 +289,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
      */
     private void atContact() {
         Intent atIntent = new Intent(this, SelectContactActivity.class);
+        atIntent.putExtra("isAt",true);
         startActivityForResult(atIntent, REQUEST_CODE_AT);
     }
 

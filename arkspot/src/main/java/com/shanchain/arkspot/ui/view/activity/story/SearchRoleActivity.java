@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SearchRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.RNDetailExt;
 import com.shanchain.arkspot.ui.model.RNGDataBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterBean;

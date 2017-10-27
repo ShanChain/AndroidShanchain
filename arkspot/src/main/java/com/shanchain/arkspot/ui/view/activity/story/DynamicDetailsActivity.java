@@ -47,6 +47,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -116,6 +117,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                         List<CommentBean> commentBeanList = responseCommentInfo.getData();
                         LogUtils.i("评论数量 = " + commentBeanList.size());
                         datas.addAll(commentBeanList);
+                        Collections.reverse(datas);
                         mDynamicCommentAdapter.notifyDataSetChanged();
                     }
                 });

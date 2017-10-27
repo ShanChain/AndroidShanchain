@@ -1,16 +1,16 @@
 package com.shanchain.arkspot.ui.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
 /**
  * Created by zhoujian on 2017/8/30.
  */
 
-public class ContactInfo implements Parcelable{
+public class ContactInfo implements Serializable{
     private String img;
     private String name;
     private String letter;
+    private int moduleId;
     private boolean isSelected;
 
     public String getImg() {
@@ -45,13 +45,11 @@ public class ContactInfo implements Parcelable{
         this.letter = letter;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getModuleId() {
+        return moduleId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
+    public void setModuleId(int moduleId) {
+        this.moduleId = moduleId;
     }
 }

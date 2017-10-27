@@ -18,12 +18,12 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.global.Constants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.rn.fragment.RNfragment;
 import com.shanchain.arkspot.ui.model.RNGDataBean;
-import com.shanchain.arkspot.ui.model.SpaceDetailInfo;
+import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.view.activity.chat.ContactActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.FindSceneActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.MeetPersonActivity;
@@ -241,7 +241,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String spaceInfo = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_INFO);
-        SpaceDetailInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceDetailInfo.class);
+        SpaceInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceInfo.class);
         String name = spaceDetailInfo.getName();
 
         mTbMain.setTitleText(name);

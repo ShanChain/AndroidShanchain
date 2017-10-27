@@ -7,20 +7,20 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.SpaceBean;
+import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.List;
 
 
-public class StoryTitleLikeAdapter extends BaseQuickAdapter<SpaceBean,BaseViewHolder> {
+public class StoryTitleLikeAdapter extends BaseQuickAdapter<SpaceInfo,BaseViewHolder> {
 
-    public StoryTitleLikeAdapter(@LayoutRes int layoutResId, @Nullable List<SpaceBean> data) {
+    public StoryTitleLikeAdapter(@LayoutRes int layoutResId, @Nullable List<SpaceInfo> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, SpaceBean item) {
+    protected void convert(BaseViewHolder helper, SpaceInfo item) {
         helper.setText(R.id.tv_item_story_like,item.getName());
         /*Glide.with(mContext)
                 .load(item.getBgPic())
