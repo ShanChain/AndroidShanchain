@@ -47,6 +47,7 @@ public interface Constants {
         String CACHE_GDATA = "gData";
         String CACHE_SPACE_COLLECTION = "spaceCollection";
 
+
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;
         int TYPE_STORY_LONG = 2;

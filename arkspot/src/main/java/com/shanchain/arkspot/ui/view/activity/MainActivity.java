@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSON;
+
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -35,12 +37,15 @@ import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
 
 import butterknife.Bind;
+
+import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
 public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener,DefaultHardwareBackBtnHandler {
@@ -366,18 +371,21 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
-
+                Bundle bundle = new Bundle();
+                JSONObject screenProps = new JSONObject();
+                screenProps.put(Constants.CACHE_GDATA,JSONObject.parse(CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_GDATA)));
+                bundle.putString(REACT_PROPS,screenProps.toString());
                 switch (view.getId()) {
                     case R.id.tv_dialog_msg_headlines:
                         NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen,new Bundle());
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_background_img:
-                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen,new Bundle());
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen,bundle);
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_intro:
-                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen,new Bundle());
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen,bundle);
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_cancel:

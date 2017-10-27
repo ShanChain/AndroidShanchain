@@ -224,8 +224,15 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID, "16");
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_CHARACTER_ID, "11");
+
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
+                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
+                            JSONObject gData = new JSONObject();
+                            gData.put("userId",userId);
+                            gData.put("token",token);
+                            gData.put("spaceId",16);
+                            gData.put("characterId","11");
+                            SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
 
                             String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
