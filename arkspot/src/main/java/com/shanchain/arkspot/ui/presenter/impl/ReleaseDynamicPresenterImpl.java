@@ -4,18 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.google.gson.Gson;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ReleaseStoryContentInfo;
 import com.shanchain.arkspot.ui.model.UpLoadImgBean;
 import com.shanchain.arkspot.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.ReleaseDynamicView;
-import com.shanchain.arkspot.utils.OssHelper;
-import com.shanchain.arkspot.utils.SCImageUtils;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.OssHelper;
+import com.shanchain.data.common.utils.SCImageUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;

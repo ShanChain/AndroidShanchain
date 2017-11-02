@@ -124,28 +124,27 @@
 
 package com.shanchain.data.common.rn;
 
-        import javax.annotation.Nullable;
-
         import android.app.Activity;
-        import android.content.Intent;
-        import android.content.res.Configuration;
-        import android.content.res.Resources;
-        import android.os.Bundle;
-        import android.text.TextUtils;
-        import android.view.KeyEvent;
-        import android.widget.Toast;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
-        import com.facebook.react.ReactActivityDelegate;
-        import com.facebook.react.ReactInstanceManager;
-        import com.facebook.react.ReactNativeHost;
-        import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
-        import com.facebook.react.modules.core.PermissionAwareActivity;
-        import com.facebook.react.modules.core.PermissionListener;
-        import com.shanchain.data.common.base.ActivityStackManager;
-        import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.PermissionAwareActivity;
+import com.facebook.react.modules.core.PermissionListener;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 
-        import org.greenrobot.eventbus.EventBus;
-        import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import javax.annotation.Nullable;
 
 /**
  * Base Activity for React Native applications.
@@ -154,6 +153,7 @@ public    class SCReactActivity extends Activity
         implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
     private SCReactActivityDelegate mDelegate;
+    private ResultListener mResultLisener;
 
 
 
@@ -165,6 +165,14 @@ public    class SCReactActivity extends Activity
                 return bundle;
             }
         };
+    }
+
+    public interface ResultListener {
+      void onResult(int requestCode, int resultCode, Intent data);
+    }
+
+    public void setResultListener(ResultListener resultListener) {
+        mResultLisener = resultListener;
     }
 
     @Override
@@ -215,6 +223,9 @@ public    class SCReactActivity extends Activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mDelegate.onActivityResult(requestCode, resultCode, data);
+        if(mResultLisener != null){
+            mResultLisener.onResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

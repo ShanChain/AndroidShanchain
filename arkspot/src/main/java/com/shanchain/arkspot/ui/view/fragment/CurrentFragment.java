@@ -52,7 +52,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mSrlStoryCurrent.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlStoryCurrent.setRefreshing(true);
         mCurrentPresenter = new CurrentPresenterImpl(this);
-        mCurrentPresenter.initData(0, 100);
+        mCurrentPresenter.initData(0, 20);
 
         initRecyclerView();
 
