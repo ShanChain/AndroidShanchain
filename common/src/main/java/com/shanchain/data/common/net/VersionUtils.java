@@ -7,10 +7,6 @@ import android.os.Build;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-/**
- * Created by zhoujian on 2017/5/16.
- * 获取app版本信息工具类
- */
 
 public class VersionUtils {
 

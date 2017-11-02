@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
-import com.shanchain.arkspot.utils.SystemUtils;
+import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -323,6 +323,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.putExtras(bundle);
         }
         startActivityForResult(intent, requestCode);
+    }
+
+    protected void showLoadingDialog(boolean cancelable) {
+        mCustomDialog = new CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
+        mCustomDialog.show();
+        mCustomDialog.setCancelable(cancelable);
     }
 
     protected void showLoadingDialog() {

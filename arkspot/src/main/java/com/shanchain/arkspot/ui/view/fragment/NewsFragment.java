@@ -196,6 +196,7 @@ public class NewsFragment extends BaseFragment {
             MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
             messageHomeInfo.setEMConversation(emConversation);
             LogUtils.d("会话列表 = " + mEMConversations.get(i).getLastMessage().getBody().toString());
+
             sourceDatas.add(messageHomeInfo);
         }
 

@@ -69,9 +69,6 @@ public class AiteContactsActivity extends BaseActivity {
                     }
 
                 }
-
-
-
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -124,6 +121,5 @@ public class AiteContactsActivity extends BaseActivity {
         setResult(RESULT_CODE,intent);
         finish();
     }
-
 
 }

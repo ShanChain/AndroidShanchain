@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_more_tag"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleText="全部标签"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <EditText
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/sp_14"
+        android:id="@+id/et_more_tag_search"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/shape_edit_search_pressed"
+        android:cursorVisible="true"
+        android:drawableLeft="@mipmap/abs_therrbody_icon_search_default"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:hint="搜索标签"
+        android:lines="1"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextDefault"
+        android:textColorHint="@color/colorHint"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_more_tag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>

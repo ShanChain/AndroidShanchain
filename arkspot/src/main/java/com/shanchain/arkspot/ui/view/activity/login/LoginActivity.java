@@ -1,5 +1,6 @@
 package com.shanchain.arkspot.ui.view.activity.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -10,19 +11,25 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.global.UserType;
+import com.shanchain.arkspot.manager.ActivityManager;
 import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.arkspot.ui.model.LoginUserInfoBean;
+import com.shanchain.arkspot.ui.model.RegisterHxBean;
+import com.shanchain.arkspot.ui.model.RegisterHxInfo;
+import com.shanchain.arkspot.ui.model.ResponseCurrentUser;
 import com.shanchain.arkspot.ui.model.ResponseLoginBean;
 import com.shanchain.arkspot.ui.model.ResponseSpaceInfo;
-import com.shanchain.arkspot.ui.model.ResponseSwitchRoleInfo;
 import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -82,7 +89,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
-        checkCache();
     }
 
     private void checkCache() {
@@ -93,19 +99,69 @@ public class LoginActivity extends BaseActivity {
 
             String characterId = SCCacheUtils.getCache(userId, Constants.CACHE_CHARACTER_ID);
             String characterInfo = SCCacheUtils.getCache(userId, Constants.CACHE_CHARACTER_INFO);
-
-            if (TextUtils.isEmpty(characterId)||TextUtils.isEmpty(characterInfo)){
-                readyGo(StoryTitleActivity.class);
-                finish();
+            String spaceId = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_ID);
+            String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
+            String hxUserName = SCCacheUtils.getCacheHxUserName();
+            String hxPwd = SCCacheUtils.getCacheHxPwd();
+            if (TextUtils.isEmpty(characterId)||TextUtils.isEmpty(characterInfo)||TextUtils.isEmpty(spaceId)||TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)){
+                checkServer();
             }else {
-                /*SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID, "16");
-                SCCacheUtils.setCache(userId + "", Constants.CACHE_CHARACTER_ID, "9");
-                hxLogin();*/
                 readyGo(MainActivity.class);
                 finish();
             }
 
         }
+    }
+
+    private void checkServer() {
+
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.CHARACTER_GET_CURRENT)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取当前角色失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取当前角色成功 " + response);
+                        if (TextUtils.isEmpty(response)){
+                            return;
+                        }
+
+                        ResponseCurrentUser currentUser = JSONObject.parseObject(response, ResponseCurrentUser.class);
+                        if (currentUser == null){
+                            return;
+                        }
+
+                        String code = currentUser.getCode();
+
+                        if (!TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            return;
+                        }
+                        CharacterInfo characterInfo = currentUser.getData();
+                        if (characterInfo == null){
+                            readyGo(StoryTitleActivity.class);
+                            finish();
+                        }else {
+                            int characterId = characterInfo.getCharacterId();
+                            int spaceId = characterInfo.getSpaceId();
+                            String characterInfoJson = JSON.toJSONString(characterInfo);
+
+                            String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+
+                            obtainSpaceInfo(characterId+"",characterInfoJson,userId,spaceId+"");
+
+                        }
+
+
+
+                    }
+                });
+
     }
 
     private void hxLogin() {
@@ -225,14 +281,6 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
 
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID,"16");
-                            SCCacheUtils.setCache(userId +"", Constants.CACHE_CHARACTER_ID,"9");
-                            JSONObject gData = new JSONObject();
-                            gData.put("userId",userId);
-                            gData.put("token",token);
-                            gData.put("spaceId",16);
-                            gData.put("characterId","11");
-                            SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
 
                             String cacheid = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
                             LogUtils.d("cacheid = " + cacheid);
@@ -374,9 +422,6 @@ public class LoginActivity extends BaseActivity {
                                      SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
-                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_SPACE_ID, "16");
-                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_CHARACTER_ID, "9");
-                                     //obtainDetailInfo();
                                      checkCache();
                                  } else {
                                      LogUtils.e("登录返回数据为空");
@@ -386,59 +431,14 @@ public class LoginActivity extends BaseActivity {
                 );
     }
 
-    private boolean characterCacheFinish;
-    private boolean spaceCacheFinish;
 
-    private void obtainDetailInfo() {
-        //获取charactor详情和space详情并缓存
 
-        final String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.CHARACTER_QUERY)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取角色详情失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d("角色详情 = " + response);
-                        if (TextUtils.isEmpty(response)) {
-                            return;
-                        }
-
-                        ResponseSwitchRoleInfo roleInfo = JSONObject.parseObject(response, ResponseSwitchRoleInfo.class);
-                        if (roleInfo == null) {
-                            return;
-                        }
-
-                        String code = roleInfo.getCode();
-                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            return;
-                        }
-                        CharacterInfo roleBean = roleInfo.getData();
-                        if (roleBean == null) {
-                            return;
-                        }
-
-                        String roleInfoJson = JSON.toJSONString(roleBean);
-
-                        SCCacheUtils.setCache(userId, Constants.CACHE_CHARACTER_INFO, roleInfoJson);
-
-                        characterCacheFinish = true;
-                        if (spaceCacheFinish) {
-                            readyGo(MainActivity.class);
-                            finish();
-                        }
-                    }
-                });
+    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String userId, final String spaceId) {
+        //获取space详情并缓存
 
         List<String> spaceIds = new ArrayList<>();
-        spaceIds.add("16");
-        String jArr = new Gson().toJson(spaceIds);
+        spaceIds.add(spaceId);
+        String jArr = JSON.toJSONString(spaceIds);
         SCHttpUtils.post()
                 .url(HttpApi.SPACE_LIST_SPACEID)
                 .addParams("jArray", jArr)
@@ -446,7 +446,8 @@ public class LoginActivity extends BaseActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        LogUtils.i("获取时空详情失败");
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -457,15 +458,74 @@ public class LoginActivity extends BaseActivity {
                         SpaceInfo spaceDetailInfo = data.get(0);
                         String spaceJson = new Gson().toJson(spaceDetailInfo);
 
-                        SCCacheUtils.setCache(userId, Constants.CACHE_SPACE_INFO, spaceJson);
-                        String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
+                        obtainHxInfo(characterId,characterInfoJson,spaceId,spaceJson);
+                    }
+                });
 
-                        LogUtils.d("缓存的spaceInfo = " + spaceInfo);
-                        spaceCacheFinish = true;
-                        if (characterCacheFinish) {
-                            readyGo(MainActivity.class);
-                            finish();
+    }
+
+
+    private void obtainHxInfo(final String characterId, final String characterInfoJson, final String spaceId, final String spaceJson) {
+        SCHttpUtils.post()
+                .url(HttpApi.HX_USER_REGIST)
+                .addParams("characterId",characterId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取当前用户环信账号失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取当前用户环信账号成功 = " + response);
+                        try {
+                            RegisterHxInfo registerHxInfo = JSONObject.parseObject(response, RegisterHxInfo.class);
+                            String code = registerHxInfo.getCode();
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                RegisterHxBean registerHxBean = registerHxInfo.getData();
+                                final String userName = registerHxBean.getHxUserName();
+                                final String pwd = registerHxBean.getHxPassword();
+
+                                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                       runOnUiThread(new Runnable() {
+                                           @Override
+                                           public void run() {
+                                               LogUtils.i("登录环信账号成功");
+                                               EMClient.getInstance().chatManager().loadAllConversations();
+
+                                               RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,spaceJson,userName,pwd);
+                                               ToastUtils.showToast(mContext,"穿越角色成功");
+                                               Intent intent = new Intent(mContext, MainActivity.class);
+                                               ActivityManager.getInstance().finishAllActivity();
+                                               startActivity(intent);
+                                           }
+                                       });
+
+                                    }
+
+                                    @Override
+                                    public void onError(int i, String s) {
+                                        LogUtils.i("登录环信账号失败");
+                                    }
+
+                                    @Override
+                                    public void onProgress(int i, String s) {
+
+                                    }
+                                });
+
+                            }
+                        } catch (Exception e) {
+                            LogUtils.i("获取环信账号失败");
+                            e.printStackTrace();
                         }
+
+
+
                     }
                 });
 

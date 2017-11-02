@@ -58,12 +58,6 @@
             <meta-data
                 android:name="page_flag"
                 android:value="page_login"/>
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".ui.view.activity.MainActivity">
             <meta-data
@@ -186,6 +180,17 @@
         <activity android:name=".ui.view.activity.login.ResetPwdActivity">
         </activity>
         <activity android:name=".ui.view.activity.mine.FriendHomeActivity">
+        </activity>
+        <activity
+            android:name=".ui.view.activity.login.SplashActivity"
+            android:theme="@style/FullScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.view.activity.story.MoreTagActivity">
         </activity>
     </application>
 

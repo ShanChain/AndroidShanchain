@@ -32,4 +32,13 @@
     <string name="str_friend_home_drama">大戏</string>
     <string name="str_friend_home_conversation">会话</string>
 
+    <array name="reportList">
+        <item>淫秽色情</item>
+        <item>有害信息</item>
+        <item>虚假内容</item>
+        <item>人身攻击</item>
+        <item>违法信息</item>
+        <item>其他</item>
+    </array>
+
 </resources>

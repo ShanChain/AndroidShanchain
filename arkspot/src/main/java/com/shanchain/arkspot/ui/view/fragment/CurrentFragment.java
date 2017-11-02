@@ -31,7 +31,7 @@ import butterknife.Bind;
  * Created by zhoujian on 2017/8/23.
  */
 
-public class CurrentFragment extends BaseFragment implements CurrentView, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener {
+public class CurrentFragment extends BaseFragment implements CurrentView, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     @Bind(R.id.rv_story_current)
     RecyclerView mRvStoryCurrent;
@@ -61,9 +61,12 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         mRvStoryCurrent.setLayoutManager(layoutManager);
+
         mRvStoryCurrent.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mAdapter = new CurrentAdapter(datas);
+        mAdapter.setEnableLoadMore(true);
         mRvStoryCurrent.setAdapter(mAdapter);
+        mAdapter.setOnLoadMoreListener(this,mRvStoryCurrent);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
     }
@@ -79,13 +82,9 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
             //测试阶段
             datas.clear();
-
             datas.addAll(list);
             mAdapter.notifyDataSetChanged();
-
-
         }
-
     }
 
     @Override
@@ -105,7 +104,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 clickAvatar(position);
                 break;
             case R.id.iv_item_story_more:
-                report();
+                report(position);
                 break;
             case R.id.tv_item_story_forwarding:
                 clickForwarding(position);
@@ -157,7 +156,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mCurrentPresenter.storySupport(storyId.substring(1));
     }
 
-    private void report() {
+    private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
                 new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
@@ -172,6 +171,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
+                        String storyId = datas.get(position).getStoryModel().getModelInfo().getStoryId();
+                        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+                        reportIntent.putExtra("storyId",storyId);
+                        reportIntent.putExtra("characterId",characterId);
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -211,5 +214,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         StoryBeanModel beanModel = datas.get(position);
         intent.putExtra("story",beanModel);
         startActivity(intent);
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+
     }
 }

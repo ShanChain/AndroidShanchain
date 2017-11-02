@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.utils.SystemUtils;
+import com.shanchain.data.common.utils.SystemUtils;
 
 
 /**

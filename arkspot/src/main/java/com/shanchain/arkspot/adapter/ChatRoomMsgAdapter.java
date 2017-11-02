@@ -177,12 +177,13 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
             String msg = body.getMessage();
             int msgAttribute = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
+            String nick = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
             if (msgAttribute == Constants.ATTR_SCENE) {
 
                 //场景
                 if (tvItemMsgSceneTitle != null){
                     tvItemMsgSceneTitle.setText("场景");
-                    getTvItemMsgSceneContent.setText(emMessage.getFrom() + " " + msg);
+                    getTvItemMsgSceneContent.setText(nick + " " + msg);
                 }
 
             } else if (msgAttribute == Constants.ATTR_DEFAULT) {

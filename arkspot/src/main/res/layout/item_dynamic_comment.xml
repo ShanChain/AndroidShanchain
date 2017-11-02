@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_10dp"
             android:layout_toRightOf="@id/iv_item_dynamic_comment_avatar"
-            android:text="小李"
             android:textColor="#3ab9c7"
             android:textSize="14sp"/>
 
@@ -39,7 +38,6 @@
             android:layout_alignParentRight="true"
             android:drawablePadding="5dp"
             android:drawableRight="@mipmap/abs_dynamic_btn_like_default"
-            android:text="9"
             android:textColor="@color/colorHint"
             android:textSize="10sp"/>
 
@@ -50,7 +48,6 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@id/tv_item_comment_like"
-            android:text="10分钟前"
             android:textColor="@color/colorHint"
             android:textSize="10sp"/>
 
@@ -64,7 +61,6 @@
         android:layout_marginLeft="56dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="@dimen/dimens_15dp"
-        android:text="重要的事情说几遍"
         android:textColor="@color/colorTextDefault"
         android:textSize="12sp"/>
 

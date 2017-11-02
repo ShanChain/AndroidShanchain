@@ -1,7 +1,9 @@
 package com.shanchain.data.common.net;
 
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SystemUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
@@ -77,9 +79,9 @@ public class SCHttpUtils {
     public static GetBuilder getWithParams() {
         return OkHttpUtils.get()
                 .addParams("AppID", "CHANNEL")          //渠道信息
-                //  .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
+                  .addParams("DeviceID", SystemUtils.getSystemDeviceId(AppManager.getInstance().getContext()))   //设备id
                 .addParams("Os","Android")              //操作系统
-                //.addParams("OsVersion", VersionUtils.getVersionName(MyApplication.getContext()))    //app版本
+                .addParams("OsVersion", VersionUtils.getVersionName(AppManager.getInstance().getContext()))    //app版本
                 .addParams("ScreenSize","")             //屏幕尺寸
                 .addParams("Timestamp",System.currentTimeMillis()+"")       //时间戳
                 .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级

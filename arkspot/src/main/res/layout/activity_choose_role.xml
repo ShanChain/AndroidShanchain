@@ -112,22 +112,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
 
-                <TextView
-                    android:id="@+id/tv_choose_role_def"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:textColor="@color/colorActive"
-                    android:textSize="@dimen/sp_12"
-                    android:background="@drawable/shape_bg_choose_role"
-                    android:text="我穿越"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"/>
-
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_choose_role_select"
                     android:layout_centerHorizontal="true"
                     android:scaleType="centerCrop"
+                    android:src="@mipmap/abs_roleselection_btn_through_default"
                     android:layout_width="50dp"
                     android:layout_height="50dp"/>
 
@@ -139,6 +128,7 @@
                 android:layout_marginTop="@dimen/dimens_10dp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/colorTextDefault"
+                android:text="添加角色"
                 android:textSize="@dimen/sp_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

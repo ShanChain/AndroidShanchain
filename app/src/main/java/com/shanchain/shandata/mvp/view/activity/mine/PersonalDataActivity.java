@@ -133,7 +133,10 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 mTvPersonalDataBirth.setText(simpleDateFormat.format(date));
             }
+
         })
+
+
                 .setType(new boolean[]{true, true, true, false, false, false})
                 .isCenterLabel(false)
                 .setCancelText("取消")
@@ -145,6 +148,7 @@ public class PersonalDataActivity extends BaseActivity implements ArthurToolBar.
                 .build();
         pickerView.setDate(Calendar.getInstance());
         pickerView.show();
+
     }
 
     private void selectSex() {

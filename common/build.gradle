@@ -31,8 +31,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':thirdparty')
     compile 'com.zhy:okhttputils:2.6.2'
-    compile 'com.google.code.gson:gson:2.6.2'
-
+    compile 'com.google.code.gson:gson:2.7'
+//生日时间选择器
+    compile 'com.contrarywind:Android-PickerView:3.2.5'
 
 }
 

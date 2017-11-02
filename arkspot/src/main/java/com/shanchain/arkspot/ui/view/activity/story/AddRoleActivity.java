@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
@@ -88,6 +89,8 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         SCHttpUtils.post()
                 .url(HttpApi.TAG_QUERY)
                 .addParams("type", "model")
+                .addParams("page","0")
+                .addParams("size","20")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -142,8 +145,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                     selectedData.add(mDatas.get(position));
                 }
                 mDatas.get(position).setSelected(!selected);
-
-                mAddRoleAdapter.notifyDataSetChanged();
+                mAddRoleAdapter.notifyItemChanged(position);
             }
         });
 
@@ -266,8 +268,6 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Override
     public void onRightClick(View v) {
         addNewRole();
-
-
     }
 
     private void addNewRole() {
@@ -291,7 +291,6 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         }
 
         uploadImg();
-
 
     }
 
@@ -366,12 +365,12 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         String data = gson.toJson(model);
         if (selectedData != null && selectedData.size() != 0) {
 
-            List<Integer> jArray = new ArrayList<>();
+            List<String> jArray = new ArrayList<>();
             for (int i = 0; i < selectedData.size(); i++) {
-                int tagId = selectedData.get(i).getTagBean().getTagId();
-                jArray.add(tagId);
+                String tagName = selectedData.get(i).getTag();
+                jArray.add(tagName);
             }
-            String jArr = new Gson().toJson(jArray);
+            String jArr = JSON.toJSONString(jArray);
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHARACTER_MODEL_CREATE)
                     .addParams("dataString", data)

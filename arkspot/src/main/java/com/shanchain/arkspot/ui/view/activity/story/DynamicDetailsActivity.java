@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
@@ -26,10 +27,14 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicCommentAdapter;
 import com.shanchain.arkspot.adapter.StoryItemNineAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.BdCommentBean;
 import com.shanchain.arkspot.ui.model.CommentBean;
+import com.shanchain.arkspot.ui.model.CommentData;
+import com.shanchain.arkspot.ui.model.ContactBean;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
+import com.shanchain.arkspot.ui.model.ResponseContactInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
@@ -47,7 +52,6 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,11 +69,13 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     TextView mTvDynamicDetailsComment;
     @Bind(R.id.ll_dynamic_details)
     LinearLayout mLlDynamicDetails;
-    private List<CommentBean> datas = new ArrayList<>();
+    private List<BdCommentBean> datas = new ArrayList<>();
     private DynamicCommentAdapter mDynamicCommentAdapter;
     private View mHeadView;
     private StoryBeanModel mBeanModel;
     private StoryModelBean mBean;
+    private String mStoryId;
+    private int mCharacterId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -84,6 +90,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             finish();
         } else {
             mBean = mBeanModel.getStoryModel().getModelInfo().getBean();
+            mStoryId = mBeanModel.getStoryModel().getModelInfo().getStoryId();
+            mCharacterId = mBean.getCharacterId();
         }
 
         initToolBar();
@@ -96,7 +104,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.COMMENT_QUERY)
                 .addParams("storyId", mBean.getDetailId().substring(1))
-                .addParams("sort", "createTime")
                 .addParams("page", "0")
                 .addParams("size", "100")
                 .build()
@@ -110,17 +117,74 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("获取评论列表成功 = " + response);
+                        if (TextUtils.isEmpty(response)) {
+
+                            return;
+                        }
                         ResponseCommentInfo responseCommentInfo = new Gson().fromJson(response, ResponseCommentInfo.class);
                         if (!TextUtils.equals(responseCommentInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
                             return;
                         }
-                        List<CommentBean> commentBeanList = responseCommentInfo.getData();
+                        CommentData data = responseCommentInfo.getData();
+                        List<CommentBean> commentBeanList = data.getContent();
+                        List<Integer> characterIds = new ArrayList<>();
                         LogUtils.i("评论数量 = " + commentBeanList.size());
-                        datas.addAll(commentBeanList);
-                        Collections.reverse(datas);
-                        mDynamicCommentAdapter.notifyDataSetChanged();
+                        List<BdCommentBean> bdCommentBeanList = new ArrayList<>();
+                        for (int i = 0; i < commentBeanList.size(); i++) {
+                            BdCommentBean bdCommentBean = new BdCommentBean();
+                            CommentBean commentBean = commentBeanList.get(i);
+                            int characterId = commentBean.getCharacterId();
+                            characterIds.add(characterId);
+                            bdCommentBean.setCharacterId(characterId);
+                            bdCommentBean.setCommentBean(commentBean);
+                            bdCommentBeanList.add(bdCommentBean);
+                        }
+                        obtainCharacterInfos(bdCommentBeanList, characterIds);
                     }
                 });
+    }
+
+    private void obtainCharacterInfos(final List<BdCommentBean> commentBeanList, List<Integer> characterIds) {
+
+        String jArr = JSON.toJSONString(characterIds);
+        SCHttpUtils.post()
+                .url(HttpApi.CHARACTER_BRIEF)
+                .addParams("dataArray", jArr)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取角色信息失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取角色信息 = " + response);
+                        try {
+                            ResponseContactInfo responseContactInfo = JSONObject.parseObject(response, ResponseContactInfo.class);
+                            String code = responseContactInfo.getCode();
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                List<ContactBean> data = responseContactInfo.getData();
+                                for (int i = 0; i < commentBeanList.size(); i++) {
+                                    BdCommentBean bdCommentBean = commentBeanList.get(i);
+
+                                    for (ContactBean contactBean : data) {
+                                        if (bdCommentBean.getCharacterId() == contactBean.getCharacterId()) {
+                                            bdCommentBean.setContactBean(contactBean);
+                                        }
+                                    }
+                                }
+                                datas.addAll(commentBeanList);
+                                mDynamicCommentAdapter.notifyDataSetChanged();
+                            }
+                        } catch (Exception e) {
+                            LogUtils.i("获取角色信息失败");
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
     }
 
     private void initRecyclerView() {
@@ -200,7 +264,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             nineGridImageView.setImagesData(imgList);
         }
 
-
         ivAvatar.setOnClickListener(this);
         tvForwarding.setOnClickListener(this);
         tvHeadComment.setOnClickListener(this);
@@ -250,6 +313,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
+                        reportIntent.putExtra("storyId",mStoryId);
+                        reportIntent.putExtra("characterId",mCharacterId+"");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;

@@ -1,4 +1,4 @@
-package com.shanchain.arkspot.utils;
+package com.shanchain.data.common.utils;
 
 import android.content.Context;
 import android.graphics.Color;

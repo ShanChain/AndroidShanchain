@@ -217,8 +217,8 @@ public class MyApplication extends BaseApplication {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new LoggerInterceptor("TAG"))
                     //.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
-                    .connectTimeout(60000L, TimeUnit.MILLISECONDS)
-                    .readTimeout(60000L, TimeUnit.MILLISECONDS)
+                    .connectTimeout(30000L, TimeUnit.MILLISECONDS)
+                    .readTimeout(30000L, TimeUnit.MILLISECONDS)
                     //其他配置
                     .build();
             OkHttpUtils.initClient(okHttpClient);

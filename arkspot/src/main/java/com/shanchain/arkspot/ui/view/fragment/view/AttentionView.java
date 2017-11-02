@@ -1,6 +1,6 @@
 package com.shanchain.arkspot.ui.view.fragment.view;
 
-import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
 
 import java.util.List;
 
@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface AttentionView {
 
-    void initSuccess(List<StoryInfo> storyInfoList);
-
-    void initError(Exception e);
+    void initSuccess(List<StoryBeanModel> list);
 
 }

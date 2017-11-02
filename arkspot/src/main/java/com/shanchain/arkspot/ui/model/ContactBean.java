@@ -6,11 +6,40 @@ package com.shanchain.arkspot.ui.model;
 
 public class ContactBean {
 
+
+    /**
+     * headImg : http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/193a2c667de440b595a790bc5e7c7d69.jpg
+     * intro : 长久以来，大陆一直流传着关于灭世魔神王的传说。他象征着绝对的黑暗，要将人间界带入永夜和毁灭之中，而他也许的大魔王的转身。
+     * name : 项羽
+     * modelNo : 1
+     * type : 1
+     * characterId : 69
+     * userId : 25
+     */
+
+    private String headImg;
+    private String intro;
     private String name;
-    private String des;
-    private String hxId;
-    private String img;
-    private boolean isGroup;
+    private int modelNo;
+    private int type;
+    private int characterId;
+    private int userId;
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 
     public String getName() {
         return name;
@@ -20,35 +49,35 @@ public class ContactBean {
         this.name = name;
     }
 
-    public String getDes() {
-        return des;
+    public int getModelNo() {
+        return modelNo;
     }
 
-    public void setDes(String des) {
-        this.des = des;
+    public void setModelNo(int modelNo) {
+        this.modelNo = modelNo;
     }
 
-    public String getHxId() {
-        return hxId;
+    public int getType() {
+        return type;
     }
 
-    public void setHxId(String hxId) {
-        this.hxId = hxId;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public String getImg() {
-        return img;
+    public int getCharacterId() {
+        return characterId;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
     }
 
-    public boolean isGroup() {
-        return isGroup;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setGroup(boolean group) {
-        isGroup = group;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

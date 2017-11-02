@@ -121,6 +121,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_REGISTER)
                 .addParams("Timestamp", time)
+                .addParams("deviceToken","adhiakdh23424")
                 .addParams("encryptAccount", encryptAccount)
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)

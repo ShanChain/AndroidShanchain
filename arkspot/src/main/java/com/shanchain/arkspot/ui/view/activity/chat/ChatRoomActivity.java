@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroup;
@@ -23,6 +24,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ChatRoomMsgAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
@@ -32,6 +34,7 @@ import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.arkspot.utils.KeyboardUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -95,9 +98,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private boolean mIsGroup;
     private boolean move;
     //发消息的头像图片
-    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/14/2152366361.jpg";
+    String myHeadImg = "";
 //    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
-    String nickName = "鸣人";
+    String nickName = "";
     private String groupHeadImg = "http://img1.2345.com/duoteimg/zixunImg/local/2016/11/16/1479289866985.jpg";
 
     @Override
@@ -117,22 +120,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void initGroup() {
         if (mChatType == EMMessage.ChatType.GroupChat) {
             //是群聊
-           /*
-            从本地获取群成员列表
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
-            memberList = group.getMembers();
-            List<String> adminList = group.getAdminList();
-            for (int i = 0; i < memberList.size(); i++) {
-                LogUtils.d("群成员:" + memberList.get(i));
-            }
-
-            for (int i = 0; i < adminList.size(); i++) {
-                LogUtils.d("群管理员:" + adminList.get(i));
-            }
-
-            if (memberList.size() == 0) {
-                LogUtils.d("未获取到群成员");
-            }*/
 
             //添加全局管理员
             EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
@@ -228,6 +215,11 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
         String s = intent.getStringExtra("toChatName");
+
+        String cacheCharacterInfo = SCCacheUtils.getCacheCharacterInfo();
+        CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo,CharacterInfo.class);
+        myHeadImg = characterInfo.getHeadImg();
+        nickName = characterInfo.getName();
         if (mIsGroup) {
             mChatType = EMMessage.ChatType.GroupChat;
         } else {

@@ -39,6 +39,8 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
         SCHttpUtils.post()
                 .url(HttpApi.TAG_QUERY)
                 .addParams("type", "space")
+                .addParams("page","0")
+                .addParams("size","20")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -52,7 +54,6 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.d("获取的热门标签数据" + response);
                         TagInfo tagInfo = new Gson().fromJson(response, TagInfo.class);
-
                         LogUtils.d("=========" + tagInfo.toString());
 
                         List<TagContentBean> tagList = tagInfo.getData().getContent();
@@ -117,6 +118,6 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
 
     @Override
     public void loadMoreData(String userId) {
-
+        mStoryTitleView.loadMoreResult();
     }
 }

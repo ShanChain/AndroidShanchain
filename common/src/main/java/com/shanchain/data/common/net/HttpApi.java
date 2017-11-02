@@ -7,11 +7,14 @@ package com.shanchain.data.common.net;
 public interface HttpApi {
 
     /** IM相关接口*/
-    String BASE_URL_IM = "http://47.91.178.114:8090";
+    String BASE_URL_IM = "http://47.91.178.114:8080/test";
 
     /** 全局接口地址*/
-    String TEST_URL = "http://47.91.178.114:8080";
-    String BASE_URL = "http://47.91.178.114:8080";
+    String TEST_URL = "http://47.91.178.114:8080/test";
+    String BASE_URL = "http://47.91.178.114:8080/test";
+
+
+
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 
@@ -51,8 +54,9 @@ public interface HttpApi {
     /** 获取我的粉丝列表*/
     String FOCUS_FANS = BASE_URL + "/v1/focus/funs";
 
-    /** 查找我所在的群*/
-    String GROUP_MY_GROUP = BASE_URL_IM + "/hx/group/myGroup";
+    /** 查找我关注的列表*/
+    String FOCUS_QUERY = BASE_URL + "/v1/focus/query";
+
 
     /** 查看群信息*/
     String HX_GROUP_QUARY = BASE_URL_IM + "/hx/group/query";
@@ -156,5 +160,28 @@ public interface HttpApi {
 
     /** 获取时空的话题列表*/
     String TOPIC_QUERY_SPACEID = BASE_URL +  "/v1/topic/query/spaceId";
+
+    /** 举报故事*/
+    String STORY_REPORT = BASE_URL + "/v1/story/report";
+
+    /** 获取当前角色*/
+    String CHARACTER_GET_CURRENT = BASE_URL + "/v1/character/get/current";
+
+    /** 获取我的评论*/
+    String COMMENT_LIST_MINE = BASE_URL + "/v1/storyComment/list/mine";
+
+    /** 通过故事id列表获取故事*/
+    String STORY_GET = BASE_URL + "/v1/story/get";
+
+    /** 添加角色关注*/
+    String FOCUS_FOCUS = BASE_URL + "/v1/focus/focus";
     
+    /** 根据cahracterId查找环信联系人*/
+    String HX_USER_LIST = BASE_URL_IM + "/hx/user/list";
+
+    /** 查找我所在的群*/
+    String HX_GROUP_MYGROUP = BASE_URL_IM + "/hx/group/myGroup";
+
+    /**创建大戏*/
+    String HX_DRAMA_CREATE = BASE_URL_IM + "/hx/game/create";
 }

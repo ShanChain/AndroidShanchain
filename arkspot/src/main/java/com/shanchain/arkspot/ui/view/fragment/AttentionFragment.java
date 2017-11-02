@@ -9,8 +9,9 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.adapter.AttentionAdapter;
+import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
+
 /**
  * Created by zhoujian on 2017/8/23.
  */
@@ -37,8 +39,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
     RecyclerView mXrvAttention;
     @Bind(R.id.srl_fragment_attention)
     SwipeRefreshLayout mSrlFragmentAttention;
-    List<StoryInfo> datas = new ArrayList<>();
-    private AttentionAdapter mAdapter;
+    List<StoryBeanModel> datas = new ArrayList<>();
+    private CurrentAdapter mAdapter;
+
 
     @Override
     public View initView() {
@@ -54,10 +57,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
         mSrlFragmentAttention.setOnRefreshListener(this);
         mXrvAttention.setLayoutManager(new LinearLayoutManager(mActivity));
         mSrlFragmentAttention.setRefreshing(true);
-        String characterId = "12";
-        presenter.initData(characterId);
+        presenter.initData(0,100);
 
-        mAdapter = new AttentionAdapter(datas);
+        mAdapter = new CurrentAdapter(datas);
         mXrvAttention.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mXrvAttention.setAdapter(mAdapter);
         mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
@@ -135,7 +137,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      *
      */
     private void clickComment(int position) {
-        StoryInfo info = datas.get(position);
+        StoryBeanModel info = datas.get(position);
         Intent intentComment = new Intent(mActivity,DynamicDetailsActivity.class);
         intentComment.putExtra("info",info);
         startActivity(intentComment);
@@ -207,19 +209,22 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
         }, 3000);
     }
 
+
     @Override
-    public void initSuccess(List<StoryInfo> storyInfoList) {
+    public void initSuccess(List<StoryBeanModel> list) {
         mSrlFragmentAttention.setRefreshing(false);
-        if (storyInfoList == null) {
+        if (list == null) {
+
             return;
+        } else {
+            //测试阶段,未分页加载
+            datas.clear();
+
+            datas.addAll(list);
+            mAdapter.notifyDataSetChanged();
+
+
         }
-        datas.addAll(storyInfoList);
-        mAdapter.notifyDataSetChanged();
-
     }
 
-    @Override
-    public void initError(Exception e) {
-        mSrlFragmentAttention.setRefreshing(false);
-    }
 }

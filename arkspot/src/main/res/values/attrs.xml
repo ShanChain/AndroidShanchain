@@ -16,4 +16,9 @@
         <attr format="reference|dimension" name="shadowSpace"/>
     </declare-styleable>
 
+    <declare-styleable name="RevealTextView">
+        <attr name="rtv_duration" format="integer" />
+        <attr name="android:text" />
+    </declare-styleable>
+
 </resources>

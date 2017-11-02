@@ -6,6 +6,6 @@ package com.shanchain.arkspot.ui.presenter;
 
 public interface AttentionPresenter {
 
-    void initData(String characterId);
+    void initData(int page,int size);
 
 }

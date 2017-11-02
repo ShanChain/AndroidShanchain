@@ -3,13 +3,15 @@ package com.shanchain.arkspot.adapter;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.CommentBean;
+import com.shanchain.arkspot.ui.model.BdCommentBean;
 import com.shanchain.arkspot.utils.DateUtils;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -18,25 +20,26 @@ import java.util.List;
  * Created by zhoujian on 2017/9/4.
  */
 
-public class DynamicCommentAdapter extends BaseQuickAdapter<CommentBean, BaseViewHolder> {
+public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseViewHolder> {
 
     private Drawable likeDefault;
     private Drawable likeSelected;
 
-    public DynamicCommentAdapter(@LayoutRes int layoutResId, @Nullable List<CommentBean> data) {
+    public DynamicCommentAdapter(@LayoutRes int layoutResId, @Nullable List<BdCommentBean> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, CommentBean item) {
+    protected void convert(BaseViewHolder helper, BdCommentBean item) {
 
-        helper.setText(R.id.tv_item_dynamic_comment, item.getContent());
-        helper.setText(R.id.tv_item_dynamic_comment_time, DateUtils.formatFriendly(new Date(item.getCreateTime())));
+        helper.setText(R.id.tv_item_dynamic_comment, item.getCommentBean().getContent());
+        helper.setText(R.id.tv_item_dynamic_comment_time, DateUtils.formatFriendly(new Date(item.getCommentBean().getCreateTime())));
         helper.addOnClickListener(R.id.tv_item_comment_like);
-
+        helper.setText(R.id.tv_item_dynamic_comment_name,item.getContactBean().getName());
         TextView tvLike = helper.getView(R.id.tv_item_comment_like);
-        tvLike.setText("" + item.getSupportCount());
-
+        tvLike.setText("" + item.getCommentBean().getSupportCount());
+        ImageView ivHead = helper.getView(R.id.iv_item_dynamic_comment_avatar);
+        GlideUtils.load(mContext,item.getContactBean().getHeadImg(),ivHead,0);
         if (likeDefault == null) {
             likeDefault = mContext.getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_default);
         }
@@ -48,7 +51,7 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<CommentBean, BaseVie
         likeDefault.setBounds(0,0,likeDefault.getMinimumWidth(),likeDefault.getMinimumHeight());
         likeSelected.setBounds(0,0,likeSelected.getMinimumWidth(),likeSelected.getMinimumHeight());
 
-        tvLike.setCompoundDrawables(null,null,item.isMySupport()?likeSelected:likeDefault,null);
+        tvLike.setCompoundDrawables(null,null,item.getCommentBean().isMySupport()?likeSelected:likeDefault,null);
 
     }
 }

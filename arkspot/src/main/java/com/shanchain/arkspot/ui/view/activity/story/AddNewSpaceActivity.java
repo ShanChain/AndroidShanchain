@@ -91,6 +91,8 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
         SCHttpUtils.post()
                 .url(HttpApi.TAG_QUERY)
                 .addParams("type", "space")
+                .addParams("size","20")
+                .addParams("page","0")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -117,8 +119,6 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                         } else {
                             ToastUtils.showToast(mContext, "获取模型标签失败！");
                         }
-
-
                     }
                 });
     }
@@ -131,8 +131,6 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
         mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
-
                 boolean selected = mDatas.get(position).isSelected();
                 if (selected) {
                     selectedData.remove(mDatas.get(position));
@@ -145,7 +143,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                 }
                 mDatas.get(position).setSelected(!selected);
 
-                mAddRoleAdapter.notifyDataSetChanged();
+                mAddRoleAdapter.notifyItemChanged(position);
             }
         });
     }
@@ -284,6 +282,11 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
             return;
         }
 
+        if (selectedData.size() == 0){
+            ToastUtils.showToast(mContext,"给你创造的世界加个标签吧~");
+            return;
+        }
+
         upLoad();
     }
 
@@ -362,12 +365,12 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
 
         if (selectedData != null && selectedData.size() != 0) {
 
-            List<Integer> jArray = new ArrayList<>();
+            List<String> jArray = new ArrayList<>();
             for (int i = 0; i < selectedData.size(); i++) {
-                int tagId = selectedData.get(i).getTagBean().getTagId();
-                jArray.add(tagId);
+                String tagName = selectedData.get(i).getTag();
+                jArray.add(tagName);
             }
-            String jArr = new Gson().toJson(jArray);
+            String jArr = JSON.toJSONString(jArray);
             SCHttpUtils.post()
                     .url(HttpApi.SPACE_CREAT)
                     .addParams("dataString", data)
@@ -416,7 +419,6 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
         }
 
     }
-
 
     @Override
     public void onLeftClick(View v) {

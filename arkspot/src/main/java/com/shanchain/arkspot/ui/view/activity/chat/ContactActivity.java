@@ -6,19 +6,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
-import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.ContactBean;
-import com.shanchain.arkspot.ui.model.GroupInfo;
-import com.shanchain.arkspot.ui.model.ResponseGroupInfo;
+import com.shanchain.arkspot.ui.model.BdContactInfo;
+import com.shanchain.arkspot.ui.presenter.ContactPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.ContactPresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.chat.view.ContactView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
-import okhttp3.Call;
 
 
-public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
+public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ContactView {
 
     @Bind(R.id.tb_contact)
     ArthurToolBar mTbContact;
@@ -37,9 +32,10 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
     EditText mEtContact;
     @Bind(R.id.elv_contact)
     ExpandableListView mElvContact;
-    List<String> parentList;
-    Map<String, ArrayList<ContactBean>> map;
+    private List<String> parentList = new ArrayList<>();
+    private Map<String, List<BdContactInfo>> map = new HashMap<>();
     private ContactAdapter mContactAdapter;
+    private ContactPresenter mPresenter;
 
 
     @Override
@@ -49,9 +45,13 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     protected void initViewsAndEvents() {
+
+        mPresenter = new ContactPresenterImpl(this);
+
         initToolBar();
-        initData();
         initListView();
+        initData();
+
     }
 
     private void initListView() {
@@ -62,16 +62,24 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         mElvContact.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String name = map.get(parentList.get(groupPosition)).get(childPosition).getHxId();
-                //ToastUtils.showToast(mContext, "点击了" + parentList.get(groupPosition) + "的" + name);
-                Intent intent = new Intent(mContext, ChatRoomActivity.class);
-                if (parentList.get(groupPosition).equals("对话场景")) {
-                    intent.putExtra("isGroup", true);
-                } else {
-                    intent.putExtra("isGroup", false);
+                BdContactInfo bdContactInfo = map.get(parentList.get(groupPosition)).get(childPosition);
+                boolean isGroup = bdContactInfo.isGroup();
+                String name ="";
+                if (isGroup){
+                    name = bdContactInfo.getGroupInfo().getGroupId();
+                }else {
+                    name = bdContactInfo.getHxUerBean().getHxUserName();
                 }
-                intent.putExtra("toChatName", name);
-                startActivity(intent);
+
+                if (TextUtils.isEmpty(name)){
+                    ToastUtils.showToast(mContext,"当前用户异常");
+
+                }else {
+                    Intent intent = new Intent(mContext, ChatRoomActivity.class);
+                    intent.putExtra("isGroup", isGroup);
+                    intent.putExtra("toChatName", name);
+                    startActivity(intent);
+                }
                 return true;
             }
         });
@@ -80,106 +88,16 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initData() {
-        map = new HashMap<>();
-        parentList = new ArrayList<>();
         parentList.add("我的关注");
         parentList.add("互相关注");
         parentList.add("我的粉丝");
         parentList.add("对话场景");
-        //粉丝列表集合
-        final ArrayList<ContactBean> myFans = new ArrayList<>();
-        //关注列表集合
-        final ArrayList<ContactBean> myFocus = new ArrayList<>();
-        //对话场景列表集合
-        final ArrayList<ContactBean> conversationScene = new ArrayList<>();
-        //互相关注列表集合
-        ArrayList<ContactBean> eachFocus = new ArrayList<>();
-
-        map.put("对话场景", conversationScene);
-
-        map.put("互相关注", eachFocus);
-
-        //获取我的关注列表
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.FOCUS_MY_FOCUS)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("获取关注列表失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d("获取我的关注的" + response);
-
-                        map.put("我的关注", myFocus);
-                        mContactAdapter.notifyDataSetChanged();
-                    }
-                });
-
-        map.put("我的关注", myFocus);
-
-        //获取粉丝列表
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.FOCUS_FANS)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("获取我的粉丝列表失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d("获取我的粉丝列表成功" + response);
-
-                        map.put("我的粉丝", myFans);
-                        mContactAdapter.notifyDataSetChanged();
-                    }
-                });
-        map.put("我的粉丝", myFans);
-
-        //获取群
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.GROUP_MY_GROUP)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.e("获取群信息失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d("获取的群信息 = " + response);
-                        if (TextUtils.isEmpty(response)){
-                            return;
-                        }
-                        ResponseGroupInfo responseGroupInfo = new Gson().fromJson(response, ResponseGroupInfo.class);
-                        if (!TextUtils.equals(responseGroupInfo.getCode(), NetErrCode.COMMON_SUC_CODE)){
-                            return;
-                        }
-
-                        List<GroupInfo> groupInfoList = responseGroupInfo.getData();
-
-                        for (int i = 0; i < groupInfoList.size(); i ++) {
-                            ContactBean contactBean = new ContactBean();
-                            GroupInfo groupInfo = groupInfoList.get(i);
-                            contactBean.setName(groupInfo.getGroupName());
-                            contactBean.setGroup(true);
-                            contactBean.setDes(groupInfo.getGroupDesc());
-                            contactBean.setImg(groupInfo.getIconUrl());
-                            contactBean.setHxId(groupInfo.getGroupId());
-                            conversationScene.add(contactBean);
-                        }
-                        map.put("对话场景",conversationScene);
-                        mContactAdapter.notifyDataSetChanged();
-                    }
-                });
+        ArrayList<BdContactInfo> bdContactInfos = new ArrayList<>();
+        map.put("我的关注", bdContactInfos);
+        map.put("互相关注", bdContactInfos);
+        map.put("我的粉丝", bdContactInfos);
+        map.put("对话场景", bdContactInfos);
+        mPresenter.initContact();
 
     }
 
@@ -191,5 +109,26 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    @Override
+    public void initContactSuccess(List<BdContactInfo> focus, List<BdContactInfo> fans, List<BdContactInfo> each) {
+        if (focus == null) {
+            return;
+        }
+        map.put("互相关注", each);
+        map.put("我的粉丝", fans);
+        map.put("我的关注", focus);
+        mContactAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void initGroupSuccess(List<BdContactInfo> group) {
+        if (group == null) {
+            return;
+        }
+
+        map.put("对话场景", group);
+        mContactAdapter.notifyDataSetChanged();
     }
 }

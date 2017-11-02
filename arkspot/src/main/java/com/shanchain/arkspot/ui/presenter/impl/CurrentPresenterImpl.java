@@ -170,10 +170,13 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                         }
 
                         List<StoryModelBean> data = storyListInfo.getData();
-                        if (data != null) {
+                        if (data != null && data.size() >0) {
 
                             obtainCharacterBrief(data);
 
+                        }else {
+                            mCurrentView.initSuccess(null);
+                            return;
                         }
 
                     }

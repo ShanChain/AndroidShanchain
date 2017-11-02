@@ -50,4 +50,24 @@ public class DateUtils {
         return "刚刚";
     }
 
+
+    public static String getDramaStartTime(long diffTime){
+        long minTime = diffTime / 60;   //分
+        long hourTime = minTime / 60;   //小时
+        long dayTime = hourTime / 24;   //天
+        if (dayTime>0){
+            return dayTime + "天"+ (hourTime - dayTime*24) + "小时" + (minTime - hourTime * 60) +"分钟";
+        }
+
+        if (hourTime > 0){
+            return hourTime + "小时" + (minTime - hourTime * 60) +"分钟";
+        }
+
+        if (minTime > 0){
+            return minTime +"分钟";
+        }
+
+        return "";
+    }
+
 }

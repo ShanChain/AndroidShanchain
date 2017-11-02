@@ -8,11 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shanchain.arkspot.R;
-import com.shanchain.arkspot.ui.model.ContactBean;
+import com.shanchain.arkspot.ui.model.BdContactInfo;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +23,9 @@ public class ContactAdapter extends BaseExpandableListAdapter {
 
     List<String> parent;
 
-    Map<String, ArrayList<ContactBean>> map;
+    Map<String, List<BdContactInfo>> map;
 
-    public ContactAdapter(List<String> parent, Map<String, ArrayList<ContactBean>> map) {
+    public ContactAdapter(List<String> parent, Map<String, List<BdContactInfo>> map) {
         this.parent = parent;
         this.map = map;
 
@@ -52,8 +51,8 @@ public class ContactAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         String key = parent.get(groupPosition);
-        ContactBean contactInfo = map.get(key).get(childPosition);
-        return contactInfo;
+        BdContactInfo bdContactInfo = map.get(key).get(childPosition);
+        return bdContactInfo;
     }
 
     @Override
@@ -98,10 +97,11 @@ public class ContactAdapter extends BaseExpandableListAdapter {
             holder = (ChildViewHolder) convertView.getTag();
         }
 
-        ContactBean contactInfo = map.get(this.parent.get(groupPosition)).get(childPosition);
-        holder.tvName.setText(contactInfo.getName());
-        holder.tvDes.setText(contactInfo.getDes());
-        GlideUtils.load(convertView.getContext(),contactInfo.getImg(),holder.ivAvatar,R.mipmap.abs_addanewrole_def_photo_default);
+        BdContactInfo bdContactInfo = map.get(this.parent.get(groupPosition)).get(childPosition);
+        boolean isGroup = bdContactInfo.isGroup();
+        holder.tvName.setText(isGroup?bdContactInfo.getGroupInfo().getGroupName():bdContactInfo.getContactBean().getName());
+        holder.tvDes.setText(isGroup?bdContactInfo.getGroupInfo().getGroupDesc():bdContactInfo.getContactBean().getIntro());
+        GlideUtils.load(convertView.getContext(),isGroup?bdContactInfo.getGroupInfo().getIconUrl():bdContactInfo.getContactBean().getHeadImg(),holder.ivAvatar,0);
 
         if (this.parent.get(groupPosition).equals("我的关注")) {
             Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_selected);

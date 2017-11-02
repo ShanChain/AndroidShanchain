@@ -17,4 +17,5 @@ public interface StoryTitleView {
 
     void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList);
 
+    void loadMoreResult();
 }

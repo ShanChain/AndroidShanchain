@@ -9,6 +9,7 @@ import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.hyphenate.chat.EMClient;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -116,6 +117,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     public void Logout(){
         String userId = SCCacheUtils.getCache("0", "curUser");
         SCCacheUtils.setCache(userId,"token","");
+        EMClient.getInstance().logout(true);
         ActivityStackManager.getInstance().appExit();
     }
 
