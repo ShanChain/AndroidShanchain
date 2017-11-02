@@ -25,9 +25,9 @@ android {
     signingConfigs {
         release {
             keyAlias 'zj'
-            keyPassword 'shanchain'
+            keyPassword '123456'
             storeFile file('keystore/shanchain.jks')
-            storePassword '123456'
+            storePassword 'shanchain'
             v1SigningEnabled true
         }
     }

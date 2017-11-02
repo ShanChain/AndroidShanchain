@@ -35,7 +35,7 @@ public class SCBottomDialogModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void show(final ReadableMap options, final Callback callback) {
+    public void show(final ReadableMap options, final Callback successCallback,final Callback failCallback) {
 
         ReadableMapKeySetIterator iterator = options.keySetIterator();
         List<String> items = new ArrayList<>();
@@ -64,7 +64,7 @@ public class SCBottomDialogModule extends ReactContextBaseJavaModule {
             @Override
             public void btnClick(String btnValue) {
                 String key = getKeyByValue(options, btnValue);
-                callback.invoke(key);
+                successCallback.invoke(key);
             }
         });
 
