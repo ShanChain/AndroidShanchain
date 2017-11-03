@@ -279,7 +279,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                             login(response,data);
                             return;
                         }
-                        EMClient.getInstance().logout(true, new EMCallBack() {
+                        EMClient.getInstance().logout(false, new EMCallBack() {
                             @Override
                             public void onSuccess() {
                                 login(response, data);

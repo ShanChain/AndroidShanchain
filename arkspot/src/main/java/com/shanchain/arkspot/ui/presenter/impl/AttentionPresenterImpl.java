@@ -101,16 +101,10 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                             }
 
                             storyModel.setModelInfo(storyModelInfo);
-
-
                             datas.add(storyModel);
                         }
-
                         LogUtils.i("datas长度 = " + datas.size());
-
-
                         obtainStoryList(ids);
-
                     }
                 });
     }

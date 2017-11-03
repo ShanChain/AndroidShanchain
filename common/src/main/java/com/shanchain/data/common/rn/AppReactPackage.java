@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.module.model.ReactModuleInfoProvider;
 import com.shanchain.data.common.rn.modules.BirthdayPickerModule;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.rn.modules.PhotoPickerModule;
 import com.shanchain.data.common.rn.modules.RNCommonCacheHelper;
 import com.shanchain.data.common.rn.modules.RNNetworkModule;
 import com.shanchain.data.common.rn.modules.SCBottomDialogModule;
@@ -91,6 +92,13 @@ public class AppReactPackage extends LazyReactPackage {
             @Override
             public NativeModule get() {
                 return new BirthdayPickerModule(reactContext);
+            }
+        }));
+
+        nativeModules.add(new ModuleSpec(PhotoPickerModule.class, new Provider<NativeModule>() {
+            @Override
+            public NativeModule get() {
+                return new PhotoPickerModule(reactContext);
             }
         }));
 

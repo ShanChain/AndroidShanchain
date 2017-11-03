@@ -1,27 +1,39 @@
 package com.shanchain.data.common.rn.modules;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.JavaOnlyArray;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.shanchain.common.R;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.bean.UpLoadImgBean;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetDataFormatUtils;
-import com.shanchain.common.R;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.NetworkUtils;
-
+import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.OssHelper;
+import com.shanchain.data.common.utils.SCImageUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -150,8 +162,75 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
 
         }
 
+    }
 
+    @ReactMethod
+    public void uploadFile(ReadableMap options , final Callback successCallback,final Callback failCallback ){
+        ReadableArray filePaths = options.getArray("filePaths");
+        Log.i("flyye",filePaths.toString());
+        final List<String> files = new ArrayList<>();
 
+        for (int i = 0; i < filePaths.size(); i ++) {
+            files.add(filePaths.getString(i));
+        }
+
+        SCHttpUtils.post()
+                .url(HttpApi.UP_LOAD_FILE)
+                .addParams("num",files.size()+"")
+                .build()
+                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取图片地址失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(UpLoadImgBean response, int id) {
+                        try {
+                            LogUtils.i("获取图片地址成功 " );
+                            String accessKeyId = response.getAccessKeyId();
+                            String accessKeySecret = response.getAccessKeySecret();
+                            String securityToken = response.getSecurityToken();
+                            List<String> uuidList = response.getUuidList();
+                            upLoadOss(accessKeyId,accessKeySecret,securityToken,uuidList,files,successCallback);
+                        } catch (Exception e) {
+                            LogUtils.i("获取图片地址失败");
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
 
     }
+
+    private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken,final List<String> uuidList, final List<String> files, final Callback callback) {
+        Activity topActivity =
+                ActivityStackManager.getInstance().getTopActivity();
+        final List<String> uuidListBack = new ArrayList<>(uuidList);
+
+        List<String> compressImages = SCImageUtils.compressImages(topActivity, files);
+
+        final OssHelper helper = new OssHelper(topActivity,accessKeyId,accessKeySecret,securityToken);
+        helper.setOnUploadListener(new OssHelper.OnUploadListener() {
+            @Override
+            public void upLoadSuccess(boolean isSuccess) {
+                if (isSuccess){
+                    LogUtils.i("文件上传阿里云成功");
+                    WritableArray urls = new WritableNativeArray();
+                    for (int i = 0; i < uuidListBack.size(); i ++) {
+                        String url = uuidListBack.get(i);
+                        String imgUrl = helper.getImgUrl(url);
+                        urls.pushString(imgUrl);
+                    }
+                    callback.invoke(urls);
+
+                }else {
+                    callback.invoke();
+                }
+            }
+        });
+        helper.ossUpload(compressImages,uuidList);
+    }
+
 }

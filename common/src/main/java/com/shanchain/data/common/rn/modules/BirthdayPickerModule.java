@@ -32,7 +32,7 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void show(final Callback callback) {
+    public void show(final Callback sureCallback,final Callback cancelCallBack) {
         final Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
         SCTimePickerView pickerView = new SCTimePickerView.Builder(topActivity, new SCTimePickerView.OnTimeSelectListener() {
             @Override
@@ -40,7 +40,7 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                 String format = simpleDateFormat.format(date);
-                callback.invoke(format);
+                sureCallback.invoke(format);
             }
 
         })
@@ -59,7 +59,7 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
       pickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
           @Override
           public void onCancelClick(View v) {
-              callback.invoke("clear");
+              cancelCallBack.invoke();
           }
       });
     }

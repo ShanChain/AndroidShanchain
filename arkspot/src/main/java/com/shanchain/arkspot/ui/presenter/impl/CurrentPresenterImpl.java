@@ -198,7 +198,6 @@ public class CurrentPresenterImpl implements CurrentPresenter {
             LogUtils.i("构建数据结果 = " + beanModel);
         }
 
-
         mCurrentView.initSuccess(list);
     }
 

@@ -1,4 +1,4 @@
-package com.shanchain.arkspot.utils;
+package com.shanchain.data.common.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -93,8 +93,6 @@ public class OssHelper {
                 new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                     @Override
                     public void onSuccess(PutObjectRequest request, PutObjectResult result) { // 上传成功
-
-
                         urls.remove(0);
                         filePaths.remove(0);
                         ossUpload(filePaths,urls);// 递归同步效果

@@ -34,6 +34,10 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
 //生日时间选择器
     compile 'com.contrarywind:Android-PickerView:3.2.5'
+    //阿里云oss
+    compile 'com.aliyun.dpa:oss-android-sdk:2.4.3'
+    //图片上传
+    compile 'me.iwf.photopicker:PhotoPicker:0.9.5@aar'
 
 }
 

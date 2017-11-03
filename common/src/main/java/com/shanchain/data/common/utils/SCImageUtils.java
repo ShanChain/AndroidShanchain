@@ -1,11 +1,9 @@
-package com.shanchain.arkspot.utils;
+package com.shanchain.data.common.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
-import com.shanchain.data.common.utils.LogUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -144,6 +142,7 @@ public class SCImageUtils {
 
     /**
      *  描述： 压缩图片
+     *  @return 返回压缩后图片的文件路径
      */
     public static List<String> compressImages(Context context, List<String> imgPaths)  {
         List<String> compressImgPaths = new ArrayList<>();
