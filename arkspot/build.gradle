@@ -37,12 +37,13 @@ android {
             signingConfig signingConfigs.release
         }
         release {
-            buildConfigField "boolean", "RN_DEBUG", "true"
+            buildConfigField "boolean", "RN_DEBUG", "false"
             // 指定签名
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "LOG_DEBUG", "true"
-            minifyEnabled false
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled true
             zipAlignEnabled false
+            shrinkResources true
             //设置是否混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

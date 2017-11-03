@@ -193,14 +193,14 @@ public    class SCReactActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+       // EventBus.getDefault().unregister(this);
         mDelegate.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         mDelegate.onResume();
     }
 

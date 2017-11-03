@@ -142,7 +142,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
-        showLoadingDialog();
+        showLoadingDialog(true);
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
         mToChatName = intent.getStringExtra("toChatName");
