@@ -34,7 +34,7 @@ public class BaseApplication extends Application implements ReactApplication {
         @Override
         public boolean getUseDeveloperSupport() {
 //            return BuildConfig.DEBUG;
-            return true;
+            return false;
         }
 
         @Override
