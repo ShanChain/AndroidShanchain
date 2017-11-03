@@ -36,7 +36,8 @@ public class AttentionPresenterImpl implements AttentionPresenter {
     //自定义的故事数据模型
     List<StoryModel> datas = new ArrayList<>();
 
-    public AttentionPresenterImpl(AttentionView attentionView) {
+    public
+    AttentionPresenterImpl(AttentionView attentionView) {
         mAttentionView = attentionView;
     }
 
@@ -220,7 +221,6 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                             storyModelInfo.setBean(bean);
                         }
                     }
-
                     for (ResponseCharacterBrief characterBrief : characterBriefList) {
                         int characterId = characterBrief.getCharacterId();
                         if (characterId == storyModelInfo.getBean().getCharacterId()) {
@@ -245,12 +245,8 @@ public class AttentionPresenterImpl implements AttentionPresenter {
             int type = bean.getType();
             beanModel.setItemType(type);
             list.add(beanModel);
-
             LogUtils.i("构建数据结果 = " + beanModel);
         }
-
         mAttentionView.initSuccess(list);
     }
-
-
 }

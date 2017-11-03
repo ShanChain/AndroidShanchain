@@ -71,7 +71,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         clickAvatar(position);
                         break;
                     case R.id.iv_item_story_more:
-                        report();
+                        report(position);
                         break;
                     case R.id.tv_item_story_forwarding:
                         clickForwarding(position);
@@ -126,6 +126,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);
         int userId = datas.get(position).getStoryModel().getModelInfo().getCharacterBrief().getCharacterId();
         intent.putExtra("characterId",userId);
+        startActivity(intent);
     }
 
     /**
@@ -154,7 +155,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
     }
 
-    private void report() {
+    private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
                 new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
@@ -169,6 +170,10 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
+                        String storyId = datas.get(position).getStoryModel().getModelInfo().getStoryId();
+                        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+                        reportIntent.putExtra("storyId",storyId);
+                        reportIntent.putExtra("characterId",characterId);
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -212,7 +217,6 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
             }
         }, 3000);
     }
-
 
     @Override
     public void initSuccess(List<StoryBeanModel> list) {
