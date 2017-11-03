@@ -14,6 +14,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.bean.UpLoadImgBean;
@@ -164,7 +165,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void uploadFile(ReadableMap options , final Callback callback,final Callback errorCallBack){
         ReadableArray filePaths = options.getArray("filePaths");
-
+        Log.i("flyye",filePaths.toString());
         final List<String> files = new ArrayList<>();
 
         for (int i = 0; i < filePaths.size(); i ++) {
@@ -204,8 +205,10 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
     }
 
     private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken, List<String> files, final List<String> uuidList, final Callback callback,final Callback errorCallBack) {
+
         Activity topActivity =
                 ActivityStackManager.getInstance().getTopActivity();
+        final List<String> uuidListBack = new ArrayList<>(uuidList);
 
         List<String> compressImages = SCImageUtils.compressImages(topActivity, files);
 
@@ -215,9 +218,9 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
             public void upLoadSuccess(boolean isSuccess) {
                 if (isSuccess){
                     LogUtils.i("文件上传阿里云成功");
-                    WritableArray urls = new JavaOnlyArray();
-                    for (int i = 0; i < uuidList.size(); i ++) {
-                        String url = uuidList.get(i);
+                    WritableArray urls = new WritableNativeArray();
+                    for (int i = 0; i < uuidListBack.size(); i ++) {
+                        String url = uuidListBack.get(i);
                         String imgUrl = helper.getImgUrl(url);
                         urls.pushString(imgUrl);
                     }

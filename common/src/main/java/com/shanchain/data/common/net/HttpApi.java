@@ -7,6 +7,7 @@ package com.shanchain.data.common.net;
 public interface HttpApi {
 
     /** IM相关接口*/
+
     String BASE_URL_IM = "http://47.91.178.114:8090";
 
     /** 全局接口地址*/
