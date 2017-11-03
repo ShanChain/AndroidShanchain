@@ -31,6 +31,10 @@
 -verbose
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
+-dontnote android.net.http.*
+-dontnote org.apache.commons.codec.**
+-dontnote org.apache.http.**
+
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Fragment
@@ -184,7 +188,51 @@
 -keep class com.alibaba.** { *;}
 -dontwarn com.alibaba.fastjson.**
 -keep class com.alibaba.fastjson.** { *;}
+-keep class me.iwf.photopicker.** { *;}
+-dontwarn me.iwf.photopicker.**
 
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
+-keep class okhttp3.internal.huc.** { *;}
+-dontwarn okio.**
+-dontwarn okhttp3.internal.huc.**
+-keep public class org.codehaus.* { *; }
+-keep public class java.nio.* { *; }
+
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+    public *;
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
+    public boolean *(android.webkit.WebView, java.lang.String);
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.webView, jav.lang.String);
+}
+
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-dontwarn android.net.http.**
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
 
 -dontwarn org.apache.http.**
 -keep class org.apache.http.** { *;}
@@ -193,6 +241,8 @@
 -keepattributes *Annotation*
 -keep class com.google.gson.** { *; }
 -dontwarn com.google.gson.**
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
 
 
 -keep class android.support.** { *; }
@@ -214,6 +264,7 @@
 -keep class com.umeng.** { *; }
 -keep class com.hianalytics.** { *; }
 -keep class com.squareup.picasso.* {*;}
+-dontwarn com.squareup.picasso.*    # 忽略警告
 -keep class com.hyphenate.* {*;}
 -keep class com.hyphenate.chat.** {*;}
 -keep class org.jivesoftware.** {*;}
@@ -280,6 +331,7 @@
 -keepattributes Signature
 
 -keep class **$$ViewBinder { *; }
+-dontwarn com.huawei.hms.update.**
 # hmscore-support: remote transport
 -keep class * extends com.huawei.hms.core.aidl.IMessageEntity { *; }
 # hmscore-support: remote transport
