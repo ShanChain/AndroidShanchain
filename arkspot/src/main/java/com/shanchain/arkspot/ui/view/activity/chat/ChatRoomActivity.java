@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -17,15 +16,12 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMCursorResult;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ChatRoomMsgAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.CharacterInfo;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.MsgInfo;
 import com.shanchain.arkspot.ui.presenter.ChatPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ChatPresenterImpl;
@@ -34,9 +30,9 @@ import com.shanchain.arkspot.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.arkspot.utils.KeyboardUtils;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -99,7 +95,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private boolean move;
     //发消息的头像图片
     String myHeadImg = "";
-//    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
+    //    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
     String nickName = "";
     private String groupHeadImg = "http://img1.2345.com/duoteimg/zixunImg/local/2016/11/16/1479289866985.jpg";
 
@@ -110,7 +106,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
-        LogUtils.d("当前环信账号 " + EMClient.getInstance().getCurrentUser());
+        LogUtils.i("当前环信账号 " + EMClient.getInstance().getCurrentUser());
         init();
         initToolBar();
         initListener();
@@ -121,8 +117,13 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         if (mChatType == EMMessage.ChatType.GroupChat) {
             //是群聊
 
+            if (mChatPresenter != null) {
+                mChatPresenter.initGroup(toChatName);
+            }
+
             //添加全局管理员
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
+           /* \
+           EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
             memberList.add("admin");
             //添加群主
             memberList.add(group.getOwner());
@@ -133,9 +134,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             for (int i = 0; i < adminList.size(); i++) {
                 LogUtils.d("群管理 : " + adminList.get(i));
             }
-
+*/
             //从环信服务器拉取群成员列表
-            ThreadUtils.runOnSubThread(new Runnable() {
+            /*ThreadUtils.runOnSubThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -157,7 +158,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                     }
                     LogUtils.d("群成员列表初始化完成");
                 }
-            });
+            });*/
 
         }
     }
@@ -217,7 +218,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         String s = intent.getStringExtra("toChatName");
 
         String cacheCharacterInfo = SCCacheUtils.getCacheCharacterInfo();
-        CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo,CharacterInfo.class);
+        CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo, CharacterInfo.class);
         myHeadImg = characterInfo.getHeadImg();
         nickName = characterInfo.getName();
         if (mIsGroup) {
@@ -355,7 +356,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                 String sceneContent = etSceneContent.getText().toString().trim();
                 ToastUtils.showToast(ChatRoomActivity.this, sceneContent);
                 int msgAttr = Constants.ATTR_SCENE;
-                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName,mIsGroup,groupHeadImg);
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg);
                 dialog.dismiss();
             }
         });
@@ -370,9 +371,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         String msg = mEtChatMsg.getText().toString();
         //设置消息类型
         int msgAttr = Constants.ATTR_DEFAULT;
-        //设置消息额外字符串参数（头像）
-        //String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
-
 
         boolean on = mShsChat.isOn();
         if (on) {
@@ -384,8 +382,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             msgAttr = Constants.ATTR_AGAINST;
         }
 
-
-        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName,mIsGroup,groupHeadImg);
+        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg);
         mEtChatMsg.getText().clear();
     }
 
@@ -506,6 +503,18 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
 
             }
         });
+    }
+
+    @Override
+    public void initGroupSuccess(List<String> members) {
+        if (members == null) {
+            ToastUtils.showToast(mContext,"获取群信息失败");
+        } else {
+            String groupName = members.get(0);
+            members.remove(0);
+            memberList = members;
+            mTbChat.setTitleText(groupName);
+        }
     }
 
     /**

@@ -55,8 +55,8 @@ public class MeetPersonActivity extends BaseActivity implements ArthurToolBar.On
 
         StoryItemNineAdapter itemNineAdapter = new StoryItemNineAdapter();
         mNgivMeetPerson.setAdapter(itemNineAdapter);
-        List<Integer> imgs = new ArrayList();
-        imgs.add(R.drawable.photo_bear);
+        List<String> imgs = new ArrayList();
+        imgs.add("http://a3.topitme.com/0/1c/12/1128107705fd5121c0l.jpg");
         mNgivMeetPerson.setImagesData(imgs);
     }
 

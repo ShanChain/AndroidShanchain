@@ -17,24 +17,22 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SceneDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.arkspot.manager.ActivityManager;
 import com.shanchain.arkspot.ui.model.ComUserInfo;
-import com.shanchain.arkspot.ui.model.GroupKeyBenInfo;
 import com.shanchain.arkspot.ui.model.GroupMemberBean;
 import com.shanchain.arkspot.ui.model.SceneImgInfo;
-import com.shanchain.arkspot.ui.model.SceneTotalInfo;
 import com.shanchain.arkspot.ui.model.UserDetailInfo;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.MarqueeText;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,7 +84,6 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     private boolean mIsGroup;
     private String mToChatName;
 
-    private SceneTotalInfo mSceneTotalInfo;
     private String mCurrentUser;
     private List<GroupMemberBean> mMembers;
     private ComUserInfo mGroupOwner;
@@ -138,7 +135,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
         }
 
-        mTvSceneDetailsName.setText(mSceneTotalInfo.getGroupName());
+       // mTvSceneDetailsName.setText(mSceneTotalInfo.getGroupName());
 
 
 
@@ -159,61 +156,6 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
             mTvSceneDetailsAnnouncement.setVisibility(View.VISIBLE);
 
            //自己服务器极客接口获取群信息
-            SCHttpUtils.post()
-                    .url(HttpApi.HX_GROUP_QUARY)
-                    .addParams("groupId", mToChatName)
-                    .build()
-                    .execute(new SCHttpCallBack<SceneTotalInfo>(SceneTotalInfo.class) {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtils.e("获取群成员失败");
-                            e.printStackTrace();
-                            closeLoadingDialog();
-                            ToastUtils.showToast(SceneDetailsActivity.this, "获取群信息异常");
-
-                        }
-
-                        @Override
-                        public void onResponse(SceneTotalInfo response, int id) {
-                            LogUtils.d("获取群成员成功 : " + response.getMembers().size());
-                            closeLoadingDialog();
-                            mSceneTotalInfo = response;
-
-                            mGroupOwner = mSceneTotalInfo.getGroupOwner();
-                            GroupMemberBean ownerBean = new GroupMemberBean();
-                            ownerBean.setAdmin(false);
-                            ownerBean.setBlocked(false);
-                            GroupKeyBenInfo groupKeyBenInfo = new GroupKeyBenInfo();
-                            groupKeyBenInfo.setHua(mGroupOwner);
-                            ownerBean.setKey(groupKeyBenInfo);
-                            mMembers = mSceneTotalInfo.getMembers();
-                            //将群主放在集合第一个
-                            mMembers.add(0, ownerBean);
-                            int size = mMembers.size();
-
-                            if (size >= 10) {
-                                size = 10;
-                            }
-
-                            for (int i = 0; i < size; i++) {
-                                GroupMemberBean groupMemberBean = mMembers.get(i);
-                                if (groupMemberBean.isAdmin()) {
-                                    ComUserInfo admin = groupMemberBean.getKey().getHua();
-                                    mAdmin.add(admin);
-                                }
-                                ComUserInfo hua = groupMemberBean.getKey().getHua();
-                                SceneImgInfo sceneImgInfo = new SceneImgInfo();
-                                sceneImgInfo.setImg(hua.getHeadImg());
-                                sceneImgInfo.setUserName(hua.getUserName());
-                                sceneImgInfo.setCharacterId(hua.getInfo().getCharacterId());
-                                mSceneImgInfos.add(sceneImgInfo);
-                            }
-
-                            mAdapter.notifyDataSetChanged();
-                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
-                            onInitView();
-                        }
-                    });
 
 
         } else {

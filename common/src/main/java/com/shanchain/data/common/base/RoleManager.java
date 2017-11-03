@@ -39,7 +39,8 @@ public class RoleManager {
         SCCacheUtils.setCache(userId,Constants.CACHE_SPACE_INFO,spaceInfo);
 
         String token = SCCacheUtils.getCache(userId, Constants.CACHE_TOKEN);
-
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_USER_NAME,userName);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_PWD,pwd);
         JSONObject gData = new JSONObject();
         gData.put("userId",userId);
         gData.put("token",token);

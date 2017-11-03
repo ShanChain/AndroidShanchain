@@ -60,7 +60,7 @@ public interface HttpApi {
 
 
     /** 查看群信息*/
-    String HX_GROUP_QUARY = BASE_URL_IM + "/hx/group/query";
+    String HX_GROUP_QUERY = BASE_URL_IM + "/hx/group/query";
 
     /** 获取群公告*/
     String HX_GROUP_GET_NOTICE = BASE_URL_IM + "/hx/group/notice/get";
@@ -188,4 +188,8 @@ public interface HttpApi {
 
     /** 获取角色联系人列表（互相关注带字母）*/
     String FOCUS_CONTACTS = BASE_URL + "/v1/focus/contacts";
+    
+    /** 获取群成员*/
+    String HX_GROUP_MEMBERS = BASE_URL_IM + "/hx/group/members";
+
 }

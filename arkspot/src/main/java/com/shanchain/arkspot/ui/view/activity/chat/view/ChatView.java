@@ -15,4 +15,6 @@ public interface ChatView {
     void onInit(List<MsgInfo> emMessageList);
 
     void onPullHistory(List<EMMessage> emMessages);
+
+    void initGroupSuccess(List<String> members);
 }

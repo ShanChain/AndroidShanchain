@@ -76,6 +76,8 @@ public class SplashActivity extends AppCompatActivity {
                 EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
                     @Override
                     public void onSuccess() {
+                        EMClient.getInstance().chatManager().loadAllConversations();
+                        EMClient.getInstance().groupManager().loadAllGroups();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -209,7 +211,7 @@ public class SplashActivity extends AppCompatActivity {
                                     public void onSuccess() {
                                         LogUtils.i("登录环信账号成功");
                                         EMClient.getInstance().chatManager().loadAllConversations();
-
+                                        EMClient.getInstance().groupManager().loadAllGroups();
                                         RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, spaceJson, userName, pwd);
                                         runOnUiThread(new Runnable() {
                                             @Override

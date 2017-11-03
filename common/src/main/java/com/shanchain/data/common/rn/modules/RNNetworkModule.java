@@ -191,7 +191,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             String accessKeySecret = response.getAccessKeySecret();
                             String securityToken = response.getSecurityToken();
                             List<String> uuidList = response.getUuidList();
-                            upLoadOss(accessKeyId,accessKeySecret,securityToken,uuidList,files,callback,errorCallBack);
+                            upLoadOss(accessKeyId,accessKeySecret,securityToken,files,uuidList,callback,errorCallBack);
                         } catch (Exception e) {
                             LogUtils.i("获取图片地址失败");
                             e.printStackTrace();

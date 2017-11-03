@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"/>
 
     <com.shanchain.arkspot.widgets.other.RevealTextView
-        android:text="让创造变简单"
+        android:text="让创作变简单"
         android:textColor="@color/colorTextDefault"
         android:textSize="20sp"
         android:layout_gravity="center_horizontal"

@@ -15,4 +15,5 @@ public interface ChatPresenter {
 
     void pullHistoryMsg(String toChatName);
 
+    void initGroup(String toChatName);
 }

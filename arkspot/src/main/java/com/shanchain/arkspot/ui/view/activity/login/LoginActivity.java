@@ -157,43 +157,11 @@ public class LoginActivity extends BaseActivity {
 
                         }
 
-
-
                     }
                 });
 
     }
 
-    private void hxLogin() {
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.HX_USER_REGIST)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("注册失败");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        if (TextUtils.isEmpty(response)) {
-                            return;
-                        }
-
-                        LogUtils.i("注册成功 = " + response);
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.i("返回码错误");
-                        } else {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String hxUserName = JSONObject.parseObject(data).getString("hxUserName");
-                            LogUtils.i("环信用户username = " + hxUserName);
-
-                        }
-                    }
-                });
-
-    }
 
     @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_wx, R.id.iv_login_wb, R.id.iv_login_qq})
     public void onClick(View view) {
@@ -452,7 +420,6 @@ public class LoginActivity extends BaseActivity {
                         List<SpaceInfo> data = responseSpaceInfo.getData();
                         SpaceInfo spaceDetailInfo = data.get(0);
                         String spaceJson = new Gson().toJson(spaceDetailInfo);
-
                         obtainHxInfo(characterId,characterInfoJson,spaceId,spaceJson);
                     }
                 });
@@ -491,7 +458,7 @@ public class LoginActivity extends BaseActivity {
                                            public void run() {
                                                LogUtils.i("登录环信账号成功");
                                                EMClient.getInstance().chatManager().loadAllConversations();
-
+                                               EMClient.getInstance().groupManager().loadAllGroups();
                                                RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,spaceJson,userName,pwd);
                                                ToastUtils.showToast(mContext,"穿越角色成功");
                                                Intent intent = new Intent(mContext, MainActivity.class);
