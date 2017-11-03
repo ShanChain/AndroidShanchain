@@ -122,7 +122,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：头像的点击事件
      */
     private void clickAvatar(int position) {
-        ToastUtils.showToast(mActivity, "头像");
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);
         int userId = datas.get(position).getStoryModel().getModelInfo().getCharacterBrief().getCharacterId();
         intent.putExtra("characterId",userId);

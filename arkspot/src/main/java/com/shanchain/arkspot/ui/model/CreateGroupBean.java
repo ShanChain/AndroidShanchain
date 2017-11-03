@@ -1,19 +1,18 @@
 package com.shanchain.arkspot.ui.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**
- * Created by zhoujian on 2017/9/19.
+ * Created by zhoujian on 2017/11/2.
  */
 
-public class CreatGroupInfo {
+public class CreateGroupBean {
 
     /**
      * approval : true
      * desc : server create group
      * groupname : testrestgrp12
+     * icon_url : xxxxxxxxxxx
      * maxusers : 300
      * members : ["sc2054380108","sc2054380109","20"]
      * owner : ddhfieio
@@ -23,10 +22,10 @@ public class CreatGroupInfo {
     private boolean approval;
     private String desc;
     private String groupname;
+    private String icon_url;
     private int maxusers;
     private String owner;
-    @SerializedName("public")
-    private boolean publicX;
+    private boolean pub;
     private List<String> members;
 
     public boolean isApproval() {
@@ -53,6 +52,14 @@ public class CreatGroupInfo {
         this.groupname = groupname;
     }
 
+    public String getIcon_url() {
+        return icon_url;
+    }
+
+    public void setIcon_url(String icon_url) {
+        this.icon_url = icon_url;
+    }
+
     public int getMaxusers() {
         return maxusers;
     }
@@ -69,12 +76,12 @@ public class CreatGroupInfo {
         this.owner = owner;
     }
 
-    public boolean isPublicX() {
-        return publicX;
+    public boolean isPub() {
+        return pub;
     }
 
-    public void setPublicX(boolean publicX) {
-        this.publicX = publicX;
+    public void setPub(boolean pub) {
+        this.pub = pub;
     }
 
     public List<String> getMembers() {

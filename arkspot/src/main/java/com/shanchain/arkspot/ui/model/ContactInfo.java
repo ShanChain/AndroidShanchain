@@ -12,6 +12,26 @@ public class ContactInfo implements Serializable{
     private String letter;
     private int moduleId;
     private boolean isSelected;
+    private String intro;
+    private int characterId;
+
+    public int getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+
 
     public String getImg() {
         return img;
