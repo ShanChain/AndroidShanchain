@@ -110,8 +110,6 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
-
-
                                 }
                             });
                 } else if (method.equalsIgnoreCase("post")) {
@@ -165,7 +163,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void uploadFile(ReadableMap options , final Callback successCallback,final Callback failCallback ){
+    public void uploadFile(ReadableMap options , final Callback callback,final Callback errorCallBack){
         ReadableArray filePaths = options.getArray("filePaths");
         Log.i("flyye",filePaths.toString());
         final List<String> files = new ArrayList<>();
@@ -183,6 +181,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取图片地址失败");
                         e.printStackTrace();
+                        errorCallBack.invoke("网络访问");
                     }
 
                     @Override
@@ -193,10 +192,11 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             String accessKeySecret = response.getAccessKeySecret();
                             String securityToken = response.getSecurityToken();
                             List<String> uuidList = response.getUuidList();
-                            upLoadOss(accessKeyId,accessKeySecret,securityToken,uuidList,files,successCallback);
+                            upLoadOss(accessKeyId,accessKeySecret,securityToken,uuidList,files,callback,errorCallBack);
                         } catch (Exception e) {
                             LogUtils.i("获取图片地址失败");
                             e.printStackTrace();
+                            errorCallBack.invoke("数据解析错误");
                         }
 
                     }
@@ -204,7 +204,8 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
 
     }
 
-    private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken,final List<String> uuidList, final List<String> files, final Callback callback) {
+    private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken, List<String> files, final List<String> uuidList, final Callback callback,final Callback errorCallBack) {
+
         Activity topActivity =
                 ActivityStackManager.getInstance().getTopActivity();
         final List<String> uuidListBack = new ArrayList<>(uuidList);
@@ -226,7 +227,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                     callback.invoke(urls);
 
                 }else {
-                    callback.invoke();
+                    errorCallBack.invoke("阿里云文件上传失败");
                 }
             }
         });

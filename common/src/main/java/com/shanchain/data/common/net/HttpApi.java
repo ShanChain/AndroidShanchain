@@ -185,4 +185,7 @@ public interface HttpApi {
 
     /**创建大戏*/
     String HX_DRAMA_CREATE = BASE_URL_IM + "/hx/game/create";
+
+    /** 获取角色联系人列表（互相关注带字母）*/
+    String FOCUS_CONTACTS = BASE_URL + "/v1/focus/contacts";
 }

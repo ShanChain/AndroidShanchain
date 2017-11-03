@@ -38,7 +38,6 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
             @Override
             public void onTimeSelect(Date date, View v) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
                 String format = simpleDateFormat.format(date);
                 sureCallback.invoke(format);
             }
@@ -59,10 +58,9 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
       pickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
           @Override
           public void onCancelClick(View v) {
-              cancelCallBack.invoke();
+              cancelCallBack.invoke("clear");
           }
       });
     }
-
 
 }

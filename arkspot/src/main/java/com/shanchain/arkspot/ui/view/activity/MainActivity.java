@@ -258,7 +258,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         switch (position) {
             case 0:
-
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_dynamic_default);
                 mTbMain.setOnTitleClickListener(this);
                 mTbMain.setBtnEnabled(false, true);
@@ -266,21 +265,12 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 1:
-//                mTbMain.setTitleText(navigationBarTitles[position]);
-//                TextView titleNews = mTbMain.getTitleView();
-//                titleNews.setCompoundDrawables(null, null, null, null);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 2:
-//                TextView squareTitle = mTbMain.getTitleView();
-//                Drawable moreDrawable = getResources().getDrawable(R.mipmap.abs_home_btn_dropdown_default);
-//                moreDrawable.setBounds(0, 0, moreDrawable.getMinimumWidth(), moreDrawable.getMinimumHeight());
-//                squareTitle.setCompoundDrawables(null, null, moreDrawable, null);
-//                squareTitle.setCompoundDrawablePadding(DensityUtils.dip2px(this, 4));
-//                mTbMain.setTitleText(navigationBarTitles[position]);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 mTbMain.setOnTitleClickListener(this);
                 mTbMain.setBtnVisibility(false, true);
@@ -288,9 +278,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
-//                mTbMain.setTitleText(navigationBarTitles[position]);
-//                TextView titleMine = mTbMain.getTitleView();
-//                titleMine.setCompoundDrawables(null, null, null, null);
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_comment_default);
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);

@@ -19,7 +19,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:maxWidth="300dp"
                 android:src="@drawable/photo_yue"/>
 
             <View
@@ -30,32 +29,40 @@
         </FrameLayout>
 
 
-
-        <TextView
-            android:id="@+id/tv_item_head_stag_des"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dimens_20dp"
-            android:layout_marginLeft="@dimen/dimens_10dp"
-            android:layout_marginRight="@dimen/dimens_20dp"
-            android:maxLines="2"
-            android:text="一壶煮酒喜相逢，古今多少事，都付笑谈中。"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_12"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_item_head_stag_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/tv_item_head_stag_des"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/dimens_10dp"
-            android:layout_marginRight="@dimen/dimens_20dp"
-            android:lines="1"
-            android:text="楚乔传"
-            android:textColor="@color/colorWhite"
-            android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/tv_item_head_stag_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/dimens_10dp"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:lines="1"
+                android:text="楚乔传"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:ellipsize="end"
+                android:id="@+id/tv_item_head_stag_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:layout_marginLeft="@dimen/dimens_10dp"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:maxLines="2"
+                android:text="一壶煮酒喜相逢，古今多少事，都付笑谈中。"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12"/>
+        </LinearLayout>
+
+
+
 
     </RelativeLayout>
 

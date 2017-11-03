@@ -32,7 +32,6 @@ import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +159,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 boolean selected = mTagDatas.get(position).isSelected();
                 if (position == mTagDatas.size() - 1) {
-                    ToastUtils.showToast(StoryTitleActivity.this, "更多");
                     Intent intent = new Intent(mContext,MoreTagActivity.class);
                     startActivity(intent);
                 } else {

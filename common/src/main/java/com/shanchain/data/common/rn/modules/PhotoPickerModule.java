@@ -17,7 +17,6 @@ import com.facebook.react.modules.core.PermissionListener;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.rn.SCReactActivity;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 
@@ -43,7 +42,7 @@ public class PhotoPickerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void selectPhoto(final Callback callback) {
+    public void selectPhoto(final Callback callback, final Callback errorCallBack) {
         final Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (topActivity instanceof SCReactActivity) {
@@ -55,27 +54,34 @@ public class PhotoPickerModule extends ReactContextBaseJavaModule {
                         public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
                             if (requestCode == REQUEST_CODE) {
                                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                                    pickImages(topActivity,callback);
+                                    pickImages(topActivity, callback,errorCallBack);
                                 } else {
                                     //未授权
-                                    ToastUtils.showToast(topActivity,"未给予权限，不能打开相机");
+                                    errorCallBack.invoke("未给予权限");
                                 }
+                            }else {
+                                //
+                                errorCallBack.invoke("请求码错误");
                             }
                             return true;
                         }
                     });
+                } else {
+                    LogUtils.d("已经申请过权限");
+                    pickImages(topActivity, callback, errorCallBack);
                 }
             } else {
-                LogUtils.d("已经申请过权限");
-                pickImages(topActivity, callback);
+                //不是该实例
+                LogUtils.i("不是RNactivity");
+                errorCallBack.invoke("当前依附activity错误");
             }
         } else {
             LogUtils.d("版本低于6.0");
-            pickImages(topActivity, callback);
+            pickImages(topActivity, callback, errorCallBack);
         }
     }
 
-    private void pickImages(Activity topActivity, final Callback callback) {
+    private void pickImages(Activity topActivity, final Callback callback, final Callback errorCallBack) {
         PhotoPicker.builder()
                 .setPhotoCount(5)
                 .setShowCamera(true)
@@ -86,19 +92,25 @@ public class PhotoPickerModule extends ReactContextBaseJavaModule {
             ((SCReactActivity) topActivity).setResultListener(new SCReactActivity.ResultListener() {
                 @Override
                 public void onResult(int requestCode, int resultCode, Intent data) {
-                    if (requestCode == PhotoPicker.REQUEST_CODE && resultCode == RESULT_OK){
-                        if (data != null){
+                    if (requestCode == PhotoPicker.REQUEST_CODE && resultCode == RESULT_OK) {
+                        if (data != null) {
                             ArrayList<String> photos =
                                     data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
                             WritableArray array = new WritableNativeArray();
-                            for (int i = 0; i < photos.size(); i ++) {
+                            for (int i = 0; i < photos.size(); i++) {
                                 array.pushString(photos.get(i));
                             }
                             callback.invoke(array);
+                        }else {
+                            errorCallBack.invoke("返回空数据");
                         }
+                    }else {
+                        errorCallBack.invoke("请求码或响应码错误");
                     }
                 }
             });
+        }else {
+            errorCallBack.invoke("当前依附activity错误");
         }
     }
 

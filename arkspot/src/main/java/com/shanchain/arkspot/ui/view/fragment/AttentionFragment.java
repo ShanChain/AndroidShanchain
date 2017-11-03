@@ -15,6 +15,7 @@ import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
@@ -93,11 +94,15 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                     case StoryInfo.type1:
                         //类型1的条目点击事件 短故事
                         Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
+                        StoryBeanModel beanModel = datas.get(position);
+                        intentType1.putExtra("story",beanModel);
                         startActivity(intentType1);
                         break;
                     case StoryInfo.type2:
                         //类型2的条目点击事件    长故事
                         Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                        StoryBeanModel beanModel2 = datas.get(position);
+                        intentType2.putExtra("story",beanModel2);
                         startActivity(intentType2);
                         break;
                     case StoryInfo.type3:
@@ -105,10 +110,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                         startActivity(intentType3);
                         break;
-                    case StoryInfo.type4:
-                        /*//类型4的条目点击事件
-                        Intent intentType4 = new Intent(mActivity, TopicDetailsActivity.class);
-                        startActivity(intentType4);*/
+                    default:
                         break;
                 }
             }
@@ -121,7 +123,9 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      *
      */
     private void clickAvatar(int position) {
-        ToastUtils.showToast(mActivity, "头像");
+        Intent intent = new Intent(mActivity, FriendHomeActivity.class);
+        int userId = datas.get(position).getStoryModel().getModelInfo().getCharacterBrief().getCharacterId();
+        intent.putExtra("characterId",userId);
     }
 
     /**
@@ -139,7 +143,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
     private void clickComment(int position) {
         StoryBeanModel info = datas.get(position);
         Intent intentComment = new Intent(mActivity,DynamicDetailsActivity.class);
-        intentComment.putExtra("info",info);
+        intentComment.putExtra("story",info);
         startActivity(intentComment);
     }
 

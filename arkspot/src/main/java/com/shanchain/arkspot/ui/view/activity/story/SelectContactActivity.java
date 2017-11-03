@@ -9,22 +9,33 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gjiazhe.wavesidebar.WaveSideBar;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SelectContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.BdAtContactInfo;
+import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.arkspot.ui.model.ContactInfo;
+import com.shanchain.arkspot.ui.model.CreateGroupBean;
 import com.shanchain.arkspot.ui.model.RequestContactInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactArr;
 import com.shanchain.arkspot.ui.model.ResponseContactBean;
 import com.shanchain.arkspot.ui.model.ResponseContactData;
+import com.shanchain.arkspot.ui.model.ResponseFocusContactArr;
+import com.shanchain.arkspot.ui.model.ResponseFocusContactBean;
+import com.shanchain.arkspot.ui.model.ResponseFocusContactInfo;
+import com.shanchain.arkspot.ui.model.ResponseHxUerBean;
+import com.shanchain.arkspot.ui.model.ResponseHxUserListInfo;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -46,8 +57,8 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     RecyclerView mRvSelectContact;
     @Bind(R.id.sb_select_contact)
     WaveSideBar mSbSelectContact;
-    private List<ContactInfo> datas = new ArrayList<>();
-    private List<ContactInfo> show = new ArrayList<>();
+    private List<BdAtContactInfo> datas = new ArrayList<>();
+    private List<BdAtContactInfo> show = new ArrayList<>();
     private SelectContactAdapter mContactAdapter;
     private ArrayList<String> selected = new ArrayList<>();
     /**
@@ -81,7 +92,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 String input = s.toString();
                 show.clear();
                 for (int i = 0; i < datas.size(); i++) {
-                    if (datas.get(i).getName().contains(input)) {
+                    if (datas.get(i).getContactInfo().getName().contains(input)) {
                         show.add(datas.get(i));
                     }
                 }
@@ -100,7 +111,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             @Override
             public void onSelectIndexItem(String index) {
                 for (int i = 0; i < show.size(); i++) {
-                    if (show.get(i).getLetter().equalsIgnoreCase(index)) {
+                    if (show.get(i).getContactInfo().getLetter().equalsIgnoreCase(index)) {
                         ((LinearLayoutManager) mRvSelectContact.getLayoutManager()).scrollToPositionWithOffset(i, 0);
                         return;
                     }
@@ -133,61 +144,161 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initData() {
-        SCHttpUtils.postWithSpaceId()
-                .url(HttpApi.SPACE_CONTACT_LIST)
+        if (mIsAt) { //从发布动态跳入该页面
+
+            SCHttpUtils.postWithSpaceId()
+                    .url(HttpApi.SPACE_CONTACT_LIST)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            if (TextUtils.isEmpty(response)) {
+                                return;
+                            }
+                            RequestContactInfo requestContactInfo = JSONObject.parseObject(response, RequestContactInfo.class);
+                            if (requestContactInfo == null) {
+                                return;
+                            }
+                            String code = requestContactInfo.getCode();
+                            if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                return;
+                            }
+
+                            ResponseContactData data = requestContactInfo.getData();
+
+                            if (data == null) {
+                                return;
+                            }
+                            List<ResponseContactArr> contactArrs = data.getArray();
+                            if (contactArrs == null) {
+                                return;
+                            }
+                            for (int i = 0; i < contactArrs.size(); i++) {
+                                String letter = contactArrs.get(i).getLetter();
+                                List<ResponseContactBean> contactBeenList = contactArrs.get(i).getList();
+                                for (int j = 0; j < contactBeenList.size(); j++) {
+                                    String headImg = contactBeenList.get(j).getHeadImg();
+                                    int modelId = contactBeenList.get(j).getModelId();
+                                    String name = contactBeenList.get(j).getName();
+                                    ContactInfo info = new ContactInfo();
+                                    info.setName(name);
+                                    info.setImg(headImg);
+                                    info.setLetter(letter);
+                                    info.setModuleId(modelId);
+                                    BdAtContactInfo bdAtContactInfo = new BdAtContactInfo();
+                                    bdAtContactInfo.setAt(true);
+                                    bdAtContactInfo.setContactInfo(info);
+                                    datas.add(bdAtContactInfo);
+
+                                }
+                            }
+                            show.addAll(datas);
+                            mContactAdapter.notifyDataSetChanged();
+
+                        }
+                    });
+        } else { //从新场景跳入该页面
+
+            SCHttpUtils.postWithChaId()
+                    .url(HttpApi.FOCUS_CONTACTS)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.i("获取互相关注列表失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            LogUtils.i("获取互相关注列表成功 = " + response);
+                            ResponseFocusContactInfo responseContactInfo = JSONObject.parseObject(response, ResponseFocusContactInfo.class);
+                            String code = responseContactInfo.getCode();
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+
+                                List<ResponseFocusContactArr> array = responseContactInfo.getData().getArray();
+
+                                if (array != null && array.size() > 0) {
+                                    ArrayList<BdAtContactInfo> bdAtContactInfos = new ArrayList<>();
+                                    ArrayList<Integer> characterIds = new ArrayList<>();
+                                    for (int i = 0; i < array.size(); i++) {
+                                        ResponseFocusContactArr responseFocusContactArr = array.get(i);
+                                        String letter = responseFocusContactArr.getLetter();
+                                        List<ResponseFocusContactBean> list = responseFocusContactArr.getList();
+                                        for (int j = 0; j < list.size(); j++) {
+                                            ResponseFocusContactBean contactBean = list.get(j);
+                                            int characterId = contactBean.getCharacterId();
+                                            String headImg = contactBean.getHeadImg();
+                                            String intro = contactBean.getIntro();
+                                            String name = contactBean.getName();
+                                            int modelNo = contactBean.getModelNo();
+                                            characterIds.add(characterId);
+                                            ContactInfo info = new ContactInfo();
+                                            info.setLetter(letter);
+                                            info.setName(name);
+                                            info.setModuleId(modelNo);
+                                            info.setImg(headImg);
+                                            info.setIntro(intro);
+                                            info.setCharacterId(characterId);
+                                            BdAtContactInfo bdAtContactInfo = new BdAtContactInfo();
+                                            bdAtContactInfo.setAt(false);
+                                            bdAtContactInfo.setContactInfo(info);
+                                            bdAtContactInfos.add(bdAtContactInfo);
+                                        }
+                                    }
+                                    getHxUserInfo(bdAtContactInfos, characterIds);
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void getHxUserInfo(final ArrayList<BdAtContactInfo> bdAtContactInfos, ArrayList<Integer> characterIds) {
+
+        String jArr = JSON.toJSONString(characterIds);
+        SCHttpUtils.post()
+                .url(HttpApi.HX_USER_LIST)
+                .addParams("characterIds", jArr)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        LogUtils.i("获取联系人失败");
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        if (TextUtils.isEmpty(response)){
-                            return;
-                        }
-                        RequestContactInfo requestContactInfo = JSONObject.parseObject(response, RequestContactInfo.class);
-                        if (requestContactInfo == null){
-                            return;
-                        }
-                        String code = requestContactInfo.getCode();
-                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
-                            return;
-                        }
+                        LogUtils.i("获取联系人成功");
+                        ResponseHxUserListInfo hxUserListInfo = JSONObject.parseObject(response, ResponseHxUserListInfo.class);
+                        String code = hxUserListInfo.getCode();
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            List<ResponseHxUerBean> hxUerBeanList = hxUserListInfo.getData();
 
-                        ResponseContactData data = requestContactInfo.getData();
+                            for (int i = 0; i < bdAtContactInfos.size(); i++) {
+                                BdAtContactInfo bdAtContactInfo = bdAtContactInfos.get(i);
+                                for (ResponseHxUerBean bean : hxUerBeanList) {
+                                    if (bdAtContactInfo.getContactInfo().getCharacterId() == bean.getCharacterId()) {
+                                        bdAtContactInfo.setHxUerBean(bean);
+                                    }
 
-                        if (data == null){
-                            return;
-                        }
-                        List<ResponseContactArr> contactArrs = data.getArray();
-                        if (contactArrs == null){
-                            return;
-                        }
-                        for (int i = 0; i < contactArrs.size(); i ++) {
-                            String letter = contactArrs.get(i).getLetter();
-                            List<ResponseContactBean> contactBeenList = contactArrs.get(i).getList();
-                            for (int j = 0; j < contactBeenList.size(); j ++) {
-                                String headImg = contactBeenList.get(j).getHeadImg();
-                                int modelId = contactBeenList.get(j).getModelId();
-                                String name = contactBeenList.get(j).getName();
-                                ContactInfo info = new ContactInfo();
-                                info.setName(name);
-                                info.setImg(headImg);
-                                info.setLetter(letter);
-                                info.setModuleId(modelId);
-                                datas.add(info);
-
+                                }
                             }
 
+                            datas.addAll(bdAtContactInfos);
+                            show.addAll(datas);
+                            mContactAdapter.notifyDataSetChanged();
+
                         }
-
-                        show.addAll(datas);
-                        mContactAdapter.notifyDataSetChanged();
-
                     }
                 });
+
 
     }
 
@@ -198,13 +309,13 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
 
     @Override
     public void onRightClick(View v) {
-        for (int i = 0; i < show.size(); i++) {
-            if (show.get(i).isSelected()) {
-                selected.add(show.get(i).getName());
-            }
-        }
-
         if (mIsAt) {
+            for (int i = 0; i < show.size(); i++) {
+                if (show.get(i).isSelected()) {
+                    selected.add(show.get(i).getContactInfo().getName());
+                }
+            }
+
             if (selected.size() == 0) {
                 finish();
             } else {
@@ -214,15 +325,72 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 finish();
             }
         } else {
+
+            for (int i = 0; i < show.size(); i++) {
+                if (show.get(i).isSelected()) {
+                    selected.add(show.get(i).getHxUerBean().getHxUserName());
+                }
+            }
+
             if (selected.size() == 0) {
                 //没有选择联系人
                 ToastUtils.showToast(this, "还没选择联系人哦~");
                 return;
-            } else {
-                Intent intent = new Intent(this, ChatRoomActivity.class);
-                intent.putStringArrayListExtra("contacts", selected);
-                startActivity(intent);
             }
+            String cacheHxUserName = SCCacheUtils.getCacheHxUserName();
+            String cacheCharacterInfo = SCCacheUtils.getCacheCharacterInfo();
+            CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo, CharacterInfo.class);
+            String name = characterInfo.getName();
+            CreateGroupBean groupBean = new CreateGroupBean();
+            groupBean.setMembers(selected);
+            groupBean.setOwner(cacheHxUserName);
+            groupBean.setGroupname(name + "的对话场景");
+            groupBean.setDesc(name + "创建的对话场景");
+            groupBean.setIcon_url("");
+            groupBean.setApproval(true);
+            groupBean.setPub(true);
+            groupBean.setMaxusers(100);
+
+            String dataString = JSON.toJSONString(groupBean);
+
+            SCHttpUtils.postWithSpaceId()
+                    .url(HttpApi.HX_GROUP_CREATE)
+                    .addParams("dataString", dataString)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.i("创建群失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            LogUtils.i("创建群成功 = " + response);
+                            try {
+                                String code = JSONObject.parseObject(response).getString("code");
+                                if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                    String data = JSONObject.parseObject(response).getString("data");
+                                    String groupId = JSONObject.parseObject(data).getString("groupid");
+                                    if (!TextUtils.isEmpty(groupId)) {
+                                        LogUtils.i("创建群成功");
+                                        Intent intent = new Intent(mContext, ChatRoomActivity.class);
+                                        intent.putExtra("isGroup",true);
+                                        intent.putExtra("toChatName",groupId);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        ToastUtils.showToast(mContext, "创建群失败");
+                                    }
+                                } else {
+                                    ToastUtils.showToast(mContext, "创建群失败");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ToastUtils.showToast(mContext, "创建群失败");
+                            }
+                        }
+                    });
         }
     }
 }
