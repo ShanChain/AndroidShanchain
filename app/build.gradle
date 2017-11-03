@@ -48,10 +48,10 @@ android {
         }*/
 
         release {
-            buildConfigField "boolean", "RN_DEBUG", "true"
+            buildConfigField "boolean", "RN_DEBUG", "false"
             // 指定签名
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "LOG_DEBUG", "false"
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true

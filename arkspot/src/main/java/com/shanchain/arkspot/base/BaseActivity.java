@@ -21,6 +21,8 @@ import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -167,13 +169,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    /**
-//     * 描述: 接收EventBus通知
-//     */
-//    @Subscribe
-//    public void onEventMainThread(Object object) {
-//        // 获取到全部消息，暂不处理
-//    }
+    /**
+     * 描述: 接收EventBus通知
+     */
+    @Subscribe
+    public void onEventMainThread(Object object) {
+        // 获取到全部消息，暂不处理
+    }
 
     /**
      * 描述: 重写finish使Activity出栈
