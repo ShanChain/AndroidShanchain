@@ -7,7 +7,7 @@ import android.widget.ImageView;
 
 import com.jaeger.ninegridimageview.NineGridImageViewAdapter;
 import com.shanchain.arkspot.ui.view.activity.story.ImageActivity;
-import com.squareup.picasso.Picasso;
+import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,10 @@ import java.util.List;
 public class StoryItemNineAdapter extends NineGridImageViewAdapter<String> {
     @Override
     protected void onDisplayImage(Context context, ImageView imageView, String imgUrl) {
-        //Glide.with(context).load(imgUrl).centerCrop().into(imageView);
+       // Glide.with(context).load(imgUrl).centerCrop().into(imageView);
+        GlideUtils.load(context,imgUrl,imageView,0);
         //这里用glide会出现跳动情况
-        Picasso.with(context).load(imgUrl).into(imageView);
+        //Picasso.with(context).load(imgUrl).into(imageView);
     }
 
     @Override
