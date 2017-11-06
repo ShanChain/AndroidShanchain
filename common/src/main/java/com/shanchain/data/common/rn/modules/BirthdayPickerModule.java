@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 
 import java.text.SimpleDateFormat;
@@ -33,34 +34,41 @@ public class BirthdayPickerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void show(final Callback sureCallback,final Callback cancelCallBack) {
+
         final Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
-        SCTimePickerView pickerView = new SCTimePickerView.Builder(topActivity, new SCTimePickerView.OnTimeSelectListener() {
+        topActivity.runOnUiThread(new Runnable() {
             @Override
-            public void onTimeSelect(Date date, View v) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String format = simpleDateFormat.format(date);
-                sureCallback.invoke(format);
+            public void run() {
+                SCTimePickerView pickerView = new SCTimePickerView.Builder(topActivity, new SCTimePickerView.OnTimeSelectListener() {
+                    @Override
+                    public void onTimeSelect(Date date, View v) {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String format = simpleDateFormat.format(date);
+                        sureCallback.invoke(format);
+                    }
+
+                })
+                        .setType(new boolean[]{true, true, true, false, false, false})
+                        .isCenterLabel(false)
+                        .setCancelText("清除")
+                        .setCancelColor(topActivity.getResources().getColor(R.color.colorDialogBtn))
+                        .setSubmitText("完成")
+                        .setSubCalSize(14)
+                        .setTitleBgColor(topActivity.getResources().getColor(R.color.colorWhite))
+                        .setSubmitColor(topActivity.getResources().getColor(R.color.colorDialogBtn))
+                        .build();
+                pickerView.setDate(Calendar.getInstance());
+                pickerView.show();
+
+                pickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
+                    @Override
+                    public void onCancelClick(View v) {
+                        cancelCallBack.invoke("clear");
+                    }
+                });
             }
+        });
 
-        })
-                .setType(new boolean[]{true, true, true, false, false, false})
-                .isCenterLabel(false)
-                .setCancelText("清除")
-                .setCancelColor(topActivity.getResources().getColor(R.color.colorDialogBtn))
-                .setSubmitText("完成")
-                .setSubCalSize(14)
-                .setTitleBgColor(topActivity.getResources().getColor(R.color.colorWhite))
-                .setSubmitColor(topActivity.getResources().getColor(R.color.colorDialogBtn))
-                .build();
-        pickerView.setDate(Calendar.getInstance());
-        pickerView.show();
-
-      pickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
-          @Override
-          public void onCancelClick(View v) {
-              cancelCallBack.invoke("clear");
-          }
-      });
     }
 
 }

@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.ui.widgets.SCInputDialog;
 
 /**
@@ -36,7 +37,7 @@ public class SCInputDialogModule extends ReactContextBaseJavaModule {
         String placeHolder = options.getString("placeHolder");
         String title = options.getString("title");
         //int maxLength = options.getInt("maxLength");
-        final SCInputDialog scInputDialog = new SCInputDialog(mContext, title, placeHolder);
+        final SCInputDialog scInputDialog = new SCInputDialog(ActivityStackManager.getInstance().getTopActivity(), title, placeHolder);
 
         final com.shanchain.data.common.base.Callback sureCallBac = new com.shanchain.data.common.base.Callback() {
             @Override

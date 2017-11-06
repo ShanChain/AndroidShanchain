@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
@@ -78,6 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
+        ActivityStackManager.getInstance().addActivity(this);
         //禁止横竖屏切换
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // 获取Intent数据
@@ -186,6 +188,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.finish();
         // Activity出栈
         ActivityManager.getInstance().removeActivity(this);
+        ActivityStackManager.getInstance().finishActivity(this);
     }
 
     /**
@@ -213,6 +216,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     public void onPause() {
         super.onPause();
+
      //   MobclickAgent.onPageEnd(this.getClass().getSimpleName()); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
       //  MobclickAgent.onPause(this);
     }

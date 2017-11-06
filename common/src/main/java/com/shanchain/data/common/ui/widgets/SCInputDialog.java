@@ -11,33 +11,35 @@ import android.widget.TextView;
 
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.utils.ToastUtils;
 
 /**
  * Created by zhoujian on 2017/10/21.
  */
 
-public class SCInputDialog extends AlertDialog {
+public class SCInputDialog{
 
     private String mTitle;
     private String mPlaceHolder;
     private EditText mEtContent;
     private Callback sureCallback;
     private Callback cancelCallback;
+    private AlertDialog mAlertDialog;
+    private Context mContext;
 
     public SCInputDialog(@NonNull Context context,String title,String placeHolder) {
-        super(context);
         this.mTitle = title;
         this.mPlaceHolder = placeHolder;
+        mAlertDialog = new AlertDialog.Builder(context).create();
+        mContext = context;
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.common_dialog_input);
-        TextView tvTitle = (TextView) findViewById(R.id.tv_input_dialog_title);
-        mEtContent = (EditText) findViewById(R.id.et_input_dialog_content);
-        Button btnCancel = (Button) findViewById(R.id.btn_dialog_input_cancel);
-        Button btnSure = (Button) findViewById(R.id.btn_dialog_input_sure);
+    public void show(){
+        View view = View.inflate(mContext, R.layout.common_dialog_input, null);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tv_input_dialog_title);
+        mEtContent = (EditText) view.findViewById(R.id.et_input_dialog_content);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_dialog_input_cancel);
+        Button btnSure = (Button) view.findViewById(R.id.btn_dialog_input_sure);
 
         tvTitle.setText(mTitle);
         mEtContent.setHint(mPlaceHolder);
@@ -48,7 +50,9 @@ public class SCInputDialog extends AlertDialog {
                 if (sureCallback != null){
                     sureCallback.invoke();
                 }
-                dismiss();
+                if(mAlertDialog != null){
+                    mAlertDialog.dismiss();
+                }
             }
         });
 
@@ -58,12 +62,20 @@ public class SCInputDialog extends AlertDialog {
                 if (cancelCallback!=null){
                     cancelCallback.invoke();
                 }
-                dismiss();
+                if(mAlertDialog != null){
+                    mAlertDialog.dismiss();
+                }
             }
         });
-
+        mAlertDialog.setView(view);
+        mAlertDialog.setCancelable(true);
+        mAlertDialog.show();
     }
-
+    public void dismiss(){
+        if(mAlertDialog != null){
+            mAlertDialog.dismiss();
+        }
+    }
     public String getInputContent() {
         return mEtContent.getText().toString().trim();
     }
