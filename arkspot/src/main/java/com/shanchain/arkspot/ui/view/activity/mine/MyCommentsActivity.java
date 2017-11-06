@@ -60,7 +60,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
     protected void initViewsAndEvents() {
         initToolBar();
         initData(false, true);
-        initRecyclerView();
+        //initRecyclerView();
 
     }
 
@@ -149,7 +149,6 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
 
                     @Override
                     public void onResponse(String response, int id) {
-                        initError();
                         LogUtils.i("获取故事列表成功 = " + response);
                         if (TextUtils.isEmpty(response)) {
                             return;
@@ -169,7 +168,6 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                         List<CommentStoryInfo> infoList = storyList.getData();
                         if (infoList == null) {
                             initError();
-
                             return;
                         }
 
@@ -209,9 +207,12 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initError() {
-        if (mSrlMyComments != null) {
-            mAdapter.loadMoreFail();
+        if (mSrlMyComments!=null){
             mSrlMyComments.setRefreshing(false);
+        }
+
+        if (mAdapter != null) {
+            mAdapter.loadMoreFail();
         }
 
     }
@@ -227,7 +228,6 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
         mRvComments.setAdapter(mAdapter);
         mAdapter.setEmptyView(emptyView);
     }
-
 
     private void initToolBar() {
         mTbMyComments.setBtnEnabled(true, false);

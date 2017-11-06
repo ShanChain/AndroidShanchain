@@ -7,19 +7,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.TopicDetailsAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.ui.model.RNDataBean;
 import com.shanchain.arkspot.ui.model.RNDetailExt;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.presenter.TopicDetailPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.TopicDetailPresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.story.stroyView.TopicDetailView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -27,16 +33,23 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
+public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, TopicDetailView {
 
 
     @Bind(R.id.tb_topic_details)
     ArthurToolBar mTbTopicDetails;
     @Bind(R.id.rv_topic_details)
     RecyclerView mRvTopicDetails;
-    private List<StoryInfo> datas;
+    private List<StoryInfo> datas = new ArrayList<>();
     private TopicDetailsAdapter mDetailsAdapter;
     private View mHeadView;
+    private String mTopicId;
+    private TopicDetailPresenter mDetailPresenter;
+    private int mDiscussNum;
+    private int mReadNum;
+    private String mBackground;
+    private String mIntro;
+    private String mTitle;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -45,12 +58,30 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     protected void initViewsAndEvents() {
+        Intent intent = getIntent();
+        int from = intent.getIntExtra("from", 0);
+        if (from == 0) {     //RN页面传值
+            String rnExtra = intent.getStringExtra(NavigatorModule.REACT_EXTRA);
+            RNDetailExt rnDetailExt = JSONObject.parseObject(rnExtra, RNDetailExt.class);
+            RNDataBean data = rnDetailExt.getData();
+            mDiscussNum = data.getStoryNum();
+            mTopicId = data.getTopicId() + "";
+            mReadNum = data.getReadNum();
+            mBackground = data.getBackground();
+            mIntro = data.getIntro();
+            mTitle = data.getTitle();
+        } else if (from == 1) {   //主页点击过来
+            StoryBeanModel beanModelTopic = (StoryBeanModel) intent.getSerializableExtra("topic");
+            StoryModelBean storyModelBean = beanModelTopic.getStoryModel().getModelInfo().getBean();
+            mTopicId = storyModelBean.getDetailId();
+            mDiscussNum = storyModelBean.getCommendCount();
+            mReadNum = storyModelBean.getSupportCount();
+            mBackground = storyModelBean.getImg();
+            mIntro = storyModelBean.getIntro();
+            mTitle = storyModelBean.getTitle();
 
-        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
-        RNDetailExt rnTopicDetailExt = new Gson().fromJson(rnExtra, RNDetailExt.class);
-        String spaceId = rnTopicDetailExt.getgData().getSpaceId();
-        LogUtils.i("spaceId  = "+spaceId);
-
+        }
+        mDetailPresenter = new TopicDetailPresenterImpl(this);
         initToolBar();
         initData();
         initRecyclerView();
@@ -60,10 +91,10 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
         initHeadView();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRvTopicDetails.setLayoutManager(layoutManager);
-        mDetailsAdapter = new TopicDetailsAdapter(R.layout.item_story_type3,datas);
+        mDetailsAdapter = new TopicDetailsAdapter(R.layout.item_story_type3, datas);
         mRvTopicDetails.addItemDecoration(new RecyclerViewDivider(this,
                 LinearLayoutManager.HORIZONTAL,
-                DensityUtils.dip2px(this,5),
+                DensityUtils.dip2px(this, 5),
                 getResources().getColor(R.color.colorAccent)));
         mRvTopicDetails.setAdapter(mDetailsAdapter);
         mDetailsAdapter.setHeaderView(mHeadView);
@@ -71,7 +102,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
         mDetailsAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(TopicDetailsActivity.this,DynamicDetailsActivity.class);
+                Intent intent = new Intent(TopicDetailsActivity.this, DynamicDetailsActivity.class);
                 startActivity(intent);
             }
         });
@@ -82,23 +113,23 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
                 switch (view.getId()) {
                     case R.id.iv_item_story_avatar:
                         //头像
-                        ToastUtils.showToast(TopicDetailsActivity.this,"头像");
+                        avatarClick(position);
                         break;
                     case R.id.tv_item_story_forwarding:
                         //转发
-                        ToastUtils.showToast(TopicDetailsActivity.this,"转发");
+                        forwarding(position);
                         break;
                     case R.id.tv_item_story_comment:
                         //评论
-                        ToastUtils.showToast(TopicDetailsActivity.this,"评论");
+                        comment(position);
                         break;
                     case R.id.tv_item_story_like:
                         //喜欢
-                        ToastUtils.showToast(TopicDetailsActivity.this,"喜欢");
+                        like(position);
                         break;
                     case R.id.iv_item_story_more:
                         //举报
-                        report();
+                        report(position);
                         break;
                 }
             }
@@ -106,19 +137,38 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     }
 
+    private void like(int position) {
+        ToastUtils.showToast(TopicDetailsActivity.this, "喜欢");
+    }
+
+    private void comment(int position) {
+        ToastUtils.showToast(TopicDetailsActivity.this, "评论");
+    }
+
+    private void forwarding(int position) {
+        ToastUtils.showToast(TopicDetailsActivity.this, "转发");
+    }
+
+    private void avatarClick(int position) {
+        ToastUtils.showToast(TopicDetailsActivity.this, "头像");
+    }
+
     private void initHeadView() {
-        mHeadView = View.inflate(this, R.layout.head_topic_details,null);
+        mHeadView = View.inflate(this, R.layout.head_topic_details, null);
         ImageView ivHeadTopicImg = (ImageView) mHeadView.findViewById(R.id.iv_head_topic_img);
         TextView tvHeadTopic = (TextView) mHeadView.findViewById(R.id.tv_head_topic_topic);
         TextView tvHeadTopicDiscussRead = (TextView) mHeadView.findViewById(R.id.tv_head_topic_discuss_read);
         TextView tvHeadTopicDes = (TextView) mHeadView.findViewById(R.id.tv_head_topic_des);
 
         //设置数据
-
+        GlideUtils.load(mContext, mBackground, ivHeadTopicImg, 0);
+        tvHeadTopic.setText("#" + mTitle + "#");
+        tvHeadTopicDes.setText(mIntro);
+        tvHeadTopicDiscussRead.setText(mDiscussNum + "讨论" + "  " + mReadNum + "阅读");
 
     }
 
-    private void report() {
+    private void report(int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
                 new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
@@ -167,16 +217,18 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
+
         datas = new ArrayList<>();
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < 4; i++) {
             StoryInfo storyInfo = new StoryInfo();
-            storyInfo.setTime(i * 12 +"");
+            storyInfo.setTime(i * 12 + "");
             datas.add(storyInfo);
         }
     }
 
+
     private void initToolBar() {
-        mTbTopicDetails.setBtnEnabled(true,false);
+        mTbTopicDetails.setBtnEnabled(true, false);
         mTbTopicDetails.setOnLeftClickListener(this);
     }
 

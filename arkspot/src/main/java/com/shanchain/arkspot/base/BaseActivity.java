@@ -78,6 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        }
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
+        ActivityStackManager.getInstance().addActivity(this);
         ActivityManager.getInstance().addActivity(this);
         ActivityStackManager.getInstance().addActivity(this);
         //禁止横竖屏切换

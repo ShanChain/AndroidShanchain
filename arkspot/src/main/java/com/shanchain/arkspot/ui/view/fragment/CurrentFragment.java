@@ -11,11 +11,13 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
+import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
@@ -209,10 +211,33 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
-        StoryBeanModel beanModel = datas.get(position);
-        intent.putExtra("story",beanModel);
-        startActivity(intent);
+        int viewType = adapter.getItemViewType(position);
+        switch (viewType) {
+            case StoryInfo.type1:
+                //类型1的条目点击事件 短故事
+                Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
+                StoryBeanModel beanModel = datas.get(position);
+                intentType1.putExtra("story",beanModel);
+                startActivity(intentType1);
+                break;
+            case StoryInfo.type2:
+                //类型2的条目点击事件    长故事
+                Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                StoryBeanModel beanModel2 = datas.get(position);
+                intentType2.putExtra("story",beanModel2);
+                startActivity(intentType2);
+                break;
+            case StoryInfo.type3:
+                //类型3的条目点击事件    话题
+                Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
+                intentType3.putExtra("from", 1);
+                StoryBeanModel beanModelTopic = datas.get(position);
+                intentType3.putExtra("topic",beanModelTopic);
+                startActivity(intentType3);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
