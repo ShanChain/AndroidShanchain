@@ -10,6 +10,15 @@ public class TopicInfo implements Serializable{
     private String topic;
     private String tag;
     private int topicId;
+    private boolean isNew;
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
 
     public int getTopicId() {
         return topicId;

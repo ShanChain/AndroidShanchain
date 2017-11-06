@@ -22,6 +22,12 @@ public class TopicAdapter extends BaseQuickAdapter<TopicInfo,BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, TopicInfo item) {
+        boolean isNew = item.isNew();
+        if (isNew){
+            helper.setText(R.id.tv_item_topic_new,"#创建新话题#");
+        }else {
+            helper.setText(R.id.tv_item_topic_new,"话题");
+        }
         helper.setText(R.id.tv_item_topic,"#"+item.getTopic()+"#");
     }
 }

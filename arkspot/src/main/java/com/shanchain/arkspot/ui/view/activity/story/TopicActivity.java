@@ -20,6 +20,7 @@ import com.shanchain.arkspot.ui.model.ResponseTopicContentBean;
 import com.shanchain.arkspot.ui.model.ResponseTopicData;
 import com.shanchain.arkspot.ui.model.ResponseTopicInfo;
 import com.shanchain.arkspot.ui.model.TopicInfo;
+import com.shanchain.arkspot.ui.view.activity.square.AddTopicActivity;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -46,6 +47,7 @@ public class TopicActivity extends BaseActivity {
     private List<TopicInfo> datas = new ArrayList<>();
     private List<TopicInfo> show = new ArrayList<>();
     private TopicAdapter mTopicAdapter;
+    private boolean hasNew;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -81,7 +83,14 @@ public class TopicActivity extends BaseActivity {
                 if (show.size() == 0) {
                     TopicInfo topicInfo = new TopicInfo();
                     topicInfo.setTopic(input);
-                    show.add(topicInfo);
+                    topicInfo.setNew(true);
+                    show.add(0,topicInfo);
+                    hasNew = true;
+                }else {
+                    if (hasNew){
+                        show.remove(0);
+                        hasNew=false;
+                    }
                 }
 
                 mTopicAdapter.notifyDataSetChanged();
@@ -104,12 +113,19 @@ public class TopicActivity extends BaseActivity {
         mTopicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent();
-                intent.putExtra("topic",show.get(position));
-                setResult(RESULT_CODE_TOPIC,intent);
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mEtTopic.getWindowToken(),0);
-                finish();
+                boolean isNew = show.get(position).isNew();
+                if (isNew){
+                    Intent intent = new Intent(mContext, AddTopicActivity.class);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent();
+                    intent.putExtra("topic",show.get(position));
+                    setResult(RESULT_CODE_TOPIC,intent);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mEtTopic.getWindowToken(),0);
+                    finish();
+                }
+
             }
         });
     }

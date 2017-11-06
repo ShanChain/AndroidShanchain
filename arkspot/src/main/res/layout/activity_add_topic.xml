@@ -22,9 +22,9 @@
         style="@style/style_text_line_match"/>
 
     <ScrollView
-        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,11 +57,11 @@
                 android:layout_marginTop="@dimen/dimens_20dp">
 
                 <ImageView
-                    android:layout_centerVertical="true"
                     android:id="@+id/iv_add_topic_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:src="@mipmap/abs_find_btn_addto_default"/>
 
                 <EditText
@@ -96,18 +96,18 @@
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/cv_add_topic"
-                    app:cardCornerRadius="8dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp">
+
                     <ImageView
                         android:id="@+id/iv_add_topic_img"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/photo_yue"/>
+                        android:src="@mipmap/abs_addarole_def_photo_default"/>
 
                 </android.support.v7.widget.CardView>
-
 
 
                 <EditText
@@ -151,7 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimens_15dp"
-                android:text="无需审核，你讲成为中国话题的主持人。"
+                android:text="无需审核，你讲成为这个话题的主持人。"
                 android:textColor="@color/colorHint"
                 android:textSize="12sp"/>
 

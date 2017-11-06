@@ -62,7 +62,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                         datas.clear();
                         LogUtils.i("实时数据 = " + response);
                         StoryResponseInfo storyResponseInfo = new Gson().fromJson(response, StoryResponseInfo.class);
-                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData();
+                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
                         if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
                             mAttentionView.initSuccess(null);
                             return;

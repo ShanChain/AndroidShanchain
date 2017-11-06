@@ -1,7 +1,5 @@
 package com.shanchain.arkspot.ui.model;
 
-import java.util.List;
-
 /**
  * Created by zhoujian on 2017/10/17.
  */
@@ -17,7 +15,7 @@ public class StoryResponseInfo {
 
     private String code;
     private String message;
-    private List<ResponseStoryIdBean> data;
+    private ResponseStoryIdData data;
 
     public String getCode() {
         return code;
@@ -35,11 +33,11 @@ public class StoryResponseInfo {
         this.message = message;
     }
 
-    public List<ResponseStoryIdBean> getData() {
+    public ResponseStoryIdData getData() {
         return data;
     }
 
-    public void setData(List<ResponseStoryIdBean> data) {
+    public void setData(ResponseStoryIdData data) {
         this.data = data;
     }
 }

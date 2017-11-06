@@ -15,15 +15,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.AddRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.StoryTagInfo;
+import com.shanchain.arkspot.ui.model.TagContentBean;
+import com.shanchain.arkspot.ui.model.TagInfo;
+import com.shanchain.arkspot.ui.model.TopicModel;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +42,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
+import okhttp3.Call;
 
 
 public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -53,11 +65,14 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Bind(R.id.et_add_topic_introduce)
     EditText mEtAddTopicIntroduce;
 
-    private List<StoryTagInfo> mDatas;
+    private List<StoryTagInfo> mDatas = new ArrayList<>();
     private AddRoleAdapter mAddRoleAdapter;
 
-    private List<StoryTagInfo> selectedData;
+    private List<StoryTagInfo> selectedData = new ArrayList<>();
     private String mImgPath = "";
+    private String mTopic;
+    private String mIntro;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_add_topic;
@@ -67,6 +82,43 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
     protected void initViewsAndEvents() {
         initToolBar();
         initRecyclerView();
+        initData();
+    }
+
+    private void initData() {
+        SCHttpUtils.post()
+                .url(HttpApi.TAG_QUERY)
+                .addParams("type", "topic")
+                .addParams("size", "20")
+                .addParams("page", "0")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取模型标签失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("获取模型标签成功 = " + response);
+                        TagInfo tagInfo = new Gson().fromJson(response, TagInfo.class);
+                        String code = tagInfo.getCode();
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            List<TagContentBean> tagContentBeanList = tagInfo.getData().getContent();
+                            int size = tagContentBeanList.size() >= 12 ? 12 : tagContentBeanList.size();
+                            for (int i = 0; i < size; i++) {
+                                StoryTagInfo storyTagInfo = new StoryTagInfo();
+                                storyTagInfo.setTag(tagContentBeanList.get(i).getTagName());
+                                storyTagInfo.setTagBean(tagContentBeanList.get(i));
+                                mDatas.add(storyTagInfo);
+                            }
+                            mAddRoleAdapter.notifyDataSetChanged();
+                        } else {
+                            ToastUtils.showToast(mContext, "获取热门标签失败！");
+                        }
+                    }
+                });
     }
 
     private void initToolBar() {
@@ -75,23 +127,13 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void initRecyclerView() {
-        selectedData = new ArrayList<>();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         mRvAddTopic.setLayoutManager(layoutManager);
-        mDatas = new ArrayList<>();
-        String[] tags = {"原创", "历史", "动漫", "游戏", "武侠", "科幻", "玄幻", "悬疑", "小说", "影视", "体育", "校园"};
-        for (int i = 0; i < tags.length; i++) {
-            StoryTagInfo tagInfo = new StoryTagInfo();
-            tagInfo.setTag(tags[i]);
-            tagInfo.setSelected(false);
-            mDatas.add(tagInfo);
-        }
         mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mDatas);
         mRvAddTopic.setAdapter(mAddRoleAdapter);
         mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
 
                 boolean selected = mDatas.get(position).isSelected();
                 if (selected) {
@@ -104,8 +146,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                     selectedData.add(mDatas.get(position));
                 }
                 mDatas.get(position).setSelected(!selected);
-
-                mAddRoleAdapter.notifyDataSetChanged();
+                mAddRoleAdapter.notifyItemChanged(position);
             }
         });
 
@@ -223,6 +264,85 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onRightClick(View v) {
         //数据提交服务器
+        mTopic = mEtAddTopicNick.getText().toString().trim();
+        mIntro = mEtAddTopicIntroduce.getText().toString().trim();
+        if (TextUtils.isEmpty(mTopic)) {
+            ToastUtils.showToast(mContext, "话题名称不能为空");
+            return;
+        }
 
+        if (TextUtils.isEmpty(mIntro)) {
+            ToastUtils.showToast(mContext, "简单描述下你创建的话题吧~");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mImgPath)) {
+            ToastUtils.showToast(mContext, "给话题添加一张背景图吧~");
+            return;
+        }
+
+        if (selectedData.size() == 0) {
+            ToastUtils.showToast(mContext, "给你创建的话题加上标签吧~");
+            return;
+        }
+
+       // uploadImg();
+
+    }
+
+    private void uploadImg() {
+        showLoadingDialog(true);
+        List<String> srcPaths = new ArrayList<>();
+        srcPaths.add(mImgPath);
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                addTopic(urls);
+            }
+
+            @Override
+            public void error() {
+                closeLoadingDialog();
+                ToastUtils.showToast(mContext,"创建话题失败");
+            }
+        });
+        helper.upLoadImg(mContext, srcPaths.size(), srcPaths);
+    }
+
+    private void addTopic(List<String> urls) {
+
+        TopicModel model = new TopicModel();
+        model.setTitle(mTopic);
+        model.setIntro(mIntro);
+        model.setBackground(urls.get(0));
+
+        String dataString = JSON.toJSONString(model);
+        List<String> jArr = new ArrayList<>();
+        for (int i = 0; i < selectedData.size(); i++) {
+            jArr.add(selectedData.get(i).getTag());
+        }
+        String arr = JSONObject.toJSONString(jArr);
+        SCHttpUtils.postWhitSpaceAndChaId()
+                .url(HttpApi.TOPIC_CREATE)
+                .addParams("dataString", dataString)
+                .addParams("jArray", arr)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("创建话题失败");
+                        e.printStackTrace();
+                        closeLoadingDialog();
+                        ToastUtils.showToast(mContext,"创建话题失败");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        closeLoadingDialog();
+                        LogUtils.i("创建话题成功 = " + response);
+
+                    }
+                });
     }
 }

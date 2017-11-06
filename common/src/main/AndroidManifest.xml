@@ -16,7 +16,7 @@
         </activity>
 
         <receiver
-            android:name=".broadcast.NetWorkStatusReceiver"
+            android:name="com.shanchain.data.common.net.NetWorkStatusReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

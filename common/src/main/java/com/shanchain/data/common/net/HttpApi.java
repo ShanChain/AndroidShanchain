@@ -192,4 +192,7 @@ public interface HttpApi {
     /** 获取群成员*/
     String HX_GROUP_MEMBERS = BASE_URL_IM + "/hx/group/members";
 
+    /** 创建话题*/
+    String TOPIC_CREATE = BASE_URL + "/v1/topic/create";
+
 }
