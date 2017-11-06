@@ -286,7 +286,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
             return;
         }
 
-       // uploadImg();
+        uploadImg();
 
     }
 

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
@@ -77,6 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        }
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
+        ActivityStackManager.getInstance().addActivity(this);
         ActivityManager.getInstance().addActivity(this);
         //禁止横竖屏切换
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -186,6 +188,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.finish();
         // Activity出栈
         ActivityManager.getInstance().removeActivity(this);
+        ActivityStackManager.getInstance().finishActivity(this);
     }
 
     /**

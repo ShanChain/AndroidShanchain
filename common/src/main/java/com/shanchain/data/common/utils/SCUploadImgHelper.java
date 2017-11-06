@@ -2,11 +2,10 @@ package com.shanchain.data.common.utils;
 
 import android.content.Context;
 
-import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.bean.UpLoadImgBean;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class SCUploadImgHelper {
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num",num+"")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取图片地址失败");
@@ -34,10 +33,8 @@ public class SCUploadImgHelper {
                     }
 
                     @Override
-                    public void onResponse(String response, int id) {
+                    public void onResponse(UpLoadImgBean upLoadImgBean, int id) {
                         try {
-                            LogUtils.i("获取图片地址成功 = " + response);
-                            UpLoadImgBean upLoadImgBean = JSONObject.parseObject(response,UpLoadImgBean.class);
                             String accessKeyId = upLoadImgBean.getAccessKeyId();
                             String accessKeySecret = upLoadImgBean.getAccessKeySecret();
                             String securityToken = upLoadImgBean.getSecurityToken();
@@ -57,7 +54,7 @@ public class SCUploadImgHelper {
     private void upLoadOss(Context context, List<String> srcPaths, String accessKeyId, String accessKeySecret, String securityToken, List<String> uuidList) {
         final OssHelper helper = new OssHelper(context,accessKeyId,accessKeySecret,securityToken);
 
-        final List<String> tempUrls = uuidList;
+        final List<String> tempUrls = new ArrayList<>(uuidList);
 
         helper.setOnUploadListener(new OssHelper.OnUploadListener() {
             @Override

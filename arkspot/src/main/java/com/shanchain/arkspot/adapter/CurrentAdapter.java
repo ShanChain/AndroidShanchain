@@ -14,6 +14,7 @@ import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModel;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.other.AutoHeightListView;
@@ -122,14 +123,16 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 break;
             case StoryInfo.type3:
-                String topicImg = storyModel.getModelInfo().getBean().getImg();
+                StoryModelBean modelBean = storyModel.getModelInfo().getBean();
+                String topicImg = modelBean.getImg();
                 if (TextUtils.isEmpty(topicImg)) {
                     holder.setVisible(R.id.iv_item_story_img, false);
                 } else {
-                    holder.setVisible(R.id.iv_item_story_img, false);
+                    holder.setVisible(R.id.iv_item_story_img, true);
                     GlideUtils.load(mContext, storyModel.getModelInfo().getBean().getImg(), (ImageView) holder.getView(R.id.iv_item_story_img), R.mipmap.abs_addanewrole_def_photo_default);
                 }
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
+
                 break;
         }
     }

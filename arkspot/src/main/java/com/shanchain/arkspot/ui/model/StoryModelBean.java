@@ -31,7 +31,7 @@ public class StoryModelBean implements Serializable{
      */
 
     private String characterImg;
-    private String img;
+    private String background;
     private int supportCount;
     private int rootId;
     private String detailId;
@@ -60,11 +60,11 @@ public class StoryModelBean implements Serializable{
     }
 
     public String getImg() {
-        return img;
+        return background;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setImg(String background) {
+        this.background = background;
     }
 
     public int getSupportCount() {
@@ -207,7 +207,7 @@ public class StoryModelBean implements Serializable{
     public String toString() {
         return "StoryModelBean{" +
                 "characterImg='" + characterImg + '\'' +
-                ", img='" + img + '\'' +
+                ", background='" + background + '\'' +
                 ", supportCount=" + supportCount +
                 ", rootId=" + rootId +
                 ", detailId='" + detailId + '\'' +
