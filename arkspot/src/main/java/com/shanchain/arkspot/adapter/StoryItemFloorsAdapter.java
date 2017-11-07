@@ -41,7 +41,9 @@ public class StoryItemFloorsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, final ViewGroup parent) {
         View view = View.inflate(parent.getContext(), R.layout.item_floors,null);
         TextView tvContent = (TextView) view.findViewById(R.id.tv_item_floors_content);
-        tvContent.setText(datas.get(position).getBean().getIntro());
+        if(datas.get(position).getBean() != null){
+            tvContent.setText(datas.get(position).getBean().getIntro());
+        }
         return view;
     }
 }

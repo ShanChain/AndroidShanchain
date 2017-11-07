@@ -46,13 +46,13 @@ public class StandardDialog extends CustomDialog{
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 if(view.getId() == R.id.tv_dialog_leave_cancel){
-                    if(sureCallback != null){
-                        sureCallback.invoke();
+                    if(cancelCallback != null){
+                        cancelCallback.invoke();
                     }
                     dismiss();
                 }else if(view.getId() == R.id.tv_dialog_leave_sure){
-                    if(cancelCallback != null){
-                        cancelCallback.invoke();
+                    if(sureCallback != null){
+                        sureCallback.invoke();
                     }
                     dismiss();
                 }
