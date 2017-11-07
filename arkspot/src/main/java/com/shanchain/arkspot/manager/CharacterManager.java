@@ -73,6 +73,8 @@ public class CharacterManager {
     private void switchRole(String modelId, String spaceId, String spaceInfo){
         if(!TextUtils.isEmpty(spaceInfo)){
             mSpaceInfo = spaceInfo;
+        }else {
+            mSpaceInfo = "";
         }
         showLoadingDialog();
         SCHttpUtils.postWithUserId()
