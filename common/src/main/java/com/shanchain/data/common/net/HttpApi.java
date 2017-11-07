@@ -195,4 +195,6 @@ public interface HttpApi {
     /** 创建话题*/
     String TOPIC_CREATE = BASE_URL + "/v1/topic/create";
 
+    /** 给微博取消点赞*/
+    String STORY_SUPPORT_CANCEL = BASE_URL + "/v1/story/support/remove";
 }

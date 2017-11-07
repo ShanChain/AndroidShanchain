@@ -1,5 +1,6 @@
 package com.shanchain.arkspot.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.other.AutoHeightListView;
+import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 
@@ -35,6 +37,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
      */
 
     private Gson gson;
+    private Drawable mDrawable;
 
     public CurrentAdapter(List<StoryBeanModel> data) {
         super(data);
@@ -42,6 +45,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         addItemType(StoryBeanModel.type2, R.layout.item_story_type2);
         addItemType(StoryBeanModel.type3, R.layout.item_story_type4);
         gson = new Gson();
+
     }
 
     @Override
@@ -63,17 +67,30 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
 
         TextView tvLike = holder.getView(R.id.tv_item_story_like);
 
-        /*Drawable likeSelected = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+        if (beFav){
+            mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+        }else {
+            mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+        }
+
+
+
+        /*
+        Drawable likeSelected = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
         likeSelected.setBounds(0, 0, likeSelected.getMinimumWidth(), likeSelected.getMinimumHeight());
         tvLike.setCompoundDrawables(likeSelected,null, null,  null);
-        tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));*/
+        tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
+        */
+        mDrawable.setBounds(0,0,mDrawable.getMinimumWidth(),mDrawable.getMinimumHeight());
+        tvLike.setCompoundDrawables(mDrawable,null,null,null);
+        tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
+
 
         holder.addOnClickListener(R.id.iv_item_story_avatar)
                 .addOnClickListener(R.id.iv_item_story_more)
                 .addOnClickListener(R.id.tv_item_story_forwarding)
                 .addOnClickListener(R.id.tv_item_story_comment)
                 .addOnClickListener(R.id.tv_item_story_like);
-
 
 
         switch (holder.getItemViewType()) {
@@ -136,6 +153,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 }
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 holder.setText(R.id.tv_item_story_intro, bean.getIntro());
+                holder.setVisible(R.id.ll_topic_function,false);
                 break;
         }
     }
