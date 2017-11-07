@@ -11,4 +11,6 @@ public interface CurrentPresenter {
     void storySupport(String storyId);
 
     void refreshData(int page , int size);
+
+    void loadMore(int page , int size);
 }

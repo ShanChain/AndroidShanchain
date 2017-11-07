@@ -3,6 +3,7 @@ package com.shanchain.arkspot.adapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -10,7 +11,6 @@ import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
-import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModel;
@@ -47,35 +47,40 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
     @Override
     protected void convert(BaseViewHolder holder, StoryBeanModel item) {
         StoryModel storyModel = item.getStoryModel();
-        ResponseCharacterBrief characterBrief = storyModel.getModelInfo().getCharacterBrief();
+        StoryModelBean bean = storyModel.getModelInfo().getBean();
+        String characterImg = bean.getCharacterImg();
+        String characterName = bean.getCharacterName();
+        boolean beFav = bean.isBeFav();
 
-        String headUrl = "";
-        String name = "没有名字";
-        if (characterBrief != null){
-            headUrl = characterBrief.getHeadImg();
-            name = characterBrief.getName();
-        }
-
-
-        holder.setText(R.id.tv_item_story_name, name);
+        holder.setText(R.id.tv_item_story_name, characterName);
         ImageView ivHeadImg = holder.getView(R.id.iv_item_story_avatar);
 
-        GlideUtils.load(mContext, headUrl, ivHeadImg, R.mipmap.abs_addanewrole_def_photo_default);
-        String time = DateUtils.formatFriendly(new Date(storyModel.getModelInfo().getBean().getCreateTime()));
+        GlideUtils.load(mContext, characterImg, ivHeadImg, R.mipmap.abs_addanewrole_def_photo_default);
+        String time = DateUtils.formatFriendly(new Date(bean.getCreateTime()));
         holder.setText(R.id.tv_item_story_time, time);
-        holder.setText(R.id.tv_item_story_comment, storyModel.getModelInfo().getBean().getCommendCount() + "");
-        holder.setText(R.id.tv_item_story_like, storyModel.getModelInfo().getBean().getSupportCount() + "");
+        holder.setText(R.id.tv_item_story_comment, bean.getCommendCount() + "");
+        holder.setText(R.id.tv_item_story_like, bean.getSupportCount() + "");
+
+        TextView tvLike = holder.getView(R.id.tv_item_story_like);
+
+        /*Drawable likeSelected = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+        likeSelected.setBounds(0, 0, likeSelected.getMinimumWidth(), likeSelected.getMinimumHeight());
+        tvLike.setCompoundDrawables(likeSelected,null, null,  null);
+        tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));*/
+
         holder.addOnClickListener(R.id.iv_item_story_avatar)
                 .addOnClickListener(R.id.iv_item_story_more)
                 .addOnClickListener(R.id.tv_item_story_forwarding)
                 .addOnClickListener(R.id.tv_item_story_comment)
                 .addOnClickListener(R.id.tv_item_story_like);
 
+
+
         switch (holder.getItemViewType()) {
             case StoryInfo.type1:
                 String content = "";
                 List<String> imgs = new ArrayList<>();
-                String intro = storyModel.getModelInfo().getBean().getIntro();
+                String intro = bean.getIntro();
                 LogUtils.d("内容信息 = " + intro);
                 if (intro.contains("content")) {
                     ReleaseContentInfo contentInfo = gson.fromJson(intro, ReleaseContentInfo.class);
@@ -102,7 +107,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                     lv.setAdapter(floorsAdapter);
                 }
 
-
                 holder.setVisible(R.id.tv_item_story_forwarding, true);
                 NineGridImageView nineGridImageView = holder.getView(R.id.ngiv_item_story);
 
@@ -116,23 +120,22 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 }
 
                 holder.setText(R.id.tv_item_story_content, content);
-                holder.setText(R.id.tv_item_story_forwarding, storyModel.getModelInfo().getBean().getTranspond() + "");
+                holder.setText(R.id.tv_item_story_forwarding, bean.getTranspond() + "");
                 break;
             case StoryInfo.type2:
-                holder.setText(R.id.tv_item_story_content, storyModel.getModelInfo().getBean().getIntro());
+                holder.setText(R.id.tv_item_story_content, bean.getIntro());
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 break;
             case StoryInfo.type3:
-                StoryModelBean modelBean = storyModel.getModelInfo().getBean();
-                String topicImg = modelBean.getImg();
+                String topicImg = bean.getBackground();
                 if (TextUtils.isEmpty(topicImg)) {
                     holder.setVisible(R.id.iv_item_story_img, false);
                 } else {
                     holder.setVisible(R.id.iv_item_story_img, true);
-                    GlideUtils.load(mContext, storyModel.getModelInfo().getBean().getImg(), (ImageView) holder.getView(R.id.iv_item_story_img), R.mipmap.abs_addanewrole_def_photo_default);
+                    GlideUtils.load(mContext, topicImg, (ImageView) holder.getView(R.id.iv_item_story_img), R.mipmap.abs_addanewrole_def_photo_default);
                 }
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
-
+                holder.setText(R.id.tv_item_story_intro, bean.getIntro());
                 break;
         }
     }

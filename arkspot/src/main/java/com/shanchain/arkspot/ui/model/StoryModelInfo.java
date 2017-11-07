@@ -10,15 +10,6 @@ public class StoryModelInfo implements Serializable{
 
     private String storyId;
     private StoryModelBean mBean;
-    private ResponseCharacterBrief mCharacterBrief;
-
-    public ResponseCharacterBrief getCharacterBrief() {
-        return mCharacterBrief;
-    }
-
-    public void setCharacterBrief(ResponseCharacterBrief characterBrief) {
-        mCharacterBrief = characterBrief;
-    }
 
     public String getStoryId() {
         return storyId;

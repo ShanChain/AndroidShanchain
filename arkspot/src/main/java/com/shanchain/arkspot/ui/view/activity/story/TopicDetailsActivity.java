@@ -76,7 +76,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             mTopicId = storyModelBean.getDetailId();
             mDiscussNum = storyModelBean.getCommendCount();
             mReadNum = storyModelBean.getSupportCount();
-            mBackground = storyModelBean.getImg();
+            mBackground = storyModelBean.getBackground();
             mIntro = storyModelBean.getIntro();
             mTitle = storyModelBean.getTitle();
 

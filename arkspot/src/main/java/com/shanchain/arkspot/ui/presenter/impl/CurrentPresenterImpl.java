@@ -2,9 +2,7 @@ package com.shanchain.arkspot.ui.presenter.impl;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
-import com.shanchain.arkspot.ui.model.ResponseCharacterList;
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.arkspot.ui.model.ResponseStoryChainBean;
 import com.shanchain.arkspot.ui.model.ResponseStoryIdBean;
 import com.shanchain.arkspot.ui.model.ResponseStoryListInfo;
@@ -40,9 +38,9 @@ public class CurrentPresenterImpl implements CurrentPresenter {
         mCurrentView = currentView;
     }
 
-
     @Override
     public void initData(int page, int size) {
+        datas.clear();
         SCHttpUtils.postWhitSpaceAndChaId()
                 .url(HttpApi.STORY_RECOMMEND_HOT)
                 .addParams("page", page + "")
@@ -53,25 +51,25 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取实时数据失败");
                         e.printStackTrace();
-                        mCurrentView.initSuccess(null);
+                        mCurrentView.initSuccess(null,false);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        datas.clear();
                         LogUtils.i("实时数据 = " + response);
-                        StoryResponseInfo storyResponseInfo = new Gson().fromJson(response, StoryResponseInfo.class);
-                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
+
+                        StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
                         if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mCurrentView.initSuccess(null);
+                            mCurrentView.initSuccess(null,false);
                             return;
                         }
+                        boolean last = storyResponseInfo.getData().isLast();
+                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
                         List<String> ids = new ArrayList<>();
                         for (int i = 0; i < storyBeanList.size(); i++) {
                             StoryModel storyModel = new StoryModel();
                             StoryModelInfo storyModelInfo = new StoryModelInfo();
                             List<StoryModelInfo> modelInfoList = new ArrayList<>();
-
                             ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
                             String detailId = responseStoryBean.getDetailId();
                             storyModelInfo.setStoryId(detailId);
@@ -86,11 +84,9 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                                         for (int j = 0; j < detailIds.size(); j++) {
                                             String dId = detailIds.get(j);
                                             ids.add(dId);
-
                                             StoryModelInfo modelInfo = new StoryModelInfo();
                                             modelInfo.setStoryId(dId);
                                             modelInfoList.add(modelInfo);
-
                                         }
                                         storyModel.setStoryChain(modelInfoList);
                                     }
@@ -99,20 +95,79 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                                 modelInfoList = null;
                                 storyModel.setStoryChain(modelInfoList);
                             }
-
                             storyModel.setModelInfo(storyModelInfo);
-
-
                             datas.add(storyModel);
                         }
-
                         LogUtils.i("datas长度 = " + datas.size());
-
-
-                        obtainStoryList(ids);
-
+                        obtainStoryList(ids,last);
                     }
                 });
+    }
+
+    private void obtainStoryList(List<String> list, final boolean isLast) {
+
+        String dataArray = JSONObject.toJSONString(list);
+        LogUtils.d("dataArray = " + dataArray);
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_RECOMMEND_DETAIL)
+                .addParams("dataArray", dataArray)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mCurrentView.initSuccess(null,false);
+                        LogUtils.e("获取故事详情列表失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("故事列表数据 = " + response);
+
+                        ResponseStoryListInfo storyListInfo = JSONObject.parseObject(response, ResponseStoryListInfo.class);
+                        if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                            mCurrentView.initSuccess(null,false);
+                            return;
+                        }
+                        List<StoryModelBean> data = storyListInfo.getData();
+                        if (data != null && data.size() >0) {
+                            //obtainCharacterBrief(data,isLast);
+                            builderData(data,isLast);
+                        }else {
+                            mCurrentView.initSuccess(null,isLast);
+                            return;
+                        }
+                    }
+                });
+    }
+
+    private void builderData(List<StoryModelBean> data,boolean isLast) {
+        List<StoryBeanModel> list = new ArrayList<>();
+
+        for (int i = 0; i < datas.size(); i++) {
+            StoryModel storyModel = datas.get(i);
+            StoryModelInfo modelInfo = storyModel.getModelInfo();
+            String storyId = modelInfo.getStoryId();
+            for (StoryModelBean bean : data) {
+                String detailId = bean.getDetailId();
+                if (TextUtils.equals(storyId, detailId)) {
+                    LogUtils.i("外层添加数据 i = " + i);
+                    modelInfo.setBean(bean);
+                }
+            }}
+
+        for (int i = 0; i < datas.size(); i++) {
+            StoryBeanModel beanModel = new StoryBeanModel();
+            StoryModel storyModel = datas.get(i);
+            beanModel.setStoryModel(storyModel);
+            StoryModelInfo modelInfo = storyModel.getModelInfo();
+            StoryModelBean bean = modelInfo.getBean();
+            int type = bean.getType();
+            beanModel.setItemType(type);
+            list.add(beanModel);
+            LogUtils.i("构建数据结果 = " + beanModel);
+        }
+        mCurrentView.initSuccess(list,isLast);
     }
 
     @Override
@@ -142,150 +197,9 @@ public class CurrentPresenterImpl implements CurrentPresenter {
         initData(page, size);
     }
 
-
-    private void obtainStoryList(List<String> list) {
-        String dataArray = new Gson().toJson(list);
-        LogUtils.d("dataArray == " + dataArray);
-        SCHttpUtils.post()
-                .url(HttpApi.STORY_RECOMMEND_DETAIL)
-                .addParams("dataArray", dataArray)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        mCurrentView.initSuccess(null);
-                        LogUtils.e("获取故事详情列表失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("故事列表数据 = " + response);
-
-                        ResponseStoryListInfo storyListInfo = new Gson().fromJson(response, ResponseStoryListInfo.class);
-
-                        if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mCurrentView.initSuccess(null);
-                            return;
-                        }
-
-                        List<StoryModelBean> data = storyListInfo.getData();
-                        if (data != null && data.size() >0) {
-
-                            obtainCharacterBrief(data);
-
-                        }else {
-                            mCurrentView.initSuccess(null);
-                            return;
-                        }
-
-                    }
-                });
-    }
-
-    private void builderData() {
-        List<StoryBeanModel> list = new ArrayList<>();
-        for (int i = 0; i < datas.size(); i++) {
-            StoryBeanModel beanModel = new StoryBeanModel();
-            StoryModel storyModel = datas.get(i);
-            beanModel.setStoryModel(storyModel);
-            StoryModelInfo modelInfo = storyModel.getModelInfo();
-            StoryModelBean bean = modelInfo.getBean();
-            int type = bean.getType();
-            beanModel.setItemType(type);
-            list.add(beanModel);
-
-            LogUtils.i("构建数据结果 = " + beanModel);
-        }
-
-        mCurrentView.initSuccess(list);
-    }
-
-    private void obtainCharacterBrief(final List<StoryModelBean> data) {
-
-        List<Integer> characterIds = new ArrayList<>();
-        for (StoryModelBean storyBean : data){
-            characterIds.add(storyBean.getCharacterId());
-        }
-
-
-        LogUtils.i("角色一共有 " + characterIds.size());
-        for (int i = 0; i < characterIds.size(); i ++) {
-
-            LogUtils.i("角色id 有 = " + characterIds.get(i));
-
-        }
-
-        String jArr = new Gson().toJson(characterIds);
-
-        SCHttpUtils.post()
-                .url(HttpApi.CHARACTER_BRIEF)
-                .addParams("dataArray",jArr)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取角色");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("获取角色简要信息 = " + response);
-                        ResponseCharacterList responseCharacterList = new Gson().fromJson(response, ResponseCharacterList.class);
-                        List<ResponseCharacterBrief> characterBriefList = responseCharacterList.getData();
-                        setData(data,characterBriefList);
-                    }
-                });
-
-    }
-
-    private void setData(List<StoryModelBean> data,List<ResponseCharacterBrief> characterBriefList){
-
-        for (int i = 0; i < datas.size(); i++) {
-            StoryModel storyModel = datas.get(i);
-            StoryModelInfo modelInfo = storyModel.getModelInfo();
-            String storyId = modelInfo.getStoryId();
-            for (StoryModelBean bean : data) {
-                String detailId = bean.getDetailId();
-                if (TextUtils.equals(storyId, detailId)) {
-                    LogUtils.i("外层添加数据 i = " + i);
-                    modelInfo.setBean(bean);
-                }
-            }
-
-            for (ResponseCharacterBrief characterBrief : characterBriefList){
-                int characterId = characterBrief.getCharacterId();
-                if (characterId == modelInfo.getBean().getCharacterId()){
-                    modelInfo.setCharacterBrief(characterBrief);
-                }
-            }
-
-            LogUtils.i("外层id" + storyId);
-            List<StoryModelInfo> modelInfoList = storyModel.getStoryChain();
-            if (modelInfoList != null) {
-                for (int j = 0; j < modelInfoList.size(); j++) {
-                    StoryModelInfo storyModelInfo = modelInfoList.get(j);
-                    String storyId1 = storyModelInfo.getStoryId();
-                    for (StoryModelBean bean : data) {
-                        if (TextUtils.equals(storyId1, bean.getDetailId())) {
-                            LogUtils.i("内层添加数据 j = " + j);
-                            storyModelInfo.setBean(bean);
-                        }
-                    }
-
-                    for (ResponseCharacterBrief characterBrief : characterBriefList){
-                        int characterId = characterBrief.getCharacterId();
-                        if (characterId == storyModelInfo.getBean().getCharacterId()){
-                            storyModelInfo.setCharacterBrief(characterBrief);
-                        }
-                    }
-                    LogUtils.i("内层id" + storyId1);
-                }
-            }
-        }
-
-        builderData();
+    @Override
+    public void loadMore(int page, int size) {
+        initData(page,size);
     }
 
 }

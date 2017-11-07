@@ -6,6 +6,6 @@ package com.shanchain.arkspot.ui.presenter;
 
 public interface RecommendPresenter {
 
-    void initData();
+    void initData(int page,int size);
 
 }

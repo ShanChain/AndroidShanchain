@@ -6,9 +6,12 @@ import android.view.View;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseFragment;
+import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.presenter.RecommendPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.RecommendPresenterImpl;
 import com.shanchain.arkspot.ui.view.fragment.view.RecommendView;
+
+import java.util.List;
 
 import butterknife.Bind;
 
@@ -22,7 +25,8 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
     @Bind(R.id.srl_fragment_recommend)
     SwipeRefreshLayout mSrlFragmentRecommend;
     private RecommendPresenter mPresenter;
-
+    private int page = 0;
+    private int size = 10;
     @Override
     public View initView() {
         return View.inflate(mActivity, R.layout.fragment_recommended, null);
@@ -33,23 +37,18 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
         mPresenter = new RecommendPresenterImpl(this);
         mSrlFragmentRecommend.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlFragmentRecommend.setOnRefreshListener(this);
-        mSrlFragmentRecommend.setRefreshing(true);
-        mPresenter.initData();
-
+        //mSrlFragmentRecommend.setRefreshing(true);
+        mPresenter.initData(page,size);
     }
 
-    @Override
-    public void initSuccess() {
-        mSrlFragmentRecommend.setRefreshing(false);
-    }
 
     @Override
     public void onRefresh() {
-        mSrlFragmentRecommend.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSrlFragmentRecommend.setRefreshing(false);
-            }
-        }, 1000);
+
+    }
+
+    @Override
+    public void initSuccess(List<StoryBeanModel> list, boolean isLast) {
+
     }
 }

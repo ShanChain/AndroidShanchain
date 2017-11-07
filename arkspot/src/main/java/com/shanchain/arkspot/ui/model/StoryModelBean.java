@@ -9,47 +9,68 @@ import java.io.Serializable;
 public class StoryModelBean implements Serializable{
 
     /**
-     * characterImg :
-     * img : http://www.baidu.com
-     * supportCount : 2
-     * rootId : 0
-     * detailId : t2
-     * title : 送给三次元的慰问
-     * type : 3
-     * isFav : 0
+     * background :
+     * beFav : true
+     * characterId : 7
+     * characterImg : http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/193a2c667de440b595a790bc5e7c7d69.jpg
+     * characterName : 刘邦
+     * commendCount : 0
+     * createTime : 1508762821000
+     * detailId : s1
+     * genNum : 1
+     * intro : add some pic
+     * lineNum : 1
+     * rootId : 1
      * spaceId : 16
-     * tailId : 0
-     * commendCount : 1
-     * genNum : 0
-     * tailName :
-     * createTime : 1501636665000
-     * intro : 今天让我们隔空向三次元送去慰问，让大叔大妈们更加了解我们。让我们荡起双桨，把三次元征服。今天让我们隔空向三次元送去慰问……
-     * lineNum : 0
-     * characterId : 2
      * status : 1
-     * transpond : 0
+     * supportCount : 0
+     * title : picstory
+     * transpond : 3
+     * type : 1
      */
 
-    private String characterImg;
     private String background;
-    private int supportCount;
-    private int rootId;
-    private String detailId;
-    private String title;
-    private int type;
-    private int isFav;
-    private int spaceId;
-    private int tailId;
+    private boolean beFav;
+    private int characterId;
+    private String characterImg;
+    private String characterName;
     private int commendCount;
-    private int genNum;
-    private String tailName;
     private long createTime;
+    private String detailId;
+    private int genNum;
     private String intro;
     private int lineNum;
-    private int characterId;
+    private int rootId;
+    private int spaceId;
     private int status;
+    private int supportCount;
+    private String title;
     private int transpond;
+    private int type;
 
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public boolean isBeFav() {
+        return beFav;
+    }
+
+    public void setBeFav(boolean beFav) {
+        this.beFav = beFav;
+    }
+
+    public int getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
+    }
 
     public String getCharacterImg() {
         return characterImg;
@@ -59,76 +80,12 @@ public class StoryModelBean implements Serializable{
         this.characterImg = characterImg;
     }
 
-    public String getImg() {
-        return background;
+    public String getCharacterName() {
+        return characterName;
     }
 
-    public void setImg(String background) {
-        this.background = background;
-    }
-
-    public int getSupportCount() {
-        return supportCount;
-    }
-
-    public void setSupportCount(int supportCount) {
-        this.supportCount = supportCount;
-    }
-
-    public int getRootId() {
-        return rootId;
-    }
-
-    public void setRootId(int rootId) {
-        this.rootId = rootId;
-    }
-
-    public String getDetailId() {
-        return detailId;
-    }
-
-    public void setDetailId(String detailId) {
-        this.detailId = detailId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public int getIsFav() {
-        return isFav;
-    }
-
-    public void setIsFav(int isFav) {
-        this.isFav = isFav;
-    }
-
-    public int getSpaceId() {
-        return spaceId;
-    }
-
-    public void setSpaceId(int spaceId) {
-        this.spaceId = spaceId;
-    }
-
-    public int getTailId() {
-        return tailId;
-    }
-
-    public void setTailId(int tailId) {
-        this.tailId = tailId;
+    public void setCharacterName(String characterName) {
+        this.characterName = characterName;
     }
 
     public int getCommendCount() {
@@ -139,28 +96,28 @@ public class StoryModelBean implements Serializable{
         this.commendCount = commendCount;
     }
 
-    public int getGenNum() {
-        return genNum;
-    }
-
-    public void setGenNum(int genNum) {
-        this.genNum = genNum;
-    }
-
-    public String getTailName() {
-        return tailName;
-    }
-
-    public void setTailName(String tailName) {
-        this.tailName = tailName;
-    }
-
     public long getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
+    }
+
+    public String getDetailId() {
+        return detailId;
+    }
+
+    public void setDetailId(String detailId) {
+        this.detailId = detailId;
+    }
+
+    public int getGenNum() {
+        return genNum;
+    }
+
+    public void setGenNum(int genNum) {
+        this.genNum = genNum;
     }
 
     public String getIntro() {
@@ -179,12 +136,20 @@ public class StoryModelBean implements Serializable{
         this.lineNum = lineNum;
     }
 
-    public int getCharacterId() {
-        return characterId;
+    public int getRootId() {
+        return rootId;
     }
 
-    public void setCharacterId(int characterId) {
-        this.characterId = characterId;
+    public void setRootId(int rootId) {
+        this.rootId = rootId;
+    }
+
+    public int getSpaceId() {
+        return spaceId;
+    }
+
+    public void setSpaceId(int spaceId) {
+        this.spaceId = spaceId;
     }
 
     public int getStatus() {
@@ -195,6 +160,22 @@ public class StoryModelBean implements Serializable{
         this.status = status;
     }
 
+    public int getSupportCount() {
+        return supportCount;
+    }
+
+    public void setSupportCount(int supportCount) {
+        this.supportCount = supportCount;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public int getTranspond() {
         return transpond;
     }
@@ -203,28 +184,11 @@ public class StoryModelBean implements Serializable{
         this.transpond = transpond;
     }
 
-    @Override
-    public String toString() {
-        return "StoryModelBean{" +
-                "characterImg='" + characterImg + '\'' +
-                ", background='" + background + '\'' +
-                ", supportCount=" + supportCount +
-                ", rootId=" + rootId +
-                ", detailId='" + detailId + '\'' +
-                ", title='" + title + '\'' +
-                ", type=" + type +
-                ", isFav=" + isFav +
-                ", spaceId=" + spaceId +
-                ", tailId=" + tailId +
-                ", commendCount=" + commendCount +
-                ", genNum=" + genNum +
-                ", tailName='" + tailName + '\'' +
-                ", createTime=" + createTime +
-                ", intro='" + intro + '\'' +
-                ", lineNum=" + lineNum +
-                ", characterId=" + characterId +
-                ", status=" + status +
-                ", transpond=" + transpond +
-                '}';
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

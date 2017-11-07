@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CurrentView {
 
-    void initSuccess(List<StoryBeanModel> list);
+    void initSuccess(List<StoryBeanModel> list,boolean isLast);
 
     void supportSuccess(boolean isSuccess);
 }

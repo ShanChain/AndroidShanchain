@@ -16,9 +16,9 @@ public class RecommendPresenterImpl implements RecommendPresenter {
     }
 
     @Override
-    public void initData() {
+    public void initData(int page , int size) {
 
 
-        mRecommendView.initSuccess();
+        //mRecommendView.initSuccess(null,false);
     }
 }

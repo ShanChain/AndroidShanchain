@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface AttentionView {
 
-    void initSuccess(List<StoryBeanModel> list);
+    void initSuccess(List<StoryBeanModel> list,boolean isLast);
 
 }

@@ -18,6 +18,7 @@
         android:layout_height="160dp"/>
 
     <TextView
+        android:id="@+id/tv_item_story_intro"
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:textColor="@color/colorTextDefault"
         android:ellipsize="end"

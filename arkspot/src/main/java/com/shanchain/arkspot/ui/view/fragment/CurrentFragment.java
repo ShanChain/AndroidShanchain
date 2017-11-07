@@ -42,7 +42,9 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private CurrentPresenter mCurrentPresenter;
     List<StoryBeanModel> datas = new ArrayList<>();
     private CurrentAdapter mAdapter;
-
+    private int page = 0;
+    private int size = 10;
+    private boolean isLoadMore;
     @Override
     public View initView() {
         return View.inflate(mActivity, R.layout.fragment_current, null);
@@ -54,8 +56,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mSrlStoryCurrent.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlStoryCurrent.setRefreshing(true);
         mCurrentPresenter = new CurrentPresenterImpl(this);
-        mCurrentPresenter.initData(0, 20);
-
+        mCurrentPresenter.initData(page, size);
         initRecyclerView();
 
     }
@@ -63,7 +64,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         mRvStoryCurrent.setLayoutManager(layoutManager);
-
         mRvStoryCurrent.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mAdapter = new CurrentAdapter(datas);
         mAdapter.setEnableLoadMore(true);
@@ -75,18 +75,46 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
 
     @Override
-    public void initSuccess(List<StoryBeanModel> list) {
-        mSrlStoryCurrent.setRefreshing(false);
+    public void initSuccess(List<StoryBeanModel> list,boolean isLast) {
+        if (mSrlStoryCurrent != null){
+            mSrlStoryCurrent.setRefreshing(false);
+        }
         if (list == null) {
-
+            if (isLast){
+                mAdapter.loadMoreEnd();
+            }else {
+                mAdapter.loadMoreFail();
+            }
             return;
         } else {
-
-            //测试阶段
-            datas.clear();
-            datas.addAll(list);
+            if (isLoadMore){
+                if (isLast){
+                    mAdapter.loadMoreEnd();
+                }else {
+                    mAdapter.loadMoreComplete();
+                }
+                datas.addAll(list);
+            }else {
+                datas.clear();
+                datas.addAll(list);
+            }
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        isLoadMore = false;
+        page = 0;
+        mCurrentPresenter.refreshData(page,size);
+        mAdapter.loadMoreComplete();
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        isLoadMore = true;
+        page ++;
+        mCurrentPresenter.loadMore(page,size);
     }
 
     @Override
@@ -94,10 +122,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         ToastUtils.showToast(mActivity, isSuccess ? "点赞成功" : "点赞失败");
     }
 
-    @Override
-    public void onRefresh() {
-        mCurrentPresenter.refreshData(0, 100);
-    }
+
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
@@ -125,8 +150,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickAvatar(int position) {
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);
-        int userId = datas.get(position).getStoryModel().getModelInfo().getCharacterBrief().getCharacterId();
-        intent.putExtra("characterId",userId);
+        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+        intent.putExtra("characterId",characterId);
         startActivity(intent);
     }
 
@@ -240,8 +265,5 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         }
     }
 
-    @Override
-    public void onLoadMoreRequested() {
 
-    }
 }

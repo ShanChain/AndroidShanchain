@@ -32,7 +32,6 @@ import com.shanchain.arkspot.ui.model.CommentBean;
 import com.shanchain.arkspot.ui.model.CommentData;
 import com.shanchain.arkspot.ui.model.ContactBean;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
-import com.shanchain.arkspot.ui.model.ResponseCharacterBrief;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
@@ -220,28 +219,23 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         TextView tvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
+        String characterImg = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterImg();
+        String characterName = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterName();
 
-        String headUrl = "";
-        String name = "没有名字";
-        ResponseCharacterBrief characterBrief = mBeanModel.getStoryModel().getModelInfo().getCharacterBrief();
-        if (characterBrief != null) {
-            headUrl = characterBrief.getHeadImg();
-            name = characterBrief.getName();
-        }
-        GlideUtils.load(mContext, headUrl, ivAvatar, 0);
-        tvName.setText(name);
+        GlideUtils.load(mContext, characterImg, ivAvatar, 0);
+        tvName.setText(characterName);
         tvTime.setText(DateUtils.formatFriendly(new Date(mBean.getCreateTime())));
         tvForwarding.setText(mBean.getTranspond() + "");
         tvHeadLike.setText(mBean.getSupportCount() + "");
         tvHeadComment.setText(mBean.getCommendCount() + "");
-        int isFav = mBean.getIsFav();
+        boolean isFav = mBean.isBeFav();
         Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
         Drawable like_selected = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
 
         like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
         like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
 
-        tvHeadLike.setCompoundDrawables(isFav == 1 ? like_selected : like_def, null, null, null);
+        tvHeadLike.setCompoundDrawables(isFav ? like_selected : like_def, null, null, null);
         tvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
         String intro = mBean.getIntro();
