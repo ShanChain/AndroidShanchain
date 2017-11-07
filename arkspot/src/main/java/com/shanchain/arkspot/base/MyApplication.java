@@ -19,6 +19,7 @@ import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.db.ContactDao;
+import com.shanchain.arkspot.manager.CharacterManager;
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.utils.Utils;
@@ -61,6 +62,11 @@ public class MyApplication extends BaseApplication {
         initDB();
         initSCCache();
         initShareAndLogin();
+        initInstance();
+    }
+
+    private void initInstance(){
+        CharacterManager.getInstance();
     }
 
     private void initSCCache() {

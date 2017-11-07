@@ -39,6 +39,7 @@ public class AppManager {
         this.mContext = context.getApplicationContext();
     }
 
+
     public Context getContext() {
         return mContext;
     }

@@ -1,9 +1,32 @@
 package com.shanchain.data.common.base;
 
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class RoleManager {
+
+    /**
+     * 切换角色
+     * @param modelId
+     * @param spaceId
+     * @param spaceInfo  可以为空
+     */
+    public static void switchRole(String modelId,String spaceId,String spaceInfo){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("modelId",modelId);
+        jsonObject.put("spaceId",spaceId);
+        if(!TextUtils.isEmpty(spaceInfo)){
+            jsonObject.put("userInfo",spaceInfo);
+        }
+        SCBaseEvent baseEvent = new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_SWITCH_ROLE,jsonObject,null);
+        EventBus.getDefault().post(baseEvent);
+    }
 
     public static void switchRoleCache(int characterId,String characterInfo,int spaceId,String spaceInfo,String userName,String pwd){
         String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
