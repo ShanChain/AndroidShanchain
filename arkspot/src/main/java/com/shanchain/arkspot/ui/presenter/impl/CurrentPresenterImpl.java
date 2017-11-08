@@ -171,7 +171,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
     }
 
     @Override
-    public void storySupport(String storyId) {
+    public void storySupport(final int position, String storyId) {
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId)
@@ -181,13 +181,19 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
                         e.printStackTrace();
-                        mCurrentView.supportSuccess(false);
+                        mCurrentView.supportSuccess(false,position);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("点赞结果 = " + response);
-                        mCurrentView.supportSuccess(true);
+                        String code = JSONObject.parseObject(response).getString("code");
+
+                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            mCurrentView.supportSuccess(true,position);
+                        }else {
+                            mCurrentView.supportSuccess(false,position);
+                        }
                     }
                 });
     }
@@ -200,6 +206,33 @@ public class CurrentPresenterImpl implements CurrentPresenter {
     @Override
     public void loadMore(int page, int size) {
         initData(page,size);
+    }
+
+    @Override
+    public void storyCancelSupport(final int position, String storyId) {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_SUPPORT_CANCEL)
+                .addParams("storyId",storyId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("取消点赞失败");
+                        e.printStackTrace();
+                        mCurrentView.supportCancelSuccess(false,position);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("取消点赞成功 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            mCurrentView.supportCancelSuccess(true,position);
+                        }else {
+                            mCurrentView.supportCancelSuccess(false,position);
+                        }
+                    }
+                });
     }
 
 }

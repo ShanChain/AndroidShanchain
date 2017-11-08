@@ -8,9 +8,11 @@ public interface CurrentPresenter {
 
     void initData(int page,int size);
 
-    void storySupport(String storyId);
+    void storySupport(int position,String storyId);
 
     void refreshData(int page , int size);
 
     void loadMore(int page , int size);
+
+    void storyCancelSupport(int position ,String storyId);
 }

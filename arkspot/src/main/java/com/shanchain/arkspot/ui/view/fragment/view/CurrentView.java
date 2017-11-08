@@ -12,5 +12,7 @@ public interface CurrentView {
 
     void initSuccess(List<StoryBeanModel> list,boolean isLast);
 
-    void supportSuccess(boolean isSuccess);
+    void supportSuccess(boolean isSuccess,int position);
+
+    void supportCancelSuccess(boolean isSuccess,int position);
 }

@@ -1,10 +1,12 @@
 package com.shanchain.arkspot.ui.view.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
@@ -12,6 +14,7 @@ import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
@@ -118,10 +121,43 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     }
 
     @Override
-    public void supportSuccess(boolean isSuccess) {
+    public void supportSuccess(boolean isSuccess,int position) {
         ToastUtils.showToast(mActivity, isSuccess ? "点赞成功" : "点赞失败");
+        if (isSuccess){
+            StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+            int supportCount = bean.getSupportCount();
+            bean.setBeFav(true);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable,null,null,null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            tvLike.setText(supportCount+1+"");
+            bean.setSupportCount(supportCount + 1);
+        }else {
+
+        }
+
     }
 
+    @Override
+    public void supportCancelSuccess(boolean isSuccess,int position) {
+        ToastUtils.showToast(mActivity,isSuccess?"取消点赞成功":"取消点赞失败");
+        if (isSuccess){
+            StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+            int supportCount = bean.getSupportCount();
+            bean.setBeFav(false);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable,null,null,null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            tvLike.setText(supportCount-1+"");
+            bean.setSupportCount(supportCount - 1);
+        }else {
+
+        }
+    }
 
 
     @Override
@@ -160,8 +196,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickForwarding(int position) {
         ToastUtils.showToast(mActivity, "转发");
-
-
     }
 
     /**
@@ -178,8 +212,15 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：喜欢的点击事件
      */
     private void clickLike(int position) {
-        String storyId = datas.get(position).getStoryModel().getModelInfo().getBean().getDetailId();
-        mCurrentPresenter.storySupport(storyId.substring(1));
+        StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+        String storyId = bean.getDetailId();
+        boolean beFav = bean.isBeFav();
+        if (beFav){     //已经点赞
+            mCurrentPresenter.storyCancelSupport(position,storyId.substring(1));
+        }else {     //未点赞
+            mCurrentPresenter.storySupport(position,storyId.substring(1));
+        }
+
     }
 
     private void report(final int position) {

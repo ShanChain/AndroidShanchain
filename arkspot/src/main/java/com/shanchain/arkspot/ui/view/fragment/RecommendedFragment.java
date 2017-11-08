@@ -41,7 +41,6 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
         mPresenter.initData(page,size);
     }
 
-
     @Override
     public void onRefresh() {
 
