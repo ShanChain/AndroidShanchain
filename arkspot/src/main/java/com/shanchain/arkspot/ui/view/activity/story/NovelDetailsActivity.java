@@ -28,14 +28,18 @@ import com.shanchain.arkspot.adapter.DynamicCommentAdapter;
 import com.shanchain.arkspot.adapter.StoryItemNineAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.BdCommentBean;
+import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.arkspot.ui.model.CommentBean;
 import com.shanchain.arkspot.ui.model.CommentData;
 import com.shanchain.arkspot.ui.model.ContactBean;
+import com.shanchain.arkspot.ui.model.NovelModel;
 import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.model.StoryModel;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
@@ -59,7 +63,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
+public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
 
     @Bind(R.id.tb_dynamic_comment)
     ArthurToolBar mTbAddRole;
@@ -69,31 +73,46 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     TextView mTvDynamicDetailsComment;
     @Bind(R.id.ll_dynamic_details)
     LinearLayout mLlDynamicDetails;
-    private List<BdCommentBean> datas = new ArrayList<>();
     private DynamicCommentAdapter mDynamicCommentAdapter;
+    private List<BdCommentBean> datas = new ArrayList<>();
     private View mHeadView;
-    private StoryBeanModel mBeanModel;
-    private StoryModelBean mBean;
     private String mStoryId;
-    private int mCharacterId;
+    private String mCharacterId;
+    private NovelModel mNovelModel;
+    private CharacterInfo mCharacterInfo;
+    private boolean isBeFav = false;
+
 
     @Override
     protected int getContentViewLayoutID() {
-        return R.layout.activity_dynamic_details;
+        return R.layout.activity_novel_details;
     }
 
     @Override
     protected void initViewsAndEvents() {
 
-        mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
+        StoryBeanModel beanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
         String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
-        if (mBeanModel == null) {
-            finish();
-            return;
+        if (beanModel == null) {
+            if(!TextUtils.isEmpty(rnExtra)){
+                JSONObject jsonObject= JSONObject.parseObject(rnExtra);
+                JSONObject rnGData = jsonObject.getJSONObject("gData");
+                JSONObject rnData = jsonObject.getJSONObject("data");
+                mNovelModel = JSON.parseObject(rnData.getJSONObject("novel").toJSONString(),NovelModel.class);
+                mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(),CharacterInfo.class);
+                mStoryId = mNovelModel.getStoryId() + "";
+                mCharacterId = mNovelModel.getCharacterId() + "";
+            }else {
+                finish();
+                return;
+            }
+
         } else {
-            mBean = mBeanModel.getStoryModel().getModelInfo().getBean();
-            mStoryId = mBeanModel.getStoryModel().getModelInfo().getStoryId();
-            mCharacterId = mBean.getCharacterId();
+            StoryModelBean storyBean = beanModel.getStoryModel().getModelInfo().getBean();
+            mStoryId = beanModel.getStoryModel().getModelInfo().getStoryId();
+            mCharacterId = storyBean.getCharacterId() + "";
+            mNovelModel = storyBean.getNovelMovel();
+            mCharacterInfo = storyBean.getCharacterInfo();
         }
 
         initToolBar();
@@ -105,7 +124,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         datas.clear();
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.COMMENT_QUERY)
-                .addParams("storyId", mBean.getDetailId().substring(1))
+                .addParams("storyId", mStoryId)
                 .addParams("page", "0")
                 .addParams("size", "100")
                 .build()
@@ -221,26 +240,30 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         TextView tvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
-        String characterImg = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterImg();
-        String characterName = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterName();
+        String characterImg = "";
+        String characterName = "";
+        if(mCharacterInfo != null){
+             characterImg = mCharacterInfo.getHeadImg();
+             characterName = mCharacterInfo.getName();
+        }
 
         GlideUtils.load(mContext, characterImg, ivAvatar, 0);
         tvName.setText(characterName);
-        tvTime.setText(DateUtils.formatFriendly(new Date(mBean.getCreateTime())));
-        tvForwarding.setText(mBean.getTranspond() + "");
-        tvHeadLike.setText(mBean.getSupportCount() + "");
-        tvHeadComment.setText(mBean.getCommendCount() + "");
-        boolean isFav = mBean.isBeFav();
+        tvTime.setText(DateUtils.formatFriendly(new Date(mNovelModel.getCreateTime())));
+        tvForwarding.setText(mNovelModel.getTranspond() + "");
+        tvHeadLike.setText(mNovelModel.getSupportCount() + "");
+        tvHeadComment.setText(mNovelModel.getCommendCount() + "");
+
         Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
         Drawable like_selected = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
 
         like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
         like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
 
-        tvHeadLike.setCompoundDrawables(isFav ? like_selected : like_def, null, null, null);
+        tvHeadLike.setCompoundDrawables(isBeFav ? like_selected : like_def, null, null, null);
         tvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
-        String intro = mBean.getIntro();
+        String intro = mNovelModel.getIntro();
         String content = "";
         List<String> imgList = new ArrayList<>();
         if (intro.contains("content")) {
@@ -268,7 +291,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         ivMore.setVisibility(View.GONE);
 
         //根据是否是长文来控制是否显示展开，是长文显示，不是则不显示
-        int type = mBean.getType();
+        int type = mNovelModel.getType();
         if (type == 2) { //是长文
             tvExpend.setVisibility(View.VISIBLE);
         } else {
@@ -349,7 +372,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_item_story_avatar:
-                int characterId = mBean.getCharacterId();
+                int characterId = mNovelModel.getCharacterId();
                 Intent intentAvatar = new Intent(mContext, FriendHomeActivity.class);
                 intentAvatar.putExtra("characterId", characterId);
                 startActivity(intentAvatar);
@@ -400,7 +423,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             public void onClick(View v) {
                 String comment = mEtPopComment.getText().toString();
                 if (TextUtils.isEmpty(comment)) {
-                    ToastUtils.showToast(DynamicDetailsActivity.this, "不能提交空评论哦~");
+                    ToastUtils.showToast(NovelDetailsActivity.this, "不能提交空评论哦~");
                     return;
                 }
 
@@ -414,21 +437,21 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         mIvPopCommentAt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this, "艾特");
+                ToastUtils.showToast(NovelDetailsActivity.this, "艾特");
             }
         });
 
         mIvPopCommentFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this, "小尾巴");
+                ToastUtils.showToast(NovelDetailsActivity.this, "小尾巴");
             }
         });
 
         mIvPopCommentTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast(DynamicDetailsActivity.this, "话题");
+                ToastUtils.showToast(NovelDetailsActivity.this, "话题");
             }
         });
         pop.setTouchable(true);
@@ -444,7 +467,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_COMMENT_ADD)
                 .addParams("dataString", dataString)
-                .addParams("storyId", mBean.getDetailId().substring(1))
+                .addParams("storyId", mNovelModel.getStoryId() + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override

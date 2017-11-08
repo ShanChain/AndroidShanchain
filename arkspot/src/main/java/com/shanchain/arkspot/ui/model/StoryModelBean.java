@@ -191,4 +191,62 @@ public class StoryModelBean implements Serializable{
     public void setType(int type) {
         this.type = type;
     }
+
+    public NovelModel getNovelMovel(){
+        NovelModel novelModel = new NovelModel();
+        novelModel.setCharacterId(this.characterId);
+        novelModel.setStoryId(Integer.parseInt(this.detailId.substring(1)));
+        novelModel.setCommendCount(this.commendCount);
+        novelModel.setIntro(this.intro);
+        novelModel.setCreateTime(this.createTime);
+        novelModel.setRootId(this.rootId);
+        novelModel.setSpaceId(this.spaceId);
+        novelModel.setTitle(this.title);
+        novelModel.setGenNum(this.genNum);
+        novelModel.setLineNum(lineNum);
+        novelModel.setStatus(status);
+        novelModel.setSupportCount(supportCount);
+        novelModel.setType(type);
+        novelModel.setTranspond(transpond);
+        return novelModel;
+    }
+
+    public DynamicModel getDynamicModel(){
+        DynamicModel dynamicModel = new DynamicModel();
+        dynamicModel.setCharacterId(this.characterId);
+        dynamicModel.setStoryId(Integer.parseInt(this.detailId.substring(1)));
+        dynamicModel.setCommendCount(this.commendCount);
+        dynamicModel.setIntro(this.intro);
+        dynamicModel.setCreateTime(this.createTime);
+        dynamicModel.setRootId(this.rootId);
+        dynamicModel.setSpaceId(this.spaceId);
+        dynamicModel.setGenNum(this.genNum);
+        dynamicModel.setLineNum(lineNum);
+        dynamicModel.setStatus(status);
+        dynamicModel.setSupportCount(supportCount);
+        dynamicModel.setType(type);
+        dynamicModel.setTranspond(transpond);
+        return dynamicModel;
+    }
+
+    public TopicModel getTopicModel(){
+        TopicModel topicModel = new TopicModel();
+        topicModel.setCharacterId(this.characterId);
+        topicModel.setBackground(background);
+        topicModel.setIntro(this.intro);
+        topicModel.setCreateTime(this.createTime);
+        topicModel.setSpaceId(this.spaceId);
+        topicModel.setStatus(status);
+        topicModel.setTopicId(Integer.parseInt(detailId.substring(1)));
+        return topicModel;
+    }
+
+    public CharacterInfo getCharacterInfo(){
+        CharacterInfo characterInfo = new CharacterInfo();
+        characterInfo.setCharacterId(this.characterId);
+        characterInfo.setHeadImg(characterImg);
+        characterInfo.setName(characterName);
+        return characterInfo;
+    }
+
 }
