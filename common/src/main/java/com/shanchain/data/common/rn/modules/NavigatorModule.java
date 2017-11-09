@@ -114,7 +114,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void Logout(){
+    public void logout(){
         String userId = SCCacheUtils.getCache("0", "curUser");
         SCCacheUtils.setCache(userId,"token","");
         EMClient.getInstance().logout(true);
