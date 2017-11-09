@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(int i, String s) {
-                        LogUtils.i("环信登录失败");
+                        LogUtils.i("环信登录失败 = " + s);
                     }
 
                     @Override

@@ -8,39 +8,97 @@ import java.util.List;
  */
 
 public class SpaceCharacterModelInfo implements Serializable{
-
-
     /**
-     * code : 000000
-     * message : ok
-     * data : [{"modelId":97,"name":"叶修","intro":"人称荣耀教科书、战术大师，荣耀网游第一批玩家，荣耀职业联赛初代选手，并创造了许多荣耀网游乃至赛场上的战术。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891353000,"spaceId":10,"tagMap":[]},{"modelId":98,"name":"苏沐橙","intro":"联盟首席枪炮师，也被称作联盟的头号美人，在联盟第四赛季加入，加入后与叶修一直是联盟最佳搭档。苏沐秋的妹妹。在第十区与叶修一起打副本，后在嘉世挑战赛决赛时毅然走进兴欣比赛席，加入兴欣。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891594000,"spaceId":10,"tagMap":[]},{"modelId":99,"name":"方锐","intro":"原呼啸战队副队长，呼啸第五赛季加入的老成员，被誉为猥琐流大师，曾用角色鬼迷神疑被誉为第一盗贼，和林敬言的流氓唐三打组成的犯罪组合一直是呼啸的标志。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891601000,"spaceId":10,"tagMap":[]},{"modelId":100,"name":"唐柔","intro":"无死角美女，个性好胜。有一双和叶修一样漂亮的手，手速很快。为唐氏千金，原本在国外学钢琴，后因对钢琴失去兴趣而在兴欣网吧中当网管，因为玩荣耀败给叶修，从此迷上荣耀。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891610000,"spaceId":10,"tagMap":[]},{"modelId":101,"name":"包荣兴","intro":"叶修在第十区遇到带起来的荣耀小白。星座控，半长头发，长得很有些卖相。原本是网吧看场子的。性格单纯，大脑时常脱线说出莫名其妙的话。战斗风格天马行空，完全无法用经验预料，有时打法高明，有时打法二缺，叶修也无法解读。喜欢一冷却好就出板砖，因为\u201c易获取，不起眼，用完随手一丢就毁灭凶器\u201d。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891621000,"spaceId":10,"tagMap":[]},{"modelId":102,"name":"魏琛","intro":"蓝雨战队首任队长，术士索克萨尔的首任操作者，混混出身。发掘了黄少天，但因为当时作为职业选手的年纪过高，状态、手速等开始下滑，以及一直低估了喻文州，直到一次队内挑战赛被喻文州连胜三次，发现战队不再需要自己，不想去别的位置混混，而选择壮士断腕般的退役。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891627000,"spaceId":10,"tagMap":[]},{"modelId":103,"name":"许博远","intro":"神之领域角色\u201c蓝桥春雪\u201d、第十区蓝溪阁公会会长\u201c蓝河\u201d、第十区兴欣公会卧底号\u201c绝色\u201d的操作者。因与蓝溪阁新崛起的高手绕岸垂杨间存在矛盾，为避开二者之间的争斗，蓝溪阁总会长春易老将其下调到第十区担任会长及开荒任务。","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":1,"createTime":1505891636000,"spaceId":10,"tagMap":[]},{"modelId":263,"name":"test model","intro":"test intro","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/4479d6d3362744a897be32818703d6e1.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":10,"createTime":1508206694000,"spaceId":10,"tagMap":[]},{"modelId":264,"name":"111122222","intro":"21123","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/4479d6d3362744a897be32818703d6e1.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":10,"createTime":1508206762000,"spaceId":10,"tagMap":[]},{"modelId":265,"name":"111122222","intro":"21123","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/4479d6d3362744a897be32818703d6e1.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":10,"createTime":1508206770000,"spaceId":10,"tagMap":[]},{"modelId":266,"name":"111122222","intro":"21123我是最帅的","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/4479d6d3362744a897be32818703d6e1.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":10,"createTime":1508206982000,"spaceId":10,"tagMap":[]},{"modelId":267,"name":"test 22222","intro":"test intro","disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/8c67a74f56e448c88a2863d0c4c93edf.jpg","status":1,"characterNum":0,"supportNum":0,"parentId":0,"createBy":10,"createTime":1508225060000,"spaceId":10,"tagMap":[{"tagId":17,"tagName":"10维空间","rate":0},{"tagId":18,"tagName":"霸道总裁","rate":0}]}]
+     * content : [{"tagMap":[{"rate":0,"tagId":69,"tagName":"仙界"}],"characterNum":4,"createBy":1,"createTime":1505889439000,"disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","intro":"出自手游《王者荣耀》，作为一名炼金师，太乙真人大部分时间都宅在家里研究各种稀奇古怪的东西，现在是时候把这些发明拿到战场上试验一下威力了~","modelId":9,"name":"太乙真人","parentId":0,"spaceId":16,"status":1,"supportNum":677},{"tagMap":[{"rate":0,"tagId":69,"tagName":"仙界"}],"characterNum":4,"createBy":1,"createTime":1505889459000,"disc":"  ","headImg":"http://shanchain-seller.oss-cn-hongkong.aliyuncs.com/81a0a74dc8034ab488e53eaf0e176bd4.jpg","intro":"长久以来，大陆一直流传着关于灭世魔神王的传说。他象征着绝对的黑暗，要将人间界带入永夜和毁灭之中，而他也许的大魔王的转身。","modelId":10,"name":"项羽","parentId":0,"spaceId":16,"status":1,"supportNum":0}]
+     * first : true
+     * last : false
+     * number : 0
+     * numberOfElements : 2
+     * size : 2
+     * sort : [{"ascending":true,"descending":false,"direction":"ASC","ignoreCase":false,"property":"createTime","undefinedHandling":"NATIVE"}]
+     * totalElements : 19
+     * totalPages : 10
      */
 
-    private String code;
-    private String message;
-    private List<SpaceCharacterBean> data;
+    private boolean first;
+    private boolean last;
+    private int number;
+    private int numberOfElements;
+    private int size;
+    private int totalElements;
+    private int totalPages;
+    private List<SpaceCharacterBean> content;
+    private List<ResponseSortBean> sort;
 
-    public String getCode() {
-        return code;
+    public boolean isFirst() {
+        return first;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setFirst(boolean first) {
+        this.first = first;
     }
 
-    public String getMessage() {
-        return message;
+    public boolean isLast() {
+        return last;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setLast(boolean last) {
+        this.last = last;
     }
 
-    public List<SpaceCharacterBean> getData() {
-        return data;
+    public int getNumber() {
+        return number;
     }
 
-    public void setData(List<SpaceCharacterBean> data) {
-        this.data = data;
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public int getNumberOfElements() {
+        return numberOfElements;
+    }
+
+    public void setNumberOfElements(int numberOfElements) {
+        this.numberOfElements = numberOfElements;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(int totalElements) {
+        this.totalElements = totalElements;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public List<SpaceCharacterBean> getContent() {
+        return content;
+    }
+
+    public void setContent(List<SpaceCharacterBean> content) {
+        this.content = content;
+    }
+
+    public List<ResponseSortBean> getSort() {
+        return sort;
+    }
+
+    public void setSort(List<ResponseSortBean> sort) {
+        this.sort = sort;
     }
 }

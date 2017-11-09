@@ -1,10 +1,12 @@
 package com.shanchain.arkspot.ui.model;
 
+import java.io.Serializable;
+
 /**
  * Created by zhoujian on 2017/10/26.
  */
 
-public class ResponseSortBean {
+public class ResponseSortBean implements Serializable{
 
     /**
      * direction : DESC

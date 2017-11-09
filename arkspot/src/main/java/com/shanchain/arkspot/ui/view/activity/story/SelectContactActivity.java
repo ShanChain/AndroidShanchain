@@ -310,9 +310,13 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     @Override
     public void onRightClick(View v) {
         if (mIsAt) {
+            ArrayList<Integer> moduleIds = new ArrayList<>();
             for (int i = 0; i < show.size(); i++) {
-                if (show.get(i).isSelected()) {
+                BdAtContactInfo bdAtContactInfo = show.get(i);
+                if (bdAtContactInfo.isSelected()) {
                     selected.add(show.get(i).getContactInfo().getName());
+                    int moduleId = bdAtContactInfo.getContactInfo().getModuleId();
+                    moduleIds.add(moduleId);
                 }
             }
 
@@ -321,6 +325,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             } else {
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra("contacts", selected);
+                intent.putIntegerArrayListExtra("moduleIds",  moduleIds);
                 setResult(RESULT_CODE_CONTACTS, intent);
                 finish();
             }

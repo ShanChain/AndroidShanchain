@@ -52,26 +52,24 @@
         android:padding="@dimen/dimens_5dp"
         android:textSize="14sp"/>
 
-    <RelativeLayout
+    <com.shanchain.arkspot.widgets.richEditor.RichTextEditor
+        android:id="@+id/et_release_dynamic_long"
+        android:visibility="gone"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:textCursorDrawable="@null"
+        android:textSize="14sp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
         <android.support.v7.widget.RecyclerView
             android:padding="@dimen/dimens_5dp"
             android:id="@+id/rv_release_dynamic"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="80dp"/>
 
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/iv_release_btn_switch"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dimens_15dp"
-            android:src="@mipmap/abs_release_btn_switch_long_default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -138,8 +136,8 @@
                 android:layout_height="wrap_content"/>
             <ImageView
                 android:visibility="invisible"
-                android:id="@+id/iv_release_icon_frame"
-                android:src="@mipmap/abs_release_btn_frame_default"
+                android:id="@+id/iv_release_icon_read"
+                android:src="@mipmap/abs_release_btn_read_default"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
@@ -147,80 +145,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/ll_release_function_long"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="216dp">
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-            <TextView
-                android:textColor="@color/colorHint"
-                android:id="@+id/tv_release_img"
-                android:textSize="@dimen/sp_14"
-                android:drawableTop="@mipmap/abs_release_btn_image_long_default"
-                android:gravity="center"
-                android:paddingTop="30dp"
-                android:text="图片"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-
-            <TextView
-                android:textColor="@color/colorHint"
-                android:id="@+id/tv_release_at"
-                android:textSize="@dimen/sp_14"
-                android:drawableTop="@mipmap/abs_release_btn_at_long_default"
-                android:gravity="center"
-                android:paddingTop="30dp"
-                android:text="提到"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-
-            <TextView
-                android:textColor="@color/colorHint"
-                android:id="@+id/tv_release_topic"
-                android:textSize="@dimen/sp_14"
-                android:drawableTop="@mipmap/abs_release_btn_topic_long_default"
-                android:gravity="center"
-                android:paddingTop="30dp"
-                android:text="话题"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-            <TextView
-                android:textColor="@color/colorHint"
-                android:id="@+id/tv_release_read"
-                android:textSize="@dimen/sp_14"
-                android:drawableTop="@mipmap/abs_release_btn_read_long_default"
-                android:gravity="center"
-                android:paddingTop="30dp"
-                android:text="阅读"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
 
 </LinearLayout>

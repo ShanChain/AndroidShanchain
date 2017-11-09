@@ -44,7 +44,6 @@ import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -86,7 +85,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     protected void initViewsAndEvents() {
 
         mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
-        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
         if (mBeanModel == null) {
             finish();
             return;
@@ -215,7 +213,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
-        TextView tvExpend = (TextView) mHeadView.findViewById(R.id.tv_head_comment_expend);
 
         NineGridImageView nineGridImageView = (NineGridImageView) mHeadView.findViewById(R.id.ngiv_item_story);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
@@ -267,16 +264,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         tvHeadLike.setOnClickListener(this);
         ivMore.setVisibility(View.GONE);
 
-        //根据是否是长文来控制是否显示展开，是长文显示，不是则不显示
-        int type = mBean.getType();
-        if (type == 2) { //是长文
-            tvExpend.setVisibility(View.VISIBLE);
-        } else {
-            tvExpend.setVisibility(View.GONE);
-        }
-
-        tvExpend.setOnClickListener(this);
-
     }
 
     private void initToolBar() {
@@ -292,7 +279,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
-        report();
+            report();
     }
 
     private void report() {
@@ -363,10 +350,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 break;
             case R.id.tv_item_story_like:
                 ToastUtils.showToast(this, "喜欢");
-                break;
-            case R.id.tv_head_comment_expend:
-                //跳到阅读模式
-
                 break;
         }
     }

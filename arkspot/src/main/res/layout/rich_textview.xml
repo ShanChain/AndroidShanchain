@@ -6,5 +6,5 @@
     android:cursorVisible="true"
     android:lineSpacingExtra="8dp"
     android:textIsSelectable="true"
-    android:textSize="16sp"
+    android:textSize="14sp"
     android:textColor="#616161" />

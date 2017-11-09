@@ -43,7 +43,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
     public void initData(int page, int size) {
         datas.clear();
         SCHttpUtils.postWhitSpaceAndChaId()
-                .url(HttpApi.STORY_RECOMMEND_HOT)
+                .url(HttpApi.STORY_RECOMMEND_FOCUS)
                 .addParams("page", page + "")
                 .addParams("size", size + "")
                 .build()

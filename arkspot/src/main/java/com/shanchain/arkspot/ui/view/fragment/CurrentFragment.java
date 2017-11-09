@@ -19,6 +19,7 @@ import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
@@ -75,7 +76,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
     }
-
 
     @Override
     public void initSuccess(List<StoryBeanModel> list,boolean isLast) {
@@ -204,6 +204,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private void clickComment(int position) {
         Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
         StoryBeanModel beanModel = datas.get(position);
+        int itemType = beanModel.getItemType();
+        intent.putExtra("type",itemType);
         intent.putExtra("story",beanModel);
         startActivity(intent);
     }
@@ -283,12 +285,13 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 //类型1的条目点击事件 短故事
                 Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
                 StoryBeanModel beanModel = datas.get(position);
+                intentType1.putExtra("type",beanModel.getItemType());
                 intentType1.putExtra("story",beanModel);
                 startActivity(intentType1);
                 break;
             case StoryInfo.type2:
                 //类型2的条目点击事件    长故事
-                Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
                 StoryBeanModel beanModel2 = datas.get(position);
                 intentType2.putExtra("story",beanModel2);
                 startActivity(intentType2);

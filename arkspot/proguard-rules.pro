@@ -338,3 +338,4 @@
 -keepclasseswithmembers class * implements com.huawei.hms.support.api.transport.DatagramTransport {<init>(...); }
 # manifest: provider for updates
 -keep public class com.huawei.hms.update.provider.UpdateProvider { public *; protected *; }
+-keep class com.shanchain.data.common.utils.SCUploadImgHelper {*;}

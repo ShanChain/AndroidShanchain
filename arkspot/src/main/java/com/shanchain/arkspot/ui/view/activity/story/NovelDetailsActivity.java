@@ -37,12 +37,9 @@ import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
-import com.shanchain.arkspot.ui.model.StoryModel;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
-import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.utils.DateUtils;
-import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
@@ -94,22 +91,22 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         StoryBeanModel beanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
         String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
         if (beanModel == null) {
-            if(!TextUtils.isEmpty(rnExtra)){
-                JSONObject jsonObject= JSONObject.parseObject(rnExtra);
+            if (!TextUtils.isEmpty(rnExtra)) {
+                JSONObject jsonObject = JSONObject.parseObject(rnExtra);
                 JSONObject rnGData = jsonObject.getJSONObject("gData");
                 JSONObject rnData = jsonObject.getJSONObject("data");
-                mNovelModel = JSON.parseObject(rnData.getJSONObject("novel").toJSONString(),NovelModel.class);
-                mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(),CharacterInfo.class);
+                mNovelModel = JSON.parseObject(rnData.getJSONObject("novel").toJSONString(), NovelModel.class);
+                mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(), CharacterInfo.class);
                 mStoryId = mNovelModel.getStoryId() + "";
                 mCharacterId = mNovelModel.getCharacterId() + "";
-            }else {
+            } else {
                 finish();
                 return;
             }
 
         } else {
             StoryModelBean storyBean = beanModel.getStoryModel().getModelInfo().getBean();
-            mStoryId = beanModel.getStoryModel().getModelInfo().getStoryId();
+            mStoryId = beanModel.getStoryModel().getModelInfo().getBean().getDetailId().substring(1);
             mCharacterId = storyBean.getCharacterId() + "";
             mNovelModel = storyBean.getNovelMovel();
             mCharacterInfo = storyBean.getCharacterInfo();
@@ -234,7 +231,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
-        TextView tvExpend = (TextView) mHeadView.findViewById(R.id.tv_head_comment_expend);
 
         NineGridImageView nineGridImageView = (NineGridImageView) mHeadView.findViewById(R.id.ngiv_item_story);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
@@ -242,9 +238,9 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
         String characterImg = "";
         String characterName = "";
-        if(mCharacterInfo != null){
-             characterImg = mCharacterInfo.getHeadImg();
-             characterName = mCharacterInfo.getName();
+        if (mCharacterInfo != null) {
+            characterImg = mCharacterInfo.getHeadImg();
+            characterName = mCharacterInfo.getName();
         }
 
         GlideUtils.load(mContext, characterImg, ivAvatar, 0);
@@ -290,23 +286,12 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         tvHeadLike.setOnClickListener(this);
         ivMore.setVisibility(View.GONE);
 
-        //根据是否是长文来控制是否显示展开，是长文显示，不是则不显示
-        int type = mNovelModel.getType();
-        if (type == 2) { //是长文
-            tvExpend.setVisibility(View.VISIBLE);
-        } else {
-            tvExpend.setVisibility(View.GONE);
-        }
-
-        tvExpend.setOnClickListener(this);
-
     }
 
     private void initToolBar() {
         mTbAddRole.setOnLeftClickListener(this);
         mTbAddRole.setOnRightClickListener(this);
     }
-
 
     @Override
     public void onLeftClick(View v) {
@@ -315,57 +300,10 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     public void onRightClick(View v) {
-        report();
-    }
-
-    private void report() {
-        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
-        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.tv_report_dialog_shielding:
-                        //屏蔽
-                        showShieldingDialog();
-                        customDialog.dismiss();
-                        break;
-                    case R.id.tv_report_dialog_report:
-                        //举报
-                        Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-                        reportIntent.putExtra("storyId",mStoryId);
-                        reportIntent.putExtra("characterId",mCharacterId+"");
-                        startActivity(reportIntent);
-                        customDialog.dismiss();
-                        break;
-                    case R.id.tv_report_dialog_cancel:
-                        //取消
-                        customDialog.dismiss();
-                        break;
-                }
-            }
-        });
-        customDialog.show();
-    }
-
-    private void showShieldingDialog() {
-        final CustomDialog shieldingDialog = new CustomDialog(mActivity, false, 1, R.layout.dialog_shielding, new int[]{R.id.tv_shielding_dialog_cancel, R.id.tv_shielding_dialog_sure});
-        shieldingDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.tv_shielding_dialog_cancel:
-                        shieldingDialog.dismiss();
-                        break;
-                    case R.id.tv_shielding_dialog_sure:
-                        //确定屏蔽，请求接口
-
-                        shieldingDialog.dismiss();
-                        break;
-                }
-            }
-        });
-        shieldingDialog.show();
+        Intent intent = new Intent(mContext, ReadModelActivity.class);
+        intent.putExtra("storyId", mStoryId);
+        intent.putExtra("native",false);
+        startActivity(intent);
     }
 
     @Override
@@ -386,10 +324,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 break;
             case R.id.tv_item_story_like:
                 ToastUtils.showToast(this, "喜欢");
-                break;
-            case R.id.tv_head_comment_expend:
-                //跳到阅读模式
-
                 break;
         }
     }
@@ -426,7 +360,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                     ToastUtils.showToast(NovelDetailsActivity.this, "不能提交空评论哦~");
                     return;
                 }
-
 
                 addComment(comment);
 

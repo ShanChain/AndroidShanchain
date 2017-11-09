@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.shanchain.arkspot.R;
+import com.shanchain.data.common.utils.DensityUtils;
 
 /**
  * Created by sendtion on 2016/6/24.
@@ -50,7 +51,7 @@ public class RichTextView extends ScrollView {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        TextView firstText = createTextView("没有内容", dip2px(context, EDIT_PADDING));
+        TextView firstText = createTextView("", dip2px(context, EDIT_PADDING));
         allLayout.addView(firstText, firstEditParam);
     }
 
@@ -116,27 +117,28 @@ public class RichTextView extends ScrollView {
      * 在特定位置添加ImageView
      */
     public void addImageViewAtIndex(final int index, String imagePath) {
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath);
+        //Bitmap bmp = BitmapFactory.decodeFile(imagePath);
 
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
-        Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
+        Glide.with(getContext()).load(imagePath).into(imageView);
         //imageView.setImageBitmap(bmp);//这里改用Glide加载图片
         //imageView.setBitmap(bmp);//这句去掉，保留下面的图片地址即可，优化图片占用
         imageView.setAbsolutePath(imagePath);
 
         // 调整imageView的高度
-        int imageHeight = 500;
-        if (bmp != null) {
+        //int imageHeight = 500;
+       /* if (bmp != null) {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
             // 使用之后，还是回收掉吧
             bmp.recycle();
-        }
+        }*/
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, imageHeight);
-        lp.bottomMargin = 10;
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        imageView.setMaxWidth(DensityUtils.dip2px(getContext(),300));
+        imageView.setMaxHeight(DensityUtils.dip2px(getContext(),500));
+        lp.bottomMargin = 5;
         imageView.setLayoutParams(lp);
-
         allLayout.addView(imageLayout, index);
     }
 
@@ -155,5 +157,4 @@ public class RichTextView extends ScrollView {
         options.inSampleSize = sampleSize;
         return BitmapFactory.decodeFile(filePath, options);
     }
-
 }

@@ -14,8 +14,6 @@ public interface HttpApi {
     String TEST_URL = "http://47.91.178.114:8080";
     String BASE_URL = "http://47.91.178.114:8080";
 
-
-
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 
@@ -197,4 +195,11 @@ public interface HttpApi {
 
     /** 给微博取消点赞*/
     String STORY_SUPPORT_CANCEL = BASE_URL + "/v1/story/support/remove";
+
+    /** 获取关注列表*/
+    String STORY_RECOMMEND_FOCUS = BASE_URL + "/v1/recommend/focus";
+
+    /** 通过故事id获取单个故事内容*/
+    String STORY_GET_BY_ID = BASE_URL + "/v1/story/get/id";
+
 }

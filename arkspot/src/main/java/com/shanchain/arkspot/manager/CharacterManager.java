@@ -1,6 +1,5 @@
 package com.shanchain.arkspot.manager;
 
-import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -177,7 +176,7 @@ public class CharacterManager {
     private void login(String response, final CharacterInfo data) {
         try {
             RegisterHxInfo registerHxInfo = JSONObject.parseObject(response, RegisterHxInfo.class);
-            String code = registerHxInfo.getCode();
+            final String code = registerHxInfo.getCode();
             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
                  mRegisterHxBean = registerHxInfo.getData();
                 final String userName = mRegisterHxBean.getHxUserName();
@@ -196,7 +195,8 @@ public class CharacterManager {
                                 ToastUtils.showToast(AppManager.getInstance().getContext(),"穿越角色成功");
                                 Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
                                 ActivityManager.getInstance().finishAllActivity();
-                                ActivityStackManager.getInstance().getTopActivity().startActivity(intent);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                AppManager.getInstance().getContext().startActivity(intent);
                             }
                         });
 

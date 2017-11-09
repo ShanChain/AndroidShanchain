@@ -9,18 +9,18 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.SearchRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.RNDetailExt;
 import com.shanchain.arkspot.ui.model.RNGDataBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
@@ -55,7 +55,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         Intent intent = getIntent();
         mSpaceInfo = (SpaceCharacterModelInfo) intent.getSerializableExtra("spaceInfo");
         mSpaceId = intent.getIntExtra("spaceId", 0);
-        mDatas = mSpaceInfo.getData();
+        mDatas = mSpaceInfo.getContent();
         show.addAll(mDatas);
         initToolBar();
         initData();
@@ -123,8 +123,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
                 detailExt.setgData(gDataBean);
                 detailExt.setModelId(show.get(position).getModelId() + "");
 
-                String json = new Gson().toJson(detailExt);
-
+                String json =JSONObject.toJSONString(detailExt);
                 bundle.putString(NavigatorModule.REACT_PROPS, json);
                 NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
             }
@@ -136,7 +135,6 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         mTbSearchRole.setOnLeftClickListener(this);
         mTbSearchRole.setOnRightClickListener(this);
     }
-
 
     @Override
     public void onLeftClick(View v) {

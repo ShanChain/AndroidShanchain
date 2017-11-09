@@ -10,15 +10,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
-import com.shanchain.arkspot.ui.model.NovelModel;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
-import com.shanchain.arkspot.ui.model.StoryInfoBean;
-import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.presenter.AttentionPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.AttentionPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.AttentionView;
@@ -107,7 +105,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         break;
                     case StoryInfo.type2:
                         //类型2的条目点击事件    长故事
-                        Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                        Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
                         StoryBeanModel beanModel2 = datas.get(position);
                         intentType2.putExtra("story", beanModel2);
                         startActivity(intentType2);

@@ -17,19 +17,6 @@
         android:textColor="@color/colorTextDefault"
         android:textSize="12sp"/>
 
-    <TextView
-        android:id="@+id/tv_head_comment_expend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimens_15dp"
-        android:layout_marginRight="@dimen/dimens_15dp"
-        android:gravity="right"
-        android:paddingBottom="3dp"
-        android:paddingTop="3dp"
-        android:text="展开"
-        android:textColor="@color/colorActive"
-        android:textSize="@dimen/sp_12"/>
-
     <com.jaeger.ninegridimageview.NineGridImageView
         android:id="@+id/ngiv_item_story"
         android:layout_width="match_parent"
