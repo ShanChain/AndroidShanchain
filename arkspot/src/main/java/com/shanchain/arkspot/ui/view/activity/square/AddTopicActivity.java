@@ -307,7 +307,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                 ToastUtils.showToast(mContext,"创建话题失败");
             }
         });
-        helper.upLoadImg(mContext, srcPaths.size(), srcPaths);
+        helper.upLoadImg(mContext, srcPaths);
     }
 
     private void addTopic(List<String> urls) {

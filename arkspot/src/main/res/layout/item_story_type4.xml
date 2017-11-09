@@ -7,6 +7,17 @@
 
     <include layout="@layout/layout_story_person_info"/>
 
+    <TextView
+        android:textSize="12sp"
+        android:lines="1"
+        android:id="@+id/tv_story_topic_title"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextDefault"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ImageView
         android:id="@+id/iv_item_story_img"
         android:src="@drawable/photo_city"

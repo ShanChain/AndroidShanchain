@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.shanchain.arkspot.R;
+import com.shanchain.data.common.utils.DensityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class RichTextEditor extends ScrollView {
 		LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		editNormalPadding = dip2px(EDIT_PADDING);
-		EditText firstEdit = createEditText("input here",
+		EditText firstEdit = createEditText("请输入内容",
 				dip2px(EDIT_FIRST_PADDING_TOP));
 		allLayout.addView(firstEdit, firstEditParam);
 		lastFocusEdit = firstEdit;
@@ -245,11 +246,10 @@ public class RichTextEditor extends ScrollView {
 	 * @param editStr
 	 *            EditText显示的文字
 	 */
-	private void addEditTextAtIndex(final int index, String editStr) {
-		EditText editText2 = createEditText("", getResources()
-				.getDimensionPixelSize(0));
+	public void addEditTextAtIndex(final int index, String editStr) {
+		EditText editText2 = createEditText("", DensityUtils.dip2px(getContext(),5));
 		editText2.setText(editStr);
-
+		editText2.setHint("继续添加");
 		// 请注意此处，EditText添加、或删除不触动Transition动画
 		allLayout.setLayoutTransition(null);
 		allLayout.addView(editText2, index);
@@ -259,7 +259,7 @@ public class RichTextEditor extends ScrollView {
 	/**
 	 * 在特定位置添加ImageView
 	 */
-	private void addImageViewAtIndex(final int index, Bitmap bmp,
+	public void addImageViewAtIndex(final int index, Bitmap bmp,
 			String imagePath) {
 		final RelativeLayout imageLayout = createImageLayout();
 		DataImageView imageView = (DataImageView) imageLayout
@@ -392,9 +392,9 @@ public class RichTextEditor extends ScrollView {
 		return dataList;
 	}
 
-	class EditData {
-		String inputStr;
-		String imagePath;
-		Bitmap bitmap;
+	public class EditData {
+		public String inputStr;
+		public String imagePath;
+		public Bitmap bitmap;
 	}
 }

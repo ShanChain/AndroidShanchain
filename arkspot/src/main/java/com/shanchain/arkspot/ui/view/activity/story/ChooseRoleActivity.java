@@ -13,21 +13,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ChooseRoleAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.manager.ActivityManager;
-import com.shanchain.arkspot.ui.model.CharacterInfo;
-import com.shanchain.arkspot.ui.model.RegisterHxBean;
-import com.shanchain.arkspot.ui.model.RegisterHxInfo;
-import com.shanchain.arkspot.ui.model.ResponseSwitchRoleInfo;
 import com.shanchain.arkspot.ui.model.SpaceCharacterBean;
 import com.shanchain.arkspot.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.arkspot.ui.model.SpaceInfo;
-import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
@@ -74,9 +65,9 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     private List<SpaceCharacterBean> datas = new ArrayList<>();
     private SpaceInfo mSpaceInfo;
     private ChooseRoleAdapter mRoleAdapter;
-    private SpaceCharacterModelInfo mSpaceCharacterModelInfo;
     private int selected = -1;
     private boolean isCollected;
+    private SpaceCharacterModelInfo mModelInfo;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -123,15 +114,18 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("获取时空角色成功 = " + response);
-
-                        mSpaceCharacterModelInfo = new Gson().fromJson(response, SpaceCharacterModelInfo.class);
-                        if (!TextUtils.equals(mSpaceCharacterModelInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            ToastUtils.showToast(mContext, "获取时空角色信息失败");
-                        } else {
-                            List<SpaceCharacterBean> characterBeanList = mSpaceCharacterModelInfo.getData();
-                            datas.addAll(characterBeanList);
-                            mRoleAdapter.notifyDataSetChanged();
+                        try {
+                            LogUtils.i("获取时空角色成功 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                mModelInfo = JSONObject.parseObject(response).getObject("data", SpaceCharacterModelInfo.class);
+                                List<SpaceCharacterBean> characterBeanList = mModelInfo.getContent();
+                                datas.addAll(characterBeanList);
+                                mRoleAdapter.notifyDataSetChanged();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            LogUtils.i("获取时空角色列表失败");
                         }
 
                     }
@@ -182,9 +176,9 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                 collectSpace();
                 break;
             case R.id.iv_choose_role_select:
-                if (mSpaceCharacterModelInfo != null && TextUtils.equals(mSpaceCharacterModelInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                if (mModelInfo != null) {
                     Intent intent = new Intent(this, SearchRoleActivity.class);
-                    intent.putExtra("spaceInfo", mSpaceCharacterModelInfo);
+                    intent.putExtra("spaceInfo", mModelInfo);
                     intent.putExtra("spaceId", mSpaceInfo.getSpaceId());
                     startActivity(intent);
                 }

@@ -49,14 +49,13 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_item_story_from"
         android:lines="1"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/tv_item_story_time"
-        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:layout_marginLeft="15dp"
         android:textColor="@color/colorActive"
-        android:text="来自  三体游戏"
+        android:text=""
         android:textSize="@dimen/sp_12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

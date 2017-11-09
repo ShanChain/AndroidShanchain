@@ -76,7 +76,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mAdapter.setOnItemClickListener(this);
     }
 
-
     @Override
     public void initSuccess(List<StoryBeanModel> list,boolean isLast) {
         if (mSrlStoryCurrent != null){
@@ -204,6 +203,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private void clickComment(int position) {
         Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
         StoryBeanModel beanModel = datas.get(position);
+        int itemType = beanModel.getItemType();
+        intent.putExtra("type",itemType);
         intent.putExtra("story",beanModel);
         startActivity(intent);
     }
@@ -283,6 +284,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 //类型1的条目点击事件 短故事
                 Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
                 StoryBeanModel beanModel = datas.get(position);
+                intentType1.putExtra("type",beanModel.getItemType());
                 intentType1.putExtra("story",beanModel);
                 startActivity(intentType1);
                 break;
@@ -290,6 +292,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 //类型2的条目点击事件    长故事
                 Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
                 StoryBeanModel beanModel2 = datas.get(position);
+                int itemType = beanModel2.getItemType();
+                intentType2.putExtra("type",itemType);
                 intentType2.putExtra("story",beanModel2);
                 startActivity(intentType2);
                 break;

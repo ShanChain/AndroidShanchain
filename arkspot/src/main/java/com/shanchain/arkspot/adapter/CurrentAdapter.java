@@ -145,6 +145,8 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 break;
             case StoryInfo.type3:
                 String topicImg = bean.getBackground();
+                String title = bean.getTitle();
+                holder.setText(R.id.tv_story_topic_title,"#"+title+"#");
                 if (TextUtils.isEmpty(topicImg)) {
                     holder.setVisible(R.id.iv_item_story_img, false);
                 } else {
