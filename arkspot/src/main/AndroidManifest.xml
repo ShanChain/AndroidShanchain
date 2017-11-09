@@ -126,6 +126,14 @@
         <activity android:name=".ui.view.activity.story.AddNewSpaceActivity">
         </activity>
         <activity android:name=".ui.view.activity.story.DynamicDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_story_dynamic"/>
+        </activity>
+        <activity android:name=".ui.view.activity.story.NovelDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_novel_dynamic"/>
         </activity>
         <activity
             android:name=".ui.view.activity.chat.ChatRoomActivity"
