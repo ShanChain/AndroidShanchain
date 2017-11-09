@@ -19,6 +19,7 @@ import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
@@ -290,10 +291,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 break;
             case StoryInfo.type2:
                 //类型2的条目点击事件    长故事
-                Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
+                Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
                 StoryBeanModel beanModel2 = datas.get(position);
-                int itemType = beanModel2.getItemType();
-                intentType2.putExtra("type",itemType);
                 intentType2.putExtra("story",beanModel2);
                 startActivity(intentType2);
                 break;

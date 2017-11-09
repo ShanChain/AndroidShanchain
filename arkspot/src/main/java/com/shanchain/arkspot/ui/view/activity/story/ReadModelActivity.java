@@ -45,8 +45,7 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
             showData(modelList);
         }else {
             showLoadingDialog(true);
-            String longTextId = intent.getStringExtra("longTextId");
-            String storyId = longTextId.substring(1);
+            String storyId = intent.getStringExtra("storyId");
             SCHttpUtils.post()
                     .url(HttpApi.STORY_GET_BY_ID)
                     .addParams("storyId",storyId)
@@ -68,7 +67,9 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
                                     String data = JSONObject.parseObject(response).getString("data");
                                     String content = JSONObject.parseObject(data).getString("content");
                                     List<RichTextModel> richTextModels = JSONObject.parseArray(content, RichTextModel.class);
+                                    String title = JSONObject.parseObject(data).getString("title");
                                     closeLoadingDialog();
+                                    mTvReadContent.addTextViewAtIndex(0,title);
                                     showData(richTextModels);
                                 }else {
                                     closeLoadingDialog();

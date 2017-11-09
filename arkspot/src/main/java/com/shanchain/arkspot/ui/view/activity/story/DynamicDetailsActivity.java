@@ -35,7 +35,6 @@ import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
-import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.utils.DateUtils;
@@ -76,7 +75,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private StoryModelBean mBean;
     private String mStoryId;
     private int mCharacterId;
-    private int mType;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -87,7 +85,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     protected void initViewsAndEvents() {
 
         mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
-        mType = getIntent().getIntExtra("type", -1);
         if (mBeanModel == null) {
             finish();
             return;
@@ -95,11 +92,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             mBean = mBeanModel.getStoryModel().getModelInfo().getBean();
             mStoryId = mBeanModel.getStoryModel().getModelInfo().getStoryId();
             mCharacterId = mBean.getCharacterId();
-        }
-
-        if (mType == -1) {
-            finish();
-            return;
         }
 
         initToolBar();
@@ -221,7 +213,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
-        TextView tvExpend = (TextView) mHeadView.findViewById(R.id.tv_head_comment_expend);
 
         NineGridImageView nineGridImageView = (NineGridImageView) mHeadView.findViewById(R.id.ngiv_item_story);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
@@ -273,26 +264,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         tvHeadLike.setOnClickListener(this);
         ivMore.setVisibility(View.GONE);
 
-        //根据是否是长文来控制是否显示展开，是长文显示，不是则不显示
-        int type = mBean.getType();
-        if (type == 2) { //是长文
-            tvExpend.setVisibility(View.GONE);
-        } else {
-            tvExpend.setVisibility(View.GONE);
-        }
-
-        tvExpend.setOnClickListener(this);
-
     }
 
     private void initToolBar() {
-        if (mType == StoryInfo.type1){  //普通动态
-            mTbAddRole.setTitleText("动态");
-            mTbAddRole.setRightImage(R.mipmap.abs_home_btn_more_default);
-        }else {     //小说
-            mTbAddRole.setTitleText("小说");
-            mTbAddRole.setRightText("阅读");
-        }
         mTbAddRole.setOnLeftClickListener(this);
         mTbAddRole.setOnRightClickListener(this);
     }
@@ -305,16 +279,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
-        if (mType == StoryInfo.type1){
             report();
-        }else {
-            Intent intent = new Intent(mContext,ReadModelActivity.class);
-            String storyId = mBeanModel.getStoryModel().getModelInfo().getStoryId();
-            intent.putExtra("longTextId",storyId);
-            intent.putExtra("native",false);
-            startActivity(intent);
-        }
-
     }
 
     private void report() {
@@ -385,10 +350,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 break;
             case R.id.tv_item_story_like:
                 ToastUtils.showToast(this, "喜欢");
-                break;
-            case R.id.tv_head_comment_expend:
-                //跳到阅读模式
-
                 break;
         }
     }

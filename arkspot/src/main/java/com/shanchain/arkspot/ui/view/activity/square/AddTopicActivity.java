@@ -27,7 +27,9 @@ import com.shanchain.arkspot.ui.model.StoryTagInfo;
 import com.shanchain.arkspot.ui.model.TagContentBean;
 import com.shanchain.arkspot.ui.model.TagInfo;
 import com.shanchain.arkspot.ui.model.TopicModel;
+import com.shanchain.arkspot.ui.view.activity.story.TopicActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -305,6 +307,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void error() {
                 closeLoadingDialog();
                 ToastUtils.showToast(mContext,"创建话题失败");
+                complete();
             }
         });
         helper.upLoadImg(mContext, srcPaths);
@@ -335,14 +338,32 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                         e.printStackTrace();
                         closeLoadingDialog();
                         ToastUtils.showToast(mContext,"创建话题失败");
+                        complete();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         closeLoadingDialog();
-                        LogUtils.i("创建话题成功 = " + response);
+                        try {
+                            LogUtils.i("创建话题成功 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                    complete();
+                            }else {
+                                ToastUtils.showToast(mContext,"创建话题失败");
+                                complete();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            complete();
+                        }
 
                     }
                 });
+    }
+
+    private void complete(){
+        ActivityStackManager.getInstance().finishActivity(TopicActivity.class);
+        finish();
     }
 }

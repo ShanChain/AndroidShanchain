@@ -20,6 +20,8 @@
 
     <View style="@style/style_text_line_match"/>
 
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
    <com.shanchain.arkspot.widgets.richEditor.RichTextView
        android:id="@+id/tv_read_content"
        android:layout_width="match_parent"
