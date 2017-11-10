@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.utils.ToastUtils;
 
 
@@ -24,6 +25,6 @@ public class SCToastModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void show(String msg ) {
-        ToastUtils.showToast(ActivityStackManager.getInstance().getTopActivity(),msg);
+        ToastUtils.showToast(AppManager.getInstance().getContext(),msg);
     }
 }
