@@ -74,4 +74,11 @@ public class SCCacheUtils {
         return getCache(userId,Constants.CACHE_HX_PWD);
     }
 
+    public static void clearCache() {
+        String userId = getCacheUserId();
+        CommonCacheHelper.getInstance().deleteCache(userId);
+        CommonCacheHelper.getInstance().deleteCache("0");
+        CommonCacheHelper.getInstance().clearMemoryCache();
+    }
+
 }

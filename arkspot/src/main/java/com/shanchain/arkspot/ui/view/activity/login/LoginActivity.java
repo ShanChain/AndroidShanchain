@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.hyphenate.EMCallBack;
@@ -20,11 +19,7 @@ import com.shanchain.arkspot.manager.ActivityManager;
 import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.arkspot.ui.model.LoginUserInfoBean;
 import com.shanchain.arkspot.ui.model.RegisterHxBean;
-import com.shanchain.arkspot.ui.model.RegisterHxInfo;
-import com.shanchain.arkspot.ui.model.ResponseCurrentUser;
 import com.shanchain.arkspot.ui.model.ResponseLoginBean;
-import com.shanchain.arkspot.ui.model.ResponseSpaceInfo;
-import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
@@ -43,9 +38,6 @@ import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -114,7 +106,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void checkServer() {
-
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHARACTER_GET_CURRENT)
                 .build()
@@ -127,36 +118,37 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("获取当前角色成功 " + response);
-                        if (TextUtils.isEmpty(response)){
-                            return;
+                        try {
+                            LogUtils.i("获取当前角色成功 " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                String data = JSONObject.parseObject(response).getString("data");
+                                String character = JSONObject.parseObject(data).getString("characterInfo");
+                                if (TextUtils.isEmpty(character)){
+                                    readyGo(StoryTitleActivity.class);
+                                    finish();
+                                }else {
+                                    CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                                    if (characterInfo == null){
+                                        readyGo(StoryTitleActivity.class);
+                                        finish();
+                                    }else {
+                                        String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                                        int spaceId = characterInfo.getSpaceId();
+                                        int characterId = characterInfo.getCharacterId();
+                                        obtainSpaceInfo(characterId+"",character,spaceId+"",hxAccount);
+                                    }
+
+                                }
+
+                            }else {
+                                //code错误
+                                LogUtils.i("获取当前角色code错误");
+                            }
+                        } catch (Exception e) {
+                            LogUtils.i("获取当前角色信息数据解析错误");
+                            e.printStackTrace();
                         }
-
-                        ResponseCurrentUser currentUser = JSONObject.parseObject(response, ResponseCurrentUser.class);
-                        if (currentUser == null){
-                            return;
-                        }
-
-                        String code = currentUser.getCode();
-
-                        if (!TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            return;
-                        }
-                        CharacterInfo characterInfo = currentUser.getData();
-                        if (characterInfo == null){
-                            readyGo(StoryTitleActivity.class);
-                            finish();
-                        }else {
-                            int characterId = characterInfo.getCharacterId();
-                            int spaceId = characterInfo.getSpaceId();
-                            String characterInfoJson = JSON.toJSONString(characterInfo);
-
-                            String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-
-                            obtainSpaceInfo(characterId+"",characterInfoJson,userId,spaceId+"");
-
-                        }
-
                     }
                 });
 
@@ -396,15 +388,12 @@ public class LoginActivity extends BaseActivity {
 
 
 
-    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String userId, final String spaceId) {
+    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
         //获取space详情并缓存
 
-        List<String> spaceIds = new ArrayList<>();
-        spaceIds.add(spaceId);
-        String jArr = JSON.toJSONString(spaceIds);
         SCHttpUtils.post()
-                .url(HttpApi.SPACE_LIST_SPACEID)
-                .addParams("jArray", jArr)
+                .url(HttpApi.SPACE_GET_ID)
+                .addParams("spaceId",spaceId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -415,57 +404,31 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.d("space详情 = " + response);
-                        ResponseSpaceInfo responseSpaceInfo = new Gson().fromJson(response, ResponseSpaceInfo.class);
-                        List<SpaceInfo> data = responseSpaceInfo.getData();
-                        SpaceInfo spaceDetailInfo = data.get(0);
-                        String spaceJson = new Gson().toJson(spaceDetailInfo);
-                        obtainHxInfo(characterId,characterInfoJson,spaceId,spaceJson);
-                    }
-                });
-
-    }
-
-
-    private void obtainHxInfo(final String characterId, final String characterInfoJson, final String spaceId, final String spaceJson) {
-        SCHttpUtils.post()
-                .url(HttpApi.HX_USER_REGIST)
-                .addParams("characterId",characterId)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取当前用户环信账号失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("获取当前用户环信账号成功 = " + response);
                         try {
-                            RegisterHxInfo registerHxInfo = JSONObject.parseObject(response, RegisterHxInfo.class);
-                            String code = registerHxInfo.getCode();
+                            LogUtils.i("space详情 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                                RegisterHxBean registerHxBean = registerHxInfo.getData();
-                                final String userName = registerHxBean.getHxUserName();
-                                final String pwd = registerHxBean.getHxPassword();
-
+                                final String data = JSONObject.parseObject(response).getString("data");
+                                //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
+                                RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+                                final String userName = hxBean.getHxUserName();
+                                final String pwd = hxBean.getHxPassword();
                                 EMClient.getInstance().login(userName, pwd, new EMCallBack() {
                                     @Override
                                     public void onSuccess() {
-                                       runOnUiThread(new Runnable() {
-                                           @Override
-                                           public void run() {
-                                               LogUtils.i("登录环信账号成功");
-                                               EMClient.getInstance().chatManager().loadAllConversations();
-                                               EMClient.getInstance().groupManager().loadAllGroups();
-                                               RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,spaceJson,userName,pwd);
-                                               ToastUtils.showToast(mContext,"穿越角色成功");
-                                               Intent intent = new Intent(mContext, MainActivity.class);
-                                               ActivityManager.getInstance().finishAllActivity();
-                                               startActivity(intent);
-                                           }
-                                       });
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                LogUtils.i("登录环信账号成功");
+                                                EMClient.getInstance().chatManager().loadAllConversations();
+                                                EMClient.getInstance().groupManager().loadAllGroups();
+                                                RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
+                                                ToastUtils.showToast(mContext,"穿越角色成功");
+                                                Intent intent = new Intent(mContext, MainActivity.class);
+                                                ActivityManager.getInstance().finishAllActivity();
+                                                startActivity(intent);
+                                            }
+                                        });
 
                                     }
 
@@ -480,17 +443,15 @@ public class LoginActivity extends BaseActivity {
                                     }
                                 });
 
+                            }else {
+                                //code错误
+
                             }
-                        } catch (Exception e) {
-                            LogUtils.i("获取环信账号失败");
+                        } catch (IllegalArgumentException e) {
+                            LogUtils.i("解析数据错误");
                             e.printStackTrace();
                         }
-
-
-
                     }
                 });
-
     }
-
 }

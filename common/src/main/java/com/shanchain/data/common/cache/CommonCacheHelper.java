@@ -134,8 +134,9 @@ public class CommonCacheHelper {
 
     public void deleteCache(String userId){
         if (!TextUtils.isEmpty(userId)){
-            String tableName = MD5Utils.md5(getTable(userId));
-            mBaseDao.dropTable(tableName);
+            String table = getTableName(userId);
+            //String tableName = MD5Utils.md5(getTable(table));
+            mBaseDao.dropTable(table);
         }
     }
 
@@ -199,4 +200,9 @@ public class CommonCacheHelper {
                 + "cacheTime text "
                 + ")";
     }
+
+    public void clearMemoryCache(){
+        mMemoryCache.evictAll();
+    }
+
 }

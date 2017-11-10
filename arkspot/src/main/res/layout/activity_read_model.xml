@@ -11,9 +11,6 @@
         android:id="@+id/tb_read_model"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
-        app:rightText="评论"
-        app:rightTextColor="@color/colorTextDefault"
-        app:rightTextSize="14"
         app:titleColor="@color/colorTextDefault"
         app:titleText="阅读模式"
         app:titleTextSize="16"/>

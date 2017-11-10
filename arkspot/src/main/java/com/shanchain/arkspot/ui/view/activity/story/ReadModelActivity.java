@@ -21,7 +21,7 @@ import java.util.List;
 import butterknife.Bind;
 import okhttp3.Call;
 
-public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener{
 
     @Bind(R.id.tb_read_model)
     ArthurToolBar mTbReadModel;
@@ -102,18 +102,13 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
     }
 
     private void initToolBar() {
+        mTbReadModel.setBtnEnabled(true,false);
         mTbReadModel.setOnLeftClickListener(this);
-        mTbReadModel.setOnRightClickListener(this);
     }
 
     @Override
     public void onLeftClick(View v) {
         finish();
-    }
-
-    @Override
-    public void onRightClick(View v) {
-
     }
 
 }
