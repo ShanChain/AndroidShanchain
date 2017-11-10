@@ -201,5 +201,8 @@ public interface HttpApi {
 
     /** 通过故事id获取单个故事内容*/
     String STORY_GET_BY_ID = BASE_URL + "/v1/story/get/id";
+    
+    /** 查找时空--根据id*/
+    String SPACE_GET_ID = BASE_URL + "/v1/space/get/id";
 
 }

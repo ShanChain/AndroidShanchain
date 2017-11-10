@@ -3,6 +3,11 @@ package com.shanchain.data.common.base;
 import android.app.Application;
 import android.content.Context;
 
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by flyye on 2017/10/19.
  */
@@ -48,6 +53,12 @@ public class AppManager {
         return android.os.Build.VERSION.RELEASE;
     }
 
-
+    public void logout(){
+        SCBaseEvent baseEvent = new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_LOGOUT,null,null);
+        EventBus.getDefault().post(baseEvent);
+//        Intent intent = new Intent(mContext,);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        AppManager.getInstance().getContext().startActivity(intent);
+    }
 
 }

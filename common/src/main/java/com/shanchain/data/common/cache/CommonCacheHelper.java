@@ -198,4 +198,9 @@ public class CommonCacheHelper {
                 + "cacheTime text "
                 + ")";
     }
+
+    public void clearMemoryCache(){
+        mMemoryCache.evictAll();
+    }
+
 }

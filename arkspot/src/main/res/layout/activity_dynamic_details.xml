@@ -12,8 +12,7 @@
         android:id="@+id/tb_dynamic_comment"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
-        app:rightTextColor="@color/colorTextDefault"
-        app:rightTextSize="14"
+        app:rightImage="@mipmap/abs_home_btn_more_default"
         app:titleColor="@color/colorTextDefault"
         app:titleText="动态"
         app:titleTextSize="16"/>

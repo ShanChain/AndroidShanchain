@@ -268,7 +268,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                         break;
                     case R.id.tv_shielding_dialog_sure:
                         //确定屏蔽，请求接口
-
                         shieldingDialog.dismiss();
                         break;
                 }
