@@ -115,6 +115,11 @@ public class SplashActivity extends AppCompatActivity {
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                             String data = JSONObject.parseObject(response).getString("data");
+                            if (TextUtils.isEmpty(data)){
+                                Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                             String character = JSONObject.parseObject(data).getString("characterInfo");
                             if (TextUtils.isEmpty(character)){
                                 Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);

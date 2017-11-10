@@ -221,7 +221,6 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
             }
         }
         StringBuilder intro = new StringBuilder();
-        intro.append(title + "\n");
         for (int i = 0; i < contents.size(); i++) {
             if (i == contents.size() - 1) {
                 intro.append(contents.get(i));

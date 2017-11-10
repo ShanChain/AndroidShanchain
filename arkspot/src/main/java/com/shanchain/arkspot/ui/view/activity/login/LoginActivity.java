@@ -123,6 +123,10 @@ public class LoginActivity extends BaseActivity {
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                 String data = JSONObject.parseObject(response).getString("data");
+                                if (TextUtils.isEmpty(data)){
+                                    readyGo(StoryTitleActivity.class);
+                                    finish();
+                                }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 if (TextUtils.isEmpty(character)){
                                     readyGo(StoryTitleActivity.class);
