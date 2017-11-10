@@ -434,7 +434,10 @@ public class LoginActivity extends BaseActivity {
 
                                     @Override
                                     public void onError(int i, String s) {
-                                        LogUtils.i("登录环信账号失败 = " + s);
+                                        LogUtils.i("登录环信账号失败 = " + s + "code" + i);
+                                        if (i == 200 ){
+
+                                        }
                                     }
 
                                     @Override

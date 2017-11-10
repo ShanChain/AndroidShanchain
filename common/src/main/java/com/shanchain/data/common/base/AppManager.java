@@ -56,9 +56,6 @@ public class AppManager {
     public void logout(){
         SCBaseEvent baseEvent = new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_LOGOUT,null,null);
         EventBus.getDefault().post(baseEvent);
-//        Intent intent = new Intent(mContext,);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        AppManager.getInstance().getContext().startActivity(intent);
     }
 
 }

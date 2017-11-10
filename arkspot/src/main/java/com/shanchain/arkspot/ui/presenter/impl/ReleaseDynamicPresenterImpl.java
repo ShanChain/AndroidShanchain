@@ -45,7 +45,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
     }
 
     @Override
-    public void releaseDynamic(String word, List<String> imgUrls, String tailId,List<Integer> atList , List<Integer> topicIds) {
+    public void releaseDynamic(String word, List<String> imgUrls, String tailId, List<Integer> atList, List<Integer> topicIds) {
 
         //{"content":"","imgs":["",""]}
         ReleaseContentInfo releaseContentInfo = new ReleaseContentInfo();
@@ -67,7 +67,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
                 .addParams("type", Constants.TYPE_STORY_SHORT + "")
-                .addParams("referedModel",referedModel)
+                .addParams("referedModel", referedModel)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -81,11 +81,11 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.d("发布故事返回的结果 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             mReleaseDynamicView.releaseSuccess();
-                        }else {
+                        } else {
                             Exception e = new Exception("返回码异常");
-                            mReleaseDynamicView.releaseFailed("返回码异常",e);
+                            mReleaseDynamicView.releaseFailed("返回码异常", e);
                         }
 
                     }
@@ -93,7 +93,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
     }
 
     @Override
-    public void upLoadImgs(final Context context, final String word, final List<String> imgPaths, final String tailId, final List<Integer> atList , final List<Integer> topics) {
+    public void upLoadImgs(final Context context, final String word, final List<String> imgPaths, final String tailId, final List<Integer> atList, final List<Integer> topics) {
 
         final List<String> compressImages = compressImages(context, imgPaths);
 
@@ -133,15 +133,15 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                                     LogUtils.d("上传阿里云成功");
                                     List<String> urls = new ArrayList<>();
 
-                                    for (int i = 0; i < saveUrls.size(); i ++) {
+                                    for (int i = 0; i < saveUrls.size(); i++) {
                                         String url = saveUrls.get(i);
                                         String imgUrl = ossHelper.getImgUrl(url);
                                         urls.add(imgUrl);
                                     }
 
-                                    LogUtils.d("图片urls = "+urls.toString());
+                                    LogUtils.d("图片urls = " + urls.toString());
 
-                                    releaseDynamic(word, urls, tailId, atList,topics);
+                                    releaseDynamic(word, urls, tailId, atList, topics);
                                 } else {
                                     LogUtils.d("上传阿里云失败");
                                     Exception e = new Exception("上传阿里云失败");
@@ -158,37 +158,46 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
     }
 
     @Override
-    public void ReleaseLongText(Context context , final String title, List<RichTextModel> editData) {
+    public void ReleaseLongText(Context context, final String title, List<RichTextModel> editData) {
         mImgModels = new ArrayList<>();
         mData = new ArrayList<>(editData);
+        RichTextModel titleModel = new RichTextModel();
+        titleModel.setImg(false);
+        titleModel.setText(title);
+        mData.add(0,titleModel);
+
         List<String> imgPaths = new ArrayList<>();
-        for (int i = 0; i < mData.size(); i ++) {
+        for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
-            if (model.isImg()){
+            if (model.isImg()) {
                 mImgModels.add(model);
                 imgPaths.add(model.getImgPath());
             }
         }
 
-        SCUploadImgHelper helper = new SCUploadImgHelper();
-        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
-            @Override
-            public void onUploadSuc(List<String> urls) {
-                for (int i = 0; i < urls.size(); i ++) {
-                    RichTextModel model = mImgModels.get(i);
-                    String url = urls.get(i);
-                    model.setImgPath(url);
+        if (imgPaths.size() == 0) {
+            publishData(title);
+        } else {
+            SCUploadImgHelper helper = new SCUploadImgHelper();
+            helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+                @Override
+                public void onUploadSuc(List<String> urls) {
+                    for (int i = 0; i < urls.size(); i++) {
+                        RichTextModel model = mImgModels.get(i);
+                        String url = urls.get(i);
+                        model.setImgPath(url);
+                    }
+                    publishData(title);
+
                 }
-                publishData(title);
 
-            }
-
-            @Override
-            public void error() {
-                mReleaseDynamicView.releaseFailed("上传阿里云失败",new Exception("阿里云失败"));
-            }
-        });
-        helper.upLoadImg(context,imgPaths);
+                @Override
+                public void error() {
+                    mReleaseDynamicView.releaseFailed("上传阿里云失败", new Exception("阿里云失败"));
+                }
+            });
+            helper.upLoadImg(context, imgPaths);
+        }
 
     }
 
@@ -196,25 +205,27 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
         List<String> contents = new ArrayList<>();
 
-        for (int i = 0; i < mData.size(); i ++) {
+
+        for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
-            for (RichTextModel imgModel : mImgModels){
-                if (model.getIndex() == imgModel.getIndex()){
+            for (RichTextModel imgModel : mImgModels) {
+                if (model.getIndex() == imgModel.getIndex()) {
                     model.setImgPath(imgModel.getImgPath());
                 }
-
             }
 
-            if (!model.isImg()){
-                contents.add(model.getText());
+            if (!model.isImg()) {
+                if (i != mData.size() - 1) {
+                    contents.add(model.getText());
+                }
             }
         }
         StringBuilder intro = new StringBuilder();
         intro.append(title + "\n");
-        for (int i = 0; i < contents.size(); i ++) {
-            if (i == contents.size()-1){
+        for (int i = 0; i < contents.size(); i++) {
+            if (i == contents.size() - 1) {
                 intro.append(contents.get(i));
-            }else {
+            } else {
                 intro.append(contents.get(i) + "\n");
             }
 
@@ -233,15 +244,15 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         String dataString = JSONObject.toJSONString(contentInfo);
         SCHttpUtils.postWhitSpaceAndChaId()
                 .url(HttpApi.STORY_ADD)
-                .addParams("dataString",dataString)
-                .addParams("type",Constants.TYPE_STORY_LONG+"")
+                .addParams("dataString", dataString)
+                .addParams("type", Constants.TYPE_STORY_LONG + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("发布小说失败");
                         e.printStackTrace();
-                        mReleaseDynamicView.releaseFailed("发布小说失败",e);
+                        mReleaseDynamicView.releaseFailed("发布小说失败", e);
                     }
 
                     @Override
@@ -249,14 +260,14 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                         try {
                             LogUtils.i("发布小说成功 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 mReleaseDynamicView.releaseSuccess();
-                            }else {
-                                mReleaseDynamicView.releaseFailed("发布小说失败",new Exception("发布小说返回码异常"));
+                            } else {
+                                mReleaseDynamicView.releaseFailed("发布小说失败", new Exception("发布小说返回码异常"));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mReleaseDynamicView.releaseFailed("发布小说失败",e);
+                            mReleaseDynamicView.releaseFailed("发布小说失败", e);
                         }
                     }
                 });
@@ -265,12 +276,12 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
 
     /**
-     *  描述： 压缩图片
+     * 描述： 压缩图片
      */
-    private List<String> compressImages(Context context, List<String> imgPaths)  {
+    private List<String> compressImages(Context context, List<String> imgPaths) {
         List<String> compressImgPaths = new ArrayList<>();
 
-        for (int i = 0; i < imgPaths.size(); i ++) {
+        for (int i = 0; i < imgPaths.size(); i++) {
 
             String imgPath = imgPaths.get(i);
             File file = new File(imgPath);
@@ -283,7 +294,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
             long curTime = System.currentTimeMillis();
             String path = filesDir.getPath() + curTime + i;
             try {
-                SCImageUtils.storeImage(bitmap,path);
+                SCImageUtils.storeImage(bitmap, path);
                 compressImgPaths.add(path);
                 File file1 = new File(path);
                 LogUtils.d(i + "压缩后图片大小 = " + file1.length());

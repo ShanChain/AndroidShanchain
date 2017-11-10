@@ -156,7 +156,7 @@ public class CharacterManager {
                         saveToCache();
                         ToastUtils.showToast(AppManager.getInstance().getContext(),"穿越角色成功");
                         Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
-                        ActivityManager.getInstance().finishAllActivity();
+                        ActivityStackManager.getInstance().finishAllActivity();
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         AppManager.getInstance().getContext().startActivity(intent);
                     }
@@ -176,101 +176,6 @@ public class CharacterManager {
         });
     }
 
-/*    private  void registerHxUserAndLogin(final CharacterInfo data) {
-        SCHttpUtils.post()
-                .url(HttpApi.HX_USER_REGIST)
-                .addParams("characterId",data.getCharacterId()+"")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        error();
-                        LogUtils.i("注册环信账号失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(final String response, int id) {
-                        LogUtils.i("注册环信账号成功 " + response );
-
-                        String currentUser = EMClient.getInstance().getCurrentUser();
-                        //String cacheHxUserName = SCCacheUtils.getCacheHxUserName();
-                        //退出当前登录的账号
-                        if (TextUtils.isEmpty(currentUser)){
-                            login(response,data);
-                            return;
-                        }
-                        EMClient.getInstance().logout(false, new EMCallBack() {
-                            @Override
-                            public void onSuccess() {
-                                login(response, data);
-                            }
-
-                            @Override
-                            public void onError(int i, String s) {
-                                error();
-                                LogUtils.i("登出失败 = " + s);
-                            }
-
-                            @Override
-                            public void onProgress(int i, String s) {
-
-                            }
-                        });
-
-                    }
-                });
-    }
-
-    private void login(String response) {
-        try {
-            RegisterHxInfo registerHxInfo = JSONObject.parseObject(response, RegisterHxInfo.class);
-            final String code = registerHxInfo.getCode();
-            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
-                 mRegisterHxBean = registerHxInfo.getData();
-                final String userName = mRegisterHxBean.getHxUserName();
-                final String pwd = mRegisterHxBean.getHxPassword();
-                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        ActivityStackManager.getInstance().getTopActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                isHxLogin = true;
-                                closeLoadingDialog();
-                                LogUtils.i("登录环信账号成功");
-                                EMClient.getInstance().chatManager().loadAllConversations();
-                                saveToCache();
-                                ToastUtils.showToast(AppManager.getInstance().getContext(),"穿越角色成功");
-                                Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
-                                ActivityManager.getInstance().finishAllActivity();
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                AppManager.getInstance().getContext().startActivity(intent);
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-                        error();
-                        LogUtils.i("登录环信账号失败");
-                    }
-
-                    @Override
-                    public void onProgress(int i, String s) {
-
-                    }
-                });
-
-            }
-        } catch (Exception e) {
-            error();
-            LogUtils.i("注册失败");
-            e.printStackTrace();
-        }
-    }
-        */
     private void obtainSpaceInfo(final String spaceId) {
         //获取space详情并缓存
         SCHttpUtils.post()
@@ -328,9 +233,6 @@ public class CharacterManager {
             RoleManager.switchRoleCache(mCharacterInfo.getCharacterId(),JSON.toJSONString(mCharacterInfo),mCharacterInfo.getSpaceId(),mSpaceInfo,mRegisterHxBean.getHxUserName(),mRegisterHxBean.getHxPassword());
         }
     }
-
-
-
 
 }
 
