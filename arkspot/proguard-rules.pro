@@ -149,15 +149,22 @@
 #-dontwarn com.facebook.react.**
 # React Native
 
+-dontobfuscate
+
+# React Native
+
 # Keep our interfaces so they can be used by other ProGuard rules.
 # See http://sourceforge.net/p/proguard/bugs/466/
 -keep,allowobfuscation @interface com.facebook.proguard.annotations.DoNotStrip
 -keep,allowobfuscation @interface com.facebook.proguard.annotations.KeepGettersAndSetters
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
 
 # Do not strip any method/class that is annotated with @DoNotStrip
 -keep @com.facebook.proguard.annotations.DoNotStrip class *
+-keep @com.facebook.common.internal.DoNotStrip class *
 -keepclassmembers class * {
     @com.facebook.proguard.annotations.DoNotStrip *;
+    @com.facebook.common.internal.DoNotStrip *;
 }
 
 -keepclassmembers @com.facebook.proguard.annotations.KeepGettersAndSetters class * {
@@ -166,13 +173,11 @@
 }
 
 -keep class * extends com.facebook.react.bridge.JavaScriptModule { *; }
--keep interface * extends com.facebook.react.bridge.JavaScriptModule { *; }
 -keep class * extends com.facebook.react.bridge.NativeModule { *; }
 -keepclassmembers,includedescriptorclasses class * { native <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
--keepclassmembers class *  { @com.facebook.react.bridge.ReactMethod <methods>; }
 -keep public class com.facebook.react.** {
   public protected *;
 }
@@ -180,6 +185,7 @@
 
 -keep class com.facebook.** { *;}
 -dontwarn com.facebook.**
+-dontwarn com.facebook.react.**
 -dontwarn com.alibaba.**
 -keep class com.alibaba.** { *;}
 -dontwarn com.taobao.**
@@ -194,6 +200,9 @@
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
 -keep class okhttp3.internal.huc.** { *;}
+-keep class sun.misc.Unsafe { *; }
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
 -dontwarn okhttp3.internal.huc.**
 -keep public class org.codehaus.* { *; }

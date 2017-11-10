@@ -134,8 +134,7 @@ public class CommonCacheHelper {
 
     public void deleteCache(String userId){
         if (!TextUtils.isEmpty(userId)){
-            String tableName = MD5Utils.md5(getTable(userId));
-            mBaseDao.dropTable(tableName);
+            mBaseDao.dropTable(getTableName(userId));
         }
     }
 
