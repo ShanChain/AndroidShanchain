@@ -80,4 +80,17 @@ public class ContactBean {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "ContactBean{" +
+                "headImg='" + headImg + '\'' +
+                ", intro='" + intro + '\'' +
+                ", name='" + name + '\'' +
+                ", modelNo=" + modelNo +
+                ", type=" + type +
+                ", characterId=" + characterId +
+                ", userId=" + userId +
+                '}';
+    }
 }

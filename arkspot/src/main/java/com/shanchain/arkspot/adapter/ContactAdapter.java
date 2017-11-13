@@ -109,18 +109,21 @@ public class ContactAdapter extends BaseExpandableListAdapter {
             holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
             holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
             holder.tvFocus.setText("已关注");
+            holder.tvFocus.setTextColor(parent.getContext().getResources().getColor(R.color.colorHint));
         } else if (this.parent.get(groupPosition).equals("互相关注")) {
             Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_selected);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
             holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
             holder.tvFocus.setText("已关注");
+            holder.tvFocus.setTextColor(parent.getContext().getResources().getColor(R.color.colorHint));
         } else if (this.parent.get(groupPosition).equals("我的粉丝")) {
             Drawable drawable = parent.getResources().getDrawable(R.mipmap.abs_contactperson_btn_attention_default);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             holder.tvFocus.setCompoundDrawables(null, drawable,null, null);
             holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
             holder.tvFocus.setText("加关注");
+            holder.tvFocus.setTextColor(parent.getContext().getResources().getColor(R.color.colorActive));
         } else if (this.parent.get(groupPosition).equals("对话场景")) {
             holder.tvFocus.setVisibility(View.GONE);
         }

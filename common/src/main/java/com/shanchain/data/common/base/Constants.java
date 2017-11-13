@@ -59,5 +59,9 @@ public interface Constants {
         int TYPE_CONTACT_FUNS = 2;
         int TYPE_CONTACT_EACH = 3;
 
+        /*************SP中的key值***************/
+        String SP_KEY_DRAFT = "draft";
+
+
 
 }

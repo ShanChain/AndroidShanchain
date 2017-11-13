@@ -33,6 +33,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
+
 /**
  * Created by zhoujian on 2017/8/23.
  */
@@ -49,6 +50,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private int page = 0;
     private int size = 10;
     private boolean isLoadMore;
+
     @Override
     public View initView() {
         return View.inflate(mActivity, R.layout.fragment_current, null);
@@ -72,36 +74,40 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         mAdapter = new CurrentAdapter(datas);
         mAdapter.setEnableLoadMore(true);
         mRvStoryCurrent.setAdapter(mAdapter);
-        mAdapter.setOnLoadMoreListener(this,mRvStoryCurrent);
+        mAdapter.openLoadAnimation();
+        mAdapter.setOnLoadMoreListener(this, mRvStoryCurrent);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
     }
 
     @Override
-    public void initSuccess(List<StoryBeanModel> list,boolean isLast) {
-        if (mSrlStoryCurrent != null){
+    public void initSuccess(List<StoryBeanModel> list, boolean isLast) {
+
+
+        if (mSrlStoryCurrent != null) {
             mSrlStoryCurrent.setRefreshing(false);
         }
         if (list == null) {
-            if (isLast){
+            if (isLast) {
                 mAdapter.loadMoreEnd();
-            }else {
+            } else {
                 mAdapter.loadMoreFail();
             }
             return;
         } else {
-            if (isLoadMore){
-                if (isLast){
+            if (isLoadMore) {
+                if (isLast) {
                     mAdapter.loadMoreEnd();
-                }else {
+                } else {
                     mAdapter.loadMoreComplete();
                 }
-                datas.addAll(list);
-            }else {
-                datas.clear();
-                datas.addAll(list);
+                mAdapter.addData(list);
+            } else {
+                mAdapter.setNewData(list);
+                mAdapter.disableLoadMoreIfNotFullPage(mRvStoryCurrent);
             }
             mAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -109,52 +115,51 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     public void onRefresh() {
         isLoadMore = false;
         page = 0;
-        mCurrentPresenter.refreshData(page,size);
+        mCurrentPresenter.refreshData(page, size);
         mAdapter.loadMoreComplete();
     }
 
     @Override
     public void onLoadMoreRequested() {
         isLoadMore = true;
-        page ++;
-        mCurrentPresenter.loadMore(page,size);
+        page++;
+        mCurrentPresenter.loadMore(page, size);
     }
 
     @Override
-    public void supportSuccess(boolean isSuccess,int position) {
+    public void supportSuccess(boolean isSuccess, int position) {
         ToastUtils.showToast(mActivity, isSuccess ? "点赞成功" : "点赞失败");
-        if (isSuccess){
-            StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+        if (isSuccess) {
+            StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
             int supportCount = bean.getSupportCount();
             bean.setBeFav(true);
             TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
-            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
-            tvLike.setCompoundDrawables(drawable,null,null,null);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
-            tvLike.setText(supportCount+1+"");
+            tvLike.setText(supportCount + 1 + "");
             bean.setSupportCount(supportCount + 1);
-        }else {
+        } else {
 
         }
-
     }
 
     @Override
-    public void supportCancelSuccess(boolean isSuccess,int position) {
-        ToastUtils.showToast(mActivity,isSuccess?"取消点赞成功":"取消点赞失败");
-        if (isSuccess){
-            StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+    public void supportCancelSuccess(boolean isSuccess, int position) {
+        ToastUtils.showToast(mActivity, isSuccess ? "取消点赞成功" : "取消点赞失败");
+        if (isSuccess) {
+            StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
             int supportCount = bean.getSupportCount();
             bean.setBeFav(false);
             TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
-            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
-            tvLike.setCompoundDrawables(drawable,null,null,null);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
-            tvLike.setText(supportCount-1+"");
+            tvLike.setText(supportCount - 1 + "");
             bean.setSupportCount(supportCount - 1);
-        }else {
+        } else {
 
         }
     }
@@ -186,8 +191,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickAvatar(int position) {
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);
-        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
-        intent.putExtra("characterId",characterId);
+        int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+        intent.putExtra("characterId", characterId);
         startActivity(intent);
     }
 
@@ -203,10 +208,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickComment(int position) {
         Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
-        StoryBeanModel beanModel = datas.get(position);
+        StoryBeanModel beanModel = mAdapter.getData().get(position);
         int itemType = beanModel.getItemType();
-        intent.putExtra("type",itemType);
-        intent.putExtra("story",beanModel);
+        intent.putExtra("type", itemType);
+        intent.putExtra("story", beanModel);
         startActivity(intent);
     }
 
@@ -214,13 +219,13 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：喜欢的点击事件
      */
     private void clickLike(int position) {
-        StoryModelBean bean = datas.get(position).getStoryModel().getModelInfo().getBean();
+        StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
         String storyId = bean.getDetailId();
         boolean beFav = bean.isBeFav();
-        if (beFav){     //已经点赞
-            mCurrentPresenter.storyCancelSupport(position,storyId.substring(1));
-        }else {     //未点赞
-            mCurrentPresenter.storySupport(position,storyId.substring(1));
+        if (beFav) {     //已经点赞
+            mCurrentPresenter.storyCancelSupport(position, storyId.substring(1));
+        } else {     //未点赞
+            mCurrentPresenter.storySupport(position, storyId.substring(1));
         }
 
     }
@@ -240,10 +245,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-                        String storyId = datas.get(position).getStoryModel().getModelInfo().getStoryId();
-                        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
-                        reportIntent.putExtra("storyId",storyId);
-                        reportIntent.putExtra("characterId",characterId);
+                        String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
+                        int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+                        reportIntent.putExtra("storyId", storyId);
+                        reportIntent.putExtra("characterId", characterId);
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -283,24 +288,26 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             case StoryInfo.type1:
                 //类型1的条目点击事件 短故事
                 Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
-                StoryBeanModel beanModel = datas.get(position);
-                intentType1.putExtra("type",beanModel.getItemType());
-                intentType1.putExtra("story",beanModel);
+                StoryBeanModel beanModel = mAdapter.getData().get(position);
+                intentType1.putExtra("type", beanModel.getItemType());
+                intentType1.putExtra("story", beanModel);
                 startActivity(intentType1);
                 break;
             case StoryInfo.type2:
                 //类型2的条目点击事件    长故事
                 Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
-                StoryBeanModel beanModel2 = datas.get(position);
-                intentType2.putExtra("story",beanModel2);
+                StoryBeanModel beanModel2 = mAdapter.getData().get(position);
+                intentType2.putExtra("story", beanModel2);
                 startActivity(intentType2);
                 break;
             case StoryInfo.type3:
                 //类型3的条目点击事件    话题
                 Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                 intentType3.putExtra("from", 1);
-                StoryBeanModel beanModelTopic = datas.get(position);
-                intentType3.putExtra("topic",beanModelTopic);
+                List<StoryBeanModel> data = mAdapter.getData();
+
+                StoryBeanModel beanModelTopic = data.get(position);
+                intentType3.putExtra("topic", beanModelTopic);
                 startActivity(intentType3);
                 break;
             default:

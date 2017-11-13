@@ -25,7 +25,6 @@ import com.shanchain.arkspot.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
-import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -192,7 +191,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login() {
-        String userId = CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_CUR_USER);
 
         String account = mEtLoginAccount.getText().toString().trim();
         String pwd = mEtLoginPwd.getText().toString().trim();
@@ -213,6 +211,8 @@ public class LoginActivity extends BaseActivity {
         //加密后的密码
         String md5Pwd = MD5Utils.md5(pwd);
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
+
+
 
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_LOGIN)
@@ -283,7 +283,6 @@ public class LoginActivity extends BaseActivity {
                             + ";\r\n headImageUrlLarge = " + headImageUrlLarge
                             + ";\r\n accessToken = " + accessToken
                     );
-
 
                     break;
                 case LoginPlatform.WX:
@@ -461,4 +460,9 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
     }
+
+    public void showProgress(){
+    }
+
+
 }

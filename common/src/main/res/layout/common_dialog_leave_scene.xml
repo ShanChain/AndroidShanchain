@@ -25,6 +25,8 @@
         android:layout_marginBottom="24dp"
         android:layout_marginTop="@dimen/dimens_10dp"
         android:text="确定要离开吗？"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:paddingRight="@dimen/dimens_15dp"
         android:textSize="@dimen/sp_12"
         android:textColor="#030303"/>
 

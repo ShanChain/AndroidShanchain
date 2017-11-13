@@ -10,10 +10,13 @@ import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.ContactAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.BdContactInfo;
+import com.shanchain.arkspot.ui.model.GroupInfo;
+import com.shanchain.arkspot.ui.model.ResponseHxUerBean;
 import com.shanchain.arkspot.ui.presenter.ContactPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.ContactPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.chat.view.ContactView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -66,14 +69,23 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
                 boolean isGroup = bdContactInfo.isGroup();
                 String name ="";
                 if (isGroup){
-                    name = bdContactInfo.getGroupInfo().getGroupId();
+                    GroupInfo groupInfo = bdContactInfo.getGroupInfo();
+                    if (groupInfo == null){
+                        ToastUtils.showToast(mContext,"当前场景异常");
+                        return true;
+                    }
+                    name = groupInfo.getGroupId();
                 }else {
-                    name = bdContactInfo.getHxUerBean().getHxUserName();
+                    ResponseHxUerBean hxUerBean = bdContactInfo.getHxUerBean();
+                    if (hxUerBean == null){
+                        ToastUtils.showToast(mContext,"当前用户异常");
+                        return true;
+                    }
+                    name = hxUerBean.getHxUserName();
                 }
 
                 if (TextUtils.isEmpty(name)){
                     ToastUtils.showToast(mContext,"当前用户异常");
-
                 }else {
                     Intent intent = new Intent(mContext, ChatRoomActivity.class);
                     intent.putExtra("isGroup", isGroup);
@@ -116,6 +128,20 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         if (focus == null) {
             return;
         }
+
+        for (int i = 0; i < focus.size(); i ++) {
+            LogUtils.i("我关注的人 = " + focus.get(i).getHxUerBean() + " ; "+focus.get(i).getContactBean());
+        }
+
+        for (int i = 0; i < fans.size(); i ++) {
+            LogUtils.i("我的粉丝 = " + fans.get(i).getHxUerBean() + " ; "+fans.get(i).getContactBean());
+        }
+
+        for (int i = 0; i < each.size(); i ++) {
+            LogUtils.i("互相关注 = " + each.get(i).getHxUerBean() + " ; "+each.get(i).getContactBean());
+        }
+
+
         map.put("互相关注", each);
         map.put("我的粉丝", fans);
         map.put("我的关注", focus);

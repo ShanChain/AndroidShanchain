@@ -29,4 +29,12 @@ public class ResponseHxUerBean {
     public void setHxUserName(String hxUserName) {
         this.hxUserName = hxUserName;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseHxUerBean{" +
+                "characterId=" + characterId +
+                ", hxUserName='" + hxUserName + '\'' +
+                '}';
+    }
 }

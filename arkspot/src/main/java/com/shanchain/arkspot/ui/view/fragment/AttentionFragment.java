@@ -65,6 +65,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
 
         mAdapter = new CurrentAdapter(datas);
         mAdapter.setEnableLoadMore(true);
+        mAdapter.openLoadAnimation();
         mXrvAttention.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mXrvAttention.setAdapter(mAdapter);
         mAdapter.setOnLoadMoreListener(this, mXrvAttention);
@@ -99,14 +100,14 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                     case StoryInfo.type1:
                         //类型1的条目点击事件 短故事
                         Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
-                        StoryBeanModel beanModel = datas.get(position);
+                        StoryBeanModel beanModel = mAdapter.getData().get(position);
                         intentType1.putExtra("story", beanModel);
                         startActivity(intentType1);
                         break;
                     case StoryInfo.type2:
                         //类型2的条目点击事件    长故事
                         Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
-                        StoryBeanModel beanModel2 = datas.get(position);
+                        StoryBeanModel beanModel2 = mAdapter.getData().get(position);
                         intentType2.putExtra("story", beanModel2);
                         startActivity(intentType2);
                         break;
@@ -114,7 +115,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         //类型3的条目点击事件    话题
                         Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                         intentType3.putExtra("from", 1);
-                        StoryBeanModel beanModelTopic = datas.get(position);
+                        StoryBeanModel beanModelTopic = mAdapter.getData().get(position);
                         intentType3.putExtra("topic", beanModelTopic);
                         startActivity(intentType3);
                         break;
@@ -131,7 +132,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      */
     private void clickAvatar(int position) {
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);
-        int userId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+        int userId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
         intent.putExtra("characterId", userId);
         startActivity(intent);
     }
@@ -147,7 +148,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-        StoryBeanModel info = datas.get(position);
+        StoryBeanModel info = mAdapter.getData().get(position);
         Intent intentComment = new Intent(mActivity, DynamicDetailsActivity.class);
         intentComment.putExtra("story", info);
         startActivity(intentComment);
@@ -175,8 +176,8 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-                        String storyId = datas.get(position).getStoryModel().getModelInfo().getStoryId();
-                        int characterId = datas.get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+                        String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
+                        int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
                         reportIntent.putExtra("storyId", storyId);
                         reportIntent.putExtra("characterId", characterId);
                         startActivity(reportIntent);
@@ -243,10 +244,13 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                 } else {
                     mAdapter.loadMoreComplete();
                 }
-                datas.addAll(list);
+                //datas.addAll(list);
+                mAdapter.addData(list);
             } else {
-                datas.clear();
-                datas.addAll(list);
+                /*datas.clear();
+                datas.addAll(list);*/
+                mAdapter.setNewData(list);
+                mAdapter.disableLoadMoreIfNotFullPage(mXrvAttention);
             }
             mAdapter.notifyDataSetChanged();
         }

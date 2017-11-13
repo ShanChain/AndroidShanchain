@@ -34,7 +34,11 @@ import com.shanchain.arkspot.utils.StringUtils;
 import com.shanchain.arkspot.widgets.richEditor.RichTextEditor;
 import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -98,10 +102,18 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         initToolBar();
         initListener();
         initRecyclerView();
+        String draft = PrefUtils.getString(mContext, Constants.SP_KEY_DRAFT, "");
+        if (TextUtils.isEmpty(draft)) {
+
+        } else {
+            LogUtils.i("草稿箱内容 = " + draft);
+            getDraftContent(draft);
+        }
     }
 
 
     private void init() {
+
         mPresenter = new ReleaseDynamicPresenterImpl(this);
     }
 
@@ -209,7 +221,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         List<RichTextModel> editData = getEditData();
         Intent intent = new Intent(this, ReadModelActivity.class);
         String jsonString = JSONObject.toJSONString(editData);
-        intent.putExtra("native",true);
+        intent.putExtra("native", true);
         intent.putExtra("editData", jsonString);
         startActivity(intent);
     }
@@ -364,7 +376,85 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     public void onLeftClick(View v) {
         //隐藏键盘
         hideSoftInput();
-        finish();
+        if (isEditLong) {
+
+            String title = mEtReleaseDynamicTitle.getText().toString().trim();
+
+            List<RichTextModel> editData = getEditData();
+            RichTextModel model = editData.get(0);
+            boolean isImg = model.isImg();
+            if (isImg) {
+                popDialog();
+            } else {
+                String text = model.getText();
+                if (TextUtils.isEmpty(text) && TextUtils.isEmpty(title)) {
+                    finish();
+                } else {
+                    popDialog();
+                }
+            }
+        } else {
+            String dynamicContent = mEtReleaseDynamicContent.getText().toString().trim();
+            if (!TextUtils.isEmpty(dynamicContent) || imgData.size() > 0) {
+                popDialog();
+            } else {
+                finish();
+            }
+        }
+    }
+
+    private void popDialog() {
+        final StandardDialog dialog = new StandardDialog(mContext);
+        dialog.setStandardMsg("当前动态未发布，是否保存草稿以便下次继续编辑？");
+        dialog.setCancelText("取消");
+        dialog.setSureText("保存");
+        dialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                //确定按钮
+                saveDraft();
+                dialog.dismiss();
+                finish();
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                //取消按钮
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
+    //保存草稿
+    private void saveDraft() {
+
+        JSONObject object = new JSONObject();
+        if (isEditLong) {
+            //保存小说草稿
+            String title = mEtReleaseDynamicTitle.getText().toString().trim();
+            List<RichTextModel> editData = getEditData();
+            String content = JSONObject.toJSONString(editData);
+            object.put("long", isEditLong);
+            object.put("content", content);
+            object.put("title", title);
+
+        } else {
+            //保存普通动态草稿
+            String dynamicContent = mEtReleaseDynamicContent.getText().toString().trim();
+            String dynamicImgs = JSONObject.toJSONString(imgData);
+            JSONObject dynamicJson = new JSONObject();
+            dynamicJson.put("dynamicContent", dynamicContent);
+            dynamicJson.put("dynamicImgs", dynamicImgs);
+            String content = JSONObject.toJSONString(dynamicJson);
+            object.put("long", isEditLong);
+            object.put("content", content);
+
+        }
+        String jsonContent = JSONObject.toJSONString(object);
+        PrefUtils.putString(mContext, Constants.SP_KEY_DRAFT, jsonContent);
+
     }
 
     @Override
@@ -395,12 +485,12 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         if (isEditLong) {
             //编辑小说状态
             String title = mEtReleaseDynamicTitle.getText().toString().trim();
-            if (TextUtils.isEmpty(title)){
-                ToastUtils.showToast(mContext,"给你的小说添加个标题吧~");
+            if (TextUtils.isEmpty(title)) {
+                ToastUtils.showToast(mContext, "给你的小说添加个标题吧~");
                 return;
             }
             List<RichTextModel> editData = getEditData();
-            mPresenter.ReleaseLongText(this,title, editData);
+            mPresenter.ReleaseLongText(this, title, editData);
         } else {
             //普通编辑
             if (imgData.size() == 0) {
@@ -453,4 +543,39 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         ToastUtils.showToast(mContext, "发布失败" + msg);
     }
 
+    public void getDraftContent(String draft) {
+        Boolean isLong = JSONObject.parseObject(draft).getBoolean("long");
+        String content = JSONObject.parseObject(draft).getString("content");
+        if (isLong) {    //长文草稿
+            String title = JSONObject.parseObject(draft).getString("title");
+            List<RichTextModel> richTextList = JSONObject.parseArray(content, RichTextModel.class);
+            LogUtils.i("草稿中的标题 = " + title);
+            LogUtils.i("草稿中的内容 = " + content);
+            mEtReleaseDynamicTitle.setText(title);
+            mEtReleaseDynamicLong.clearAllLayout();
+            for (int i = 0; i < richTextList.size(); i++) {
+                RichTextModel model = richTextList.get(i);
+                boolean img = model.isImg();
+                if (img) {
+                    LogUtils.i("位置 = " + mEtReleaseDynamicLong.getLastIndex() + " ; 图片地址 = " + model.getImgPath());
+                    int lastIndex = mEtReleaseDynamicLong.getLastIndex();
+                    mEtReleaseDynamicLong.addImageViewAtIndex(lastIndex, model.getImgPath());
+                } else {
+                    LogUtils.i("位置 = " + mEtReleaseDynamicLong.getLastIndex() + "; 文本 = " + model.getText());
+                    int lastIndex = mEtReleaseDynamicLong.getLastIndex();
+                    mEtReleaseDynamicLong.addEditTextAtIndex(lastIndex, model.getText());
+                }
+            }
+
+        } else {     //普通动态
+            String dynamicContent = JSONObject.parseObject(content).getString("dynamicContent");
+            String dynamicImgs = JSONObject.parseObject(content).getString("dynamicImgs");
+            List<DynamicImageInfo> imgs = JSONObject.parseArray(dynamicImgs, DynamicImageInfo.class);
+            LogUtils.i("动态内容 = " + dynamicContent);
+            LogUtils.i("动态图片 = " + dynamicImgs);
+            imgData.addAll(imgs);
+            mImagesAdapter.notifyDataSetChanged();
+            mEtReleaseDynamicContent.setText(dynamicContent);
+        }
+    }
 }

@@ -53,7 +53,7 @@ public class ContactPresenterImpl implements ContactPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.d("获取我的关注的" + response);
+                        LogUtils.i("获取我的关注的" + response);
                         if (TextUtils.isEmpty(response)){
                             initError();
                             return;
@@ -159,6 +159,7 @@ public class ContactPresenterImpl implements ContactPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        LogUtils.i("获取环信联系人成功 = " + response);
                         if (TextUtils.isEmpty(response)){
                             initError();
                             return;

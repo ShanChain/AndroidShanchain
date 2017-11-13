@@ -153,6 +153,7 @@ public class CharacterManager {
                         closeLoadingDialog();
                         LogUtils.i("登录环信账号成功");
                         EMClient.getInstance().chatManager().loadAllConversations();
+                        EMClient.getInstance().groupManager().loadAllGroups();
                         saveToCache();
                         ToastUtils.showToast(AppManager.getInstance().getContext(),"穿越角色成功");
                         Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
@@ -165,7 +166,7 @@ public class CharacterManager {
 
             @Override
             public void onError(int i, String s) {
-                LogUtils.i("环信登录失败 = " + s);
+                LogUtils.i("环信登录失败 = " + s + "错误码 = " + i);
                 error();
             }
 

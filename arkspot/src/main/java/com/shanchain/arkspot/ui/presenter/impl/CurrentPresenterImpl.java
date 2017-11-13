@@ -131,7 +131,6 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                         }
                         List<StoryModelBean> data = storyListInfo.getData();
                         if (data != null && data.size() >0) {
-                            //obtainCharacterBrief(data,isLast);
                             builderData(data,isLast);
                         }else {
                             mCurrentView.initSuccess(null,isLast);
@@ -143,7 +142,6 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
     private void builderData(List<StoryModelBean> data,boolean isLast) {
         List<StoryBeanModel> list = new ArrayList<>();
-
         for (int i = 0; i < datas.size(); i++) {
             StoryModel storyModel = datas.get(i);
             StoryModelInfo modelInfo = storyModel.getModelInfo();

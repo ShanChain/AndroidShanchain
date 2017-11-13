@@ -48,31 +48,31 @@ public final class LogUtils {
 
     public static void v(String msg) {
         if (LOG_LEVEL > VERBOSE) {
-            Log.v(getCallerName(), msg);
+            Log.v(getCallerName(), "sc-"+msg);
         }
     }
 
     public static void d(String msg) {
         if (LOG_LEVEL > DEBUG) {
-            Log.d(getCallerName(), msg);
+            Log.d(getCallerName(), "sc-"+msg);
         }
     }
 
     public static void i(String msg) {
         if (LOG_LEVEL > INFO) {
-            Log.i(getCallerName(), msg);
+            Log.i(getCallerName(), "sc-"+msg);
         }
     }
 
     public static void w(String msg) {
         if (LOG_LEVEL > WARN) {
-            Log.w(getCallerName(), msg);
+            Log.w(getCallerName(), "sc-"+msg);
         }
     }
 
     public static void e(String msg) {
         if (LOG_LEVEL > ERROR) {
-            Log.e(getCallerName(), msg);
+            Log.e(getCallerName(), "sc-"+msg);
         }
     }
 

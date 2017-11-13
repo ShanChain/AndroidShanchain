@@ -123,4 +123,20 @@ public class GroupInfo {
         this.valid = valid;
     }
 
+    @Override
+    public String toString() {
+        return "GroupInfo{" +
+                "allowinvites=" + allowinvites +
+                ", createTime=" + createTime +
+                ", groupDesc='" + groupDesc + '\'' +
+                ", groupId='" + groupId + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", groupOwner=" + groupOwner +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", maxUsers=" + maxUsers +
+                ", membersOnly=" + membersOnly +
+                ", publicX=" + publicX +
+                ", valid=" + valid +
+                '}';
+    }
 }
