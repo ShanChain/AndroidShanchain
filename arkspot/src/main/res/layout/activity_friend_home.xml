@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_friend_home"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleText="好友主页"
+        app:titleTextSize="16"/>
+    
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/rv_friend_home"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+
+</LinearLayout>

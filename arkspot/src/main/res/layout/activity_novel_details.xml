@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_dynamic_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_dynamic_comment"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="@string/right_read_btn"
+        app:rightTextColor="@color/colorTextDefault"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="小说"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_dynamic_comment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <TextView
+        android:id="@+id/tv_dynamic_details_comment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:drawableLeft="@mipmap/abs_home_btn_comment_default"
+        android:drawablePadding="@dimen/dimens_20dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:text="在这里说点什么吧"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp"/>
+
+</LinearLayout>

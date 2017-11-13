@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@color/colorTransparent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:id="@+id/tv_dialog_add_announcement"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="添加公告"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:id="@+id/tv_dialog_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+</LinearLayout>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_report"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_report"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/colorWhite"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="提交"
+        app:rightTextColor="@color/colorTextDefault"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="举报"
+        app:titleTextSize="16"/>
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <View
+       style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_pornographic"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="淫秽色情"
+            android:textColor="@color/colorTextDefault"/>
+
+        <RadioButton
+            android:id="@+id/rb_harmful_info"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="有害信息"
+            android:textColor="@color/colorTextDefault"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_sham_content"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="虚假内容"
+            android:textColor="@color/colorTextDefault"/>
+
+        <RadioButton
+            android:id="@+id/rb_personal_attack"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="人身攻击"
+            android:textColor="@color/colorTextDefault"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_break_law"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="违法信息"
+            android:textColor="@color/colorTextDefault"/>
+
+        <RadioButton
+            android:id="@+id/rb_other"
+            style="@style/style_radiobutton_report"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_weight="1"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:text="其他"
+            android:textColor="@color/colorTextDefault"/>
+    </LinearLayout>
+
+    <EditText
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_report_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/shape_bg_edit_report"
+        android:gravity="top"
+        android:hint="请详细填写,以确保举报能够被受理"
+        android:lines="3"
+        android:paddingBottom="6dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:textColor="@color/colorTextDefault"
+        android:textColorHint="#cbcbcb"
+        android:textSize="@dimen/sp_14"/>
+
+</LinearLayout>
+

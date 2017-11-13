@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_my_comments_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:src="@drawable/photo_yue"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_my_comments_info"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:layout_toRightOf="@id/iv_my_comments_head"
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:id="@+id/tv_my_comments_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="章北海"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14"/>
+
+        <TextView
+            android:textSize="12sp"
+            android:textColor="@color/colorActive"
+            android:layout_alignParentBottom="true"
+            android:text="评论"
+            android:layout_toRightOf="@id/tv_my_comments_name"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_my_comments_count"
+            android:textSize="12sp"
+            android:drawablePadding="@dimen/dimens_5dp"
+            android:text="6"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorHint"
+            android:drawableLeft="@mipmap/abs_dynamic_btn_like_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+        <TextView
+            android:id="@+id/tv_my_comments_time"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/dimens_20dp"
+            android:textSize="13sp"
+            android:layout_toLeftOf="@id/tv_my_comments_count"
+            android:layout_width="wrap_content"
+            android:text="10分钟前"
+            android:textColor="@color/colorTime"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_below="@id/rl_my_comments_info"
+        android:layout_toRightOf="@id/iv_my_comments_head"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorHint"
+        android:id="@+id/tv_my_comments_comment"
+        android:text="这不算崩皮？这不算崩皮？不算我吃整块橡皮擦橡皮 擦对方的！！！"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_my_comments_content"
+        android:layout_marginBottom="@dimen/dimens_20dp"
+        android:textSize="@dimen/sp_12"
+        android:maxLines="5"
+        android:ellipsize="end"
+        android:padding="8dp"
+        android:textColor="@color/colorTextDefault"
+        android:text="叶文洁：不知道为什么，总觉得那天他的身影似乎 有些僵硬，我从地下室里看见他，就知道要或许要 发生一些事情，那么多都在场，说实话，我有点心 情科技时代科技时代回复健康扫黄打非就开始地方 圣诞节开放后受到尽快恢复健康好水淀粉即可获得 释放，圣诞节复合物抠脚大汉风以为加快速度。"
+        android:background="@color/colorTextBg"
+        android:layout_below="@id/tv_my_comments_comment"
+        android:layout_toRightOf="@id/iv_my_comments_head"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+</RelativeLayout>
