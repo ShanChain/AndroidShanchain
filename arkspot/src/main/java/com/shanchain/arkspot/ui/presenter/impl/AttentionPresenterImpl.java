@@ -115,6 +115,61 @@ public class AttentionPresenterImpl implements AttentionPresenter {
         initData(page, size);
     }
 
+    @Override
+    public void storyCancelSupport(final int position, String storyId) {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_SUPPORT_CANCEL)
+                .addParams("storyId",storyId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("取消点赞失败");
+                        e.printStackTrace();
+                        mAttentionView.supportCancelSuccess(false,position);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("取消点赞成功 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            mAttentionView.supportCancelSuccess(true,position);
+                        }else {
+                            mAttentionView.supportCancelSuccess(false,position);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void storySupport(final int position, String storyId) {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_SUPPORT_ADD)
+                .addParams("storyId", storyId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("点赞失败");
+                        e.printStackTrace();
+                        mAttentionView.supportSuccess(false,position);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("点赞结果 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+
+                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            mAttentionView.supportSuccess(true,position);
+                        }else {
+                            mAttentionView.supportSuccess(false,position);
+                        }
+                    }
+                });
+    }
+
 
     private void obtainStoryList(List<String> list, final boolean isLast) {
         String dataArray = JSONObject.toJSONString(list);

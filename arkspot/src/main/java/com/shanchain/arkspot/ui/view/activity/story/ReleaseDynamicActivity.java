@@ -48,6 +48,8 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 
+
+
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ReleaseDynamicView {
 
     private static final int REQUEST_CODE_TOPIC = 10;

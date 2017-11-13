@@ -39,6 +39,7 @@ import java.util.List;
 import butterknife.Bind;
 
 
+
 public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener, StoryTitleView, SwipeRefreshLayout.OnRefreshListener {
 
 

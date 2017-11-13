@@ -8,11 +8,11 @@ public interface HttpApi {
 
     /** IM相关接口*/
 
-    String BASE_URL_IM = "http://47.91.178.114:8080/test";
+    String BASE_URL_IM = "http://47.91.178.114:8080";
 
     /** 全局接口地址*/
-    String TEST_URL = "http://47.91.178.114:8080/test";
-    String BASE_URL = "http://47.91.178.114:8080/test";
+    String TEST_URL = "http://47.91.178.114:8080";
+    String BASE_URL = "http://47.91.178.114:8080";
 
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
@@ -205,4 +205,5 @@ public interface HttpApi {
     /** 查找时空--根据id*/
     String SPACE_GET_ID = BASE_URL + "/v1/space/get/id";
 
+    String RECOMMEND_RATE = BASE_URL + "/v1/recommend/rate";
 }

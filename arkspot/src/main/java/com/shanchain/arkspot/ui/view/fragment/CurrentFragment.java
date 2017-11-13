@@ -82,8 +82,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     @Override
     public void initSuccess(List<StoryBeanModel> list, boolean isLast) {
-
-
         if (mSrlStoryCurrent != null) {
             mSrlStoryCurrent.setRefreshing(false);
         }
@@ -232,16 +230,11 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{ R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
-                    case R.id.tv_report_dialog_shielding:
-                        //屏蔽
-                        showShieldingDialog();
-                        customDialog.dismiss();
-                        break;
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
@@ -262,7 +255,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         customDialog.show();
     }
 
-    private void showShieldingDialog() {
+  /*  private void showShieldingDialog() {
         final CustomDialog shieldingDialog = new CustomDialog(mActivity, false, 1, R.layout.dialog_shielding, new int[]{R.id.tv_shielding_dialog_cancel, R.id.tv_shielding_dialog_sure});
         shieldingDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
@@ -279,7 +272,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             }
         });
         shieldingDialog.show();
-    }
+    }*/
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {

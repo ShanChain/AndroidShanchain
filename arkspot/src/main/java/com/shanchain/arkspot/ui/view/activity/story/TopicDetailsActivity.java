@@ -168,21 +168,18 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     }
 
-    private void report(int position) {
+    private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_shielding, R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{ R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
-                    case R.id.tv_report_dialog_shielding:
-                        //屏蔽
-                        showShieldingDialog();
-                        customDialog.dismiss();
-                        break;
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
+                        reportIntent.putExtra("storyId",datas.get(position).getStoryListDataBean().getStoryId()+"");
+                        reportIntent.putExtra("characterId",datas.get(position).getStoryListDataBean().getInfo().getCharacterId()+"");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -194,26 +191,6 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
         });
         customDialog.show();
-    }
-
-    private void showShieldingDialog() {
-        final CustomDialog shieldingDialog = new CustomDialog(mActivity, false, 1, R.layout.dialog_shielding, new int[]{R.id.tv_shielding_dialog_cancel, R.id.tv_shielding_dialog_sure});
-        shieldingDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.tv_shielding_dialog_cancel:
-                        shieldingDialog.dismiss();
-                        break;
-                    case R.id.tv_shielding_dialog_sure:
-                        //确定屏蔽，请求接口
-
-                        shieldingDialog.dismiss();
-                        break;
-                }
-            }
-        });
-        shieldingDialog.show();
     }
 
     private void initData() {

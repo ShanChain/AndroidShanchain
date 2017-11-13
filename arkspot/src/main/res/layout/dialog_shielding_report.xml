@@ -5,7 +5,7 @@
               android:background="@color/colorTransparent"
               android:orientation="vertical">
 
-    <TextView
+    <!--<TextView
         android:layout_marginRight="@dimen/dimens_10dp"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:id="@+id/tv_report_dialog_shielding"
@@ -20,7 +20,7 @@
     <View
         style="@style/style_text_line_match"
         android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"/>
+        android:layout_marginRight="@dimen/dimens_10dp"/>-->
 
     <TextView
         android:layout_marginLeft="@dimen/dimens_10dp"
@@ -28,7 +28,7 @@
         android:id="@+id/tv_report_dialog_report"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@drawable/shape_bg_dialog_bottom"
+        android:background="@drawable/shape_bg_dialog_item"
         android:gravity="center"
         android:text="举报"
         android:textColor="@color/colorDialogBtn"
