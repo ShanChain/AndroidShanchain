@@ -8,11 +8,11 @@ public interface HttpApi {
 
     /** IM相关接口*/
 
-    String BASE_URL_IM = "http://47.91.178.114:8080";
+    String BASE_URL_IM = "http://47.91.178.114:8080/test";
 
     /** 全局接口地址*/
-    String TEST_URL = "http://47.91.178.114:8080";
-    String BASE_URL = "http://47.91.178.114:8080";
+    String TEST_URL = "http://47.91.178.114:8080/test";
+    String BASE_URL = "http://47.91.178.114:8080/test";
 
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";

@@ -353,8 +353,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void squareRightClick() {
-        final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_square_msg_bottom, new int[]{R.id.tv_dialog_msg_headlines,
-                R.id.tv_dialog_msg_background_img, R.id.tv_dialog_msg_intro, R.id.tv_dialog_msg_cancel});
+        final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_square_msg_bottom, new int[]{
+                R.id.tv_dialog_msg_background_img, R.id.tv_dialog_msg_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
