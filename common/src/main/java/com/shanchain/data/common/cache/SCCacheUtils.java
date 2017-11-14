@@ -81,4 +81,8 @@ public class SCCacheUtils {
         CommonCacheHelper.getInstance().clearMemoryCache();
     }
 
+    public static String getCacheToken(){
+        String userId = getCacheUserId();
+        return getCache(userId,Constants.CACHE_TOKEN);
+    }
 }

@@ -64,44 +64,22 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="82dp">
 
         <TextView
-            android:id="@+id/tv_friend_home_drama"
-            android:layout_marginTop="6dp"
-            android:textSize="12sp"
-            android:textColor="@color/colorTextSecondary"
-            android:text="@string/str_friend_home_drama"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:drawableTop="@mipmap/abs_friends_btn_drama_default"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <TextView
             android:id="@+id/tv_friend_home_conversation"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/dimens_10dp"
             android:textSize="12sp"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingRight="@dimen/dimens_15dp"
             android:textColor="@color/colorTextSecondary"
             android:text="@string/str_friend_home_conversation"
             android:gravity="center"
-            android:layout_weight="1"
             android:drawableTop="@mipmap/abs_friends_btn_dialogue_default"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <TextView
-            android:id="@+id/tv_friend_home_long"
-            android:layout_marginTop="6dp"
-            android:textSize="12sp"
-            android:textColor="@color/colorTextSecondary"
-            android:text="@string/str_friend_home_longtext"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:drawableTop="@mipmap/abs_friends_btn_longtext_default"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
 
     </LinearLayout>

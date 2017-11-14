@@ -168,7 +168,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void getCheckCode(String phone) {
-        SCHttpUtils.post()
+        SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_UNLOGIN_VERIFYCODE)
                 .addParams("mobile",phone)
                 .build()

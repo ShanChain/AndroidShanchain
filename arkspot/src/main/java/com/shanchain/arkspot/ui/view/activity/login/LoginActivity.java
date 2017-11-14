@@ -1,5 +1,6 @@
 package com.shanchain.arkspot.ui.view.activity.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -71,6 +72,7 @@ public class LoginActivity extends BaseActivity {
     ImageView mIvLoginWb;
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
+    private ProgressDialog mDialog;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -94,9 +96,11 @@ public class LoginActivity extends BaseActivity {
             String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
             String hxUserName = SCCacheUtils.getCacheHxUserName();
             String hxPwd = SCCacheUtils.getCacheHxPwd();
-            if (TextUtils.isEmpty(characterId)||TextUtils.isEmpty(characterInfo)||TextUtils.isEmpty(spaceId)||TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)){
+            String token = SCCacheUtils.getCacheToken();
+            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
                 checkServer();
-            }else {
+            } else {
+                closeProgress();
                 readyGo(MainActivity.class);
                 finish();
             }
@@ -111,6 +115,8 @@ public class LoginActivity extends BaseActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        closeProgress();
+                        ToastUtils.showToast(mContext, "登录失败");
                         LogUtils.i("获取当前角色失败");
                         e.printStackTrace();
                     }
@@ -120,35 +126,40 @@ public class LoginActivity extends BaseActivity {
                         try {
                             LogUtils.i("获取当前角色成功 " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
-                                if (TextUtils.isEmpty(data)){
+                                if (TextUtils.isEmpty(data)) {
+                                    closeProgress();
                                     readyGo(StoryTitleActivity.class);
                                     finish();
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
-                                if (TextUtils.isEmpty(character)){
+                                if (TextUtils.isEmpty(character)) {
+                                    closeProgress();
                                     readyGo(StoryTitleActivity.class);
                                     finish();
-                                }else {
+                                } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                    if (characterInfo == null){
+                                    if (characterInfo == null) {
+                                        closeProgress();
                                         readyGo(StoryTitleActivity.class);
                                         finish();
-                                    }else {
+                                    } else {
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
                                         int spaceId = characterInfo.getSpaceId();
                                         int characterId = characterInfo.getCharacterId();
-                                        obtainSpaceInfo(characterId+"",character,spaceId+"",hxAccount);
+                                        obtainSpaceInfo(characterId + "", character, spaceId + "", hxAccount);
                                     }
 
                                 }
 
-                            }else {
+                            } else {
                                 //code错误
+                                closeProgress();
                                 LogUtils.i("获取当前角色code错误");
                             }
                         } catch (Exception e) {
+                            closeProgress();
                             LogUtils.i("获取当前角色信息数据解析错误");
                             e.printStackTrace();
                         }
@@ -212,7 +223,7 @@ public class LoginActivity extends BaseActivity {
         String md5Pwd = MD5Utils.md5(pwd);
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
 
-
+        showProgress();
 
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_LOGIN)
@@ -224,6 +235,7 @@ public class LoginActivity extends BaseActivity {
                 .execute(new SCHttpCallBack<ResponseLoginBean>(ResponseLoginBean.class) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        closeProgress();
                         ToastUtils.showToast(mContext, "登录失败！");
                         LogUtils.e("登录失败!");
                         e.printStackTrace();
@@ -232,6 +244,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onResponse(ResponseLoginBean response, int id) {
                         if (response == null) {
+                            closeProgress();
                             ToastUtils.showToast(mContext, "登录失败！");
                         } else {
                             //登录成功 在此缓存用户数据
@@ -243,7 +256,7 @@ public class LoginActivity extends BaseActivity {
 
                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
                             checkCache();
                         }
                     }
@@ -379,7 +392,7 @@ public class LoginActivity extends BaseActivity {
 
                                      SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                      SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, token);
+                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
                                      checkCache();
                                  } else {
                                      LogUtils.e("登录返回数据为空");
@@ -390,17 +403,18 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-
     private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
         //获取space详情并缓存
 
         SCHttpUtils.post()
                 .url(HttpApi.SPACE_GET_ID)
-                .addParams("spaceId",spaceId)
+                .addParams("spaceId", spaceId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        closeProgress();
+                        ToastUtils.showToast(mContext, "网络错误");
                         LogUtils.i("获取时空详情失败");
                         e.printStackTrace();
                     }
@@ -410,9 +424,8 @@ public class LoginActivity extends BaseActivity {
                         try {
                             LogUtils.i("space详情 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 final String data = JSONObject.parseObject(response).getString("data");
-                                //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
@@ -422,11 +435,12 @@ public class LoginActivity extends BaseActivity {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                closeProgress();
                                                 LogUtils.i("登录环信账号成功");
                                                 EMClient.getInstance().chatManager().loadAllConversations();
                                                 EMClient.getInstance().groupManager().loadAllGroups();
-                                                RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
-                                                ToastUtils.showToast(mContext,"穿越角色成功");
+                                                RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
+                                                ToastUtils.showToast(mContext, "穿越角色成功");
                                                 Intent intent = new Intent(mContext, MainActivity.class);
                                                 ActivityManager.getInstance().finishAllActivity();
                                                 startActivity(intent);
@@ -438,8 +452,8 @@ public class LoginActivity extends BaseActivity {
                                     @Override
                                     public void onError(int i, String s) {
                                         LogUtils.i("登录环信账号失败 = " + s + "code" + i);
-                                        if (i == 200 ){
-
+                                        if (i == 200) {
+                                            closeProgress();
                                         }
                                     }
 
@@ -449,11 +463,12 @@ public class LoginActivity extends BaseActivity {
                                     }
                                 });
 
-                            }else {
+                            } else {
                                 //code错误
-
+                                closeProgress();
                             }
                         } catch (IllegalArgumentException e) {
+                            closeProgress();
                             LogUtils.i("解析数据错误");
                             e.printStackTrace();
                         }
@@ -461,7 +476,18 @@ public class LoginActivity extends BaseActivity {
                 });
     }
 
-    public void showProgress(){
+    public void showProgress() {
+        mDialog = new ProgressDialog(this);
+        mDialog.setMax(100);
+        mDialog.setMessage("登录中。。。");
+        mDialog.setCancelable(false);
+        mDialog.show();
+    }
+
+    public void closeProgress() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
     }
 
 

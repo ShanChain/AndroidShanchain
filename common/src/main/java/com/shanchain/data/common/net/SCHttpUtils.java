@@ -23,7 +23,9 @@ public class SCHttpUtils {
     }
 
     public static PostFormBuilder post() {
-        return OkHttpUtils.post();
+        String token = SCCacheUtils.getCacheToken();
+        LogUtils.i("token = " + token);
+        return OkHttpUtils.post().addParams("token",token);
     }
 
     /**
@@ -33,8 +35,11 @@ public class SCHttpUtils {
     public static PostFormBuilder postWithSpaceId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
+        String token = SCCacheUtils.getCacheToken();
+        LogUtils.i("token = " + token);
         return OkHttpUtils.post()
-                .addParams("spaceId",spaceId);
+                .addParams("spaceId",spaceId)
+                .addParams("token",token);
     }
 
     /**
@@ -44,10 +49,17 @@ public class SCHttpUtils {
     public static PostFormBuilder postWithChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
+        String token = SCCacheUtils.getCacheToken();
+        LogUtils.i("token = " + token);
         return OkHttpUtils.post()
-                .addParams("characterId", characterId);
+                .addParams("characterId", characterId)
+                .addParams("token",token);
     }
 
+
+    public static PostFormBuilder postNoToken(){
+        return OkHttpUtils.post();
+    }
 
     /**
      *  描述：带当前时空id和当前角色id的post请求
@@ -57,10 +69,13 @@ public class SCHttpUtils {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
-        LogUtils.d("缓存中获取的spaceid" + spaceId);
+
+        String token = SCCacheUtils.getCacheToken();
+        LogUtils.d("缓存中获取的spaceid = " + spaceId + "token = " + token);
         return OkHttpUtils.post()
                 .addParams("spaceId",spaceId)
-                .addParams("characterId",characterId);
+                .addParams("characterId",characterId)
+                .addParams("token",token);
     }
 
     /**
@@ -69,8 +84,11 @@ public class SCHttpUtils {
      */
     public static PostFormBuilder postWithUserId(){
         String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCacheToken();
+        LogUtils.i("token = " + token);
         return OkHttpUtils.post()
-                .addParams("userId",userId);
+                .addParams("userId",userId)
+                .addParams("token",token);
     }
 
     /**

@@ -50,9 +50,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private TextView mTvName;
     private Button mBtnFocus;
     private TextView mTvDes;
-    private TextView mTvDrama;
     private TextView mTvConversation;
-    private TextView mTvLongtext;
     private int mCharacterId;
     private FriendDetailInfo mFriendDetailInfo;
 
@@ -89,7 +87,6 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                         }else {
                             ToastUtils.showToast(mContext,"获取角色信息失败");
                         }
-
                     }
                 });
     }
@@ -117,14 +114,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         mTvName = (TextView) mHeadView.findViewById(R.id.tv_friend_home_name);
         mTvDes = (TextView) mHeadView.findViewById(R.id.tv_friend_home_des);
         mBtnFocus = (Button) mHeadView.findViewById(R.id.btn_friend_home_focus);
-        mTvDrama = (TextView) mHeadView.findViewById(R.id.tv_friend_home_drama);
         mTvConversation = (TextView) mHeadView.findViewById(R.id.tv_friend_home_conversation);
-        mTvLongtext = (TextView) mHeadView.findViewById(R.id.tv_friend_home_long);
 
 
         mTvConversation.setOnClickListener(this);
-        mTvDrama.setOnClickListener(this);
-        mTvLongtext.setOnClickListener(this);
         mBtnFocus.setOnClickListener(this);
     }
 
@@ -150,20 +143,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                 }
                 focus();
                 break;
-            case R.id.tv_friend_home_drama:
-                //大戏
-
-                break;
             case R.id.tv_friend_home_conversation:
                 //发起对话
 
                 break;
-            case R.id.tv_friend_home_long:
-                //长文
-
-                break;
-
-
         }
     }
 

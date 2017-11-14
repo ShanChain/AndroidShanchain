@@ -43,6 +43,7 @@
         android:layout_height="5dp"/>
 
     <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
         android:paddingTop="@dimen/dimens_10dp"
         android:paddingBottom="@dimen/dimens_10dp"
         android:id="@+id/rv_story_title_tag"

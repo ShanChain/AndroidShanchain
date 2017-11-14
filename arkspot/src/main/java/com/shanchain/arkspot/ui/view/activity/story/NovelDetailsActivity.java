@@ -339,9 +339,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView mTvPopCommentOutside = (TextView) contentView.findViewById(R.id.tv_pop_comment_outside);
         final EditText mEtPopComment = (EditText) contentView.findViewById(R.id.et_pop_comment);
         TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
-        ImageView mIvPopCommentAt = (ImageView) contentView.findViewById(R.id.iv_pop_comment_at);
-        ImageView mIvPopCommentTopic = (ImageView) contentView.findViewById(R.id.iv_pop_comment_topic);
-        ImageView mIvPopCommentFrame = (ImageView) contentView.findViewById(R.id.iv_pop_comment_frame);
 
         final PopupWindow pop = new PopupWindow(contentView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
 
@@ -367,26 +364,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
         });
 
-        mIvPopCommentAt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.showToast(NovelDetailsActivity.this, "艾特");
-            }
-        });
-
-        mIvPopCommentFrame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.showToast(NovelDetailsActivity.this, "小尾巴");
-            }
-        });
-
-        mIvPopCommentTopic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtils.showToast(NovelDetailsActivity.this, "话题");
-            }
-        });
         pop.setTouchable(true);
         pop.setOutsideTouchable(true);
         pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));

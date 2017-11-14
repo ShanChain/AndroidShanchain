@@ -266,8 +266,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
                 mStagAdapter.loadMoreComplete();
             }
         }, 1000);
-
-
     }
 
     private void hideFavoriteLayout() {
