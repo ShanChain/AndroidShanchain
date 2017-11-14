@@ -93,19 +93,19 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             }
             return;
         } else {
+
             if (isLoadMore) {
-                if (isLast) {
-                    mAdapter.loadMoreEnd();
-                } else {
-                    mAdapter.loadMoreComplete();
-                }
                 mAdapter.addData(list);
             } else {
                 mAdapter.setNewData(list);
                 mAdapter.disableLoadMoreIfNotFullPage(mRvStoryCurrent);
             }
             mAdapter.notifyDataSetChanged();
-
+            if (isLast) {
+                mAdapter.loadMoreEnd();
+            } else {
+                mAdapter.loadMoreComplete();
+            }
         }
     }
 

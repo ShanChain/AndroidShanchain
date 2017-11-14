@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.EditText;
 
 import com.shanchain.arkspot.R;
 
 
-public class ClearEditText extends EditText implements TextWatcher, View.OnFocusChangeListener {
+public class ClearEditText extends android.support.v7.widget.AppCompatEditText implements TextWatcher, View.OnFocusChangeListener {
     /**
      * 删除按钮的引用
      */

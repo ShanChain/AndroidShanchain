@@ -69,7 +69,7 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
                                     List<RichTextModel> richTextModels = JSONObject.parseArray(content, RichTextModel.class);
                                     String title = JSONObject.parseObject(data).getString("title");
                                     closeLoadingDialog();
-                                    mTvReadContent.addTextViewAtIndex(0,title);
+                                    //mTvReadContent.addTextViewAtIndex(0,title);
                                     showData(richTextModels);
                                 }else {
                                     closeLoadingDialog();

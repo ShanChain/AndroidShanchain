@@ -27,15 +27,14 @@
         android:id="@+id/et_release_dynamic_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimens_15dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginTop="@dimen/dimens_20dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
         android:background="@null"
         android:hint="标题"
-        android:padding="@dimen/dimens_5dp"
         android:textColor="@color/colorTextDefault"
         android:textColorHint="@color/colorHint"
-        android:textSize="@dimen/sp_14"/>
+        android:textSize="@dimen/sp_16"/>
 
     <EditText
         android:textCursorDrawable="@null"
@@ -55,8 +54,6 @@
     <com.shanchain.arkspot.widgets.richEditor.RichTextEditor
         android:id="@+id/et_release_dynamic_long"
         android:visibility="gone"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:layout_width="match_parent"
         android:textCursorDrawable="@null"
         android:textSize="14sp"

@@ -13,7 +13,7 @@ public interface StoryTitleView {
 
     void getTagSuccess(List<TagContentBean> tagList);
 
-    void getSpaceListSuccess(List<SpaceInfo> spaceInfoList);
+    void getSpaceListSuccess(List<SpaceInfo> spaceInfoList,boolean isLast);
 
     void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList);
 

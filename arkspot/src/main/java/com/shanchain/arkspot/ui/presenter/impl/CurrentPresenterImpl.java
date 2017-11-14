@@ -41,7 +41,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
     @Override
     public void initData(int page, int size) {
         datas.clear();
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithUidSpaceIdAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_HOT)
                 .addParams("page", page + "")
                 .addParams("size", size + "")
@@ -56,50 +56,59 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("实时数据 = " + response);
+                        try {
+                            LogUtils.i("实时数据 = " + response);
 
-                        StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
-                        if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mCurrentView.initSuccess(null,false);
-                            return;
-                        }
-                        boolean last = storyResponseInfo.getData().isLast();
-                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
-                        List<String> ids = new ArrayList<>();
-                        for (int i = 0; i < storyBeanList.size(); i++) {
-                            StoryModel storyModel = new StoryModel();
-                            StoryModelInfo storyModelInfo = new StoryModelInfo();
-                            List<StoryModelInfo> modelInfoList = new ArrayList<>();
-                            ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
-                            String detailId = responseStoryBean.getDetailId();
-                            storyModelInfo.setStoryId(detailId);
-                            ids.add(detailId);
-                            ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
-                            if (storyChainBean != null) {
-                                List<String> detailIds = storyChainBean.getDetailIds();
-                                if (detailIds != null) {
-                                    if (storyChainBean.getDetailIds().size() == 0) {
-
-                                    } else {
-                                        for (int j = 0; j < detailIds.size(); j++) {
-                                            String dId = detailIds.get(j);
-                                            ids.add(dId);
-                                            StoryModelInfo modelInfo = new StoryModelInfo();
-                                            modelInfo.setStoryId(dId);
-                                            modelInfoList.add(modelInfo);
-                                        }
-                                        storyModel.setStoryChain(modelInfoList);
-                                    }
-                                }
-                            } else {
-                                modelInfoList = null;
-                                storyModel.setStoryChain(modelInfoList);
+                            StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
+                            if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                                mCurrentView.initSuccess(null,false);
+                                return;
                             }
-                            storyModel.setModelInfo(storyModelInfo);
-                            datas.add(storyModel);
+                            boolean last = storyResponseInfo.getData().isLast();
+                            List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
+                            if (storyBeanList.size() == 0){
+                                mCurrentView.initSuccess(null,last);
+                                return;
+                            }
+                            List<String> ids = new ArrayList<>();
+                            for (int i = 0; i < storyBeanList.size(); i++) {
+                                StoryModel storyModel = new StoryModel();
+                                StoryModelInfo storyModelInfo = new StoryModelInfo();
+                                List<StoryModelInfo> modelInfoList = new ArrayList<>();
+                                ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
+                                String detailId = responseStoryBean.getDetailId();
+                                storyModelInfo.setStoryId(detailId);
+                                ids.add(detailId);
+                                ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
+                                if (storyChainBean != null) {
+                                    List<String> detailIds = storyChainBean.getDetailIds();
+                                    if (detailIds != null) {
+                                        if (storyChainBean.getDetailIds().size() == 0) {
+
+                                        } else {
+                                            for (int j = 0; j < detailIds.size(); j++) {
+                                                String dId = detailIds.get(j);
+                                                ids.add(dId);
+                                                StoryModelInfo modelInfo = new StoryModelInfo();
+                                                modelInfo.setStoryId(dId);
+                                                modelInfoList.add(modelInfo);
+                                            }
+                                            storyModel.setStoryChain(modelInfoList);
+                                        }
+                                    }
+                                } else {
+                                    modelInfoList = null;
+                                    storyModel.setStoryChain(modelInfoList);
+                                }
+                                storyModel.setModelInfo(storyModelInfo);
+                                datas.add(storyModel);
+                            }
+                            LogUtils.i("datas长度 = " + datas.size());
+                            obtainStoryList(ids,last);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mCurrentView.initSuccess(null,false);
                         }
-                        LogUtils.i("datas长度 = " + datas.size());
-                        obtainStoryList(ids,last);
                     }
                 });
     }
@@ -107,7 +116,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
     private void obtainStoryList(List<String> list, final boolean isLast) {
 
         String dataArray = JSONObject.toJSONString(list);
-        LogUtils.d("dataArray = " + dataArray);
+        LogUtils.i("dataArray = " + dataArray);
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
@@ -126,7 +135,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
                         ResponseStoryListInfo storyListInfo = JSONObject.parseObject(response, ResponseStoryListInfo.class);
                         if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mCurrentView.initSuccess(null,false);
+                            mCurrentView.initSuccess(null,isLast);
                             return;
                         }
                         List<StoryModelBean> data = storyListInfo.getData();

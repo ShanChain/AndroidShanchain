@@ -7,14 +7,13 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
 /**
  * 九宫格图片控件
  */
-public class CustomImageView extends ImageView {
+public class CustomImageView extends android.support.v7.widget.AppCompatImageView {
     private String url;
     private boolean isAttachedToWindow;
 

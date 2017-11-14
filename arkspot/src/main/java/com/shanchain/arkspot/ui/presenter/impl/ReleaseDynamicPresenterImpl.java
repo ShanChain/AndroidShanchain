@@ -62,7 +62,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         String dataString = gson.toJson(contentInfo);
         String topicArr = gson.toJson(topicIds);
         String referedModel = gson.toJson(atList);
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithSpaceAndChaId()
                 .url(HttpApi.STORY_ADD)
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
@@ -169,6 +169,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         List<String> imgPaths = new ArrayList<>();
         for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
+            model.setIndex(i);
             if (model.isImg()) {
                 mImgModels.add(model);
                 imgPaths.add(model.getImgPath());
@@ -241,7 +242,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         contentInfo.setTailId("");
 
         String dataString = JSONObject.toJSONString(contentInfo);
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithSpaceAndChaId()
                 .url(HttpApi.STORY_ADD)
                 .addParams("dataString", dataString)
                 .addParams("type", Constants.TYPE_STORY_LONG + "")

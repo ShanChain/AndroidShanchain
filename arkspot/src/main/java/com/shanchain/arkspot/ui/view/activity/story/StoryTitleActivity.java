@@ -39,7 +39,6 @@ import java.util.List;
 import butterknife.Bind;
 
 
-
 public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener, StoryTitleView, SwipeRefreshLayout.OnRefreshListener {
 
 
@@ -62,9 +61,12 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     private StoryTitleStagAdapter mStagAdapter;
     private AddRoleAdapter mAddRoleAdapter;
     private StoryTitleLikeAdapter mStoryTitleLikeAdapter;
-    private StoryTitlePresenter mStoryTitlePresenter;
+    private StoryTitlePresenter mPresenter;
     private LinearLayout mLlFavorite;
     private SwipeRefreshLayout mSrlStoryTitle;
+    private int page = 0;
+    private int size = 15;
+    private boolean isLoadMore;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -73,6 +75,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
+        mPresenter = new StoryTitlePresenterImpl(this);
         mSrlStoryTitle = (SwipeRefreshLayout) findViewById(R.id.srl_story_title);
         mSrlStoryTitle.setColorSchemeColors(getResources().getColor(R.color.colorActive));
         mSrlStoryTitle.setOnRefreshListener(this);
@@ -82,8 +85,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initData() {
-        mStoryTitlePresenter = new StoryTitlePresenterImpl(this);
-        mStoryTitlePresenter.initData();
+        mPresenter.initFavData();
+        mPresenter.initSpace(page, size);
     }
 
     private void initRecyclerView() {
@@ -92,7 +95,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         //防止位置发生改变
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRvStoryTitle.setLayoutManager(manager);
-
         mStagAdapter = new StoryTitleStagAdapter(R.layout.item_head_stagger, mStagDatas);
         mStagAdapter.addHeaderView(mHeadView);
         mStagAdapter.setEnableLoadMore(true);
@@ -107,7 +109,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(StoryTitleActivity.this, ChooseRoleActivity.class);
-                SpaceInfo spaceInfo = mStagDatas.get(position);
+                SpaceInfo spaceInfo = mStagAdapter.getData().get(position);
                 intent.putExtra("spaceInfo", spaceInfo);
                 startActivity(intent);
             }
@@ -122,12 +124,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             }
         });
     }
-
-    private void loadMore() {
-        String userId = "12";
-        mStoryTitlePresenter.loadMoreData(userId);
-    }
-
 
     private void initHeadView() {
         mHeadView = LayoutInflater.from(this).inflate(R.layout.head_story_title, (ViewGroup) findViewById(android.R.id.content), false);
@@ -160,7 +156,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 boolean selected = mTagDatas.get(position).isSelected();
                 if (position == mTagDatas.size() - 1) {
-                    Intent intent = new Intent(mContext,MoreTagActivity.class);
+                    Intent intent = new Intent(mContext, MoreTagActivity.class);
                     startActivity(intent);
                 } else {
                     mTagDatas.get(position).setSelected(!selected);
@@ -231,15 +227,37 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     }
 
+    private void loadMore() {
+        page++;
+        isLoadMore = true;
+        mPresenter.loadMoreData(page, size);
+    }
+
     @Override
-    public void getSpaceListSuccess(List<SpaceInfo> spaceInfoList) {
+    public void getSpaceListSuccess(List<SpaceInfo> spaceInfoList, boolean isLast) {
         spaceSuc = true;
         refreshFinish();
         if (spaceInfoList == null) {
-            return;
+            if (isLast) {
+                mStagAdapter.loadMoreEnd();
+            } else {
+                mStagAdapter.loadMoreFail();
+            }
+        } else {
+            if (isLoadMore) {
+                if (isLast) {
+                    mStagAdapter.loadMoreEnd();
+                } else {
+                    mStagAdapter.loadMoreComplete();
+                }
+                mStagAdapter.addData(spaceInfoList);
+            } else {
+                mStagAdapter.setNewData(spaceInfoList);
+                mStagAdapter.disableLoadMoreIfNotFullPage(mRvStoryTitle);
+            }
+            mStagAdapter.notifyDataSetChanged();
         }
-        mStagDatas.addAll(spaceInfoList);
-        mStagAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -282,15 +300,15 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRefresh() {
-        spaceSuc = likeSuc = tagSuc = false;
+        isLoadMore = false;
+        spaceSuc = likeSuc = false;
         likeDatas.clear();
-        mTagDatas.clear();
-        mStagDatas.clear();
+        page = 0;
         initData();
     }
 
-    private void refreshFinish(){
-        if (mSrlStoryTitle!=null&&spaceSuc&&likeSuc&& tagSuc){
+    private void refreshFinish() {
+        if (mSrlStoryTitle != null && spaceSuc && likeSuc) {
             mSrlStoryTitle.setRefreshing(false);
         }
     }
