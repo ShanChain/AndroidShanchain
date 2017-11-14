@@ -73,7 +73,7 @@ public class SCHttpUtils {
         LogUtils.d("缓存中获取的spaceid" + spaceId);
         return post()
                 .addParams("spaceId",spaceId)
-                .addParams("characterId",characterId)
+                .addParams("characterId",characterId);
     }
 
     /**
