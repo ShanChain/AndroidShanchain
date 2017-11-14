@@ -17,9 +17,14 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
 
+
         manifestPlaceholders = [
                 qq_id: "1106258060"
         ]
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     signingConfigs {
