@@ -9,6 +9,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.CommonConstants;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.cache.BaseSqlDao;
 import com.shanchain.data.common.rn.AppReactPackage;
@@ -33,8 +34,7 @@ public class BaseApplication extends Application implements ReactApplication {
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
-//            return BuildConfig.DEBUG;
-            return true;
+            return Constants.SC_RN_DEBUG;
         }
 
         @Override
