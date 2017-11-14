@@ -1,16 +1,18 @@
 package com.shanchain.arkspot.ui.presenter.impl;
 
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.ui.model.SpaceInfo;
 import com.shanchain.arkspot.ui.model.SpaceListInfo;
-import com.shanchain.arkspot.ui.model.TagContentBean;
-import com.shanchain.arkspot.ui.model.TagInfo;
 import com.shanchain.arkspot.ui.presenter.StoryTitlePresenter;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.StoryTitleView;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -34,9 +36,9 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
 
 
     @Override
-    public void initData() {
+    public void initFavData() {
         //获取标签列表
-        SCHttpUtils.post()
+      /*  SCHttpUtils.post()
                 .url(HttpApi.TAG_QUERY)
                 .addParams("type", "space")
                 .addParams("page","0")
@@ -59,10 +61,10 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                         List<TagContentBean> tagList = tagInfo.getData().getContent();
                         mStoryTitleView.getTagSuccess(tagList);
                     }
-                });
+                });*/
 
         //获取瀑布流数据
-        SCHttpUtils.post()
+     /*   SCHttpUtils.post()
                 .url(HttpApi.SPACE_LIST)
                 .build()
                 .execute(new StringCallback() {
@@ -81,6 +83,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                         mStoryTitleView.getSpaceListSuccess(spaceInfoList);
                     }
                 });
+*/
 
         //收藏的时空
         SCHttpUtils.postWithUserId()
@@ -100,15 +103,15 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                         SpaceListInfo spaceListInfo = new Gson().fromJson(response, SpaceListInfo.class);
                         LogUtils.d("我收藏的 = " + spaceListInfo.toString());
                         List<SpaceInfo> favoriteSpaceList = spaceListInfo.getData();
-                        if (favoriteSpaceList != null){
+                        if (favoriteSpaceList != null) {
                             List<String> favoriteSpace = new ArrayList<>();
-                            for (int i = 0; i < favoriteSpaceList.size(); i ++) {
+                            for (int i = 0; i < favoriteSpaceList.size(); i++) {
                                 String spaceId = favoriteSpaceList.get(i).getSpaceId() + "";
                                 favoriteSpace.add(spaceId);
                             }
                             String favoriteSpaceIds = JSON.toJSONString(favoriteSpace);
                             String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-                            SCCacheUtils.setCache(userId, Constants.CACHE_SPACE_COLLECTION,favoriteSpaceIds);
+                            SCCacheUtils.setCache(userId, Constants.CACHE_SPACE_COLLECTION, favoriteSpaceIds);
                         }
                         mStoryTitleView.getMyFavoriteSuccess(favoriteSpaceList);
                     }
@@ -117,7 +120,41 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
     }
 
     @Override
-    public void loadMoreData(String userId) {
-        mStoryTitleView.loadMoreResult();
+    public void loadMoreData(int page, int size) {
+        initSpace(page,size);
+    }
+
+    @Override
+    public void initSpace(int page, int size) {
+        SCHttpUtils.post()
+                .url(HttpApi.SPACE_LIST_ALL)
+                .addParams("page", "" + page)
+                .addParams("size", "" + size)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取时空列表失败");
+                        e.printStackTrace();
+                        mStoryTitleView.getSpaceListSuccess(null,false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("时空列表 = " + response);
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String spaceStr = JSONObject.parseObject(data).getString("content");
+                            List<SpaceInfo> spaceInfos = JSONObject.parseArray(spaceStr, SpaceInfo.class);
+                            Boolean isLast = JSONObject.parseObject(data).getBoolean("last");
+
+                            mStoryTitleView.getSpaceListSuccess(spaceInfos,isLast);
+
+                        } else {
+                            mStoryTitleView.getSpaceListSuccess(null,false);
+                        }
+                    }
+                });
     }
 }

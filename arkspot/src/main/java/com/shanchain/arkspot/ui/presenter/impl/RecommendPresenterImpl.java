@@ -40,7 +40,7 @@ public class RecommendPresenterImpl implements RecommendPresenter {
     @Override
     public void initData(int page , int size) {
         datas.clear();
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithUidSpaceIdAndCharId()
                 .url(HttpApi.RECOMMEND_RATE)
                 .addParams("page", page + "")
                 .addParams("size", size + "")
@@ -55,50 +55,60 @@ public class RecommendPresenterImpl implements RecommendPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("实时数据 = " + response);
+                        try {
+                            LogUtils.i("实时数据 = " + response);
 
-                        StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
-                        if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mRecommendView.initSuccess(null,false);
-                            return;
-                        }
-                        boolean last = storyResponseInfo.getData().isLast();
-                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
-                        List<String> ids = new ArrayList<>();
-                        for (int i = 0; i < storyBeanList.size(); i++) {
-                            StoryModel storyModel = new StoryModel();
-                            StoryModelInfo storyModelInfo = new StoryModelInfo();
-                            List<StoryModelInfo> modelInfoList = new ArrayList<>();
-                            ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
-                            String detailId = responseStoryBean.getDetailId();
-                            storyModelInfo.setStoryId(detailId);
-                            ids.add(detailId);
-                            ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
-                            if (storyChainBean != null) {
-                                List<String> detailIds = storyChainBean.getDetailIds();
-                                if (detailIds != null) {
-                                    if (storyChainBean.getDetailIds().size() == 0) {
-
-                                    } else {
-                                        for (int j = 0; j < detailIds.size(); j++) {
-                                            String dId = detailIds.get(j);
-                                            ids.add(dId);
-                                            StoryModelInfo modelInfo = new StoryModelInfo();
-                                            modelInfo.setStoryId(dId);
-                                            modelInfoList.add(modelInfo);
-                                        }
-                                        storyModel.setStoryChain(modelInfoList);
-                                    }
-                                }
-                            } else {
-                                modelInfoList = null;
-                                storyModel.setStoryChain(modelInfoList);
+                            StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
+                            if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                                mRecommendView.initSuccess(null,false);
+                                return;
                             }
-                            storyModel.setModelInfo(storyModelInfo);
-                            datas.add(storyModel);
+                            boolean last = storyResponseInfo.getData().isLast();
+                            List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
+
+                            if (storyBeanList.size() == 0){
+                                mRecommendView.initSuccess(null,last);
+                                return;
+                            }
+                            List<String> ids = new ArrayList<>();
+                            for (int i = 0; i < storyBeanList.size(); i++) {
+                                StoryModel storyModel = new StoryModel();
+                                StoryModelInfo storyModelInfo = new StoryModelInfo();
+                                List<StoryModelInfo> modelInfoList = new ArrayList<>();
+                                ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
+                                String detailId = responseStoryBean.getDetailId();
+                                storyModelInfo.setStoryId(detailId);
+                                ids.add(detailId);
+                                ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
+                                if (storyChainBean != null) {
+                                    List<String> detailIds = storyChainBean.getDetailIds();
+                                    if (detailIds != null) {
+                                        if (storyChainBean.getDetailIds().size() == 0) {
+
+                                        } else {
+                                            for (int j = 0; j < detailIds.size(); j++) {
+                                                String dId = detailIds.get(j);
+                                                ids.add(dId);
+                                                StoryModelInfo modelInfo = new StoryModelInfo();
+                                                modelInfo.setStoryId(dId);
+                                                modelInfoList.add(modelInfo);
+                                            }
+                                            storyModel.setStoryChain(modelInfoList);
+                                        }
+                                    }
+                                } else {
+                                    modelInfoList = null;
+                                    storyModel.setStoryChain(modelInfoList);
+                                }
+                                storyModel.setModelInfo(storyModelInfo);
+                                datas.add(storyModel);
+                            }
+                            LogUtils.i("datas长度 = " + datas.size());
+                            obtainStoryList(ids,last);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mRecommendView.initSuccess(null,false);
                         }
-                        LogUtils.i("datas长度 = " + datas.size());
-                        obtainStoryList(ids,last);
                     }
                 });
     }

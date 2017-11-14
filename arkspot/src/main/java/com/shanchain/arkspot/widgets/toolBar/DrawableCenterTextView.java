@@ -5,12 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * 描述: 自定义TextView 实现 Drawable 居中显示
  */
-public class DrawableCenterTextView extends TextView {
+public class DrawableCenterTextView extends android.support.v7.widget.AppCompatTextView {
 
     private Rect mRect;
 

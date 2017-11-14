@@ -326,7 +326,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
             jArr.add(selectedData.get(i).getTag());
         }
         String arr = JSONObject.toJSONString(jArr);
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithSpaceAndChaId()
                 .url(HttpApi.TOPIC_CREATE)
                 .addParams("dataString", dataString)
                 .addParams("jArray", arr)

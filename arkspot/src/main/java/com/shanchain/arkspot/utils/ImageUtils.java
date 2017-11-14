@@ -32,7 +32,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -214,7 +213,6 @@ public class ImageUtils {
     /**
      * 使用当前时间戳拼接一个唯一的文件名
      *
-     * @param format
      * @return
      */
     public static String getTempFileName() {
@@ -237,7 +235,7 @@ public class ImageUtils {
     /**
      * 判断当前Url是否标准的content://样式，如果不是，则返回绝对路径
      *
-     * @param uri
+     * @param mUri
      * @return
      */
     public static String getAbsolutePathFromNoStandardUri(Uri mUri) {

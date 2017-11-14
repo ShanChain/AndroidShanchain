@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.arkspot.ui.model.ResponseStoryChainBean;
 import com.shanchain.arkspot.ui.model.ResponseStoryIdBean;
+import com.shanchain.arkspot.ui.model.ResponseStoryIdData;
 import com.shanchain.arkspot.ui.model.ResponseStoryListInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryModel;
@@ -42,7 +43,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
     @Override
     public void initData(int page, int size) {
         datas.clear();
-        SCHttpUtils.postWhitSpaceAndChaId()
+        SCHttpUtils.postWithUidSpaceIdAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_FOCUS)
                 .addParams("page", page + "")
                 .addParams("size", size + "")
@@ -57,50 +58,65 @@ public class AttentionPresenterImpl implements AttentionPresenter {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("实时数据 = " + response);
-                        StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
-                        List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
-                        if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mAttentionView.initSuccess(null, false);
-                            return;
-                        }
-                        boolean last = storyResponseInfo.getData().isLast();
-                        List<String> ids = new ArrayList<>();
-                        for (int i = 0; i < storyBeanList.size(); i++) {
-                            StoryModel storyModel = new StoryModel();
-                            StoryModelInfo storyModelInfo = new StoryModelInfo();
-                            List<StoryModelInfo> modelInfoList = new ArrayList<>();
+                        try {
+                            LogUtils.i("关注数据 = " + response);
+                            StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
 
-                            ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
-                            String detailId = responseStoryBean.getDetailId();
-                            storyModelInfo.setStoryId(detailId);
-                            ids.add(detailId);
-                            ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
-                            if (storyChainBean != null) {
-                                List<String> detailIds = storyChainBean.getDetailIds();
-                                if (detailIds != null) {
-                                    if (storyChainBean.getDetailIds().size() == 0) {
-
-                                    } else {
-                                        for (int j = 0; j < detailIds.size(); j++) {
-                                            String dId = detailIds.get(j);
-                                            ids.add(dId);
-                                            StoryModelInfo modelInfo = new StoryModelInfo();
-                                            modelInfo.setStoryId(dId);
-                                            modelInfoList.add(modelInfo);
-                                        }
-                                        storyModel.setStoryChain(modelInfoList);
-                                    }
-                                }
-                            } else {
-                                modelInfoList = null;
-                                storyModel.setStoryChain(modelInfoList);
+                            if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
+                                mAttentionView.initSuccess(null, false);
+                                return;
                             }
-                            storyModel.setModelInfo(storyModelInfo);
-                            datas.add(storyModel);
+                            ResponseStoryIdData idData = storyResponseInfo.getData();
+                            if (idData == null){
+                                mAttentionView.initSuccess(null,false);
+                                return;
+                            }
+                            List<ResponseStoryIdBean> storyBeanList = idData.getContent();
+                            boolean last = idData.isLast();
+                            if (storyBeanList.size() == 0){
+                                mAttentionView.initSuccess(null,last);
+                                return;
+                            }
+                            List<String> ids = new ArrayList<>();
+                            for (int i = 0; i < storyBeanList.size(); i++) {
+                                StoryModel storyModel = new StoryModel();
+                                StoryModelInfo storyModelInfo = new StoryModelInfo();
+                                List<StoryModelInfo> modelInfoList = new ArrayList<>();
+
+                                ResponseStoryIdBean responseStoryBean = storyBeanList.get(i);
+                                String detailId = responseStoryBean.getDetailId();
+                                storyModelInfo.setStoryId(detailId);
+                                ids.add(detailId);
+                                ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
+                                if (storyChainBean != null) {
+                                    List<String> detailIds = storyChainBean.getDetailIds();
+                                    if (detailIds != null) {
+                                        if (storyChainBean.getDetailIds().size() == 0) {
+
+                                        } else {
+                                            for (int j = 0; j < detailIds.size(); j++) {
+                                                String dId = detailIds.get(j);
+                                                ids.add(dId);
+                                                StoryModelInfo modelInfo = new StoryModelInfo();
+                                                modelInfo.setStoryId(dId);
+                                                modelInfoList.add(modelInfo);
+                                            }
+                                            storyModel.setStoryChain(modelInfoList);
+                                        }
+                                    }
+                                } else {
+                                    modelInfoList = null;
+                                    storyModel.setStoryChain(modelInfoList);
+                                }
+                                storyModel.setModelInfo(storyModelInfo);
+                                datas.add(storyModel);
+                            }
+                            LogUtils.i("datas长度 = " + datas.size());
+                            obtainStoryList(ids, last);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mAttentionView.initSuccess(null,false);
                         }
-                        LogUtils.i("datas长度 = " + datas.size());
-                        obtainStoryList(ids, last);
                     }
                 });
     }

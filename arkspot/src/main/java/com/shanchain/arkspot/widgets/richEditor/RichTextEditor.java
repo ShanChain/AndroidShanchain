@@ -62,7 +62,7 @@ public class RichTextEditor extends ScrollView {
 		setupLayoutTransitions();
 		LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT);
-		allLayout.setPadding(50, 15, 50, 15);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
+		allLayout.setPadding(dip2px(context,15), dip2px(context,5), dip2px(context,15), dip2px(context,5));//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
 		addView(allLayout, layoutParams);
 
 		// 2. 初始化键盘退格监听
@@ -85,7 +85,7 @@ public class RichTextEditor extends ScrollView {
 
 			@Override
 			public void onClick(View v) {
-				RelativeLayout parentView = (RelativeLayout) v.getParent();
+				RelativeLayout parentView = (RelativeLayout) v.getParent().getParent();
 				onImageCloseClick(parentView);
 			}
 		};
@@ -182,13 +182,6 @@ public class RichTextEditor extends ScrollView {
 	 */
 	private void onImageCloseClick(View view) {
 		disappearingImageIndex = allLayout.indexOfChild(view);
-		/*//删除文件夹里的图片
-		List<EditData> dataList = buildEditData();
-		EditData editData = dataList.get(disappearingImageIndex);
-		//Log.i("", "editData: "+editData);
-		if (editData.imagePath != null) {
-			SDCardUtil.deleteFile(editData.imagePath);
-		}*/
 		allLayout.removeView(view);
 	}
 
@@ -284,10 +277,9 @@ public class RichTextEditor extends ScrollView {
 	 * @param editStr EditText显示的文字
 	 */
 	public void addEditTextAtIndex(final int index, CharSequence editStr) {
-		EditText editText2 = createEditText("", EDIT_PADDING);
+		EditText editText2 = createEditText("请输入内容", EDIT_PADDING);
 		editText2.setText(editStr);
 		editText2.setOnFocusChangeListener(focusListener);
-
 		allLayout.addView(editText2, index);
 	}
 
@@ -298,21 +290,21 @@ public class RichTextEditor extends ScrollView {
 		final RelativeLayout imageLayout = createImageLayout();
 		DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
 		Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
-		/*imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
-		imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
+		imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
 
 		// 调整imageView的高度，根据宽度来调整高度
-		Bitmap bmp = BitmapFactory.decodeFile(imagePath);
+	/*	Bitmap bmp = BitmapFactory.decodeFile(imagePath);
 		int imageHeight = 500;
 		if (bmp != null) {
 			imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
 			bmp.recycle();
-		}
+		}*/
 		// TODO: 17/3/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);//设置图片固定高度
+
 		lp.bottomMargin = 10;
-		imageView.setLayoutParams(lp);*/
+		imageView.setLayoutParams(lp);
 
 		allLayout.addView(imageLayout, index);
 	}

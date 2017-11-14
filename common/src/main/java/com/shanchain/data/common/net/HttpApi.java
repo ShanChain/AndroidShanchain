@@ -205,5 +205,9 @@ public interface HttpApi {
     /** 查找时空--根据id*/
     String SPACE_GET_ID = BASE_URL + "/v1/space/get/id";
 
+    /** 推荐列表*/
     String RECOMMEND_RATE = BASE_URL + "/v1/recommend/rate";
+
+    /** 获取所有时空*/
+    String SPACE_LIST_ALL = BASE_URL + "/v1/space/list/all";
 }

@@ -49,7 +49,6 @@ import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 
 
-
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ReleaseDynamicView {
 
     private static final int REQUEST_CODE_TOPIC = 10;
@@ -473,7 +472,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     public void onRightClick(View v) {
-        showLoadingDialog(true);
+
         final List<String> imgPaths = new ArrayList<>();
         if (imgData != null && imgData.size() != 0) {
             for (int i = 0; i < imgData.size(); i++) {
@@ -492,9 +491,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 return;
             }
             List<RichTextModel> editData = getEditData();
+            showLoadingDialog(true);
             mPresenter.ReleaseLongText(this, title, editData);
         } else {
             //普通编辑
+            showLoadingDialog(true);
             if (imgData.size() == 0) {
                 //无图片
                 mPresenter.releaseDynamic(word, imgPaths, tailId, atIds, topicIds);

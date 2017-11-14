@@ -65,7 +65,7 @@ public class SCHttpUtils {
      *  描述：带当前时空id和当前角色id的post请求
      *
      */
-    public static PostFormBuilder postWhitSpaceAndChaId() {
+    public static PostFormBuilder postWithSpaceAndChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
@@ -87,6 +87,16 @@ public class SCHttpUtils {
                 .addParams("userId",userId);
     }
 
+
+    public static PostFormBuilder postWithUidSpaceIdAndCharId(){
+        String userId = SCCacheUtils.getCacheUserId();
+        String characterId = SCCacheUtils.getCacheCharacterId();
+        String spaceId = SCCacheUtils.getCacheSpaceId();
+        return post()
+                .addParams("userId",userId)
+                .addParams("spaceId",spaceId)
+                .addParams("characterId",characterId);
+    }
     /**
      *  描述：带基础请求参数的get请求
      */
@@ -137,8 +147,6 @@ public class SCHttpUtils {
                 .addParams("Signture","");               //签名
 
     }
-
-
 
 
     public static String getRequestId() {
