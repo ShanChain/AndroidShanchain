@@ -11,6 +11,9 @@ import com.zhy.http.okhttp.builder.PostFormBuilder;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
+import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
+
 /**
  * Created by zhoujian on 2017/8/22.
  */
@@ -23,9 +26,11 @@ public class SCHttpUtils {
     }
 
     public static PostFormBuilder post() {
-        String token = SCCacheUtils.getCacheToken();
-        LogUtils.i("token = " + token);
-        return OkHttpUtils.post().addParams("token",token);
+
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        return OkHttpUtils.post()
+                .addParams("token",token);
     }
 
     /**
@@ -35,11 +40,9 @@ public class SCHttpUtils {
     public static PostFormBuilder postWithSpaceId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
-        String token = SCCacheUtils.getCacheToken();
-        LogUtils.i("token = " + token);
-        return OkHttpUtils.post()
-                .addParams("spaceId",spaceId)
-                .addParams("token",token);
+        return  post()
+                .addParams("spaceId",spaceId);
+
     }
 
     /**
@@ -49,11 +52,8 @@ public class SCHttpUtils {
     public static PostFormBuilder postWithChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
-        String token = SCCacheUtils.getCacheToken();
-        LogUtils.i("token = " + token);
-        return OkHttpUtils.post()
-                .addParams("characterId", characterId)
-                .addParams("token",token);
+        return post()
+                .addParams("characterId", characterId);
     }
 
 
@@ -70,12 +70,10 @@ public class SCHttpUtils {
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
         String characterId = SCCacheUtils.getCache(userId, "characterId");
 
-        String token = SCCacheUtils.getCacheToken();
-        LogUtils.d("缓存中获取的spaceid = " + spaceId + "token = " + token);
-        return OkHttpUtils.post()
+        LogUtils.d("缓存中获取的spaceid" + spaceId);
+        return post()
                 .addParams("spaceId",spaceId)
                 .addParams("characterId",characterId)
-                .addParams("token",token);
     }
 
     /**
@@ -83,12 +81,10 @@ public class SCHttpUtils {
      *
      */
     public static PostFormBuilder postWithUserId(){
-        String userId = SCCacheUtils.getCache("0", "curUser");
-        String token = SCCacheUtils.getCacheToken();
-        LogUtils.i("token = " + token);
-        return OkHttpUtils.post()
-                .addParams("userId",userId)
-                .addParams("token",token);
+
+        String userId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
+        return post()
+                .addParams("userId",userId);
     }
 
     /**

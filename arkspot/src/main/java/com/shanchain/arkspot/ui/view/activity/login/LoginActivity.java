@@ -256,7 +256,7 @@ public class LoginActivity extends BaseActivity {
 
                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId+ "_" +token);
                             checkCache();
                         }
                     }
