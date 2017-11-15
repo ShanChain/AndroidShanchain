@@ -1,5 +1,7 @@
 package com.shanchain.data.common.net;
 
+import com.shanchain.data.common.base.Constants;
+
 /**
  * Created by zhoujian on 2017/9/18.
  */
@@ -8,11 +10,12 @@ public interface HttpApi {
 
     /** IM相关接口*/
 
-    String BASE_URL_IM = "http://47.91.178.114:8080";
+
+
+    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
 
     /** 全局接口地址*/
-    String TEST_URL = "http://47.91.178.114:8080";
-    String BASE_URL = "http://47.91.178.114:8080";
+    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
 
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
@@ -75,42 +78,42 @@ public interface HttpApi {
     String UP_LOAD_FILE = "http://115.29.176.143/v1/upload/app";
 
     /** 查询标签*/
-    String TAG_QUERY = TEST_URL + "/v1/tag/query";
+    String TAG_QUERY = BASE_URL + "/v1/tag/query";
 
     /** 获取热门标签*/
-    String TAG_QUERY_HOT = TEST_URL + "/v1/tag/query/hot";
+    String TAG_QUERY_HOT = BASE_URL + "/v1/tag/query/hot";
 
     /** 获取我收藏的时空*/
-    String SPACE_LIST_FAVORITE = TEST_URL + "/v1/space/list/favorite";
+    String SPACE_LIST_FAVORITE = BASE_URL + "/v1/space/list/favorite";
 
     /**查找时空--根据ID*/
-    String SPACE_LIST = TEST_URL + "/v1/space/list/spaceId";
+    String SPACE_LIST = BASE_URL + "/v1/space/list/spaceId";
 
     /**发布动态*/
     String STORY_ADD = BASE_URL + "/v1/story/add";
     /**第三方登录*/
-    String USER_THIRD_LOGIN = TEST_URL + "/v1/user/third_login";
+    String USER_THIRD_LOGIN = BASE_URL + "/v1/user/third_login";
 
     /**注册账号*/
-    String USER_REGISTER = TEST_URL + "/v1/user/register";
+    String USER_REGISTER = BASE_URL + "/v1/user/register";
 
     /**未登录状态获取短信验证码*/
-    String SMS_UNLOGIN_VERIFYCODE = TEST_URL + "/v1/sms/unlogin/verifycode";
+    String SMS_UNLOGIN_VERIFYCODE = BASE_URL + "/v1/sms/unlogin/verifycode";
 
     /** 登录*/
-    String USER_LOGIN = TEST_URL + "/v1/user/login";
+    String USER_LOGIN = BASE_URL + "/v1/user/login";
 
     /** 重置密码*/
-    String RESET_PWD = TEST_URL + "/v1/user/reset_password";
+    String RESET_PWD = BASE_URL + "/v1/user/reset_password";
 
     /** 获取主页关注故事列表*/
-    String STORY_FOCUS_GET = TEST_URL + "/v1/story/focus/get";
+    String STORY_FOCUS_GET = BASE_URL + "/v1/story/focus/get";
 
     /** 获取实时故事id列表*/
-    String STORY_RECOMMEND_HOT = TEST_URL + "/v1/recommend/hot";
+    String STORY_RECOMMEND_HOT = BASE_URL + "/v1/recommend/hot";
 
     /** 获取故事详情列表*/
-    String STORY_RECOMMEND_DETAIL = TEST_URL + "/v1/recommend/detail";
+    String STORY_RECOMMEND_DETAIL = BASE_URL + "/v1/recommend/detail";
 
     /**通过角色id查询角色详细信息*/
     String CHARACTER_QUERY = BASE_URL + "/v1/character/query";

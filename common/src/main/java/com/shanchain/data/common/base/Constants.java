@@ -1,5 +1,7 @@
 package com.shanchain.data.common.base;
 
+import com.shanchain.common.BuildConfig;
+
 /**
  * 全局常量
  */
@@ -61,6 +63,13 @@ public interface Constants {
 
         /*************SP中的key值***************/
         String SP_KEY_DRAFT = "draft";
+
+        /** config.gradle中定义的常量 */
+
+        boolean SC_RN_DEBUG = Boolean.valueOf(BuildConfig.RN_DEBUG);
+        boolean SC_ENV_PRD = Boolean.valueOf(BuildConfig.ENV_PRD);
+        String SC_HOST_TEST = BuildConfig.HOST_TEST;
+        String SC_HOST_RELEASE = BuildConfig.HOST_RELEASE;
 
 
 

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: "${project.rootDir}/config.gradle"
 
 android {
     compileSdkVersion 25
@@ -48,4 +49,18 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+android.libraryVariants.all { variant ->
+    generateConfigField("CFG_", variant)
+    variant.resValue "string","arkspot_name", "\"${project.ext.arkspot_name}\""
+}
+
+def generateConfigField(prefix, variant) {
+    def start = prefix.length()
+    project.getProperties().each {
+        if (it.key.startsWith(prefix)) {
+            variant.buildConfigField "String", it.key.substring(start), "\"${it.value}\""
+        }
+    }
 }
