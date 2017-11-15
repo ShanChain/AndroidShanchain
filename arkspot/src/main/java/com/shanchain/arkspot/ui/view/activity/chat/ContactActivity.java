@@ -140,8 +140,6 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         for (int i = 0; i < each.size(); i ++) {
             LogUtils.i("互相关注 = " + each.get(i).getHxUerBean() + " ; "+each.get(i).getContactBean());
         }
-
-
         map.put("互相关注", each);
         map.put("我的粉丝", fans);
         map.put("我的关注", focus);
@@ -153,7 +151,6 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         if (group == null) {
             return;
         }
-
         map.put("对话场景", group);
         mContactAdapter.notifyDataSetChanged();
     }

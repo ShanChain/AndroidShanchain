@@ -46,7 +46,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取好友信息失败 ");
                         e.printStackTrace();
-                        mView.initFriendSuc(null);
+                        mView.initFriendSuc(null,false);
                     }
 
                     @Override
@@ -57,16 +57,16 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 CharacterInfo characterInfo = JSONObject.parseObject(data, CharacterInfo.class);
-                                mView.initFriendSuc(characterInfo);
-                                //checkIsFocus(characterInfo);
+
+                                checkIsFocus(characterInfo);
 
                             } else {
                                 //
-                                mView.initFriendSuc(null);
+                                mView.initFriendSuc(null,false);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mView.initFriendSuc(null);
+                            mView.initFriendSuc(null,false);
                         }
 
                     }
@@ -74,17 +74,20 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
     }
 
 
-    private void checkIsFocus(CharacterInfo characterInfo) {
+    private void checkIsFocus(final CharacterInfo characterInfo) {
         int characterId = characterInfo.getCharacterId();
-        SCHttpUtils.postWithChaId()
+        String spaceId = SCCacheUtils.getCacheSpaceId();
+        SCHttpUtils.postWithUserId()
                 .url(HttpApi.FOCUS_IS_FAV)
                 .addParams("checkId", characterId + "")
+                .addParams("spaceId",spaceId + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取是否关注角色失败");
                         e.printStackTrace();
+                        mView.initFriendSuc(characterInfo,false);
                     }
 
                     @Override
@@ -93,13 +96,14 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                             LogUtils.i("获取到是否关注结果 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-
+                                Boolean focus = JSONObject.parseObject(response).getBoolean("data");
+                                mView.initFriendSuc(characterInfo,focus);
                             } else {
-
+                                mView.initFriendSuc(characterInfo,false);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-
+                            mView.initFriendSuc(characterInfo,false);
                         }
                     }
                 });
@@ -110,7 +114,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
         String cacheCharacterId = SCCacheUtils.getCacheCharacterId();
         SCHttpUtils.post()
                 .url(HttpApi.FOCUS_FOCUS)
-                .addParams("funsId", cacheCharacterId)
+                .addParams("funsCharacterId", cacheCharacterId)
                 .addParams("characterId", characterId + "")
                 .build()
                 .execute(new StringCallback() {
@@ -128,8 +132,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
-                                CharacterInfo characterInfo = JSONObject.parseObject(data, CharacterInfo.class);
-                                if (characterInfo != null) {
+                                if (TextUtils.equals(data,"1")) {
                                     //关注成功
                                     mView.focusSuc(true);
                                 } else {
@@ -286,12 +289,51 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                     public void onResponse(String response, int id) {
                         LogUtils.i("点赞结果 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
-
                         if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                             mView.supportSuccess(true,position);
                         }else {
                             mView.supportSuccess(false,position);
                         }
+                    }
+                });
+    }
+
+    @Override
+    public void focusCancel(int characterId) {
+        String userId = SCCacheUtils.getCacheUserId();
+        SCHttpUtils.post()
+                .url(HttpApi.FOCUS_UNFOCUS)
+                .addParams("characterId",""+characterId)
+                .addParams("funsUserId","" + userId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("取消关注失败");
+                        e.printStackTrace();
+                        mView.focusCancelSuc(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("取消关注结果" + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                String data = JSONObject.parseObject(response).getString("data");
+                                if (TextUtils.equals(data,"1")){    //取消关注成功
+                                    mView.focusCancelSuc(true);
+                                }else { //取消关注失败
+                                    mView.focusCancelSuc(false);
+                                }
+                            }else {
+                                mView.focusCancelSuc(false);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.focusCancelSuc(false);
+                        }
+
                     }
                 });
     }

@@ -219,4 +219,7 @@ public interface HttpApi {
     
     /** 获取角色动态接口*/
     String DYNAMIC_CHARACTER = BASE_URL + "/v1/dynamic/character";
+
+    /** 取消角色关注*/
+    String FOCUS_UNFOCUS = BASE_URL + "/v1/focus/unfocus";
 }

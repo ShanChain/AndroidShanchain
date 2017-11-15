@@ -19,4 +19,6 @@ public interface FriendHomePresenter {
 
 
     void storySupport(int position, String substring);
+
+    void focusCancel(int characterId);
 }

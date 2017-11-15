@@ -49,7 +49,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Bind(R.id.tb_story_title)
     ArthurToolBar mTbStoryTitle;
     private boolean spaceSuc;
-    private boolean tagSuc;
     private boolean likeSuc;
 
     private RecyclerView mRvLike;
@@ -202,7 +201,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void getTagSuccess(List<TagContentBean> tagList) {
-        tagSuc = true;
         refreshFinish();
         if (tagList == null) {
             return;

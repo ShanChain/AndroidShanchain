@@ -40,6 +40,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     private List<StoryInfo> mDatas;
     private AttentionAdapter mAdapter;
     private String tbTitle = "";
+    private View emptyView;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_praised;
@@ -51,8 +52,10 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         String reactExtra = intent.getStringExtra("ReactExtra");
         if (reactExtra.equals("praised")){
             tbTitle = getString(R.string.str_tb_title_praised);
+            emptyView = new SCEmptyView(this,R.string.str_praised_empty_word,R.mipmap.abs_liked_icon_thumbsup_default);
         }else if (reactExtra.equals("story")){
             tbTitle = getString(R.string.str_tb_title_my_stories);
+            emptyView = new SCEmptyView(this,R.string.str_story_empty_word,R.mipmap.abs_mylongtext_icon_longtext_default);
         }
         initToolBar();
         initData();
@@ -60,7 +63,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initRecyclerView() {
-        View emptyView = new SCEmptyView(this,R.string.str_praised_empty_word,R.mipmap.abs_liked_icon_thumbsup_default);
         mRvPraised.setLayoutManager(new LinearLayoutManager(this));
         mSrlPraised.setOnRefreshListener(this);
         mAdapter = new AttentionAdapter(mDatas);
@@ -181,27 +183,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         });
         customDialog.show();
     }
-
- /*   private void showShieldingDialog() {
-        final CustomDialog shieldingDialog = new CustomDialog(mActivity, false, 1, R.layout.dialog_shielding, new int[]{R.id.tv_shielding_dialog_cancel, R.id.tv_shielding_dialog_sure});
-        shieldingDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.tv_shielding_dialog_cancel:
-                        shieldingDialog.dismiss();
-                        break;
-                    case R.id.tv_shielding_dialog_sure:
-                        //确定屏蔽，请求接口
-
-                        shieldingDialog.dismiss();
-                        break;
-                }
-            }
-        });
-        shieldingDialog.show();
-    }*/
-
 
     @Override
     public void onRefresh() {

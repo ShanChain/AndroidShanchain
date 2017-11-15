@@ -68,6 +68,9 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     private int selected = -1;
     private boolean isCollected;
     private SpaceCharacterModelInfo mModelInfo;
+    private int page = 0;
+    private int size = 10;
+    private int mSpaceId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -83,12 +86,12 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initData() {
-        int spaceId = mSpaceInfo.getSpaceId();
+        mSpaceId = mSpaceInfo.getSpaceId();
         String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String spaceCollection = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_COLLECTION);
         if (!TextUtils.isEmpty(spaceCollection)) {
             List<Integer> spaceIds = JSONObject.parseArray(spaceCollection, Integer.class);
-            if (spaceIds.contains(spaceId)) {
+            if (spaceIds.contains(mSpaceId)) {
                 setIsCollection(true);
             } else {
                 setIsCollection(false);
@@ -100,10 +103,16 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
         mTvChooseRoleDes.setText(mSpaceInfo.getSlogan());
         mTvChooseRoleDetail.setText(mSpaceInfo.getIntro());
 
+        initSpaceModel(page,size);
 
+    }
+
+    private void initSpaceModel(int page ,int size) {
         SCHttpUtils.post()
                 .url(HttpApi.CHARACTER_MODEL_QUERY_SPACEID)
-                .addParams("spaceId", spaceId + "")
+                .addParams("spaceId", mSpaceId + "")
+                .addParams("page",""+page)
+                .addParams("size",""+size)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -117,7 +126,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                         try {
                             LogUtils.i("获取时空角色成功 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
                                 mModelInfo = JSONObject.parseObject(response).getObject("data", SpaceCharacterModelInfo.class);
                                 List<SpaceCharacterBean> characterBeanList = mModelInfo.getContent();
                                 datas.addAll(characterBeanList);
@@ -130,7 +139,6 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
 
                     }
                 });
-
     }
 
     /**
@@ -146,7 +154,6 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvChooseRole.setLayoutManager(layoutManager);
-
         mRoleAdapter = new ChooseRoleAdapter(R.layout.item_choose_role, datas);
         mRvChooseRole.setAdapter(mRoleAdapter);
         mRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -155,6 +162,23 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                 setRoleInfo(position);
             }
         });
+        mRvChooseRole.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+                if (manager instanceof LinearLayoutManager){
+                    int lastVisibleItemPosition = ((LinearLayoutManager) manager).findLastVisibleItemPosition();
+                    LogUtils.i("最后可见条目位置 = " + lastVisibleItemPosition + "; 数据集长度 = "+ datas.size());
+                    if (lastVisibleItemPosition == datas.size() - 1 ){
+                        LogUtils.i("获取跟多角色 ====");
+                        page++;
+                        initSpaceModel(page,size);
+                    }
+                }
+            }
+        });
+
     }
 
     private void setRoleInfo(int position) {
@@ -178,7 +202,6 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
             case R.id.iv_choose_role_select:
                 if (mModelInfo != null) {
                     Intent intent = new Intent(this, SearchRoleActivity.class);
-                    intent.putExtra("spaceInfo", mModelInfo);
                     intent.putExtra("spaceId", mSpaceInfo.getSpaceId());
                     startActivity(intent);
                 }
@@ -201,162 +224,8 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
 
         RoleManager.switchRole(datas.get(selected).getModelId() + "",mSpaceInfo.getSpaceId() + "",JSON.toJSONString(mSpaceInfo));
 
-//        int modelId = datas.get(selected).getModelId();
-//
-//        showLoadingDialog();
-//        SCHttpUtils.postWithUserId()
-//                .url(HttpApi.CHARACTER_CHANGE)
-//                .addParams("spaceId", mSpaceInfo.getSpaceId() + "")
-//                .addParams("modelId",modelId + "")
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        error();
-//                        LogUtils.i("切换角色失败");
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        LogUtils.i("切换角色成功" + response);
-//
-//                        if (TextUtils.isEmpty(response)){
-//                            error();
-//                            return;
-//                        }
-//
-//                        ResponseSwitchRoleInfo responseSwitchRoleInfo = JSONObject.parseObject(response, ResponseSwitchRoleInfo.class);
-//                        if (responseSwitchRoleInfo == null){
-//                            error();
-//                            return;
-//                        }
-//
-//                        String code = responseSwitchRoleInfo.getCode();
-//
-//                        if (!TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-//                            error();
-//                            return;
-//                        }
-//
-//                        CharacterInfo data = responseSwitchRoleInfo.getData();
-//
-//                        if (data == null) {
-//                            error();
-//                            return;
-//                        }
-//
-//                        registerHxUserAndLogin(data);
-//
-//                    }
-//                });
     }
 
-//    private void registerHxUserAndLogin(final CharacterInfo data) {
-//        SCHttpUtils.post()
-//                .url(HttpApi.HX_USER_REGIST)
-//                .addParams("characterId",data.getCharacterId()+"")
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        error();
-//                        LogUtils.i("注册环信账号失败");
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onResponse(final String response, int id) {
-//                        LogUtils.i("注册环信账号成功 " + response );
-//
-//                        String currentUser = EMClient.getInstance().getCurrentUser();
-//                        //String cacheHxUserName = SCCacheUtils.getCacheHxUserName();
-//                        //退出当前登录的账号
-//                        if (TextUtils.isEmpty(currentUser)){
-//                            login(response,data);
-//                            return;
-//                        }
-//                        EMClient.getInstance().logout(false, new EMCallBack() {
-//                            @Override
-//                            public void onSuccess() {
-//                                login(response, data);
-//                            }
-//
-//                            @Override
-//                            public void onError(int i, String s) {
-//                                error();
-//                                LogUtils.i("登出失败 = " + s);
-//                            }
-//
-//                            @Override
-//                            public void onProgress(int i, String s) {
-//
-//                            }
-//                        });
-//
-//                    }
-//                });
-//    }
-
-//    private void login(String response, final CharacterInfo data) {
-//        try {
-//            RegisterHxInfo registerHxInfo = JSONObject.parseObject(response, RegisterHxInfo.class);
-//            String code = registerHxInfo.getCode();
-//            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
-//                RegisterHxBean registerHxBean = registerHxInfo.getData();
-//                final String userName = registerHxBean.getHxUserName();
-//                final String pwd = registerHxBean.getHxPassword();
-//                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-//                    @Override
-//                    public void onSuccess() {
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                closeLoadingDialog();
-//                                LogUtils.i("登录环信账号成功");
-//                                EMClient.getInstance().chatManager().loadAllConversations();
-//                                String spaceInfoJson = JSON.toJSONString(mSpaceInfo);
-//                                String characterInfoJson = JSON.toJSONString(data);
-//                                RoleManager.switchRoleCache(data.getCharacterId(),characterInfoJson,mSpaceInfo.getSpaceId(),spaceInfoJson,userName,pwd);
-//                                ToastUtils.showToast(mContext,"穿越角色成功");
-//                                Intent intent = new Intent(mContext, MainActivity.class);
-//                                ActivityManager.getInstance().finishAllActivity();
-//                                startActivity(intent);
-//                            }
-//                        });
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(int i, String s) {
-//                        error();
-//                        LogUtils.i("登录环信账号失败");
-//                    }
-//
-//                    @Override
-//                    public void onProgress(int i, String s) {
-//
-//                    }
-//                });
-//
-//            }
-//        } catch (Exception e) {
-//            error();
-//            LogUtils.i("注册失败");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void error(){
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                ToastUtils.showToast(mContext,"穿越失败！");
-//                closeLoadingDialog();
-//            }
-//        });
-//
-//    }
 
     /**
      * 收藏时空
@@ -452,5 +321,4 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     public void onLeftClick(View v) {
         finish();
     }
-
 }

@@ -232,36 +232,48 @@ public class LoginActivity extends BaseActivity {
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
                 .build()
-                .execute(new SCHttpCallBack<ResponseLoginBean>(ResponseLoginBean.class) {
+                .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();
-                        ToastUtils.showToast(mContext, "登录失败！");
-                        LogUtils.e("登录失败!");
+                        LogUtils.i("登录错误");
                         e.printStackTrace();
+                        ToastUtils.showToast(mContext,"网络错误");
                     }
 
                     @Override
-                    public void onResponse(ResponseLoginBean response, int id) {
-                        if (response == null) {
-                            closeProgress();
-                            ToastUtils.showToast(mContext, "登录失败！");
-                        } else {
-                            //登录成功 在此缓存用户数据
-                            String token = response.getToken();
-                            String account = response.getAccount();
-                            LoginUserInfoBean userInfo = response.getUserInfo();
-                            int userId = userInfo.getUserId();
-                            LogUtils.d("登录成功  uid" + userId);
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.d("登录返回数据 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                //登录成功
+                                String data = JSONObject.parseObject(response).getString("data");
+                                ResponseLoginBean loginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
+                                //登录成功 在此缓存用户数据
+                                String token = loginBean.getToken();
+                                LoginUserInfoBean userInfo = loginBean.getUserInfo();
+                                int userId = userInfo.getUserId();
+                                LogUtils.d("登录成功  uid" + userId);
 
-                            SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId+ "_" +token);
-                            checkCache();
+                                SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                                SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                                SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId+ "_" +token);
+                                checkCache();
+                            }else if (TextUtils.equals(code,NetErrCode.LOGIN_ERR_CODE)){
+                                closeProgress();
+                                ToastUtils.showToast(mContext,"账号或密码错误");
+                            }else {
+                                closeProgress();
+                                ToastUtils.showToast(mContext,"登录失败");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            closeProgress();
+                            ToastUtils.showToast(mContext,"登录异常");
                         }
                     }
                 });
-
 
     }
 

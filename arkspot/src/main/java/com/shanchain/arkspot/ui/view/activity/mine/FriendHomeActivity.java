@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -31,6 +32,7 @@ import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -62,6 +64,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private int page = 0;
     private int size = 10;
     private boolean isLoadMore = false;
+    private LinearLayout mLlConversation;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -104,6 +107,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         mTvDes = (TextView) mHeadView.findViewById(R.id.tv_friend_home_des);
         mBtnFocus = (Button) mHeadView.findViewById(R.id.btn_friend_home_focus);
         mTvConversation = (TextView) mHeadView.findViewById(R.id.tv_friend_home_conversation);
+        mLlConversation = (LinearLayout) mHeadView.findViewById(R.id.ll_conversation);
         mTvConversation.setOnClickListener(this);
         mBtnFocus.setOnClickListener(this);
     }
@@ -125,9 +129,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                 //关注
                 String btnTxt = mBtnFocus.getText().toString().trim();
                 if (TextUtils.equals(btnTxt, "已关注")) {
-                    return;
+                    mPresenter.focusCancel(mCharacterId);
+                } else {
+                    mPresenter.focus(mCharacterId);
                 }
-                focus();
                 break;
             case R.id.tv_friend_home_conversation:
                 //发起对话
@@ -136,16 +141,34 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         }
     }
 
-    private void focus() {
-        mPresenter.focus(mCharacterId);
-    }
 
     @Override
-    public void initFriendSuc(CharacterInfo friendInfo) {
-        if (mHeadView != null) {
+    public void initFriendSuc(CharacterInfo friendInfo, boolean isFocus) {
+        if (mHeadView != null && friendInfo != null) {
+            int userId = friendInfo.getUserId();
+            int spaceId = friendInfo.getSpaceId();
+            String cacheUserId = SCCacheUtils.getCacheUserId();
+            String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
+            if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
+                mBtnFocus.setVisibility(View.GONE);
+                mLlConversation.setVisibility(View.GONE);
+            } else {
+                mBtnFocus.setVisibility(View.VISIBLE);
+                mLlConversation.setVisibility(View.VISIBLE);
+            }
+
+            if (TextUtils.equals(cacheUserId, userId + "")) {
+                mBtnFocus.setVisibility(View.GONE);
+                mLlConversation.setVisibility(View.GONE);
+            } else {
+                mBtnFocus.setVisibility(View.VISIBLE);
+                mLlConversation.setVisibility(View.VISIBLE);
+            }
+
             GlideUtils.load(mContext, friendInfo.getHeadImg(), mIvHead, 0);
             mTvName.setText(friendInfo.getName() + "(No." + friendInfo.getModelNo() + ")");
             mTvDes.setText(friendInfo.getSignature());
+            mBtnFocus.setText(isFocus ? "已关注" : "关注TA");
         }
     }
 
@@ -156,6 +179,15 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             mBtnFocus.setText("已关注");
         } else {
             ToastUtils.showToast(mContext, "关注失败");
+        }
+    }
+
+    @Override
+    public void focusCancelSuc(boolean suc) {
+        if (suc) {
+            mBtnFocus.setText("关注TA");
+        } else {
+            ToastUtils.showToast(mContext, "取消关注失败");
         }
     }
 
@@ -232,6 +264,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
 
         }
     }
+
 
     @Override
     public void onLoadMoreRequested() {
