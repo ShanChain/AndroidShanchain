@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mToolbar"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/arthur_navigation_height">
+
+    <!-- 左侧按钮 -->
+    <com.shanchain.arkspot.widgets.toolBar.DrawableCenterTextView
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:id="@+id/mLeftText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:gravity="center"
+        android:textSize="@dimen/arthur_toolbar_button_text_size"
+        android:textColor="#0f0"
+        android:visibility="gone"/>
+
+    <!-- 中间标题 -->
+    <TextView
+        android:id="@+id/mTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@dimen/arthur_toolbar_title_text_size"
+        android:textColor="#000"
+        android:text="title"/>
+
+    <!--  右侧按钮 -->
+    <com.shanchain.arkspot.widgets.toolBar.DrawableCenterTextView
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:id="@+id/mRightText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:textSize="@dimen/arthur_toolbar_button_text_size"
+        android:textColor="#0f0"
+        android:visibility="gone"/>
+
+</FrameLayout>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_add_role"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="确定"
+        app:rightTextColor="@color/colorTextDefault"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="添加角色"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dimens_15dp"
+                android:text="选择标签"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_add_role"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="14dp"
+                android:overScrollMode="never"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dimens_20dp">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_add_role_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/abs_find_btn_addto_default"/>
+
+                <EditText
+                    android:id="@+id/et_add_role_tag"
+                    android:layout_width="130dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="@dimen/dimens_10dp"
+                    android:layout_toLeftOf="@id/iv_add_role_tag"
+                    android:background="@drawable/shape_bg_edit_report"
+                    android:gravity="center_vertical"
+                    android:hint="自定义标签"
+                    android:lines="1"
+                    android:maxLength="4"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
+                    android:textColor="@color/colorTextDefault"
+                    android:textColorHint="@color/colorHint"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/sp_12"/>
+
+            </RelativeLayout>
+
+            <View
+                style="@style/style_text_line_match"
+                android:layout_marginTop="16dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dp_10">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_add_role"
+                    app:cardCornerRadius="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_add_role_img"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/abs_addarole_def_photo_default"/>
+
+                </android.support.v7.widget.CardView>
+
+                <EditText
+                    android:id="@+id/et_add_role_nick"
+                    android:layout_width="180dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/cv_add_role"
+                    android:background="@drawable/shape_bg_edit_report"
+                    android:gravity="center_vertical"
+                    android:hint="请输入角色昵称"
+                    android:lines="1"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingRight="@dimen/sp_12"
+                    android:textColor="@color/colorTextDefault"
+                    android:textColorHint="@color/colorHint"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/sp_12"/>
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_add_role_introduce"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="@dimen/dimens_5dp"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dimens_15dp"
+                android:background="@drawable/shape_bg_edit_report"
+                android:gravity="top"
+                android:hint="简单介绍一下角色吧~"
+                android:padding="@dimen/dimens_10dp"
+                android:textColor="@color/colorTextDefault"
+                android:textColorHint="@color/colorHint"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/sp_12"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:text="请确保角色符合要求，且不要和现有角色重复哦~"
+                android:textColor="@color/colorHint"
+                android:textSize="10sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dimens_5dp"
+                android:text="时空管理局和当前时空的管理员都会审核这个角色。如果审核不通过，你可能 无法继续使用这个角色。你还可以补充这个角色的人设长文。"
+                android:textColor="@color/colorHint"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
