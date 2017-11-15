@@ -32,13 +32,7 @@ import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
-
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
