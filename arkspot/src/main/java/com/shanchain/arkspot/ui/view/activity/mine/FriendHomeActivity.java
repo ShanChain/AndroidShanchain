@@ -24,6 +24,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -62,6 +63,14 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         mCharacterId = getIntent().getIntExtra("characterId", 0);
+        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
+        if(!getIntent().hasExtra("characterId")){
+            JSONObject jsonObject = JSONObject.parseObject(rnExtra);
+            JSONObject rnGData = jsonObject.getJSONObject("gData");
+            JSONObject rnData = jsonObject.getJSONObject("data");
+            mCharacterId = Integer.parseInt(rnData.getString("characterId"));
+        }
+
         initToolBar();
         initData();
         initRecyclerView();

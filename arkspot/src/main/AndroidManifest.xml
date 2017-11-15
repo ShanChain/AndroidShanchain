@@ -188,6 +188,9 @@
         <activity android:name=".ui.view.activity.login.ResetPwdActivity">
         </activity>
         <activity android:name=".ui.view.activity.mine.FriendHomeActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_character_home"/>
         </activity>
         <activity
             android:name=".ui.view.activity.login.SplashActivity"
