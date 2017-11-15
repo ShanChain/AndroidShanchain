@@ -42,7 +42,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     EditText mEtReportContent;
     private boolean isCommit = false;
     private String mStoryId;
-    private int mCharacterId;
+    private String mCharacterId;
     private int mPosition;
     private String[] mReportList;
 
@@ -55,7 +55,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     protected void initViewsAndEvents() {
         Intent intent = getIntent();
         mStoryId = intent.getStringExtra("storyId");
-        mCharacterId = intent.getIntExtra("characterId", 0);
+        mCharacterId = intent.getStringExtra("characterId");
         mReportList = getResources().getStringArray(R.array.reportList);
         initToolBar();
     }
@@ -126,7 +126,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
             SCHttpUtils.post()
                     .url(HttpApi.STORY_REPORT)
                     .addParams("storyId",mStoryId.substring(1))
-                    .addParams("characterId",mCharacterId + "")
+                    .addParams("characterId",mCharacterId)
                     .addParams("reason",reason)
                     .build()
                     .execute(new StringCallback() {

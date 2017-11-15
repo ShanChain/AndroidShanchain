@@ -191,7 +191,7 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
                         int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
                         reportIntent.putExtra("storyId", storyId);
-                        reportIntent.putExtra("characterId", characterId);
+                        reportIntent.putExtra("characterId", characterId +"");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;

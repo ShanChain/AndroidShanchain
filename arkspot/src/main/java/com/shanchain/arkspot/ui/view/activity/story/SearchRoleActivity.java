@@ -170,7 +170,7 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
                 gDataBean.setToken(token);
                 gDataBean.setUserId(uId);
                 detailExt.setgData(gDataBean);
-                detailExt.setModelId(mDatas.get(position).getModelId() + "");
+                detailExt.setModelId(mSearchRoleAdapter.getData().get(position).getModelId() + "");
 
                 String json =JSONObject.toJSONString(detailExt);
                 bundle.putString(NavigatorModule.REACT_PROPS, json);
