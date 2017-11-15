@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
@@ -33,6 +34,8 @@ import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
+
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -74,6 +77,15 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         mCharacterId = getIntent().getIntExtra("characterId", 0);
+
+        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
+        if(!getIntent().hasExtra("characterId")){
+            JSONObject jsonObject = JSONObject.parseObject(rnExtra);
+            JSONObject rnGData = jsonObject.getJSONObject("gData");
+            JSONObject rnData = jsonObject.getJSONObject("data");
+            mCharacterId = Integer.parseInt(rnData.getString("characterId"));
+        }
+
         mPresenter = new FriendHomePresenterImpl(this);
         initToolBar();
         initData();
