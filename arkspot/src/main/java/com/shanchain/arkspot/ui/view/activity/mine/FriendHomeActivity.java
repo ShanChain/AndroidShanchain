@@ -1,5 +1,7 @@
 package com.shanchain.arkspot.ui.view.activity.mine;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,33 +12,37 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.FriendDetailInfo;
-import com.shanchain.arkspot.ui.model.ResponseFocusData;
-import com.shanchain.arkspot.ui.model.ResponseFocusInfo;
+import com.shanchain.arkspot.ui.model.CharacterInfo;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.presenter.FriendHomePresenter;
+import com.shanchain.arkspot.ui.presenter.impl.FriendHomePresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
+import com.shanchain.arkspot.ui.view.activity.mine.view.FriendHomeView;
+import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
+import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
+import com.shanchain.arkspot.widgets.dialog.CustomDialog;
+import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import okhttp3.Call;
 
 
-public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnClickListener {
+public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnClickListener, FriendHomeView, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
 
     @Bind(R.id.tb_friend_home)
     ArthurToolBar mTbFriendHome;
@@ -52,7 +58,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private TextView mTvDes;
     private TextView mTvConversation;
     private int mCharacterId;
-    private FriendDetailInfo mFriendDetailInfo;
+    private FriendHomePresenter mPresenter;
+    private int page = 0;
+    private int size = 10;
+    private boolean isLoadMore = false;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -62,6 +71,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         mCharacterId = getIntent().getIntExtra("characterId", 0);
+        mPresenter = new FriendHomePresenterImpl(this);
         initToolBar();
         initData();
         initRecyclerView();
@@ -69,42 +79,21 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initData() {
-        SCHttpUtils.post()
-                .url(HttpApi.CHARACTER_QUERY)
-                .addParams("characterId",mCharacterId + "")
-                .build()
-                .execute(new SCHttpCallBack<FriendDetailInfo>(FriendDetailInfo.class) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(FriendDetailInfo response, int id) {
-                        if (response != null){
-                            mFriendDetailInfo = response;
-                            fillData();
-                        }else {
-                            ToastUtils.showToast(mContext,"获取角色信息失败");
-                        }
-                    }
-                });
-    }
-
-    private void fillData() {
-        GlideUtils.load(mContext,mFriendDetailInfo.getHeadImg(),mIvHead,0);
-        mTvName.setText(mFriendDetailInfo.getName() + "(No." + mFriendDetailInfo.getModelNo() + ")");
-        mTvDes.setText(mFriendDetailInfo.getSignature());
+        mPresenter.initCharacterInfo(mCharacterId);
+        mPresenter.initStory(mCharacterId, page, size);
     }
 
     private void initRecyclerView() {
         initHeadView();
         mRvFriendHome.setLayoutManager(new LinearLayoutManager(this));
+        mRvFriendHome.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mContext, 5), getResources().getColor(R.color.colorDivider)));
         mAdapter = new CurrentAdapter(datas);
+        mAdapter.setEnableLoadMore(true);
         mAdapter.setHeaderView(mHeadView);
         mRvFriendHome.setAdapter(mAdapter);
-
-
+        mAdapter.setOnLoadMoreListener(this, mRvFriendHome);
+        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnItemChildClickListener(this);
     }
 
     private void initHeadView() {
@@ -115,14 +104,12 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         mTvDes = (TextView) mHeadView.findViewById(R.id.tv_friend_home_des);
         mBtnFocus = (Button) mHeadView.findViewById(R.id.btn_friend_home_focus);
         mTvConversation = (TextView) mHeadView.findViewById(R.id.tv_friend_home_conversation);
-
-
         mTvConversation.setOnClickListener(this);
         mBtnFocus.setOnClickListener(this);
     }
 
     private void initToolBar() {
-        mTbFriendHome.setBtnEnabled(true,false);
+        mTbFriendHome.setBtnEnabled(true, false);
         mTbFriendHome.setOnLeftClickListener(this);
     }
 
@@ -137,59 +124,232 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             case R.id.btn_friend_home_focus:
                 //关注
                 String btnTxt = mBtnFocus.getText().toString().trim();
-                if (TextUtils.equals(btnTxt,"已关注")){
-
+                if (TextUtils.equals(btnTxt, "已关注")) {
                     return;
                 }
                 focus();
                 break;
             case R.id.tv_friend_home_conversation:
                 //发起对话
-
+                mPresenter.obtainHxInfo(mCharacterId);
                 break;
         }
     }
 
     private void focus() {
-         String cacheCharacterId = SCCacheUtils.getCacheCharacterId();
-        SCHttpUtils.post()
-                .url(HttpApi.FOCUS_FOCUS)
-                .addParams("funsId",cacheCharacterId)
-                .addParams("characterId",mCharacterId+"")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("关注角色失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("关注角色成功 = " + response);
-                        if (TextUtils.isEmpty(response)){
-                            return;
-                        }
-                        ResponseFocusInfo responseFocusInfo = JSONObject.parseObject(response, ResponseFocusInfo.class);
-                        if (responseFocusInfo == null){
-                            return;
-                        }
-
-                        String code = responseFocusInfo.getCode();
-                        if (!TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
-                            return;
-                        }
-
-                        ResponseFocusData focusData = responseFocusInfo.getData();
-                        if (focusData == null){
-                            return;
-                        }
-
-                        //关注成功
-                        mBtnFocus.setText("已关注");
-                        ToastUtils.showToast(mContext,"关注成功");
-
-                    }
-                });
+        mPresenter.focus(mCharacterId);
     }
+
+    @Override
+    public void initFriendSuc(CharacterInfo friendInfo) {
+        if (mHeadView != null) {
+            GlideUtils.load(mContext, friendInfo.getHeadImg(), mIvHead, 0);
+            mTvName.setText(friendInfo.getName() + "(No." + friendInfo.getModelNo() + ")");
+            mTvDes.setText(friendInfo.getSignature());
+        }
+    }
+
+    @Override
+    public void focusSuc(boolean focusSuc) {
+        if (focusSuc) {
+            //关注成功
+            mBtnFocus.setText("已关注");
+        } else {
+            ToastUtils.showToast(mContext, "关注失败");
+        }
+    }
+
+    @Override
+    public void getStoryInfoSuc(List<StoryBeanModel> list, Boolean isLast) {
+        if (list == null) {
+            if (isLast) {
+                mAdapter.loadMoreEnd();
+            } else {
+                mAdapter.loadMoreFail();
+            }
+        } else {
+            if (isLoadMore) {
+                mAdapter.addData(list);
+            } else {
+                mAdapter.setNewData(list);
+                mAdapter.disableLoadMoreIfNotFullPage(mRvFriendHome);
+            }
+            mAdapter.notifyDataSetChanged();
+            if (isLast) {
+                mAdapter.loadMoreEnd();
+            } else {
+                mAdapter.loadMoreComplete();
+            }
+        }
+    }
+
+    @Override
+    public void getHxSuc(String hxUserName) {
+        if (TextUtils.isEmpty(hxUserName)) {
+            ToastUtils.showToast(mContext, "当前用户异常");
+        } else {
+            Intent intent = new Intent(mContext, ChatRoomActivity.class);
+            intent.putExtra("isGroup", false);
+            intent.putExtra("toChatName", hxUserName);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void supportSuccess(boolean suc, int position) {
+        if (suc) {
+            StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+            int supportCount = bean.getSupportCount();
+            bean.setBeFav(true);
+            int headerLayoutCount = mAdapter.getHeaderLayoutCount();
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_story_like);
+            Drawable drawable = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
+            tvLike.setText(supportCount + 1 + "");
+            bean.setSupportCount(supportCount + 1);
+        } else {
+
+        }
+    }
+
+    @Override
+    public void supportCancelSuccess(boolean suc, int position) {
+        if (suc) {
+            StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+            int supportCount = bean.getSupportCount();
+            bean.setBeFav(false);
+            int headerLayoutCount = mAdapter.getHeaderLayoutCount();
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_story_like);
+            Drawable drawable = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
+            tvLike.setText(supportCount - 1 + "");
+            bean.setSupportCount(supportCount - 1);
+        } else {
+
+        }
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        isLoadMore = true;
+        page++;
+        mPresenter.loadMore(mCharacterId, page, size);
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        StoryBeanModel bean = mAdapter.getData().get(position);
+        LogUtils.i("item  click = " + position + "; bean = " + bean);
+        int itemType = bean.getItemType();
+        switch (itemType) {
+            case StoryInfo.type1:
+                //类型1的条目点击事件 短故事
+                Intent intentType1 = new Intent(mContext, DynamicDetailsActivity.class);
+                StoryBeanModel beanModel = mAdapter.getData().get(position);
+                intentType1.putExtra("story", beanModel);
+                startActivity(intentType1);
+                break;
+            case StoryInfo.type2:
+                //类型2的条目点击事件    长故事
+                Intent intentType2 = new Intent(mContext, NovelDetailsActivity.class);
+                StoryBeanModel beanModel2 = mAdapter.getData().get(position);
+                intentType2.putExtra("story", beanModel2);
+                startActivity(intentType2);
+                break;
+            case StoryInfo.type3:
+                //类型3的条目点击事件    话题
+                Intent intentType3 = new Intent(mContext, TopicDetailsActivity.class);
+                intentType3.putExtra("from", 1);
+                List<StoryBeanModel> data = mAdapter.getData();
+                StoryBeanModel beanModelTopic = data.get(position);
+                intentType3.putExtra("topic", beanModelTopic);
+                startActivity(intentType3);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        LogUtils.i("点击的条目是  =  " + position);
+        switch (view.getId()) {
+            case R.id.iv_item_story_avatar:
+                break;
+            case R.id.iv_item_story_more:
+                report(position);
+                break;
+            case R.id.tv_item_story_forwarding:
+                clickForwarding(position);
+                break;
+            case R.id.tv_item_story_comment:
+                clickComment(position);
+                break;
+            case R.id.tv_item_story_like:
+                clickLike(position);
+                break;
+        }
+    }
+
+    private void clickLike(int position) {
+        StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        String storyId = bean.getDetailId();
+        boolean beFav = bean.isBeFav();
+        if (beFav) {     //已经点赞
+            mPresenter.storyCancelSupport(position, storyId.substring(1));
+        } else {     //未点赞
+            mPresenter.storySupport(position, storyId.substring(1));
+        }
+    }
+
+    private void clickComment(int position) {
+        StoryBeanModel beanModel = mAdapter.getData().get(position);
+        int itemType = beanModel.getItemType();
+        if (itemType == StoryInfo.type1) {   //普通动态
+            Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
+            intent.putExtra("story", beanModel);
+            startActivity(intent);
+        } else if (itemType == StoryInfo.type2) { //小说
+            Intent intentType2 = new Intent(mContext, NovelDetailsActivity.class);
+            intentType2.putExtra("story", beanModel);
+            startActivity(intentType2);
+        }
+
+    }
+
+    private void clickForwarding(int position) {
+        // TODO: 2017/11/14
+    }
+
+    private void report(final int position) {
+        final CustomDialog customDialog = new CustomDialog(mContext, true, 1.0, R.layout.dialog_shielding_report,
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.tv_report_dialog_report:
+                        //举报
+                        Intent reportIntent = new Intent(mContext, ReportActivity.class);
+                        String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
+                        int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
+                        reportIntent.putExtra("storyId", storyId);
+                        reportIntent.putExtra("characterId", characterId);
+                        startActivity(reportIntent);
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_report_dialog_cancel:
+                        //取消
+                        customDialog.dismiss();
+                        break;
+                }
+            }
+        });
+        customDialog.show();
+    }
+
 }

@@ -151,10 +151,17 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-        StoryBeanModel info = mAdapter.getData().get(position);
-        Intent intentComment = new Intent(mActivity, DynamicDetailsActivity.class);
-        intentComment.putExtra("story", info);
-        startActivity(intentComment);
+        StoryBeanModel beanModel = mAdapter.getData().get(position);
+        int itemType = beanModel.getItemType();
+        if (itemType == StoryInfo.type1){   //普通动态
+            Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+            intent.putExtra("story", beanModel);
+            startActivity(intent);
+        }else if (itemType == StoryInfo.type2){ //小说
+            Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
+            intentType2.putExtra("story", beanModel);
+            startActivity(intentType2);
+        }
     }
 
     /**

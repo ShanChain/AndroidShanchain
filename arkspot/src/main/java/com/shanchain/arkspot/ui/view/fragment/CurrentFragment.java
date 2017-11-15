@@ -198,6 +198,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：转发的点击事件
      */
     private void clickForwarding(int position) {
+        // TODO: 2017/11/14
         ToastUtils.showToast(mActivity, "转发");
     }
 
@@ -205,12 +206,18 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
         StoryBeanModel beanModel = mAdapter.getData().get(position);
         int itemType = beanModel.getItemType();
-        intent.putExtra("type", itemType);
-        intent.putExtra("story", beanModel);
-        startActivity(intent);
+        if (itemType == StoryInfo.type1){   //普通动态
+            Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+            intent.putExtra("story", beanModel);
+            startActivity(intent);
+        }else if (itemType == StoryInfo.type2){ //小说
+            Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
+            intentType2.putExtra("story", beanModel);
+            startActivity(intentType2);
+        }
+
     }
 
     /**
@@ -254,25 +261,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         });
         customDialog.show();
     }
-
-  /*  private void showShieldingDialog() {
-        final CustomDialog shieldingDialog = new CustomDialog(mActivity, false, 1, R.layout.dialog_shielding, new int[]{R.id.tv_shielding_dialog_cancel, R.id.tv_shielding_dialog_sure});
-        shieldingDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-            @Override
-            public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()) {
-                    case R.id.tv_shielding_dialog_cancel:
-                        shieldingDialog.dismiss();
-                        break;
-                    case R.id.tv_shielding_dialog_sure:
-                        //确定屏蔽，请求接口
-                        shieldingDialog.dismiss();
-                        break;
-                }
-            }
-        });
-        shieldingDialog.show();
-    }*/
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {

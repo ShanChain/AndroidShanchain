@@ -83,6 +83,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
         mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
         if (mBeanModel == null) {
+            LogUtils.i("finish掉了 =，=！");
             finish();
             return;
         } else {

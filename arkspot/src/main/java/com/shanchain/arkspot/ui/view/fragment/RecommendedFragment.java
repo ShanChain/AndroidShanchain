@@ -185,7 +185,7 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
     }
 
     /**
-     *  描述：喜欢
+     * 描述：喜欢
      */
     private void clickLike(int position) {
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
@@ -200,30 +200,35 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
     }
 
     /**
-     *  描述：评论
+     * 描述：评论
      */
     private void clickComment(int position) {
-        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
         StoryBeanModel beanModel = mAdapter.getData().get(position);
         int itemType = beanModel.getItemType();
-        intent.putExtra("type", itemType);
-        intent.putExtra("story", beanModel);
-        startActivity(intent);
+        if (itemType == StoryInfo.type1) {   //普通动态
+            Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+            intent.putExtra("story", beanModel);
+            startActivity(intent);
+        } else if (itemType == StoryInfo.type2) { //小说
+            Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
+            intentType2.putExtra("story", beanModel);
+            startActivity(intentType2);
+        }
     }
 
     /**
-     *  描述：转发
+     * 描述：转发
      */
     private void clickForwarding(int position) {
 
     }
 
     /**
-     *  描述：举报
+     * 描述：举报
      */
     private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{ R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -249,7 +254,7 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
     }
 
     /**
-     *  描述：头像点击
+     * 描述：头像点击
      */
     private void clickAvatar(int position) {
         Intent intent = new Intent(mActivity, FriendHomeActivity.class);

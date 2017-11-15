@@ -210,4 +210,10 @@ public interface HttpApi {
 
     /** 获取所有时空*/
     String SPACE_LIST_ALL = BASE_URL + "/v1/space/list/all";
+    
+    /**判断角色是否关注-通过id */
+    String FOCUS_IS_FAV = BASE_URL + "/v1/focus/isFav";
+    
+    /** 获取角色动态接口*/
+    String DYNAMIC_CHARACTER = BASE_URL + "/v1/dynamic/character";
 }
