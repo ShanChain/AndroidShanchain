@@ -105,7 +105,7 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
         LogUtils.d("加密后账号：" + encryptAccount);
         LogUtils.d("加密后密码：" + passwordAccount);
 
-        SCHttpUtils.post()
+        SCHttpUtils.postNoToken()
                 .url(HttpApi.RESET_PWD)
                 .addParams("Timestamp", time)
                 .addParams("encryptAccount", encryptAccount)
@@ -152,7 +152,7 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void getCheckCode(String phone) {
-        SCHttpUtils.post()
+        SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_UNLOGIN_VERIFYCODE)
                 .addParams("mobile", phone)
                 .build()

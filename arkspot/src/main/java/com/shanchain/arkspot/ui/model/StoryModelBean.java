@@ -249,4 +249,27 @@ public class StoryModelBean implements Serializable{
         return characterInfo;
     }
 
+    @Override
+    public String toString() {
+        return "StoryModelBean{" +
+                "background='" + background + '\'' +
+                ", beFav=" + beFav +
+                ", characterId=" + characterId +
+                ", characterImg='" + characterImg + '\'' +
+                ", characterName='" + characterName + '\'' +
+                ", commendCount=" + commendCount +
+                ", createTime=" + createTime +
+                ", detailId='" + detailId + '\'' +
+                ", genNum=" + genNum +
+                ", intro='" + intro + '\'' +
+                ", lineNum=" + lineNum +
+                ", rootId=" + rootId +
+                ", spaceId=" + spaceId +
+                ", status=" + status +
+                ", supportCount=" + supportCount +
+                ", title='" + title + '\'' +
+                ", transpond=" + transpond +
+                ", type=" + type +
+                '}';
+    }
 }
