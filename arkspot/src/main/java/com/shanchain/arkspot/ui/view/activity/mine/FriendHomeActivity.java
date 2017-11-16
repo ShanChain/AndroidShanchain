@@ -160,20 +160,18 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             int spaceId = friendInfo.getSpaceId();
             String cacheUserId = SCCacheUtils.getCacheUserId();
             String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
-            if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
-                mBtnFocus.setVisibility(View.VISIBLE);
-                mLlConversation.setVisibility(View.VISIBLE);
-            } else {
-                mBtnFocus.setVisibility(View.GONE);
-                mLlConversation.setVisibility(View.GONE);
-            }
 
             if (TextUtils.equals(cacheUserId, userId + "")) {
                 mBtnFocus.setVisibility(View.GONE);
                 mLlConversation.setVisibility(View.GONE);
             } else {
-                mBtnFocus.setVisibility(View.VISIBLE);
-                mLlConversation.setVisibility(View.VISIBLE);
+                if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
+                    mBtnFocus.setVisibility(View.VISIBLE);
+                    mLlConversation.setVisibility(View.VISIBLE);
+                } else {
+                    mBtnFocus.setVisibility(View.GONE);
+                    mLlConversation.setVisibility(View.GONE);
+                }
             }
 
             GlideUtils.load(mContext, friendInfo.getHeadImg(), mIvHead, 0);
