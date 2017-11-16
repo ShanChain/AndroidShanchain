@@ -73,14 +73,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
             mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
         }
 
-
-
-        /*
-        Drawable likeSelected = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
-        likeSelected.setBounds(0, 0, likeSelected.getMinimumWidth(), likeSelected.getMinimumHeight());
-        tvLike.setCompoundDrawables(likeSelected,null, null,  null);
-        tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
-        */
         mDrawable.setBounds(0,0,mDrawable.getMinimumWidth(),mDrawable.getMinimumHeight());
         tvLike.setCompoundDrawables(mDrawable,null,null,null);
         tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));

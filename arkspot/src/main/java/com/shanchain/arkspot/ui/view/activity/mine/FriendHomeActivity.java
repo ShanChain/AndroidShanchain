@@ -161,11 +161,11 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             String cacheUserId = SCCacheUtils.getCacheUserId();
             String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
             if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
-                mBtnFocus.setVisibility(View.GONE);
-                mLlConversation.setVisibility(View.GONE);
-            } else {
                 mBtnFocus.setVisibility(View.VISIBLE);
                 mLlConversation.setVisibility(View.VISIBLE);
+            } else {
+                mBtnFocus.setVisibility(View.GONE);
+                mLlConversation.setVisibility(View.GONE);
             }
 
             if (TextUtils.equals(cacheUserId, userId + "")) {

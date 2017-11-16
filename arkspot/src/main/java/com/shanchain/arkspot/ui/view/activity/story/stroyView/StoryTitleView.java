@@ -15,7 +15,7 @@ public interface StoryTitleView {
 
     void getSpaceListSuccess(List<SpaceInfo> spaceInfoList,boolean isLast);
 
-    void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList);
+    void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList,boolean isLast);
 
     void loadMoreResult();
 }

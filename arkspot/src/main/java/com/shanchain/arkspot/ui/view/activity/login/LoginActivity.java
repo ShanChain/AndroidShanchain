@@ -132,12 +132,14 @@ public class LoginActivity extends BaseActivity {
                                     closeProgress();
                                     readyGo(StoryTitleActivity.class);
                                     finish();
+                                    return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
                                     readyGo(StoryTitleActivity.class);
                                     finish();
+                                    return;
                                 } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null) {
@@ -478,6 +480,7 @@ public class LoginActivity extends BaseActivity {
                             } else {
                                 //code错误
                                 closeProgress();
+                                ToastUtils.showToast(mContext,"网络错误");
                             }
                         } catch (IllegalArgumentException e) {
                             closeProgress();

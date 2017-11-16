@@ -5,9 +5,11 @@ package com.shanchain.arkspot.ui.presenter;
  */
 
 public interface StoryTitlePresenter {
-    void initFavData();
+    void initFavData(int page,int size);
 
     void loadMoreData(int page, int size);
 
     void initSpace(int page, int size);
+
+    void loadMoreLike(int likePage, int likeSize);
 }

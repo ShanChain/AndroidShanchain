@@ -92,6 +92,7 @@
         android:digits="@string/input_type_pwd"
         android:lines="1"
         android:paddingLeft="20dp"
+        android:inputType="textPassword"
         android:paddingRight="20dp"
         android:textColor="@color/colorTextDefault"
         android:textColorHint="@color/colorLoginHint"

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_forward_dynamic"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="发送"
+        app:rightTextColor="@color/colorTextDefault"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="转发动态"
+        app:titleTextSize="16"/>
+
+    <View
+        android:layout_below="@id/tb_forward_dynamic"
+        style="@style/style_text_line_match"/>
+
+    <EditText
+        android:layout_below="@id/tb_forward_dynamic"
+        android:id="@+id/et_forward_dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="以角色的身份，今天的日记是什么内容?"
+        android:minHeight="110dp"
+        android:padding="@dimen/dimens_5dp"
+        android:textColor="@color/colorTextDefault"
+        android:textCursorDrawable="@null"
+        android:textSize="14sp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_forward_from"
+        android:layout_below="@id/et_forward_dynamic_content"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:background="@color/colorAccent">
+
+        <ImageView
+            android:id="@+id/iv_forward_from"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/photo_yue"/>
+
+        <TextView
+            android:id="@+id/tv_forward_from_at"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:layout_toRightOf="@id/iv_forward_from"
+            android:lines="1"
+            android:text="太乙真人"
+            android:textSize="@dimen/sp_14"
+            />
+
+        <TextView
+            android:id="@+id/tv_forward_from_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_forward_from_at"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/iv_forward_from"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="静安寺古代的卡回调卡死角度看卡打开卡斯巴达克科技部打瞌睡卡舍不得看不懂看卡的吧"
+            android:textSize="@dimen/sp_12"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/rl_forward_from"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:id="@+id/rv_forward_img"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="@dimen/dimens_5dp"/>
+
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorDivider"
+        android:id="@+id/ll_forward_function"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:paddingRight="200dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+
+        <ImageView
+            android:id="@+id/iv_forward_icon_img"
+            android:src="@mipmap/abs_release_btn_image_default"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv_forward_icon_at"
+            android:src="@mipmap/abs_release_btn_at_default"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv_forward_icon_topic"
+            android:src="@mipmap/abs_release_btn_yopic_default"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

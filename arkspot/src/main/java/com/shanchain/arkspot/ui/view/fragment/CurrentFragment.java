@@ -19,6 +19,7 @@ import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
@@ -198,8 +199,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：转发的点击事件
      */
     private void clickForwarding(int position) {
-        // TODO: 2017/11/14
-        ToastUtils.showToast(mActivity, "转发");
+        StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        Intent intent = new Intent(mActivity, ForwardingActivity.class);
+        intent.putExtra("forward",bean);
+        startActivity(intent);
     }
 
     /**
