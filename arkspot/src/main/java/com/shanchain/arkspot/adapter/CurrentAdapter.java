@@ -1,11 +1,14 @@
 package com.shanchain.arkspot.adapter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -17,6 +20,7 @@ import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModel;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.model.StoryModelInfo;
+import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.other.AutoHeightListView;
 import com.shanchain.data.common.utils.DensityUtils;
@@ -82,7 +86,8 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 .addOnClickListener(R.id.iv_item_story_more)
                 .addOnClickListener(R.id.tv_item_story_forwarding)
                 .addOnClickListener(R.id.tv_item_story_comment)
-                .addOnClickListener(R.id.tv_item_story_like);
+                .addOnClickListener(R.id.tv_item_story_like)
+                .addOnClickListener(R.id.tv_item_story_floors);
 
 
         switch (holder.getItemViewType()) {
@@ -92,14 +97,14 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 String intro = bean.getIntro();
                 LogUtils.d("内容信息 = " + intro);
                 if (intro.contains("content")) {
-                    ReleaseContentInfo contentInfo = gson.fromJson(intro, ReleaseContentInfo.class);
+                    ReleaseContentInfo contentInfo = JSONObject.parseObject(intro,ReleaseContentInfo.class);
                     content = contentInfo.getContent();
                     imgs = contentInfo.getImgs();
                 } else {
                     content = intro;
                 }
 
-                List<StoryModelInfo> storyChain = storyModel.getStoryChain();
+                final List<StoryModelInfo> storyChain = storyModel.getStoryChain();
                 if (storyChain != null) {
                     LogUtils.d("故事连长度 = " + storyChain.size());
                 }
@@ -110,10 +115,21 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                     holder.setVisible(R.id.lv_item_story, false);
                 } else {
                     LogUtils.d("visible==========");
+                    //String characterName1 = storyChain.get(0).getBean().getCharacterName();
+                    //.i("一楼的名字 = " + characterName1);
                     holder.setVisible(R.id.tv_item_story_floors, true);
                     holder.setVisible(R.id.lv_item_story, true);
                     StoryItemFloorsAdapter floorsAdapter = new StoryItemFloorsAdapter(storyChain);
                     lv.setAdapter(floorsAdapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
+                            StoryModelBean storyModelBean = storyChain.get(position).getBean();
+                            intent.putExtra("story",storyModelBean);
+                            mContext.startActivity(intent);
+                        }
+                    });
                 }
 
                 holder.setVisible(R.id.tv_item_story_forwarding, true);

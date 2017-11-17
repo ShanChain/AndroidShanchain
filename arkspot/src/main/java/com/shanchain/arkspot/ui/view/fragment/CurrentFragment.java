@@ -15,6 +15,7 @@ import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.ui.presenter.CurrentPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.CurrentPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
@@ -22,12 +23,12 @@ import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
+import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private CurrentAdapter mAdapter;
     private int page = 0;
     private int size = 10;
-    private boolean isLoadMore;
+    private boolean isLoadMore = false;
 
     @Override
     public View initView() {
@@ -127,7 +128,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     @Override
     public void supportSuccess(boolean isSuccess, int position) {
-        ToastUtils.showToast(mActivity, isSuccess ? "点赞成功" : "点赞失败");
         if (isSuccess) {
             StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
             int supportCount = bean.getSupportCount();
@@ -146,7 +146,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     @Override
     public void supportCancelSuccess(boolean isSuccess, int position) {
-        ToastUtils.showToast(mActivity, isSuccess ? "取消点赞成功" : "取消点赞失败");
         if (isSuccess) {
             StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
             int supportCount = bean.getSupportCount();
@@ -182,7 +181,20 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             case R.id.tv_item_story_like:
                 clickLike(position);
                 break;
+            case R.id.tv_item_story_floors:
+                expendFloors(position);
+                break;
         }
+    }
+
+    /**
+     *  描述： 展开楼层
+     */
+    private void expendFloors(int position) {
+        StoryModelInfo modelInfo = mAdapter.getData().get(position).getStoryModel().getModelInfo();
+        Intent intent = new Intent(mActivity, StoryChainActivity.class);
+        intent.putExtra("storyInfo",modelInfo);
+        startActivity(intent);
     }
 
     /**
@@ -210,14 +222,16 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickComment(int position) {
         StoryBeanModel beanModel = mAdapter.getData().get(position);
+        StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
         int itemType = beanModel.getItemType();
         if (itemType == StoryInfo.type1){   //普通动态
             Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
-            intent.putExtra("story", beanModel);
+
+            intent.putExtra("story", bean);
             startActivity(intent);
         }else if (itemType == StoryInfo.type2){ //小说
             Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
-            intentType2.putExtra("story", beanModel);
+            intentType2.putExtra("story", bean);
             startActivity(intentType2);
         }
 
@@ -273,15 +287,16 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 //类型1的条目点击事件 短故事
                 Intent intentType1 = new Intent(mActivity, DynamicDetailsActivity.class);
                 StoryBeanModel beanModel = mAdapter.getData().get(position);
-                intentType1.putExtra("type", beanModel.getItemType());
-                intentType1.putExtra("story", beanModel);
+                StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
+                intentType1.putExtra("story", bean);
                 startActivity(intentType1);
                 break;
             case StoryInfo.type2:
                 //类型2的条目点击事件    长故事
                 Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
                 StoryBeanModel beanModel2 = mAdapter.getData().get(position);
-                intentType2.putExtra("story", beanModel2);
+                StoryModelBean bean2 = beanModel2.getStoryModel().getModelInfo().getBean();
+                intentType2.putExtra("story", bean2);
                 startActivity(intentType2);
                 break;
             case StoryInfo.type3:

@@ -11,6 +11,15 @@ public class StoryModel implements Serializable{
 
     private StoryModelInfo modelInfo;
     private List<StoryModelInfo> storyChain;
+    private int chainCount;
+
+    public int getChainCount() {
+        return chainCount;
+    }
+
+    public void setChainCount(int chainCount) {
+        this.chainCount = chainCount;
+    }
 
     public StoryModelInfo getModelInfo() {
         return modelInfo;

@@ -64,6 +64,7 @@
             android:layout_toRightOf="@id/iv_forward_from"
             android:lines="1"
             android:text="太乙真人"
+            android:textColor="@color/colorTextDefault"
             android:textSize="@dimen/sp_14"
             />
 
@@ -78,6 +79,7 @@
             android:layout_toRightOf="@id/iv_forward_from"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="#999"
             android:text="静安寺古代的卡回调卡死角度看卡打开卡斯巴达克科技部打瞌睡卡舍不得看不懂看卡的吧"
             android:textSize="@dimen/sp_12"/>
 

@@ -161,7 +161,27 @@ public class RecommendPresenterImpl implements RecommendPresenter {
                     LogUtils.i("外层添加数据 i = " + i);
                     modelInfo.setBean(bean);
                 }
-            }}
+            }
+
+            List<StoryModelInfo> storyChain = storyModel.getStoryChain();
+            if (storyChain!=null && storyChain.size()>0){
+                LogUtils.i("构建数据时获取的楼层数 = " + storyChain.size());
+                for (int j = 0 ; j < storyChain.size();j ++){
+                    StoryModelInfo storyModelInfo = storyChain.get(j);
+                    String storyId1 = storyModelInfo.getStoryId();
+                    LogUtils.i("楼层中的故事id = " + storyId1);
+                    for (StoryModelBean bean : data){
+                        String detailId = bean.getDetailId();
+                        LogUtils.i("所有故事表中的id = " + detailId);
+                        if (TextUtils.equals(storyId1,detailId)){
+                            LogUtils.i("内层添加数据 j = " + j);
+                            storyModelInfo.setBean(bean);
+                        }
+                    }
+                }
+            }
+
+        }
 
         for (int i = 0; i < datas.size(); i++) {
             StoryBeanModel beanModel = new StoryBeanModel();

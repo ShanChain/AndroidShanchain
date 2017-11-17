@@ -3,12 +3,14 @@ package com.shanchain.arkspot.ui.presenter.impl;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.arkspot.ui.model.BdCommentBean;
 import com.shanchain.arkspot.ui.model.CommentBean;
 import com.shanchain.arkspot.ui.model.CommentData;
 import com.shanchain.arkspot.ui.model.ContactBean;
 import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
 import com.shanchain.arkspot.ui.model.ResponseContactInfo;
+import com.shanchain.arkspot.ui.model.StoryDetailInfo;
 import com.shanchain.arkspot.ui.presenter.DynamicDetailsPresenter;
 import com.shanchain.arkspot.ui.view.activity.story.stroyView.DynamicDetailView;
 import com.shanchain.data.common.net.HttpApi;
@@ -169,6 +171,8 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 });
     }
 
+
+
     private void obtainCharacterInfos(final List<BdCommentBean> commentBeanList, List<Integer> characterIds, final boolean isLast) {
 
         String jArr = JSON.toJSONString(characterIds);
@@ -215,7 +219,47 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
 
     }
 
+    @Override
+    public void initNovelInfo(String storyId) {
+        SCHttpUtils.post()
+                .url(HttpApi.STORY_GET_BY_ID)
+                .addParams("storyId",storyId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取故事失败");
+                        e.printStackTrace();
+                        mView.initNovelSuc(null);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取到故事内容 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                String data = JSONObject.parseObject(response).getString("data");
+                                StoryDetailInfo storyDetailInfo = JSONObject.parseObject(data, StoryDetailInfo.class);
+                                if (storyDetailInfo == null){
+                                    mView.initNovelSuc(storyDetailInfo);
+                                }else {
+                                    mView.initNovelSuc(null);
+                                }
+                            }else {
+                                mView.initNovelSuc(null);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.initNovelSuc(null);
+                        }
+                    }
+                });
+    }
+
     private void error(boolean isLast) {
         mView.commentSuccess(null, isLast);
     }
+
+
 }

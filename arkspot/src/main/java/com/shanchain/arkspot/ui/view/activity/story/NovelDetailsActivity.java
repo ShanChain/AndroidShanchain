@@ -21,36 +21,25 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
-import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicCommentAdapter;
-import com.shanchain.arkspot.adapter.StoryItemNineAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
 import com.shanchain.arkspot.ui.model.BdCommentBean;
 import com.shanchain.arkspot.ui.model.CharacterInfo;
-import com.shanchain.arkspot.ui.model.CommentBean;
-import com.shanchain.arkspot.ui.model.CommentData;
-import com.shanchain.arkspot.ui.model.ContactBean;
 import com.shanchain.arkspot.ui.model.NovelModel;
-import com.shanchain.arkspot.ui.model.ReleaseContentInfo;
-import com.shanchain.arkspot.ui.model.ResponseCommentInfo;
-import com.shanchain.arkspot.ui.model.ResponseContactInfo;
-import com.shanchain.arkspot.ui.model.StoryBeanModel;
+import com.shanchain.arkspot.ui.model.StoryDetailInfo;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.presenter.impl.DynamicDetailsPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
+import com.shanchain.arkspot.ui.view.activity.story.stroyView.DynamicDetailView;
 import com.shanchain.arkspot.utils.DateUtils;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,9 +47,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import okhttp3.Call;
 
-public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener {
+public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, DynamicDetailView, BaseQuickAdapter.RequestLoadMoreListener {
 
     @Bind(R.id.tb_dynamic_comment)
     ArthurToolBar mTbAddRole;
@@ -78,7 +66,11 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private NovelModel mNovelModel;
     private CharacterInfo mCharacterInfo;
     private boolean isBeFav = false;
-
+    private DynamicDetailsPresenterImpl mPresenter;
+    private int page = 0;
+    private int size = 10;
+    private boolean isLoadMore = false;
+    private TextView mTvHeadLike;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -88,9 +80,9 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     @Override
     protected void initViewsAndEvents() {
 
-        StoryBeanModel beanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
+        StoryModelBean bean = (StoryModelBean) getIntent().getSerializableExtra("story");
         String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
-        if (beanModel == null) {
+        if (bean == null) {
             if (!TextUtils.isEmpty(rnExtra)) {
                 JSONObject jsonObject = JSONObject.parseObject(rnExtra);
                 JSONObject rnGData = jsonObject.getJSONObject("gData");
@@ -105,11 +97,10 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
 
         } else {
-            StoryModelBean storyBean = beanModel.getStoryModel().getModelInfo().getBean();
-            mStoryId = beanModel.getStoryModel().getModelInfo().getBean().getDetailId().substring(1);
-            mCharacterId = storyBean.getCharacterId() + "";
-            mNovelModel = storyBean.getNovelMovel();
-            mCharacterInfo = storyBean.getCharacterInfo();
+            mStoryId = bean.getDetailId().substring(1);
+            mCharacterId = bean.getCharacterId() + "";
+            mNovelModel = bean.getNovelMovel();
+            mCharacterInfo = bean.getCharacterInfo();
         }
 
         initToolBar();
@@ -118,91 +109,9 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
-        datas.clear();
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.COMMENT_QUERY)
-                .addParams("storyId", mStoryId)
-                .addParams("page", "0")
-                .addParams("size", "100")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取评论列表失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("获取评论列表成功 = " + response);
-                        if (TextUtils.isEmpty(response)) {
-
-                            return;
-                        }
-                        ResponseCommentInfo responseCommentInfo = new Gson().fromJson(response, ResponseCommentInfo.class);
-                        if (!TextUtils.equals(responseCommentInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            return;
-                        }
-                        CommentData data = responseCommentInfo.getData();
-                        List<CommentBean> commentBeanList = data.getContent();
-                        List<Integer> characterIds = new ArrayList<>();
-                        LogUtils.i("评论数量 = " + commentBeanList.size());
-                        List<BdCommentBean> bdCommentBeanList = new ArrayList<>();
-                        for (int i = 0; i < commentBeanList.size(); i++) {
-                            BdCommentBean bdCommentBean = new BdCommentBean();
-                            CommentBean commentBean = commentBeanList.get(i);
-                            int characterId = commentBean.getCharacterId();
-                            characterIds.add(characterId);
-                            bdCommentBean.setCharacterId(characterId);
-                            bdCommentBean.setCommentBean(commentBean);
-                            bdCommentBeanList.add(bdCommentBean);
-                        }
-                        obtainCharacterInfos(bdCommentBeanList, characterIds);
-                    }
-                });
-    }
-
-    private void obtainCharacterInfos(final List<BdCommentBean> commentBeanList, List<Integer> characterIds) {
-
-        String jArr = JSON.toJSONString(characterIds);
-        SCHttpUtils.post()
-                .url(HttpApi.CHARACTER_BRIEF)
-                .addParams("dataArray", jArr)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取角色信息失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("获取角色信息 = " + response);
-                        try {
-                            ResponseContactInfo responseContactInfo = JSONObject.parseObject(response, ResponseContactInfo.class);
-                            String code = responseContactInfo.getCode();
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                List<ContactBean> data = responseContactInfo.getData();
-                                for (int i = 0; i < commentBeanList.size(); i++) {
-                                    BdCommentBean bdCommentBean = commentBeanList.get(i);
-
-                                    for (ContactBean contactBean : data) {
-                                        if (bdCommentBean.getCharacterId() == contactBean.getCharacterId()) {
-                                            bdCommentBean.setContactBean(contactBean);
-                                        }
-                                    }
-                                }
-                                datas.addAll(commentBeanList);
-                                mDynamicCommentAdapter.notifyDataSetChanged();
-                            }
-                        } catch (Exception e) {
-                            LogUtils.i("获取角色信息失败");
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
+        mPresenter = new DynamicDetailsPresenterImpl(this);
+        mPresenter.initNovelInfo(mStoryId);
+        mPresenter.initData(page,size,mStoryId);
     }
 
     private void initRecyclerView() {
@@ -210,7 +119,9 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         mRvDynamicComment.setLayoutManager(new LinearLayoutManager(this));
         mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas);
         mRvDynamicComment.addItemDecoration(new RecyclerViewDivider(this));
+        mDynamicCommentAdapter.setEnableLoadMore(true);
         mRvDynamicComment.setAdapter(mDynamicCommentAdapter);
+        mDynamicCommentAdapter.setOnLoadMoreListener(this,mRvDynamicComment);
         mDynamicCommentAdapter.setHeaderView(mHeadView);
         mDynamicCommentAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
@@ -225,17 +136,18 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initHeadView() {
-        mHeadView = View.inflate(this, R.layout.head_dynamic_comment, null);
+
+        mHeadView = View.inflate(this, R.layout.head_novel_comment, null);
         ImageView ivAvatar = (ImageView) mHeadView.findViewById(R.id.iv_item_story_avatar);
         ImageView ivMore = (ImageView) mHeadView.findViewById(R.id.iv_item_story_more);
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
 
-        NineGridImageView nineGridImageView = (NineGridImageView) mHeadView.findViewById(R.id.ngiv_item_story);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
-        TextView tvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
+        mTvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
+        tvForwarding.setVisibility(View.GONE);
         String characterImg = "";
         String characterName = "";
         if (mCharacterInfo != null) {
@@ -246,8 +158,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         GlideUtils.load(mContext, characterImg, ivAvatar, 0);
         tvName.setText(characterName);
         tvTime.setText(DateUtils.formatFriendly(new Date(mNovelModel.getCreateTime())));
-        tvForwarding.setText(mNovelModel.getTranspond() + "");
-        tvHeadLike.setText(mNovelModel.getSupportCount() + "");
+        mTvHeadLike.setText(mNovelModel.getSupportCount() + "");
         tvHeadComment.setText(mNovelModel.getCommendCount() + "");
 
         Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
@@ -256,34 +167,18 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
         like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
 
-        tvHeadLike.setCompoundDrawables(isBeFav ? like_selected : like_def, null, null, null);
-        tvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
+        mTvHeadLike.setCompoundDrawables(isBeFav ? like_selected : like_def, null, null, null);
+        mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
         String intro = mNovelModel.getIntro();
-        String content = "";
-        List<String> imgList = new ArrayList<>();
-        if (intro.contains("content")) {
-            ReleaseContentInfo contentInfo = new Gson().fromJson(intro, ReleaseContentInfo.class);
-            content = contentInfo.getContent();
-            imgList = contentInfo.getImgs();
-        } else {
-            content = intro;
-        }
 
-        tvContent.setText(content);
-        if (imgList.size() == 0) {
-            nineGridImageView.setVisibility(View.GONE);
-        } else {
-            nineGridImageView.setVisibility(View.VISIBLE);
-            StoryItemNineAdapter adapter = new StoryItemNineAdapter();
-            nineGridImageView.setAdapter(adapter);
-            nineGridImageView.setImagesData(imgList);
-        }
+        tvContent.setText(intro);
+
 
         ivAvatar.setOnClickListener(this);
         tvForwarding.setOnClickListener(this);
         tvHeadComment.setOnClickListener(this);
-        tvHeadLike.setOnClickListener(this);
+        mTvHeadLike.setOnClickListener(this);
         ivMore.setVisibility(View.GONE);
 
     }
@@ -315,16 +210,24 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 intentAvatar.putExtra("characterId", characterId);
                 startActivity(intentAvatar);
                 break;
-            case R.id.tv_item_story_forwarding:
-
-                break;
             case R.id.tv_item_story_comment:
                 showPop();
                 popupInputMethodWindow();
                 break;
             case R.id.tv_item_story_like:
-                ToastUtils.showToast(this, "喜欢");
+                clickLike();
                 break;
+        }
+    }
+
+    private void clickLike() {
+        boolean fav = true;
+        if (fav){
+            //已经点赞
+            mPresenter.supportCancel(mStoryId);
+        }else {
+            //未点赞
+            mPresenter.support(mStoryId);
         }
     }
 
@@ -341,14 +244,12 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
 
         final PopupWindow pop = new PopupWindow(contentView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
-
         mTvPopCommentOutside.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pop.dismiss();
             }
         });
-
         mTvPopCommentSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -357,9 +258,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                     ToastUtils.showToast(NovelDetailsActivity.this, "不能提交空评论哦~");
                     return;
                 }
-
                 addComment(comment);
-
                 pop.dismiss();
             }
         });
@@ -371,32 +270,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void addComment(String comment) {
-
-        String dataString = "{\"content\": \"" + comment + "\",\"isAnon\":0}";
-
-        SCHttpUtils.postWithChaId()
-                .url(HttpApi.STORY_COMMENT_ADD)
-                .addParams("dataString", dataString)
-                .addParams("storyId", mNovelModel.getStoryId() + "")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("添加评论失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.i("添加评论成功 = " + response);
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            initData();
-                        } else {
-                            ToastUtils.showToast(mContext, "评论失败~");
-                        }
-                    }
-                });
+        mPresenter.addComment(comment,mStoryId);
     }
 
     private void popupInputMethodWindow() {
@@ -409,4 +283,63 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         }, 0);
     }
 
+    @Override
+    public void commentSuccess(List<BdCommentBean> list, boolean isLast) {
+        if (list == null){
+            if (isLast){
+                mDynamicCommentAdapter.loadMoreEnd();
+            }else {
+                mDynamicCommentAdapter.loadMoreFail();
+            }
+        }else {
+            if (isLoadMore){
+                if (isLast){
+                    mDynamicCommentAdapter.loadMoreEnd();
+                }else {
+                    mDynamicCommentAdapter.loadMoreComplete();
+                }
+                mDynamicCommentAdapter.addData(list);
+            }else {
+                mDynamicCommentAdapter.setNewData(list);
+                mDynamicCommentAdapter.disableLoadMoreIfNotFullPage(mRvDynamicComment);
+            }
+            mDynamicCommentAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void addSuccess(boolean success) {
+        if (success){
+            //添加评论成功
+            page = 0;
+            isLoadMore = false;
+            mPresenter.initData(page,size,mStoryId);
+        }else {
+            //添加评论失败
+
+        }
+    }
+
+    @Override
+    public void supportSuc(boolean suc) {
+
+    }
+
+    @Override
+    public void supportCancelSuc(boolean suc) {
+
+    }
+
+    @Override
+    public void initNovelSuc(StoryDetailInfo storyDetailInfo) {
+
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        LogUtils.i("load more ......");
+        page ++;
+        isLoadMore = true;
+        mPresenter.initData(page,size,mStoryId);
+    }
 }

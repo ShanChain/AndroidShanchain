@@ -7,8 +7,7 @@
         android:id="@+id/iv_head_topic_img"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/photo_public"/>
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tv_head_topic_topic"
@@ -16,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginTop="@dimen/dimens_10dp"
-        android:text="#送给三次元的慰问#"
         android:textColor="@color/colorWhite"
         android:textSize="12sp"/>
 
@@ -27,22 +25,21 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/dimens_15dp"
         android:layout_marginTop="@dimen/dimens_10dp"
-        android:text="888讨论    3.5万阅读"
         android:textColor="@color/colorWhite"
         android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/tv_head_topic_des"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimens_10dp"
         android:layout_alignParentBottom="true"
         android:background="#6000"
         android:ellipsize="end"
         android:maxLines="3"
         android:paddingLeft="@dimen/dimens_15dp"
         android:paddingRight="@dimen/dimens_15dp"
-        android:paddingTop="8dp"
-        android:text="梵蒂冈 是呃呃就哦片奖闓，和卡号饥饿号尬的额卡咯啊的邪恶啊 是委是去的快好的男生不会啊叫你开始卡夹马克吗，计算机卡是啊 使劲儿开始看拉开....."
+        android:paddingTop="@dimen/dimens_10dp"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_12"/>
 

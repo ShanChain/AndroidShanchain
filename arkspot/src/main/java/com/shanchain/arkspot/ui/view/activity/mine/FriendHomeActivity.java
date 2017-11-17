@@ -292,14 +292,16 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                 //类型1的条目点击事件 短故事
                 Intent intentType1 = new Intent(mContext, DynamicDetailsActivity.class);
                 StoryBeanModel beanModel = mAdapter.getData().get(position);
-                intentType1.putExtra("story", beanModel);
+                StoryModelBean bean1 = beanModel.getStoryModel().getModelInfo().getBean();
+                intentType1.putExtra("story", bean1);
                 startActivity(intentType1);
                 break;
             case StoryInfo.type2:
                 //类型2的条目点击事件    长故事
                 Intent intentType2 = new Intent(mContext, NovelDetailsActivity.class);
                 StoryBeanModel beanModel2 = mAdapter.getData().get(position);
-                intentType2.putExtra("story", beanModel2);
+                StoryModelBean bean2 = beanModel2.getStoryModel().getModelInfo().getBean();
+                intentType2.putExtra("story", bean2);
                 startActivity(intentType2);
                 break;
             case StoryInfo.type3:
@@ -350,14 +352,15 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
 
     private void clickComment(int position) {
         StoryBeanModel beanModel = mAdapter.getData().get(position);
+        StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
         int itemType = beanModel.getItemType();
         if (itemType == StoryInfo.type1) {   //普通动态
             Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
-            intent.putExtra("story", beanModel);
+            intent.putExtra("story", bean);
             startActivity(intent);
         } else if (itemType == StoryInfo.type2) { //小说
             Intent intentType2 = new Intent(mContext, NovelDetailsActivity.class);
-            intentType2.putExtra("story", beanModel);
+            intentType2.putExtra("story", bean);
             startActivity(intentType2);
         }
 

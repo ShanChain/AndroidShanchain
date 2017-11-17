@@ -6,5 +6,11 @@ package com.shanchain.arkspot.ui.presenter;
 
 public interface TopicDetailPresenter {
     void initTopicInfo(String topicId);
-    void initStoryInfo();
+    void initStoryInfo(String topicId , int page , int size);
+
+    void loadMore(String topicId, int page, int size);
+
+    void storyCancelSupport(int position, String storyId);
+
+    void storySupport(int position, String storyId);
 }

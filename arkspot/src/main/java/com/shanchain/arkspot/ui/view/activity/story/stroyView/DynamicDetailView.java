@@ -1,6 +1,7 @@
 package com.shanchain.arkspot.ui.view.activity.story.stroyView;
 
 import com.shanchain.arkspot.ui.model.BdCommentBean;
+import com.shanchain.arkspot.ui.model.StoryDetailInfo;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface DynamicDetailView {
     void supportSuc(boolean suc);
 
     void supportCancelSuc(boolean suc);
+
+    void initNovelSuc(StoryDetailInfo storyDetailInfo);
 }

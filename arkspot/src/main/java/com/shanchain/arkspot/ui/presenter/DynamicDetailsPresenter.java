@@ -14,4 +14,6 @@ public interface DynamicDetailsPresenter {
     void support(String storyId);
 
     void supportCancel(String storyId);
+
+    void initNovelInfo(String storyId);
 }
