@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_story_title"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"

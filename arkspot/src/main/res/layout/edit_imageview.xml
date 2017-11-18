@@ -8,7 +8,7 @@
         android:layout_marginRight="50dp"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-        <com.shanchain.arkspot.widgets.richEditor.DataImageView
+        <com.shanchain.shandata.widgets.richEditor.DataImageView
             android:layout_centerHorizontal="true"
             android:id="@+id/edit_imageView"
             android:layout_width="match_parent"

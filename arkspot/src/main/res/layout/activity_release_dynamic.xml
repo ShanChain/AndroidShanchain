@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_release_dynamic"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
@@ -51,7 +51,7 @@
         android:padding="@dimen/dimens_5dp"
         android:textSize="14sp"/>
 
-    <com.shanchain.arkspot.widgets.richEditor.RichTextEditor
+    <com.shanchain.shandata.widgets.richEditor.RichTextEditor
         android:id="@+id/et_release_dynamic_long"
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
 
-        <com.shanchain.arkspot.widgets.switchview.SwitchView
+        <com.shanchain.shandata.widgets.switchview.SwitchView
             android:id="@+id/shs_release_dynamic"
             android:layout_width="51dp"
             android:layout_height="36dp"

@@ -140,8 +140,9 @@ import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
+        import com.umeng.message.PushAgent;
 
-import org.greenrobot.eventbus.EventBus;
+        import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.annotation.Nullable;
@@ -188,6 +189,11 @@ public    class SCReactActivity extends Activity
         Bundle bundle = getIntent().getBundleExtra(NavigatorModule.REACT_INITIAL_PROPS);
         mDelegate = createReactActivityDelegate(screenName,bundle);
         mDelegate.onCreate(savedInstanceState);
+        initPushAgent();
+    }
+
+    private void initPushAgent(){
+        PushAgent.getInstance(this).onAppStart();
     }
 
     @Override

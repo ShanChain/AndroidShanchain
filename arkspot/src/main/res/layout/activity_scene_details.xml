@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_scene_details"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
@@ -18,7 +18,7 @@
 
     <View style="@style/style_text_line_match"/>
 
-    <com.shanchain.arkspot.widgets.other.MarqueeText
+    <com.shanchain.shandata.widgets.other.MarqueeText
         android:id="@+id/tv_scene_details_announcement"
         android:layout_width="match_parent"
         android:layout_height="36dp"
@@ -181,7 +181,7 @@
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
 
-        <com.shanchain.arkspot.widgets.switchview.SwitchView
+        <com.shanchain.shandata.widgets.switchview.SwitchView
             android:id="@+id/sv_scene_details_msg"
             android:layout_width="51dp"
             android:layout_height="35dp"
@@ -207,7 +207,7 @@
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
 
-        <com.shanchain.arkspot.widgets.switchview.SwitchView
+        <com.shanchain.shandata.widgets.switchview.SwitchView
             android:id="@+id/sv_scene_details_top"
             android:layout_width="51dp"
             android:layout_height="35dp"
@@ -235,7 +235,7 @@
             android:textSize="14sp"/>
 
 
-        <com.shanchain.arkspot.widgets.switchview.SwitchView
+        <com.shanchain.shandata.widgets.switchview.SwitchView
             android:id="@+id/sv_scene_details_validation"
             android:layout_width="51dp"
             android:layout_height="35dp"

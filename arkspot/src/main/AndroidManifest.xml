@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.shanchain.arkspot">
+          package="com.shanchain.shandata">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -27,6 +27,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- 友盟消息推送 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59828961cae7e754170008ab">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="dfb65b759f7998b0b69b644d17303224">
+        </meta-data>
+        <!-- 友盟消息处理服务 -->
+        <!--<service android:name=".service.MyPushIntentService" />-->
 
         <!-- 设置环信应用的AppKey -->
         <meta-data

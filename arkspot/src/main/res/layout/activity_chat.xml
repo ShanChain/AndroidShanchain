@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_chat"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
@@ -49,7 +49,7 @@
                     android:textColor="@color/colorTextDefault"
                     android:textSize="12sp"/>
 
-                <com.shanchain.arkspot.widgets.switchview.SwitchView
+                <com.shanchain.shandata.widgets.switchview.SwitchView
                     android:id="@+id/shs_chat"
                     android:layout_width="51dp"
                     android:layout_height="34dp"

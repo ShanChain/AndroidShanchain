@@ -100,8 +100,8 @@
     public void *(android.webkit.webView, jav.lang.String);
 }
 
--keep class com.shanchain.arkspot.ui.model.** { *; }
--dontwarn com.shanchain.arkspot.ui.model.**
+-keep class com.shanchain.shandata.ui.model.** { *; }
+-dontwarn com.shanchain.shandata.ui.model.**
 
 -keep class com.shanchain.data.common.rn.**{ *; }
 -keep class java.nio.file.**{ *; }
@@ -348,3 +348,38 @@
 # manifest: provider for updates
 -keep public class com.huawei.hms.update.provider.UpdateProvider { public *; protected *; }
 -keep class com.shanchain.data.common.utils.SCUploadImgHelper {*;}
+#umeng push need
+-dontwarn com.taobao.**
+-dontwarn anet.channel.**
+-dontwarn anetwork.channel.**
+-dontwarn org.android.**
+-dontwarn org.apache.thrift.**
+-dontwarn com.xiaomi.**
+-dontwarn com.huawei.**
+
+-keepattributes *Annotation*
+
+-keep class com.taobao.** {*;}
+-keep class org.android.** {*;}
+-keep class anet.channel.** {*;}
+-keep class com.umeng.** {*;}
+-keep class com.xiaomi.** {*;}
+-keep class com.huawei.** {*;}
+-keep class org.apache.thrift.** {*;}
+
+-keep class com.alibaba.sdk.android.**{*;}
+-keep class com.ut.**{*;}
+-keep class com.ta.**{*;}
+
+-keep public class **.R$*{
+   public static final int *;
+}
+
+#（可选）避免Log打印输出
+-assumenosideeffects class android.util.Log {
+   public static *** v(...);
+   public static *** d(...);
+   public static *** i(...);
+   public static *** w(...);
+ }
+ #umeng push need
