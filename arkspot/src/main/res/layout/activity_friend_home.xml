@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_friend_home"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"

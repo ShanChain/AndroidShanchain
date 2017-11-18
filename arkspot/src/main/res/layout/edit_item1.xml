@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.shanchain.arkspot.widgets.richEditor.DeletableEditText xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shanchain.shandata.widgets.richEditor.DeletableEditText xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
@@ -8,4 +8,4 @@
     android:textColor="@color/colorTextDefault"
     android:textCursorDrawable="@null" >
 
-</com.shanchain.arkspot.widgets.richEditor.DeletableEditText>
+</com.shanchain.shandata.widgets.richEditor.DeletableEditText>

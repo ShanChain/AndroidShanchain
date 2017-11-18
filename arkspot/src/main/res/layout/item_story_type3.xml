@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <com.shanchain.arkspot.widgets.other.AutoHeightListView
+    <com.shanchain.shandata.widgets.other.AutoHeightListView
         android:id="@+id/lv_item_story"
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginRight="@dimen/dimens_15dp"

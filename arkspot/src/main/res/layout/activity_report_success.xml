@@ -6,7 +6,7 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_report_success"
         style="@style/style_toolbar"
         app:rightText="确定"

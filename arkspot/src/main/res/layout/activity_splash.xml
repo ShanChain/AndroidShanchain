@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <com.shanchain.arkspot.widgets.other.RevealTextView
+    <com.shanchain.shandata.widgets.other.RevealTextView
         android:text="用想象力创造世界"
         android:textColor="@color/colorTextDefault"
         android:textSize="20sp"

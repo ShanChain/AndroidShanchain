@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.shanchain.arkspot.widgets.toolBar.ArthurToolBar
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_contact"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
