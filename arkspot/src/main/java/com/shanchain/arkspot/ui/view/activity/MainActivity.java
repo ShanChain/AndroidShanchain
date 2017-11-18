@@ -11,16 +11,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSON;
-
+import com.alibaba.fastjson.JSONObject;
+import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.data.common.base.Constants;
 import com.shanchain.arkspot.rn.fragment.RNMineFragment;
 import com.shanchain.arkspot.rn.fragment.RNSquareFragment;
 import com.shanchain.arkspot.rn.fragment.RNfragment;
@@ -36,6 +35,7 @@ import com.shanchain.arkspot.ui.view.fragment.NewsFragment;
 import com.shanchain.arkspot.ui.view.fragment.StoryFragment;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -96,14 +96,30 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void initBottomNavigationBar() {
+        BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
+        BadgeItem storyBadge = new BadgeItem();
+        storyBadge.setText("").show();
+        btmItemStory.setBadgeItem(storyBadge);
+        BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
+        BadgeItem newsBadge = new BadgeItem();
+        newsBadge.setText("").show();
+        btmItemNews.setBadgeItem(newsBadge);
+        BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
+        BadgeItem squareBadge = new BadgeItem();
+        squareBadge.setText("").show();
+        btmItemSquare.setBadgeItem(squareBadge);
+        BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
+        BadgeItem mineBadge = new BadgeItem();
+        mineBadge.setText("").show();
+        btmItemMine.setBadgeItem(mineBadge);
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
                 .setInActiveColor(R.color.colorInactive)
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]))
-                .addItem(new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]))
+                .addItem(btmItemStory)
+                .addItem(btmItemNews)
+                .addItem(btmItemSquare)
+                .addItem(btmItemMine)
                 .setFirstSelectedPosition(0)
                 .initialise();
         mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -445,4 +461,10 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     public void invokeDefaultOnBackPressed() {
         super.onBackPressed();
     }
+
+
+
+
+
+
 }

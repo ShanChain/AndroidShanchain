@@ -16,12 +16,13 @@ import android.view.MenuItem;
 
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.manager.ActivityManager;
-import com.shanchain.data.common.base.ActivityStackManager;
-import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SystemUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
@@ -73,9 +74,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 调用父类onCreate
         super.onCreate(savedInstanceState);
         // 注册EventBus
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityStackManager.getInstance().addActivity(this);
@@ -202,7 +203,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
-        //  EventBus.getDefault().unregister(this);
+          EventBus.getDefault().unregister(this);
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
     }

@@ -234,7 +234,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 startActivity(intentAvatar);
                 break;
             case R.id.tv_item_story_forwarding:
-
+                Intent intent = new Intent(mActivity, ForwardingActivity.class);
+                intent.putExtra("forward",mBean);
+                startActivity(intent);
                 break;
             case R.id.tv_item_story_comment:
                 showPop();

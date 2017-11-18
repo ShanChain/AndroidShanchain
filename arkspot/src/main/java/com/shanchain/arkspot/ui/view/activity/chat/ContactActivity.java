@@ -103,12 +103,12 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         parentList.add("我的关注");
         parentList.add("互相关注");
         parentList.add("我的粉丝");
-        parentList.add("对话场景");
+        parentList.add("群组");
         ArrayList<BdContactInfo> bdContactInfos = new ArrayList<>();
         map.put("我的关注", bdContactInfos);
         map.put("互相关注", bdContactInfos);
         map.put("我的粉丝", bdContactInfos);
-        map.put("对话场景", bdContactInfos);
+        map.put("群组", bdContactInfos);
         mPresenter.initContact();
 
     }
@@ -151,7 +151,7 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
         if (group == null) {
             return;
         }
-        map.put("对话场景", group);
+        map.put("群组", group);
         mContactAdapter.notifyDataSetChanged();
     }
 }

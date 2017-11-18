@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.StoryChainAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
-import com.shanchain.arkspot.ui.model.StoryInfo;
+import com.shanchain.arkspot.ui.model.StoryModelBean;
 import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.ui.presenter.StoryChainPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.StoryChainPresenterImpl;
@@ -24,21 +24,25 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class StoryChainActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, StoryChainView {
+public class StoryChainActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, StoryChainView, BaseQuickAdapter.RequestLoadMoreListener {
 
     @Bind(R.id.tb_story_chain)
     ArthurToolBar mTbStoryChain;
     @Bind(R.id.rv_story_chain)
     RecyclerView mRvStoryChain;
-    private List<StoryInfo> datas;
+    private List<StoryModelBean> datas = new ArrayList<>();
 
-    /** 描述：是否为倒序排列*/
+    /**
+     * 描述：是否为倒序排列
+     */
     private boolean isReverse = false;
     private StoryChainAdapter mStoryChainAdapter;
     private int start = 0;
     private int end = 0;
     private StoryChainPresenter mPresenter;
     private StoryModelInfo mInfo;
+    private boolean isFirstLoad;
+    private String mStoryId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -48,6 +52,15 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         mInfo = (StoryModelInfo) getIntent().getSerializableExtra("storyInfo");
+        mStoryId = mInfo.getBean().getDetailId().substring(1);
+        mPresenter = new StoryChainPresenterImpl(this);
+        int genNum = mInfo.getBean().getGenNum();
+        start = genNum;
+        if (start >= 10) {
+            end = genNum - 10;
+        } else {
+            end = 0;
+        }
         initToolBar();
         initData();
         initRecycler();
@@ -57,13 +70,13 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
         mRvStoryChain.setLayoutManager(new LinearLayoutManager(this));
 
         mStoryChainAdapter = new StoryChainAdapter(R.layout.item_story_chain, datas);
-
+        mStoryChainAdapter.setEnableLoadMore(true);
         mRvStoryChain.setAdapter(mStoryChainAdapter);
-
+        mStoryChainAdapter.setOnLoadMoreListener(this, mRvStoryChain);
         mStoryChainAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(StoryChainActivity.this,DynamicDetailsActivity.class);
+                Intent intent = new Intent(StoryChainActivity.this, DynamicDetailsActivity.class);
                 startActivity(intent);
             }
         });
@@ -99,16 +112,17 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
     private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{ R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
                     case R.id.tv_report_dialog_report:
                         //举报
+                        StoryModelBean modelBean = mStoryChainAdapter.getData().get(position);
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-                        reportIntent.putExtra("storyId",datas.get(position).getStoryListDataBean().getStoryId()+"");
-                        reportIntent.putExtra("characterId",datas.get(position).getStoryListDataBean().getInfo().getCharacterId()+"");
+                        reportIntent.putExtra("storyId", modelBean.getDetailId() + "");
+                        reportIntent.putExtra("characterId", modelBean.getCharacterId() + "");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -124,23 +138,7 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
 
     private void initData() {
-        mPresenter = new StoryChainPresenterImpl(this);
-        String storyId = mInfo.getBean().getDetailId().substring(1);
-        int genNum = mInfo.getBean().getGenNum();
-        start = genNum;
-        if (start>=10){
-            end = genNum -10;
-        }else {
-            end = 0;
-        }
-        mPresenter.initStoryList(start,end,storyId);
-
-        datas = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            StoryInfo info = new StoryInfo();
-            info.setTime("" + i * 5);
-            datas.add(info);
-        }
+        mPresenter.initStoryList(start, end, mStoryId);
     }
 
     private void initToolBar() {
@@ -155,22 +153,22 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRightClick(View v) {
-        final CustomDialog customDialog = new CustomDialog(this,true,1.0,R.layout.dialog_sort
-                ,new int[]{R.id.tv_sort_dialog_positive,R.id.tv_sort_dialog_reverse,R.id.tv_sort_dialog_cancel});
+        final CustomDialog customDialog = new CustomDialog(this, true, 1.0, R.layout.dialog_sort
+                , new int[]{R.id.tv_sort_dialog_positive, R.id.tv_sort_dialog_reverse, R.id.tv_sort_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
                     case R.id.tv_sort_dialog_positive:
                         //正序
-                        if (isReverse){
+                        if (isReverse) {
                             reverseDatas();
                         }
                         customDialog.dismiss();
                         break;
                     case R.id.tv_sort_dialog_reverse:
                         //倒序
-                        if (!isReverse){
+                        if (!isReverse) {
                             reverseDatas();
                         }
                         customDialog.dismiss();
@@ -186,11 +184,38 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
 
     /**
-     *  描述：翻转集合数据并刷新
+     * 描述：翻转集合数据并刷新
      */
     private void reverseDatas() {
         isReverse = !isReverse;
         Collections.reverse(datas);
         mStoryChainAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getStoryListSuc(List<StoryModelBean> modelBeanList, boolean isLast) {
+        if (modelBeanList == null) {
+            mStoryChainAdapter.loadMoreFail();
+            return;
+        }
+
+        if (isFirstLoad) {
+            mStoryChainAdapter.setNewData(modelBeanList);
+            mStoryChainAdapter.disableLoadMoreIfNotFullPage(mRvStoryChain);
+        } else {
+            mStoryChainAdapter.addData(modelBeanList);
+        }
+        mStoryChainAdapter.notifyDataSetChanged();
+        start = modelBeanList.get(modelBeanList.size() - 1).getGenNum();
+        if (isLast) {
+            mStoryChainAdapter.loadMoreEnd();
+        } else {
+            mStoryChainAdapter.loadMoreComplete();
+        }
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+        initData();
     }
 }

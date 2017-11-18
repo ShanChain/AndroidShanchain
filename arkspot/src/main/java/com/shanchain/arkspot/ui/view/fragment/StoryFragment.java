@@ -30,6 +30,7 @@ public class StoryFragment extends BaseFragment {
         mVpStory.setOffscreenPageLimit(3);
         mVpStory.setAdapter(adapter);
         mTabStory.setupWithViewPager(mVpStory);
+        mVpStory.setCurrentItem(1);
     }
 
 }

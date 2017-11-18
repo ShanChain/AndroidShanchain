@@ -12,6 +12,7 @@ public class EventConstant {
 
     public static final String EVENT_KEY_LOGOUT = "EVENT_KEY_LOGOUT";
 
+    public static final String EVENT_KEY_RELEASE = "EVENT_KEY_RELEASE";
     // receiver 模块化处理，仅注册模块名，后续可以做成注册模式
 
     public static final String EVENT_MODULE_ARKSPOT = "EVENT_MODULE_ARKSPOT";

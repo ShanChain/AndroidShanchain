@@ -27,6 +27,7 @@ import com.shanchain.arkspot.ui.presenter.impl.FriendHomePresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.arkspot.ui.view.activity.mine.view.FriendHomeView;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
@@ -367,7 +368,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void clickForwarding(int position) {
-        // TODO: 2017/11/14
+        StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        Intent intent = new Intent(mActivity, ForwardingActivity.class);
+        intent.putExtra("forward",bean);
+        startActivity(intent);
     }
 
     private void report(final int position) {

@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.CurrentAdapter;
 import com.shanchain.arkspot.base.BaseFragment;
+import com.shanchain.arkspot.event.ReleaseSucEvent;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
@@ -28,7 +29,13 @@ import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.CurrentView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
 import com.shanchain.arkspot.widgets.other.RecyclerViewDivider;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.LogUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +100,6 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             } else {
                 mAdapter.loadMoreFail();
             }
-            return;
         } else {
 
             if (isLoadMore) {
@@ -117,6 +123,17 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         page = 0;
         mCurrentPresenter.refreshData(page, size);
         mAdapter.loadMoreComplete();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SCBaseEvent event){
+        if(event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_RELEASE)){
+            ReleaseSucEvent releaseSucEvent = (ReleaseSucEvent) event.params;
+            if (releaseSucEvent.isSuc()){
+                LogUtils.i("发布成功，刷新数据");
+                onRefresh();
+            }
+        }
     }
 
     @Override
@@ -313,6 +330,5 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 break;
         }
     }
-
 
 }

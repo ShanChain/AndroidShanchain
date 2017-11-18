@@ -35,7 +35,6 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -226,8 +225,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         } else {
             mChatType = EMMessage.ChatType.Chat;
         }
-        //注册观察者
-        EventBus.getDefault().register(this);
         this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
         mLayoutManager = new LinearLayoutManager(this);
@@ -262,7 +259,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
 

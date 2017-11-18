@@ -47,7 +47,7 @@
         android:background="@null"
         android:gravity="top"
         android:textColor="@color/colorTextDefault"
-        android:hint="以角色的身份，今天的日记是什么内容?"
+        android:hint="以角色的身份，想想你有什么故事想说......"
         android:padding="@dimen/dimens_5dp"
         android:textSize="14sp"/>
 

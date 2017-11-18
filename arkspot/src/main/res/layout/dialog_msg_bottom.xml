@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/dimens_10dp"
         android:background="@drawable/shape_bg_dialog_top"
         android:gravity="center"
-        android:text="新场景"
+        android:text="新建群组"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
 
@@ -30,7 +30,7 @@
         android:layout_marginRight="@dimen/dimens_10dp"
         android:background="@color/colorWhite"
         android:gravity="center"
-        android:text="互相关注"
+        android:text="联系人"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
 

@@ -15,12 +15,15 @@ import com.shanchain.arkspot.base.BaseFragment;
 import com.shanchain.arkspot.ui.model.StoryBeanModel;
 import com.shanchain.arkspot.ui.model.StoryInfo;
 import com.shanchain.arkspot.ui.model.StoryModelBean;
+import com.shanchain.arkspot.ui.model.StoryModelInfo;
 import com.shanchain.arkspot.ui.presenter.RecommendPresenter;
 import com.shanchain.arkspot.ui.presenter.impl.RecommendPresenterImpl;
 import com.shanchain.arkspot.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.arkspot.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.arkspot.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.arkspot.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.arkspot.ui.view.activity.story.ReportActivity;
+import com.shanchain.arkspot.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.arkspot.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.arkspot.ui.view.fragment.view.RecommendView;
 import com.shanchain.arkspot.widgets.dialog.CustomDialog;
@@ -181,7 +184,20 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
             case R.id.tv_item_story_like:
                 clickLike(position);
                 break;
+            case R.id.tv_item_story_floors:
+                expendFloors(position);
+                break;
         }
+    }
+
+    /**
+     *  描述： 展开楼层
+     */
+    private void expendFloors(int position) {
+        StoryModelInfo modelInfo = mAdapter.getData().get(position).getStoryModel().getModelInfo();
+        Intent intent = new Intent(mActivity, StoryChainActivity.class);
+        intent.putExtra("storyInfo",modelInfo);
+        startActivity(intent);
     }
 
     /**
@@ -221,7 +237,10 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
      * 描述：转发
      */
     private void clickForwarding(int position) {
-// TODO: 2017/11/17
+        StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        Intent intent = new Intent(mActivity, ForwardingActivity.class);
+        intent.putExtra("forward",bean);
+        startActivity(intent);
     }
 
     /**

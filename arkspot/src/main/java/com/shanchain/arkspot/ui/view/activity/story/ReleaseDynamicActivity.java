@@ -24,6 +24,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.arkspot.R;
 import com.shanchain.arkspot.adapter.DynamicImagesAdapter;
 import com.shanchain.arkspot.base.BaseActivity;
+import com.shanchain.arkspot.event.ReleaseSucEvent;
 import com.shanchain.arkspot.ui.model.DynamicImageInfo;
 import com.shanchain.arkspot.ui.model.RichTextModel;
 import com.shanchain.arkspot.ui.model.TopicInfo;
@@ -36,10 +37,14 @@ import com.shanchain.arkspot.widgets.switchview.SwitchView;
 import com.shanchain.arkspot.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,16 +144,15 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         mSvReleaseDynamic.setOnSwitchStateChangeListener(new SwitchView.OnSwitchStateChangeListener() {
             @Override
             public void onSwitchStateChange(boolean isOn) {
-
                 mEtReleaseDynamicTitle.setText("");
                 mEtReleaseDynamicContent.setText("");
                 imgData.clear();
                 if (mImagesAdapter != null) {
                     mImagesAdapter.notifyDataSetChanged();
                 }
-
                 if (isOn) {
                     //长文模式
+                    mTbReleaseDynamic.setTitleText("撰写小说");
                     mEtReleaseDynamicTitle.setVisibility(View.VISIBLE);
                     mEtReleaseDynamicLong.setVisibility(View.VISIBLE);
                     mEtReleaseDynamicContent.setVisibility(View.GONE);
@@ -159,8 +163,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     isEditLong = true;
                 } else {
                     //普通模式
+                    mTbReleaseDynamic.setTitleText("发布动态");
                     mEtReleaseDynamicTitle.setVisibility(View.GONE);
-                    mEtReleaseDynamicContent.setHint("以角色的身份，想想你有什么故事想说......");
                     mEtReleaseDynamicContent.setVisibility(View.VISIBLE);
                     mEtReleaseDynamicLong.setVisibility(View.GONE);
                     mIvReleaseIconRead.setVisibility(View.INVISIBLE);
@@ -451,11 +455,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             String content = JSONObject.toJSONString(dynamicJson);
             object.put("long", isEditLong);
             object.put("content", content);
-
         }
         String jsonContent = JSONObject.toJSONString(object);
         PrefUtils.putString(mContext, Constants.SP_KEY_DRAFT, jsonContent);
-
     }
 
     @Override
@@ -483,6 +485,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         String tailId = "";
         //发布动态
         String word = mEtReleaseDynamicContent.getText().toString().trim();
+
         if (isEditLong) {
             //编辑小说状态
             String title = mEtReleaseDynamicTitle.getText().toString().trim();
@@ -494,12 +497,16 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             showLoadingDialog(true);
             mPresenter.ReleaseLongText(this, title, editData);
         } else {
+            if (TextUtils.isEmpty(word)){
+                ToastUtils.showToast(mContext,"请输入内容");
+                return;
+            }
+
             //普通编辑
             showLoadingDialog(true);
             if (imgData.size() == 0) {
                 //无图片
                 mPresenter.releaseDynamic(word, imgPaths, tailId, atIds, topicIds);
-
             } else {
                 //有图片
                 mPresenter.upLoadImgs(mContext, word, imgPaths, tailId, atIds, topicIds);
@@ -537,6 +544,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         ToastUtils.showToast(mContext, "发布成功");
         closeLoadingDialog();
         finish();
+        ReleaseSucEvent releaseSucEvent = new ReleaseSucEvent(true);
+        EventBus.getDefault().post(new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_RELEASE,releaseSucEvent,null));
     }
 
     @Override

@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 
 import com.shanchain.arkspot.ui.view.activity.MainActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.ButterKnife;
 
 /**
@@ -53,10 +57,16 @@ public abstract class BaseFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // 注册ButterKnife
         ButterKnife.bind(this, view);
-
+        if (!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
         initData();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Object obj){
+
+    }
 
     /**
      *  描述：友盟统计
@@ -101,5 +111,6 @@ public abstract class BaseFragment extends Fragment {
         super.onDestroyView();
         // 取消ButterKnife
         ButterKnife.unbind(getActivity());
+        EventBus.getDefault().unregister(this);
     }
 }

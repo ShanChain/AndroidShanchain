@@ -11,7 +11,7 @@
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
-        app:titleText="好友主页"
+        app:titleText="人物名牌"
         app:titleTextSize="16"/>
     
   <android.support.v7.widget.RecyclerView

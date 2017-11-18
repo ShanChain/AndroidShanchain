@@ -115,8 +115,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                     holder.setVisible(R.id.lv_item_story, false);
                 } else {
                     LogUtils.d("visible==========");
-                    //String characterName1 = storyChain.get(0).getBean().getCharacterName();
-                    //.i("一楼的名字 = " + characterName1);
                     holder.setVisible(R.id.tv_item_story_floors, true);
                     holder.setVisible(R.id.lv_item_story, true);
                     StoryItemFloorsAdapter floorsAdapter = new StoryItemFloorsAdapter(storyChain);
