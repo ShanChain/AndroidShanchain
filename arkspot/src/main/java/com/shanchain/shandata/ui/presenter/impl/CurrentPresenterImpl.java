@@ -51,7 +51,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取实时数据失败");
                         e.printStackTrace();
-                        mCurrentView.initSuccess(null,false);
+                        mCurrentView.initSuccess(null, false);
                     }
 
                     @Override
@@ -61,13 +61,13 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
                             StoryResponseInfo storyResponseInfo = JSONObject.parseObject(response, StoryResponseInfo.class);
                             if (!TextUtils.equals(storyResponseInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                                mCurrentView.initSuccess(null,false);
+                                mCurrentView.initSuccess(null, false);
                                 return;
                             }
                             boolean last = storyResponseInfo.getData().isLast();
                             List<ResponseStoryIdBean> storyBeanList = storyResponseInfo.getData().getContent();
-                            if (storyBeanList.size() == 0){
-                                mCurrentView.initSuccess(null,last);
+                            if (storyBeanList.size() == 0) {
+                                mCurrentView.initSuccess(null, last);
                                 return;
                             }
                             List<String> ids = new ArrayList<>();
@@ -82,32 +82,30 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                                 ResponseStoryChainBean storyChainBean = responseStoryBean.getChain();
                                 if (storyChainBean != null) {
                                     List<String> detailIds = storyChainBean.getDetailIds();
-                                    if (detailIds != null) {
-                                        if (storyChainBean.getDetailIds().size() == 0) {
-
-                                        } else {
-                                            for (int j = 0; j < detailIds.size(); j++) {
-                                                String dId = detailIds.get(j);
-                                                ids.add(dId);
-                                                StoryModelInfo modelInfo = new StoryModelInfo();
-                                                modelInfo.setStoryId(dId);
-                                                modelInfoList.add(modelInfo);
-                                            }
-                                            storyModel.setStoryChain(modelInfoList);
+                                    if (detailIds != null && detailIds.size() > 0) {
+                                        for (int j = 0; j < detailIds.size(); j++) {
+                                            String dId = detailIds.get(j);
+                                            ids.add(dId);
+                                            StoryModelInfo modelInfo = new StoryModelInfo();
+                                            modelInfo.setStoryId(dId);
+                                            modelInfoList.add(modelInfo);
                                         }
+                                        storyModel.setStoryChain(modelInfoList);
+                                        LogUtils.i("构建的故事链的长度 = " + modelInfoList.size());
+                                        storyModel.setChainCount(detailIds.size());
                                     }
                                 } else {
-                                    modelInfoList = null;
-                                    storyModel.setStoryChain(modelInfoList);
+                                    storyModel.setStoryChain(null);
+                                    storyModel.setChainCount(0);
                                 }
                                 storyModel.setModelInfo(storyModelInfo);
                                 datas.add(storyModel);
                             }
                             LogUtils.i("datas长度 = " + datas.size());
-                            obtainStoryList(ids,last);
+                            obtainStoryList(ids, last);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mCurrentView.initSuccess(null,false);
+                            mCurrentView.initSuccess(null, false);
                         }
                     }
                 });
@@ -124,7 +122,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        mCurrentView.initSuccess(null,false);
+                        mCurrentView.initSuccess(null, false);
                         LogUtils.e("获取故事详情列表失败");
                         e.printStackTrace();
                     }
@@ -135,21 +133,21 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
                         ResponseStoryListInfo storyListInfo = JSONObject.parseObject(response, ResponseStoryListInfo.class);
                         if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                            mCurrentView.initSuccess(null,isLast);
+                            mCurrentView.initSuccess(null, isLast);
                             return;
                         }
                         List<StoryModelBean> data = storyListInfo.getData();
-                        if (data != null && data.size() >0) {
-                            builderData(data,isLast);
-                        }else {
-                            mCurrentView.initSuccess(null,isLast);
+                        if (data != null && data.size() > 0) {
+                            builderData(data, isLast);
+                        } else {
+                            mCurrentView.initSuccess(null, isLast);
                             return;
                         }
                     }
                 });
     }
 
-    private void builderData(List<StoryModelBean> data,boolean isLast) {
+    private void builderData(List<StoryModelBean> data, boolean isLast) {
         List<StoryBeanModel> list = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
             StoryModel storyModel = datas.get(i);
@@ -161,7 +159,26 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     LogUtils.i("外层添加数据 i = " + i);
                     modelInfo.setBean(bean);
                 }
-            }}
+            }
+
+            List<StoryModelInfo> storyChain = storyModel.getStoryChain();
+            if (storyChain!=null && storyChain.size()>0){
+                LogUtils.i("构建数据时获取的楼层数 = " + storyChain.size());
+                for (int j = 0 ; j < storyChain.size();j ++){
+                    StoryModelInfo storyModelInfo = storyChain.get(j);
+                    String storyId1 = storyModelInfo.getStoryId();
+                    LogUtils.i("楼层中的故事id = " + storyId1);
+                    for (StoryModelBean bean : data){
+                        String detailId = bean.getDetailId();
+                        LogUtils.i("所有故事表中的id = " + detailId);
+                        if (TextUtils.equals(storyId1,detailId)){
+                            LogUtils.i("内层添加数据 j = " + j);
+                            storyModelInfo.setBean(bean);
+                        }
+                    }
+                }
+            }
+        }
 
         for (int i = 0; i < datas.size(); i++) {
             StoryBeanModel beanModel = new StoryBeanModel();
@@ -174,7 +191,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
             list.add(beanModel);
             LogUtils.i("构建数据结果 = " + beanModel);
         }
-        mCurrentView.initSuccess(list,isLast);
+        mCurrentView.initSuccess(list, isLast);
     }
 
     @Override
@@ -188,7 +205,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
                         e.printStackTrace();
-                        mCurrentView.supportSuccess(false,position);
+                        mCurrentView.supportSuccess(false, position);
                     }
 
                     @Override
@@ -196,10 +213,10 @@ public class CurrentPresenterImpl implements CurrentPresenter {
                         LogUtils.i("点赞结果 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
 
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            mCurrentView.supportSuccess(true,position);
-                        }else {
-                            mCurrentView.supportSuccess(false,position);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mCurrentView.supportSuccess(true, position);
+                        } else {
+                            mCurrentView.supportSuccess(false, position);
                         }
                     }
                 });
@@ -212,31 +229,31 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
     @Override
     public void loadMore(int page, int size) {
-        initData(page,size);
+        initData(page, size);
     }
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
-                .addParams("storyId",storyId)
+                .addParams("storyId", storyId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
                         e.printStackTrace();
-                        mCurrentView.supportCancelSuccess(false,position);
+                        mCurrentView.supportCancelSuccess(false, position);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("取消点赞成功 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            mCurrentView.supportCancelSuccess(true,position);
-                        }else {
-                            mCurrentView.supportCancelSuccess(false,position);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mCurrentView.supportCancelSuccess(true, position);
+                        } else {
+                            mCurrentView.supportCancelSuccess(false, position);
                         }
                     }
                 });

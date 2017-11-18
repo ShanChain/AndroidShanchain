@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
+import com.shanchain.arkspot.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.adapter.StoryItemNineAdapter;
@@ -62,7 +63,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private List<BdCommentBean> datas = new ArrayList<>();
     private DynamicCommentAdapter mDynamicCommentAdapter;
     private View mHeadView;
-    private StoryBeanModel mBeanModel;
     private StoryModelBean mBean;
     private String mStoryId;
     private int mCharacterId;
@@ -81,15 +81,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     @Override
     protected void initViewsAndEvents() {
 
-        mBeanModel = (StoryBeanModel) getIntent().getSerializableExtra("story");
-        if (mBeanModel == null) {
+        mBean = (StoryModelBean) getIntent().getSerializableExtra("story");
+        if (mBean == null) {
             LogUtils.i("finish掉了 =，=！");
             finish();
             return;
         } else {
-            mBean = mBeanModel.getStoryModel().getModelInfo().getBean();
-            mStoryId = mBeanModel.getStoryModel().getModelInfo().getStoryId();
             mCharacterId = mBean.getCharacterId();
+            mStoryId = mBean.getDetailId();
         }
         initToolBar();
         initData();
@@ -98,7 +97,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     private void initData() {
         mPresenter = new DynamicDetailsPresenterImpl(this);
-        String storyId = mBean.getDetailId().substring(1);
+        String storyId = mStoryId.substring(1);
         mPresenter.initData(page,size,storyId);
 
     }
@@ -136,8 +135,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         mTvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         mTvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
-        String characterImg = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterImg();
-        String characterName = mBeanModel.getStoryModel().getModelInfo().getBean().getCharacterName();
+        String characterImg = mBean.getCharacterImg();
+        String characterName = mBean.getCharacterName();
 
         GlideUtils.load(mContext, characterImg, ivAvatar, 0);
         tvName.setText(characterName);
@@ -405,5 +404,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         }else {
 
         }
+    }
+
+    @Override
+    public void initNovelSuc(StoryDetailInfo storyDetailInfo) {
+
     }
 }

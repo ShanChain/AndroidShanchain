@@ -119,12 +119,14 @@ public class SplashActivity extends AppCompatActivity {
                                 Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
                                 startActivity(intent);
                                 finish();
+                                return;
                             }
                             String character = JSONObject.parseObject(data).getString("characterInfo");
                             if (TextUtils.isEmpty(character)){
                                 Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
                                 startActivity(intent);
                                 finish();
+                                return;
                             }else {
                                 CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                 if (characterInfo == null){

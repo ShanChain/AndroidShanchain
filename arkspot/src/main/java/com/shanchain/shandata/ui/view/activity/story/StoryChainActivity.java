@@ -6,12 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.arkspot.ui.presenter.StoryChainPresenter;
+import com.shanchain.arkspot.ui.presenter.impl.StoryChainPresenterImpl;
+import com.shanchain.arkspot.ui.view.activity.story.stroyView.StoryChainView;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.StoryChainAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.StoryInfo;
+import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+
 import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -20,7 +25,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class StoryChainActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+public class StoryChainActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, StoryChainView {
 
     @Bind(R.id.tb_story_chain)
     ArthurToolBar mTbStoryChain;
@@ -31,6 +36,10 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
     /** 描述：是否为倒序排列*/
     private boolean isReverse = false;
     private StoryChainAdapter mStoryChainAdapter;
+    private int start = 0;
+    private int end = 0;
+    private StoryChainPresenter mPresenter;
+    private StoryModelInfo mInfo;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -39,6 +48,7 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
+        mInfo = (StoryModelInfo) getIntent().getSerializableExtra("storyInfo");
         initToolBar();
         initData();
         initRecycler();
@@ -115,6 +125,17 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
 
 
     private void initData() {
+        mPresenter = new StoryChainPresenterImpl(this);
+        String storyId = mInfo.getBean().getDetailId().substring(1);
+        int genNum = mInfo.getBean().getGenNum();
+        start = genNum;
+        if (start>=10){
+            end = genNum -10;
+        }else {
+            end = 0;
+        }
+        mPresenter.initStoryList(start,end,storyId);
+
         datas = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
             StoryInfo info = new StoryInfo();

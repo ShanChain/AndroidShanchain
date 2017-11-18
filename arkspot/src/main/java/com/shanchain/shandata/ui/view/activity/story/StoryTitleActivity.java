@@ -32,6 +32,7 @@ import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,9 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     private int page = 0;
     private int size = 15;
     private boolean isLoadMore;
+    private boolean firstLoadLike = true;
+    private int likePage = 0;
+    private int likeSize = 10;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -84,7 +88,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initData() {
-        mPresenter.initFavData();
+        mPresenter.initFavData(likePage, likeSize);
         mPresenter.initSpace(page, size);
     }
 
@@ -129,7 +133,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         mRvLike = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_head);
         mRvTag = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_tag);
         mLlFavorite = (LinearLayout) mHeadView.findViewById(R.id.ll_head_favorite);
-        LinearLayoutManager likeLayoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager likeLayoutManager = new LinearLayoutManager(this);
         likeLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvLike.setLayoutManager(likeLayoutManager);
 
@@ -160,6 +164,23 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
                 } else {
                     mTagDatas.get(position).setSelected(!selected);
                     mAddRoleAdapter.notifyItemChanged(position);
+                }
+            }
+        });
+
+        mRvLike.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+                if (manager instanceof LinearLayoutManager) {
+                    int lastVisibleItemPosition = ((LinearLayoutManager) manager).findLastVisibleItemPosition();
+                    LogUtils.i("最后可见条目位置 = " + lastVisibleItemPosition + "; 数据集长度 = " + mStoryTitleLikeAdapter.getData().size());
+                    if (lastVisibleItemPosition == mStoryTitleLikeAdapter.getData().size() - 1) {
+                        LogUtils.i("获取跟多角色 ====");
+                        likePage++;
+                        mPresenter.loadMoreLike(likePage, likeSize);
+                    }
                 }
             }
         });
@@ -259,19 +280,22 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
-    public void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList) {
+    public void getMyFavoriteSuccess(List<SpaceInfo> favoriteSpaceList, boolean isLast) {
         likeSuc = true;
         refreshFinish();
         if (favoriteSpaceList == null) {
             hideFavoriteLayout();
             return;
         }
-        if (favoriteSpaceList.size() == 0) {
-            hideFavoriteLayout();
+        if (firstLoadLike) {
+            if (favoriteSpaceList.size() == 0) {
+                hideFavoriteLayout();
+            }
         }
         showFavoriteLayout();
         likeDatas.addAll(favoriteSpaceList);
         mStoryTitleLikeAdapter.notifyDataSetChanged();
+        firstLoadLike = false;
     }
 
     @Override
@@ -302,6 +326,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         spaceSuc = likeSuc = false;
         likeDatas.clear();
         page = 0;
+        likePage = 0;
+        firstLoadLike = true;
         initData();
     }
 

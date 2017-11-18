@@ -9,9 +9,6 @@ import com.shanchain.data.common.base.Constants;
 public interface HttpApi {
 
     /** IM相关接口*/
-
-
-
     String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
 
     /** 全局接口地址*/
@@ -75,7 +72,7 @@ public interface HttpApi {
 
 
     /** 获取上传图片的信息*/
-    String UP_LOAD_FILE = "http://115.29.176.143/v1/upload/app";
+    String UP_LOAD_FILE = "http://115.29.176.143/oss/upload/app";
 
     /** 查询标签*/
     String TAG_QUERY = BASE_URL + "/v1/tag/query";
@@ -222,4 +219,12 @@ public interface HttpApi {
 
     /** 取消角色关注*/
     String FOCUS_UNFOCUS = BASE_URL + "/v1/focus/unfocus";
+    
+    /** 获取话题动态列表*/
+    String DYNAMIC_TOPIC = BASE_URL + "/v1/dynamic/topic";
+    
+    /** 转发微博*/
+    String STORY_TRANSPOND = BASE_URL + "/v1/story/transpond";
+
+    String STORY_CHAIN_ID = BASE_URL + "/v1/story/chain/id";
 }

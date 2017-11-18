@@ -27,7 +27,7 @@
     <string name="str_login_btn_login">登录</string>
     <string name="str_login_btn_register">注册</string>
     <string name="str_txt_login_third">第三方登录</string>
-    <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.</string>
+    <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.@#$%^*()!,。?</string>
     <string name="str_reset_pwd">请输入新密码</string>
     <string name="str_sure">确定</string>
     <string name="str_friend_home_longtext">长文</string>

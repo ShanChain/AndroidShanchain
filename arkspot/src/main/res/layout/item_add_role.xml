@@ -13,6 +13,7 @@
         android:background="@mipmap/abs_therrbody_btn_label_default"
         android:gravity="center"
         android:text="体育"
+        android:lines="1"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/colorTextDefault"
         android:layout_width="70dp"
