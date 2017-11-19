@@ -47,6 +47,7 @@ public class PushConstants {
     public static final String MSG_COMMENT_BE_PRAISE = "MSG_COMMENT_BE_PRAISE";//有人赞了我的评论
     public static final String MSG_DYNAMIC_BE_FORWARD = "MSG_DYNAMIC_BE_FORWARD";//有人转发了我
     public static final String MSG_BE_REPORT = "MSG_BE_REPORT";//我被举报并处理
+    public static final String MSG_REPORT_WILL_BE_DEAL_WITH = "MSG_REPORT_WILL_BE_DEAL_WITH";//待处理的举报
     public static final String MSG_FRIEND_RECOMMEND = "MSG_FRIEND_RECOMMEND";//好友推荐
     public static final String MSG_CHARACTER_BE_FOLLOW = "MSG_CHARACTER_BE_FOLLOW";//有人关注了你
     public static final String MSG_BE_FOCUS_AT_CHAT = "MSG_BE_FOCUS_AT_CHAT";//对话场景推荐

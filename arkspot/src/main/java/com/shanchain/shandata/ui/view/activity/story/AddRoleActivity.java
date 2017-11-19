@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -44,6 +45,9 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
 import okhttp3.Call;
+
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
+import static com.shanchain.data.common.base.Constants.CACHE_SPACE_ID;
 
 
 public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
@@ -80,6 +84,13 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
     protected void initViewsAndEvents() {
         Intent intent = getIntent();
         mSpaceId = intent.getIntExtra("spaceId", 0);
+        if(mSpaceId == 0){
+          String  userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+          String  spaceId = CommonCacheHelper.getInstance().getCache(userId,CACHE_SPACE_ID);
+            if(!TextUtils.isEmpty(spaceId)){
+                mSpaceId = Integer.parseInt(spaceId);
+            }
+        }
         initToolBar();
         initRecyclerView();
         initData();
