@@ -97,21 +97,21 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void initBottomNavigationBar() {
         BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
-        BadgeItem storyBadge = new BadgeItem();
-        storyBadge.setText("").show();
-        btmItemStory.setBadgeItem(storyBadge);
+//        BadgeItem storyBadge = new BadgeItem();
+//        storyBadge.setText("").show();
+//        btmItemStory.setBadgeItem(storyBadge);
         BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
-        BadgeItem newsBadge = new BadgeItem();
-        newsBadge.setText("").show();
-        btmItemNews.setBadgeItem(newsBadge);
+//        BadgeItem newsBadge = new BadgeItem();
+//        newsBadge.setText("").show();
+//        btmItemNews.setBadgeItem(newsBadge);
         BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
-        BadgeItem squareBadge = new BadgeItem();
-        squareBadge.setText("").show();
-        btmItemSquare.setBadgeItem(squareBadge);
+//        BadgeItem squareBadge = new BadgeItem();
+//        squareBadge.setText("").show();
+//        btmItemSquare.setBadgeItem(squareBadge);
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
-        BadgeItem mineBadge = new BadgeItem();
-        mineBadge.setText("").show();
-        btmItemMine.setBadgeItem(mineBadge);
+//        BadgeItem mineBadge = new BadgeItem();
+//        mineBadge.setText("").show();
+//        btmItemMine.setBadgeItem(mineBadge);
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
