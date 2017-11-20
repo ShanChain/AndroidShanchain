@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseFragment;
@@ -19,9 +22,9 @@ import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.RecommendPresenter;
 import com.shanchain.shandata.ui.presenter.impl.RecommendPresenterImpl;
-import com.shanchain.shandata.ui.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryChainActivity;
@@ -239,6 +242,12 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
      */
     private void clickForwarding(int position) {
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        int spaceId = bean.getSpaceId();
+        String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (!TextUtils.equals(cacheSpaceId,spaceId + "")){
+            ToastUtils.showToast(mActivity,"不同世界不可转发");
+            return;
+        }
         Intent intent = new Intent(mActivity, ForwardingActivity.class);
         intent.putExtra("forward",bean);
         startActivity(intent);

@@ -35,7 +35,6 @@ import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.DynamicDetailsPresenter;
 import com.shanchain.shandata.ui.presenter.impl.DynamicDetailsPresenterImpl;
-import com.shanchain.shandata.ui.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView;
 import com.shanchain.shandata.utils.DateUtils;

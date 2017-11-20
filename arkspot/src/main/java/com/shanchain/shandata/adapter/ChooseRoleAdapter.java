@@ -21,7 +21,7 @@ public class ChooseRoleAdapter extends BaseQuickAdapter<SpaceCharacterBean,BaseV
     @Override
     protected void convert(BaseViewHolder helper, SpaceCharacterBean item) {
 
-        GlideUtils.load(mContext,item.getHeadImg(),(ImageView) helper.getView(R.id.iv_item_role));
+        GlideUtils.load(mContext,item.getHeadImg(),(ImageView) helper.getView(R.id.iv_item_role),0);
 
         helper.setText(R.id.tv_item_role,item.getName());
     }

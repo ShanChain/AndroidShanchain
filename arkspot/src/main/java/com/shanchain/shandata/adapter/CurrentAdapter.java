@@ -63,7 +63,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         holder.setText(R.id.tv_item_story_name, characterName);
         ImageView ivHeadImg = holder.getView(R.id.iv_item_story_avatar);
 
-        GlideUtils.load(mContext, characterImg, ivHeadImg, R.mipmap.abs_addanewrole_def_photo_default);
+        GlideUtils.load(mContext, characterImg, ivHeadImg, 0);
         String time = DateUtils.formatFriendly(new Date(bean.getCreateTime()));
         holder.setText(R.id.tv_item_story_time, time);
         holder.setText(R.id.tv_item_story_comment, bean.getCommendCount() + "");
@@ -157,7 +157,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                     holder.setVisible(R.id.iv_item_story_img, false);
                 } else {
                     holder.setVisible(R.id.iv_item_story_img, true);
-                    GlideUtils.load(mContext, topicImg, (ImageView) holder.getView(R.id.iv_item_story_img), R.mipmap.abs_addanewrole_def_photo_default);
+                    GlideUtils.load(mContext, topicImg, (ImageView) holder.getView(R.id.iv_item_story_img), 0);
                 }
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 holder.setText(R.id.tv_item_story_intro, bean.getIntro());

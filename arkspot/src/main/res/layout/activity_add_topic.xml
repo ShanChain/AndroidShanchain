@@ -120,7 +120,7 @@
                     android:background="@drawable/shape_bg_edit_report"
                     android:gravity="center_vertical"
                     android:hint="请输入话题"
-                    android:maxLength="20"
+                    android:maxLength="25"
                     android:lines="1"
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/sp_12"
@@ -142,20 +142,13 @@
                 android:background="@drawable/shape_bg_edit_report"
                 android:gravity="top"
                 android:hint="请输入导语~"
-                android:maxLength="80"
+                android:maxLength="140"
                 android:padding="@dimen/dimens_10dp"
                 android:textColor="@color/colorTextDefault"
                 android:textColorHint="@color/colorHint"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/sp_12"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimens_15dp"
-                android:text="无需审核，你讲成为这个话题的主持人。"
-                android:textColor="@color/colorHint"
-                android:textSize="12sp"/>
 
         </LinearLayout>
 

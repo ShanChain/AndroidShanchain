@@ -67,29 +67,33 @@ public class ContactActivity extends BaseActivity implements ArthurToolBar.OnLef
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 BdContactInfo bdContactInfo = map.get(parentList.get(groupPosition)).get(childPosition);
                 boolean isGroup = bdContactInfo.isGroup();
-                String name ="";
+                String hxUserName ="";
+                String name = "";
                 if (isGroup){
                     GroupInfo groupInfo = bdContactInfo.getGroupInfo();
                     if (groupInfo == null){
                         ToastUtils.showToast(mContext,"当前场景异常");
                         return true;
                     }
-                    name = groupInfo.getGroupId();
+                    hxUserName = groupInfo.getGroupId();
+                    name = bdContactInfo.getGroupInfo().getGroupName();
                 }else {
                     ResponseHxUerBean hxUerBean = bdContactInfo.getHxUerBean();
                     if (hxUerBean == null){
                         ToastUtils.showToast(mContext,"当前用户异常");
                         return true;
                     }
-                    name = hxUerBean.getHxUserName();
+                    hxUserName = hxUerBean.getHxUserName();
+                    name = bdContactInfo.getContactBean().getName();
                 }
 
-                if (TextUtils.isEmpty(name)){
+                if (TextUtils.isEmpty(hxUserName)){
                     ToastUtils.showToast(mContext,"当前用户异常");
                 }else {
                     Intent intent = new Intent(mContext, ChatRoomActivity.class);
                     intent.putExtra("isGroup", isGroup);
-                    intent.putExtra("toChatName", name);
+                    intent.putExtra("toChatName", hxUserName);
+                    intent.putExtra("name",name);
                     startActivity(intent);
                 }
                 return true;

@@ -13,6 +13,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.ChooseRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -20,16 +31,10 @@ import com.shanchain.shandata.ui.model.SpaceCharacterBean;
 import com.shanchain.shandata.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.shandata.ui.model.SpaceInfo;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.base.RoleManager;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.GlideUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,25 +92,45 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initData() {
         mSpaceId = mSpaceInfo.getSpaceId();
-        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-        String spaceCollection = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_COLLECTION);
-        if (!TextUtils.isEmpty(spaceCollection)) {
-            List<Integer> spaceIds = JSONObject.parseArray(spaceCollection, Integer.class);
-            if (spaceIds.contains(mSpaceId)) {
-                setIsCollection(true);
-            } else {
-                setIsCollection(false);
-            }
-        }
-
+        spaceIsFav();
         GlideUtils.load(mContext, mSpaceInfo.getBackground(), mIvChooseRoleImg, 0);
         mTvChooseRoleTitle.setText(mSpaceInfo.getName());
         mTvChooseRoleDes.setText(mSpaceInfo.getSlogan());
         mTvChooseRoleDetail.setText(mSpaceInfo.getIntro());
-
         initSpaceModel(page,size);
-
     }
+
+    private void spaceIsFav() {
+        SCHttpUtils.postWithUserId()
+                .addParams("spaceId",mSpaceId+"")
+                .url(HttpApi.SPACE_IS_FAV)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取时空是否收藏失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取时空是否收藏成功 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                Boolean isFav = JSONObject.parseObject(response).getBoolean("data");
+                                if (isFav){
+                                    setIsCollection(true);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            LogUtils.i("数据解析错误");
+                        }
+                    }
+                });
+    }
+
 
     private void initSpaceModel(int page ,int size) {
         SCHttpUtils.post()
@@ -221,11 +246,8 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
             ToastUtils.showToast(mContext, "选一个你喜欢的角色吧~");
             return;
         }
-
         RoleManager.switchRole(datas.get(selected).getModelId() + "",mSpaceInfo.getSpaceId() + "",JSON.toJSONString(mSpaceInfo));
-
     }
-
 
     /**
      * 收藏时空
@@ -320,5 +342,14 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SCBaseEvent event){
+        if(event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_MODEL_CREATE)){
+            page = 0;
+            mRoleAdapter.getData().clear();
+            initData();
+        }
     }
 }

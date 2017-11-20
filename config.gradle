@@ -1,6 +1,7 @@
 project.ext {
     arkspot_name = '千千世界'
     CFG_RN_DEBUG = 'false'
+
     CFG_ENV_PRD = project.hasProperty('isEnvPrd') ? project.isEnvPrd : 'true'
     CFG_HOST_TEST = 'http://47.91.178.114:8080'
     CFG_HOST_RELEASE = 'http://47.91.178.114:8080/test'

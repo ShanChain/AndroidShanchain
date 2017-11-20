@@ -62,12 +62,12 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
             String s = emConversation.getLastMessage().conversationId();
             helper.setText(R.id.tv_item_msg_home_name, s);
             String groupImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_GROUP_IMG, defaultGroupImg);
-            GlideUtils.load(mContext,groupImg,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar));
+            GlideUtils.load(mContext,groupImg,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
         } else {
             //会话不是群组
             helper.setText(R.id.tv_item_msg_home_name, emConversation.getLastMessage().getTo());
             String headImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_HEAD_IMG, defaultHeadImg);
-            GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar));
+            GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
         }
 
     }

@@ -1,4 +1,4 @@
-package com.shanchain.shandata.ui.story;
+package com.shanchain.shandata.ui.view.activity.story;
 
 import android.Manifest;
 import android.content.Intent;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -35,8 +34,6 @@ import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.TopicInfo;
-import com.shanchain.shandata.ui.view.activity.story.SelectContactActivity;
-import com.shanchain.shandata.ui.view.activity.story.TopicActivity;
 import com.shanchain.shandata.utils.StringUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;

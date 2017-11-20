@@ -23,7 +23,7 @@ import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.CurrentPresenter;
 import com.shanchain.shandata.ui.presenter.impl.CurrentPresenterImpl;
-import com.shanchain.shandata.ui.story.ForwardingActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;

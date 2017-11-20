@@ -119,7 +119,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
 
     private void init() {
-
         mPresenter = new ReleaseDynamicPresenterImpl(this);
     }
 

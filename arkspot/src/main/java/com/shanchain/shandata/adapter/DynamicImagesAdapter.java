@@ -4,9 +4,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.DynamicImageInfo;
 
@@ -25,7 +25,7 @@ public class DynamicImagesAdapter extends BaseQuickAdapter<DynamicImageInfo,Base
     @Override
     protected void convert(BaseViewHolder helper, DynamicImageInfo item) {
         ImageView ivImg = helper.getView(R.id.iv_item_dynamic_image);
-        Glide.with(mContext).load(item.getImg()).into(ivImg);
+        GlideUtils.load(mContext,item.getImg(),ivImg,0);
         helper.addOnClickListener(R.id.iv_item_dynamic_clear);
     }
 }

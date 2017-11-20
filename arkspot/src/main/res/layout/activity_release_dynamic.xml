@@ -46,6 +46,7 @@
         android:layout_weight="1"
         android:background="@null"
         android:gravity="top"
+        android:maxLength="1000"
         android:textColor="@color/colorTextDefault"
         android:hint="以角色的身份，想想你有什么故事想说......"
         android:padding="@dimen/dimens_5dp"

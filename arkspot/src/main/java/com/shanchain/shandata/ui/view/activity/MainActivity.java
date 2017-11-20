@@ -48,7 +48,7 @@ import butterknife.Bind;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
-public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener,DefaultHardwareBackBtnHandler {
+public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnTitleClickListener, DefaultHardwareBackBtnHandler {
 
     ArthurToolBar mTbMain;
     @Bind(R.id.fl_main_container)
@@ -57,6 +57,10 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     BottomNavigationBar mBnb;
     private int mFragmentId;
     private String[] navigationBarTitles = {"故事", "会话", "广场", "我的"};
+    private BadgeItem mStoryBadge;
+    private BadgeItem mNewsBadge;
+    private BadgeItem mSquareBadge;
+    private BadgeItem mMineBadge;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -80,7 +84,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         rngDataBean.setSpaceId(spaceId);
         rngDataBean.setCharacterId(characterId);
         String jsonGData = JSON.toJSONString(rngDataBean);
-        SCCacheUtils.setCache(uId,Constants.CACHE_GDATA,jsonGData);
+        SCCacheUtils.setCache(uId, Constants.CACHE_GDATA, jsonGData);
         String cacheGData = SCCacheUtils.getCache(uId, Constants.CACHE_GDATA);
         LogUtils.i("缓存的gdata = " + cacheGData);
 
@@ -97,21 +101,22 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void initBottomNavigationBar() {
         BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
-//        BadgeItem storyBadge = new BadgeItem();
-//        storyBadge.setText("").show();
-//        btmItemStory.setBadgeItem(storyBadge);
+        mStoryBadge = new BadgeItem();
+        mStoryBadge.setText("2").show();
+        btmItemStory.setBadgeItem(mStoryBadge);
         BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
-//        BadgeItem newsBadge = new BadgeItem();
-//        newsBadge.setText("").show();
-//        btmItemNews.setBadgeItem(newsBadge);
+        mNewsBadge = new BadgeItem();
+        mNewsBadge.setText("99+").show();
+        btmItemNews.setBadgeItem(mNewsBadge);
         BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
-//        BadgeItem squareBadge = new BadgeItem();
-//        squareBadge.setText("").show();
-//        btmItemSquare.setBadgeItem(squareBadge);
+        mSquareBadge = new BadgeItem();
+        mSquareBadge.setText("11").show();
+        btmItemSquare.setBadgeItem(mSquareBadge);
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
-//        BadgeItem mineBadge = new BadgeItem();
-//        mineBadge.setText("").show();
-//        btmItemMine.setBadgeItem(mineBadge);
+        mMineBadge = new BadgeItem();
+
+        mMineBadge.setText("   ").show().setBorderWidth(DensityUtils.dip2px(mContext,3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+        btmItemMine.setBadgeItem(mMineBadge);
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
@@ -169,60 +174,61 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private NewsFragment mNewsFragment;
     private RNSquareFragment mSquareFragment;
     private RNMineFragment mMineFragment;
+
     private void setFragment(int position) {
 
-            FragmentManager supportFragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
 
         hideAllFragment(fragmentTransaction);
 
-            switch (position) {
-                case 0:
-                    if (mStoryFragment == null){
-                        mStoryFragment = new StoryFragment();
-                        fragmentTransaction.add(R.id.fl_main_container,mStoryFragment);
-                    }else {
-                        fragmentTransaction.show(mStoryFragment);
-                    }
-                    break;
-                case 1:
-                    if (mNewsFragment == null){
-                        mNewsFragment = new NewsFragment();
-                        fragmentTransaction.add(R.id.fl_main_container,mNewsFragment);
-                    }else {
-                        fragmentTransaction.show(mNewsFragment);
-                    }
-                    break;
-                case 2:
-                    if (mSquareFragment == null){
-                        mSquareFragment = new RNSquareFragment();
-                        fragmentTransaction.add(R.id.fl_main_container,mSquareFragment);
-                    }else {
-                        fragmentTransaction.show(mSquareFragment);
-                    }
-                    break;
-                case 3:
-                    if (mMineFragment == null){
-                        mMineFragment = new RNMineFragment();
-                        fragmentTransaction.add(R.id.fl_main_container,mMineFragment);
-                    }else {
-                        fragmentTransaction.show(mMineFragment);
-                    }
-                    break;
-                default:
-                    break;
-            }
+        switch (position) {
+            case 0:
+                if (mStoryFragment == null) {
+                    mStoryFragment = new StoryFragment();
+                    fragmentTransaction.add(R.id.fl_main_container, mStoryFragment);
+                } else {
+                    fragmentTransaction.show(mStoryFragment);
+                }
+                break;
+            case 1:
+                if (mNewsFragment == null) {
+                    mNewsFragment = new NewsFragment();
+                    fragmentTransaction.add(R.id.fl_main_container, mNewsFragment);
+                } else {
+                    fragmentTransaction.show(mNewsFragment);
+                }
+                break;
+            case 2:
+                if (mSquareFragment == null) {
+                    mSquareFragment = new RNSquareFragment();
+                    fragmentTransaction.add(R.id.fl_main_container, mSquareFragment);
+                } else {
+                    fragmentTransaction.show(mSquareFragment);
+                }
+                break;
+            case 3:
+                if (mMineFragment == null) {
+                    mMineFragment = new RNMineFragment();
+                    fragmentTransaction.add(R.id.fl_main_container, mMineFragment);
+                } else {
+                    fragmentTransaction.show(mMineFragment);
+                }
+                break;
+            default:
+                break;
+        }
 
-            fragmentTransaction.commit();
+        fragmentTransaction.commit();
 
     }
 
     private void hideAllFragment(FragmentTransaction fragmentTransaction) {
-        if (mStoryFragment!= null){
+        if (mStoryFragment != null) {
             fragmentTransaction.hide(mStoryFragment);
         }
 
-        if (mSquareFragment != null){
+        if (mSquareFragment != null) {
             fragmentTransaction.hide(mSquareFragment);
         }
 
@@ -326,8 +332,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void notifyRightClick() {
-        NavigatorModule.startReactPage(this, RNPagesConstant.NotificationScreen,new Bundle());
+        NavigatorModule.startReactPage(this, RNPagesConstant.NotificationScreen, new Bundle());
     }
+
     private void newsRightClick() {
         final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_msg_bottom, new int[]{R.id.tv_dialog_msg_new,
                 R.id.tv_dialog_msg_focus, R.id.tv_dialog_msg_code, R.id.tv_dialog_msg_cancel});
@@ -339,7 +346,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     case R.id.tv_dialog_msg_new:
                         //邀请好友，创建新场景（群）
                         Intent invitationIntent = new Intent(MainActivity.this, SelectContactActivity.class);
-                        invitationIntent.putExtra("isAt",false);
+                        invitationIntent.putExtra("isAt", false);
                         startActivity(invitationIntent);
                         customDialog.dismiss();
                         break;
@@ -376,19 +383,19 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             public void OnItemClick(CustomDialog dialog, View view) {
                 Bundle bundle = new Bundle();
                 JSONObject screenProps = new JSONObject();
-                screenProps.put(Constants.CACHE_GDATA,JSONObject.parse(CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_GDATA)));
-                bundle.putString(REACT_PROPS,screenProps.toString());
+                screenProps.put(Constants.CACHE_GDATA, JSONObject.parse(CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_GDATA)));
+                bundle.putString(REACT_PROPS, screenProps.toString());
                 switch (view.getId()) {
                     case R.id.tv_dialog_msg_headlines:
-                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen,new Bundle());
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen, new Bundle());
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_background_img:
-                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen,bundle);
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen, bundle);
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_intro:
-                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen,bundle);
+                        NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen, bundle);
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_msg_cancel:
@@ -465,10 +472,75 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-
-        Intent i= new Intent(Intent.ACTION_MAIN);
+        //复写back键，主页点击back不finish页面
+        Intent i = new Intent(Intent.ACTION_MAIN);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addCategory(Intent.CATEGORY_HOME);
         startActivity(i);
+    }
+
+    /**
+     * 描述：设置底部栏红点显示的内容
+     *
+     * @param position 刷新哪个位置的红点
+     * @param num      显示的数值
+     */
+    private void setRedPoint(int position, String num) {
+        switch (position) {
+            case 0:
+                if (mStoryBadge.isHidden()) {
+                    mStoryBadge.show();
+                }
+                mStoryBadge.setText(num);
+                break;
+            case 1:
+                if (mNewsBadge.isHidden()) {
+                    mNewsBadge.show();
+                }
+                mNewsBadge.setText(num);
+                break;
+            case 2:
+                if (mSquareBadge.isHidden()) {
+                    mSquareBadge.show();
+                }
+                mSquareBadge.setText(num);
+                break;
+            case 3:
+                if (mMineBadge.isHidden()) {
+                    mMineBadge.show();
+                }
+                mMineBadge.setText(num);
+                break;
+        }
+    }
+
+    /**
+     * 描述：隐藏底部栏的红点
+     *
+     * @param position 隐藏的红点的位置
+     */
+    private void hideRedPoint(int position) {
+        switch (position) {
+            case 0:
+                if (!mStoryBadge.isHidden()) {
+                    mStoryBadge.hide();
+                }
+                break;
+            case 1:
+                if (!mNewsBadge.isHidden()) {
+                    mNewsBadge.hide();
+                }
+                break;
+            case 2:
+                if (!mSquareBadge.isHidden()) {
+                    mSquareBadge.hide();
+                }
+                break;
+            case 3:
+                if (!mMineBadge.isHidden()) {
+                    mMineBadge.hide();
+                }
+                break;
+        }
     }
 }

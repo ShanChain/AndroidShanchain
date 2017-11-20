@@ -31,7 +31,8 @@
         android:layout_marginRight="@dimen/dimens_10dp"
         android:background="@null"
         android:gravity="top"
-        android:hint="以角色的身份，今天的日记是什么内容?"
+        android:hint="输入内容"
+        android:maxLength="1000"
         android:minHeight="110dp"
         android:padding="@dimen/dimens_5dp"
         android:textColor="@color/colorTextDefault"
@@ -51,8 +52,7 @@
             android:id="@+id/iv_forward_from"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_yue"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/tv_forward_from_at"
@@ -63,7 +63,6 @@
             android:layout_marginTop="@dimen/dimens_15dp"
             android:layout_toRightOf="@id/iv_forward_from"
             android:lines="1"
-            android:text="太乙真人"
             android:textColor="@color/colorTextDefault"
             android:textSize="@dimen/sp_14"
             />
@@ -80,7 +79,6 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="#999"
-            android:text="静安寺古代的卡回调卡死角度看卡打开卡斯巴达克科技部打瞌睡卡舍不得看不懂看卡的吧"
             android:textSize="@dimen/sp_12"/>
 
     </RelativeLayout>
