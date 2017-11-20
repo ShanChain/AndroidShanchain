@@ -236,7 +236,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void initToolBar() {
-        mTbChat.setTitleText(toChatName);
         mTbChat.setOnLeftClickListener(this);
         mTbChat.setOnRightClickListener(this);
     }
