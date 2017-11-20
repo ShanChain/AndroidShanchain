@@ -226,5 +226,9 @@ public interface HttpApi {
     /** 转发微博*/
     String STORY_TRANSPOND = BASE_URL + "/v1/story/transpond";
 
+    /** 获取故事链*/
     String STORY_CHAIN_ID = BASE_URL + "/v1/story/chain/id";
+
+    /** 判断是否收藏*/
+    String SPACE_IS_FAV = BASE_URL + "/v1/space/isFav";
 }

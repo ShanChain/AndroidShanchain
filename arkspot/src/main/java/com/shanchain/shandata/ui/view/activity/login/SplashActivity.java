@@ -81,6 +81,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onError(int i, String s) {
                         LogUtils.i("环信登录失败 = " + s);
+                        exception();
                     }
 
                     @Override
@@ -107,41 +108,48 @@ public class SplashActivity extends AppCompatActivity {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取当前角色失败");
                         e.printStackTrace();
+                        exception();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("获取当前角色成功 " + response);
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            String data = JSONObject.parseObject(response).getString("data");
-                            if (TextUtils.isEmpty(data)){
-                                Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
-                                startActivity(intent);
-                                finish();
-                                return;
-                            }
-                            String character = JSONObject.parseObject(data).getString("characterInfo");
-                            if (TextUtils.isEmpty(character)){
-                                Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
-                                startActivity(intent);
-                                finish();
-                                return;
-                            }else {
-                                CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                if (characterInfo == null){
+                        try {
+                            LogUtils.i("获取当前角色成功 " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                String data = JSONObject.parseObject(response).getString("data");
+                                if (TextUtils.isEmpty(data)){
                                     Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
                                     startActivity(intent);
                                     finish();
-                                }else {
-                                    String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
-                                    int spaceId = characterInfo.getSpaceId();
-                                    int characterId = characterInfo.getCharacterId();
-                                    obtainSpaceInfo(characterId+"",character,spaceId+"",hxAccount);
+                                    return;
                                 }
+                                String character = JSONObject.parseObject(data).getString("characterInfo");
+                                if (TextUtils.isEmpty(character)){
+                                    Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    return;
+                                }else {
+                                    CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                                    if (characterInfo == null){
+                                        Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }else {
+                                        String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                                        int spaceId = characterInfo.getSpaceId();
+                                        int characterId = characterInfo.getCharacterId();
+                                        obtainSpaceInfo(characterId+"",character,spaceId+"",hxAccount);
+                                    }
 
+                                }
+                            }else {
+                                exception();
                             }
-
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            exception();
                         }
                     }
                 });
@@ -160,49 +168,56 @@ public class SplashActivity extends AppCompatActivity {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空详情失败");
                         e.printStackTrace();
+                        exception();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("space详情 = " + response);
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            final String data = JSONObject.parseObject(response).getString("data");
-                            //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
-                            RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
-                            final String userName = hxBean.getHxUserName();
-                            final String pwd = hxBean.getHxPassword();
-                            EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-                                @Override
-                                public void onSuccess() {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            LogUtils.i("登录环信账号成功");
-                                            EMClient.getInstance().chatManager().loadAllConversations();
-                                            EMClient.getInstance().groupManager().loadAllGroups();
-                                            RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
-                                            ToastUtils.showToast(SplashActivity.this,"穿越角色成功");
-                                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                            ActivityManager.getInstance().finishAllActivity();
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
+                        try {
+                            LogUtils.i("space详情 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                final String data = JSONObject.parseObject(response).getString("data");
+                                //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
+                                RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+                                final String userName = hxBean.getHxUserName();
+                                final String pwd = hxBean.getHxPassword();
+                                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                LogUtils.i("登录环信账号成功");
+                                                EMClient.getInstance().chatManager().loadAllConversations();
+                                                EMClient.getInstance().groupManager().loadAllGroups();
+                                                RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
+                                                ToastUtils.showToast(SplashActivity.this,"穿越角色成功");
+                                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                                ActivityManager.getInstance().finishAllActivity();
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
 
-                                }
+                                    }
 
-                                @Override
-                                public void onError(int i, String s) {
-                                    LogUtils.i("登录环信账号失败 = " + s);
-                                }
+                                    @Override
+                                    public void onError(int i, String s) {
+                                        LogUtils.i("登录环信账号失败 = " + s);
+                                        exception();
+                                    }
 
-                                @Override
-                                public void onProgress(int i, String s) {
+                                    @Override
+                                    public void onProgress(int i, String s) {
 
-                                }
-                            });
+                                    }
+                                });
 
+                            }
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                            exception();
                         }
                     }
                 });
@@ -211,6 +226,12 @@ public class SplashActivity extends AppCompatActivity {
 
     private void error() {
         Intent intent = new Intent(this, StoryTitleActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void exception(){
+        Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
         finish();
     }

@@ -20,7 +20,7 @@ public class GlideUtils {
      */
     public static void load(Context context, String url, final ImageView iv, int placeHolderResId){
         if (placeHolderResId == 0){
-            placeHolderResId = R.drawable.abs_addanewrole_def_photo_default;
+            placeHolderResId = R.drawable.shape_pic_default;
         }
         Glide.with(context).load(url).dontAnimate().placeholder(placeHolderResId).into(iv);
     }

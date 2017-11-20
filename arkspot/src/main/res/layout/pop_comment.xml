@@ -30,6 +30,7 @@
             android:gravity="center_vertical"
             android:hint="在这里说点什么吧"
             android:maxLines="5"
+            android:maxLength="140"
             android:paddingBottom="@dimen/dimens_10dp"
             android:paddingLeft="@dimen/dimens_15dp"
             android:paddingRight="@dimen/dimens_10dp"

@@ -119,6 +119,7 @@
                     android:gravity="center_vertical"
                     android:hint="请输入角色昵称"
                     android:lines="1"
+                    android:maxLength="16"
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/sp_12"
                     android:textColor="@color/colorTextDefault"
@@ -139,29 +140,13 @@
                 android:background="@drawable/shape_bg_edit_report"
                 android:gravity="top"
                 android:hint="简单介绍一下角色吧~"
+                android:maxLength="1000"
                 android:padding="@dimen/dimens_10dp"
                 android:textColor="@color/colorTextDefault"
                 android:textColorHint="@color/colorHint"
                 android:textCursorDrawable="@null"
                 android:textSize="@dimen/sp_12"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimens_15dp"
-                android:text="请确保角色符合要求，且不要和现有角色重复哦~"
-                android:textColor="@color/colorHint"
-                android:textSize="10sp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimens_15dp"
-                android:layout_marginRight="@dimen/dimens_15dp"
-                android:layout_marginTop="@dimen/dimens_5dp"
-                android:text="时空管理局和当前时空的管理员都会审核这个角色。如果审核不通过，你可能 无法继续使用这个角色。你还可以补充这个角色的人设长文。"
-                android:textColor="@color/colorHint"
-                android:textSize="10sp"/>
         </LinearLayout>
 
     </ScrollView>

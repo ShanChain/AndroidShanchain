@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.shanchain.shandata.ui.story.ForwardingActivity;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseActivity;

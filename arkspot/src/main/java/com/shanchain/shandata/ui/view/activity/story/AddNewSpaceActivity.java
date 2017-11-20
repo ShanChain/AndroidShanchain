@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -387,10 +388,26 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
 
                         @Override
                         public void onResponse(String response, int id) {
-                            closeLoadingDialog();
-                            ToastUtils.showToast(mContext,"添加时空成功");
-                            LogUtils.i("创建时空模型成功 = " + response);
-                            finish();
+                            try {
+                                closeLoadingDialog();
+                                LogUtils.i("创建时空模型成功 = " + response);
+                                String code = SCJsonUtils.parseCode(response);
+                                if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                    String resData = SCJsonUtils.parseData(response);
+                                    if (TextUtils.isEmpty(resData)){
+                                        ToastUtils.showToast(mContext,"创建世界失败");
+                                    }else {
+                                        finish();
+                                    }
+                                }else if (TextUtils.equals(code,NetErrCode.SPACE_CREATE_ERR_CODE)){
+                                    ToastUtils.showToast(mContext,"当前世界名称已存在");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ToastUtils.showToast(mContext,"创建世界失败");
+                            }
+
+
                         }
                     });
 

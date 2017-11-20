@@ -30,7 +30,7 @@ import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.FriendHomePresenter;
 import com.shanchain.shandata.ui.presenter.impl.FriendHomePresenterImpl;
-import com.shanchain.shandata.ui.story.ForwardingActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.ui.view.activity.mine.view.FriendHomeView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
@@ -69,6 +69,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private int size = 10;
     private boolean isLoadMore = false;
     private LinearLayout mLlConversation;
+    private String mName = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -85,6 +86,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             JSONObject rnGData = jsonObject.getJSONObject("gData");
             JSONObject rnData = jsonObject.getJSONObject("data");
             mCharacterId = Integer.parseInt(rnData.getString("characterId"));
+
         }
 
         mPresenter = new FriendHomePresenterImpl(this);
@@ -175,9 +177,9 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                     mLlConversation.setVisibility(View.GONE);
                 }
             }
-
+            mName = friendInfo.getName();
             GlideUtils.load(mContext, friendInfo.getHeadImg(), mIvHead, 0);
-            mTvName.setText(friendInfo.getName() + "(No." + friendInfo.getModelNo() + ")");
+            mTvName.setText(mName + "(No." + friendInfo.getModelNo() + ")");
             mTvDes.setText(friendInfo.getSignature());
             mBtnFocus.setText(isFocus ? "已关注" : "关注TA");
         }
@@ -234,6 +236,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             Intent intent = new Intent(mContext, ChatRoomActivity.class);
             intent.putExtra("isGroup", false);
             intent.putExtra("toChatName", hxUserName);
+            intent.putExtra("name",mName);
             startActivity(intent);
         }
     }

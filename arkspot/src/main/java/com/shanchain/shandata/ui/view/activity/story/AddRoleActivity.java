@@ -18,6 +18,18 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.OssHelper;
+import com.shanchain.data.common.utils.SCImageUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -27,15 +39,9 @@ import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.OssHelper;
-import com.shanchain.data.common.utils.SCImageUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -392,7 +398,23 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                         closeLoadingDialog();
                         ToastUtils.showToast(mContext, "添加角色成功");
                         LogUtils.i("创建人物模型成功 = " + response);
-                        finish();
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            String resData = SCJsonUtils.parseData(response);
+                            if (TextUtils.isEmpty(resData)){
+                                ToastUtils.showToast(mContext,"创建人物模型失败");
+                            }else {
+                                SCBaseEvent event = new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_MODEL_CREATE,null,null);
+                                EventBus.getDefault().post(event);
+                                ActivityStackManager.getInstance().finishActivity(SearchRoleActivity.class);
+                                finish();
+                            }
+                        } else if (TextUtils.equals(code,NetErrCode.SPACE_CREATE_ERR_CODE)){
+                            ToastUtils.showToast(mContext,"当前人物名称已存在");
+                        }else {
+                            ToastUtils.showToast(mContext,"创建人物模型失败");
+                        }
+
                     }
                 });
     }

@@ -337,8 +337,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                         LogUtils.i("创建话题失败");
                         e.printStackTrace();
                         closeLoadingDialog();
-                        ToastUtils.showToast(mContext,"创建话题失败");
-                        complete();
+                        ToastUtils.showToast(mContext,"网络异常");
                     }
 
                     @Override
@@ -349,13 +348,14 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                     complete();
+                            }else if (TextUtils.equals(code,NetErrCode.SPACE_CREATE_ERR_CODE)){
+                                ToastUtils.showToast(mContext,"当前话题名称已存在");
                             }else {
                                 ToastUtils.showToast(mContext,"创建话题失败");
-                                complete();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            complete();
+                            ToastUtils.showToast(mContext,"创建话题失败");
                         }
 
                     }

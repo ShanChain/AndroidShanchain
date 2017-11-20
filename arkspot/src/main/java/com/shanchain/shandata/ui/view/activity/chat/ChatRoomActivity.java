@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -215,7 +216,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
         String s = intent.getStringExtra("toChatName");
-
+        String name = intent.getStringExtra("name");
+        mTbChat.setTitleText(name);
         String cacheCharacterInfo = SCCacheUtils.getCacheCharacterInfo();
         CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo, CharacterInfo.class);
         myHeadImg = characterInfo.getHeadImg();
@@ -224,6 +226,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             mChatType = EMMessage.ChatType.GroupChat;
         } else {
             mChatType = EMMessage.ChatType.Chat;
+
         }
         this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
@@ -350,7 +353,10 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             @Override
             public void onClick(View v) {
                 String sceneContent = etSceneContent.getText().toString().trim();
-                ToastUtils.showToast(ChatRoomActivity.this, sceneContent);
+                if (TextUtils.isEmpty(sceneContent)){
+                    ToastUtils.showToast(mContext,"不能添加空的情景");
+                    return;
+                }
                 int msgAttr = Constants.ATTR_SCENE;
                 mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg);
                 dialog.dismiss();
@@ -367,7 +373,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         String msg = mEtChatMsg.getText().toString();
         //设置消息类型
         int msgAttr = Constants.ATTR_DEFAULT;
-
         boolean on = mShsChat.isOn();
         if (on) {
             //闲聊
