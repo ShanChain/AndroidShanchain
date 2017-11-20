@@ -227,7 +227,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 tvSendContent.setText(msg);
                 tvSendTime.setText(timestampString);
                 tvSendNick.setText(nickName);
-                GlideUtils.load(ivSendAvatar.getContext(),headImg,ivSendAvatar);
+                GlideUtils.load(ivSendAvatar.getContext(),headImg,ivSendAvatar,0);
                 if (position == 0) {
                     tvSendTime.setVisibility(View.VISIBLE);
                 } else {
@@ -244,7 +244,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 tvReceiveContent.setText(msg);
                 tvReceiveTime.setText(timestampString);
                 tvReceiverNick.setText(nickName);
-                GlideUtils.load(ivReceiverAvatar.getContext(),headImg,ivReceiverAvatar);
+                GlideUtils.load(ivReceiverAvatar.getContext(),headImg,ivReceiverAvatar,0);
                 if (position == 0) {
                     tvReceiveTime.setVisibility(View.VISIBLE);
                 } else {

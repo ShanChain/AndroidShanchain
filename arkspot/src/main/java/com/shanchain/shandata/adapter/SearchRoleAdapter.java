@@ -24,7 +24,7 @@ public class SearchRoleAdapter extends BaseQuickAdapter<SpaceCharacterBean,BaseV
 
     @Override
     protected void convert(BaseViewHolder helper, SpaceCharacterBean item) {
-        GlideUtils.load(mContext,item.getHeadImg(),(ImageView) helper.getView(R.id.iv_item_search_role));
+        GlideUtils.load(mContext,item.getHeadImg(),(ImageView) helper.getView(R.id.iv_item_search_role),0);
 
         helper.setText(R.id.tv_item_search_role_name,item.getName());
         helper.setText(R.id.tv_item_search_role_des,item.getIntro());

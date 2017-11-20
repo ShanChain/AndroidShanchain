@@ -41,7 +41,7 @@ public class SceneNumbersAdapter extends BaseQuickAdapter<SceneMemberInfo, BaseV
         helper.setText(R.id.tv_item_all_des, item.getDes());
 
 
-        GlideUtils.load(mContext,item.getAvatar(),(ImageView) helper.getView(R.id.iv_item_scene_all_avatar),R.drawable.photo_yue);
+        GlideUtils.load(mContext,item.getAvatar(),(ImageView) helper.getView(R.id.iv_item_scene_all_avatar),0);
 
         helper.addOnClickListener(R.id.tv_item_all_leave);
 

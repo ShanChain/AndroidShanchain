@@ -36,7 +36,7 @@ public class AttentionAdapter extends BaseMultiItemQuickAdapter<StoryInfo, BaseV
 
         holder.setText(R.id.tv_item_story_name,storyListDataBean.getInfo().getName());
         ImageView ivAvatar = holder.getView(R.id.iv_item_story_avatar);
-        GlideUtils.load(mContext,storyListDataBean.getInfo().getHeadImg(),ivAvatar,R.mipmap.abs_addanewrole_def_photo_default);
+        GlideUtils.load(mContext,storyListDataBean.getInfo().getHeadImg(),ivAvatar,0);
         String time = DateUtils.formatFriendly(new Date(storyListDataBean.getUpdateTime()));
         int commentCount = storyListDataBean.getCommentCount();
         holder.setText(R.id.tv_item_story_comment,commentCount + "");
