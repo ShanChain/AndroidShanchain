@@ -91,6 +91,12 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         initToolBar();
         initBottomNavigationBar();
+
+        checkApkVersion();
+    }
+
+    private void checkApkVersion() {
+
     }
 
     private void initToolBar() {
@@ -435,17 +441,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         switch (mFragmentId) {
             case 0:
-//                Intent intent = new Intent(this, StoryTitleActivity.class);
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 1:
 
                 break;
             case 2:
-//                Intent squareIntent = new Intent(this, StoryTitleActivity.class);
-//                startActivity(squareIntent);
-//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 3:
                 break;

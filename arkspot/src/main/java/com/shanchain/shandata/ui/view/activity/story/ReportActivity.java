@@ -45,6 +45,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     private String mCharacterId;
     private int mPosition;
     private String[] mReportList;
+    private boolean mIsGroupReport;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -54,8 +55,13 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     @Override
     protected void initViewsAndEvents() {
         Intent intent = getIntent();
-        mStoryId = intent.getStringExtra("storyId");
-        mCharacterId = intent.getStringExtra("characterId");
+        mIsGroupReport = intent.getBooleanExtra("groupReport", false);
+        if (mIsGroupReport) {
+
+        } else {
+            mStoryId = intent.getStringExtra("storyId");
+            mCharacterId = intent.getStringExtra("characterId");
+        }
         mReportList = getResources().getStringArray(R.array.reportList);
         initToolBar();
     }
@@ -118,23 +124,23 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     public void onRightClick(View v) {
 
 
-        if (isCommit) {
+        if (isCommit && !mIsGroupReport) {
             String content = mEtReportContent.getText().toString().trim();
             //提交举报信息
             showLoadingDialog();
-            final String reason = "举报类型:" + mReportList[mPosition] +";举报内容:"+content;
+            final String reason = "举报类型:" + mReportList[mPosition] + ";举报内容:" + content;
             SCHttpUtils.post()
                     .url(HttpApi.STORY_REPORT)
-                    .addParams("storyId",mStoryId.substring(1))
-                    .addParams("characterId",mCharacterId)
-                    .addParams("reason",reason)
+                    .addParams("storyId", mStoryId.substring(1))
+                    .addParams("characterId", mCharacterId)
+                    .addParams("reason", reason)
                     .build()
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
                             LogUtils.i("举报失败！");
-                            ToastUtils.showToast(mContext,"举报失败");
+                            ToastUtils.showToast(mContext, "举报失败");
                             e.printStackTrace();
                         }
 
@@ -142,13 +148,16 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                         public void onResponse(String response, int id) {
                             LogUtils.i("举报成功" + response);
                             closeLoadingDialog();
-                            ToastUtils.showToast(mContext,"感谢你的举报，我们会尽快处理~");
+                            ToastUtils.showToast(mContext, "感谢你的举报，我们会尽快处理~");
                             finish();
                         }
                     });
 
-        }else {
-            ToastUtils.showToast(this,"请选择举报类型！");
+        } else if (isCommit && mIsGroupReport) {
+            //群举报
+
+        } else {
+            ToastUtils.showToast(this, "请选择举报类型！");
         }
     }
 

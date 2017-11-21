@@ -183,7 +183,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
                 //场景
                 if (tvItemMsgSceneTitle != null){
                     tvItemMsgSceneTitle.setText("场景");
-                    getTvItemMsgSceneContent.setText(nick + " " + msg);
+                    getTvItemMsgSceneContent.setText(msg+" --("+nick+")");
                 }
 
             } else if (msgAttribute == Constants.ATTR_DEFAULT) {

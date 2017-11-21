@@ -208,6 +208,11 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onTitleClick(View v) {
+        String characterId = SCCacheUtils.getCacheCharacterId();
+        if (TextUtils.isEmpty(characterId)){
+            return;
+        }
+
         finish();
         overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
     }

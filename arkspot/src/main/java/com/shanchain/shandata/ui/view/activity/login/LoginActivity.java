@@ -13,17 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.global.UserType;
-import com.shanchain.shandata.manager.ActivityManager;
-import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.LoginUserInfoBean;
-import com.shanchain.shandata.ui.model.RegisterHxBean;
-import com.shanchain.shandata.ui.model.ResponseLoginBean;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -37,6 +26,19 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.global.UserType;
+import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.LoginUserInfoBean;
+import com.shanchain.shandata.ui.model.RegisterHxBean;
+import com.shanchain.shandata.ui.model.ResponseLoginBean;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
+import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.tencent.tauth.Tencent;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
@@ -73,6 +75,7 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
     private ProgressDialog mDialog;
+    private Tencent mTencent;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -85,15 +88,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void checkCache() {
-        String userId = getCache("0", Constants.CACHE_CUR_USER);
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
 
         LogUtils.e("当前用户id" + userId);
         if (!TextUtils.isEmpty(userId)) {
 
-            String characterId = SCCacheUtils.getCache(userId, Constants.CACHE_CHARACTER_ID);
-            String characterInfo = SCCacheUtils.getCache(userId, Constants.CACHE_CHARACTER_INFO);
-            String spaceId = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_ID);
-            String spaceInfo = SCCacheUtils.getCache(userId, Constants.CACHE_SPACE_INFO);
+            String characterId = getCache(userId, Constants.CACHE_CHARACTER_ID);
+            String characterInfo = getCache(userId, Constants.CACHE_CHARACTER_INFO);
+            String spaceId = getCache(userId, Constants.CACHE_SPACE_ID);
+            String spaceInfo = getCache(userId, Constants.CACHE_SPACE_INFO);
             String hxUserName = SCCacheUtils.getCacheHxUserName();
             String hxPwd = SCCacheUtils.getCacheHxPwd();
             String token = SCCacheUtils.getCacheToken();
@@ -152,9 +155,7 @@ public class LoginActivity extends BaseActivity {
                                         int characterId = characterInfo.getCharacterId();
                                         obtainSpaceInfo(characterId + "", character, spaceId + "", hxAccount);
                                     }
-
                                 }
-
                             } else {
                                 //code错误
                                 closeProgress();
@@ -224,7 +225,7 @@ public class LoginActivity extends BaseActivity {
         //加密后的密码
         String md5Pwd = MD5Utils.md5(pwd);
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
-
+        KeyboardUtils.hideSoftInput(this);
         showProgress();
 
         SCHttpUtils.postWithParamsForLogin()
@@ -351,7 +352,7 @@ public class LoginActivity extends BaseActivity {
 
             LogUtils.d("加密后openid：" + encryptOpenId);
             LogUtils.d("加密后accesstoken：" + encryptToken16);
-            LogUtils.d("用户类型：" + UserType.USER_TYPE_QQ);
+            LogUtils.d("用户类型：" + userType);
 
             thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
 
@@ -373,7 +374,7 @@ public class LoginActivity extends BaseActivity {
      */
     public void thridLogin(String time, String encryptOpenId, String encryptToken16, String headIcon, String nickName, String sex, String userType) {
         SCHttpUtils.postWithParamsForLogin()
-                .addParams("", time)
+                .addParams("Timestamp", time)
                 .addParams("encryptOpenId", encryptOpenId)
                 .addParams("encryptToken16", encryptToken16)
                 .addParams("headIcon", headIcon)
@@ -396,11 +397,9 @@ public class LoginActivity extends BaseActivity {
                                      String token = response.getToken();
                                      String account = response.getAccount();
                                      LoginUserInfoBean userInfo = response.getUserInfo();
-
                                      if (userInfo == null) {
                                          return;
                                      }
-
                                      int userId = userInfo.getUserId();
                                      LogUtils.d("登录成功  uid" + userId);
 
@@ -503,6 +502,7 @@ public class LoginActivity extends BaseActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         }
+
     }
 
 

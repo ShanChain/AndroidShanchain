@@ -18,7 +18,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.exceptions.HyphenateException;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.ChatRoomMsgAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -31,10 +34,6 @@ import com.shanchain.shandata.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -204,9 +203,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
          * 显示最多最近的20条聊天记录，然后定位RecyclerView到最后一行
          */
         mChatPresenter.initChat(toChatName);
-
         mSrlPullHistoryMsg.setOnRefreshListener(this);
-
     }
 
     /**
@@ -353,7 +350,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void onClick(View v) {
                 String sceneContent = etSceneContent.getText().toString().trim();
                 if (TextUtils.isEmpty(sceneContent)){
-                    ToastUtils.showToast(mContext,"不能添加空的情景");
+                    ToastUtils.showToast(mContext,"不能发布空的情境");
                     return;
                 }
                 int msgAttr = Constants.ATTR_SCENE;
@@ -396,6 +393,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         //群信息或者好友信息
         Intent intent = new Intent(this, SceneDetailsActivity.class);
         intent.putExtra("isGroup", mIsGroup);
+        if (mIsGroup){
+            intent.putExtra("","");
+        }
         intent.putExtra("toChatName", toChatName);
         startActivity(intent);
     }
@@ -444,26 +444,14 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         mChatRoomMsgAdapter.setOnBubbleLongClickListener(new ChatRoomMsgAdapter.OnBubbleLongClickListener() {
             @Override
             public void onBubbleLongClick(View v, final int position) {
-                ToastUtils.showToast(ChatRoomActivity.this, "长按了 " + msgInfoList.get(position).getEMMessage().getBody().toString());
-                if (msgInfoList.get(position).getEMMessage().direct() == EMMessage.Direct.SEND) {
 
-                    try {
-                        //消息撤回有问题
-                        EMClient.getInstance().chatManager().recallMessage(msgInfoList.get(position).getEMMessage());
-                        LogUtils.d("撤回消息成功~~~");
-                    } catch (HyphenateException e) {
-                        e.printStackTrace();
-                        LogUtils.d("撤回消息失败~~~");
-                    }
-
-                }
             }
         });
 
         mChatRoomMsgAdapter.setOnAvatarClickListener(new ChatRoomMsgAdapter.OnAvatarClickListener() {
             @Override
             public void onAvatarClick(View v, int position) {
-                ToastUtils.showToast(ChatRoomActivity.this, "点击了头像 他的消息是 " + msgInfoList.get(position).getEMMessage().getBody().toString());
+
             }
         });
 
@@ -514,6 +502,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             members.remove(0);
             memberList = members;
             mTbChat.setTitleText(groupName);
+            for (int i = 0; i < memberList.size(); i ++) {
+                LogUtils.i("群成员有 = " + members.get(i));
+            }
         }
     }
 
