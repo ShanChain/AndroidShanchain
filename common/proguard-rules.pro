@@ -185,9 +185,7 @@
 -keep public class com.shanchain.data.common.eventbus.**{
      *;
 }
-#  -keep class com.shanchain.data.common.cache.CommonCacheHelper {
-#       public *;
-#         }
+
   -keep class com.shanchain.data.common.cache.** {
          *;
          }
