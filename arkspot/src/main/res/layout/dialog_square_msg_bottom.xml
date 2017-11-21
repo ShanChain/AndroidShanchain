@@ -18,11 +18,6 @@
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
 
-    <View
-        style="@style/style_text_line_match"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"/>
-
     <TextView
         android:id="@+id/tv_dialog_msg_background_img"
         android:layout_width="match_parent"
@@ -34,11 +29,6 @@
         android:text="@string/background_img"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
-
-    <View
-        style="@style/style_text_line_match"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"/>
 
     <TextView
         android:id="@+id/tv_dialog_msg_intro"

@@ -231,4 +231,7 @@ public interface HttpApi {
 
     /** 判断是否收藏*/
     String SPACE_IS_FAV = BASE_URL + "/v1/space/isFav";
+    
+    /**获取角色点赞列表 */
+    String STORY_SUPPORT_LIST = BASE_URL + "/v1/story/support/list";
 }

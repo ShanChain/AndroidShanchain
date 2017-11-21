@@ -292,11 +292,10 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             hideFavoriteLayout();
             return;
         }
-        if (firstLoadLike) {
-            if (favoriteSpaceList.size() == 0) {
+        if (favoriteSpaceList.size() == 0&&likeDatas.size() == 0 ) {
                 hideFavoriteLayout();
+            return;
             }
-        }
         showFavoriteLayout();
         likeDatas.addAll(favoriteSpaceList);
         mStoryTitleLikeAdapter.notifyDataSetChanged();

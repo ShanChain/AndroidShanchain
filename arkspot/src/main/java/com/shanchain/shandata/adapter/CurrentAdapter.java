@@ -146,6 +146,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 holder.setText(R.id.tv_item_story_forwarding, bean.getTranspond() + "");
                 break;
             case StoryInfo.type2:
+                holder.setText(R.id.tv_item_story_title,bean.getTitle());
                 holder.setText(R.id.tv_item_story_content, bean.getIntro());
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 break;
