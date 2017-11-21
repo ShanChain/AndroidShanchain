@@ -103,7 +103,6 @@
 -keep class com.shanchain.shandata.ui.model.** { *; }
 -dontwarn com.shanchain.shandata.ui.model.**
 
--keep class com.shanchain.data.common.rn.**{ *; }
 -keep class java.nio.file.**{ *; }
 
 -keep class butterknife.** { *; }
