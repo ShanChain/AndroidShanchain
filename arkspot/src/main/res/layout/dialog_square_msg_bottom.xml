@@ -18,27 +18,17 @@
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
 
-    <View
-        style="@style/style_text_line_match"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"/>
-
     <TextView
         android:id="@+id/tv_dialog_msg_background_img"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:layout_marginRight="@dimen/dimens_10dp"
-        android:background="@color/colorWhite"
+        android:background="@drawable/shape_bg_dialog_item"
         android:gravity="center"
         android:text="@string/background_img"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
-
-    <View
-        style="@style/style_text_line_match"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"/>
 
     <TextView
         android:id="@+id/tv_dialog_msg_intro"
@@ -46,7 +36,7 @@
         android:layout_height="56dp"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:layout_marginRight="@dimen/dimens_10dp"
-        android:background="@drawable/shape_bg_dialog_bottom"
+        android:background="@drawable/shape_bg_dialog_item"
         android:gravity="center"
         android:text="@string/space_introduction"
         android:visibility="gone"

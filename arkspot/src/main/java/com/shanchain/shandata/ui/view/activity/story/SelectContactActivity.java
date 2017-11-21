@@ -204,7 +204,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                     });
         } else { //从新场景跳入该页面
 
-            SCHttpUtils.postWithChaId()
+            SCHttpUtils.postWithUidAndSpaceId()
                     .url(HttpApi.FOCUS_CONTACTS)
                     .build()
                     .execute(new StringCallback() {
@@ -345,12 +345,12 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             String cacheHxUserName = SCCacheUtils.getCacheHxUserName();
             String cacheCharacterInfo = SCCacheUtils.getCacheCharacterInfo();
             CharacterInfo characterInfo = JSONObject.parseObject(cacheCharacterInfo, CharacterInfo.class);
-            String name = characterInfo.getName();
+            final String name = characterInfo.getName();
             CreateGroupBean groupBean = new CreateGroupBean();
             groupBean.setMembers(selected);
             groupBean.setOwner(cacheHxUserName);
-            groupBean.setGroupname(name + "的对话场景");
-            groupBean.setDesc(name + "创建的对话场景");
+            groupBean.setGroupname(name + "创建的群");
+            groupBean.setDesc(name + "创建的群");
             groupBean.setIcon_url("");
             groupBean.setApproval(true);
             groupBean.setPub(true);
@@ -382,6 +382,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                                         Intent intent = new Intent(mContext, ChatRoomActivity.class);
                                         intent.putExtra("isGroup",true);
                                         intent.putExtra("toChatName",groupId);
+                                        intent.putExtra("name",name + "创建的群");
                                         startActivity(intent);
                                         finish();
                                     } else {

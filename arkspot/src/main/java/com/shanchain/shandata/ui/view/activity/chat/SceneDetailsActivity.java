@@ -1,7 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.chat;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,37 +11,34 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SceneDetailsAdapter;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.manager.ActivityManager;
-import com.shanchain.shandata.ui.model.ComUserInfo;
-import com.shanchain.shandata.ui.model.GroupMemberBean;
-import com.shanchain.shandata.ui.model.SceneImgInfo;
-import com.shanchain.shandata.ui.model.UserDetailInfo;
+import com.shanchain.shandata.ui.model.BdGroupMemberInfo;
+import com.shanchain.shandata.ui.model.NoticeBean;
+import com.shanchain.shandata.ui.model.SceneDetailData;
+import com.shanchain.shandata.ui.presenter.SceneDetailsPresenter;
+import com.shanchain.shandata.ui.presenter.impl.SceneDetailsPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.chat.view.SceneDetailsView;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.MarqueeText;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import okhttp3.Call;
 
-public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
+public class SceneDetailsActivity extends BaseActivity implements SceneDetailsView, ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
 
     @Bind(R.id.tb_scene_details)
@@ -63,39 +59,31 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
     TextView mTvSceneDetailsNumbers;
     @Bind(R.id.ll_scene_details_numbers)
     LinearLayout mLlSceneDetailsNumbers;
-    @Bind(R.id.tv_scene_details_all)
-    TextView mTvSceneDetailsAll;
-    @Bind(R.id.tv_scene_details_history)
-    TextView mTvSceneDetailsHistory;
     @Bind(R.id.sv_scene_details_msg)
     SwitchView mSvSceneDetailsMsg;
     @Bind(R.id.sv_scene_details_top)
     SwitchView mSvSceneDetailsTop;
-    @Bind(R.id.sv_scene_details_validation)
-    SwitchView mSvSceneDetailsValidation;
     @Bind(R.id.btn_scene_details_leave)
     Button mBtnSceneDetailsLeave;
     @Bind(R.id.rv_scene_details_numbers)
     RecyclerView mRvSceneDetailsNumbers;
     @Bind(R.id.iv_scene_details_all)
     ImageView mIvSceneDetailsAll;
-    @Bind(R.id.rl_scene_detail_check)
-    RelativeLayout mRlSceneDetailCheck;
+    @Bind(R.id.rl_group_info)
+    RelativeLayout mRlGroupInfo;
     private boolean mIsGroup;
     private String mToChatName;
 
     private String mCurrentUser;
-    private List<GroupMemberBean> mMembers;
-    private ComUserInfo mGroupOwner;
     /**
      * 描述：头像显示的数据集合
      */
-    private List<SceneImgInfo> mSceneImgInfos = new ArrayList<>();
+    private List<BdGroupMemberInfo> mSceneImgInfos = new ArrayList<>();
     /**
      * 描述：管理员数据集合
      */
-    private List<ComUserInfo> mAdmin = new ArrayList<>();
     private SceneDetailsAdapter mAdapter;
+    private SceneDetailsPresenter mPresenter;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -104,9 +92,10 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     protected void initViewsAndEvents() {
+        mPresenter = new SceneDetailsPresenterImpl(this);
         initToolBar();
-        initData();
         initRecyclerView();
+        initData();
     }
 
     private void initRecyclerView() {
@@ -117,32 +106,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         mRvSceneDetailsNumbers.setAdapter(mAdapter);
     }
 
-    private void onInitView() {
-
-        if (mMembers == null) {
-            return;
-        }
-        //默认隐藏加群验证设置
-        mRlSceneDetailCheck.setVisibility(View.GONE);
-        //当前用户是群主时，显示加群验证设置
-        if (mCurrentUser.equals(mGroupOwner.getUserName())) {
-            mRlSceneDetailCheck.setVisibility(View.VISIBLE);
-        }
-        //当前用户是群管理时，显示加群验证设置
-        for (int i = 0; i < mAdmin.size(); i++) {
-            if (mCurrentUser.equals(mAdmin.get(i).getUserName())) {
-                mRlSceneDetailCheck.setVisibility(View.VISIBLE);
-            }
-        }
-
-       // mTvSceneDetailsName.setText(mSceneTotalInfo.getGroupName());
-
-
-
-    }
-
     private void initData() {
-        showLoadingDialog(true);
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
         mToChatName = intent.getStringExtra("toChatName");
@@ -150,86 +114,12 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         LogUtils.d("是否是群组 " + mIsGroup);
         LogUtils.d("聊天对象 " + mToChatName);
         if (mIsGroup) {
-            //群
-            mIvSceneDetailsAll.setVisibility(View.VISIBLE);
-            mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
-            mTvSceneDetailsAnnouncement.setVisibility(View.VISIBLE);
-
-           //自己服务器极客接口获取群信息
-
-
+            showLoadingDialog(true);
+            //自己服务器极客接口获取群信息
+            mPresenter.getGroupInfo(mToChatName);
         } else {
-            //单聊
-            mIvSceneDetailsAll.setVisibility(View.GONE);
-            mRlSceneDetailCheck.setVisibility(View.GONE);
-            mBtnSceneDetailsLeave.setVisibility(View.GONE);
-            mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
 
-
-            //获取对聊人信息
-            SCHttpUtils.post()
-                    .url(HttpApi.HX_USER_DETAIL)
-                    .addParams("userName", "sc-738727063")
-                    .build()
-                    .execute(new SCHttpCallBack<UserDetailInfo>(UserDetailInfo.class) {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtils.e("获取用户信息失败");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(UserDetailInfo response, int id) {
-                            closeLoadingDialog();
-                            if (response == null) {
-                                LogUtils.d("..获取...sc-738727191....null.........");
-                                return;
-                            }
-
-
-                            LogUtils.d("????获取到用户信息" + response.getUserInfo().getUserName());
-                            SceneImgInfo sceneImgInfo = new SceneImgInfo();
-                            sceneImgInfo.setCharacterId(response.getCharacterId());
-                            sceneImgInfo.setUserName(response.getName());
-                            sceneImgInfo.setImg(response.getHeadImg());
-                            mSceneImgInfos.add(sceneImgInfo);
-                            mAdapter.notifyDataSetChanged();
-                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
-                        }
-
-                    });
-
-            //获取当前用户信息
-            SCHttpUtils.post()
-                    .url(HttpApi.HX_USER_DETAIL)
-                    .addParams("userName", mCurrentUser)
-                    .build()
-                    .execute(new SCHttpCallBack<UserDetailInfo>(UserDetailInfo.class) {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtils.e("获取用户信息失败");
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(UserDetailInfo response, int id) {
-                            closeLoadingDialog();
-                            if (response == null) {
-                                LogUtils.d("..获取...mCurrentUser....null.........");
-                                return;
-                            }
-                            LogUtils.d("获取到用户信息" + response.getUserInfo().getUserName());
-                            SceneImgInfo sceneImgInfo = new SceneImgInfo();
-                            sceneImgInfo.setCharacterId(response.getCharacterId());
-                            sceneImgInfo.setUserName(response.getName());
-                            sceneImgInfo.setImg(response.getHeadImg());
-                            mSceneImgInfos.add(sceneImgInfo);
-                            mAdapter.notifyDataSetChanged();
-                            mTvSceneDetailsNumbers.setText("角色  " + "(" + mSceneImgInfos.size() + ")");
-                        }
-
-                    });
-            onInitView();
+            mPresenter.getUserInfo(mToChatName);
         }
 
     }
@@ -239,7 +129,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
         mTbSceneDetails.setOnRightClickListener(this);
     }
 
-    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.tv_scene_details_all, R.id.tv_scene_details_history, R.id.btn_scene_details_leave})
+    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.btn_scene_details_leave})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_scene_details_announcement:
@@ -263,14 +153,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                     return;
                 }
                 break;
-            case R.id.tv_scene_details_all:
-                //全部对戏
 
-                break;
-            case R.id.tv_scene_details_history:
-                //历史大戏
-
-                break;
             case R.id.btn_scene_details_leave:
                 //离开(退群)
                 leave();
@@ -314,44 +197,16 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
      */
     private void leaveScene() {
         //退群操作
-        showLoadingDialog();
-        ToastUtils.showToast(this, "退群成功！");
-        ThreadUtils.runOnSubThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    EMClient.getInstance().groupManager().leaveGroup(mToChatName);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeLoadingDialog();
-                            ToastUtils.showToast(SceneDetailsActivity.this, "退群成功");
-                            ActivityManager.getInstance().finishActivity(ChatRoomActivity.class);
-                            ActivityManager.getInstance().finishActivity(ContactActivity.class);
-                            finish();
-                        }
-                    });
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeLoadingDialog();
-                            ToastUtils.showToast(SceneDetailsActivity.this, "退群失败");
-                        }
-                    });
-                }
-            }
-        });
-
-
+        mPresenter.leaveGroup(mToChatName);
     }
 
     private void allNumbers() {
         Intent intent = new Intent(this, SceneNumbersActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("members", (Serializable) mMembers);
-        intent.putExtras(bundle);
+        List<BdGroupMemberInfo> data = mAdapter.getData();
+        if (data != null) {
+            String memberList = JSONObject.toJSONString(data);
+            intent.putExtra("member", memberList);
+        }
         startActivity(intent);
     }
 
@@ -376,6 +231,7 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
+                        reportIntent.putExtra("groupReport",true);
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -392,6 +248,62 @@ public class SceneDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
         });
         customDialog.show();
+    }
+
+    @Override
+    public void initGroupInfoSuc(SceneDetailData sceneDetailInfo, List<BdGroupMemberInfo> bdInfos) {
+        //群
+        mIvSceneDetailsAll.setVisibility(View.VISIBLE);
+        mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
+        mTvSceneDetailsAnnouncement.setVisibility(View.VISIBLE);
+        mRlGroupInfo.setVisibility(View.VISIBLE);
+        closeLoadingDialog();
+        if (sceneDetailInfo != null) {
+            GlideUtils.load(mContext, sceneDetailInfo.getIconUrl(), mIvSceneDetailsImg, 0);
+            mTvSceneDetailsDes.setText(sceneDetailInfo.getGroupDesc());
+            mTvSceneDetailsName.setText(sceneDetailInfo.getGroupName());
+        }
+
+        if (bdInfos != null) {
+            mAdapter.setNewData(bdInfos);
+            mAdapter.notifyDataSetChanged();
+            mTvSceneDetailsNumbers.setText("角色  ("+bdInfos.size()+")");
+        }
+    }
+
+    @Override
+    public void initUserInfo(List<BdGroupMemberInfo> bdInfos) {
+        //单聊
+        mIvSceneDetailsAll.setVisibility(View.GONE);
+        mBtnSceneDetailsLeave.setVisibility(View.GONE);
+        mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
+        mRlGroupInfo.setVisibility(View.GONE);
+        if (bdInfos != null) {
+            mAdapter.setNewData(bdInfos);
+            mAdapter.notifyDataSetChanged();
+            mTvSceneDetailsNumbers.setText("角色  ("+bdInfos.size()+")");
+        }
+
+    }
+
+    @Override
+    public void initNoticeSuc(NoticeBean noticeBean) {
+        if (noticeBean != null){
+            String notice = noticeBean.getNotice();
+            mTvSceneDetailsAnnouncement.setText(notice);
+        }
+
+    }
+
+    @Override
+    public void leaveGroupSuc(boolean result) {
+        if (result){
+            ToastUtils.showToast(mContext,"退群成功");
+            ActivityStackManager.getInstance().finishActivity(ChatRoomActivity.class);
+            finish();
+        }else {
+            ToastUtils.showToast(mContext,"退群失败");
+        }
     }
 
 }

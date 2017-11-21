@@ -218,6 +218,8 @@
         <activity android:name=".ui.view.activity.story.ForwardingActivity"
                   android:windowSoftInputMode="adjustResize">
         </activity>
+
+
     </application>
 
 </manifest>

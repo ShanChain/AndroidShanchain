@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.soloader.SoLoader;
 import com.hyphenate.EMContactListener;
@@ -19,20 +18,18 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
 import com.shanchain.shandata.manager.CharacterManager;
 import com.shanchain.shandata.push.PushManager;
-import com.shanchain.shandata.service.MyPushIntentService;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
-import com.shanchain.data.common.BaseApplication;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.utils.LogUtils;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.common.inter.ITagManager;
@@ -58,9 +55,10 @@ public class MyApplication extends BaseApplication {
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
-
+    private static final String QQ_KEY = "cc7M3ByR9jPcsIDg";
     private static final String WEIBO_ID = "2916880440";
-    private static final String REDIRECT_URL = "http://api.weibo.com/oauth2/default.html";
+    private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
+    private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
 
     UmengNotificationClickHandler mNotificationClickHandler = new UmengNotificationClickHandler() {
@@ -99,6 +97,11 @@ public class MyApplication extends BaseApplication {
         initSCCache();
         initShareAndLogin();
         initInstance();
+        initUmengSocial();
+    }
+
+    private void initUmengSocial() {
+
     }
 
     private void initInstance(){

@@ -33,8 +33,6 @@ import com.shanchain.shandata.rn.fragment.RNfragment;
 import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.model.SpaceInfo;
 import com.shanchain.shandata.ui.view.activity.chat.ContactActivity;
-import com.shanchain.shandata.ui.view.activity.chat.FindSceneActivity;
-import com.shanchain.shandata.ui.view.activity.chat.MeetPersonActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReleaseDynamicActivity;
 import com.shanchain.shandata.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
@@ -91,6 +89,12 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         initToolBar();
         initBottomNavigationBar();
+
+        checkApkVersion();
+    }
+
+    private void checkApkVersion() {
+
     }
 
     private void initToolBar() {
@@ -337,7 +341,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void newsRightClick() {
         final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_msg_bottom, new int[]{R.id.tv_dialog_msg_new,
-                R.id.tv_dialog_msg_focus, R.id.tv_dialog_msg_code, R.id.tv_dialog_msg_cancel});
+                R.id.tv_dialog_msg_focus, R.id.tv_dialog_msg_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -356,14 +360,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         startActivity(intent);
                         customDialog.dismiss();
                         break;
-                    case R.id.tv_dialog_msg_code:
+                    /*case R.id.tv_dialog_msg_code:
                         //扫码
                         readyGo(FindSceneActivity.class);
                         customDialog.dismiss();
-                        break;
+                        break;*/
                     case R.id.tv_dialog_msg_cancel:
                         //取消
-                        readyGo(MeetPersonActivity.class);
+                       // readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
                     default:
@@ -435,17 +439,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         switch (mFragmentId) {
             case 0:
-//                Intent intent = new Intent(this, StoryTitleActivity.class);
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 1:
 
                 break;
             case 2:
-//                Intent squareIntent = new Intent(this, StoryTitleActivity.class);
-//                startActivity(squareIntent);
-//                overridePendingTransition(R.anim.activity_enter_alpha, R.anim.activity_anim_default);
                 break;
             case 3:
                 break;

@@ -185,8 +185,6 @@ public class NewsFragment extends BaseFragment {
             sourceDatas.add(messageHomeInfo);
         }
 
-
-
     }
 
 }

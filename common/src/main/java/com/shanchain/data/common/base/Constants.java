@@ -71,6 +71,9 @@ public interface Constants {
         String SC_HOST_TEST = BuildConfig.HOST_TEST;
         String SC_HOST_RELEASE = BuildConfig.HOST_RELEASE;
 
-
+        /**************群成员配置信息**************/
+        int GROUP_OWNER = 0;
+        int GROUP_ADMIN = 1;
+        int GROUP_MEMBER = 2;
 
 }

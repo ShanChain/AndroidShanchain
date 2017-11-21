@@ -8,10 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.AttentionAdapter;
+import com.shanchain.shandata.adapter.MyStoryAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.StoryContentBean;
 import com.shanchain.shandata.ui.model.StoryInfo;
+import com.shanchain.shandata.ui.presenter.PraisedPresenter;
+import com.shanchain.shandata.ui.presenter.impl.PraisedPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.mine.view.PraisedView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryChainActivity;
@@ -20,8 +26,6 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.other.SCEmptyView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +33,7 @@ import java.util.List;
 import butterknife.Bind;
 
 
-public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener,PraisedView, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.tb_praised)
     ArthurToolBar mTbPraised;
@@ -37,10 +41,14 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     RecyclerView mRvPraised;
     @Bind(R.id.srl_praised)
     SwipeRefreshLayout mSrlPraised;
-    private List<StoryInfo> mDatas;
-    private AttentionAdapter mAdapter;
+    private List<StoryContentBean> mDatas = new ArrayList<>();
+    private MyStoryAdapter mAdapter;
     private String tbTitle = "";
     private View emptyView;
+    private boolean isPraised;
+    private int page = 0;
+    private int size = 0;
+    private boolean isFirst;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_praised;
@@ -51,9 +59,11 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         Intent intent = getIntent();
         String reactExtra = intent.getStringExtra("ReactExtra");
         if (reactExtra.equals("praised")){
+            isPraised = true;
             tbTitle = getString(R.string.str_tb_title_praised);
             emptyView = new SCEmptyView(this,R.string.str_praised_empty_word,R.mipmap.abs_liked_icon_thumbsup_default);
         }else if (reactExtra.equals("story")){
+            isPraised = false;
             tbTitle = getString(R.string.str_tb_title_my_stories);
             emptyView = new SCEmptyView(this,R.string.str_story_empty_word,R.mipmap.abs_mylongtext_icon_longtext_default);
         }
@@ -65,7 +75,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     private void initRecyclerView() {
         mRvPraised.setLayoutManager(new LinearLayoutManager(this));
         mSrlPraised.setOnRefreshListener(this);
-        mAdapter = new AttentionAdapter(mDatas);
+        mAdapter = new MyStoryAdapter(R.layout.item_story_type3,mDatas);
         mRvPraised.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mRvPraised.setAdapter(mAdapter);
         mAdapter.setEmptyView(emptyView);
@@ -123,7 +133,13 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initData() {
-        mDatas = new ArrayList<>();
+        PraisedPresenter presenter = new PraisedPresenterImpl(this);
+        if (isPraised){
+            presenter.initPraiseData(page,size);
+        }else {
+
+        }
+
 
     }
 
@@ -169,8 +185,8 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-                        reportIntent.putExtra("storyId",mDatas.get(position).getStoryListDataBean().getStoryId()+"");
-                        reportIntent.putExtra("characterId",mDatas.get(position).getStoryListDataBean().getInfo().getCharacterId()+"");
+//                        reportIntent.putExtra("storyId",mDatas.get(position).getStoryListDataBean().getStoryId()+"");
+//                        reportIntent.putExtra("characterId",mDatas.get(position).getStoryListDataBean().getInfo().getCharacterId()+"");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -207,4 +223,16 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         finish();
     }
 
+    @Override
+    public void initPraisedSuc(List<StoryContentBean> contentBeanList, boolean last) {
+        if (contentBeanList == null){
+            initRecyclerView();
+            return;
+        }
+
+
+        isFirst = true;
+
+
+    }
 }

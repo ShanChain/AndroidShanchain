@@ -54,6 +54,7 @@
         android:textSize="@dimen/sp_12"/>
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/rl_add_announcement_img"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -66,8 +67,7 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dimens_5dp"
             android:background="@color/colorWhite"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_yue"/>
+            android:scaleType="centerCrop"/>
 
         <ImageView
             android:id="@+id/iv_add_announcement_delete"

@@ -45,6 +45,11 @@ public class SCHttpUtils {
 
     }
 
+    public static PostFormBuilder postWithUidAndSpaceId(){
+        String spaceId = SCCacheUtils.getCacheSpaceId();
+        return postWithUserId().addParams("spaceId",spaceId);
+    }
+
     /**
      *  描述：带当前角色id的post请求
      *

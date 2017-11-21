@@ -200,8 +200,6 @@ public class ChatPresenterImpl implements ChatPresenter {
                             e.printStackTrace();
                             mChatView.initGroupSuccess(null);
                         }
-
-
                     }
                 });
 
