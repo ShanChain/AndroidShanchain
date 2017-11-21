@@ -170,9 +170,9 @@
     -keepattributes *JavascriptInterface*
     -keep class com.wyk.test.js.** { *; }
 
--keep public class com.shanchain.data.common.**{
-     public static *;
-}
+#-keep public class com.shanchain.data.common.**{
+#      *;
+#}
 -keep public class com.shanchain.data.common.rn.modules.**{
      *;
 }
@@ -185,22 +185,19 @@
 -keep public class com.shanchain.data.common.eventbus.**{
      *;
 }
-  -keepclassmembers class com.shanchain.data.common.cache.CommonCacheHelper {
-        public *;
-        }
-  -keepclassmembers class com.shanchain.data.common.cache.SCCacheUtils {
-         public *;
-        }
-  -keepclassmembers class com.shanchain.data.common.cache.SCCacheUtils {
-          public static *;
+#  -keep class com.shanchain.data.common.cache.CommonCacheHelper {
+#       public *;
+#         }
+  -keep class com.shanchain.data.common.cache.** {
+         *;
          }
-  -keepclassmembers class com.shanchain.data.common.net.** {
+  -keep class com.shanchain.data.common.net.** {
           public *;
          }
-  -keepclassmembers class com.shanchain.data.common.ui.** {
-           public *;
+  -keep class com.shanchain.data.common.ui.** {
+         public   *;
          }
-  -keepclassmembers class com.shanchain.data.common.utils.** {
+  -keep class com.shanchain.data.common.utils.** {
           public *;
            }
 
