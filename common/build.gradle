@@ -20,8 +20,8 @@ android {
         debug {
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled !project.ext.IS_DEV_ENV
+            shrinkResources !project.ext.IS_DEV_ENV
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
