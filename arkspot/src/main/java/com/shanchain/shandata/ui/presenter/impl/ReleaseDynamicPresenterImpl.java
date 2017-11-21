@@ -298,7 +298,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 compressImgPaths.add(path);
                 File file1 = new File(path);
                 LogUtils.d(i + "压缩后图片大小 = " + file1.length());
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 LogUtils.d("压缩图片错误");
             }

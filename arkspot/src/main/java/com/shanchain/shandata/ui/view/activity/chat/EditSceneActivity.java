@@ -154,7 +154,7 @@ public class EditSceneActivity extends BaseActivity implements ArthurToolBar.OnL
                     LogUtils.d("新图片的大小" + file1.length());
 
                     Glide.with(mContext).load(filePath).into(mIvImg2);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
