@@ -145,7 +145,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.tv_head_comment_content);
-
+        TextView tvTitle = (TextView) mHeadView.findViewById(R.id.tv_head_comment_title);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         mTvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
@@ -168,13 +168,15 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
 
         like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
         like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
-
+        tvTitle.setText(mNovelModel.getTitle());
         mTvHeadLike.setCompoundDrawables(isBeFav ? like_selected : like_def, null, null, null);
         mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
         String intro = mNovelModel.getIntro();
 
-        tvContent.setText(intro);
+        String replace = intro.replace(mNovelModel.getTitle() + "\n", "");
+
+        tvContent.setText(replace);
 
 
         ivAvatar.setOnClickListener(this);

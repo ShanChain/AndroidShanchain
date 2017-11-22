@@ -48,7 +48,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     private boolean isPraised;
     private int page = 0;
     private int size = 0;
-    private boolean isFirst;
+    private boolean isFirst = true;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_praised;
@@ -225,13 +225,33 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     public void initPraisedSuc(List<StoryContentBean> contentBeanList, boolean last) {
+
         if (contentBeanList == null){
-            initRecyclerView();
-            return;
+            if (isFirst){
+                initRecyclerView();
+            }else {
+
+            }
+        }else {
+            if (isFirst){
+                initRecyclerView();
+                mAdapter.setNewData(contentBeanList);
+                mAdapter.disableLoadMoreIfNotFullPage(mRvPraised);
+            }else {
+                mAdapter.addData(contentBeanList);
+            }
+            mAdapter.notifyDataSetChanged();
+            if (last) {
+                mAdapter.loadMoreEnd();
+            } else {
+                mAdapter.loadMoreComplete();
+            }
         }
 
 
-        isFirst = true;
+
+
+        isFirst = false;
 
 
     }
