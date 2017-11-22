@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: "${project.rootDir}/config.gradle"
 
 android {
     compileSdkVersion 25
@@ -46,9 +47,9 @@ android {
             // 指定签名
             signingConfig signingConfigs.release
             buildConfigField "boolean", "LOG_DEBUG", "false"
-            minifyEnabled true
+            minifyEnabled !project.ext.IS_DEV_ENV
             zipAlignEnabled false
-            shrinkResources true
+            shrinkResources !project.ext.IS_DEV_ENV
             //设置是否混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
