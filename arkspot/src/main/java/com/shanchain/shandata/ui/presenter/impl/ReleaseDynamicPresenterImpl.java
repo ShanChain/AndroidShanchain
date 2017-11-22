@@ -6,12 +6,6 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.shanchain.shandata.ui.model.ReleaseContentInfo;
-import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
-import com.shanchain.shandata.ui.model.RichTextModel;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
-import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
-import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -21,10 +15,15 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
 import com.shanchain.data.common.utils.SCImageUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.shandata.ui.model.ReleaseContentInfo;
+import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
+import com.shanchain.shandata.ui.model.RichTextModel;
+import com.shanchain.shandata.ui.model.UpLoadImgBean;
+import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
+import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,6 +222,9 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         }
         StringBuilder intro = new StringBuilder();
         for (int i = 0; i < contents.size(); i++) {
+            if ( i == 0 ) {
+                continue;
+            }
             if (i == contents.size() - 1) {
                 intro.append(contents.get(i));
             } else {
@@ -238,7 +240,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         ReleaseStoryContentInfo contentInfo = new ReleaseStoryContentInfo();
         contentInfo.setContent(content);
         contentInfo.setIntro(intro.toString());
-        contentInfo.setTitle("");
+        contentInfo.setTitle(title);
         contentInfo.setTailId("");
 
         String dataString = JSONObject.toJSONString(contentInfo);

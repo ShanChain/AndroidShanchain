@@ -68,8 +68,6 @@
                     android:id="@+id/et_add_space_tag"
                     android:layout_width="130dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="@dimen/dimens_10dp"
-                    android:layout_toLeftOf="@id/iv_add_space_tag"
                     android:background="@drawable/shape_bg_edit_report"
                     android:gravity="center_vertical"
                     android:hint="自定义标签"
@@ -80,7 +78,10 @@
                     android:textColor="@color/colorTextDefault"
                     android:textColorHint="@color/colorHint"
                     android:textCursorDrawable="@null"
-                    android:textSize="@dimen/sp_12"/>
+                    android:textSize="@dimen/sp_12"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/iv_add_space_tag"
+                    android:layout_toStartOf="@+id/iv_add_space_tag"/>
 
             </RelativeLayout>
 

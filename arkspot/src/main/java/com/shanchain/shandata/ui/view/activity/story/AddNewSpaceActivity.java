@@ -15,19 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.AddRoleAdapter;
-import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.SpaceModel;
-import com.shanchain.shandata.ui.model.StoryTagInfo;
-import com.shanchain.shandata.ui.model.TagContentBean;
-import com.shanchain.shandata.ui.model.TagInfo;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -38,6 +29,17 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
 import com.shanchain.data.common.utils.SCImageUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.AddRoleAdapter;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.SpaceModel;
+import com.shanchain.shandata.ui.model.StoryTagInfo;
+import com.shanchain.shandata.ui.model.TagContentBean;
+import com.shanchain.shandata.ui.model.TagInfo;
+import com.shanchain.shandata.ui.model.UpLoadImgBean;
+import com.shanchain.shandata.utils.EditTextUtils;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -86,6 +88,13 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
         initToolBar();
         initRecyclerView();
         initData();
+        initListener();
+    }
+
+    private void initListener() {
+        EditTextUtils.banEnterInput(mEtAddSpaceTag);
+        EditTextUtils.banEnterInput(mEtAddSpaceNick);
+        EditTextUtils.banEnterInput(mEtAddSpaceSlogan);
     }
 
     private void initData() {
@@ -397,6 +406,8 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                                     if (TextUtils.isEmpty(resData)){
                                         ToastUtils.showToast(mContext,"创建世界失败");
                                     }else {
+                                        int spaceId = JSONObject.parseObject(resData).getIntValue("spaceId");
+                                        collectSpace(spaceId);
                                         finish();
                                     }
                                 }else if (TextUtils.equals(code,NetErrCode.SPACE_CREATE_ERR_CODE)){
@@ -420,20 +431,68 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
-                            ToastUtils.showToast(mContext,"添加时空失败");
-                            LogUtils.i("创建时空模型失败");
+                            ToastUtils.showToast(mContext,"创建世界失败");
+                            LogUtils.i("创建世界失败");
                             e.printStackTrace();
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            closeLoadingDialog();
-                            ToastUtils.showToast(mContext,"添加时空成功");
-                            LogUtils.i("创建时空模型成功 = " + response);
-                            finish();
+                            try {
+                                closeLoadingDialog();
+                                LogUtils.i("创建时空模型成功 = " + response);
+                                String code = SCJsonUtils.parseCode(response);
+                                if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                    String resData = SCJsonUtils.parseData(response);
+                                    if (TextUtils.isEmpty(resData)){
+                                        ToastUtils.showToast(mContext,"创建世界失败");
+                                    }else {
+                                        int spaceId = JSONObject.parseObject(resData).getIntValue("spaceId");
+                                        collectSpace(spaceId);
+                                        finish();
+                                    }
+                                }else if (TextUtils.equals(code,NetErrCode.SPACE_CREATE_ERR_CODE)){
+                                    ToastUtils.showToast(mContext,"当前世界名称已存在");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ToastUtils.showToast(mContext,"创建世界失败");
+                            }
                         }
                     });
         }
+
+    }
+
+    /**
+     *  描述：收藏时空
+     *
+     */
+    private void collectSpace(int spaceId) {
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.SPACE_FAVORITE)
+                .addParams("spaceId","" + spaceId)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("收藏时空失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("收藏时空成功 = " + response);
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            LogUtils.i("收藏时空成功");
+                        }else{
+                            LogUtils.i("收藏时空失败");
+                        }
+
+                    }
+                });
+
 
     }
 
