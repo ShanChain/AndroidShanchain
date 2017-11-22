@@ -1,6 +1,7 @@
 package com.shanchain.data.common.net;
 
 import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
@@ -12,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
+import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 
 /**
@@ -149,6 +151,7 @@ public class SCHttpUtils {
                 .addParams("ScreenSize","")             //屏幕尺寸
                 .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
                 .addParams("RequestId",getRequestId())   //
+                .addParams("deviceToken", CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
                 .addParams("Signture","");               //签名
 
     }

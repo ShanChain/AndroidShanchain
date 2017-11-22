@@ -19,6 +19,8 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
@@ -146,7 +148,7 @@ public class MyApplication extends BaseApplication {
             @Override
             public void onSuccess(String deviceToken) {
                 //注册成功会返回device token
-                LogUtils.d("U-Push : " + deviceToken);
+                CommonCacheHelper.getInstance().setCache("0", Constants.CACHE_DEVICE_TOKEN,deviceToken);
             }
 
             @Override

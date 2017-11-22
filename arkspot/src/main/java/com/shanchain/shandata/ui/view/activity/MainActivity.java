@@ -299,8 +299,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             case 2:
                 mTbMain.setRightImage(R.mipmap.abs_home_btn_more_default);
                 mTbMain.setOnTitleClickListener(this);
-                mTbMain.setBtnVisibility(false, true);
-                mTbMain.setBtnEnabled(false, true);
+                mTbMain.setBtnVisibility(false, false);
+                mTbMain.setBtnEnabled(false, false);
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
@@ -336,7 +336,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void notifyRightClick() {
-        NavigatorModule.startReactPage(this, RNPagesConstant.NotificationScreen, new Bundle());
+        Bundle bundle = new Bundle();
+        JSONObject screenProps = new JSONObject();
+        screenProps.put(Constants.CACHE_GDATA, JSONObject.parse(CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_GDATA)));
+        bundle.putString(REACT_PROPS, screenProps.toString());
+        NavigatorModule.startReactPage(this, RNPagesConstant.NotificationScreen, bundle);
     }
 
     private void newsRightClick() {
