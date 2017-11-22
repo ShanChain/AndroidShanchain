@@ -50,6 +50,7 @@ public interface Constants {
         String CACHE_SPACE_COLLECTION = "spaceCollection";
         String CACHE_HX_USER_NAME = "hxUserName";
         String CACHE_HX_PWD = "hxPwd";
+        String CACHE_DEVICE_TOKEN = "deviceToken";
 
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;
