@@ -1,10 +1,12 @@
 package com.shanchain.shandata.ui.model;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 /**
  * Created by zhoujian on 2017/11/21.
  */
 
-public class StoryContentBean {
+public class StoryContentBean implements MultiItemEntity{
     /**
      * characterId : 11
      * commentCount : 2
@@ -46,7 +48,7 @@ public class StoryContentBean {
     private int type;
     private long updateTime;
     private int userId;
-
+    private ContactBean contactBean;
     public int getCharacterId() {
         return characterId;
     }
@@ -197,5 +199,18 @@ public class StoryContentBean {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public int getItemType() {
+        return type;
+    }
+
+    public ContactBean getContactBean() {
+        return contactBean;
+    }
+
+    public void setContactBean(ContactBean contactBean) {
+        this.contactBean = contactBean;
     }
 }

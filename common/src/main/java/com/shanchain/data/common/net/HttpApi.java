@@ -130,9 +130,6 @@ public interface HttpApi {
     /**获取角色简要信息*/
     String CHARACTER_BRIEF = BASE_URL + "/v1/character/query/brief";
 
-    /** 查找角色--通过用户ID*/
-    String CHARACTER_QUERY_USER_ID = BASE_URL + "/v1/character/query/userId";
-
     /**新建评论*/
     String STORY_COMMENT_ADD = BASE_URL + "/v1/storyComment/add";
 
@@ -153,9 +150,6 @@ public interface HttpApi {
     
     /** 切换角色*/
     String CHARACTER_CHANGE = BASE_URL + "/v1/character/change";
-
-    /** 切换时空*/
-    String SPACE_SWITCH = BASE_URL + "/v1/space/switch";
 
     /** 获取时空的话题列表*/
     String TOPIC_QUERY_SPACEID = BASE_URL +  "/v1/topic/query/spaceId";
@@ -234,4 +228,11 @@ public interface HttpApi {
     
     /**获取角色点赞列表 */
     String STORY_SUPPORT_LIST = BASE_URL + "/v1/story/support/list";
+    
+    /** 查询我的故事*/
+    String STORY_QUERY_MINE = BASE_URL + "/v1/story/query/mine";
+    
+    /** 查找时空根据名字 模糊匹配*/
+    String SPACE_LIST_NAME = BASE_URL + "/v1/space/list/name";
+    
 }

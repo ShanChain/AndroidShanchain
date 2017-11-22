@@ -12,4 +12,9 @@ public interface StoryTitlePresenter {
     void initSpace(int page, int size);
 
     void loadMoreLike(int likePage, int likeSize);
+
+    void searchSpace(String keyWord, int page, int size);
+
+    void loadMoreSearchData(String keyWord, int page, int size);
+
 }

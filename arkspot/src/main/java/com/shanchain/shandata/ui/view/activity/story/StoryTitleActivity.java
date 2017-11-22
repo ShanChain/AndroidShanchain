@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,27 +16,28 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.AddRoleAdapter;
-import com.shanchain.shandata.adapter.StoryTitleLikeAdapter;
-import com.shanchain.shandata.adapter.StoryTitleStagAdapter;
-import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.SpaceInfo;
-import com.shanchain.shandata.ui.model.StoryTagInfo;
-import com.shanchain.shandata.ui.model.TagContentBean;
-import com.shanchain.shandata.ui.presenter.StoryTitlePresenter;
-import com.shanchain.shandata.ui.presenter.impl.StoryTitlePresenterImpl;
-import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.StoryTitleLikeAdapter;
+import com.shanchain.shandata.adapter.StoryTitleStagAdapter;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.SpaceInfo;
+import com.shanchain.shandata.ui.model.TagContentBean;
+import com.shanchain.shandata.ui.presenter.StoryTitlePresenter;
+import com.shanchain.shandata.ui.presenter.impl.StoryTitlePresenterImpl;
+import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
+import com.shanchain.shandata.utils.EditTextUtils;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 
 public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.OnTitleClickListener, ArthurToolBar.OnRightClickListener, StoryTitleView, SwipeRefreshLayout.OnRefreshListener {
@@ -49,17 +49,16 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     RecyclerView mRvStoryTitle;
     @Bind(R.id.tb_story_title)
     ArthurToolBar mTbStoryTitle;
+    @Bind(R.id.tv_story_title_search)
+    TextView mTvStoryTitleSearch;
     private boolean spaceSuc;
     private boolean likeSuc;
 
     private RecyclerView mRvLike;
-    private RecyclerView mRvTag;
-    private List<StoryTagInfo> mTagDatas = new ArrayList<>();
     private List<SpaceInfo> mStagDatas = new ArrayList<>();
     private List<SpaceInfo> likeDatas = new ArrayList<>();
     private View mHeadView;
     private StoryTitleStagAdapter mStagAdapter;
-    private AddRoleAdapter mAddRoleAdapter;
     private StoryTitleLikeAdapter mStoryTitleLikeAdapter;
     private StoryTitlePresenter mPresenter;
     private LinearLayout mLlFavorite;
@@ -67,9 +66,11 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     private int page = 0;
     private int size = 15;
     private boolean isLoadMore;
-    private boolean firstLoadLike = true;
     private int likePage = 0;
     private int likeSize = 10;
+    private GridLayoutManager mManager;
+    private boolean isSearch;
+    private String mKeyWord;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -85,6 +86,11 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         initToolBar();
         initRecyclerView();
         initData();
+        initListener();
+    }
+
+    private void initListener() {
+        EditTextUtils.banEnterInput(mEtStoryTitleSearch);
     }
 
     private void initData() {
@@ -94,10 +100,8 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initRecyclerView() {
         initHeadView();
-        final StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        //防止位置发生改变
-        manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        mRvStoryTitle.setLayoutManager(manager);
+        mManager = new GridLayoutManager(this, 2);
+        mRvStoryTitle.setLayoutManager(mManager);
         mStagAdapter = new StoryTitleStagAdapter(R.layout.item_head_stagger, mStagDatas);
         mStagAdapter.addHeaderView(mHeadView);
         mStagAdapter.setEnableLoadMore(true);
@@ -118,20 +122,11 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             }
         });
 
-        mRvStoryTitle.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                //防止第一行顶部有空白
-                manager.invalidateSpanAssignments();
-
-            }
-        });
     }
 
     private void initHeadView() {
         mHeadView = LayoutInflater.from(this).inflate(R.layout.head_story_title, (ViewGroup) findViewById(android.R.id.content), false);
         mRvLike = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_head);
-        mRvTag = (RecyclerView) mHeadView.findViewById(R.id.rv_story_title_tag);
         mLlFavorite = (LinearLayout) mHeadView.findViewById(R.id.ll_head_favorite);
         final LinearLayoutManager likeLayoutManager = new LinearLayoutManager(this);
         likeLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -149,24 +144,6 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             }
         });
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
-        mRvTag.setLayoutManager(gridLayoutManager);
-
-        mAddRoleAdapter = new AddRoleAdapter(R.layout.item_add_role, mTagDatas);
-        mRvTag.setAdapter(mAddRoleAdapter);
-        mAddRoleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                boolean selected = mTagDatas.get(position).isSelected();
-                if (position == mTagDatas.size() - 1) {
-                    Intent intent = new Intent(mContext, MoreTagActivity.class);
-                    startActivity(intent);
-                } else {
-                    mTagDatas.get(position).setSelected(!selected);
-                    mAddRoleAdapter.notifyItemChanged(position);
-                }
-            }
-        });
 
         mRvLike.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -209,7 +186,7 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     public void onTitleClick(View v) {
         String characterId = SCCacheUtils.getCacheCharacterId();
-        if (TextUtils.isEmpty(characterId)){
+        if (TextUtils.isEmpty(characterId)) {
             return;
         }
 
@@ -227,34 +204,19 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void getTagSuccess(List<TagContentBean> tagList) {
-        refreshFinish();
-        if (tagList == null) {
-            return;
-        }
-        int size = tagList.size();
-        if (size > 19) {
-            size = 19;
-        }
 
-        for (int i = 0; i < size; i++) {
-            StoryTagInfo storyTagInfo = new StoryTagInfo();
-            storyTagInfo.setTag(tagList.get(i).getTagName());
-            storyTagInfo.setTagBean(tagList.get(i));
-            mTagDatas.add(storyTagInfo);
-        }
-
-        StoryTagInfo storyTagInfo = new StoryTagInfo();
-        storyTagInfo.setTag("更多");
-        storyTagInfo.setSelected(true);
-        mTagDatas.add(storyTagInfo);
-        mAddRoleAdapter.notifyDataSetChanged();
 
     }
 
     private void loadMore() {
         page++;
         isLoadMore = true;
-        mPresenter.loadMoreData(page, size);
+        if (isSearch){
+            mPresenter.loadMoreSearchData(mKeyWord,page,size);
+        }else {
+            mPresenter.loadMoreData(page, size);
+        }
+
     }
 
     @Override
@@ -292,14 +254,13 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
             hideFavoriteLayout();
             return;
         }
-        if (favoriteSpaceList.size() == 0&&likeDatas.size() == 0 ) {
-                hideFavoriteLayout();
+        if (favoriteSpaceList.size() == 0 && likeDatas.size() == 0) {
+            hideFavoriteLayout();
             return;
-            }
+        }
         showFavoriteLayout();
         likeDatas.addAll(favoriteSpaceList);
         mStoryTitleLikeAdapter.notifyDataSetChanged();
-        firstLoadLike = false;
     }
 
     @Override
@@ -326,12 +287,12 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRefresh() {
+        isSearch = false;
         isLoadMore = false;
         spaceSuc = likeSuc = false;
         likeDatas.clear();
         page = 0;
         likePage = 0;
-        firstLoadLike = true;
         initData();
     }
 
@@ -341,4 +302,18 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
         }
     }
 
+    @OnClick(R.id.tv_story_title_search)
+    public void onClick() {
+        mKeyWord = mEtStoryTitleSearch.getText().toString().trim();
+
+        if (TextUtils.isEmpty(mKeyWord)){
+            ToastUtils.showToast(mContext,"未输入搜索关键字");
+            return;
+        }
+        isSearch = true;
+        page = 0;
+        mPresenter.searchSpace(mKeyWord,page,size);
+        mStagAdapter.getData().clear();
+
+    }
 }

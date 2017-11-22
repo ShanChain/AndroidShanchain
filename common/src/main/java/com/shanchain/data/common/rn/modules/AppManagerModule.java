@@ -2,18 +2,13 @@ package com.shanchain.data.common.rn.modules;
 
 import android.content.Context;
 
-import com.alibaba.fastjson.JSONObject;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.RoleManager;
-import com.shanchain.data.common.eventbus.EventConstant;
-import com.shanchain.data.common.eventbus.SCBaseEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by flyye on 2017/11/7.
@@ -45,6 +40,11 @@ public class AppManagerModule extends ReactContextBaseJavaModule {
             }
         });
 
+    }
+
+    @ReactMethod
+    public void clearCache(){
+        AppManager.getInstance().clearCache();
     }
 
 }

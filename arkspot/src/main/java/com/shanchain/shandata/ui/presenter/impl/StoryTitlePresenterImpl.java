@@ -4,18 +4,15 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import com.shanchain.shandata.ui.model.SpaceInfo;
-import com.shanchain.shandata.ui.model.SpaceListInfo;
-import com.shanchain.shandata.ui.presenter.StoryTitlePresenter;
-import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
-
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.shandata.ui.model.SpaceInfo;
+import com.shanchain.shandata.ui.presenter.StoryTitlePresenter;
+import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -125,5 +122,49 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
     @Override
     public void loadMoreLike(int likePage, int likeSize) {
         initFavData(likePage,likeSize);
+    }
+
+    @Override
+    public void searchSpace(String keyWord, int page, int size) {
+        SCHttpUtils.post()
+                .url(HttpApi.SPACE_LIST_NAME)
+                .addParams("page","" + page)
+                .addParams("size","" + size)
+                .addParams("name",keyWord)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("sou's搜索时空失败");
+                        e.printStackTrace();
+                        mStoryTitleView.getSpaceListSuccess(null,false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("搜索时空成功 = " + response);
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                String data = JSONObject.parseObject(response).getString("data");
+                                String spaceStr = JSONObject.parseObject(data).getString("content");
+                                List<SpaceInfo> spaceInfos = JSONObject.parseArray(spaceStr, SpaceInfo.class);
+                                Boolean isLast = JSONObject.parseObject(data).getBoolean("last");
+
+                                mStoryTitleView.getSpaceListSuccess(spaceInfos,isLast);
+                            }else{
+                                mStoryTitleView.getSpaceListSuccess(null,false);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mStoryTitleView.getSpaceListSuccess(null,false);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void loadMoreSearchData(String keyWord, int page, int size) {
+        searchSpace(keyWord, page, size);
     }
 }

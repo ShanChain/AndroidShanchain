@@ -11,4 +11,5 @@ import java.util.List;
 public interface PraisedView {
     void initPraisedSuc(List<StoryContentBean> contentBeanList, boolean last);
 
+    void initStorySuc(List<StoryContentBean> contentBeanList, boolean last);
 }

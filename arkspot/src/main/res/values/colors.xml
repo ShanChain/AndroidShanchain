@@ -33,4 +33,5 @@
     <color name="colorTextBg">#f7f7f7</color>
     <color name="colorLoginHint">#ddd</color>
     <color name="colorTextSecondary">#333333</color>
+    <color name="colorTextThree">#2e2e2e</color>
 </resources>

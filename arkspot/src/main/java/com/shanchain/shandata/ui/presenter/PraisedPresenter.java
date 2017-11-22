@@ -6,4 +6,6 @@ package com.shanchain.shandata.ui.presenter;
 
 public interface PraisedPresenter {
     void initPraiseData(int page,int size);
+
+    void initStoryData(int page, int size);
 }

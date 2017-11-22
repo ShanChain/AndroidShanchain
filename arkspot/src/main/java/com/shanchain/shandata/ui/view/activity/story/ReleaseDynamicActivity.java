@@ -493,7 +493,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 return;
             }
             List<RichTextModel> editData = getEditData();
-            showLoadingDialog(true);
+            showLoadingDialog(false);
             mPresenter.ReleaseLongText(this, title, editData);
         } else {
             if (TextUtils.isEmpty(word)){
@@ -502,7 +502,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             }
 
             //普通编辑
-            showLoadingDialog(true);
+            showLoadingDialog(false);
             if (imgData.size() == 0) {
                 //无图片
                 mPresenter.releaseDynamic(word, imgPaths, tailId, atIds, topicIds);
