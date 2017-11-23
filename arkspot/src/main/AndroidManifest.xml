@@ -199,6 +199,11 @@
         </activity>
         <activity android:name=".ui.view.activity.login.ResetPwdActivity">
         </activity>
+        <activity android:name=".ui.view.activity.login.BindInfoActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="bind_info"/>
+        </activity>
         <activity android:name=".ui.view.activity.mine.FriendHomeActivity">
             <meta-data
                 android:name="page_flag"
