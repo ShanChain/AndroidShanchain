@@ -6,24 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
-        android:id="@+id/tb_main"
+        android:id="@+id/tb_chain"
         style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightImage="@mipmap/abs_home_btn_more_default"
         app:titleColor="@color/colorTextDefault"
+        app:titleText="故事链条"
         app:titleTextSize="16"/>
 
-    <View
-        style="@style/style_text_line_match"/>
+    <View style="@style/style_text_line_match"/>
 
-    <FrameLayout
-        android:id="@+id/fl_main_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_chain"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <com.ashokvarma.bottomnavigation.BottomNavigationBar
-        android:id="@+id/bnb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

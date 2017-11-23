@@ -77,4 +77,6 @@ public interface Constants {
         int GROUP_ADMIN = 1;
         int GROUP_MEMBER = 2;
 
+        String BIND_MOBILE = "BIND_MOBILE";
+        String RESET_PASSWORD = "RESET_PASSWORD";
 }

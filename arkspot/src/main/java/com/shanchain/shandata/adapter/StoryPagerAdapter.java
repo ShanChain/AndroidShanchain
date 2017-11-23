@@ -28,10 +28,10 @@ public class StoryPagerAdapter extends FragmentPagerAdapter {
                 fragment = new AttentionFragment();
                 break;
             case 1:
-                fragment = new RecommendedFragment();
+                fragment = new CurrentFragment();
                 break;
             case 2:
-                fragment = new CurrentFragment();
+                fragment = new RecommendedFragment();
                 break;
         }
         return fragment;

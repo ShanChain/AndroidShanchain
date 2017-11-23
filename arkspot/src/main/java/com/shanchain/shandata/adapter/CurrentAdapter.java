@@ -81,7 +81,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         tvLike.setCompoundDrawables(mDrawable,null,null,null);
         tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
 
-
         holder.addOnClickListener(R.id.iv_item_story_avatar)
                 .addOnClickListener(R.id.iv_item_story_more)
                 .addOnClickListener(R.id.tv_item_story_forwarding)

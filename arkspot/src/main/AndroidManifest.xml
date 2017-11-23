@@ -38,7 +38,8 @@
             android:value="dfb65b759f7998b0b69b644d17303224">
         </meta-data>
         <!-- 友盟消息处理服务 -->
-        <!--<service android:name=".service.MyPushIntentService" />-->
+        <!-- <service android:name=".service.MyPushIntentService" /> -->
+
 
         <!-- 设置环信应用的AppKey -->
         <meta-data
@@ -220,11 +221,12 @@
         </activity>
         <activity android:name=".ui.view.activity.story.MoreTagActivity">
         </activity>
-        <activity android:name=".ui.view.activity.story.ForwardingActivity"
-                  android:windowSoftInputMode="adjustResize">
+        <activity
+            android:name=".ui.view.activity.story.ForwardingActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
-
-
+        <activity android:name=".ui.view.activity.story.ChainActivity">
+        </activity>
     </application>
 
 </manifest>

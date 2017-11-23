@@ -23,12 +23,12 @@ import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.CurrentPresenter;
 import com.shanchain.shandata.ui.presenter.impl.CurrentPresenterImpl;
-import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
+import com.shanchain.shandata.ui.view.activity.story.ChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.shandata.ui.view.fragment.view.CurrentView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
@@ -209,7 +209,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void expendFloors(int position) {
         StoryModelInfo modelInfo = mAdapter.getData().get(position).getStoryModel().getModelInfo();
-        Intent intent = new Intent(mActivity, StoryChainActivity.class);
+        Intent intent = new Intent(mActivity, ChainActivity.class);
         intent.putExtra("storyInfo",modelInfo);
         startActivity(intent);
     }

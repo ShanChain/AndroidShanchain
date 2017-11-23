@@ -72,7 +72,7 @@ public interface HttpApi {
 
 
     /** 获取上传图片的信息*/
-    String UP_LOAD_FILE = "http://115.29.176.143/oss/upload/app";
+    String UP_LOAD_FILE = "http://47.91.178.114:9177/oss/upload/app";
 
     /** 查询标签*/
     String TAG_QUERY = BASE_URL + "/v1/tag/query";
@@ -235,4 +235,14 @@ public interface HttpApi {
     /** 查找时空根据名字 模糊匹配*/
     String SPACE_LIST_NAME = BASE_URL + "/v1/space/list/name";
     
+    /** 绑定其他账号*/
+    String BIND_OTHER_ACCOUNT = BASE_URL + "/v1/user/bind_other_account";
+
+    /** 获取最新apk信息*/
+    String OSS_APK_GET_LASTEST = BASE_URL + "/oss/apk/get/latest";
+    
+    /**判断故事是否点赞 -idList */
+    String STORY_ISFAV_LIST = BASE_URL + "/v1/story/isFav/list";
+
+
 }

@@ -6,8 +6,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -21,12 +21,11 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.global.UserType;
-import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.NovelModel;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -63,15 +62,21 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
 
         String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
 
-            if (!TextUtils.isEmpty(rnExtra)) {
-                JSONObject jsonObject = JSONObject.parseObject(rnExtra);
-                JSONObject rnData = jsonObject.getJSONObject("data");
-                mBindType = rnData.getString("type");
-                isNeedPW = Boolean.parseBoolean(rnData.getString("isNeedPW"));
-            } else {
-                finish();
-                return;
-            }
+        if (!TextUtils.isEmpty(rnExtra)) {
+            JSONObject jsonObject = JSONObject.parseObject(rnExtra);
+            JSONObject rnData = jsonObject.getJSONObject("data");
+            mBindType = rnData.getString("type");
+            isNeedPW = Boolean.parseBoolean(rnData.getString("isNeedPW"));
+        } else {
+            finish();
+            return;
+        }
+
+        if (isNeedPW) {
+            mEtResetPwd.setVisibility(View.VISIBLE);
+        } else {
+            mEtResetPwd.setVisibility(View.GONE);
+        }
 
         initToolBar();
     }
@@ -79,6 +84,11 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void initToolBar() {
         mTbResetPwd.setBtnEnabled(true, false);
         mTbResetPwd.setOnLeftClickListener(this);
+        if (TextUtils.equals(mBindType, Constants.BIND_MOBILE)) {
+            mTbResetPwd.setTitleText("绑定手机号");
+        } else if (TextUtils.equals(mBindType, Constants.RESET_PASSWORD)) {
+            mTbResetPwd.setTitleText("重置密码");
+        }
     }
 
 
@@ -101,10 +111,18 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
         String code = mEtResetCode.getText().toString().trim();
         String pwd = mEtResetPwd.getText().toString().trim();
 
-        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd)) {
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {
             ToastUtils.showToast(this, "请填写完整数据");
             return;
         }
+
+        if (isNeedPW) {
+            if (TextUtils.isEmpty(pwd)) {
+                ToastUtils.showToast(mContext, "请填写密码");
+                return;
+            }
+        }
+
 
         if (!TextUtils.equals(phone, mMobile)) {
             ToastUtils.showToast(this, "账号错误");
@@ -119,12 +137,51 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
         String encryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
-        //加密后的密码
-        String passwordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
-
         LogUtils.d("加密后账号：" + encryptAccount);
-        LogUtils.d("加密后密码：" + passwordAccount);
 
+
+        if (isNeedPW) {
+            //加密后的密码
+            String passwordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
+            LogUtils.d("加密后密码：" + passwordAccount);
+            resetPassWord(time, encryptAccount, passwordAccount);
+        } else {
+            bindPhone(encryptAccount);
+        }
+
+    }
+
+    /**
+     * 描述：绑定手机号
+     *
+     * @param encryptAccount
+     */
+    private void bindPhone(String encryptAccount) {
+        SCHttpUtils.post()
+                .url(HttpApi.BIND_OTHER_ACCOUNT)
+                .addParams("encryptAccount", encryptAccount)
+                .addParams("userType", UserType.USER_TYPE_MOBILE)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("绑定手机号失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.i("绑定成功 = " + response);
+                    }
+                });
+
+
+    }
+
+    /**
+     * 描述：重置密码
+     */
+    private void resetPassWord(String time, String encryptAccount, String passwordAccount) {
         SCHttpUtils.postNoToken()
                 .url(HttpApi.RESET_PWD)
                 .addParams("Timestamp", time)
@@ -141,11 +198,10 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
 
                     @Override
                     public void onResponse(ResponseRegisteUserBean response, int id) {
-                            ToastUtils.showToast(mContext, "重置密码成功");
-                            finish();
+                        ToastUtils.showToast(mContext, "重置密码成功");
+                        finish();
                     }
                 });
-
     }
 
     @Override

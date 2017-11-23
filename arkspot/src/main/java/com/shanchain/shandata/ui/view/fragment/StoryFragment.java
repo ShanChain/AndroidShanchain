@@ -25,7 +25,7 @@ public class StoryFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        String[] titles = {"关注","推荐","实时"};
+        String[] titles = {"关注","实时","推荐"};
         StoryPagerAdapter adapter = new StoryPagerAdapter(getChildFragmentManager(), titles);
         mVpStory.setOffscreenPageLimit(3);
         mVpStory.setAdapter(adapter);
