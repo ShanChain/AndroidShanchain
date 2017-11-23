@@ -22,8 +22,6 @@ import java.util.Date;
 
 /**
  * 时间选择器
- * Created by Sai on 15/11/22.
- * Updated by XiaoSong on 2017-2-22.
  */
 public class SCTimePickerView extends BasePickerView implements View.OnClickListener {
     private int layoutRes;

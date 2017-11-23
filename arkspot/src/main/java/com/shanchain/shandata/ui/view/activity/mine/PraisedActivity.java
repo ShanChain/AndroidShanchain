@@ -227,12 +227,16 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     @Override
     public void initPraisedSuc(List<StoryContentBean> contentBeanList, boolean last) {
-
         if (contentBeanList == null) {
             if (isFirst) {
                 initRecyclerView();
             } else {
-
+                if (last) {
+                    mAdapter.loadMoreEnd();
+                } else {
+                    mAdapter.loadMoreFail();
+                }
+                mAdapter.notifyDataSetChanged();
             }
         } else {
             if (isFirst) {

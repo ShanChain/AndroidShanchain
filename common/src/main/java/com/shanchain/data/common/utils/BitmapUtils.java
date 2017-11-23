@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by zhoujian on 2017/5/16.
  * 图片压缩工具类
  */
 

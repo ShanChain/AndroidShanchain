@@ -18,7 +18,6 @@ import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -26,6 +25,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.global.UserType;
@@ -90,9 +90,9 @@ public class LoginActivity extends BaseActivity {
     private void checkCache() {
         String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
 
-        LogUtils.e("当前用户id" + userId);
-        if (!TextUtils.isEmpty(userId)) {
 
+        if (!TextUtils.isEmpty(userId)) {
+            LogUtils.e("当前用户id" + userId);
             String characterId = getCache(userId, Constants.CACHE_CHARACTER_ID);
             String characterInfo = getCache(userId, Constants.CACHE_CHARACTER_INFO);
             String spaceId = getCache(userId, Constants.CACHE_SPACE_ID);
@@ -119,7 +119,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();
-                        ToastUtils.showToast(mContext, "登录失败");
+                        ToastUtils.showToast(mContext, "网络异常");
                         LogUtils.i("获取当前角色失败");
                         e.printStackTrace();
                     }
@@ -160,9 +160,11 @@ public class LoginActivity extends BaseActivity {
                                 //code错误
                                 closeProgress();
                                 LogUtils.i("获取当前角色code错误");
+                                ToastUtils.showToast(mContext,"网络异常");
                             }
                         } catch (Exception e) {
                             closeProgress();
+                            ToastUtils.showToast(mContext,"网络异常");
                             LogUtils.i("获取当前角色信息数据解析错误");
                             e.printStackTrace();
                         }
@@ -268,12 +270,12 @@ public class LoginActivity extends BaseActivity {
                                 ToastUtils.showToast(mContext,"账号或密码错误");
                             }else {
                                 closeProgress();
-                                ToastUtils.showToast(mContext,"登录失败");
+                                ToastUtils.showToast(mContext,"网络错误");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             closeProgress();
-                            ToastUtils.showToast(mContext,"登录异常");
+                            ToastUtils.showToast(mContext,"网络错误");
                         }
                     }
                 });
@@ -353,14 +355,17 @@ public class LoginActivity extends BaseActivity {
             LogUtils.d("加密后openid：" + encryptOpenId);
             LogUtils.d("加密后accesstoken：" + encryptToken16);
             LogUtils.d("用户类型：" + userType);
-
+            LogUtils.i("回调了登录成功");
             thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
 
         }
 
         @Override
         public void loginFailure(Exception e) {
-            LogUtils.d("登录失败");
+            closeProgress();
+            ToastUtils.showToast(mContext,"网络异常");
+            LogUtils.i("还回调了登录失败");
+            e.printStackTrace();
         }
 
         @Override
@@ -373,46 +378,93 @@ public class LoginActivity extends BaseActivity {
      * 三方登录注册信息到服务器
      */
     public void thridLogin(String time, String encryptOpenId, String encryptToken16, String headIcon, String nickName, String sex, String userType) {
-        SCHttpUtils.postWithParamsForLogin()
-                .addParams("Timestamp", time)
-                .addParams("encryptOpenId", encryptOpenId)
-                .addParams("encryptToken16", encryptToken16)
-                .addParams("headIcon", headIcon)
-                .addParams("nickName", nickName)
-                .addParams("sex", sex)
-                .addParams("userType", userType)
-                .url(HttpApi.USER_THIRD_LOGIN)
-                .build()
-                .execute(new SCHttpCallBack<ResponseLoginBean>(ResponseLoginBean.class) {
-                             @Override
-                             public void onError(Call call, Exception e, int id) {
-                                 LogUtils.e("三方登录创建账号失败");
-                                 e.printStackTrace();
-                             }
+        showProgress();
+        try {
+            SCHttpUtils.postWithParamsForLogin()
+                    .url(HttpApi.USER_THIRD_LOGIN)
+                    .addParams("Timestamp", time)
+                    .addParams("encryptOpenId", encryptOpenId)
+                    .addParams("encryptToken16", encryptToken16)
+                    .addParams("headIcon", headIcon)
+                    .addParams("nickName", nickName)
+                    .addParams("sex", sex)
+                    .addParams("userType", userType)
+                    .build()
+                    .execute(new StringCallback() {
+                                 @Override
+                                 public void onError(Call call, Exception e, int id) {
+                                     closeProgress();
+                                     LogUtils.e("三方登录创建账号失败");
+                                     ToastUtils.showToast(mContext,"网络异常");
+                                     e.printStackTrace();
+                                 }
 
-                             @Override
-                             public void onResponse(ResponseLoginBean response, int id) {
-                                 if (response != null) {
-                                     LogUtils.d("三方登录成功");
-                                     String token = response.getToken();
-                                     String account = response.getAccount();
-                                     LoginUserInfoBean userInfo = response.getUserInfo();
-                                     if (userInfo == null) {
-                                         return;
+                                 @Override
+                                 public void onResponse(String response, int id) {
+                                     try {
+                                         String code = SCJsonUtils.parseCode(response);
+                                         if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                             String data = SCJsonUtils.parseData(response);
+                                             ResponseLoginBean responseLoginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
+                                             String token = responseLoginBean.getToken();
+                                             LoginUserInfoBean userInfo = responseLoginBean.getUserInfo();
+                                             int userId = userInfo.getUserId();
+                                             LogUtils.d("登录成功  uid" + userId);
+                                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                                             checkCache();
+                                         }else{
+                                             closeProgress();
+                                             ToastUtils.showToast(mContext,"网络异常");
+                                         }
+                                     } catch (Exception e) {
+                                         closeProgress();
+                                         e.printStackTrace();
+                                         ToastUtils.showToast(mContext,"网络异常");
                                      }
-                                     int userId = userInfo.getUserId();
-                                     LogUtils.d("登录成功  uid" + userId);
-
-                                     SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
-                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                                     SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
-                                     checkCache();
-                                 } else {
-                                     LogUtils.e("登录返回数据为空");
                                  }
                              }
-                         }
-                );
+
+                            /*SCHttpCallBack<ResponseLoginBean>(ResponseLoginBean.class) {
+                                 @Override
+                                 public void onError(Call call, Exception e, int id) {
+                                     closeProgress();
+                                     LogUtils.e("三方登录创建账号失败");
+                                     e.printStackTrace();
+                                 }
+
+                                 @Override
+                                 public void onResponse(ResponseLoginBean response, int id) {
+                                     if (response != null) {
+                                         LogUtils.d("三方登录成功");
+                                         String token = response.getToken();
+                                         String account = response.getAccount();
+                                         LoginUserInfoBean userInfo = response.getUserInfo();
+                                         if (userInfo == null) {
+                                             closeProgress();
+                                             ToastUtils.showToast(mContext,"网络错误");
+                                             LogUtils.i("userInfo异常");
+                                             return;
+                                         }
+                                         int userId = userInfo.getUserId();
+                                         LogUtils.d("登录成功  uid" + userId);
+                                         SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                                         SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                                         SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                                         checkCache();
+                                     } else {
+                                         LogUtils.e("登录返回数据为空");
+                                     }
+                                 }
+                             }*/
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+            closeProgress();
+            ToastUtils.showToast(mContext,"网络异常");
+            LogUtils.i("网络异常");
+        }
     }
 
 
@@ -442,18 +494,22 @@ public class LoginActivity extends BaseActivity {
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
+                                final long startTime = System.currentTimeMillis();
+                                LogUtils.i("登录环信 = 开始时间 = " + startTime);
                                 EMClient.getInstance().login(userName, pwd, new EMCallBack() {
                                     @Override
                                     public void onSuccess() {
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                long endTime = System.currentTimeMillis();
+                                                LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
                                                 closeProgress();
-                                                LogUtils.i("登录环信账号成功");
+                                                LogUtils.i("耗时 = " + (endTime - startTime));
                                                 EMClient.getInstance().chatManager().loadAllConversations();
                                                 EMClient.getInstance().groupManager().loadAllGroups();
                                                 RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
-                                                ToastUtils.showToast(mContext, "穿越角色成功");
+                                                //ToastUtils.showToast(mContext, "欢迎来到千千世界");
                                                 Intent intent = new Intent(mContext, MainActivity.class);
                                                 ActivityManager.getInstance().finishAllActivity();
                                                 startActivity(intent);
@@ -464,15 +520,17 @@ public class LoginActivity extends BaseActivity {
 
                                     @Override
                                     public void onError(int i, String s) {
+                                        closeProgress();
+                                        ToastUtils.showToast(mContext,"网络异常");
                                         LogUtils.i("登录环信账号失败 = " + s + "code" + i);
                                         if (i == 200) {
-                                            closeProgress();
+
                                         }
                                     }
 
                                     @Override
                                     public void onProgress(int i, String s) {
-
+                                        LogUtils.i("登录进度 = " + i + " 进度信息 = " + s );
                                     }
                                 });
 
@@ -485,6 +543,7 @@ public class LoginActivity extends BaseActivity {
                             closeProgress();
                             LogUtils.i("解析数据错误");
                             e.printStackTrace();
+                            ToastUtils.showToast(mContext,"网络异常");
                         }
                     }
                 });

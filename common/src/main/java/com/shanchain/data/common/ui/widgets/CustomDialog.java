@@ -2,7 +2,6 @@ package com.shanchain.data.common.ui.widgets;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Display;
@@ -17,9 +16,6 @@ import com.shanchain.common.R;
 
 import java.util.List;
 
-/**
- * Created by 周建 on 2017/5/30.
- */
 
 public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private Context context;      // 上下文
