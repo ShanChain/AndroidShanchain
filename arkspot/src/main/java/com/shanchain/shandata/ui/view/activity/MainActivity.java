@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,13 +19,20 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.cache.SharedPreferencesUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.rn.fragment.RNMineFragment;
@@ -40,9 +48,14 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
+import okhttp3.Call;
 
+import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
+import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_SATUS;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
@@ -91,11 +104,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         initBottomNavigationBar();
 
         checkApkVersion();
+
     }
 
     private void checkApkVersion() {
 
     }
+
+
 
     private void initToolBar() {
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);

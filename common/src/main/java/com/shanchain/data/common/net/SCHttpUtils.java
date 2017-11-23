@@ -28,7 +28,6 @@ public class SCHttpUtils {
     }
 
     public static PostFormBuilder post() {
-
         String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
         return OkHttpUtils.post()
@@ -151,7 +150,6 @@ public class SCHttpUtils {
                 .addParams("ScreenSize","")             //屏幕尺寸
                 .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
                 .addParams("RequestId",getRequestId())   //
-                .addParams("deviceToken", CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
                 .addParams("Signture","");               //签名
 
     }

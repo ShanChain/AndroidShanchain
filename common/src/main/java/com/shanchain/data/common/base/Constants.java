@@ -51,6 +51,7 @@ public interface Constants {
         String CACHE_HX_USER_NAME = "hxUserName";
         String CACHE_HX_PWD = "hxPwd";
         String CACHE_DEVICE_TOKEN = "deviceToken";
+        String CACHE_APP_ENV = "true";
 
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;
@@ -64,7 +65,7 @@ public interface Constants {
 
         /*************SP中的key值***************/
         String SP_KEY_DRAFT = "draft";
-
+        String SP_KEY_DEVICE_TOKEN_SATUS = "sp_key_device_token_satus";
         /** config.gradle中定义的常量 */
 
         boolean SC_RN_DEBUG = Boolean.valueOf(BuildConfig.RN_DEBUG);

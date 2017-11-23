@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.shanchain.data.common.base.Constants;
@@ -11,6 +12,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.push.PushFilterBuilder;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
 import com.shanchain.data.common.utils.SCImageUtils;
@@ -61,12 +63,22 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         String dataString = gson.toJson(contentInfo);
         String topicArr = gson.toJson(topicIds);
         String referedModel = gson.toJson(atList);
+        JSONArray jsonArray = new JSONArray();
+        for (Integer val:atList) {
+            JSONObject tagJson = new JSONObject();
+            tagJson.put("tag","MODEL_"+ val);
+            jsonArray.add(tagJson);
+        }
+        PushFilterBuilder builder = new PushFilterBuilder();
+        if(jsonArray.size() > 0){
+            builder.addOrFilter(jsonArray);
+        }
         SCHttpUtils.postWithSpaceAndChaId()
                 .url(HttpApi.STORY_ADD)
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
                 .addParams("type", Constants.TYPE_STORY_SHORT + "")
-                .addParams("referedModel", referedModel)
+                .addParams("filter",builder.getFilter())
                 .build()
                 .execute(new StringCallback() {
                     @Override

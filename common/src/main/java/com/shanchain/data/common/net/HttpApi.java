@@ -72,7 +72,7 @@ public interface HttpApi {
 
 
     /** 获取上传图片的信息*/
-    String UP_LOAD_FILE = "http://115.29.176.143/oss/upload/app";
+    String UP_LOAD_FILE = BASE_URL + "/oss/upload/app";
 
     /** 查询标签*/
     String TAG_QUERY = BASE_URL + "/v1/tag/query";
@@ -234,5 +234,8 @@ public interface HttpApi {
     
     /** 查找时空根据名字 模糊匹配*/
     String SPACE_LIST_NAME = BASE_URL + "/v1/space/list/name";
+
+    /** 设置deviceToken*/
+    String SET_DEVICE_TOKEN = BASE_URL + "/v1/user/deviceToken";
     
 }

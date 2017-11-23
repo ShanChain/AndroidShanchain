@@ -17,11 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.push.PushFilterBuilder;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
@@ -343,12 +345,22 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
         String dataString = JSONObject.toJSONString(contentInfo);
         String topicArr = JSONObject.toJSONString(topicIds);
         final String referedModel = JSONObject.toJSONString(atIds);
+        JSONArray jsonArray = new JSONArray();
+        for (Integer val:atIds) {
+            JSONObject tagJson = new JSONObject();
+            tagJson.put("tag","MODEL_"+ val);
+            jsonArray.add(tagJson);
+        }
+        PushFilterBuilder builder = new PushFilterBuilder();
+        if(jsonArray.size() > 0){
+            builder.addOrFilter(jsonArray);
+        }
 
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_TRANSPOND)
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
-                .addParams("referedModel", referedModel)
+                .addParams("filter", builder.getFilter())
                 .addParams("storyId", mBean.getDetailId().substring(1))
                 .build()
                 .execute(new StringCallback() {

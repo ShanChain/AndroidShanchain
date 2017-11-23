@@ -3,6 +3,7 @@ package com.shanchain.shandata.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -25,10 +26,15 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.umeng.message.PushAgent;
+import com.umeng.message.common.inter.ITagManager;
+import com.umeng.message.tag.TagManager;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 import okhttp3.Call;
 
@@ -111,6 +117,7 @@ public class CharacterManager {
                                 mRegisterHxBean = JSONObject.parseObject(hxAccount,RegisterHxBean.class);
                                 String currentUser = EMClient.getInstance().getCurrentUser();
                                 obtainSpaceInfo(spaceId);
+                                changePushTags();
                                 if (TextUtils.isEmpty(currentUser)){
                                     loginHx();
                                 }else {
@@ -233,6 +240,32 @@ public class CharacterManager {
         if(isHxLogin && mCharacterInfo != null && mRegisterHxBean != null && mSpaceInfo != null){
             RoleManager.switchRoleCache(mCharacterInfo.getCharacterId(),JSON.toJSONString(mCharacterInfo),mCharacterInfo.getSpaceId(),mSpaceInfo,mRegisterHxBean.getHxUserName(),mRegisterHxBean.getHxPassword());
         }
+    }
+
+    private void changePushTags(){
+        final String spaceId = mCharacterInfo.getSpaceId() + "";
+        final String modelId = mCharacterInfo.getModelId() + "";
+        if(!TextUtils.isEmpty(spaceId) && !TextUtils.isEmpty(modelId)){
+            final PushAgent mPushAgent = PushAgent.getInstance(AppManager.getInstance().getContext());
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mPushAgent.getTagManager().update(new TagManager.TCallBack() {
+                        @Override
+                        public void onMessage(final boolean isSuccess, final ITagManager.Result result) {
+                            mPushAgent.getTagManager().list(new TagManager.TagListCallBack() {
+                                @Override
+                                public void onMessage(boolean isSuccess, List<String> result) {
+                                   LogUtils.e("flyye",result.toString());
+                                }
+                            });
+                        }
+                    },  "MODEL_" + modelId,"SPACE_" +spaceId);
+                }
+            });
+            thread.start();
+        }
+
     }
 
 }
