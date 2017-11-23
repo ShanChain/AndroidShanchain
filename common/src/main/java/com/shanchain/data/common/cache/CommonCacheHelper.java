@@ -37,7 +37,7 @@ public class CommonCacheHelper {
     public String getCache(String userId , String key){
 
         if (TextUtils.isEmpty(key)){
-            return null;
+            return "";
         }
         String value =  mMemoryCache.get(userId + key);
         if ( !TextUtils.isEmpty(value)){

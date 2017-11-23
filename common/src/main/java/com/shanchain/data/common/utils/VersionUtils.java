@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.shanchain.data.common.utils.encryption.Base64Utils;
+
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import com.shanchain.data.common.utils.encryption.Base64Utils;
-
 /**
- * Created by zhoujian on 2017/5/16.
  * 获取app版本信息工具类
  */
 

@@ -74,6 +74,7 @@ public interface HttpApi {
     /** 获取上传图片的信息*/
     String UP_LOAD_FILE = BASE_URL + "/oss/upload/app";
 
+
     /** 查询标签*/
     String TAG_QUERY = BASE_URL + "/v1/tag/query";
 
@@ -238,4 +239,14 @@ public interface HttpApi {
     /** 设置deviceToken*/
     String SET_DEVICE_TOKEN = BASE_URL + "/v1/user/deviceToken";
     
+    /** 绑定其他账号*/
+    String BIND_OTHER_ACCOUNT = BASE_URL + "/v1/user/bind_other_account";
+
+    /** 获取最新apk信息*/
+    String OSS_APK_GET_LASTEST = BASE_URL + "/oss/apk/get/latest";
+    
+    /**判断故事是否点赞 -idList */
+    String STORY_ISFAV_LIST = BASE_URL + "/v1/story/isFav/list";
+
+
 }

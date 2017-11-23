@@ -1,16 +1,14 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.StoryChainAdapter;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.StoryModelBean;
+import com.shanchain.shandata.ui.model.StoryChainModel;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.StoryChainPresenter;
 import com.shanchain.shandata.ui.presenter.impl.StoryChainPresenterImpl;
@@ -30,18 +28,18 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
     ArthurToolBar mTbStoryChain;
     @Bind(R.id.rv_story_chain)
     RecyclerView mRvStoryChain;
-    private List<StoryModelBean> datas = new ArrayList<>();
+    private List<StoryChainModel> datas = new ArrayList<>();
 
     /**
      * 描述：是否为倒序排列
      */
     private boolean isReverse = false;
-    private StoryChainAdapter mStoryChainAdapter;
+    private StoryChainAdapter mAdapter;
     private int start = 0;
     private int end = 0;
     private StoryChainPresenter mPresenter;
     private StoryModelInfo mInfo;
-    private boolean isFirstLoad;
+    private boolean isFirstLoad = true;
     private String mStoryId;
 
     @Override
@@ -62,52 +60,17 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
             end = 0;
         }
         initToolBar();
-        initData();
         initRecycler();
+        initData();
     }
 
     private void initRecycler() {
         mRvStoryChain.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new StoryChainAdapter(R.layout.item_story_type3, datas);
+        mAdapter.setEnableLoadMore(true);
+        mRvStoryChain.setAdapter(mAdapter);
+        mAdapter.setOnLoadMoreListener(this, mRvStoryChain);
 
-        mStoryChainAdapter = new StoryChainAdapter(R.layout.item_story_chain, datas);
-        mStoryChainAdapter.setEnableLoadMore(true);
-        mRvStoryChain.setAdapter(mStoryChainAdapter);
-        mStoryChainAdapter.setOnLoadMoreListener(this, mRvStoryChain);
-        mStoryChainAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(StoryChainActivity.this, DynamicDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mStoryChainAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()) {
-                    case R.id.iv_item_story_avatar:
-                        //头像
-                        ToastUtils.showToast(StoryChainActivity.this, "头像");
-                        break;
-                    case R.id.tv_item_story_forwarding:
-                        //转发
-                        ToastUtils.showToast(StoryChainActivity.this, "转发");
-                        break;
-                    case R.id.tv_item_story_comment:
-                        //评论
-                        ToastUtils.showToast(StoryChainActivity.this, "评论");
-                        break;
-                    case R.id.tv_item_story_like:
-                        //喜欢
-                        ToastUtils.showToast(StoryChainActivity.this, "喜欢");
-                        break;
-                    case R.id.iv_item_story_more:
-                        //举报
-                        report(position);
-                        break;
-                }
-            }
-        });
     }
 
     private void report(final int position) {
@@ -119,11 +82,12 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
                 switch (view.getId()) {
                     case R.id.tv_report_dialog_report:
                         //举报
-                        StoryModelBean modelBean = mStoryChainAdapter.getData().get(position);
+                        // TODO: 2017/11/23  
+                      /*  StoryModelBean modelBean = mAdapter.getData().get(position);
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
                         reportIntent.putExtra("storyId", modelBean.getDetailId() + "");
                         reportIntent.putExtra("characterId", modelBean.getCharacterId() + "");
-                        startActivity(reportIntent);
+                        startActivity(reportIntent);*/
                         customDialog.dismiss();
                         break;
                     case R.id.tv_report_dialog_cancel:
@@ -189,29 +153,33 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
     private void reverseDatas() {
         isReverse = !isReverse;
         Collections.reverse(datas);
-        mStoryChainAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void getStoryListSuc(List<StoryModelBean> modelBeanList, boolean isLast) {
-        if (modelBeanList == null) {
-            mStoryChainAdapter.loadMoreFail();
-            return;
+    public void getStoryListSuc(List<StoryChainModel> modelBeanList, boolean isLast) {
+        if (modelBeanList == null){
+            if (isLast){
+                mAdapter.loadMoreEnd();
+            }else {
+                mAdapter.loadMoreFail();
+            }
+        }else {
+            if (isFirstLoad){
+                mAdapter.setNewData(modelBeanList);
+                mAdapter.disableLoadMoreIfNotFullPage(mRvStoryChain);
+            }else {
+                mAdapter.addData(modelBeanList);
+            }
+            mAdapter.notifyDataSetChanged();
+            if (isLast) {
+                mAdapter.loadMoreEnd();
+            } else {
+                mAdapter.loadMoreComplete();
+            }
+
         }
 
-        if (isFirstLoad) {
-            mStoryChainAdapter.setNewData(modelBeanList);
-            mStoryChainAdapter.disableLoadMoreIfNotFullPage(mRvStoryChain);
-        } else {
-            mStoryChainAdapter.addData(modelBeanList);
-        }
-        mStoryChainAdapter.notifyDataSetChanged();
-        start = modelBeanList.get(modelBeanList.size() - 1).getGenNum();
-        if (isLast) {
-            mStoryChainAdapter.loadMoreEnd();
-        } else {
-            mStoryChainAdapter.loadMoreComplete();
-        }
     }
 
     @Override

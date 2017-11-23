@@ -1,6 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.story.stroyView;
 
-import com.shanchain.shandata.ui.model.StoryModelBean;
+import com.shanchain.shandata.ui.model.StoryChainModel;
 
 import java.util.List;
 
@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface StoryChainView {
 
-    void getStoryListSuc(List<StoryModelBean> modelBeanList, boolean isLast);
+    void getStoryListSuc(List<StoryChainModel> modelBeanList, boolean isLast);
 
 }

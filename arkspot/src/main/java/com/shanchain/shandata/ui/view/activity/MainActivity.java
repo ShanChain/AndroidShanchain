@@ -2,6 +2,7 @@ package com.shanchain.shandata.ui.view.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,19 +20,25 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
-import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.cache.SharedPreferencesUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.PrefUtils;
+
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
@@ -48,14 +55,15 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.FileCallBack;
+
+import java.io.File;
+
 
 import butterknife.Bind;
 import okhttp3.Call;
 
-import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
-import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
-import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_SATUS;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
@@ -102,21 +110,120 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
         initToolBar();
         initBottomNavigationBar();
-
         checkApkVersion();
 
     }
 
     private void checkApkVersion() {
+        final String localVersion = VersionUtils.getVersionName(mContext);
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.OSS_APK_GET_LASTEST)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取版本信息失败");
+                        e.printStackTrace();
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取到版本信息 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                String data = SCJsonUtils.parseData(response);
+                                String forceUpdate = JSONObject.parseObject(data).getString("forceUpdate");
+                                boolean force = Boolean.parseBoolean(forceUpdate);
+                                String url = JSONObject.parseObject(data).getString("url");
+                                String version = JSONObject.parseObject(data).getString("version");
+                                boolean isUpdata = VersionUtils.compareVersion(localVersion, version);
+                                if (isUpdata) {
+                                    showUpdateDialog(url, force, version);
+                                } else {
+                                    return;
+                                }
+
+                            } else {
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                });
+    }
+
+    private void showUpdateDialog(final String url, final boolean force, String version) {
+        String msg = "";
+        if (force) {
+            msg = "该版本有重大改动，需强制更新";
+        } else {
+            msg = "确定要更新吗？";
+        }
+        final StandardDialog dialog = new StandardDialog(this);
+        dialog.setStandardTitle("发现新版本 (" + version + ")");
+        dialog.setStandardMsg(msg);
+        dialog.setSureText("确定");
+        dialog.setCancelText("取消");
+        dialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {  //确定
+                downLoadApk(url);
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {  //取消
+                if (force) {
+                    dialog.dismiss();
+                    ActivityStackManager.getInstance().finishAllActivity();
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(!force);
+        dialog.setCanceledOnTouchOutside(!force);
+    }
+
+    private void downLoadApk(String url) {
+        File filesDir = getFilesDir();
+        String fileName = System.currentTimeMillis() + ".apk";
+        OkHttpUtils.post()
+                .url(url)
+                .build()
+                .execute(new FileCallBack(filesDir.getAbsolutePath(),fileName) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("下载失败");
+                        e.printStackTrace();
+                        ToastUtils.showToast(mContext,"下载过程中网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(File response, int id) {
+                        LogUtils.i("下载apk成功 = " + response.getName());
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setDataAndType(Uri.fromFile(response), "application/vnd.android.package-archive");
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void inProgress(float progress, long total, int id) {
+                        super.inProgress(progress, total, id);
+                        LogUtils.i("apk下载进度 = " + progress/total);
+                    }
+                });
     }
 
 
 
     private void initToolBar() {
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
-        mTbMain.setTitleText("三体");
-
     }
 
     private void initBottomNavigationBar() {
@@ -135,7 +242,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
         mMineBadge = new BadgeItem();
 
-        mMineBadge.setText("   ").show().setBorderWidth(DensityUtils.dip2px(mContext,3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+        mMineBadge.setText("   ").show().setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
         btmItemMine.setBadgeItem(mMineBadge);
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
@@ -387,7 +494,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         break;*/
                     case R.id.tv_dialog_msg_cancel:
                         //取消
-                       // readyGo(MeetPersonActivity.class);
+                        // readyGo(MeetPersonActivity.class);
                         customDialog.dismiss();
                         break;
                     default:

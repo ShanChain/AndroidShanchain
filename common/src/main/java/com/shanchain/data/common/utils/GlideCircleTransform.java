@@ -10,7 +10,6 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 /**
- * Created by zhoujian on 2017/6/6.
  * 下载的图片转换成圆形的方法
  */
 

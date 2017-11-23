@@ -1,5 +1,7 @@
 package com.shanchain.data.common.net;
 
+import android.text.TextUtils;
+
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -141,13 +143,12 @@ public class SCHttpUtils {
      *  描述：用于登录的带基础请求参数的post请求
      */
     public static PostFormBuilder postWithParamsForLogin(){
-
         return OkHttpUtils.post()
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
                 .addParams("Os","Android")              //操作系统
                 //.addParams("OsVersion", VersionUtils.getVersionName(MyApplication.getContext()))    //app版本
-                .addParams("ScreenSize","")             //屏幕尺寸
+                //.addParams("ScreenSize","")             //屏幕尺寸
                 .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
                 .addParams("RequestId",getRequestId())   //
                 .addParams("Signture","");               //签名
@@ -164,8 +165,13 @@ public class SCHttpUtils {
         long lBits = uid.getMostSignificantBits();
 
         byte[] bytes = ByteBuffer.allocate(16).putLong(hBits).putLong(lBits).array();
+        String encode = Base64Utils.encode(bytes);
+        if (TextUtils.isEmpty(encode)){
+            return "";
+        }else {
+            return encode;
+        }
 
-        return Base64Utils.encode(bytes);
 
     }
 
