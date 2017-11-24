@@ -125,7 +125,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mView.supportCancelSuc(false, position);
+                       //     mView.supportCancelSuc(false, position);
                         }
                     }
                 });
@@ -158,7 +158,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mView.supportSuc(false, position);
+                      //      mView.supportSuc(false, position);
                         }
                     }
                 });

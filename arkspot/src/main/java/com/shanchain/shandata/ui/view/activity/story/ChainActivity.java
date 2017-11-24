@@ -162,6 +162,8 @@ public class ChainActivity extends BaseActivity implements ArthurToolBar.OnLeftC
     }
 
     private void clickLike(int position) {
+        /*TextView tvLike = (TextView) mAdapter.getViewByPosition(position,R.id.tv_item_story_like);
+        tvLike.setEnabled(false);*/
         boolean beFav = mAdapter.getData().get(position).isBeFav();
         int storyId = mAdapter.getData().get(position).getStoryId();
         if (beFav){
@@ -169,8 +171,7 @@ public class ChainActivity extends BaseActivity implements ArthurToolBar.OnLeftC
         }else {
             mPresenter.support(storyId,position);
         }
-        TextView tvLike = (TextView) mAdapter.getViewByPosition(position,R.id.tv_item_story_like);
-        tvLike.setEnabled(false);
+
     }
 
     private void clickComment(int position) {
@@ -244,7 +245,7 @@ public class ChainActivity extends BaseActivity implements ArthurToolBar.OnLeftC
             int supportCount = bean.getSupportCount();
             model.setBeFav(true);
             TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
-            tvLike.setEnabled(true);
+            //tvLike.setEnabled(true);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
@@ -264,7 +265,7 @@ public class ChainActivity extends BaseActivity implements ArthurToolBar.OnLeftC
             int supportCount = bean.getSupportCount();
             model.setBeFav(true);
             TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
-            tvLike.setEnabled(true);
+            //tvLike.setEnabled(true);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
