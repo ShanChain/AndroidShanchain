@@ -173,9 +173,15 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
         String intro = mNovelModel.getIntro();
-        JSONObject jsonObject = JSONObject.parseObject(intro);
-        String replace = intro.replace(mNovelModel.getTitle() + "\n", "");
-        tvContent.setText(jsonObject.getString("content"));
+        try{
+            JSONObject jsonObject = JSONObject.parseObject(intro);
+            String replace = intro.replace(mNovelModel.getTitle() + "\n", "");
+            tvContent.setText(jsonObject.getString("content"));
+        }catch (Exception e){
+            String replace = intro.replace(mNovelModel.getTitle() + "\n", "");
+            tvContent.setText(replace);
+        }
+
 
 
         ivAvatar.setOnClickListener(this);
