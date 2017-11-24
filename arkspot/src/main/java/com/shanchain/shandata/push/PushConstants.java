@@ -21,7 +21,7 @@ public class PushConstants {
     public static final String PAGE_MINE = "mine_page";
     public static final String PAGE_SPACE = "space_page";
     public static final String PAGE_SETTING = "setting_page";
-    public static final String PAGE_RULE = "rule_page";
+    public static final String PAGE_ROLE = "role_page";
     public static final String PAGE_CHARACTER = "character_page";
     public static final String PAGE_CONTACT = "contact_page";
     public static final String PAGE_NOTIFICATION = "notification_page";

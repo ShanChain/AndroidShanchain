@@ -28,6 +28,8 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -55,9 +57,13 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.Bind;
 import okhttp3.Call;
 
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
+import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_READ_STATUS;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
@@ -75,6 +81,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private BadgeItem mSquareBadge;
     private BadgeItem mMineBadge;
     private   long downloadId;
+    private boolean isMsgRead = true;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -87,7 +94,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         Intent intent = getIntent();
         mFragmentId = intent.getIntExtra("fragmentId", 0);
 
-        String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String uId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
         String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
@@ -210,22 +217,32 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void initBottomNavigationBar() {
         BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
-//        mStoryBadge = new BadgeItem();
-//        mStoryBadge.setText("2").show();
-//        btmItemStory.setBadgeItem(mStoryBadge);
+        mStoryBadge = new BadgeItem();
+        mStoryBadge.setText("2").hide();
+        btmItemStory.setBadgeItem(mStoryBadge);
         BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
-//        mNewsBadge = new BadgeItem();
-//        mNewsBadge.setText("99+").show();
-//        btmItemNews.setBadgeItem(mNewsBadge);
+        mNewsBadge = new BadgeItem();
+        mNewsBadge.setText("99+").hide();
+        btmItemNews.setBadgeItem(mNewsBadge);
         BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
-//        mSquareBadge = new BadgeItem();
-//        mSquareBadge.setText("11").show();
-//        btmItemSquare.setBadgeItem(mSquareBadge);
+        mSquareBadge = new BadgeItem();
+        mSquareBadge.setText("11").hide();
+        btmItemSquare.setBadgeItem(mSquareBadge);
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
         mMineBadge = new BadgeItem();
 
-        mMineBadge.setText("   ").show().setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+        mMineBadge.setText("   ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+        String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+        String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_READ_STATUS);
         btmItemMine.setBadgeItem(mMineBadge);
+        if(!TextUtils.isEmpty(msgReadStatus) && !Boolean.parseBoolean(msgReadStatus)){
+            isMsgRead = Boolean.parseBoolean(msgReadStatus);
+            mMineBadge.show();
+        }else {
+            isMsgRead = true;
+            mMineBadge.hide();
+        }
+
         mBnb.setActiveColor(R.color.colorActive)
                 .setMode(BottomNavigationBar.MODE_FIXED)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
@@ -234,7 +251,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 .addItem(btmItemNews)
                 .addItem(btmItemSquare)
                 .addItem(btmItemMine)
-                .setFirstSelectedPosition(0)
+                .setFirstSelectedPosition(mFragmentId)
                 .initialise();
         mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
@@ -375,7 +392,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void setToolBar(int position) {
 
-        String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        String uId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
         String spaceInfo = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_INFO);
         SpaceInfo spaceDetailInfo = new Gson().fromJson(spaceInfo, SpaceInfo.class);
         String name = spaceDetailInfo.getName();
@@ -409,7 +426,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
-                mTbMain.setRightImage(R.mipmap.abs_home_btn_comment_default);
+                if(isMsgRead){
+                    mTbMain.setRightImage(R.mipmap.abs_mine_btn_information_default);
+                }else {
+                    mTbMain.setRightImage(R.mipmap.abs_mine_btn_haveinformation_default);
+                }
                 mTbMain.setBtnEnabled(false, true);
                 mTbMain.setBtnVisibility(false, true);
                 mTbMain.setOnRightClickListener(this);
@@ -441,6 +462,10 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void notifyRightClick() {
+        String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+        CommonCacheHelper.getInstance().setCache(userId,CACHE_USER_MSG_READ_STATUS,"true");
+        mMineBadge.hide();
+        isMsgRead = true;
         Bundle bundle = new Bundle();
         JSONObject screenProps = new JSONObject();
         screenProps.put(Constants.CACHE_GDATA, JSONObject.parse(CommonCacheHelper.getInstance().getCache("0", Constants.CACHE_GDATA)));
@@ -648,6 +673,14 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     mMineBadge.hide();
                 }
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(SCBaseEvent event) {
+        if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_NEW_MSG)) {
+            isMsgRead = false;
+            mMineBadge.show();
         }
     }
 }

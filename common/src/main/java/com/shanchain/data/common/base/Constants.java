@@ -53,6 +53,7 @@ public interface Constants {
         String CACHE_DEVICE_TOKEN = "deviceToken";
         String CACHE_APP_ENV = "true";
         String CACHE_USER_MSG = "userMessage";
+        String CACHE_USER_MSG_READ_STATUS = "cache_user_msg_read_status";
 
         /*************本地缓存常量************/
         int TYPE_STORY_SHORT = 1;
