@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.shandata.ui.model.RNDetailExt;
@@ -18,6 +19,8 @@ import com.shanchain.shandata.ui.view.activity.chat.ContactActivity;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.umeng.message.UTrack;
 import com.umeng.message.entity.UMessage;
+
+import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG;
 
 /**
  * Created by flyye on 2017/11/17.
@@ -92,7 +95,8 @@ public class PushManager {
             }
             context.startActivity(intent);
         }else if (msgBody.getString("action_type").equalsIgnoreCase("red_point")){
-
+//            String userId = CommonCacheHelper.getInstance().getCache("0",Constants.CACHE_CUR_USER);
+//            CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG);
         }
 
     }
