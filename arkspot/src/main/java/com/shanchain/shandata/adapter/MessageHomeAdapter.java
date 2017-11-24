@@ -9,10 +9,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.DateUtils;
-import com.shanchain.shandata.R;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.shandata.ui.model.MessageHomeInfo;
 import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.ui.model.MessageHomeInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -59,14 +58,13 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         EMConversation.EMConversationType type = emConversation.getType();
         if (emConversation.isGroup()) {
             //会话是群组
-            String s = emConversation.getLastMessage().conversationId();
-            helper.setText(R.id.tv_item_msg_home_name, s);
-            String groupImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_GROUP_IMG, defaultGroupImg);
+            helper.setText(R.id.tv_item_msg_home_name, item.getName());
+            String groupImg = item.getImg();
             GlideUtils.load(mContext,groupImg,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
         } else {
             //会话不是群组
-            helper.setText(R.id.tv_item_msg_home_name, emConversation.getLastMessage().getTo());
-            String headImg = emConversation.getLastMessage().getStringAttribute(Constants.MSG_HEAD_IMG, defaultHeadImg);
+            helper.setText(R.id.tv_item_msg_home_name, item.getName());
+            String headImg = item.getImg();
             GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
         }
 

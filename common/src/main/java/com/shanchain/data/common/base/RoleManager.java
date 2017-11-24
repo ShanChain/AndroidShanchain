@@ -71,7 +71,27 @@ public class RoleManager {
         gData.put("characterId",characterId);
         SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
 
+    }
 
+    public static void switchRoleCacheComment(String characterId,String characterInfo,String spaceId,String spaceInfo){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,Constants.CACHE_SPACE_ID,spaceId);
+        SCCacheUtils.setCache(userId,Constants.CACHE_CHARACTER_ID,characterId);
+        SCCacheUtils.setCache(userId,Constants.CACHE_CHARACTER_INFO,characterInfo);
+        SCCacheUtils.setCache(userId,Constants.CACHE_SPACE_INFO,spaceInfo);
+        JSONObject gData = new JSONObject();
+        String token = SCCacheUtils.getCache(userId, Constants.CACHE_TOKEN);
+        gData.put("userId",userId);
+        gData.put("token",token);
+        gData.put("spaceId",spaceId );
+        gData.put("characterId",characterId);
+        SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
+    }
+
+    public static void switchRoleCacheHx(String hxUser,String pwd){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_USER_NAME,hxUser);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_PWD,pwd);
     }
 
 }

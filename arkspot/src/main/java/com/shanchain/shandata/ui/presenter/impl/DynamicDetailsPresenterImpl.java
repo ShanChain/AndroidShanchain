@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CommentBean;
@@ -172,7 +174,6 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
     }
 
 
-
     private void obtainCharacterInfos(final List<BdCommentBean> commentBeanList, List<Integer> characterIds, final boolean isLast) {
 
         String jArr = JSON.toJSONString(characterIds);
@@ -223,7 +224,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
     public void initNovelInfo(String storyId) {
         SCHttpUtils.post()
                 .url(HttpApi.STORY_GET_BY_ID)
-                .addParams("storyId",storyId)
+                .addParams("storyId", storyId)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -238,20 +239,84 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                         try {
                             LogUtils.i("获取到故事内容 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 StoryDetailInfo storyDetailInfo = JSONObject.parseObject(data, StoryDetailInfo.class);
-                                if (storyDetailInfo == null){
+                                if (storyDetailInfo == null) {
                                     mView.initNovelSuc(storyDetailInfo);
-                                }else {
+                                } else {
                                     mView.initNovelSuc(null);
                                 }
-                            }else {
+                            } else {
                                 mView.initNovelSuc(null);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             mView.initNovelSuc(null);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void supportCancelComment(int commentId, final int position) {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_COMMENT_SUPPORT_CANCEL)
+                .addParams("commentId", "" + commentId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("取消点赞点赞失败");
+                        e.printStackTrace();
+                        mView.commentSupportCancelSuc(false,position);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("取消点赞评论结果 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                    mView.commentSupportCancelSuc(true,position);
+                            } else {
+                                mView.commentSupportCancelSuc(false,position);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.commentSupportCancelSuc(false,position);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void supportComment(int commentId, final int position) {
+        SCHttpUtils.postWithChaId()
+                .url(HttpApi.STORY_COMMENT_SUPPORT)
+                .addParams("commentId", "" + commentId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("点赞失败");
+                        e.printStackTrace();
+                        mView.commentSupportSuc(false,position);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("点赞评论结果 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                    mView.commentSupportSuc(true,position);
+                            } else {
+                                mView.commentSupportSuc(false,position);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.commentSupportSuc(false,position);
                         }
                     }
                 });

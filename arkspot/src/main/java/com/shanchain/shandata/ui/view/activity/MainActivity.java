@@ -56,7 +56,6 @@ import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
-
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
@@ -151,7 +150,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-
                         }
                     }
                 });
@@ -596,10 +594,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         return handled || super.onKeyUp(keyCode, event);
     }
 
-    @Override
-    public void invokeDefaultOnBackPressed() {
-        super.onBackPressed();
-    }
 
     @Override
     public void onBackPressed() {
@@ -675,6 +669,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 break;
         }
     }
+
+    @Override
+    public void invokeDefaultOnBackPressed() {}
 
     @Subscribe
     public void onEventMainThread(SCBaseEvent event) {

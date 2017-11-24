@@ -82,6 +82,12 @@ public interface Constants {
         int GROUP_ADMIN = 1;
         int GROUP_MEMBER = 2;
 
+        /**************绑定内容**************/
         String BIND_MOBILE = "BIND_MOBILE";
         String RESET_PASSWORD = "RESET_PASSWORD";
+
+        /**************举报类型**************/
+        String REPORT_TYPE_TOPIC = "TOPIC";
+        String REPORT_TYPE_STORY = "STORY";
+
 }

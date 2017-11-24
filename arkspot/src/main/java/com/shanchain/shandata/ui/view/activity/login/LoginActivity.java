@@ -21,6 +21,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
@@ -425,39 +426,6 @@ public class LoginActivity extends BaseActivity {
                                      }
                                  }
                              }
-
-                            /*SCHttpCallBack<ResponseLoginBean>(ResponseLoginBean.class) {
-                                 @Override
-                                 public void onError(Call call, Exception e, int id) {
-                                     closeProgress();
-                                     LogUtils.e("三方登录创建账号失败");
-                                     e.printStackTrace();
-                                 }
-
-                                 @Override
-                                 public void onResponse(ResponseLoginBean response, int id) {
-                                     if (response != null) {
-                                         LogUtils.d("三方登录成功");
-                                         String token = response.getToken();
-                                         String account = response.getAccount();
-                                         LoginUserInfoBean userInfo = response.getUserInfo();
-                                         if (userInfo == null) {
-                                             closeProgress();
-                                             ToastUtils.showToast(mContext,"网络错误");
-                                             LogUtils.i("userInfo异常");
-                                             return;
-                                         }
-                                         int userId = userInfo.getUserId();
-                                         LogUtils.d("登录成功  uid" + userId);
-                                         SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
-                                         SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                                         SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
-                                         checkCache();
-                                     } else {
-                                         LogUtils.e("登录返回数据为空");
-                                     }
-                                 }
-                             }*/
                     );
         } catch (Exception e) {
             e.printStackTrace();
@@ -490,50 +458,21 @@ public class LoginActivity extends BaseActivity {
                             LogUtils.i("space详情 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                closeProgress();
                                 final String data = JSONObject.parseObject(response).getString("data");
+                                RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                ActivityManager.getInstance().finishAllActivity();
+                                startActivity(intent);
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
-                                final long startTime = System.currentTimeMillis();
-                                LogUtils.i("登录环信 = 开始时间 = " + startTime);
-                                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+                                ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
-                                    public void onSuccess() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                long endTime = System.currentTimeMillis();
-                                                LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
-                                                closeProgress();
-                                                LogUtils.i("耗时 = " + (endTime - startTime));
-                                                EMClient.getInstance().chatManager().loadAllConversations();
-                                                EMClient.getInstance().groupManager().loadAllGroups();
-                                                RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
-                                                //ToastUtils.showToast(mContext, "欢迎来到千千世界");
-                                                Intent intent = new Intent(mContext, MainActivity.class);
-                                                ActivityManager.getInstance().finishAllActivity();
-                                                startActivity(intent);
-                                            }
-                                        });
-
-                                    }
-
-                                    @Override
-                                    public void onError(int i, String s) {
-                                        closeProgress();
-                                        ToastUtils.showToast(mContext,"网络异常");
-                                        LogUtils.i("登录环信账号失败 = " + s + "code" + i);
-                                        if (i == 200) {
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onProgress(int i, String s) {
-                                        LogUtils.i("登录进度 = " + i + " 进度信息 = " + s );
+                                    public void run() {
+                                        hxLogin(userName,pwd);
                                     }
                                 });
-
                             } else {
                                 //code错误
                                 closeProgress();
@@ -547,6 +486,48 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
                 });
+    }
+
+    private void hxLogin(final String userName, final String pwd) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录环信 = 开始时间 = " + startTime);
+        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        long endTime = System.currentTimeMillis();
+                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+
+                        LogUtils.i("耗时 = " + (endTime - startTime));
+                        EMClient.getInstance().chatManager().loadAllConversations();
+                        EMClient.getInstance().groupManager().loadAllGroups();
+                        //RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
+                        RoleManager.switchRoleCacheHx(userName,pwd);
+                        //ToastUtils.showToast(mContext, "欢迎来到千千世界");
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                //closeProgress();
+                ToastUtils.showToast(mContext,"网络异常");
+                LogUtils.i("登录环信账号失败 = " + s + "code" + i);
+                if (i == 200) {
+
+                }
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s );
+            }
+        });
+
     }
 
     public void showProgress() {

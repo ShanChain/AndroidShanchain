@@ -21,4 +21,8 @@ public interface DynamicDetailView {
     void supportCancelSuc(boolean suc);
 
     void initNovelSuc(StoryDetailInfo storyDetailInfo);
+
+    void commentSupportSuc(boolean suc, int position);
+
+    void commentSupportCancelSuc(boolean suc, int position);
 }

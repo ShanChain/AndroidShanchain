@@ -1,6 +1,4 @@
 package com.shanchain.shandata.receiver;
-import java.io.File;
-
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.content.BroadcastReceiver;
@@ -8,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+
+import java.io.File;
 /**
  * Created by flyye on 2017/11/24.
  */

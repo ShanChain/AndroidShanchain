@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -129,11 +130,11 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
             //提交举报信息
             showLoadingDialog();
             final String reason = "举报类型:" + mReportList[mPosition] + ";举报内容:" + content;
-            SCHttpUtils.post()
+            SCHttpUtils.postWithChaId()
                     .url(HttpApi.STORY_REPORT)
-                    .addParams("storyId", mStoryId.substring(1))
-                    .addParams("characterId", mCharacterId)
+                    .addParams("targetId", mStoryId.substring(1))
                     .addParams("reason", reason)
+                    .addParams("reportType", Constants.REPORT_TYPE_STORY)
                     .build()
                     .execute(new StringCallback() {
                         @Override

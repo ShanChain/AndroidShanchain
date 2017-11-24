@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -168,11 +171,11 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
         StoryBeanModel beanModel = mAdapter.getData().get(position);
         StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
         int itemType = beanModel.getItemType();
-        if (itemType == StoryInfo.type1){   //普通动态
+        if (itemType == StoryInfo.type1) {   //普通动态
             Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
             intent.putExtra("story", bean);
             startActivity(intent);
-        }else if (itemType == StoryInfo.type2){ //小说
+        } else if (itemType == StoryInfo.type2) { //小说
             Intent intentType2 = new Intent(mContext, NovelDetailsActivity.class);
             intentType2.putExtra("story", bean);
             startActivity(intentType2);
@@ -180,10 +183,18 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void forwarding(int position) {
+
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
-        Intent intent = new Intent(mContext, ForwardingActivity.class);
-        intent.putExtra("forward",bean);
-        startActivity(intent);
+        int spaceId = bean.getSpaceId();
+        String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (TextUtils.equals(cacheSpaceId, "" + spaceId)) {
+            Intent intent = new Intent(mContext, ForwardingActivity.class);
+            intent.putExtra("forward", bean);
+            startActivity(intent);
+        } else {
+            ToastUtils.showToast(mContext, "不同世界不能进行转发操作");
+        }
+
     }
 
     private void avatarClick(int position) {
@@ -284,7 +295,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             int supportCount = bean.getSupportCount();
             bean.setBeFav(true);
             int headerLayoutCount = mAdapter.getHeaderLayoutCount();
-            TextView tvLike = (TextView) mAdapter.getViewByPosition(position+headerLayoutCount, R.id.tv_item_story_like);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_story_like);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
@@ -303,7 +314,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             int supportCount = bean.getSupportCount();
             bean.setBeFav(false);
             int headerLayoutCount = mAdapter.getHeaderLayoutCount();
-            TextView tvLike = (TextView) mAdapter.getViewByPosition(position+headerLayoutCount, R.id.tv_item_story_like);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_story_like);
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);

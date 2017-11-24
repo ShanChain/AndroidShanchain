@@ -183,6 +183,16 @@ public class StoryChainActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
+    public void supportSuc(boolean suc, int position) {
+
+    }
+
+    @Override
+    public void supportCancelSuc(boolean suc, int position) {
+
+    }
+
+    @Override
     public void onLoadMoreRequested() {
         initData();
     }
