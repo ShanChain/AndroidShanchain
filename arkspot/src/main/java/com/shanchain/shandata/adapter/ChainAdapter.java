@@ -45,6 +45,7 @@ public class ChainAdapter extends BaseQuickAdapter<StoryChainModel,BaseViewHolde
 
         StoryChainBean storyBean = item.getStoryBean();
         ContactBean characterBean = item.getCharacterBean();
+
         boolean beFav = item.isBeFav();
         long createTime = storyBean.getCreateTime();
         String time = DateUtils.formatFriendly(new Date(createTime));
@@ -52,6 +53,8 @@ public class ChainAdapter extends BaseQuickAdapter<StoryChainModel,BaseViewHolde
         helper.setText(R.id.tv_item_story_time, time);
         helper.setText(R.id.tv_item_story_comment, storyBean.getCommentCount() + "");
         helper.setText(R.id.tv_item_story_name,characterBean.getName());
+        helper.setText(R.id.tv_item_story_forwarding,storyBean.getTranspond() + "");
+        helper.setText(R.id.tv_item_story_like,storyBean.getSupportCount() + "");
         if (beFav){
             mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
         }else {

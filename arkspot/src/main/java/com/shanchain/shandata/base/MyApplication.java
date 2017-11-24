@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.soloader.SoLoader;
@@ -19,10 +20,17 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.shanchain.data.common.BaseApplication;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
 import com.shanchain.shandata.manager.CharacterManager;
@@ -38,17 +46,25 @@ import com.umeng.message.common.inter.ITagManager;
 import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.shaohui.shareutil.ShareConfig;
 import me.shaohui.shareutil.ShareManager;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
+
+import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
+import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_SATUS;
 
 
 public class MyApplication extends BaseApplication {
@@ -142,33 +158,31 @@ public class MyApplication extends BaseApplication {
     }
 
     private void initUPush() {
-        PushAgent mPushAgent = PushAgent.getInstance(this);
-        //注册推送服务，每次调用register方法都会回调该接口
-        mPushAgent.register(new IUmengRegisterCallback() {
-            @Override
-            public void onSuccess(String deviceToken) {
-                //注册成功会返回device token
-                CommonCacheHelper.getInstance().setCache("0", Constants.CACHE_DEVICE_TOKEN,deviceToken);
-            }
+       final PushAgent mPushAgent = PushAgent.getInstance(this);
 
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void onFailure(String s, String s1) {
+            public void run() {
+                //注册推送服务，每次调用register方法都会回调该接口
+                mPushAgent.register(new IUmengRegisterCallback() {
+                    @Override
+                    public void onSuccess(String deviceToken) {
+                        //注册成功会返回device token
+                        CommonCacheHelper.getInstance().setCache("0", Constants.CACHE_DEVICE_TOKEN,deviceToken);
+                        setDeviceToken();
+                    }
 
+                    @Override
+                    public void onFailure(String s, String s1) {
+
+                    }
+                });
             }
         });
+        thread.start();
         mPushAgent.setNotificationClickHandler(mNotificationClickHandler);
         mPushAgent.setMessageHandler(messageHandler);
 //        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
-
-        mPushAgent.getTagManager().add(new TagManager.TCallBack() {
-            @Override
-            public void onMessage(final boolean isSuccess, final ITagManager.Result result) {
-                //isSuccess表示操作是否成功
-                if(result !=null){
-                    Log.i("flyyenubia",result.jsonString);
-                }
-            }
-        }, "nubia");
     }
 
 
@@ -290,16 +304,29 @@ public class MyApplication extends BaseApplication {
      */
     private void initOkhttpUtils() {
         try {
-//            HttpsUtils.SSLParams sslParams =
-//                    HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new LoggerInterceptor("TAG"))
-                    //.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
-                    .connectTimeout(60000L, TimeUnit.MILLISECONDS)
-                    .readTimeout(60000L, TimeUnit.MILLISECONDS)
-                    //其他配置
-                    .build();
-            OkHttpUtils.initClient(okHttpClient);
+            if(Constants.SC_ENV_PRD){
+                            HttpsUtils.SSLParams sslParams =
+                    HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .addInterceptor(new LoggerInterceptor("TAG"))
+                        .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                        .connectTimeout(60000L, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000L, TimeUnit.MILLISECONDS)
+                        //其他配置
+                        .build();
+                OkHttpUtils.initClient(okHttpClient);
+            }else {
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .addInterceptor(new LoggerInterceptor("TAG"))
+                        .connectTimeout(60000L, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000L, TimeUnit.MILLISECONDS)
+                        //其他配置
+                        .build();
+                OkHttpUtils.initClient(okHttpClient);
+            }
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -365,6 +392,36 @@ public class MyApplication extends BaseApplication {
                 .setPriority(Notification.PRIORITY_MAX)
                 .build();
         notificationManager.notify(1,notification);
+    }
+
+    private void setDeviceToken(){
+        if(PrefUtils.getBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_SATUS,false)){
+            return;
+        }
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.SET_DEVICE_TOKEN)
+                .addParams("osType","android")
+                .addParams("token",token)
+                .addParams("deviceToken",CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("设置DeviceToken失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            PrefUtils.putBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_SATUS,true);
+                        }
+
+                    }
+                });
     }
 
 }

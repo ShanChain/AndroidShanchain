@@ -126,7 +126,9 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
 
     private void initToolBar() {
         mTbSceneDetails.setOnLeftClickListener(this);
-        mTbSceneDetails.setOnRightClickListener(this);
+        mTbSceneDetails.setBtnEnabled(true,false);
+        mTbSceneDetails.setBtnVisibility(true,false);
+       // mTbSceneDetails.setOnRightClickListener(this);
     }
 
     @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.btn_scene_details_leave})
@@ -139,6 +141,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
             case R.id.iv_scene_details_img:
                 //场景图片
                 Intent intent = new Intent(this, EditSceneActivity.class);
+                intent.putExtra("groupId",mToChatName);
                 startActivity(intent);
                 break;
             case R.id.iv_scene_details_modify:
@@ -148,7 +151,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
             case R.id.ll_scene_details_numbers:
                 //所有角色
                 if (mIsGroup) {
-                    allNumbers();
+                    //allNumbers();
                 } else {
                     return;
                 }
@@ -218,7 +221,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
     @Override
     public void onRightClick(View v) {
         //举报
-        report();
+        //report();
     }
 
     private void report() {
@@ -255,7 +258,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
         //群
         mIvSceneDetailsAll.setVisibility(View.VISIBLE);
         mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
-        mTvSceneDetailsAnnouncement.setVisibility(View.VISIBLE);
+        mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
         mRlGroupInfo.setVisibility(View.VISIBLE);
         closeLoadingDialog();
         if (sceneDetailInfo != null) {

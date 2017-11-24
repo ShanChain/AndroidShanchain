@@ -9,19 +9,19 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.manager.ActivityManager;
-import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.RegisterHxBean;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.RegisterHxBean;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import okhttp3.Call;
@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void initAPP() {
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -63,32 +64,11 @@ public class SplashActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
-                EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMClient.getInstance().chatManager().loadAllConversations();
-                        EMClient.getInstance().groupManager().loadAllGroups();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                    }
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
 
-                    @Override
-                    public void onError(int i, String s) {
-                        LogUtils.i("环信登录失败 = " + s);
-                        exception();
-                    }
-
-                    @Override
-                    public void onProgress(int i, String s) {
-
-                    }
-                });
+                loginHx(hxUserName, hxPwd);
 
             }
         } else {
@@ -96,6 +76,34 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void loginHx(String hxUserName, String hxPwd) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录环信 = 开始时间 = " + startTime);
+        EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                LogUtils.i("登录环信账号成功");
+                long endTime = System.currentTimeMillis();
+                LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+
+                LogUtils.i("耗时 = " + (endTime - startTime));
+                EMClient.getInstance().chatManager().loadAllConversations();
+                EMClient.getInstance().groupManager().loadAllGroups();
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                LogUtils.i("环信登录失败 = " + s);
+                exception();
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
     }
 
     private void checkServer() {
@@ -179,38 +187,17 @@ public class SplashActivity extends AppCompatActivity {
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                 final String data = JSONObject.parseObject(response).getString("data");
                                 //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
+                                RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
+                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                ActivityManager.getInstance().finishAllActivity();
+                                startActivity(intent);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
-                                EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+                                ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
-                                    public void onSuccess() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                LogUtils.i("登录环信账号成功");
-                                                EMClient.getInstance().chatManager().loadAllConversations();
-                                                EMClient.getInstance().groupManager().loadAllGroups();
-                                                RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
-                                                ToastUtils.showToast(SplashActivity.this,"穿越角色成功");
-                                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                                ActivityManager.getInstance().finishAllActivity();
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-
-                                    }
-
-                                    @Override
-                                    public void onError(int i, String s) {
-                                        LogUtils.i("登录环信账号失败 = " + s);
-                                        exception();
-                                    }
-
-                                    @Override
-                                    public void onProgress(int i, String s) {
-
+                                    public void run() {
+                                        hxLogin(userName, pwd);
                                     }
                                 });
 
@@ -221,6 +208,42 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void hxLogin(final String userName, final String pwd) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录环信 = 开始时间 = " + startTime);
+        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LogUtils.i("登录环信账号成功");
+                        long endTime = System.currentTimeMillis();
+                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+
+                        LogUtils.i("耗时 = " + (endTime - startTime));
+                        EMClient.getInstance().chatManager().loadAllConversations();
+                        EMClient.getInstance().groupManager().loadAllGroups();
+                        //RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
+                        RoleManager.switchRoleCacheHx(userName,pwd);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                LogUtils.i("登录环信账号失败 = " + s);
+                exception();
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
     }
 
 

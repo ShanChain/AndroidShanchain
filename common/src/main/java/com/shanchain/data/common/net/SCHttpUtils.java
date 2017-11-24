@@ -30,7 +30,6 @@ public class SCHttpUtils {
     }
 
     public static PostFormBuilder post() {
-
         String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
         return OkHttpUtils.post()
@@ -144,17 +143,6 @@ public class SCHttpUtils {
      *  描述：用于登录的带基础请求参数的post请求
      */
     public static PostFormBuilder postWithParamsForLogin(){
-        String deviceToken = CommonCacheHelper.getInstance().getCache("0", CACHE_DEVICE_TOKEN);
-        if (deviceToken == null){
-            LogUtils.i("缓存的dtoken为NULL");
-        }
-        String dToken = "";
-        if (TextUtils.isEmpty(deviceToken)){
-            LogUtils.i("缓存的dtoken为空");
-            dToken = "";
-        }else {
-            dToken = deviceToken;
-        }
         return OkHttpUtils.post()
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
@@ -163,7 +151,6 @@ public class SCHttpUtils {
                 //.addParams("ScreenSize","")             //屏幕尺寸
                 .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
                 .addParams("RequestId",getRequestId())   //
-                .addParams("deviceToken",dToken)
                 .addParams("Signture","");               //签名
 
     }

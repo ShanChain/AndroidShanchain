@@ -182,6 +182,9 @@
 -keep public class com.shanchain.data.common.bean.**{
      *;
 }
+-keep public class com.shanchain.data.common.push.**{
+     *;
+}
 -keep public class com.shanchain.data.common.eventbus.**{
      *;
 }

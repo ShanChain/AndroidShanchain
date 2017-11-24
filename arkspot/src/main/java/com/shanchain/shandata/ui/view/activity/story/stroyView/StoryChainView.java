@@ -12,4 +12,7 @@ public interface StoryChainView {
 
     void getStoryListSuc(List<StoryChainModel> modelBeanList, boolean isLast);
 
+    void supportSuc(boolean suc, int position);
+
+    void supportCancelSuc(boolean suc, int position);
 }

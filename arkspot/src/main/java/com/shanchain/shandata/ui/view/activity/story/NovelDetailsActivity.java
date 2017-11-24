@@ -340,6 +340,16 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     @Override
+    public void commentSupportSuc(boolean suc, int position) {
+
+    }
+
+    @Override
+    public void commentSupportCancelSuc(boolean suc, int position) {
+
+    }
+
+    @Override
     public void onLoadMoreRequested() {
         LogUtils.i("load more ......");
         page ++;

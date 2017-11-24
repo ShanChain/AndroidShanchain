@@ -41,17 +41,7 @@ public interface HttpApi {
     /** 批量移除群成员*/
     String HX_GROUP_REMOVE_MEMBERS = BASE_URL_IM + "/hx/group/rmMembers";
 
-    /** 添加管理员*/
-    String HX_GROUP_ADD_ADMIN = BASE_URL_IM + "/hx/group/addAdmin";
 
-    /** 移除群管理*/
-    String HX_GROUP_REMOVE_ADMIN = BASE_URL_IM + "/hx/group/rmAdmin";
-
-    /** 获取我的关注列表*/
-    String FOCUS_MY_FOCUS = BASE_URL + "/v1/focus/myFocus";
-
-    /** 获取我的粉丝列表*/
-    String FOCUS_FANS = BASE_URL + "/v1/focus/funs";
 
     /** 查找我关注的列表*/
     String FOCUS_QUERY = BASE_URL + "/v1/focus/query";
@@ -72,7 +62,8 @@ public interface HttpApi {
 
 
     /** 获取上传图片的信息*/
-    String UP_LOAD_FILE = "http://47.91.178.114:9177/oss/upload/app";
+    String UP_LOAD_FILE = BASE_URL + "/oss/upload/app";
+
 
     /** 查询标签*/
     String TAG_QUERY = BASE_URL + "/v1/tag/query";
@@ -155,7 +146,7 @@ public interface HttpApi {
     String TOPIC_QUERY_SPACEID = BASE_URL +  "/v1/topic/query/spaceId";
 
     /** 举报故事*/
-    String STORY_REPORT = BASE_URL + "/v1/story/report";
+    String STORY_REPORT = BASE_URL + "/v1/story/report/create";
 
     /** 获取当前角色*/
     String CHARACTER_GET_CURRENT = BASE_URL + "/v1/character/get/current";
@@ -234,6 +225,9 @@ public interface HttpApi {
     
     /** 查找时空根据名字 模糊匹配*/
     String SPACE_LIST_NAME = BASE_URL + "/v1/space/list/name";
+
+    /** 设置deviceToken*/
+    String SET_DEVICE_TOKEN = BASE_URL + "/v1/user/deviceToken";
     
     /** 绑定其他账号*/
     String BIND_OTHER_ACCOUNT = BASE_URL + "/v1/user/bind_other_account";
@@ -244,5 +238,19 @@ public interface HttpApi {
     /**判断故事是否点赞 -idList */
     String STORY_ISFAV_LIST = BASE_URL + "/v1/story/isFav/list";
 
+    /** 添加公告*/
+    String SPACE_ANNO_CREATE = BASE_URL + "/v1/spaceAnno/create";
+
+    /** 给评论点赞*/
+    String STORY_COMMENT_SUPPORT = BASE_URL + "/v1/storyComment/support/add";
+
+    /** 给评论取消点赞*/
+    String STORY_COMMENT_SUPPORT_CANCEL = BASE_URL + "/v1/storyComment/support/remove";
+
+    /** 根据环信用户名批量查询用户信息*/
+    String HX_USER_USERNAME_LIST = BASE_URL_IM + "/hx/user/hxUserName/list";
+
+    /** 通过环信groupId批量查询群信息*/
+    String HX_GROUP_LIST = BASE_URL_IM + "/hx/group/list";
 
 }

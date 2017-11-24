@@ -8,35 +8,28 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.alibaba.sdk.android.oss.ClientException;
-import com.alibaba.sdk.android.oss.OSS;
-import com.alibaba.sdk.android.oss.OSSClient;
-import com.alibaba.sdk.android.oss.ServiceException;
-import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
-import com.alibaba.sdk.android.oss.common.OSSLog;
-import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
-import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
-import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
-import com.alibaba.sdk.android.oss.model.PutObjectRequest;
-import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
+import com.shanchain.shandata.ui.model.AnnouncementContent;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.data.common.net.SCHttpCallBack;
-import com.shanchain.data.common.net.SCHttpUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -115,74 +108,77 @@ public class AddAnnouncementActivity extends BaseActivity implements ArthurToolB
         }
 
         //提交公告消息
-
-        if(TextUtils.isEmpty(mImgPath)){
-            ToastUtils.showToast(this,"图片为空！");
-            return;
+        showLoadingDialog(false);
+        if (TextUtils.isEmpty(mImgPath)){   //无图片
+            AnnouncementContent announcementContent = new AnnouncementContent();
+            announcementContent.setImg("");
+            announcementContent.setInfo(content);
+            String jContent = JSONObject.toJSONString(announcementContent);
+            releaseAnnouncement(title,jContent);
+        }else { //有图片
+            uploadImg(title,content);
         }
 
-        SCHttpUtils.post().url(HttpApi.UP_LOAD_FILE)
-                .addParams("num","1")
+
+    }
+
+    private void releaseAnnouncement(String title, final String content) {
+        SCHttpUtils.postWithSpaceAndChaId()
+                .url(HttpApi.SPACE_ANNO_CREATE)
+                .addParams("content",content)
+                .addParams("title",title)
                 .build()
-                .execute(new SCHttpCallBack<UpLoadImgBean>(UpLoadImgBean.class) {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtils.e("上传图片失败");
+                        closeLoadingDialog();
+                        LogUtils.i("添加公告失败");
                         e.printStackTrace();
+                        ToastUtils.showToast(mContext,"添加公告失败");
                     }
 
                     @Override
-                    public void onResponse(UpLoadImgBean response, int id) {
-                        if (response == null){
-                            LogUtils.e("上传图片返回为空");
-                            return;
+                    public void onResponse(String response, int id) {
+                        closeLoadingDialog();
+                        try {
+                            LogUtils.i("公告信息 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                                ToastUtils.showToast(mContext,"添加公告成功");
+                                finish();
+                            }else{
+                                ToastUtils.showToast(mContext,"添加公告失败");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ToastUtils.showToast(mContext,"添加公告失败");
                         }
-
-                        String endPoint = response.getEndPoint();
-                        String accessKeyId = response.getAccessKeyId();
-                        String accessKeySecret = response.getAccessKeySecret();
-                        String securityToken = response.getSecurityToken();
-                        String bucket = response.getBucket();
-                        String img1 = response.getUuidList().get(0);
-                        String host = response.getHost();
-                        LogUtils.d("response = "+response.toString());
-                        int h  = 120;
-                        int w = 100;
-                        String imgUrl = img1 + ".jpg";
-                        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(accessKeyId, accessKeySecret, securityToken);
-                        OSSLog.enableLog();
-                        OSS oss = new OSSClient(getApplicationContext(), endPoint, credentialProvider);
-                        ossUpLoad(bucket, imgUrl, oss);
                     }
                 });
     }
 
-    private void ossUpLoad(String bucket, String imgUrl, OSS oss) {
-        PutObjectRequest put = new PutObjectRequest(bucket,imgUrl,mImgPath);
-        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+    private void uploadImg(final String title, final String content) {
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
             @Override
-            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                Log.d("PutObject", "UploadSuccess");
-                Log.d("ETag", result.getETag());
-                Log.d("RequestId", result.getRequestId());
-                LogUtils.d("objectKey = " + request.getObjectKey());
+            public void onUploadSuc(List<String> urls) {
+                String imgUrl = urls.get(0);
+                AnnouncementContent announcementContent = new AnnouncementContent();
+                announcementContent.setImg(imgUrl);
+                announcementContent.setInfo(content);
+                String jContent = JSONObject.toJSONString(announcementContent);
+                releaseAnnouncement(title,jContent);
             }
+
             @Override
-            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                // 请求异常
-                if (clientExcepion != null) {
-                    // 本地异常如网络异常等
-                    clientExcepion.printStackTrace();
-                }
-                if (serviceException != null) {
-                    // 服务异常
-                    Log.e("ErrorCode", serviceException.getErrorCode());
-                    Log.e("RequestId", serviceException.getRequestId());
-                    Log.e("HostId", serviceException.getHostId());
-                    Log.e("RawMessage", serviceException.getRawMessage());
-                }
+            public void error() {
+                closeLoadingDialog();
+                ToastUtils.showToast(mContext,"上传图片失败");
             }
         });
+        List<String> src = new ArrayList<>();
+        src.add(mImgPath);
+        helper.upLoadImg(mContext,src);
     }
 
     private void selectImage() {

@@ -94,9 +94,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private boolean move;
     //发消息的头像图片
     String myHeadImg = "";
-    //    String myHeadImg = "http://www.sioe.cn/z/uploadfile/201109/13/1548377753.jpg";
     String nickName = "";
-    private String groupHeadImg = "http://img1.2345.com/duoteimg/zixunImg/local/2016/11/16/1479289866985.jpg";
+    private String groupHeadImg = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -115,49 +114,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void initGroup() {
         if (mChatType == EMMessage.ChatType.GroupChat) {
             //是群聊
-
             if (mChatPresenter != null) {
                 mChatPresenter.initGroup(toChatName);
             }
-
-            //添加全局管理员
-           /* \
-           EMGroup group = EMClient.getInstance().groupManager().getGroup(toChatName);
-            memberList.add("admin");
-            //添加群主
-            memberList.add(group.getOwner());
-            //添加管理员
-            List<String> adminList = group.getAdminList();
-            memberList.addAll(adminList);
-
-            for (int i = 0; i < adminList.size(); i++) {
-                LogUtils.d("群管理 : " + adminList.get(i));
-            }
-*/
-            //从环信服务器拉取群成员列表
-            /*ThreadUtils.runOnSubThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        EMCursorResult<String> result = null;
-                        final int pageSize = 200;
-                        do {
-                            result = EMClient.getInstance().groupManager().fetchGroupMembers(toChatName,
-                                    result != null ? result.getCursor() : "", pageSize);
-                            memberList.addAll(result.getData());
-                            LogUtils.d("fetchGroupMembers = " + result.getData().size());
-                        }
-                        while (!TextUtils.isEmpty(result.getCursor()) && result.getData().size() == pageSize);
-                    } catch (HyphenateException e) {
-                        LogUtils.d("失败了");
-                        e.printStackTrace();
-                    }
-                    for (int i = 0; i < memberList.size(); i++) {
-                        LogUtils.d("群成员有" + memberList.get(i));
-                    }
-                    LogUtils.d("群成员列表初始化完成");
-                }
-            });*/
 
         }
     }
@@ -223,7 +182,6 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             mChatType = EMMessage.ChatType.GroupChat;
         } else {
             mChatType = EMMessage.ChatType.Chat;
-
         }
         this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
@@ -496,7 +454,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void initGroupSuccess(List<String> members) {
         if (members == null) {
-            ToastUtils.showToast(mContext,"获取群信息失败");
+            //ToastUtils.showToast(mContext,"获取群信息失败");
         } else {
             String groupName = members.get(0);
             members.remove(0);

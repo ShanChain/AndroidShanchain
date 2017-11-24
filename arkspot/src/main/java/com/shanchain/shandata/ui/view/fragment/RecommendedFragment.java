@@ -23,11 +23,11 @@ import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.RecommendPresenter;
 import com.shanchain.shandata.ui.presenter.impl.RecommendPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
+import com.shanchain.shandata.ui.view.activity.story.ChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.shandata.ui.view.fragment.view.RecommendView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
@@ -140,7 +140,6 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
 
     @Override
     public void supportCancelSuccess(boolean isSuccess, int position) {
-        //ToastUtils.showToast(mActivity, isSuccess ? "取消点赞成功" : "取消点赞失败");
         if (isSuccess) {
             StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
             int supportCount = bean.getSupportCount();
@@ -150,8 +149,13 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
-            tvLike.setText(supportCount - 1 + "");
-            bean.setSupportCount(supportCount - 1);
+            if (supportCount - 1 <= 0) {
+                tvLike.setText("0");
+                bean.setSupportCount(0);
+            } else {
+                tvLike.setText(supportCount - 1 + "");
+                bean.setSupportCount(supportCount - 1);
+            }
         } else {
 
         }
@@ -195,12 +199,12 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
     }
 
     /**
-     *  描述： 展开楼层
+     * 描述： 展开楼层
      */
     private void expendFloors(int position) {
         StoryModelInfo modelInfo = mAdapter.getData().get(position).getStoryModel().getModelInfo();
-        Intent intent = new Intent(mActivity, StoryChainActivity.class);
-        intent.putExtra("storyInfo",modelInfo);
+        Intent intent = new Intent(mActivity, ChainActivity.class);
+        intent.putExtra("storyInfo", modelInfo);
         startActivity(intent);
     }
 
@@ -244,13 +248,14 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
         int spaceId = bean.getSpaceId();
         String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
-        if (!TextUtils.equals(cacheSpaceId,spaceId + "")){
-            ToastUtils.showToast(mActivity,"不同世界不可转发");
-            return;
+        if (!TextUtils.equals(cacheSpaceId, spaceId + "")) {
+            ToastUtils.showToast(mActivity, "不同世界不能进行转发操作");
+        }else {
+            Intent intent = new Intent(mActivity, ForwardingActivity.class);
+            intent.putExtra("forward", bean);
+            startActivity(intent);
         }
-        Intent intent = new Intent(mActivity, ForwardingActivity.class);
-        intent.putExtra("forward",bean);
-        startActivity(intent);
+
     }
 
     /**
@@ -269,7 +274,7 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
                         String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
                         int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
                         reportIntent.putExtra("storyId", storyId);
-                        reportIntent.putExtra("characterId", characterId+"");
+                        reportIntent.putExtra("characterId", characterId + "");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;

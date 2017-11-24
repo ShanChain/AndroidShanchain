@@ -6,7 +6,6 @@ project.ext {
 
     CFG_ENV_PRD = project.hasProperty('isEnvPrd') ? project.isEnvPrd : (IS_DEV_ENV ? 'false' :'true' )
     CFG_HOST_TEST = 'http://47.91.178.114:8080'
-    CFG_HOST_RELEASE = 'http://47.91.178.114:8080/test'
-
+    CFG_HOST_RELEASE = 'https://api.shanchain.com'
 
 }

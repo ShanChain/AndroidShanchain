@@ -5,14 +5,17 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseFragment;
@@ -126,10 +129,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(SCBaseEvent event){
-        if(event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_RELEASE)){
+    public void onEvent(SCBaseEvent event) {
+        if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_RELEASE)) {
             ReleaseSucEvent releaseSucEvent = (ReleaseSucEvent) event.params;
-            if (releaseSucEvent.isSuc()){
+            if (releaseSucEvent.isSuc()) {
                 LogUtils.i("发布成功，刷新数据");
                 onRefresh();
             }
@@ -154,8 +157,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+
             tvLike.setText(supportCount + 1 + "");
             bean.setSupportCount(supportCount + 1);
+
         } else {
 
         }
@@ -172,8 +177,13 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tvLike.setCompoundDrawables(drawable, null, null, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
-            tvLike.setText(supportCount - 1 + "");
-            bean.setSupportCount(supportCount - 1);
+            if (supportCount - 1 <= 0) {
+                tvLike.setText("0");
+                bean.setSupportCount(0);
+            } else {
+                tvLike.setText(supportCount - 1 + "");
+                bean.setSupportCount(supportCount - 1);
+            }
         } else {
 
         }
@@ -205,12 +215,12 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     }
 
     /**
-     *  描述： 展开楼层
+     * 描述： 展开楼层
      */
     private void expendFloors(int position) {
         StoryModelInfo modelInfo = mAdapter.getData().get(position).getStoryModel().getModelInfo();
         Intent intent = new Intent(mActivity, ChainActivity.class);
-        intent.putExtra("storyInfo",modelInfo);
+        intent.putExtra("storyInfo", modelInfo);
         startActivity(intent);
     }
 
@@ -229,9 +239,16 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      */
     private void clickForwarding(int position) {
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
-        Intent intent = new Intent(mActivity, ForwardingActivity.class);
-        intent.putExtra("forward",bean);
-        startActivity(intent);
+        int spaceId = bean.getSpaceId();
+        String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (TextUtils.equals(cacheSpaceId,spaceId + "")){
+            Intent intent = new Intent(mActivity, ForwardingActivity.class);
+            intent.putExtra("forward", bean);
+            startActivity(intent);
+        }else {
+            ToastUtils.showToast(mActivity,"不同世界不能进行转发操作");
+        }
+
     }
 
     /**
@@ -241,12 +258,11 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         StoryBeanModel beanModel = mAdapter.getData().get(position);
         StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
         int itemType = beanModel.getItemType();
-        if (itemType == StoryInfo.type1){   //普通动态
+        if (itemType == StoryInfo.type1) {   //普通动态
             Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
-
             intent.putExtra("story", bean);
             startActivity(intent);
-        }else if (itemType == StoryInfo.type2){ //小说
+        } else if (itemType == StoryInfo.type2) { //小说
             Intent intentType2 = new Intent(mActivity, NovelDetailsActivity.class);
             intentType2.putExtra("story", bean);
             startActivity(intentType2);
@@ -271,7 +287,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
 
     private void report(final int position) {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{ R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -282,7 +298,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                         String storyId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getStoryId();
                         int characterId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getCharacterId();
                         reportIntent.putExtra("storyId", storyId);
-                        reportIntent.putExtra("characterId", characterId+"");
+                        reportIntent.putExtra("characterId", characterId + "");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;

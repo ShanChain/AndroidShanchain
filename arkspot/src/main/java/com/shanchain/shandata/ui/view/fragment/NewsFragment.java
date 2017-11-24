@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,14 +13,19 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MessageHomeAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
+import com.shanchain.shandata.ui.model.NewsCharacterBean;
+import com.shanchain.shandata.ui.model.NewsGroupBean;
+import com.shanchain.shandata.ui.presenter.NewsPresenter;
+import com.shanchain.shandata.ui.presenter.impl.NewsPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+import com.shanchain.shandata.ui.view.fragment.view.NewsView;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,12 +44,13 @@ import butterknife.Bind;
  * Created by zhoujian on 2017/8/23.
  */
 
-public class NewsFragment extends BaseFragment {
+public class NewsFragment extends BaseFragment implements NewsView {
     @Bind(R.id.rv_fragment_news)
     RecyclerView mRvFragmentNews;
     private List<MessageHomeInfo> sourceDatas;
     private List<MessageHomeInfo> topDatas;
     private MessageHomeAdapter mMessageHomeAdapter;
+    private NewsPresenter mPresenter;
 
     @Override
     public View initView() {
@@ -52,11 +59,13 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void initData() {
+        mPresenter = new NewsPresenterImpl(this);
         initConversation();
         initRecyclerView();
     }
 
     private void initRecyclerView() {
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         mRvFragmentNews.setLayoutManager(layoutManager);
 
@@ -73,6 +82,7 @@ public class NewsFragment extends BaseFragment {
                 boolean isGroup = messageHomeInfo.getEMConversation().isGroup();
                 intent.putExtra("toChatName", toChatName);
                 intent.putExtra("isGroup",isGroup);
+                intent.putExtra("name",messageHomeInfo.getName());
                 startActivity(intent);
             }
         });
@@ -80,10 +90,12 @@ public class NewsFragment extends BaseFragment {
         mMessageHomeAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                showDialog(position);
+                //showDialog(position);
                 return true;
             }
         });
+
+
 
     }
 
@@ -107,6 +119,7 @@ public class NewsFragment extends BaseFragment {
         if (mMessageHomeAdapter != null){
             mMessageHomeAdapter.notifyDataSetChanged();
         }
+        mPresenter.initConversationInfo(sourceDatas);
     }
 
     /**
@@ -180,11 +193,47 @@ public class NewsFragment extends BaseFragment {
             EMConversation emConversation = mEMConversations.get(i);
             MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
             messageHomeInfo.setEMConversation(emConversation);
-            LogUtils.d("会话列表 = " + mEMConversations.get(i).getLastMessage().getBody().toString());
-
+            String userName = emConversation.getLastMessage().getUserName();
+            LogUtils.i("对方的环信id = " + userName);
+            LogUtils.d("会话列表 = " + emConversation.getLastMessage().getBody().toString());
+            messageHomeInfo.setHxUser(userName);
             sourceDatas.add(messageHomeInfo);
         }
-
     }
 
+    @Override
+    public void initGroupInfoSuc(List<NewsGroupBean> newsGroupBeanList) {
+        if (newsGroupBeanList == null){
+            return;
+        }
+        for (int i = 0; i < sourceDatas.size(); i ++) {
+            MessageHomeInfo messageHomeInfo = sourceDatas.get(i);
+            String hxUser = messageHomeInfo.getHxUser();
+            for(NewsGroupBean bean : newsGroupBeanList){
+                if (TextUtils.equals(hxUser,bean.getGroupId())){
+                    messageHomeInfo.setImg(bean.getIconUrl());
+                    messageHomeInfo.setName(bean.getGroupName());
+                }
+            }
+        }
+        mMessageHomeAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void initCharacterSuc(List<NewsCharacterBean> characterBeanList) {
+        if (characterBeanList == null){
+            return;
+        }
+        for (int i = 0; i < sourceDatas.size(); i ++) {
+            MessageHomeInfo messageHomeInfo = sourceDatas.get(i);
+            String hxUser = messageHomeInfo.getHxUser();
+            for (NewsCharacterBean bean : characterBeanList){
+                if (TextUtils.equals(hxUser,bean.getHxUserName())){
+                    messageHomeInfo.setName(bean.getName());
+                    messageHomeInfo.setImg(bean.getHeadImg());
+                }
+            }
+        }
+        mMessageHomeAdapter.notifyDataSetChanged();
+    }
 }

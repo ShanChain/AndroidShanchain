@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MyStoryAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -18,9 +17,9 @@ import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.presenter.PraisedPresenter;
 import com.shanchain.shandata.ui.presenter.impl.PraisedPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.view.PraisedView;
+import com.shanchain.shandata.ui.view.activity.story.ChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
@@ -114,7 +113,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                 switch (viewType) {
                     case StoryInfo.type1:
                         //类型1的条目点击事件
-                        Intent intentType1 = new Intent(mActivity, StoryChainActivity.class);
+                        Intent intentType1 = new Intent(mActivity, ChainActivity.class);
                         startActivity(intentType1);
                         break;
                     case StoryInfo.type2:
@@ -152,14 +151,14 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
      * 描述：头像的点击事件
      */
     private void clickAvatar(int position) {
-        ToastUtils.showToast(mActivity, "头像");
+
     }
 
     /**
      * 描述：转发的点击事件
      */
     private void clickForwarding(int position) {
-        ToastUtils.showToast(mActivity, "转发");
+
     }
 
     /**
@@ -187,8 +186,10 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
-//                        reportIntent.putExtra("storyId",mDatas.get(position).getStoryListDataBean().getStoryId()+"");
-//                        reportIntent.putExtra("characterId",mDatas.get(position).getStoryListDataBean().getInfo().getCharacterId()+"");
+                        int storyId = mAdapter.getData().get(position).getStoryId();
+                        int characterId = mAdapter.getData().get(position).getCharacterId();
+                        reportIntent.putExtra("storyId",storyId+"");
+                        reportIntent.putExtra("characterId",characterId+"");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
