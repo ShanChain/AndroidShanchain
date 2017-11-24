@@ -186,7 +186,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private void downLoadApk(String url) {
         File filesDir = getFilesDir();
         String fileName = System.currentTimeMillis() + ".apk";
-        OkHttpUtils.post()
+        final String filePath = filesDir.getAbsoluteFile() + fileName;
+        OkHttpUtils.get()
                 .url(url)
                 .build()
                 .execute(new FileCallBack(filesDir.getAbsolutePath(),fileName) {
@@ -200,17 +201,26 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     @Override
                     public void onResponse(File response, int id) {
                         LogUtils.i("下载apk成功 = " + response.getName());
-                        Intent intent = new Intent();
+                       /* Intent intent = new Intent();
                         intent.setAction("android.intent.action.VIEW");
                         intent.addCategory("android.intent.category.DEFAULT");
                         intent.setDataAndType(Uri.fromFile(response), "application/vnd.android.package-archive");
-                        startActivity(intent);
+                        startActivity(intent);*/
+
+                            File file = new File(filePath);
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setAction(Intent.ACTION_VIEW);
+                            String type = "application/vnd.android.package-archive";
+                            intent.setDataAndType(Uri.fromFile(file), type);
+                            startActivity(intent);
+
                     }
 
                     @Override
                     public void inProgress(float progress, long total, int id) {
                         super.inProgress(progress, total, id);
-                        LogUtils.i("apk下载进度 = " + progress/total);
+                        LogUtils.i("apk下载进度 = " + progress);
                     }
                 });
     }

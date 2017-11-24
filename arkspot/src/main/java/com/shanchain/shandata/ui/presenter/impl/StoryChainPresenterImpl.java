@@ -59,7 +59,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
                                 String data = JSONObject.parseObject(response).getString("data");
                                 List<StoryChainBean> chainBeanList = JSONObject.parseArray(data, StoryChainBean.class);
-                                if (chainBeanList !=null){
+                                if (chainBeanList !=null&&chainBeanList.size()>0){
                                     int size = chainBeanList.size();
                                     int genNum = chainBeanList.get(size - 1).getGenNum();
                                     int startNum = chainBeanList.get(0).getGenNum();
