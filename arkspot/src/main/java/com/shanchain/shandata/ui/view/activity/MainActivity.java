@@ -1,6 +1,8 @@
 package com.shanchain.shandata.ui.view.activity;
 
+import android.app.DownloadManager;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,10 +57,6 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.FileCallBack;
-
-import java.io.File;
 
 
 import butterknife.Bind;
@@ -80,6 +78,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private BadgeItem mNewsBadge;
     private BadgeItem mSquareBadge;
     private BadgeItem mMineBadge;
+    private   long downloadId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -158,7 +157,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private void showUpdateDialog(final String url, final boolean force, String version) {
         String msg = "";
         if (force) {
-            msg = "该版本有重大改动，需强制更新";
+            msg = "新版本有较大改进，马上更新吧";
         } else {
             msg = "确定要更新吗？";
         }
@@ -189,37 +188,24 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void downLoadApk(String url) {
-        File filesDir = getFilesDir();
-        String fileName = System.currentTimeMillis() + ".apk";
-        OkHttpUtils.post()
-                .url(url)
-                .build()
-                .execute(new FileCallBack(filesDir.getAbsolutePath(),fileName) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("下载失败");
-                        e.printStackTrace();
-                        ToastUtils.showToast(mContext,"下载过程中网络异常");
-                    }
+        DownloadManager manager;
 
-                    @Override
-                    public void onResponse(File response, int id) {
-                        LogUtils.i("下载apk成功 = " + response.getName());
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        intent.addCategory("android.intent.category.DEFAULT");
-                        intent.setDataAndType(Uri.fromFile(response), "application/vnd.android.package-archive");
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void inProgress(float progress, long total, int id) {
-                        super.inProgress(progress, total, id);
-                        LogUtils.i("apk下载进度 = " + progress/total);
-                    }
-                });
+        manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(downloadId);
+        query.setFilterByStatus(DownloadManager.STATUS_RUNNING);//正在下载
+        Cursor c = manager.query(query);
+        if (c.moveToNext()) {
+        } else {
+            DownloadManager.Request down = new DownloadManager.Request(Uri.parse(url));
+            down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+            down.setVisibleInDownloadsUi(true);
+            down.setTitle("千千世界");
+            down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+            down.setDestinationInExternalFilesDir(this, null, "arkspot-release.apk");
+            downloadId = manager.enqueue(down);
+        }
     }
-
 
 
     private void initToolBar() {
@@ -228,17 +214,17 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     private void initBottomNavigationBar() {
         BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
-        mStoryBadge = new BadgeItem();
-        mStoryBadge.setText("2").show();
-        btmItemStory.setBadgeItem(mStoryBadge);
+//        mStoryBadge = new BadgeItem();
+//        mStoryBadge.setText("2").show();
+//        btmItemStory.setBadgeItem(mStoryBadge);
         BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
-        mNewsBadge = new BadgeItem();
-        mNewsBadge.setText("99+").show();
-        btmItemNews.setBadgeItem(mNewsBadge);
+//        mNewsBadge = new BadgeItem();
+//        mNewsBadge.setText("99+").show();
+//        btmItemNews.setBadgeItem(mNewsBadge);
         BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
-        mSquareBadge = new BadgeItem();
-        mSquareBadge.setText("11").show();
-        btmItemSquare.setBadgeItem(mSquareBadge);
+//        mSquareBadge = new BadgeItem();
+//        mSquareBadge.setText("11").show();
+//        btmItemSquare.setBadgeItem(mSquareBadge);
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
         mMineBadge = new BadgeItem();
 
