@@ -26,7 +26,7 @@ import com.umeng.message.entity.UMessage;
 public class PushManager {
 
     public static void dealWithCustomClickAction(Context context, UMessage message){
-        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
         if(TextUtils.isEmpty(message.custom)){
             return;
         }
@@ -108,7 +108,7 @@ public class PushManager {
             //自定义消息的忽略统计
             UTrack.getInstance(context).trackMsgDismissed(message);
         }
-        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
 
     }
 
