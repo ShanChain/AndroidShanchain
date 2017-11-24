@@ -62,8 +62,10 @@ import me.shaohui.shareutil.ShareManager;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
+import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_SATUS;
 
 
@@ -82,7 +84,12 @@ public class MyApplication extends BaseApplication {
     UmengNotificationClickHandler mNotificationClickHandler = new UmengNotificationClickHandler() {
         @Override
         public void dealWithCustomAction(Context context, UMessage msg) {
-            PushManager.dealWithCustomClickAction(context,msg);
+            String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+
+            String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_IS_RECEIVE);
+            if(TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")){
+                PushManager.dealWithCustomClickAction(context,msg);
+            }
         }
     };
 
@@ -93,7 +100,11 @@ public class MyApplication extends BaseApplication {
 
                 @Override
                 public void run() {
-                 PushManager.dealWithCustomMessage(context,msg);
+                    String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+                    String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_IS_RECEIVE);
+                    if(TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")){
+                        PushManager.dealWithCustomMessage(context,msg);
+                    }
                 }
             });
         }
@@ -167,7 +178,11 @@ public class MyApplication extends BaseApplication {
                 mPushAgent.register(new IUmengRegisterCallback() {
                     @Override
                     public void onSuccess(String deviceToken) {
+                        Log.i("flyye",deviceToken);
                         //注册成功会返回device token
+                        if(TextUtils.isEmpty(deviceToken)){
+                            return;
+                        }
                         CommonCacheHelper.getInstance().setCache("0", Constants.CACHE_DEVICE_TOKEN,deviceToken);
                         setDeviceToken();
                     }
@@ -400,6 +415,9 @@ public class MyApplication extends BaseApplication {
         }
         String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        if(TextUtils.isEmpty(token)){
+            return;
+        }
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.SET_DEVICE_TOKEN)
                 .addParams("osType","android")

@@ -3,6 +3,7 @@ package com.shanchain.shandata.push;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ import static com.shanchain.shandata.push.PushConstants.MSG_STORY_BE_PRAISE;
 public class PushManager {
 
     public static void dealWithCustomClickAction(Context context, UMessage message){
-//        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
         if(TextUtils.isEmpty(message.custom)){
             return;
         }
@@ -179,8 +179,6 @@ public class PushManager {
             //自定义消息的忽略统计
             UTrack.getInstance(context).trackMsgDismissed(message);
         }
-        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
-        //        Toast.makeText(context, message.custom, Toast.LENGTH_LONG).show();
         if(TextUtils.isEmpty(message.custom)){
             return;
         }
