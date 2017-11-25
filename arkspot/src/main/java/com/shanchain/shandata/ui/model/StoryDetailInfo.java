@@ -48,7 +48,7 @@ public class StoryDetailInfo {
     private int type;
     private long updateTime;
     private int userId;
-
+    private boolean isFav;
     public int getCharacterId() {
         return characterId;
     }
@@ -199,5 +199,13 @@ public class StoryDetailInfo {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public boolean isFav() {
+        return isFav;
+    }
+
+    public void setFav(boolean fav) {
+        isFav = fav;
     }
 }

@@ -33,7 +33,7 @@ public final class NativePages {
     public static final String PAGE_LOGIN = "page_login";
     public static final String BIND_INFO = "bind_info";
     public static final String PAGE_CHARACTER_HOME = "page_character_home";
-
+    public static final String PAGE_MY_STORY = "page_my_story";
     private static HashMap<String, ActivityInfo> actMaps = new HashMap<>();
 
 

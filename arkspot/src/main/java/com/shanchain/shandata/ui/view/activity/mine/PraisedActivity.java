@@ -1,26 +1,27 @@
 package com.shanchain.shandata.ui.view.activity.mine;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.MyStoryAdapter;
+import com.shanchain.shandata.adapter.PraisedAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.ContactBean;
 import com.shanchain.shandata.ui.model.StoryContentBean;
-import com.shanchain.shandata.ui.model.StoryInfo;
+import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.PraisedPresenter;
 import com.shanchain.shandata.ui.presenter.impl.PraisedPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.view.PraisedView;
-import com.shanchain.shandata.ui.view.activity.story.ChainActivity;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
-import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.other.SCEmptyView;
@@ -32,16 +33,14 @@ import java.util.List;
 import butterknife.Bind;
 
 
-public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, PraisedView, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
+public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, PraisedView, BaseQuickAdapter.RequestLoadMoreListener {
 
     @Bind(R.id.tb_praised)
     ArthurToolBar mTbPraised;
     @Bind(R.id.rv_praised)
     RecyclerView mRvPraised;
-    @Bind(R.id.srl_praised)
-    SwipeRefreshLayout mSrlPraised;
     private List<StoryContentBean> mDatas = new ArrayList<>();
-    private MyStoryAdapter mAdapter;
+    private PraisedAdapter mAdapter;
     private String tbTitle = "";
     private View emptyView;
     private boolean isPraised;
@@ -63,10 +62,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
             isPraised = true;
             tbTitle = getString(R.string.str_tb_title_praised);
             emptyView = new SCEmptyView(this, R.string.str_praised_empty_word, R.mipmap.abs_liked_icon_thumbsup_default);
-        } else if (reactExtra.equals("story")) {
-            isPraised = false;
-            tbTitle = getString(R.string.str_tb_title_my_stories);
-            emptyView = new SCEmptyView(this, R.string.str_story_empty_word, R.mipmap.abs_mylongtext_icon_longtext_default);
         }
         initToolBar();
         initData();
@@ -75,9 +70,7 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private void initRecyclerView() {
         mRvPraised.setLayoutManager(new LinearLayoutManager(this));
-        mSrlPraised.setOnRefreshListener(this);
-        mSrlPraised.setEnabled(false);
-        mAdapter = new MyStoryAdapter(mDatas);
+        mAdapter = new PraisedAdapter(mDatas);
         mAdapter.loadMoreEnd(true);
         mRvPraised.addItemDecoration(new RecyclerViewDivider(mActivity, LinearLayoutManager.HORIZONTAL, DensityUtils.dip2px(mActivity, 5), getResources().getColor(R.color.colorDivider)));
         mRvPraised.setAdapter(mAdapter);
@@ -109,71 +102,80 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                int viewType = adapter.getItemViewType(position);
-                switch (viewType) {
-                    case StoryInfo.type1:
-                        //类型1的条目点击事件
-                        Intent intentType1 = new Intent(mActivity, ChainActivity.class);
-                        startActivity(intentType1);
-                        break;
-                    case StoryInfo.type2:
-                        //类型2的条目点击事件
-                        Intent intentType2 = new Intent(mActivity, DynamicDetailsActivity.class);
-                        startActivity(intentType2);
-                        break;
-                    case StoryInfo.type3:
-                        //类型3的条目点击事件
-                        Intent intentType3 = new Intent(mActivity, DynamicDetailsActivity.class);
-                        startActivity(intentType3);
-                        break;
-                    case StoryInfo.type4:
-                        //类型4的条目点击事件
-                        Intent intentType4 = new Intent(mActivity, TopicDetailsActivity.class);
-                        startActivity(intentType4);
-                        break;
-                }
+                clickComment(position);
             }
         });
     }
 
     private void initData() {
         mPresenter = new PraisedPresenterImpl(this);
-        if (isPraised) {
-            mPresenter.initPraiseData(page, size);
-        } else {
-            mPresenter.initStoryData(page, size);
-        }
-
-
+        mPresenter.initPraiseData(page, size);
     }
 
     /**
      * 描述：头像的点击事件
      */
     private void clickAvatar(int position) {
-
+        ContactBean characterBean = mAdapter.getData().get(position).getContactBean();
+        int characterId = characterBean.getCharacterId();
+        Intent intent = new Intent(this, FriendHomeActivity.class);
+        intent.putExtra("characterId", characterId);
+        startActivity(intent);
     }
 
     /**
      * 描述：转发的点击事件
      */
     private void clickForwarding(int position) {
-
+        StoryModelBean bean = getStoryModelBean(position);
+        Intent intent = new Intent(mActivity, ForwardingActivity.class);
+        intent.putExtra("forward", bean);
+        startActivity(intent);
     }
+
+    @NonNull
+    private StoryModelBean getStoryModelBean(int position) {
+        StoryContentBean info = mAdapter.getData().get(position);
+        StoryModelBean bean = new StoryModelBean();
+        bean.setSupportCount(info.getSupportCount());
+        bean.setCharacterId(info.getCharacterId());
+        bean.setBeFav(info.isFav());
+        bean.setDetailId("s" + info.getStoryId());
+        bean.setCharacterImg(info.getContactBean().getHeadImg());
+        bean.setCharacterName(info.getContactBean().getName());
+        bean.setCommendCount(info.getCommentCount());
+        bean.setCreateTime(info.getCreateTime());
+        bean.setIntro(info.getIntro());
+        bean.setCharacterId(info.getContactBean().getCharacterId());
+        bean.setSpaceId(info.getSpaceId());
+        bean.setTitle(info.getTitle());
+        bean.setTranspond(info.getTranspond());
+        bean.setType(info.getType());
+        return bean;
+    }
+
 
     /**
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-        Intent intentComment = new Intent(mActivity, DynamicDetailsActivity.class);
-        startActivity(intentComment);
+        StoryModelBean bean = getStoryModelBean(position);
+        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+        intent.putExtra("story", bean);
+        startActivity(intent);
     }
 
     /**
      * 描述：喜欢的点击事件
      */
     private void clickLike(int position) {
-
+        StoryContentBean storyContentBean = mAdapter.getData().get(position);
+        boolean fav = storyContentBean.isFav();
+        if (fav){
+            mPresenter.supportCancel(storyContentBean.getStoryId(),position);
+        }else {
+            mPresenter.support(storyContentBean.getStoryId(),position);
+        }
     }
 
     private void report(final int position) {
@@ -188,8 +190,8 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);
                         int storyId = mAdapter.getData().get(position).getStoryId();
                         int characterId = mAdapter.getData().get(position).getCharacterId();
-                        reportIntent.putExtra("storyId",storyId+"");
-                        reportIntent.putExtra("characterId",characterId+"");
+                        reportIntent.putExtra("storyId", storyId + "");
+                        reportIntent.putExtra("characterId", characterId + "");
                         startActivity(reportIntent);
                         customDialog.dismiss();
                         break;
@@ -203,17 +205,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
         customDialog.show();
     }
 
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDatas.clear();
-                mAdapter.notifyDataSetChanged();
-                mSrlPraised.setRefreshing(false);
-            }
-        }, 3000);
-    }
 
     private void initToolBar() {
         mTbPraised.setTitleText(tbTitle);
@@ -237,7 +228,6 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
                 } else {
                     mAdapter.loadMoreFail();
                 }
-                mAdapter.notifyDataSetChanged();
             }
         } else {
             if (isFirst) {
@@ -258,44 +248,54 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     @Override
-    public void initStorySuc(List<StoryContentBean> contentBeanList, boolean last) {
-        if (contentBeanList == null) {
-            if (isFirst) {
-                initRecyclerView();
-            } else {
-                if (last) {
-                    mAdapter.loadMoreEnd();
-                } else {
-                    mAdapter.loadMoreFail();
-                }
-                mAdapter.notifyDataSetChanged();
-            }
+    public void supportSuc(boolean suc, int position) {
+        if (suc) {
+            StoryContentBean bean = mAdapter.getData().get(position);
+            int supportCount = bean.getSupportCount();
+            bean.setFav(true);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
+            tvLike.setEnabled(true);
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            tvLike.setText(supportCount + 1 + "");
+            bean.setSupportCount(supportCount + 1);
         } else {
-            if (isFirst) {
-                initRecyclerView();
-                mAdapter.setNewData(contentBeanList);
-                mAdapter.disableLoadMoreIfNotFullPage(mRvPraised);
-            } else {
-                mAdapter.addData(contentBeanList);
-            }
-            mAdapter.notifyDataSetChanged();
-            if (last) {
-                mAdapter.loadMoreEnd();
-            } else {
-                mAdapter.loadMoreComplete();
-            }
+
         }
-        isFirst = false;
     }
+
+    @Override
+    public void supportCancelSuc(boolean suc, int position) {
+        if (suc) {
+            StoryContentBean bean = mAdapter.getData().get(position);
+            int supportCount = bean.getSupportCount();
+            bean.setFav(false);
+            TextView tvLike = (TextView) mAdapter.getViewByPosition(position, R.id.tv_item_story_like);
+            tvLike.setEnabled(true);
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables(drawable, null, null, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            if (supportCount - 1 < 0) {
+                tvLike.setText("0");
+                bean.setSupportCount(0);
+            } else {
+                tvLike.setText(supportCount - 1 + "");
+                bean.setSupportCount(supportCount - 1);
+            }
+
+        } else {
+
+        }
+    }
+
 
     @Override
     public void onLoadMoreRequested() {
         page++;
-        if (isPraised) {
-            mPresenter.initPraiseData(page, size);
-        } else {
-            mPresenter.initStoryData(page, size);
-        }
+        mPresenter.initPraiseData(page, size);
 
     }
 }

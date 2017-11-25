@@ -49,6 +49,16 @@ public class StoryContentBean implements MultiItemEntity{
     private long updateTime;
     private int userId;
     private ContactBean contactBean;
+    private boolean fav;
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
+    }
+
     public int getCharacterId() {
         return characterId;
     }
