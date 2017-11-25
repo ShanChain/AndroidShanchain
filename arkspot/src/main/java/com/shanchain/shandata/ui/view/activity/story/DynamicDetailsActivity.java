@@ -18,10 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -31,7 +34,9 @@ import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.adapter.StoryItemNineAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.BdCommentBean;
+import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CommentBean;
+import com.shanchain.shandata.ui.model.DynamicModel;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
@@ -67,6 +72,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private StoryModelBean mBean;
     private String mStoryId;
     private int mCharacterId;
+    private boolean isBeFav;
+    private DynamicModel mDynamicModel;
+    private CharacterInfo mCharacterInfo;
     private TextView mTvHeadLike;
     private TextView mTvHeadComment;
     private int page = 0;
@@ -81,16 +89,30 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     @Override
     protected void initViewsAndEvents() {
-
         mBean = (StoryModelBean) getIntent().getSerializableExtra("story");
+        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
         if (mBean == null) {
-            LogUtils.i("finish掉了 =，=！");
-            finish();
-            return;
+            if (!TextUtils.isEmpty(rnExtra)) {
+                JSONObject jsonObject = JSONObject.parseObject(rnExtra);
+                JSONObject rnGData = jsonObject.getJSONObject("gData");
+                JSONObject rnData = jsonObject.getJSONObject("data");
+                mDynamicModel = JSON.parseObject(rnData.getJSONObject("novel").toJSONString(), DynamicModel.class);
+                mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(), CharacterInfo.class);
+                mStoryId = mDynamicModel.getStoryId() + "";
+                mCharacterId = mDynamicModel.getCharacterId();
+            } else {
+                finish();
+                return;
+            }
+
         } else {
             mCharacterId = mBean.getCharacterId();
-            mStoryId = mBean.getDetailId();
+            mStoryId = mBean.getDetailId().substring(1);
+            mDynamicModel = mBean.getDynamicModel();
+            mCharacterInfo = mBean.getCharacterInfo();
+            isBeFav = mBean.isBeFav();
         }
+
         initToolBar();
         initData();
         initRecyclerView();
@@ -147,16 +169,20 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         mTvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
         mTvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
-        String characterImg = mBean.getCharacterImg();
-        String characterName = mBean.getCharacterName();
+        String characterImg = mCharacterInfo.getHeadImg();
+        String characterName = mCharacterInfo.getName();
 
         GlideUtils.load(mContext, characterImg, ivAvatar, 0);
         tvName.setText(characterName);
-        tvTime.setText(DateUtils.formatFriendly(new Date(mBean.getCreateTime())));
-        tvForwarding.setText(mBean.getTranspond() + "");
-        mTvHeadLike.setText(mBean.getSupportCount() + "");
-        mTvHeadComment.setText(mBean.getCommendCount() + "");
-        boolean isFav = mBean.isBeFav();
+        tvTime.setText(DateUtils.formatFriendly(new Date(mDynamicModel.getCreateTime())));
+        tvForwarding.setText(mDynamicModel.getTranspond() + "");
+        if(mBean == null){
+            //从rn转过来的页面暂时不可转发
+            tvForwarding.setVisibility(View.INVISIBLE);
+        }
+        mTvHeadLike.setText(mDynamicModel.getSupportCount() + "");
+        mTvHeadComment.setText(mDynamicModel.getCommendCount() + "");
+        boolean isFav = isBeFav;
         Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
         Drawable like_selected = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
 
@@ -166,7 +192,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         mTvHeadLike.setCompoundDrawables(isFav ? like_selected : like_def, null, null, null);
         mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
 
-        String intro = mBean.getIntro();
+        String intro = mDynamicModel.getIntro();
         String content = "";
         List<String> imgList = new ArrayList<>();
         if (intro.contains("content")) {
@@ -241,13 +267,13 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_item_story_avatar:
-                int characterId = mBean.getCharacterId();
+                int characterId = mCharacterInfo.getCharacterId();
                 Intent intentAvatar = new Intent(mContext, FriendHomeActivity.class);
                 intentAvatar.putExtra("characterId", characterId);
                 startActivity(intentAvatar);
                 break;
             case R.id.tv_item_story_forwarding:
-                int spaceId = mBean.getSpaceId();
+                int spaceId = mCharacterInfo.getSpaceId();
                 String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
 
                 if (TextUtils.equals(cacheSpaceId,spaceId+"")){
@@ -272,7 +298,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
      * 描述：点赞当前故事
      */
     private void clickLike() {
-        boolean fav = mBean.isBeFav();
+        boolean fav = isBeFav;
         mTvHeadLike.setEnabled(false);
         if (fav) {
             //已经点赞
@@ -284,13 +310,13 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void cancelSupport() {
-        String storyId = mBean.getDetailId().substring(1);
+        String storyId = mStoryId;
         mPresenter.supportCancel(storyId);
 
     }
 
     private void support() {
-        String storyId = mBean.getDetailId().substring(1);
+        String storyId = mStoryId;
         mPresenter.support(storyId);
     }
 
@@ -331,7 +357,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void addComment(String comment) {
-        String storyId = mBean.getDetailId().substring(1);
+        String storyId = mStoryId;
         mPresenter.addComment(comment, storyId);
 
     }
@@ -385,7 +411,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void addSuccess(boolean success) {
         if (success) {
             //添加评论成功
-            String storyId = mBean.getDetailId().substring(1);
+            String storyId = mStoryId;
             page = 0;
             isLoadMore = false;
             mPresenter.initData(page, size, storyId);
@@ -400,14 +426,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void supportSuc(boolean suc) {
         mTvHeadLike.setEnabled(true);
         if (suc) {
-            mBean.setBeFav(true);
-            int supportCount = mBean.getSupportCount();
+            isBeFav = true;
+            int supportCount = mDynamicModel.getSupportCount();
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             mTvHeadLike.setCompoundDrawables(drawable, null, null, null);
             mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
             mTvHeadLike.setText(supportCount + 1 + "");
-            mBean.setSupportCount(supportCount + 1);
+            mDynamicModel.setSupportCount(supportCount + 1);
         } else {
 
         }
@@ -417,14 +443,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     public void supportCancelSuc(boolean suc) {
         mTvHeadLike.setEnabled(true);
         if (suc) {
-            mBean.setBeFav(false);
-            int supportCount = mBean.getSupportCount();
+            isBeFav = false;
+            int supportCount = mDynamicModel.getSupportCount();
             Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             mTvHeadLike.setCompoundDrawables(drawable, null, null, null);
             mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
             mTvHeadLike.setText(supportCount - 1 + "");
-            mBean.setSupportCount(supportCount - 1);
+            mDynamicModel.setSupportCount(supportCount - 1);
         } else {
 
         }

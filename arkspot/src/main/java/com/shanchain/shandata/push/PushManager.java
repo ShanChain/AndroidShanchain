@@ -5,11 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.widget.Toast;
-
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.CommonCacheHelper;
@@ -46,13 +42,17 @@ public class PushManager {
         if(TextUtils.isEmpty(message.custom)){
             return;
         }
-
+        String userId = CommonCacheHelper.getInstance().getCache("0",Constants.CACHE_CUR_USER);
         JSONObject jsonObject = JSONObject.parseObject(message.custom);
+        if(!TextUtils.isEmpty(jsonObject.getString("send_userId")) && jsonObject.getString("send_userId").equalsIgnoreCase(userId)){
+            return;
+        }
         String msgKey = jsonObject.getString("msg_key");
         JSONObject msgBody = jsonObject.getJSONObject("msg_body");
         JSONObject actionBody = msgBody.getJSONObject("action_body");
         JSONObject params = actionBody.getJSONObject("params");
         String time = jsonObject.getString("create_time");
+
 
         if(msgBody.getString("action_type").equalsIgnoreCase("open_page")){
             Intent intent = new Intent();
@@ -111,7 +111,6 @@ public class PushManager {
             }
             context.startActivity(intent);
         }else if (msgBody.getString("action_type").equalsIgnoreCase("red_point")){
-            String userId = CommonCacheHelper.getInstance().getCache("0",Constants.CACHE_CUR_USER);
              String msg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG);
             if(TextUtils.isEmpty(msg)){
                 msg = new JSONObject().toString();
@@ -184,6 +183,10 @@ public class PushManager {
         }
 
         JSONObject jsonObject = JSONObject.parseObject(message.custom);
+        String userId = CommonCacheHelper.getInstance().getCache("0",Constants.CACHE_CUR_USER);
+        if(!TextUtils.isEmpty(jsonObject.getString("send_userId")) && jsonObject.getString("send_userId").equalsIgnoreCase(userId)){
+            return;
+        }
         String msgKey = jsonObject.getString("msg_key");
         JSONObject msgBody = jsonObject.getJSONObject("msg_body");
         JSONObject actionBody = msgBody.getJSONObject("action_body");
@@ -191,7 +194,6 @@ public class PushManager {
         String time = jsonObject.getString("create_time");
 
          if (msgBody.getString("action_type").equalsIgnoreCase("red_point")){
-            String userId = CommonCacheHelper.getInstance().getCache("0",Constants.CACHE_CUR_USER);
             String msg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG);
             if(TextUtils.isEmpty(msg)){
                 msg = new JSONObject().toString();
