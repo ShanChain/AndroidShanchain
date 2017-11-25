@@ -246,6 +246,8 @@ public class StoryModelBean implements Serializable{
         characterInfo.setCharacterId(this.characterId);
         characterInfo.setHeadImg(characterImg);
         characterInfo.setName(characterName);
+        characterInfo.setSpaceId(spaceId);
+        characterInfo.setIntro(intro);
         return characterInfo;
     }
 
