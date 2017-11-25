@@ -242,7 +242,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 StoryDetailInfo storyDetailInfo = JSONObject.parseObject(data, StoryDetailInfo.class);
-                                if (storyDetailInfo == null) {
+                                if (storyDetailInfo != null) {
                                     mView.initNovelSuc(storyDetailInfo);
                                 } else {
                                     mView.initNovelSuc(null);

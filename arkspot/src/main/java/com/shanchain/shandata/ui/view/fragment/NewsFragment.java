@@ -119,7 +119,10 @@ public class NewsFragment extends BaseFragment implements NewsView {
         if (mMessageHomeAdapter != null){
             mMessageHomeAdapter.notifyDataSetChanged();
         }
-        mPresenter.initConversationInfo(sourceDatas);
+        if (sourceDatas != null && sourceDatas.size() > 0){
+            mPresenter.initConversationInfo(sourceDatas);
+        }
+
     }
 
     /**

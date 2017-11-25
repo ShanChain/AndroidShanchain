@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -7,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -206,7 +208,10 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(ResponseRegisteUserBean response, int id) {
                         ToastUtils.showToast(mContext, "重置密码成功");
-                        finish();
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        ActivityStackManager.getInstance().finishAllActivity();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     }
                 });
     }

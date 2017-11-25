@@ -66,10 +66,9 @@
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.DownloadCompleteReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
             </intent-filter>
         </receiver>
@@ -233,6 +232,11 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".ui.view.activity.story.ChainActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.mine.MyStoryActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_my_story"/>
         </activity>
     </application>
 

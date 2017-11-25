@@ -189,12 +189,13 @@ public class ChainActivity extends BaseActivity implements ArthurToolBar.OnLeftC
         bean.setSupportCount(storyBean.getSupportCount());
         bean.setCharacterId(storyBean.getCharacterId());
         bean.setBeFav(mAdapter.getData().get(position).isBeFav());
-        bean.setDetailId("s" + storyBean.getSpaceId());
+        bean.setDetailId("s" + storyBean.getStoryId());
         bean.setCharacterImg(characterBean.getHeadImg());
         bean.setCharacterName(characterBean.getName());
         bean.setCommendCount(storyBean.getCommentCount());
         bean.setCreateTime(storyBean.getCreateTime());
         bean.setIntro(storyBean.getIntro());
+        bean.setCharacterId(characterBean.getCharacterId());
         bean.setSpaceId(storyBean.getSpaceId());
         bean.setTitle(storyBean.getTitle());
         bean.setTranspond(storyBean.getTranspond());

@@ -21,14 +21,19 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-
-import com.shanchain.shandata.ui.model.StoryDetailInfo;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.CommentBean;
 import com.shanchain.shandata.ui.model.NovelModel;
+import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.impl.DynamicDetailsPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
@@ -36,12 +41,6 @@ import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-
-import com.shanchain.data.common.rn.modules.NavigatorModule;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.GlideUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,6 +72,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private int size = 10;
     private boolean isLoadMore = false;
     private TextView mTvHeadLike;
+    private boolean mFav;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -130,11 +130,24 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
                     case R.id.tv_item_comment_like:
-                        mDynamicCommentAdapter.notifyDataSetChanged();
+                        BdCommentBean bdCommentBean = mDynamicCommentAdapter.getData().get(position);
+                        int commentId = bdCommentBean.getCommentBean().getCommentId();
+                        boolean mySupport = bdCommentBean.getCommentBean().isMySupport();
+                        if (mySupport) {
+                            mPresenter.supportCancelComment(commentId, position);
+                        } else {
+                            mPresenter.supportComment(commentId, position);
+                        }
+                        int headerLayoutCount = mDynamicCommentAdapter.getHeaderLayoutCount();
+
+                        TextView tvLike= (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
+                        tvLike.setEnabled(false);
                         break;
                 }
             }
         });
+
+
     }
 
     private void initHeadView() {
@@ -182,8 +195,6 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             tvContent.setText(replace);
         }
 
-
-
         ivAvatar.setOnClickListener(this);
         tvForwarding.setOnClickListener(this);
         tvHeadComment.setOnClickListener(this);
@@ -230,8 +241,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void clickLike() {
-        boolean fav = true;
-        if (fav){
+        if (mFav){
             //已经点赞
             mPresenter.supportCancel(mStoryId);
         }else {
@@ -331,27 +341,97 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     public void supportSuc(boolean suc) {
+        mTvHeadLike.setEnabled(true);
+        if (suc) {
+            mFav = true;
+            int supportCount = mNovelModel.getSupportCount();
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            mTvHeadLike.setCompoundDrawables(drawable, null, null, null);
+            mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            mTvHeadLike.setText(supportCount + 1 + "");
+            mNovelModel.setSupportCount(supportCount + 1);
+        } else {
 
+        }
     }
 
     @Override
     public void supportCancelSuc(boolean suc) {
+        mTvHeadLike.setEnabled(true);
+        if (suc) {
+            mFav = false;
+            int supportCount = mNovelModel.getSupportCount();
+            Drawable drawable = mActivity.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            mTvHeadLike.setCompoundDrawables(drawable, null, null, null);
+            mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(mActivity, 10));
+            if (supportCount - 1 < 0){
+                mTvHeadLike.setText( "0");
+                mNovelModel.setSupportCount(0);
+            }else {
+                mTvHeadLike.setText(supportCount - 1 + "");
+                mNovelModel.setSupportCount(supportCount - 1);
+            }
 
+        } else {
+
+        }
     }
 
     @Override
     public void initNovelSuc(StoryDetailInfo storyDetailInfo) {
+        if (storyDetailInfo == null){
 
+        }else {
+            mFav = storyDetailInfo.isFav();
+        }
     }
 
     @Override
     public void commentSupportSuc(boolean suc, int position) {
+        if (suc) {
+            CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+            int supportCount = commentBean.getSupportCount();
+            commentBean.setMySupport(true);
+            int headerLayoutCount = mDynamicCommentAdapter.getHeaderLayoutCount();
+            TextView tvLike = (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
+            tvLike.setEnabled(true);
+            Drawable drawable = getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_selected);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables( null, null,drawable, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 5));
+            tvLike.setText(supportCount + 1 + "");
+            commentBean.setSupportCount(supportCount + 1);
+        } else {
 
+        }
     }
 
     @Override
     public void commentSupportCancelSuc(boolean suc, int position) {
+        if (suc) {
+            CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+            int supportCount = commentBean.getSupportCount();
+            commentBean.setMySupport(false);
+            int headerLayoutCount = mDynamicCommentAdapter.getHeaderLayoutCount();
+            TextView tvLike = (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
+            tvLike.setEnabled(true);
+            Drawable drawable = getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_default);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tvLike.setCompoundDrawables( null, null,drawable, null);
+            tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 5));
+            if (supportCount - 1 <= 0) {
+                tvLike.setText("0");
+                commentBean.setSupportCount(0);
+            } else {
+                tvLike.setText(supportCount - 1 + "");
+                commentBean.setSupportCount(supportCount - 1);
+            }
 
+        } else {
+
+        }
     }
 
     @Override

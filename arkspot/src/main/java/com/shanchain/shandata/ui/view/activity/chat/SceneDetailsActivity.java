@@ -117,8 +117,15 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
             showLoadingDialog(true);
             //自己服务器极客接口获取群信息
             mPresenter.getGroupInfo(mToChatName);
+            mIvSceneDetailsAll.setVisibility(View.VISIBLE);
+            mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
+            mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
+            mRlGroupInfo.setVisibility(View.VISIBLE);
         } else {
-
+            mIvSceneDetailsAll.setVisibility(View.GONE);
+            mBtnSceneDetailsLeave.setVisibility(View.GONE);
+            mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
+            mRlGroupInfo.setVisibility(View.GONE);
             mPresenter.getUserInfo(mToChatName);
         }
 
@@ -256,10 +263,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
     @Override
     public void initGroupInfoSuc(SceneDetailData sceneDetailInfo, List<BdGroupMemberInfo> bdInfos) {
         //群
-        mIvSceneDetailsAll.setVisibility(View.VISIBLE);
-        mBtnSceneDetailsLeave.setVisibility(View.VISIBLE);
-        mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
-        mRlGroupInfo.setVisibility(View.VISIBLE);
+
         closeLoadingDialog();
         if (sceneDetailInfo != null) {
             GlideUtils.load(mContext, sceneDetailInfo.getIconUrl(), mIvSceneDetailsImg, 0);
@@ -277,10 +281,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
     @Override
     public void initUserInfo(List<BdGroupMemberInfo> bdInfos) {
         //单聊
-        mIvSceneDetailsAll.setVisibility(View.GONE);
-        mBtnSceneDetailsLeave.setVisibility(View.GONE);
-        mTvSceneDetailsAnnouncement.setVisibility(View.GONE);
-        mRlGroupInfo.setVisibility(View.GONE);
+
         if (bdInfos != null) {
             mAdapter.setNewData(bdInfos);
             mAdapter.notifyDataSetChanged();

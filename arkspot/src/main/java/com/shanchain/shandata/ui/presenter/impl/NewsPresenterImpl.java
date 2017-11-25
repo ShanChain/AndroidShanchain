@@ -49,10 +49,13 @@ public class NewsPresenterImpl implements NewsPresenter {
             }
         }
 
-        obtainHxGroupInfo(hxGroup);
-        obtainHxUserInfo(hxUser);
+        if (hxGroup.size() > 0){
+            obtainHxGroupInfo(hxGroup);
+        }
 
-
+        if (hxUser.size()>0){
+            obtainHxUserInfo(hxUser);
+        }
     }
 
     private void obtainHxUserInfo(List<String> hxUser) {
