@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.CommonCacheHelper;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -20,7 +22,7 @@ import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.global.UserType;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
@@ -30,6 +32,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import butterknife.Bind;
 import butterknife.OnClick;
 import okhttp3.Call;
+
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 
 
 public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
@@ -146,7 +150,7 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
             LogUtils.d("加密后密码：" + passwordAccount);
             resetPassWord(time, encryptAccount, passwordAccount);
         } else {
-            bindPhone(encryptAccount);
+            bindPhone(phone);
         }
 
     }
@@ -154,13 +158,15 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
     /**
      * 描述：绑定手机号
      *
-     * @param encryptAccount
+     * @param mobile
      */
-    private void bindPhone(String encryptAccount) {
+    private void bindPhone(String mobile) {
         SCHttpUtils.post()
                 .url(HttpApi.BIND_OTHER_ACCOUNT)
-                .addParams("encryptAccount", encryptAccount)
+                .addParams("otherAccount", mobile)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
+                .addParams("userId", CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER))
+                .addParams("token", SCCacheUtils.getCacheToken())
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -172,6 +178,7 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("绑定成功 = " + response);
+                        finish();
                     }
                 });
 

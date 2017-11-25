@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.global.UserType;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;

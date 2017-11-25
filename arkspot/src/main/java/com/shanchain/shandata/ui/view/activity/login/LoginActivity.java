@@ -29,7 +29,7 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.global.UserType;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;

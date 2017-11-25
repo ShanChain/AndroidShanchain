@@ -1,4 +1,4 @@
-package com.shanchain.shandata.global;
+package com.shanchain.data.common.base;
 
 /**
  * Created by zhoujian on 2017/10/11.

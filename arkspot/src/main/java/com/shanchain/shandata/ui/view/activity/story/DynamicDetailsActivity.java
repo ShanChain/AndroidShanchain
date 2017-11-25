@@ -120,8 +120,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     private void initData() {
         mPresenter = new DynamicDetailsPresenterImpl(this);
-        String storyId = mStoryId.substring(1);
-        mPresenter.initData(page, size, storyId);
+
+        mPresenter.initData(page, size, mStoryId);
 
     }
 

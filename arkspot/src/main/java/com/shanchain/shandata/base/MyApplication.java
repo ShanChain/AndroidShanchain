@@ -34,6 +34,7 @@ import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
 import com.shanchain.shandata.manager.CharacterManager;
+import com.shanchain.shandata.manager.LoginManager;
 import com.shanchain.shandata.push.PushManager;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
@@ -135,6 +136,7 @@ public class MyApplication extends BaseApplication {
 
     private void initInstance(){
         CharacterManager.getInstance();
+        LoginManager.getInstance();
     }
 
     private void initSCCache() {

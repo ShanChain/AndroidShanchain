@@ -10,6 +10,8 @@ public class EventConstant {
     // event key 列表
     public static final String EVENT_KEY_SWITCH_ROLE = "EVENT_KEY_SWITCH_ROLE";
     public static final String EVENT_KEY_NEW_MSG = "EVENT_KEY_NEW_MSG";
+    public static final String EVENT_KEY_BIND_OTHER_ACCOUNT = "EVENT_KEY_BIND_OTHER_ACCOUNT";
+
 
 
     public static final String EVENT_KEY_LOGOUT = "EVENT_KEY_LOGOUT";

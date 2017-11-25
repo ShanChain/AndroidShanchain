@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.base.CommonLoginManager;
 import com.shanchain.data.common.base.RoleManager;
 
 /**
@@ -40,6 +41,11 @@ public class AppManagerModule extends ReactContextBaseJavaModule {
             }
         });
 
+    }
+
+    @ReactMethod
+    public void bindOtherAccount(String userType){
+        CommonLoginManager.bindOtherAccount(userType);
     }
 
     @ReactMethod
