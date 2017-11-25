@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.PraisedAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -128,9 +131,14 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
      */
     private void clickForwarding(int position) {
         StoryModelBean bean = getStoryModelBean(position);
-        Intent intent = new Intent(mActivity, ForwardingActivity.class);
-        intent.putExtra("forward", bean);
-        startActivity(intent);
+        if (TextUtils.equals(bean.getSpaceId() + "", SCCacheUtils.getCacheSpaceId()+"")){
+            Intent intent = new Intent(mActivity, ForwardingActivity.class);
+            intent.putExtra("forward", bean);
+            startActivity(intent);
+        }else {
+            ToastUtils.showToast(mContext,"不同世界不能进行转发操作");
+        }
+
     }
 
     @NonNull
@@ -160,9 +168,13 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
      */
     private void clickComment(int position) {
         StoryModelBean bean = getStoryModelBean(position);
-        Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
-        intent.putExtra("story", bean);
-        startActivity(intent);
+        if (TextUtils.equals(bean.getSpaceId() + "", SCCacheUtils.getCacheSpaceId()+"")){
+            Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
+            intent.putExtra("story", bean);
+            startActivity(intent);
+        }else {
+            ToastUtils.showToast(mContext,"不同世界不能进行转发操作");
+        }
     }
 
     /**
