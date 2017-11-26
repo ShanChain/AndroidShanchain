@@ -1,5 +1,7 @@
 package com.shanchain.data.common.net;
 
+import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
@@ -17,7 +19,7 @@ public abstract class SCHttpStringCallBack extends Callback<String>{
         String code = SCJsonUtils.parseCode(result);
         switch (code) {
             case NetErrCode.COMMON_TOKEN_OVERDUE_CODE:
-
+                AppManager.getInstance().logout();
                 break;
             case NetErrCode.COMMON_ERR_CODE:
 
