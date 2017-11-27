@@ -135,7 +135,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("sou's搜索时空失败");
+                        LogUtils.i("sou's搜索世界失败");
                         e.printStackTrace();
                         mStoryTitleView.getSpaceListSuccess(null,false);
                     }
@@ -143,7 +143,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         try {
-                            LogUtils.i("搜索时空成功 = " + response);
+                            LogUtils.i("搜索世界成功 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                 String data = JSONObject.parseObject(response).getString("data");
