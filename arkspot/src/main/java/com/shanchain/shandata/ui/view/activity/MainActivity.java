@@ -710,27 +710,29 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         if(TextUtils.isEmpty(token)){
             return;
         }
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.SET_DEVICE_TOKEN)
-                .addParams("osType","android")
-                .addParams("token",token)
-                .addParams("deviceToken",CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("设置DeviceToken失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = SCJsonUtils.parseCode(response);
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            PrefUtils.putBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_SATUS,true);
+        if(!TextUtils.isEmpty(CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))){
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.SET_DEVICE_TOKEN)
+                    .addParams("osType","android")
+                    .addParams("token",token)
+                    .addParams("deviceToken",CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.i("设置DeviceToken失败");
+                            e.printStackTrace();
                         }
 
-                    }
-                });
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                PrefUtils.putBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_SATUS,true);
+                            }
+
+                        }
+                    });
+        }
     }
 }
