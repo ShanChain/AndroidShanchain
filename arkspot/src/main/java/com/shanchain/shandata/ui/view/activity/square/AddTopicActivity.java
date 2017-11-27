@@ -28,6 +28,7 @@ import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.ui.model.TopicModel;
 import com.shanchain.shandata.ui.view.activity.story.TopicActivity;
+import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.net.HttpApi;
@@ -85,6 +86,8 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
         initToolBar();
         initRecyclerView();
         initData();
+        EditTextUtils.banEnterInput(mEtAddTopicTag);
+        EditTextUtils.banEnterInput(mEtAddTopicNick);
     }
 
     private void initData() {

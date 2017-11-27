@@ -30,6 +30,7 @@ import com.shanchain.shandata.ui.model.ResponseFocusContactInfo;
 import com.shanchain.shandata.ui.model.ResponseHxUerBean;
 import com.shanchain.shandata.ui.model.ResponseHxUserListInfo;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -81,6 +82,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initListener() {
+        EditTextUtils.banEnterInput(mEtSelectContact);
         mEtSelectContact.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
