@@ -115,29 +115,32 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:padding="@dimen/dimens_10dp"
+                android:layout_marginRight="@dimen/dimens_10dp"
                 android:id="@+id/iv_release_icon_img"
                 android:src="@mipmap/abs_release_btn_image_default"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:padding="@dimen/dimens_10dp"
+                android:layout_marginRight="@dimen/dimens_10dp"
                 android:id="@+id/iv_release_icon_at"
                 android:src="@mipmap/abs_release_btn_at_default"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:padding="@dimen/dimens_10dp"
+                android:layout_marginRight="@dimen/dimens_10dp"
                 android:id="@+id/iv_release_icon_topic"
                 android:src="@mipmap/abs_release_btn_yopic_default"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:padding="@dimen/dimens_10dp"
                 android:visibility="invisible"
                 android:id="@+id/iv_release_icon_read"
                 android:src="@mipmap/abs_release_btn_read_default"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>

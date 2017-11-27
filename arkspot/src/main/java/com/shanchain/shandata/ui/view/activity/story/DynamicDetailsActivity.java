@@ -81,6 +81,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private int size = 10;
     private DynamicDetailsPresenter mPresenter;
     private boolean isLoadMore = false;
+    private int mSpaceId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -100,6 +101,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(), CharacterInfo.class);
                 mStoryId = mDynamicModel.getStoryId() + "";
                 mCharacterId = mDynamicModel.getCharacterId();
+                mSpaceId = mDynamicModel.getSpaceId();
             } else {
                 finish();
                 return;
@@ -110,6 +112,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             mStoryId = mBean.getDetailId().substring(1);
             mDynamicModel = mBean.getDynamicModel();
             mCharacterInfo = mBean.getCharacterInfo();
+            mSpaceId = mBean.getSpaceId();
             isBeFav = mBean.isBeFav();
         }
 
@@ -285,8 +288,15 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 }
                 break;
             case R.id.tv_item_story_comment:
-                showPop();
-                popupInputMethodWindow();
+
+                String comSpaceId = SCCacheUtils.getCacheSpaceId();
+                if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+                    showPop();
+                    popupInputMethodWindow();
+                }else {
+                    ToastUtils.showToast(mContext,"不同世界不能进行评论");
+                }
+
                 break;
             case R.id.tv_item_story_like:
                 clickLike();
@@ -322,8 +332,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     @OnClick(R.id.tv_dynamic_details_comment)
     public void onClick() {
-        showPop();
-        popupInputMethodWindow();
+        String comSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+            showPop();
+            popupInputMethodWindow();
+        }else {
+            ToastUtils.showToast(mContext,"不同世界不能进行评论");
+        }
+
     }
 
     private void showPop() {

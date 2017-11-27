@@ -253,4 +253,6 @@ public interface HttpApi {
     /** 通过环信groupId批量查询群信息*/
     String HX_GROUP_LIST = BASE_URL_IM + "/hx/group/list";
 
+    /** 判断故事是否点赞*/
+    String STORY_IS_FAV = BASE_URL + "/v1/story/isFav";
 }

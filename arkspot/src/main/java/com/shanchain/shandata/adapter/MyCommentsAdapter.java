@@ -7,14 +7,11 @@ import android.widget.ImageView;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.BdMyCommentBean;
-import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.utils.DateUtils;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -25,23 +22,18 @@ import java.util.List;
 
 public class MyCommentsAdapter extends BaseQuickAdapter<BdMyCommentBean,BaseViewHolder> {
 
-    private final String mHeadImg;
-    private final String mName;
 
     public MyCommentsAdapter(@LayoutRes int layoutResId, @Nullable List<BdMyCommentBean> data) {
         super(layoutResId, data);
-        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-        String characterInfo = SCCacheUtils.getCache(userId, Constants.CACHE_CHARACTER_INFO);
-        CharacterInfo characterBean = JSONObject.parseObject(characterInfo, CharacterInfo.class);
-        mHeadImg = characterBean.getHeadImg();
-        mName = characterBean.getName();
 
     }
 
     @Override
     protected void convert(BaseViewHolder helper, BdMyCommentBean item) {
-        GlideUtils.load(mContext,mHeadImg,(ImageView) helper.getView(R.id.iv_my_comments_head),0);
-        helper.setText(R.id.tv_my_comments_name,mName);
+        String headImg = item.getContactBean().getHeadImg();
+        String name = item.getContactBean().getName();
+        GlideUtils.load(mContext,headImg,(ImageView) helper.getView(R.id.iv_my_comments_head),0);
+        helper.setText(R.id.tv_my_comments_name,name);
         helper.setText(R.id.tv_my_comments_count,item.getCommentBean().getSupportCount()+"");
         String time = DateUtils.formatFriendly(new Date(item.getCommentBean().getCreateTime()));
         helper.setText(R.id.tv_my_comments_time,time);

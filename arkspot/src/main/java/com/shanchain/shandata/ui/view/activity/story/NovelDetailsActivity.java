@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
@@ -73,6 +74,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private boolean isLoadMore = false;
     private TextView mTvHeadLike;
     private boolean mFav;
+    private int mSpaceId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -93,6 +95,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(), CharacterInfo.class);
                 mStoryId = mNovelModel.getStoryId() + "";
                 mCharacterId = mNovelModel.getCharacterId() + "";
+                mSpaceId = mNovelModel.getSpaceId();
             } else {
                 finish();
                 return;
@@ -103,6 +106,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             mCharacterId = bean.getCharacterId() + "";
             mNovelModel = bean.getNovelMovel();
             mCharacterInfo = bean.getCharacterInfo();
+            mSpaceId = bean.getSpaceId();
         }
 
         initToolBar();
@@ -231,8 +235,14 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 startActivity(intentAvatar);
                 break;
             case R.id.tv_item_story_comment:
-                showPop();
-                popupInputMethodWindow();
+                String comSpaceId = SCCacheUtils.getCacheSpaceId();
+                if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+                    showPop();
+                    popupInputMethodWindow();
+                }else {
+                    ToastUtils.showToast(mContext,"不同世界不能进行评论");
+                }
+
                 break;
             case R.id.tv_item_story_like:
                 clickLike();
@@ -252,8 +262,14 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @OnClick(R.id.tv_dynamic_details_comment)
     public void onClick() {
-        showPop();
-        popupInputMethodWindow();
+        String comSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+            showPop();
+            popupInputMethodWindow();
+        }else {
+            ToastUtils.showToast(mContext,"不同世界不能进行评论");
+        }
+
     }
 
     private void showPop() {
