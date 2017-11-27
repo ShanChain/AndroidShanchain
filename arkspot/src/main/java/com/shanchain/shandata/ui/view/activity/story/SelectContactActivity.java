@@ -13,7 +13,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gjiazhe.wavesidebar.WaveSideBar;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SelectContactAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -33,13 +39,6 @@ import com.shanchain.shandata.ui.model.ResponseHxUserListInfo;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,8 +133,16 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 if (view.getId() == R.id.rb_item_contact) {
                     boolean selected = show.get(position).isSelected();
                     show.get(position).setSelected(!selected);
-                    mContactAdapter.notifyDataSetChanged();
+                    mContactAdapter.notifyItemChanged(position);
                 }
+            }
+        });
+        mContactAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                boolean selected = show.get(position).isSelected();
+                show.get(position).setSelected(!selected);
+                mContactAdapter.notifyItemChanged(position);
             }
         });
     }
