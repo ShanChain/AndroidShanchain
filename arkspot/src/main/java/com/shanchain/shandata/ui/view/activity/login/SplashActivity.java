@@ -13,6 +13,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
@@ -111,7 +112,7 @@ public class SplashActivity extends AppCompatActivity {
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHARACTER_GET_CURRENT)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取当前角色失败");
@@ -171,7 +172,7 @@ public class SplashActivity extends AppCompatActivity {
                 .url(HttpApi.SPACE_GET_ID)
                 .addParams("spaceId",spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空详情失败");

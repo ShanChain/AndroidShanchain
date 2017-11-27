@@ -11,6 +11,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.push.PushFilterBuilder;
 import com.shanchain.data.common.utils.LogUtils;
@@ -80,7 +81,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 .addParams("type", Constants.TYPE_STORY_SHORT + "")
                 .addParams("filter",builder.getFilter())
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("发布动态失败");
@@ -261,7 +262,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 .addParams("dataString", dataString)
                 .addParams("type", Constants.TYPE_STORY_LONG + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("发布小说失败");

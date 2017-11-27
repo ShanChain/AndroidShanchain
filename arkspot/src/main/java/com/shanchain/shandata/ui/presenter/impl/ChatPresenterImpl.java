@@ -7,6 +7,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.ui.model.GroupMembersInfo;
 import com.shanchain.shandata.ui.model.MsgInfo;
 import com.shanchain.shandata.ui.model.ResponseGroupMemberBean;
@@ -169,7 +170,7 @@ public class ChatPresenterImpl implements ChatPresenter {
                 .url(HttpApi.HX_GROUP_QUERY)
                 .addParams("groupId", toChatName)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取群信息失败");
@@ -207,7 +208,7 @@ public class ChatPresenterImpl implements ChatPresenter {
                 .url(HttpApi.HX_GROUP_MEMBERS)
                 .addParams("groupId",toChatName)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取群成员失败");

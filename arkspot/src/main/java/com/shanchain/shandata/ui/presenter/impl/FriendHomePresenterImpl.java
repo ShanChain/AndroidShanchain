@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.presenter.impl;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryModel;
@@ -41,7 +42,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .url(HttpApi.CHARACTER_QUERY)
                 .addParams("characterId", characterId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取好友信息失败 ");
@@ -82,7 +83,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .addParams("checkId", characterId + "")
                 .addParams("spaceId",spaceId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取是否关注角色失败");
@@ -117,7 +118,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .addParams("funsCharacterId", cacheCharacterId)
                 .addParams("characterId", characterId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("关注角色失败");
@@ -158,7 +159,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .addParams("size", size + "")
                 .addParams("targetId", characterId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色动态失败");
@@ -216,7 +217,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .url(HttpApi.HX_USER_REGIST)
                 .addParams("characterId",characterId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取好友环信信息失败");
@@ -250,7 +251,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId",storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -277,7 +278,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
@@ -306,7 +307,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .addParams("characterId",""+characterId)
                 .addParams("funsUserId","" + userId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消关注失败");
@@ -345,7 +346,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取动态详情信息失败");

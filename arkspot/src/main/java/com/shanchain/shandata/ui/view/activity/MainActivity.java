@@ -717,7 +717,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                     .addParams("token",token)
                     .addParams("deviceToken",CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("设置DeviceToken失败");

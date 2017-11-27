@@ -44,7 +44,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                 .addParams("end", "" + end)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取故事链条失败");
@@ -105,7 +105,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -137,7 +137,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");

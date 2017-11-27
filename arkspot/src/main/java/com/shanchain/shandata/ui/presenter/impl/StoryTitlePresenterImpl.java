@@ -8,6 +8,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.ui.model.SpaceInfo;
@@ -41,7 +42,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("page",page+"")
                 .addParams("size",size + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("获取我收藏的时空数据失败");
@@ -92,7 +93,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("page", "" + page)
                 .addParams("size", "" + size)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空列表失败");
@@ -132,7 +133,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("size","" + size)
                 .addParams("name",keyWord)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("sou's搜索世界失败");

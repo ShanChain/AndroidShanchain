@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AnnouncementAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -105,7 +106,7 @@ public class AnnouncementActivity extends BaseActivity implements ArthurToolBar.
                 .addParams("size","20")
                 .addParams("sort","desc")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.e("获取群公告失败");

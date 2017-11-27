@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -136,7 +137,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                     .addParams("reason", reason)
                     .addParams("reportType", Constants.REPORT_TYPE_STORY)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();

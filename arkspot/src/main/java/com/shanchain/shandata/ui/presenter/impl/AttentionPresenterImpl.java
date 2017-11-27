@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.presenter.impl;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.ui.model.ResponseStoryChainBean;
 import com.shanchain.shandata.ui.model.ResponseStoryIdBean;
 import com.shanchain.shandata.ui.model.ResponseStoryIdData;
@@ -48,7 +49,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                 .addParams("page", page + "")
                 .addParams("size", size + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取实时数据失败");
@@ -137,7 +138,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId",storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -164,7 +165,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
@@ -194,7 +195,7 @@ public class AttentionPresenterImpl implements AttentionPresenter {
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         mAttentionView.initSuccess(null, isLast);

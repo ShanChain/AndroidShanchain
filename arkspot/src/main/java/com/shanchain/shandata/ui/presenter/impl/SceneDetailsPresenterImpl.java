@@ -7,6 +7,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
@@ -47,7 +48,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .url(HttpApi.HX_GROUP_QUERY)
                 .addParams("groupId", toChatName)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取群信息失败");
@@ -99,7 +100,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .addParams("groupId", toChatName)
                 .addParams("jArray", jArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("退群失败");
@@ -134,7 +135,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .url(HttpApi.CHARACTER_BRIEF)
                 .addParams("dataArray", arr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色简要信息失败");
@@ -179,7 +180,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .url(HttpApi.HX_GROUP_MEMBERS)
                 .addParams("groupId", toChatName)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取群成员失败");
@@ -236,7 +237,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .url(HttpApi.HX_GROUP_GET_NOTICE)
                 .addParams("groupId", toChatName)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取群公告失败");
@@ -276,7 +277,7 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                 .url(HttpApi.CHARACTER_BRIEF)
                 .addParams("dataArray", arr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色简要信息失败");

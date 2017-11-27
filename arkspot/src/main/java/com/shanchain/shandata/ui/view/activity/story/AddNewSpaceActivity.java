@@ -24,6 +24,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
@@ -104,7 +105,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                 .addParams("size","20")
                 .addParams("page","0")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取模型标签失败");
@@ -386,7 +387,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                     .addParams("dataString", data)
                     .addParams("jArray", jArr)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
@@ -427,7 +428,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                     .url(HttpApi.SPACE_CREAT)
                     .addParams("dataString", data)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
@@ -473,7 +474,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                 .url(HttpApi.SPACE_FAVORITE)
                 .addParams("spaceId","" + spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("收藏时空失败");

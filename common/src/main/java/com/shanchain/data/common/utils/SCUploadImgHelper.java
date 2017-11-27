@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -26,7 +27,7 @@ public class SCUploadImgHelper {
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num",size+"")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取图片地址失败 onError");

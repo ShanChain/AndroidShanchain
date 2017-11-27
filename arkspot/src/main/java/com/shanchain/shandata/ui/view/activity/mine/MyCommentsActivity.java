@@ -9,6 +9,7 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MyCommentsAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -74,7 +75,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                 .addParams("page", page + "")
                 .addParams("size", pageSise + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -139,7 +140,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                 .url(HttpApi.STORY_GET)
                 .addParams("dataArray", dataArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         initError();
