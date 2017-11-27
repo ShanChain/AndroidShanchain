@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.ui.model.BdContactInfo;
 import com.shanchain.shandata.ui.model.ContactBean;
 import com.shanchain.shandata.ui.model.GroupInfo;
@@ -43,7 +44,7 @@ public class ContactPresenterImpl implements ContactPresenter {
                 .addParams("type", "0")
                 .addParams("spaceId",spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取联系人失败");
@@ -82,7 +83,7 @@ public class ContactPresenterImpl implements ContactPresenter {
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.HX_GROUP_MYGROUP)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("查找我所在的群失败");
@@ -131,7 +132,7 @@ public class ContactPresenterImpl implements ContactPresenter {
                 .url(HttpApi.HX_USER_LIST)
                 .addParams("characterIds", jArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取环信联系人失败");

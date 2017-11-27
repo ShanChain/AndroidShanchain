@@ -41,7 +41,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
                 .addParams("page", "" + page)
                 .addParams("size", "" + size)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取我赞过的失败");
@@ -84,7 +84,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -155,7 +155,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
                 .url(HttpApi.CHARACTER_BRIEF)
                 .addParams("dataArray",jArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色简要信息失败");

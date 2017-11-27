@@ -47,7 +47,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .addParams("page", page + "")
                 .addParams("size", size + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取评论列表失败");
@@ -97,7 +97,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .addParams("dataString", dataString)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("添加评论失败");
@@ -124,7 +124,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
@@ -152,7 +152,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -181,7 +181,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .url(HttpApi.CHARACTER_BRIEF)
                 .addParams("dataArray", jArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取角色信息失败");
@@ -226,7 +226,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 .url(HttpApi.STORY_GET_BY_ID)
                 .addParams("storyId", storyId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取故事失败");

@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gjiazhe.wavesidebar.WaveSideBar;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SelectContactAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -151,7 +152,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             SCHttpUtils.postWithSpaceId()
                     .url(HttpApi.SPACE_CONTACT_LIST)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
 
@@ -209,7 +210,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             SCHttpUtils.postWithUidAndSpaceId()
                     .url(HttpApi.FOCUS_CONTACTS)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("获取互相关注列表失败");
@@ -268,7 +269,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 .url(HttpApi.HX_USER_LIST)
                 .addParams("characterIds", jArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取联系人失败");
@@ -364,7 +365,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                     .url(HttpApi.HX_GROUP_CREATE)
                     .addParams("dataString", dataString)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("创建群失败");

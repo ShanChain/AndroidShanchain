@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -97,7 +98,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("size", "20")
                 .addParams("page", "0")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取模型标签失败");
@@ -334,7 +335,7 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("dataString", dataString)
                 .addParams("jArray", arr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("创建话题失败");

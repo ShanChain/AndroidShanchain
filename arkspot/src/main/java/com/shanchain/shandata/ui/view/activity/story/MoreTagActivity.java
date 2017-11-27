@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -58,7 +59,7 @@ public class MoreTagActivity extends BaseActivity implements ArthurToolBar.OnLef
                 .addParams("page","0")
                 .addParams("size","100")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取标签失败");

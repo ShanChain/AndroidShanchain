@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.push.PushFilterBuilder;
 import com.shanchain.data.common.utils.GlideUtils;
@@ -363,7 +364,7 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
                 .addParams("filter", builder.getFilter())
                 .addParams("storyId", mBean.getDetailId().substring(1))
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("转发失败");

@@ -20,6 +20,7 @@ import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -105,7 +106,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                 .addParams("spaceId",mSpaceId+"")
                 .url(HttpApi.SPACE_IS_FAV)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空是否收藏失败");
@@ -139,7 +140,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                 .addParams("page",""+page)
                 .addParams("size",""+size)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空角色失败");
@@ -259,7 +260,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                     .url(HttpApi.SPACE_UNFAVORITE)
                     .addParams("spaceId", mSpaceInfo.getSpaceId() + "")
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("取消收藏时空失败");
@@ -280,7 +281,7 @@ public class ChooseRoleActivity extends BaseActivity implements ArthurToolBar.On
                     .url(HttpApi.SPACE_FAVORITE)
                     .addParams("spaceId", mSpaceInfo.getSpaceId() + "")
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("收藏时空失败");

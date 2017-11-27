@@ -8,6 +8,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.ui.model.SpaceInfo;
@@ -41,7 +42,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("page",page+"")
                 .addParams("size",size + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("获取我收藏的时空数据失败");
@@ -92,7 +93,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("page", "" + page)
                 .addParams("size", "" + size)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空列表失败");
@@ -132,10 +133,10 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                 .addParams("size","" + size)
                 .addParams("name",keyWord)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("sou's搜索时空失败");
+                        LogUtils.i("sou's搜索世界失败");
                         e.printStackTrace();
                         mStoryTitleView.getSpaceListSuccess(null,false);
                     }
@@ -143,7 +144,7 @@ public class StoryTitlePresenterImpl implements StoryTitlePresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         try {
-                            LogUtils.i("搜索时空成功 = " + response);
+                            LogUtils.i("搜索世界成功 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                 String data = JSONObject.parseObject(response).getString("data");

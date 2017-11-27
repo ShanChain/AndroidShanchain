@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.utils.DateUtils;
@@ -152,7 +153,7 @@ public class CreateDramaActivity extends BaseActivity implements ArthurToolBar.O
                 .addParams("startTime",mStartTime+"")
                 .addParams("title",title)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("创建大戏失败");

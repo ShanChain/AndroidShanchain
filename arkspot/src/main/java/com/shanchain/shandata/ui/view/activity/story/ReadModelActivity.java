@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.RichTextModel;
@@ -50,7 +51,7 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
                     .url(HttpApi.STORY_GET_BY_ID)
                     .addParams("storyId",storyId)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.i("获取小说内容失败");

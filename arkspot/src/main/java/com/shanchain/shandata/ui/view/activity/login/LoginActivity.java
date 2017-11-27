@@ -18,6 +18,7 @@ import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -116,7 +117,7 @@ public class LoginActivity extends BaseActivity {
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHARACTER_GET_CURRENT)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();
@@ -238,7 +239,7 @@ public class LoginActivity extends BaseActivity {
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();
@@ -391,7 +392,7 @@ public class LoginActivity extends BaseActivity {
                     .addParams("sex", sex)
                     .addParams("userType", userType)
                     .build()
-                    .execute(new StringCallback() {
+                    .execute(new SCHttpStringCallBack() {
                                  @Override
                                  public void onError(Call call, Exception e, int id) {
                                      closeProgress();
@@ -443,7 +444,7 @@ public class LoginActivity extends BaseActivity {
                 .url(HttpApi.SPACE_GET_ID)
                 .addParams("spaceId", spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();

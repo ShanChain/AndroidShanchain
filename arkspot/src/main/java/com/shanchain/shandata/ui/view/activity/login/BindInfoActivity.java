@@ -14,6 +14,7 @@ import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.AccountUtils;
@@ -170,7 +171,7 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("userId", CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER))
                 .addParams("token", SCCacheUtils.getCacheToken())
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("绑定手机号失败");

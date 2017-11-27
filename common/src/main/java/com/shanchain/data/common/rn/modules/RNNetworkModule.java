@@ -22,6 +22,7 @@ import com.shanchain.data.common.net.NetDataFormatUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.NetworkUtils;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
@@ -84,7 +85,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             .url(HttpApi.BASE_URL + urlPath)
                             .params(endParams)
                             .build()
-                            .execute(new StringCallback() {
+                            .execute(new SCHttpStringCallBack() {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
                                     e.printStackTrace();
@@ -116,7 +117,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             .url(HttpApi.BASE_URL + urlPath)
                             .params(endParams)
                             .build()
-                            .execute(new StringCallback() {
+                            .execute(new SCHttpStringCallBack() {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
                                     e.printStackTrace();

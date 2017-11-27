@@ -32,7 +32,6 @@ import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.other.SCEmptyView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +145,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                 .url(HttpApi.STORY_GET)
                 .addParams("dataArray", dataArr)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         initError();

@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
@@ -94,7 +95,7 @@ public class CharacterManager {
                 .addParams("spaceId", spaceId)
                 .addParams("modelId",modelId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         error();
@@ -190,7 +191,7 @@ public class CharacterManager {
                 .url(HttpApi.SPACE_GET_ID)
                 .addParams("spaceId",spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取时空详情失败");

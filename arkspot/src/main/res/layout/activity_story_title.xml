@@ -42,7 +42,7 @@
             android:drawableLeft="@mipmap/abs_therrbody_icon_search_default"
             android:drawablePadding="20dp"
             android:gravity="center_vertical"
-            android:hint="搜索时空"
+            android:hint="搜索世界"
             android:lines="1"
             android:paddingLeft="@dimen/dimens_15dp"
             android:textColor="@color/colorTextDefault"

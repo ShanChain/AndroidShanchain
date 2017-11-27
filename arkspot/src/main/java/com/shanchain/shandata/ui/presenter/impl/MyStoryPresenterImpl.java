@@ -44,7 +44,7 @@ public class MyStoryPresenterImpl implements MyStoryPresenter {
                 .addParams("type", StoryInfo.type1 + "")
                 .addParams("spaceId", spaceId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -86,7 +86,7 @@ public class MyStoryPresenterImpl implements MyStoryPresenter {
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
@@ -118,7 +118,7 @@ public class MyStoryPresenterImpl implements MyStoryPresenter {
                 .url(HttpApi.STORY_SUPPORT_ADD)
                 .addParams("storyId", storyId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");

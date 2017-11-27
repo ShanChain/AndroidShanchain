@@ -25,6 +25,7 @@ import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
@@ -113,7 +114,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                 .addParams("page", "0")
                 .addParams("size", "20")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("获取模型标签失败");
@@ -399,7 +400,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                 .addParams("jArray", jArr)
                 .addParams("spaceId", mSpaceId + "")
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeLoadingDialog();
