@@ -133,7 +133,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 if (view.getId() == R.id.rb_item_contact) {
                     boolean selected = show.get(position).isSelected();
                     show.get(position).setSelected(!selected);
-                    mContactAdapter.notifyItemChanged(position);
+                    mContactAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -142,7 +142,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 boolean selected = show.get(position).isSelected();
                 show.get(position).setSelected(!selected);
-                mContactAdapter.notifyItemChanged(position);
+                mContactAdapter.notifyDataSetChanged();
             }
         });
     }
