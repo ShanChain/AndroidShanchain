@@ -21,6 +21,7 @@ import com.shanchain.shandata.ui.model.ResponseTopicData;
 import com.shanchain.shandata.ui.model.ResponseTopicInfo;
 import com.shanchain.shandata.ui.model.TopicInfo;
 import com.shanchain.shandata.ui.view.activity.square.AddTopicActivity;
+import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -62,6 +63,7 @@ public class TopicActivity extends BaseActivity {
     }
 
     private void initListener() {
+        EditTextUtils.banEnterInput(mEtTopic);
         mEtTopic.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

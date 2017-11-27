@@ -60,7 +60,6 @@ public class SearchRoleActivity extends BaseActivity implements ArthurToolBar.On
         mSpaceId = intent.getIntExtra("spaceId", 0);
         initToolBar();
         initSpaceModel(page,size);
-
         initListener();
     }
 

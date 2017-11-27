@@ -1,11 +1,14 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.h5.SCWebViewActivity;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
@@ -78,7 +81,13 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 break;
             case R.id.tv_register_terms:
                 //查看条款
-
+                Intent intent = new Intent(mContext, SCWebViewActivity.class);
+                JSONObject obj = new JSONObject();
+                obj.put("url","http://www.qianqianshijie.com/#/agreement");
+                obj.put("title","用户服务协议（草案）");
+                String webParams = obj.toJSONString();
+                intent.putExtra("webParams",webParams);
+                startActivity(intent);
                 break;
         }
     }

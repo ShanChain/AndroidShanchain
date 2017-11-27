@@ -39,6 +39,7 @@ import com.shanchain.shandata.ui.model.StoryTagInfo;
 import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
+import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -101,6 +102,8 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         initToolBar();
         initRecyclerView();
         initData();
+        EditTextUtils.banEnterInput(mEtAddRoleTag);
+        EditTextUtils.banEnterInput(mEtAddRoleNick);
     }
 
     private void initData() {
