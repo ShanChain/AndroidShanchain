@@ -1,21 +1,14 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
-import android.app.Service;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -45,6 +38,8 @@ import com.shanchain.shandata.ui.presenter.impl.DynamicDetailsPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -292,7 +287,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 String comSpaceId = SCCacheUtils.getCacheSpaceId();
                 if (TextUtils.equals(comSpaceId,mSpaceId + "")){
                     showPop();
-                    popupInputMethodWindow();
                 }else {
                     ToastUtils.showToast(mContext,"不同世界不能进行评论");
                 }
@@ -335,7 +329,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         String comSpaceId = SCCacheUtils.getCacheSpaceId();
         if (TextUtils.equals(comSpaceId,mSpaceId + "")){
             showPop();
-            popupInputMethodWindow();
         }else {
             ToastUtils.showToast(mContext,"不同世界不能进行评论");
         }
@@ -343,7 +336,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void showPop() {
-        View contentView = View.inflate(this, R.layout.pop_comment, null);
+        /*View contentView = View.inflate(this, R.layout.pop_comment, null);
         TextView mTvPopCommentOutside = (TextView) contentView.findViewById(R.id.tv_pop_comment_outside);
         final EditText mEtPopComment = (EditText) contentView.findViewById(R.id.et_pop_comment);
         TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
@@ -369,24 +362,19 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         pop.setTouchable(true);
         pop.setOutsideTouchable(true);
         pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));
-        pop.showAtLocation(mLlDynamicDetails, 0, 0, Gravity.BOTTOM);
-    }
-
-    private void addComment(String comment) {
-        String storyId = mStoryId;
-        mPresenter.addComment(comment, storyId);
-
-    }
-
-    private void popupInputMethodWindow() {
-        new Handler().postDelayed(new Runnable() {
+        pop.showAtLocation(mLlDynamicDetails, 0, 0, Gravity.BOTTOM);*/
+        FragmentManager manager = getSupportFragmentManager();
+        CommentDialog dialog = new CommentDialog();
+        dialog.show(manager,"tag");
+        dialog.setOnSendClickListener(new CommentDialog.OnSendClickListener() {
             @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            public void onSendClick(View v, String msg) {
+                mPresenter.addComment(msg, mStoryId);
             }
-        }, 0);
+        });
+        KeyboardUtils.showSoftInput(this);
     }
+
 
     /**
      * 描述：加载更多评论信息

@@ -65,6 +65,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
+        mSrlMyComments.setEnabled(false);
         initData(false, true);
         //initRecyclerView();
 
@@ -273,7 +274,6 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initRecyclerView() {
         mSrlMyComments.setOnRefreshListener(this);
-        mSrlMyComments.setEnabled(false);
         View emptyView = new SCEmptyView(this, R.string.str_empty_my_comments, R.mipmap.abs_comment_icon_thumbsup_default_1);
         mRvComments.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MyCommentsAdapter(R.layout.item_my_comments, datas);
