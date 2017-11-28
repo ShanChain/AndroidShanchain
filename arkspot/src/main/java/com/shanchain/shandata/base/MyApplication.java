@@ -67,7 +67,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE;
-import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_SATUS;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_STATUS;
 
 
 public class MyApplication extends BaseApplication {

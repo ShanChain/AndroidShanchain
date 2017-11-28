@@ -143,7 +143,9 @@ public class SCHttpUtils {
      *  描述：用于登录的带基础请求参数的post请求
      */
     public static PostFormBuilder postWithParamsForLogin(){
+
         return OkHttpUtils.post()
+                .addParams("deviceToken",CommonCacheHelper.getInstance().getCache(SCCacheUtils.getCacheUserId(),"deviceToken"))
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
                 .addParams("Os","Android")              //操作系统
