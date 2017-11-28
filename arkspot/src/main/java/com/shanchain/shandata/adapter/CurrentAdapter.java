@@ -11,8 +11,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
@@ -23,9 +25,6 @@ import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.widgets.other.AutoHeightListView;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.GlideUtils;
-import com.shanchain.data.common.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +39,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
      * @param data A new list is created out of this one to avoid mutable list
      */
 
-    private Gson gson;
     private Drawable mDrawable;
 
     public CurrentAdapter(List<StoryBeanModel> data) {
@@ -48,8 +46,6 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         addItemType(StoryBeanModel.type1, R.layout.item_story_type3);
         addItemType(StoryBeanModel.type2, R.layout.item_story_type2);
         addItemType(StoryBeanModel.type3, R.layout.item_story_type4);
-        gson = new Gson();
-
     }
 
     @Override

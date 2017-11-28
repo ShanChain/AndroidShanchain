@@ -9,6 +9,7 @@ public class BdMyCommentBean {
     private int storyId;
     private CommentStoryInfo storyInfo;
     private CommentBean mCommentBean;
+    private ContactBean mContactBean;
 
     public CommentStoryInfo getStoryInfo() {
         return storyInfo;
@@ -32,5 +33,13 @@ public class BdMyCommentBean {
 
     public void setStoryId(int storyId) {
         this.storyId = storyId;
+    }
+
+    public ContactBean getContactBean() {
+        return mContactBean;
+    }
+
+    public void setContactBean(ContactBean contactBean) {
+        mContactBean = contactBean;
     }
 }

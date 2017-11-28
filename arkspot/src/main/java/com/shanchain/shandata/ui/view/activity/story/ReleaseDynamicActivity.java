@@ -158,6 +158,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mIvReleaseIconRead.setVisibility(View.VISIBLE);
                     mRvReleaseDynamic.setVisibility(View.GONE);
                     mLlReleaseFunctionCommon.setVisibility(View.GONE);
+                    mIvReleaseIconAt.setVisibility(View.GONE);
+                    mIvReleaseIconTopic.setVisibility(View.GONE);
                     imgCounts = 1;
                     isEditLong = true;
                 } else {
@@ -169,6 +171,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mIvReleaseIconRead.setVisibility(View.INVISIBLE);
                     mRvReleaseDynamic.setVisibility(View.INVISIBLE);
                     mLlReleaseFunctionCommon.setVisibility(View.VISIBLE);
+                    mIvReleaseIconTopic.setVisibility(View.VISIBLE);
+                    mIvReleaseIconAt.setVisibility(View.VISIBLE);
                     imgCounts = 3;
                     isEditLong = false;
                 }

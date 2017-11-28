@@ -1,26 +1,20 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
-import android.app.Service;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
@@ -39,6 +33,8 @@ import com.shanchain.shandata.ui.presenter.impl.DynamicDetailsPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -73,6 +69,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private boolean isLoadMore = false;
     private TextView mTvHeadLike;
     private boolean mFav;
+    private int mSpaceId;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -93,6 +90,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 mCharacterInfo = JSON.parseObject(rnData.getJSONObject("character").toJSONString(), CharacterInfo.class);
                 mStoryId = mNovelModel.getStoryId() + "";
                 mCharacterId = mNovelModel.getCharacterId() + "";
+                mSpaceId = mNovelModel.getSpaceId();
             } else {
                 finish();
                 return;
@@ -103,6 +101,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             mCharacterId = bean.getCharacterId() + "";
             mNovelModel = bean.getNovelMovel();
             mCharacterInfo = bean.getCharacterInfo();
+            mSpaceId = bean.getSpaceId();
         }
 
         initToolBar();
@@ -231,8 +230,13 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                 startActivity(intentAvatar);
                 break;
             case R.id.tv_item_story_comment:
-                showPop();
-                popupInputMethodWindow();
+                String comSpaceId = SCCacheUtils.getCacheSpaceId();
+                if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+                    showPop();
+                }else {
+                    ToastUtils.showToast(mContext,"不同世界不能进行评论");
+                }
+
                 break;
             case R.id.tv_item_story_like:
                 clickLike();
@@ -252,55 +256,29 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     @OnClick(R.id.tv_dynamic_details_comment)
     public void onClick() {
-        showPop();
-        popupInputMethodWindow();
+        String comSpaceId = SCCacheUtils.getCacheSpaceId();
+        if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+            showPop();
+        }else {
+            ToastUtils.showToast(mContext,"不同世界不能进行评论");
+        }
+
     }
 
     private void showPop() {
-        View contentView = View.inflate(this, R.layout.pop_comment, null);
-        TextView mTvPopCommentOutside = (TextView) contentView.findViewById(R.id.tv_pop_comment_outside);
-        final EditText mEtPopComment = (EditText) contentView.findViewById(R.id.et_pop_comment);
-        TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
-
-        final PopupWindow pop = new PopupWindow(contentView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
-        mTvPopCommentOutside.setOnClickListener(new View.OnClickListener() {
+        FragmentManager manager = getSupportFragmentManager();
+        CommentDialog dialog = new CommentDialog();
+        dialog.show(manager,"tag");
+        dialog.setOnSendClickListener(new CommentDialog.OnSendClickListener() {
             @Override
-            public void onClick(View v) {
-                pop.dismiss();
+            public void onSendClick(View v, String msg) {
+                mPresenter.addComment(msg, mStoryId);
             }
         });
-        mTvPopCommentSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String comment = mEtPopComment.getText().toString();
-                if (TextUtils.isEmpty(comment)) {
-                    ToastUtils.showToast(NovelDetailsActivity.this, "不能提交空评论哦~");
-                    return;
-                }
-                addComment(comment);
-                pop.dismiss();
-            }
-        });
-
-        pop.setTouchable(true);
-        pop.setOutsideTouchable(true);
-        pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));
-        pop.showAtLocation(mLlDynamicDetails, 0, 0, Gravity.BOTTOM);
+        KeyboardUtils.showSoftInput(this);
     }
 
-    private void addComment(String comment) {
-        mPresenter.addComment(comment,mStoryId);
-    }
 
-    private void popupInputMethodWindow() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-            }
-        }, 0);
-    }
 
     @Override
     public void commentSuccess(List<BdCommentBean> list, boolean isLast) {

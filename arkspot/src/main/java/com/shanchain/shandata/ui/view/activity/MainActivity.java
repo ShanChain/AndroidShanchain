@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -58,7 +57,6 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.umeng.message.IUmengRegisterCallback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -235,20 +233,19 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private void initBottomNavigationBar() {
         BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
         mStoryBadge = new BadgeItem();
-        mStoryBadge.setText("2").hide();
-        btmItemStory.setBadgeItem(mStoryBadge);
+        mStoryBadge.hide();
+        //btmItemStory.setBadgeItem(mStoryBadge);
         BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
         mNewsBadge = new BadgeItem();
-        mNewsBadge.setText("99+").hide();
-        btmItemNews.setBadgeItem(mNewsBadge);
+        mNewsBadge.hide();
+        //btmItemNews.setBadgeItem(mNewsBadge);
         BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
         mSquareBadge = new BadgeItem();
-        mSquareBadge.setText("11").hide();
-        btmItemSquare.setBadgeItem(mSquareBadge);
+        mSquareBadge.hide();
+        //btmItemSquare.setBadgeItem(mSquareBadge);
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
         mMineBadge = new BadgeItem();
-
-        mMineBadge.setText("   ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+        mMineBadge.setText("  ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
         String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
         String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_READ_STATUS);
         btmItemMine.setBadgeItem(mMineBadge);

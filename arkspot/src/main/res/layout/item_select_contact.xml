@@ -16,7 +16,6 @@
             android:layout_height="20dp"
             android:layout_marginLeft="@dimen/dimens_15dp"
             android:gravity="center_vertical"
-            android:text="A"
             android:textColor="@color/colorHint"
             android:textSize="10sp"/>
 
@@ -42,8 +41,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="13dp"
-            android:src="@drawable/photo_yue"/>
+            android:layout_marginLeft="13dp"/>
 
         <TextView
             android:id="@+id/tv_item_contact_name"
@@ -53,7 +51,6 @@
             android:layout_marginLeft="@dimen/dimens_20dp"
             android:layout_marginRight="@dimen/dimens_20dp"
             android:lines="1"
-            android:text="瑶姐"
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp"/>
     </LinearLayout>

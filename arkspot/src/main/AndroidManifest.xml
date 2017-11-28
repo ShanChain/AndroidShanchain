@@ -91,8 +91,6 @@
         </activity>
         <activity android:name=".ui.view.activity.story.ReportActivity">
         </activity>
-        <activity android:name=".ui.view.activity.story.ReportSuccessActivity">
-        </activity>
         <activity android:name=".ui.view.activity.story.AddRoleActivity">
             <meta-data
                 android:name="page_flag"

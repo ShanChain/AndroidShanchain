@@ -58,7 +58,6 @@ public class PraisedPresenterImpl implements PraisedPresenter {
                                 String data = SCJsonUtils.parseData(response);
                                 boolean last = SCJsonUtils.parseBoolean(data, "last");
                                 String content = SCJsonUtils.parseString(data, "content");
-
                                 mContentBeanList = JSONObject.parseArray(content, StoryContentBean.class);
                                 if (mContentBeanList != null && mContentBeanList.size() > 0) {
                                     obtainCharacterInfo(last);
@@ -181,6 +180,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
                                     }
                                 }
                                 checkFav(last);
+
                             }else{
                                 mView.initPraisedSuc(null,last);
                             }
