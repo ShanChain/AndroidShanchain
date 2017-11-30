@@ -69,7 +69,7 @@ public interface Constants {
 
         /*************SP中的key值***************/
         String SP_KEY_DRAFT = "draft";
-        String SP_KEY_DEVICE_TOKEN_SATUS = "sp_key_device_token_satus";
+        String SP_KEY_DEVICE_TOKEN_STATUS = "sp_key_device_token_status";
         /** config.gradle中定义的常量 */
 
         boolean SC_RN_DEBUG = Boolean.valueOf(BuildConfig.RN_DEBUG);
