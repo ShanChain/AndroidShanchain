@@ -138,7 +138,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
        // mTbSceneDetails.setOnRightClickListener(this);
     }
 
-    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.btn_scene_details_leave})
+    @OnClick({R.id.tv_scene_details_announcement, R.id.iv_scene_details_img, R.id.iv_scene_details_modify, R.id.ll_scene_details_numbers, R.id.btn_scene_details_leave,R.id.rl_group_info})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_scene_details_announcement:
@@ -147,9 +147,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
                 break;
             case R.id.iv_scene_details_img:
                 //场景图片
-                Intent intent = new Intent(this, EditSceneActivity.class);
-                intent.putExtra("groupId",mToChatName);
-                startActivity(intent);
+
                 break;
             case R.id.iv_scene_details_modify:
                 //修改群信息
@@ -167,6 +165,11 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
             case R.id.btn_scene_details_leave:
                 //离开(退群)
                 leave();
+                break;
+            case R.id.rl_group_info:
+                Intent intent = new Intent(this, EditSceneActivity.class);
+                intent.putExtra("groupId",mToChatName);
+                startActivity(intent);
                 break;
         }
     }

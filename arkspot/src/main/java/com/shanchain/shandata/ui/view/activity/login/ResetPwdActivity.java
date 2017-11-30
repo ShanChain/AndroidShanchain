@@ -6,15 +6,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
-import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
-import com.shanchain.shandata.ui.model.ResponseSmsBean;
-import com.shanchain.shandata.utils.CountDownTimeUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -22,7 +18,12 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
-
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.ResponseSmsBean;
+import com.shanchain.shandata.utils.CountDownTimeUtils;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -112,19 +113,32 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
                 .build()
-                .execute(new SCHttpCallBack<ResponseRegisteUserBean>(ResponseRegisteUserBean.class) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        ToastUtils.showToast(mContext, "重置密码失败");
-                        e.printStackTrace();
-                    }
+                .execute(new SCHttpStringCallBack() {
+                             @Override
+                             public void onError(Call call, Exception e, int id) {
+                                 ToastUtils.showToast(mContext, "重置密码失败");
+                                 LogUtils.e("重置密码失败");
+                                 e.printStackTrace();
+                             }
 
-                    @Override
-                    public void onResponse(ResponseRegisteUserBean response, int id) {
-                            ToastUtils.showToast(mContext, "重置密码成功");
-                            finish();
-                    }
-                });
+                             @Override
+                             public void onResponse(String response, int id) {
+                                 try {
+                                     LogUtils.i("重置密码成功 = " + response);
+                                     String code = SCJsonUtils.parseCode(response);
+                                     if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                                         ToastUtils.showToast(mContext,"重置密码成功");
+                                         finish();
+                                     }else{
+                                         ToastUtils.showToast(mContext, "重置密码失败");
+                                     }
+                                 } catch (Exception e) {
+                                     e.printStackTrace();
+                                     ToastUtils.showToast(mContext, "重置密码失败");
+                                 }
+                             }
+                         }
+                );
 
     }
 

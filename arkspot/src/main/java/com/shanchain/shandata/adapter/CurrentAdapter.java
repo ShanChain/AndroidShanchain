@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jaeger.ninegridimageview.NineGridImageView;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -40,12 +41,14 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
      */
 
     private Drawable mDrawable;
+    private final String mCacheSpaceId;
 
     public CurrentAdapter(List<StoryBeanModel> data) {
         super(data);
         addItemType(StoryBeanModel.type1, R.layout.item_story_type3);
         addItemType(StoryBeanModel.type2, R.layout.item_story_type2);
         addItemType(StoryBeanModel.type3, R.layout.item_story_type4);
+        mCacheSpaceId = SCCacheUtils.getCacheSpaceId();
     }
 
     @Override
@@ -64,7 +67,12 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         holder.setText(R.id.tv_item_story_time, time);
         holder.setText(R.id.tv_item_story_comment, bean.getCommendCount() + "");
         holder.setText(R.id.tv_item_story_like, bean.getSupportCount() + "");
-
+        if (TextUtils.equals(mCacheSpaceId,bean.getSpaceId()+"")){
+            holder.setVisible(R.id.tv_item_story_from,false);
+        }else {
+            holder.setVisible(R.id.tv_item_story_from,true);
+            holder.setText(R.id.tv_item_story_from,"来自"+bean.getSpaceName());
+        }
         TextView tvLike = holder.getView(R.id.tv_item_story_like);
 
         if (beFav){

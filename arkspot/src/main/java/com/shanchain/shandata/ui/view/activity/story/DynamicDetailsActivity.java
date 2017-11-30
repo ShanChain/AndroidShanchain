@@ -306,22 +306,11 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         mTvHeadLike.setEnabled(false);
         if (fav) {
             //已经点赞
-            cancelSupport();
+            mPresenter.supportCancel(mStoryId);
         } else {
             //未点赞
-            support();
+            mPresenter.support(mStoryId);
         }
-    }
-
-    private void cancelSupport() {
-        String storyId = mStoryId;
-        mPresenter.supportCancel(storyId);
-
-    }
-
-    private void support() {
-        String storyId = mStoryId;
-        mPresenter.support(storyId);
     }
 
     @OnClick(R.id.tv_dynamic_details_comment)
@@ -336,33 +325,6 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void showPop() {
-        /*View contentView = View.inflate(this, R.layout.pop_comment, null);
-        TextView mTvPopCommentOutside = (TextView) contentView.findViewById(R.id.tv_pop_comment_outside);
-        final EditText mEtPopComment = (EditText) contentView.findViewById(R.id.et_pop_comment);
-        TextView mTvPopCommentSend = (TextView) contentView.findViewById(R.id.tv_pop_comment_send);
-        final PopupWindow pop = new PopupWindow(contentView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
-        mTvPopCommentOutside.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pop.dismiss();
-            }
-        });
-        mTvPopCommentSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String comment = mEtPopComment.getText().toString();
-                if (TextUtils.isEmpty(comment)) {
-                    ToastUtils.showToast(DynamicDetailsActivity.this, "不能提交空评论哦~");
-                    return;
-                }
-                addComment(comment);
-                pop.dismiss();
-            }
-        });
-        pop.setTouchable(true);
-        pop.setOutsideTouchable(true);
-        pop.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPopBg)));
-        pop.showAtLocation(mLlDynamicDetails, 0, 0, Gravity.BOTTOM);*/
         FragmentManager manager = getSupportFragmentManager();
         CommentDialog dialog = new CommentDialog();
         dialog.show(manager,"tag");

@@ -42,7 +42,6 @@ import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -296,22 +295,22 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
         mNick = mEtAddRoleNick.getText().toString().trim();
         mIntro = mEtAddRoleIntroduce.getText().toString().trim();
         if (TextUtils.isEmpty(mNick)) {
-            ToastUtils.showToast(mContext, "角色昵称不能为空哦~");
+            ToastUtils.showToast(mContext, "人物昵称不能为空哦~");
             return;
         }
 
         if (TextUtils.isEmpty(mIntro)) {
-            ToastUtils.showToast(mContext, "多少写点角色介绍呗~");
+            ToastUtils.showToast(mContext, "多少写点人物介绍呗~");
             return;
         }
 
         if (TextUtils.isEmpty(mImgPath)) {
-            ToastUtils.showToast(mContext, "角色要有一个属于自己的画像哦~");
+            ToastUtils.showToast(mContext, "人物要有一个美美的头像哦~");
             return;
         }
 
         if (selectedData.size() == 0) {
-            ToastUtils.showToast(mContext, "为了方便找到该角色，请给角色加几个标签吧~");
+            ToastUtils.showToast(mContext, "为了方便找到该人物，请给角色加几个标签吧~");
             return;
         }
 
@@ -404,7 +403,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeLoadingDialog();
-                        ToastUtils.showToast(mContext, "添加角色失败");
+                        ToastUtils.showToast(mContext, "创建人物模型失败");
                         LogUtils.i("创建人物模型失败");
                         e.printStackTrace();
                     }
@@ -412,7 +411,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                     @Override
                     public void onResponse(String response, int id) {
                         closeLoadingDialog();
-                        ToastUtils.showToast(mContext, "添加角色成功");
+                        ToastUtils.showToast(mContext, "创建人物模型成功");
                         LogUtils.i("创建人物模型成功 = " + response);
                         String code = SCJsonUtils.parseCode(response);
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {

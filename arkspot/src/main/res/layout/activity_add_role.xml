@@ -15,7 +15,7 @@
         app:rightTextColor="@color/colorTextDefault"
         app:rightTextSize="14"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="添加角色"
+        app:titleText="添加新人物"
         app:titleTextSize="16"/>
 
     <View
@@ -117,7 +117,7 @@
                     android:layout_toRightOf="@id/cv_add_role"
                     android:background="@drawable/shape_bg_edit_report"
                     android:gravity="center_vertical"
-                    android:hint="请输入角色昵称"
+                    android:hint="请输入人物昵称"
                     android:lines="1"
                     android:maxLength="16"
                     android:paddingLeft="@dimen/dp_10"
@@ -139,7 +139,7 @@
                 android:layout_marginTop="@dimen/dimens_15dp"
                 android:background="@drawable/shape_bg_edit_report"
                 android:gravity="top"
-                android:hint="简单介绍一下角色吧~"
+                android:hint="简单介绍一下人物吧~"
                 android:maxLength="1000"
                 android:padding="@dimen/dimens_10dp"
                 android:textColor="@color/colorTextDefault"

@@ -27,6 +27,7 @@ public class StoryModelBean implements Serializable{
      * title : picstory
      * transpond : 3
      * type : 1
+     *
      */
 
     private String background;
@@ -47,6 +48,15 @@ public class StoryModelBean implements Serializable{
     private String title;
     private int transpond;
     private int type;
+    private String spaceName;
+
+    public String getSpaceName() {
+        return spaceName;
+    }
+
+    public void setSpaceName(String spaceName) {
+        this.spaceName = spaceName;
+    }
 
     public String getBackground() {
         return background;

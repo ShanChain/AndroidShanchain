@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TopicAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -24,10 +27,6 @@ import com.shanchain.shandata.ui.model.TopicInfo;
 import com.shanchain.shandata.ui.view.activity.square.AddTopicActivity;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +118,8 @@ public class TopicActivity extends BaseActivity {
                 boolean isNew = show.get(position).isNew();
                 if (isNew){
                     Intent intent = new Intent(mContext, AddTopicActivity.class);
+                    String topic = show.get(position).getTopic();
+                    intent.putExtra("name",topic);
                     startActivity(intent);
                 }else {
                     Intent intent = new Intent();

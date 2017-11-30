@@ -31,6 +31,7 @@ import com.shanchain.shandata.ui.presenter.StoryTitlePresenter;
 import com.shanchain.shandata.ui.presenter.impl.StoryTitlePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
 import com.shanchain.shandata.utils.EditTextUtils;
+import com.shanchain.shandata.widgets.listener.SCTextWatcher;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
@@ -91,6 +92,14 @@ public class StoryTitleActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initListener() {
         EditTextUtils.banEnterInput(mEtStoryTitleSearch);
+        mEtStoryTitleSearch.addTextChangedListener(new SCTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)){
+                    onRefresh();
+                }
+            }
+        });
     }
 
     private void initData() {

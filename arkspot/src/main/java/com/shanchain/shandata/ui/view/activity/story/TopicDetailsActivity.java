@@ -56,7 +56,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     private String mTitle;
     private int page = 0;
     private int size = 10;
-    private boolean isLoadMore = false;
+    private boolean isFirstLoad = true;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -247,7 +247,14 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
-        String topicId = mTopicId.substring(1);
+        String topicId = "";
+
+        if (mTopicId.startsWith("t")){
+            topicId = mTopicId.substring(1);
+        }else {
+            topicId = mTopicId;
+        }
+
         mDetailPresenter.initStoryInfo(topicId, page, size);
     }
 
@@ -272,7 +279,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
                 mAdapter.loadMoreFail();
             }
         } else {
-            if (isLoadMore) {
+            if (!isFirstLoad) {
                 mAdapter.addData(list);
             } else {
                 mAdapter.setNewData(list);
@@ -286,6 +293,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             }
 
         }
+        isFirstLoad = false;
     }
 
     @Override
@@ -329,7 +337,14 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     @Override
     public void onLoadMoreRequested() {
         page++;
-        String topicId = mTopicId.substring(1);
+        String topicId = "";
+
+        if (mTopicId.startsWith("t")){
+            topicId = mTopicId.substring(1);
+        }else {
+            topicId = mTopicId;
+        }
+
         mDetailPresenter.loadMore(topicId, page, size);
     }
 }

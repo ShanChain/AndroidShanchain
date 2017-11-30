@@ -20,7 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chad.library.adapter.base.BaseQuickAdapter;import com.shanchain.data.common.base.Callback;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
@@ -51,7 +52,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import me.iwf.photopicker.PhotoPicker;
-
 
 
 public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ReleaseDynamicView {
@@ -120,6 +120,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     private void init() {
         mPresenter = new ReleaseDynamicPresenterImpl(this);
+        //mEtReleaseDynamicLong.
     }
 
     private void initRecyclerView() {
@@ -500,8 +501,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             showLoadingDialog(false);
             mPresenter.ReleaseLongText(this, title, editData);
         } else {
-            if (TextUtils.isEmpty(word)){
-                ToastUtils.showToast(mContext,"请输入内容");
+            if (TextUtils.isEmpty(word)) {
+                ToastUtils.showToast(mContext, "请输入内容");
                 return;
             }
 
@@ -546,9 +547,33 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         //发布成功
         ToastUtils.showToast(mContext, "发布成功");
         closeLoadingDialog();
+
+        clearDraft();
+
         finish();
         ReleaseSucEvent releaseSucEvent = new ReleaseSucEvent(true);
-        EventBus.getDefault().post(new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT,EventConstant.EVENT_KEY_RELEASE,releaseSucEvent,null));
+        EventBus.getDefault().post(new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT, EventConstant.EVENT_KEY_RELEASE, releaseSucEvent, null));
+
+    }
+
+    /**
+     * 描述：清除草稿
+     */
+    private void clearDraft() {
+        String draft = PrefUtils.getString(mContext, Constants.SP_KEY_DRAFT, "");
+        if (!TextUtils.isEmpty(draft)) {
+            LogUtils.i("草稿箱内容 = " + draft);
+            Boolean isLong = JSONObject.parseObject(draft).getBoolean("long");
+            if (isEditLong) {    //小说编辑状态
+                if (isLong) {    //存的草稿也是小说的草稿
+                    PrefUtils.putString(mContext, Constants.SP_KEY_DRAFT, "");
+                }
+            } else {
+                if (!isLong) {
+                    PrefUtils.putString(mContext, Constants.SP_KEY_DRAFT, "");
+                }
+            }
+        }
     }
 
     @Override

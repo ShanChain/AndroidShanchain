@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="95dp"
-            android:text="编辑头像"
+            android:text="封面图"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_14"/>
 
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dimens_15dp"
-            android:text="昵称"
+            android:text="名称"
             android:textColor="@color/colorTextDefault"/>
 
         <EditText

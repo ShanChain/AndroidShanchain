@@ -1,6 +1,5 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -8,11 +7,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -23,14 +24,12 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.data.common.base.UserType;
-import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -58,6 +57,8 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     String mBindType = "";
     boolean isNeedPW = false;
+    private String mEncryptAccount;
+    private String mPasswordAccount;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -143,17 +144,15 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
 
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
-        String encryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
-        LogUtils.d("加密后账号：" + encryptAccount);
-
-
+        mEncryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
+        LogUtils.d("加密后账号：" + mEncryptAccount);
         if (isNeedPW) {
             //加密后的密码
-            String passwordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
-            LogUtils.d("加密后密码：" + passwordAccount);
-            resetPassWord(time, encryptAccount, passwordAccount);
+            bindPhone(phone, time);
+            mPasswordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
+            LogUtils.d("加密后密码：" + mPasswordAccount);
         } else {
-            bindPhone(phone);
+            bindPhone(phone, time);
         }
 
     }
@@ -163,12 +162,12 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
      *
      * @param mobile
      */
-    private void bindPhone(String mobile) {
+    private void bindPhone(String mobile, final String time) {
         SCHttpUtils.post()
                 .url(HttpApi.BIND_OTHER_ACCOUNT)
                 .addParams("otherAccount", mobile)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
-                .addParams("userId", CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER))
+                .addParams("userId", CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER))
                 .addParams("token", SCCacheUtils.getCacheToken())
                 .build()
                 .execute(new SCHttpStringCallBack() {
@@ -181,7 +180,13 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("绑定成功 = " + response);
-                        finish();
+                        if (isNeedPW) {
+                            resetPassWord(time, mEncryptAccount, mPasswordAccount);
+                        } else {
+                            ToastUtils.showToast(mContext, "绑定成功");
+                            finish();
+                        }
+
                     }
                 });
 
@@ -199,7 +204,33 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
                 .build()
-                .execute(new SCHttpCallBack<ResponseRegisteUserBean>(ResponseRegisteUserBean.class) {
+                .execute(new SCHttpStringCallBack() {
+                             @Override
+                             public void onError(Call call, Exception e, int id) {
+                                 LogUtils.e("重置密码失败");
+                                 e.printStackTrace();
+                             }
+
+                             @Override
+                             public void onResponse(String response, int id) {
+                                 try {
+                                     LogUtils.i("重置密码成功 = " + response);
+                                     String code = SCJsonUtils.parseCode(response);
+                                     if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                         ToastUtils.showToast(mContext, "重置密码成功");
+                                         AppManager.getInstance().logout();
+
+                                     } else {
+                                         ToastUtils.showToast(mContext, "重置密码失败");
+                                     }
+                                 } catch (Exception e) {
+                                     e.printStackTrace();
+                                     ToastUtils.showToast(mContext, "重置密码失败");
+                                 }
+                             }
+                         }
+
+                        /*SCHttpCallBack<ResponseRegisteUserBean>(ResponseRegisteUserBean.class) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         ToastUtils.showToast(mContext, "重置密码失败");
@@ -209,12 +240,9 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(ResponseRegisteUserBean response, int id) {
                         ToastUtils.showToast(mContext, "重置密码成功");
-                        Intent intent = new Intent(mContext, LoginActivity.class);
-                        ActivityStackManager.getInstance().finishAllActivity();
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        AppManager.getInstance().logout();
                     }
-                });
+                }*/);
     }
 
     @Override
