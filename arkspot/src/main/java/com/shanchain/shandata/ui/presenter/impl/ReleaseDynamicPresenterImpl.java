@@ -24,7 +24,6 @@ import com.shanchain.shandata.ui.model.RichTextModel;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,13 +64,13 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         String topicArr = gson.toJson(topicIds);
         String referedModel = gson.toJson(atList);
         JSONArray jsonArray = new JSONArray();
-        for (Integer val:atList) {
+        for (Integer val : atList) {
             JSONObject tagJson = new JSONObject();
-            tagJson.put("tag","MODEL_"+ val);
+            tagJson.put("tag", "MODEL_" + val);
             jsonArray.add(tagJson);
         }
         PushFilterBuilder builder = new PushFilterBuilder();
-        if(jsonArray.size() > 0){
+        if (jsonArray.size() > 0) {
             builder.addOrFilter(jsonArray);
         }
         SCHttpUtils.postWithSpaceAndChaId()
@@ -79,7 +78,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
                 .addParams("type", Constants.TYPE_STORY_SHORT + "")
-                .addParams("filter",builder.getFilter())
+                .addParams("filter", builder.getFilter())
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -176,7 +175,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         RichTextModel titleModel = new RichTextModel();
         titleModel.setImg(false);
         titleModel.setText(title);
-        mData.add(0,titleModel);
+        mData.add(0, titleModel);
 
         List<String> imgPaths = new ArrayList<>();
         for (int i = 0; i < mData.size(); i++) {
@@ -218,7 +217,6 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
         List<String> contents = new ArrayList<>();
 
-
         for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
             for (RichTextModel imgModel : mImgModels) {
@@ -228,14 +226,19 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
             }
 
             if (!model.isImg()) {
-                if (i != mData.size() - 1) {
+                if (i == mData.size() - 1) {
+                    String text = model.getText();
+                    if (!TextUtils.isEmpty(text)) {
+                        contents.add(model.getText());
+                    }
+                } else {
                     contents.add(model.getText());
                 }
             }
         }
         StringBuilder intro = new StringBuilder();
         for (int i = 0; i < contents.size(); i++) {
-            if ( i == 0 ) {
+            if (i == 0) {
                 continue;
             }
             if (i == contents.size() - 1) {

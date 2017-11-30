@@ -12,7 +12,7 @@ import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.ui.model.ResponseStoryChainBean;
 import com.shanchain.shandata.ui.model.ResponseStoryIdBean;
 import com.shanchain.shandata.ui.model.ResponseStoryListInfo;
-import com.shanchain.shandata.ui.model.SpaceInfo;
+import com.shanchain.shandata.ui.model.SpaceBriefBean;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryModel;
 import com.shanchain.shandata.ui.model.StoryModelBean;
@@ -195,10 +195,10 @@ public class RecommendPresenterImpl implements RecommendPresenter {
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = SCJsonUtils.parseData(response);
-                                List<SpaceInfo> infoList = JSONObject.parseArray(data, SpaceInfo.class);
+                                List<SpaceBriefBean> infoList = JSONObject.parseArray(data, SpaceBriefBean.class);
                                 for (int i = 0; i < datas.size(); i ++) {
                                     StoryModelInfo modelInfo = datas.get(i).getModelInfo();
-                                    for (SpaceInfo info : infoList) {
+                                    for (SpaceBriefBean info : infoList) {
                                         int spaceId = info.getSpaceId();
                                         if (modelInfo.getBean().getSpaceId() == spaceId) {
                                             modelInfo.getBean().setSpaceName(info.getName());
@@ -267,30 +267,7 @@ public class RecommendPresenterImpl implements RecommendPresenter {
 
         }
 
-      /*  for (int i = 0; i < datas.size(); i ++) {
-            StoryModelInfo modelInfo = datas.get(i).getModelInfo();
-            for (SpaceInfo info : infoList) {
-                int spaceId = info.getSpaceId();
-                if (modelInfo.getBean().getSpaceId() == spaceId) {
-                    modelInfo.getBean().setSpaceName(info.getName());
-                }
-            }
-        }*/
-
-    /*    for (int i = 0; i < datas.size(); i++) {
-            StoryBeanModel beanModel = new StoryBeanModel();
-            StoryModel storyModel = datas.get(i);
-            beanModel.setStoryModel(storyModel);
-            StoryModelInfo modelInfo = storyModel.getModelInfo();
-            StoryModelBean bean = modelInfo.getBean();
-            int type = bean.getType();
-            beanModel.setItemType(type);
-            list.add(beanModel);
-            LogUtils.i("构建数据结果 = " + beanModel);
-        }*/
-
         obtainSpaceInfo(isLast);
-        //mRecommendView.initSuccess(list, isLast);
     }
 
     @Override
