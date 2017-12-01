@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
-import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 
 /**
@@ -145,7 +144,7 @@ public class SCHttpUtils {
     public static PostFormBuilder postWithParamsForLogin(){
 
         return OkHttpUtils.post()
-                .addParams("deviceToken",CommonCacheHelper.getInstance().getCache(SCCacheUtils.getCacheUserId(),"deviceToken"))
+                .addParams("deviceToken", CommonCacheHelper.getInstance().getCache(SCCacheUtils.getCacheUserId(),"deviceToken"))
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
                 .addParams("Os","Android")              //操作系统

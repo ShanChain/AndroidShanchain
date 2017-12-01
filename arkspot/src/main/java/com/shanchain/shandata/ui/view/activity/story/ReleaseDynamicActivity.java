@@ -10,7 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -39,7 +39,8 @@ import com.shanchain.shandata.ui.model.TopicInfo;
 import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ReleaseDynamicPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
-import com.shanchain.shandata.utils.StringUtils;
+import com.shanchain.shandata.widgets.rEdit.InsertModel;
+import com.shanchain.shandata.widgets.rEdit.RichEditor;
 import com.shanchain.shandata.widgets.richEditor.RichTextEditor;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -63,7 +64,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
     @Bind(R.id.et_release_dynamic_title)
     EditText mEtReleaseDynamicTitle;
     @Bind(R.id.et_release_dynamic_content)
-    EditText mEtReleaseDynamicContent;
+    RichEditor mEtReleaseDynamicContent;
     @Bind(R.id.tv_release_long_words)
     TextView mTvReleaseLongWords;
     @Bind(R.id.shs_release_dynamic)
@@ -90,7 +91,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
      * 描述：标记是否是编辑长文状态
      */
     private boolean isEditLong;
-
+    private boolean listenerEnable = true;
     private ArrayList<String> replaceAt = new ArrayList<>();
     private ArrayList<String> replaceTopic = new ArrayList<>();
     private ReleaseDynamicPresenter mPresenter;
@@ -187,6 +188,22 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mLlReleaseFunctionCommon.setVisibility(View.GONE);
                 } else {
                     mLlReleaseFunctionCommon.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mEtReleaseDynamicContent.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
+            @Override
+            public void textChange(CharSequence s, int start, int before, int count) {
+
+                int selectionStart = mEtReleaseDynamicContent.getSelectionStart();
+                String string = s.toString();
+                String sub = string.substring(0, selectionStart);
+
+                if (sub.endsWith("@")){
+                    atContact();
+                }else if (sub.endsWith("#")){
+                    selectTopic();
                 }
             }
         });
@@ -320,8 +337,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     imgCounts = 3 - imgData.size();
                     mImagesAdapter.notifyDataSetChanged();
                 }
-
-
             }
         } else if (requestCode == REQUEST_CODE_TOPIC) {
             //话题页面返回的数据
@@ -330,48 +345,35 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 String topic = topicInfo.getTopic();
                 int topicId = topicInfo.getTopicId();
                 topicIds.add(topicId);
-                replaceTopic.add("#" + topic + "#");
 
-                String content = mEtReleaseDynamicContent.getText().toString();
-                content += "#" + topic + "#";
-
-                for (int i = 0; i < replaceTopic.size(); i++) {
-                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
+                int start = mEtReleaseDynamicContent.getSelectionStart();
+                Editable text = mEtReleaseDynamicContent.getText();
+                LogUtils.i("txt = " + text.toString());
+                String sub = text.toString().substring(0, start);
+                if (sub.endsWith("#")){
+                    text.delete(start-1,start);
                 }
-
-                for (int i = 0; i < replaceAt.size(); i++) {
-                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
-                }
-
-                mEtReleaseDynamicContent.setText(Html.fromHtml(content));
-
-                mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
+                InsertModel model = new InsertModel("#",topic,"#3bbac8");
+                mEtReleaseDynamicContent.insertSpecialStr(model);
             }
         } else if (requestCode == REQUEST_CODE_AT) {
             //@页面返回的数据
             if (data != null) {
                 ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
                 atIds = data.getIntegerArrayListExtra("moduleIds");
-                String s = " ";
-                for (int i = 0; i < contacts.size(); i++) {
-                    LogUtils.d("@的人" + contacts.get(i));
-                    s += "@" + contacts.get(i) + ", ";
-                    replaceAt.add("@" + contacts.get(i) + ", ");
+                for (int i = 0; i < contacts.size(); i ++) {
+
+                    int start = mEtReleaseDynamicContent.getSelectionStart();
+                    Editable text = mEtReleaseDynamicContent.getText();
+                    LogUtils.i("txt = " + text.toString());
+                    String sub = text.toString().substring(0, start);
+                    if (sub.endsWith("@")){
+                        text.delete(start-1,start);
+                    }
+
+                    InsertModel model = new InsertModel("@",contacts.get(i),"#3bbac8");
+                    mEtReleaseDynamicContent.insertSpecialStr(model);
                 }
-                String content = mEtReleaseDynamicContent.getText().toString();
-
-                content += s;
-
-                for (int i = 0; i < replaceAt.size(); i++) {
-                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
-                }
-
-                for (int i = 0; i < replaceTopic.size(); i++) {
-                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
-                }
-
-                mEtReleaseDynamicContent.setText(Html.fromHtml(content));
-                mEtReleaseDynamicContent.setSelection(mEtReleaseDynamicContent.getText().toString().length());
             }
         }
     }
@@ -438,6 +440,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
     //保存草稿
     private void saveDraft() {
+
 
         JSONObject object = new JSONObject();
         if (isEditLong) {

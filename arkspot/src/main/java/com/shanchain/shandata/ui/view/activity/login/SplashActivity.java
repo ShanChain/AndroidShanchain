@@ -23,7 +23,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.umeng.analytics.MobclickAgent;
 
 import okhttp3.Call;
 
@@ -39,6 +39,18 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initAPP();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void initAPP() {

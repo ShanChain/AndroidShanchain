@@ -21,4 +21,9 @@
         <attr name="android:text" />
     </declare-styleable>
 
+    <declare-styleable name="REditText">
+        <attr name="object_background_color" format="color"/>
+        <attr name="object_foreground_color" format="color"/>
+    </declare-styleable>
+
 </resources>

@@ -36,7 +36,7 @@
         android:textColorHint="@color/colorHint"
         android:textSize="@dimen/sp_16"/>
 
-    <EditText
+    <com.shanchain.shandata.widgets.rEdit.RichEditor
         android:textCursorDrawable="@null"
         android:id="@+id/et_release_dynamic_content"
         android:layout_width="match_parent"
