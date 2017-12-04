@@ -15,6 +15,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -22,6 +23,7 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
@@ -30,7 +32,6 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.data.common.base.UserType;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
@@ -41,7 +42,6 @@ import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.tencent.tauth.Tencent;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -162,11 +162,11 @@ public class LoginActivity extends BaseActivity {
                                 //code错误
                                 closeProgress();
                                 LogUtils.i("获取当前角色code错误");
-                                ToastUtils.showToast(mContext,"网络异常");
+                                ToastUtils.showToast(mContext, "网络异常");
                             }
                         } catch (Exception e) {
                             closeProgress();
-                            ToastUtils.showToast(mContext,"网络异常");
+                            ToastUtils.showToast(mContext, "网络异常");
                             LogUtils.i("获取当前角色信息数据解析错误");
                             e.printStackTrace();
                         }
@@ -245,7 +245,7 @@ public class LoginActivity extends BaseActivity {
                         closeProgress();
                         LogUtils.i("登录错误");
                         e.printStackTrace();
-                        ToastUtils.showToast(mContext,"网络错误");
+                        ToastUtils.showToast(mContext, "网络错误");
                     }
 
                     @Override
@@ -253,7 +253,7 @@ public class LoginActivity extends BaseActivity {
                         try {
                             LogUtils.d("登录返回数据 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 //登录成功
                                 String data = JSONObject.parseObject(response).getString("data");
                                 ResponseLoginBean loginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
@@ -265,19 +265,19 @@ public class LoginActivity extends BaseActivity {
 
                                 SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                 SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
-                                SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId+ "_" +token);
+                                SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
                                 checkCache();
-                            }else if (TextUtils.equals(code,NetErrCode.LOGIN_ERR_CODE)){
+                            } else if (TextUtils.equals(code, NetErrCode.LOGIN_ERR_CODE)) {
                                 closeProgress();
-                                ToastUtils.showToast(mContext,"账号或密码错误");
-                            }else {
+                                ToastUtils.showToast(mContext, "账号或密码错误");
+                            } else {
                                 closeProgress();
-                                ToastUtils.showToast(mContext,"网络错误");
+                                ToastUtils.showToast(mContext, "网络错误");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             closeProgress();
-                            ToastUtils.showToast(mContext,"网络错误");
+                            ToastUtils.showToast(mContext, "网络错误");
                         }
                     }
                 });
@@ -365,7 +365,7 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void loginFailure(Exception e) {
             closeProgress();
-            ToastUtils.showToast(mContext,"网络异常");
+            ToastUtils.showToast(mContext, "网络异常");
             LogUtils.i("还回调了登录失败");
             e.printStackTrace();
         }
@@ -397,7 +397,7 @@ public class LoginActivity extends BaseActivity {
                                  public void onError(Call call, Exception e, int id) {
                                      closeProgress();
                                      LogUtils.e("三方登录创建账号失败");
-                                     ToastUtils.showToast(mContext,"网络异常");
+                                     ToastUtils.showToast(mContext, "网络异常");
                                      e.printStackTrace();
                                  }
 
@@ -405,7 +405,7 @@ public class LoginActivity extends BaseActivity {
                                  public void onResponse(String response, int id) {
                                      try {
                                          String code = SCJsonUtils.parseCode(response);
-                                         if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                              String data = SCJsonUtils.parseData(response);
                                              ResponseLoginBean responseLoginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
                                              String token = responseLoginBean.getToken();
@@ -416,14 +416,14 @@ public class LoginActivity extends BaseActivity {
                                              SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                              SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
                                              checkCache();
-                                         }else{
+                                         } else {
                                              closeProgress();
-                                             ToastUtils.showToast(mContext,"网络异常");
+                                             ToastUtils.showToast(mContext, "网络异常");
                                          }
                                      } catch (Exception e) {
                                          closeProgress();
                                          e.printStackTrace();
-                                         ToastUtils.showToast(mContext,"网络异常");
+                                         ToastUtils.showToast(mContext, "网络异常");
                                      }
                                  }
                              }
@@ -431,7 +431,7 @@ public class LoginActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
             closeProgress();
-            ToastUtils.showToast(mContext,"网络异常");
+            ToastUtils.showToast(mContext, "网络异常");
             LogUtils.i("网络异常");
         }
     }
@@ -461,29 +461,35 @@ public class LoginActivity extends BaseActivity {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 closeProgress();
                                 final String data = JSONObject.parseObject(response).getString("data");
-                                RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
+                                RoleManager.switchRoleCacheComment(characterId, characterInfoJson, spaceId, data);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 Intent intent = new Intent(mContext, MainActivity.class);
                                 ActivityManager.getInstance().finishAllActivity();
-                                startActivity(intent);
+                                boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
+                                if (guided) {
+                                    startActivity(intent);
+                                } else {
+                                    startActivity(new Intent(mContext, GuideActivity.class));
+                                }
+
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
                                 ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        hxLogin(userName,pwd);
+                                        hxLogin(userName, pwd);
                                     }
                                 });
                             } else {
                                 //code错误
                                 closeProgress();
-                                ToastUtils.showToast(mContext,"网络错误");
+                                ToastUtils.showToast(mContext, "网络错误");
                             }
                         } catch (IllegalArgumentException e) {
                             closeProgress();
                             LogUtils.i("解析数据错误");
                             e.printStackTrace();
-                            ToastUtils.showToast(mContext,"网络异常");
+                            ToastUtils.showToast(mContext, "网络异常");
                         }
                     }
                 });
@@ -499,13 +505,13 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void run() {
                         long endTime = System.currentTimeMillis();
-                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime);
 
                         LogUtils.i("耗时 = " + (endTime - startTime));
                         EMClient.getInstance().chatManager().loadAllConversations();
                         EMClient.getInstance().groupManager().loadAllGroups();
                         //RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
-                        RoleManager.switchRoleCacheHx(userName,pwd);
+                        RoleManager.switchRoleCacheHx(userName, pwd);
                         //ToastUtils.showToast(mContext, "欢迎来到千千世界");
 
                     }
@@ -516,7 +522,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onError(int i, String s) {
                 //closeProgress();
-                ToastUtils.showToast(mContext,"网络异常");
+                ToastUtils.showToast(mContext, "网络异常");
                 LogUtils.i("登录环信账号失败 = " + s + "code" + i);
                 if (i == 200) {
 
@@ -525,7 +531,7 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onProgress(int i, String s) {
-                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s );
+                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s);
             }
         });
 
@@ -534,7 +540,7 @@ public class LoginActivity extends BaseActivity {
     public void showProgress() {
         mDialog = new ProgressDialog(this);
         mDialog.setMax(100);
-        mDialog.setMessage("登录中。。。");
+        mDialog.setMessage("登录中。。");
         mDialog.setCancelable(false);
         mDialog.show();
     }

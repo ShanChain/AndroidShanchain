@@ -94,4 +94,5 @@ public interface Constants {
         int SPAN_TYPE_AT = 1;
         int SPAN_TYPE_TOPIC = 2;
 
+        String SP_KEY_GUIDE = "sp_key_guide";
 }
