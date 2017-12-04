@@ -128,10 +128,6 @@ public class AppReactPackage extends LazyReactPackage {
         return nativeModules;
     }
 
-    @Override
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
-        return Collections.emptyList();
-    }
 
 
     @Override
