@@ -83,6 +83,8 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
+        String name = getIntent().getStringExtra("name");
+        mEtAddTopicNick.setText(name);
         initToolBar();
         initRecyclerView();
         initData();
@@ -276,18 +278,8 @@ public class AddTopicActivity extends BaseActivity implements ArthurToolBar.OnLe
             return;
         }
 
-        if (TextUtils.isEmpty(mIntro)) {
-            ToastUtils.showToast(mContext, "简单描述下你创建的话题吧~");
-            return;
-        }
-
         if (TextUtils.isEmpty(mImgPath)) {
-            ToastUtils.showToast(mContext, "给话题添加一张背景图吧~");
-            return;
-        }
-
-        if (selectedData.size() == 0) {
-            ToastUtils.showToast(mContext, "给你创建的话题加上标签吧~");
+            ToastUtils.showToast(mContext, "给话题添加一张封面图吧~");
             return;
         }
 

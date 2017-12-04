@@ -18,12 +18,14 @@ import com.shanchain.shandata.adapter.PraisedAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.ContactBean;
 import com.shanchain.shandata.ui.model.StoryContentBean;
+import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.PraisedPresenter;
 import com.shanchain.shandata.ui.presenter.impl.PraisedPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.view.PraisedView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
+import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
@@ -168,12 +170,15 @@ public class PraisedActivity extends BaseActivity implements ArthurToolBar.OnLef
      */
     private void clickComment(int position) {
         StoryModelBean bean = getStoryModelBean(position);
-        if (TextUtils.equals(bean.getSpaceId() + "", SCCacheUtils.getCacheSpaceId()+"")){
+        int type = bean.getType();
+        if (type == StoryInfo.type1){   //故事
             Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
             intent.putExtra("story", bean);
             startActivity(intent);
-        }else {
-            ToastUtils.showToast(mContext,"不同世界不能进行转发操作");
+        }else if (type == StoryInfo.type2){ //小说
+            Intent intent = new Intent(mActivity, NovelDetailsActivity.class);
+            intent.putExtra("story", bean);
+            startActivity(intent);
         }
     }
 

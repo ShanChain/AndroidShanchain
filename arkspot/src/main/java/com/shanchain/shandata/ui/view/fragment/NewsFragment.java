@@ -91,6 +91,9 @@ public class NewsFragment extends BaseFragment implements NewsView {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
                 //showDialog(position);
+
+
+
                 return true;
             }
         });

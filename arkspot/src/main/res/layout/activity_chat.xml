@@ -170,6 +170,7 @@
                     android:paddingLeft="@dimen/dimens_15dp"
                     android:paddingRight="@dimen/dimens_15dp"
                     android:paddingTop="8dp"
+                    android:maxLength="2000"
                     android:textColor="@color/colorTextDefault"
                     android:textColorHint="@color/colorHint"
                     android:textCursorDrawable="@null"

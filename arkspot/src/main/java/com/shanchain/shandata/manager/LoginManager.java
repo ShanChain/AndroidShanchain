@@ -1,19 +1,22 @@
 package com.shanchain.shandata.manager;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.base.UserType;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.base.UserType;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,7 +29,6 @@ import me.shaohui.shareutil.login.result.BaseToken;
 import me.shaohui.shareutil.login.result.BaseUser;
 import okhttp3.Call;
 
-import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 
 /**
@@ -36,8 +38,9 @@ import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 public class LoginManager {
     private static LoginManager instance;
     private ProgressDialog mDialog;
-
-    public synchronized static LoginManager getInstance() {
+    private static Context mContext;
+    public synchronized static LoginManager getInstance(Context context) {
+        mContext = context;
         if (null == instance) {
             instance = new LoginManager();
         }
@@ -139,7 +142,15 @@ public class LoginManager {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtils.i("绑定成功 = " + response);
+                        LogUtils.i("绑定结果 = " + response);
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                            ToastUtils.showToast(mContext,"绑定成功");
+                        }else if (TextUtils.equals(code,NetErrCode.COMMON_ERR_CODE)){
+                            ToastUtils.showToast(mContext,"此账号已被使用");
+                        }
+
+
                     }
                 });
     }

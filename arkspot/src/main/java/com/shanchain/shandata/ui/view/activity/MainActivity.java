@@ -57,7 +57,6 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -80,7 +79,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     @Bind(R.id.bnb)
     BottomNavigationBar mBnb;
     private int mFragmentId;
-    private String[] navigationBarTitles = {"故事", "会话", "广场", "我的"};
+    private String[] navigationBarTitles = {"故事", "对话", "广场", "我的"};
     private BadgeItem mStoryBadge;
     private BadgeItem mNewsBadge;
     private BadgeItem mSquareBadge;

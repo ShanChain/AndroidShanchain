@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpCallBack;
@@ -21,10 +22,11 @@ import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
 import com.shanchain.shandata.ui.model.RichTextModel;
+import com.shanchain.shandata.ui.model.SpanBean;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.shandata.widgets.rEdit.InsertModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,39 +49,62 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
     }
 
     @Override
-    public void releaseDynamic(String word, List<String> imgUrls, String tailId, List<Integer> atList, List<Integer> topicIds) {
+    public void releaseDynamic(String word, List<String> imgUrls, String tailId, List<InsertModel> richInsertList) {
+        List<Integer> topicIds = new ArrayList<>();
+        List<Integer> atList = new ArrayList<>();
+        List<SpanBean> spanBeanList = new ArrayList<>();
+        for (InsertModel model : richInsertList) {
+            SpanBean spanBean = new SpanBean();
+            String insertContent = model.getInsertContent();
+            String insertRule = model.getInsertRule();
+            int insertId = model.getInsertId();
+            spanBean.setStr(insertContent);
+            spanBean.setSpaceId(Integer.parseInt(SCCacheUtils.getCacheSpaceId()));
+            if (TextUtils.equals(insertRule, "@")) {
+                atList.add(insertId);
+                spanBean.setType(Constants.SPAN_TYPE_AT);
+            } else if (TextUtils.equals(insertRule, "#")) {
+                topicIds.add(insertId);
+                spanBean.setType(Constants.SPAN_TYPE_TOPIC);
+            }
+            spanBean.setBeanId(insertId);
+            spanBeanList.add(spanBean);
+        }
+
 
         //{"content":"","imgs":["",""]}
         ReleaseContentInfo releaseContentInfo = new ReleaseContentInfo();
         releaseContentInfo.setContent(word);
-
         releaseContentInfo.setImgs(imgUrls);
+        releaseContentInfo.setSpanBeanList(spanBeanList);
 
         String content = new Gson().toJson(releaseContentInfo);
-
+        LogUtils.i("content = " + content);
         ReleaseStoryContentInfo contentInfo = new ReleaseStoryContentInfo();
         contentInfo.setIntro(content);
         contentInfo.setTailId(tailId);
         Gson gson = new Gson();
         String dataString = gson.toJson(contentInfo);
         String topicArr = gson.toJson(topicIds);
-        String referedModel = gson.toJson(atList);
         JSONArray jsonArray = new JSONArray();
-        for (Integer val:atList) {
+        for (Integer val : atList) {
             JSONObject tagJson = new JSONObject();
-            tagJson.put("tag","MODEL_"+ val);
+            tagJson.put("tag", "MODEL_" + val);
             jsonArray.add(tagJson);
         }
         PushFilterBuilder builder = new PushFilterBuilder();
-        if(jsonArray.size() > 0){
+        if (jsonArray.size() > 0) {
             builder.addOrFilter(jsonArray);
         }
+
+        LogUtils.i("topicId = " + topicArr + "; \n atId = " + builder.getFilter());
+
         SCHttpUtils.postWithSpaceAndChaId()
                 .url(HttpApi.STORY_ADD)
                 .addParams("dataString", dataString)
                 .addParams("topicIds", topicArr)
                 .addParams("type", Constants.TYPE_STORY_SHORT + "")
-                .addParams("filter",builder.getFilter())
+                .addParams("filter", builder.getFilter())
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -105,7 +130,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
     }
 
     @Override
-    public void upLoadImgs(final Context context, final String word, final List<String> imgPaths, final String tailId, final List<Integer> atList, final List<Integer> topics) {
+    public void upLoadImgs(final Context context, final String word, final List<String> imgPaths, final String tailId, final List<InsertModel> richInsertList) {
 
         final List<String> compressImages = compressImages(context, imgPaths);
 
@@ -153,7 +178,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
                                     LogUtils.d("图片urls = " + urls.toString());
 
-                                    releaseDynamic(word, urls, tailId, atList, topics);
+                                    releaseDynamic(word, urls, tailId, richInsertList);
                                 } else {
                                     LogUtils.d("上传阿里云失败");
                                     Exception e = new Exception("上传阿里云失败");
@@ -176,7 +201,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         RichTextModel titleModel = new RichTextModel();
         titleModel.setImg(false);
         titleModel.setText(title);
-        mData.add(0,titleModel);
+        mData.add(0, titleModel);
 
         List<String> imgPaths = new ArrayList<>();
         for (int i = 0; i < mData.size(); i++) {
@@ -218,7 +243,6 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
         List<String> contents = new ArrayList<>();
 
-
         for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
             for (RichTextModel imgModel : mImgModels) {
@@ -228,14 +252,19 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
             }
 
             if (!model.isImg()) {
-                if (i != mData.size() - 1) {
+                if (i == mData.size() - 1) {
+                    String text = model.getText();
+                    if (!TextUtils.isEmpty(text)) {
+                        contents.add(model.getText());
+                    }
+                } else {
                     contents.add(model.getText());
                 }
             }
         }
         StringBuilder intro = new StringBuilder();
         for (int i = 0; i < contents.size(); i++) {
-            if ( i == 0 ) {
+            if (i == 0) {
                 continue;
             }
             if (i == contents.size() - 1) {

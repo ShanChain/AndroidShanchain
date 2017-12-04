@@ -124,7 +124,7 @@ public class ContactAdapter extends BaseExpandableListAdapter {
             holder.tvFocus.setCompoundDrawablePadding(DensityUtils.dip2px(parent.getContext(), 5));
             holder.tvFocus.setText("加关注");
             holder.tvFocus.setTextColor(parent.getContext().getResources().getColor(R.color.colorActive));
-        } else if (this.parent.get(groupPosition).equals("对话场景")) {
+        } else if (this.parent.get(groupPosition).equals("群组")) {
             holder.tvFocus.setVisibility(View.GONE);
         }
 

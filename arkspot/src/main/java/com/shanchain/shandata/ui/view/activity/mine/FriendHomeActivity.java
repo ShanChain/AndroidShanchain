@@ -314,8 +314,8 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
                 Intent intentType3 = new Intent(mContext, TopicDetailsActivity.class);
                 intentType3.putExtra("from", 1);
                 List<StoryBeanModel> data = mAdapter.getData();
-                StoryBeanModel beanModelTopic = data.get(position);
-                intentType3.putExtra("topic", beanModelTopic);
+                String topicId = data.get(position).getStoryModel().getModelInfo().getBean().getTopicModel().getTopicId()+"";
+                intentType3.putExtra("topicId", topicId);
                 startActivity(intentType3);
                 break;
             default:

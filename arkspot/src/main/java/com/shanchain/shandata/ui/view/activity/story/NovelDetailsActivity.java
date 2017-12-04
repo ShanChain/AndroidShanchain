@@ -142,6 +142,15 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
                         TextView tvLike= (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
                         tvLike.setEnabled(false);
                         break;
+                    case R.id.iv_item_dynamic_comment_avatar:
+                        BdCommentBean bean = mDynamicCommentAdapter.getData().get(position);
+                        int characterId = bean.getCharacterId();
+                        Intent intent = new Intent(mContext,FriendHomeActivity.class);
+                        intent.putExtra("characterId",characterId);
+                        startActivity(intent);
+                        break;
+                    default:
+                        break;
                 }
             }
         });

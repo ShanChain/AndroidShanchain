@@ -15,9 +15,9 @@
         android:gravity="center"
         android:text="232"
         android:drawableLeft="@mipmap/abs_home_btn_forwarding_default"
-        android:layout_marginRight="@dimen/dimens_26dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
 
     <TextView
         android:id="@+id/tv_item_story_comment"
@@ -27,9 +27,9 @@
         android:gravity="center"
         android:text="232"
         android:drawableLeft="@mipmap/abs_home_btn_comment_default"
-        android:layout_marginRight="@dimen/dimens_26dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
 
     <TextView
         android:id="@+id/tv_item_story_like"
@@ -39,8 +39,8 @@
         android:gravity="center"
         android:text="232"
         android:drawableLeft="@mipmap/abs_home_btn_thumbsup_selscted"
-        android:layout_marginRight="@dimen/dimens_26dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
 
 </LinearLayout>

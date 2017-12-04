@@ -41,7 +41,6 @@ import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +127,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                             }
                             mAddRoleAdapter.notifyDataSetChanged();
                         } else {
-                            ToastUtils.showToast(mContext, "获取模型标签失败！");
+                            //ToastUtils.showToast(mContext, "");
                         }
                     }
                 });
@@ -289,7 +288,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
         }
 
         if (TextUtils.isEmpty(mImgPath)){
-            ToastUtils.showToast(mContext,"快去给你创造的世界添加一张背景图片吧~");
+            ToastUtils.showToast(mContext,"快去给你创造的世界添加一张封面图吧~");
             return;
         }
 
@@ -449,6 +448,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                                         ToastUtils.showToast(mContext,"创建世界失败");
                                     }else {
                                         int spaceId = JSONObject.parseObject(resData).getIntValue("spaceId");
+                                        ToastUtils.showToast(mContext,"哇！现在你有了一个新世界");
                                         collectSpace(spaceId);
                                         finish();
                                     }

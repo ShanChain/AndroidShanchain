@@ -1,6 +1,7 @@
 package com.shanchain.shandata.ui.view.activity.story.stroyView;
 
 
+import com.shanchain.shandata.ui.model.ResponseTopicContentBean;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public interface TopicDetailView {
 
+    void initTopicInfo(ResponseTopicContentBean topicInfo);
 
     void initSuccess(List<StoryBeanModel> list, boolean isLast);
 

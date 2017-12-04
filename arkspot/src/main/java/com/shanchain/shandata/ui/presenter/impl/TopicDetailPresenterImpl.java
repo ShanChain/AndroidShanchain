@@ -1,23 +1,24 @@
 package com.shanchain.shandata.ui.presenter.impl;
 
+import android.text.TextUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.ui.model.ResponseStoryChainBean;
 import com.shanchain.shandata.ui.model.ResponseStoryIdBean;
 import com.shanchain.shandata.ui.model.ResponseStoryListInfo;
+import com.shanchain.shandata.ui.model.ResponseTopicContentBean;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryModel;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.TopicDetailPresenter;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.TopicDetailView;
-import android.text.TextUtils;
-
-import com.alibaba.fastjson.JSONObject;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +34,43 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
 
     TopicDetailView mDetailView;
     List<StoryModel> datas = new ArrayList<>();
+
     public TopicDetailPresenterImpl(TopicDetailView detailView) {
         mDetailView = detailView;
     }
 
     @Override
-    public void initTopicInfo(String topicId) {
+    public void initTopicInfo(final String topicId) {
+        SCHttpUtils.post()
+                .url(HttpApi.TOPIC_QUERY_ID)
+                .addParams("topicId", topicId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e("获取话题信息失败");
+                        e.printStackTrace();
+                        mDetailView.initTopicInfo(null);
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取到话题数据 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                String data = SCJsonUtils.parseData(response);
+                                ResponseTopicContentBean topicInfo = JSONObject.parseObject(data, ResponseTopicContentBean.class);
+                                mDetailView.initTopicInfo(topicInfo);
+                            } else {
+                                mDetailView.initTopicInfo(null);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mDetailView.initTopicInfo(null);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -63,13 +94,13 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                         try {
                             LogUtils.i("获取到话题故事列表 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 String content = JSONObject.parseObject(data).getString("content");
                                 Boolean last = JSONObject.parseObject(data).getBoolean("last");
-                                List<ResponseStoryIdBean> storyBeanList = JSONObject.parseArray(content,ResponseStoryIdBean.class);
-                                if (storyBeanList == null || storyBeanList.size() == 0){
-                                    mDetailView.initSuccess(null,last);
+                                List<ResponseStoryIdBean> storyBeanList = JSONObject.parseArray(content, ResponseStoryIdBean.class);
+                                if (storyBeanList == null || storyBeanList.size() == 0) {
+                                    mDetailView.initSuccess(null, last);
                                     return;
                                 }
 
@@ -107,18 +138,17 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                                     datas.add(storyModel);
                                 }
                                 LogUtils.i("datas长度 = " + datas.size());
-                                obtainStoryList(ids,last);
-                            }else {
-                                mDetailView.initSuccess(null,false);
+                                obtainStoryList(ids, last);
+                            } else {
+                                mDetailView.initSuccess(null, false);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mDetailView.initSuccess(null,false);
+                            mDetailView.initSuccess(null, false);
                         }
                     }
                 });
     }
-
 
 
     private void obtainStoryList(List<String> list, final boolean isLast) {
@@ -132,7 +162,7 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        mDetailView.initSuccess(null,isLast);
+                        mDetailView.initSuccess(null, isLast);
                         LogUtils.e("获取故事详情列表失败");
                         e.printStackTrace();
                     }
@@ -143,25 +173,25 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                             LogUtils.i("故事列表数据 = " + response);
                             ResponseStoryListInfo storyListInfo = JSONObject.parseObject(response, ResponseStoryListInfo.class);
                             if (!TextUtils.equals(storyListInfo.getCode(), NetErrCode.COMMON_SUC_CODE)) {
-                                mDetailView.initSuccess(null,isLast);
+                                mDetailView.initSuccess(null, isLast);
                                 return;
                             }
                             List<StoryModelBean> data = storyListInfo.getData();
-                            if (data != null && data.size() >0) {
-                                builderData(data,isLast);
-                            }else {
-                                mDetailView.initSuccess(null,isLast);
+                            if (data != null && data.size() > 0) {
+                                builderData(data, isLast);
+                            } else {
+                                mDetailView.initSuccess(null, isLast);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mDetailView.initSuccess(null,isLast);
+                            mDetailView.initSuccess(null, isLast);
                         }
                     }
                 });
     }
 
 
-    private void builderData(List<StoryModelBean> data,boolean isLast) {
+    private void builderData(List<StoryModelBean> data, boolean isLast) {
         List<StoryBeanModel> list = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
             StoryModel storyModel = datas.get(i);
@@ -175,16 +205,16 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                 }
             }
             List<StoryModelInfo> storyChain = storyModel.getStoryChain();
-            if (storyChain!=null && storyChain.size()>0){
+            if (storyChain != null && storyChain.size() > 0) {
                 LogUtils.i("构建数据时获取的楼层数 = " + storyChain.size());
-                for (int j = 0 ; j < storyChain.size();j ++){
+                for (int j = 0; j < storyChain.size(); j++) {
                     StoryModelInfo storyModelInfo = storyChain.get(j);
                     String storyId1 = storyModelInfo.getStoryId();
                     LogUtils.i("楼层中的故事id = " + storyId1);
-                    for (StoryModelBean bean : data){
+                    for (StoryModelBean bean : data) {
                         String detailId = bean.getDetailId();
                         LogUtils.i("所有故事表中的id = " + detailId);
-                        if (TextUtils.equals(storyId1,detailId)){
+                        if (TextUtils.equals(storyId1, detailId)) {
                             LogUtils.i("内层添加数据 j = " + j);
                             storyModelInfo.setBean(bean);
                         }
@@ -204,36 +234,36 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
             list.add(beanModel);
             LogUtils.i("构建数据结果 = " + beanModel);
         }
-        mDetailView.initSuccess(list,isLast);
+        mDetailView.initSuccess(list, isLast);
     }
 
     @Override
     public void loadMore(String topicId, int page, int size) {
-        initStoryInfo(topicId,page,size);
+        initStoryInfo(topicId, page, size);
     }
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
         SCHttpUtils.postWithChaId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
-                .addParams("storyId",storyId)
+                .addParams("storyId", storyId)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞失败");
                         e.printStackTrace();
-                        mDetailView.supportCancelSuccess(false,position);
+                        mDetailView.supportCancelSuccess(false, position);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("取消点赞成功 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            mDetailView.supportCancelSuccess(true,position);
-                        }else {
-                            mDetailView.supportCancelSuccess(false,position);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mDetailView.supportCancelSuccess(true, position);
+                        } else {
+                            mDetailView.supportCancelSuccess(false, position);
                         }
                     }
                 });
@@ -250,7 +280,7 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
                         e.printStackTrace();
-                        mDetailView.supportSuccess(false,position);
+                        mDetailView.supportSuccess(false, position);
                     }
 
                     @Override
@@ -258,10 +288,10 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
                         LogUtils.i("点赞结果 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
 
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                            mDetailView.supportSuccess(true,position);
-                        }else {
-                            mDetailView.supportSuccess(false,position);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mDetailView.supportSuccess(true, position);
+                        } else {
+                            mDetailView.supportSuccess(false, position);
                         }
                     }
                 });

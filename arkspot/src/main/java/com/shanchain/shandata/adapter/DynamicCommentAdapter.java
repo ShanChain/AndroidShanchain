@@ -34,7 +34,8 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
 
         helper.setText(R.id.tv_item_dynamic_comment, item.getCommentBean().getContent());
         helper.setText(R.id.tv_item_dynamic_comment_time, DateUtils.formatFriendly(new Date(item.getCommentBean().getCreateTime())));
-        helper.addOnClickListener(R.id.tv_item_comment_like);
+        helper.addOnClickListener(R.id.tv_item_comment_like)
+        .addOnClickListener(R.id.iv_item_dynamic_comment_avatar);
         helper.setText(R.id.tv_item_dynamic_comment_name,item.getContactBean().getName());
         TextView tvLike = helper.getView(R.id.tv_item_comment_like);
         tvLike.setText("" + item.getCommentBean().getSupportCount());

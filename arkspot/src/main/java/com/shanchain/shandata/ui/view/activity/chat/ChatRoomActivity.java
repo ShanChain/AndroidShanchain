@@ -387,7 +387,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         mChatRoomMsgAdapter.setOnBubbleClickListener(new ChatRoomMsgAdapter.OnBubbleClickListener() {
             @Override
             public void onBubbleClick(View v, int position) {
-                ToastUtils.showToast(ChatRoomActivity.this, "点击了 " + msgInfoList.get(position).getEMMessage().getBody().toString());
+
             }
         });
 

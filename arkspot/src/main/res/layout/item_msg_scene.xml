@@ -22,7 +22,6 @@
             android:layout_marginBottom="8dp"
             android:textSize="14sp"
             android:textColor="@color/colorWhite"
-            android:text="公告"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -30,7 +29,6 @@
             android:id="@+id/tv_item_msg_scene_content"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/colorWhite"
-            android:text="【版规】请仔细阅读一下说明：1严禁崩皮。不要发布与人 物不相符的言论，违者重罚。2.严禁干嘛干嘛干嘛干嘛的 爱干嘛干嘛！"
             android:layout_marginLeft="@dimen/dimens_15dp"
             android:layout_marginRight="@dimen/dimens_15dp"
             android:layout_marginBottom="@dimen/dimens_15dp"

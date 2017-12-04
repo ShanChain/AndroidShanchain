@@ -37,6 +37,9 @@
             android:name="UMENG_MESSAGE_SECRET"
             android:value="dfb65b759f7998b0b69b644d17303224">
         </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Channel ID"/>
         <!-- 友盟消息处理服务 -->
         <!-- <service android:name=".service.MyPushIntentService" /> -->
 
@@ -235,6 +238,8 @@
             <meta-data
                 android:name="page_flag"
                 android:value="page_my_story"/>
+        </activity>
+        <activity android:name=".ui.view.activity.chat.ChatAtActivity">
         </activity>
     </application>
 

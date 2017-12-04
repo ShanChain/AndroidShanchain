@@ -211,6 +211,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             case R.id.tv_item_story_floors:
                 expendFloors(position);
                 break;
+            default:
+                break;
         }
     }
 
@@ -337,9 +339,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                 intentType3.putExtra("from", 1);
                 List<StoryBeanModel> data = mAdapter.getData();
-
-                StoryBeanModel beanModelTopic = data.get(position);
-                intentType3.putExtra("topic", beanModelTopic);
+                String  topicId = data.get(position).getStoryModel().getModelInfo().getBean().getTopicModel().getTopicId()+"";
+                intentType3.putExtra("topicId", topicId);
                 startActivity(intentType3);
                 break;
             default:

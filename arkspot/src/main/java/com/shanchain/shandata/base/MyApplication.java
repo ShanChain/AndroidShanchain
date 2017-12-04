@@ -136,7 +136,7 @@ public class MyApplication extends BaseApplication {
 
     private void initInstance(){
         CharacterManager.getInstance();
-        LoginManager.getInstance();
+        LoginManager.getInstance(this);
     }
 
     private void initSCCache() {

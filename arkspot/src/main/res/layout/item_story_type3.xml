@@ -15,7 +15,10 @@
         android:textColor="@color/colorTextDefault"
         android:ellipsize="end"
         android:maxLines="7"
+        android:textColorHighlight="@color/colorDialogBtn"
         android:layout_width="match_parent"
+        android:textColorLink="@color/colorActive"
+        android:linksClickable="true"
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginRight="@dimen/dimens_15dp"
         android:text="#太空军纪念建军节#\n踏进太空总部。"
@@ -53,7 +56,7 @@
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/colorActive"
-        android:text="展开余下几层楼"
+        android:text="展开全部楼层"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

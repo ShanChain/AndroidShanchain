@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.widgets.listener.SCTextWatcher;
 
 /**
  * Created by zhoujian on 2017/11/28.
@@ -49,6 +50,16 @@ public class CommentDialog extends DialogFragment implements View.OnClickListene
         mTvOutSide = (TextView) view.findViewById(R.id.tv_pop_comment_outside);
         mTvCommentSend.setOnClickListener(this);
         mTvOutSide.setOnClickListener(this);
+        mEtInput.addTextChangedListener(new SCTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (TextUtils.isEmpty(s)){
+                    mTvCommentSend.setEnabled(false);
+                }else {
+                    mTvCommentSend.setEnabled(true);
+                }
+            }
+        });
     }
 
     @Override

@@ -36,7 +36,8 @@ public class CommonCacheHelper {
 
     public String getCache(String userId , String key){
 
-        if (TextUtils.isEmpty(key)){
+
+        if (TextUtils.isEmpty(key) || TextUtils.isEmpty(userId)){
             return "";
         }
         String value =  mMemoryCache.get(userId + key);
@@ -106,8 +107,8 @@ public class CommonCacheHelper {
     }
 
     public void setCache(String userId ,String key ,String value){
-        if (TextUtils.isEmpty(key)){
-                return;
+        if (TextUtils.isEmpty(key) || TextUtils.isEmpty(userId)){
+            return ;
         }
         JSONObject object = new JSONObject();
         try {

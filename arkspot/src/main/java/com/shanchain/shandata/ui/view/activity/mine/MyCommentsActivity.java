@@ -252,8 +252,6 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                             if (mSrlMyComments != null) {
                                 mSrlMyComments.setRefreshing(false);
                             }
-
-
                         }else{
                         
                         }
