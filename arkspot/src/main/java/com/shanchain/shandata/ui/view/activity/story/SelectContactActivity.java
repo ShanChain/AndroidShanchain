@@ -1,6 +1,7 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -23,6 +24,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SelectContactAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.AtBean;
 import com.shanchain.shandata.ui.model.BdAtContactInfo;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.ContactInfo;
@@ -321,12 +323,16 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
     public void onRightClick(View v) {
         if (mIsAt) {
             ArrayList<Integer> moduleIds = new ArrayList<>();
+            ArrayList<AtBean> list = new ArrayList<>();
             for (int i = 0; i < show.size(); i++) {
                 BdAtContactInfo bdAtContactInfo = show.get(i);
                 if (bdAtContactInfo.isSelected()) {
-                    selected.add(show.get(i).getContactInfo().getName());
+                    String name = bdAtContactInfo.getContactInfo().getName();
+                    selected.add(name);
                     int moduleId = bdAtContactInfo.getContactInfo().getModuleId();
                     moduleIds.add(moduleId);
+                    AtBean bean = new AtBean(name,moduleId);
+                    list.add(bean);
                 }
             }
 
@@ -336,6 +342,9 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra("contacts", selected);
                 intent.putIntegerArrayListExtra("moduleIds",  moduleIds);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("atBeans",list);
+                intent.putExtras(bundle);
                 setResult(RESULT_CODE_CONTACTS, intent);
                 finish();
             }

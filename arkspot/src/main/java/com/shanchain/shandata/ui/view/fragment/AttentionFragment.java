@@ -129,8 +129,8 @@ public class AttentionFragment extends BaseFragment implements SwipeRefreshLayou
                         //类型3的条目点击事件    话题
                         Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                         intentType3.putExtra("from", 1);
-                        StoryBeanModel beanModelTopic = mAdapter.getData().get(position);
-                        intentType3.putExtra("topic", beanModelTopic);
+                        String topicId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getTopicModel().getTopicId()+"";
+                        intentType3.putExtra("topic", topicId);
                         startActivity(intentType3);
                         break;
                     default:

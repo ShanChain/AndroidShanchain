@@ -9,11 +9,20 @@ public class InsertModel {
     private String insertRule;
     private String insertContent;
     private String insertColor;
+    private int insertId;
 
-    public InsertModel(String insertRule, String insertContent, String insertColor) {
+    public InsertModel(String insertRule, String insertContent, String insertColor, int insertId) {
         this.insertRule = insertRule;
         this.insertContent = insertContent;
         this.insertColor = insertColor;
+        this.insertId = insertId;
+    }
+    public int getInsertId() {
+        return insertId;
+    }
+
+    public void setInsertId(int insertId) {
+        this.insertId = insertId;
     }
 
     public String getInsertRule() {

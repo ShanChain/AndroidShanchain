@@ -10,6 +10,15 @@ public class ReleaseContentInfo {
 
     private String content;
     private List<String> imgs;
+    private List<SpanBean> spanBeanList;
+
+    public List<SpanBean> getSpanBeanList() {
+        return spanBeanList;
+    }
+
+    public void setSpanBeanList(List<SpanBean> spanBeanList) {
+        this.spanBeanList = spanBeanList;
+    }
 
     public String getContent() {
         return content;

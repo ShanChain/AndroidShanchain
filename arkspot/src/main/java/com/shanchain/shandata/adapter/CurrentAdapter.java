@@ -1,7 +1,11 @@
 package com.shanchain.shandata.adapter;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,19 +16,29 @@ import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jaeger.ninegridimageview.NineGridImageView;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.ui.model.RNDetailExt;
+import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
+import com.shanchain.shandata.ui.model.SpanBean;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModel;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
+import com.shanchain.shandata.utils.ClickableSpanNoUnderline;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.SCLinkMovementMethod;
 import com.shanchain.shandata.widgets.other.AutoHeightListView;
 
 import java.util.ArrayList;
@@ -54,7 +68,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
     @Override
     protected void convert(BaseViewHolder holder, StoryBeanModel item) {
         StoryModel storyModel = item.getStoryModel();
-        StoryModelBean bean = storyModel.getModelInfo().getBean();
+        final StoryModelBean bean = storyModel.getModelInfo().getBean();
         String characterImg = bean.getCharacterImg();
         String characterName = bean.getCharacterName();
         boolean beFav = bean.isBeFav();
@@ -67,22 +81,22 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
         holder.setText(R.id.tv_item_story_time, time);
         holder.setText(R.id.tv_item_story_comment, bean.getCommendCount() + "");
         holder.setText(R.id.tv_item_story_like, bean.getSupportCount() + "");
-        if (TextUtils.equals(mCacheSpaceId,bean.getSpaceId()+"")){
-            holder.setVisible(R.id.tv_item_story_from,false);
-        }else {
-            holder.setVisible(R.id.tv_item_story_from,true);
-            holder.setText(R.id.tv_item_story_from,"来自"+bean.getSpaceName());
+        if (TextUtils.equals(mCacheSpaceId, bean.getSpaceId() + "")) {
+            holder.setVisible(R.id.tv_item_story_from, false);
+        } else {
+            holder.setVisible(R.id.tv_item_story_from, true);
+            holder.setText(R.id.tv_item_story_from, "来自" + bean.getSpaceName());
         }
         TextView tvLike = holder.getView(R.id.tv_item_story_like);
 
-        if (beFav){
+        if (beFav) {
             mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
-        }else {
+        } else {
             mDrawable = mContext.getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
         }
 
-        mDrawable.setBounds(0,0,mDrawable.getMinimumWidth(),mDrawable.getMinimumHeight());
-        tvLike.setCompoundDrawables(mDrawable,null,null,null);
+        mDrawable.setBounds(0, 0, mDrawable.getMinimumWidth(), mDrawable.getMinimumHeight());
+        tvLike.setCompoundDrawables(mDrawable, null, null, null);
         tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 10));
 
         holder.addOnClickListener(R.id.iv_item_story_avatar)
@@ -99,9 +113,12 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 List<String> imgs = new ArrayList<>();
                 String intro = bean.getIntro();
                 LogUtils.d("内容信息 = " + intro);
+                List<SpanBean> spanBeanList = null;
                 if (intro.contains("content")) {
-                    ReleaseContentInfo contentInfo = JSONObject.parseObject(intro,ReleaseContentInfo.class);
+                    ReleaseContentInfo contentInfo = JSONObject.parseObject(intro, ReleaseContentInfo.class);
                     content = contentInfo.getContent();
+                    spanBeanList = contentInfo.getSpanBeanList();
+                    //span处理
                     imgs = contentInfo.getImgs();
                 } else {
                     content = intro;
@@ -127,7 +144,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(mContext, DynamicDetailsActivity.class);
                             StoryModelBean storyModelBean = storyChain.get(position).getBean();
-                            intent.putExtra("story",storyModelBean);
+                            intent.putExtra("story", storyModelBean);
                             mContext.startActivity(intent);
                         }
                     });
@@ -145,11 +162,76 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                     nineGridImageView.setImagesData(imgs);
                 }
 
-                holder.setText(R.id.tv_item_story_content, content);
                 holder.setText(R.id.tv_item_story_forwarding, bean.getTranspond() + "");
+
+                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(content);
+
+                if (spanBeanList != null) {
+                    for (int i = 0; i < spanBeanList.size(); i++) {
+                        ClickableSpanNoUnderline clickSpan = new ClickableSpanNoUnderline(Color.parseColor("#3bbac8"), new ClickableSpanNoUnderline.OnClickListener() {
+                            @Override
+                            public void onClick(View widget, ClickableSpanNoUnderline span) {
+                                //ToastUtils.showToast(mContext, span.getClickData().getStr());
+                                SpanBean clickData = span.getClickData();
+                                if (clickData.getType() == Constants.SPAN_TYPE_AT) {
+                                    Bundle bundle = new Bundle();
+                                    RNDetailExt detailExt = new RNDetailExt();
+                                    RNGDataBean gDataBean = new RNGDataBean();
+                                    String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+                                    String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
+                                    String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
+                                    String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
+                                    gDataBean.setCharacterId(characterId);
+                                    gDataBean.setSpaceId(spaceId);
+                                    gDataBean.setToken(token);
+                                    gDataBean.setUserId(uId);
+                                    detailExt.setgData(gDataBean);
+                                    detailExt.setModelId(clickData.getBeanId()+"");
+                                    String json =JSONObject.toJSONString(detailExt);
+                                    bundle.putString(NavigatorModule.REACT_PROPS, json);
+                                    NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
+                                }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
+                                    String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
+                                    int spaceId = clickData.getSpaceId();
+                                    if (TextUtils.equals(cacheSpaceId,spaceId+"")){
+                                        int beanId = clickData.getBeanId();
+                                        Intent intent = new Intent(mContext, TopicDetailsActivity.class);
+                                        intent.putExtra("topicId",beanId + "");
+                                        intent.putExtra("from",1);
+                                        mContext.startActivity(intent);
+                                    }else {
+                                        ToastUtils.showToast(mContext,"不可查看非当前世界的话题内容");
+                                    }
+
+                                }
+                            }
+                        });
+                        String str = spanBeanList.get(i).getStr();
+                        if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_AT) {
+                            String temp = "@" + str;
+                            int indexAt = content.indexOf(temp);
+                            if (indexAt == -1) {
+                                return;
+                            }
+                            spannableStringBuilder.setSpan(clickSpan, indexAt, indexAt + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        } else if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_TOPIC) {
+                            String temp = "#" + str + "#";
+                            int indexTopic = content.indexOf(temp);
+                            if (indexTopic == -1) {
+                                return;
+                            }
+                            spannableStringBuilder.setSpan(clickSpan, indexTopic, indexTopic + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        }
+                        clickSpan.setClickData(spanBeanList.get(i));
+                    }
+
+                }
+                TextView tvContent = holder.getView(R.id.tv_item_story_content);
+                tvContent.setMovementMethod(SCLinkMovementMethod.getInstance());
+                tvContent.setText(spannableStringBuilder);
                 break;
             case StoryInfo.type2:
-                holder.setText(R.id.tv_item_story_title,bean.getTitle());
+                holder.setText(R.id.tv_item_story_title, bean.getTitle());
                 String introLong = bean.getIntro();
                 String replace = introLong.replace(bean.getTitle() + "\n", "");
                 holder.setText(R.id.tv_item_story_content, replace);
@@ -158,7 +240,7 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
             case StoryInfo.type3:
                 String topicImg = bean.getBackground();
                 String title = bean.getTitle();
-                holder.setText(R.id.tv_story_topic_title,"#"+title+"#");
+                holder.setText(R.id.tv_story_topic_title, "#" + title + "#");
                 if (TextUtils.isEmpty(topicImg)) {
                     holder.setVisible(R.id.iv_item_story_img, false);
                 } else {
@@ -167,8 +249,10 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                 }
                 holder.setVisible(R.id.tv_item_story_forwarding, false);
                 holder.setText(R.id.tv_item_story_intro, bean.getIntro());
-                holder.setVisible(R.id.ll_topic_function,false);
+                holder.setVisible(R.id.ll_topic_function, false);
+
                 break;
         }
     }
+
 }

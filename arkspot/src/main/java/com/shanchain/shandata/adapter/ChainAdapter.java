@@ -52,7 +52,7 @@ public class ChainAdapter extends BaseQuickAdapter<StoryChainModel,BaseViewHolde
         TextView tvLike = helper.getView(R.id.tv_item_story_like);
         helper.setText(R.id.tv_item_story_time, time);
         helper.setText(R.id.tv_item_story_comment, storyBean.getCommentCount() + "");
-        helper.setText(R.id.tv_item_story_name,characterBean.getName());
+        helper.setText(R.id.tv_item_story_name,characterBean==null?"":characterBean.getName());
         helper.setText(R.id.tv_item_story_forwarding,storyBean.getTranspond() + "");
         helper.setText(R.id.tv_item_story_like,storyBean.getSupportCount() + "");
         if (beFav){
@@ -75,7 +75,7 @@ public class ChainAdapter extends BaseQuickAdapter<StoryChainModel,BaseViewHolde
             content = intro;
         }
         ImageView ivAvatar = helper.getView(R.id.iv_item_story_avatar);
-        GlideUtils.load(mContext,characterBean.getHeadImg(),ivAvatar,0);
+        GlideUtils.load(mContext,characterBean==null?"":characterBean.getHeadImg(),ivAvatar,0);
         helper.setText(R.id.tv_item_story_chain_content,content);
 
 

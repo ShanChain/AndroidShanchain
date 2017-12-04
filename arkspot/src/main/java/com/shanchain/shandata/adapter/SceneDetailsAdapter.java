@@ -24,6 +24,7 @@ public class SceneDetailsAdapter extends BaseQuickAdapter<BdGroupMemberInfo,Base
 
     @Override
     protected void convert(BaseViewHolder helper, BdGroupMemberInfo item) {
+
         ImageView iv = helper.getView(R.id.iv_item_scene_numbers);
         GlideUtils.load(mContext,item.getHeadImg(),iv,0);
     }

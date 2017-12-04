@@ -255,4 +255,10 @@ public interface HttpApi {
 
     /** 判断故事是否点赞*/
     String STORY_IS_FAV = BASE_URL + "/v1/story/isFav";
+    
+    /** 通过Id查找话题*/
+    String TOPIC_QUERY = BASE_URL + "/v1/topic/query";
+
+    /** 获取话题-通过id*/
+    String TOPIC_QUERY_ID = BASE_URL + "/v1/topic/query/id";
 }

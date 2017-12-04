@@ -33,6 +33,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicImagesAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.ReleaseSucEvent;
+import com.shanchain.shandata.ui.model.AtBean;
 import com.shanchain.shandata.ui.model.DynamicImageInfo;
 import com.shanchain.shandata.ui.model.RichTextModel;
 import com.shanchain.shandata.ui.model.TopicInfo;
@@ -91,9 +92,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
      * 描述：标记是否是编辑长文状态
      */
     private boolean isEditLong;
-    private boolean listenerEnable = true;
-    private ArrayList<String> replaceAt = new ArrayList<>();
-    private ArrayList<String> replaceTopic = new ArrayList<>();
     private ReleaseDynamicPresenter mPresenter;
     private List<Integer> topicIds = new ArrayList<>();
     private List<Integer> atIds = new ArrayList<>();
@@ -344,7 +342,6 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 TopicInfo topicInfo = (TopicInfo) data.getSerializableExtra("topic");
                 String topic = topicInfo.getTopic();
                 int topicId = topicInfo.getTopicId();
-                topicIds.add(topicId);
 
                 int start = mEtReleaseDynamicContent.getSelectionStart();
                 Editable text = mEtReleaseDynamicContent.getText();
@@ -353,15 +350,17 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 if (sub.endsWith("#")){
                     text.delete(start-1,start);
                 }
-                InsertModel model = new InsertModel("#",topic,"#3bbac8");
+                InsertModel model = new InsertModel("#",topic,"#3bbac8",topicId);
                 mEtReleaseDynamicContent.insertSpecialStr(model);
             }
         } else if (requestCode == REQUEST_CODE_AT) {
             //@页面返回的数据
             if (data != null) {
                 ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
-                atIds = data.getIntegerArrayListExtra("moduleIds");
-                for (int i = 0; i < contacts.size(); i ++) {
+
+                ArrayList<AtBean> list = (ArrayList<AtBean>) data.getSerializableExtra("atBeans");
+
+                for (int i = 0; i < list.size(); i ++) {
 
                     int start = mEtReleaseDynamicContent.getSelectionStart();
                     Editable text = mEtReleaseDynamicContent.getText();
@@ -371,7 +370,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                         text.delete(start-1,start);
                     }
 
-                    InsertModel model = new InsertModel("@",contacts.get(i),"#3bbac8");
+                    InsertModel model = new InsertModel("@",list.get(i).getName(),"#3bbac8",list.get(i).getAtId());
                     mEtReleaseDynamicContent.insertSpecialStr(model);
                 }
             }
@@ -511,12 +510,14 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
             //普通编辑
             showLoadingDialog(false);
+            List<InsertModel> richInsertList = mEtReleaseDynamicContent.getRichInsertList();
+
             if (imgData.size() == 0) {
                 //无图片
-                mPresenter.releaseDynamic(word, imgPaths, tailId, atIds, topicIds);
+                mPresenter.releaseDynamic(word, imgPaths, tailId, richInsertList);
             } else {
                 //有图片
-                mPresenter.upLoadImgs(mContext, word, imgPaths, tailId, atIds, topicIds);
+                mPresenter.upLoadImgs(mContext, word, imgPaths, tailId, richInsertList);
             }
         }
 

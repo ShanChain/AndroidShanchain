@@ -1,10 +1,14 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +20,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.jaeger.ninegridimageview.NineGridImageView;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
@@ -30,15 +36,20 @@ import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CommentBean;
 import com.shanchain.shandata.ui.model.DynamicModel;
+import com.shanchain.shandata.ui.model.RNDetailExt;
+import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
+import com.shanchain.shandata.ui.model.SpanBean;
 import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.DynamicDetailsPresenter;
 import com.shanchain.shandata.ui.presenter.impl.DynamicDetailsPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView;
+import com.shanchain.shandata.utils.ClickableSpanNoUnderline;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.utils.SCLinkMovementMethod;
 import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
@@ -150,6 +161,16 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                         TextView tvLike= (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
                         tvLike.setEnabled(false);
                         break;
+                    case R.id.iv_item_dynamic_comment_avatar:
+                        BdCommentBean bean = mDynamicCommentAdapter.getData().get(position);
+                        int characterId = bean.getCharacterId();
+                        Intent intent = new Intent(mContext,FriendHomeActivity.class);
+                        Intent intentFriend = intent.putExtra("characterId", characterId);
+                        startActivity(intentFriend);
+                        break;
+                    default:
+
+                        break;
                 }
             }
         });
@@ -193,15 +214,70 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         String intro = mDynamicModel.getIntro();
         String content = "";
         List<String> imgList = new ArrayList<>();
+        List<SpanBean> spanBeanList = null;
         if (intro.contains("content")) {
             ReleaseContentInfo contentInfo = new Gson().fromJson(intro, ReleaseContentInfo.class);
             content = contentInfo.getContent();
             imgList = contentInfo.getImgs();
+            spanBeanList = contentInfo.getSpanBeanList();
         } else {
             content = intro;
         }
 
-        tvContent.setText(content);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(content);
+
+        if (spanBeanList != null) {
+            for (int i = 0; i < spanBeanList.size(); i++) {
+                ClickableSpanNoUnderline clickSpan = new ClickableSpanNoUnderline(Color.parseColor("#3bbac8"), new ClickableSpanNoUnderline.OnClickListener() {
+                    @Override
+                    public void onClick(View widget, ClickableSpanNoUnderline span) {
+                        //ToastUtils.showToast(mContext, span.getClickData().getStr());
+                        SpanBean clickData = span.getClickData();
+                        if (clickData.getType() == Constants.SPAN_TYPE_AT) {
+                            Bundle bundle = new Bundle();
+                            RNDetailExt detailExt = new RNDetailExt();
+                            RNGDataBean gDataBean = new RNGDataBean();
+                            String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+                            String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
+                            String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
+                            String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
+                            gDataBean.setCharacterId(characterId);
+                            gDataBean.setSpaceId(spaceId);
+                            gDataBean.setToken(token);
+                            gDataBean.setUserId(uId);
+                            detailExt.setgData(gDataBean);
+                            detailExt.setModelId(clickData.getBeanId()+"");
+                            String json =JSONObject.toJSONString(detailExt);
+                            bundle.putString(NavigatorModule.REACT_PROPS, json);
+                            NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
+                        }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
+
+                        }
+                    }
+                });
+                String str = spanBeanList.get(i).getStr();
+                if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_AT) {
+                    String temp = "@" + str;
+                    int indexAt = content.indexOf(temp);
+                    if (indexAt == -1) {
+                        return;
+                    }
+                    spannableStringBuilder.setSpan(clickSpan, indexAt, indexAt + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                } else if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_TOPIC) {
+                    String temp = "#" + str + "#";
+                    int indexTopic = content.indexOf(temp);
+                    if (indexTopic == -1) {
+                        return;
+                    }
+                    spannableStringBuilder.setSpan(clickSpan, indexTopic, indexTopic + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                }
+                clickSpan.setClickData(spanBeanList.get(i));
+            }
+
+        }
+        tvContent.setMovementMethod(SCLinkMovementMethod.getInstance());
+        tvContent.setText(spannableStringBuilder);
+
         if (imgList.size() == 0) {
             nineGridImageView.setVisibility(View.GONE);
         } else {

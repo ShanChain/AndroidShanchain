@@ -90,4 +90,8 @@ public interface Constants {
         String REPORT_TYPE_TOPIC = "TOPIC";
         String REPORT_TYPE_STORY = "STORY";
 
+        /**************span类型**************/
+        int SPAN_TYPE_AT = 1;
+        int SPAN_TYPE_TOPIC = 2;
+
 }

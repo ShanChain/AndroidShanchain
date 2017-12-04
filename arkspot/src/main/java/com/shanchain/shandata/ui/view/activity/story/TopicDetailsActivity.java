@@ -12,12 +12,16 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.utils.DensityUtils;
+import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.RNDataBean;
 import com.shanchain.shandata.ui.model.RNDetailExt;
+import com.shanchain.shandata.ui.model.ResponseTopicContentBean;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
@@ -28,9 +32,6 @@ import com.shanchain.shandata.ui.view.activity.story.stroyView.TopicDetailView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.rn.modules.NavigatorModule;
-import com.shanchain.data.common.utils.DensityUtils;
-import com.shanchain.data.common.utils.GlideUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +50,13 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     private View mHeadView;
     private String mTopicId;
     private TopicDetailPresenter mDetailPresenter;
-    private int mDiscussNum;
-    private int mReadNum;
-    private String mBackground;
-    private String mIntro;
-    private String mTitle;
     private int page = 0;
     private int size = 10;
     private boolean isFirstLoad = true;
+    private ImageView mIvHeadTopicImg;
+    private TextView mTvHeadTopic;
+    private TextView mTvHeadTopicDiscussRead;
+    private TextView mTvHeadTopicDes;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -71,22 +71,9 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
             String rnExtra = intent.getStringExtra(NavigatorModule.REACT_EXTRA);
             RNDetailExt rnDetailExt = JSONObject.parseObject(rnExtra, RNDetailExt.class);
             RNDataBean data = rnDetailExt.getData();
-            mDiscussNum = data.getStoryNum();
             mTopicId = data.getTopicId() + "";
-            mReadNum = data.getReadNum();
-            mBackground = data.getBackground();
-            mIntro = data.getIntro();
-            mTitle = data.getTitle();
         } else if (from == 1) {   //主页点击过来
-            StoryBeanModel beanModelTopic = (StoryBeanModel) intent.getSerializableExtra("topic");
-            StoryModelBean storyModelBean = beanModelTopic.getStoryModel().getModelInfo().getBean();
-            mTopicId = storyModelBean.getDetailId();
-            mDiscussNum = storyModelBean.getCommendCount();
-            mReadNum = storyModelBean.getSupportCount();
-            mBackground = storyModelBean.getBackground();
-            mIntro = storyModelBean.getIntro();
-            mTitle = storyModelBean.getTitle();
-
+            mTopicId= intent.getStringExtra("topicId");
         }
         mDetailPresenter = new TopicDetailPresenterImpl(this);
         initToolBar();
@@ -206,16 +193,10 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
 
     private void initHeadView() {
         mHeadView = View.inflate(this, R.layout.head_topic_details, null);
-        ImageView ivHeadTopicImg = (ImageView) mHeadView.findViewById(R.id.iv_head_topic_img);
-        TextView tvHeadTopic = (TextView) mHeadView.findViewById(R.id.tv_head_topic_topic);
-        TextView tvHeadTopicDiscussRead = (TextView) mHeadView.findViewById(R.id.tv_head_topic_discuss_read);
-        TextView tvHeadTopicDes = (TextView) mHeadView.findViewById(R.id.tv_head_topic_des);
-
-        //设置数据
-        GlideUtils.load(mContext, mBackground, ivHeadTopicImg, 0);
-        tvHeadTopic.setText("#" + mTitle + "#");
-        tvHeadTopicDes.setText(mIntro);
-        tvHeadTopicDiscussRead.setText(mDiscussNum + "讨论" + "  " + mReadNum + "阅读");
+        mIvHeadTopicImg = (ImageView) mHeadView.findViewById(R.id.iv_head_topic_img);
+        mTvHeadTopic = (TextView) mHeadView.findViewById(R.id.tv_head_topic_topic);
+        mTvHeadTopicDiscussRead = (TextView) mHeadView.findViewById(R.id.tv_head_topic_discuss_read);
+        mTvHeadTopicDes = (TextView) mHeadView.findViewById(R.id.tv_head_topic_des);
 
     }
 
@@ -254,7 +235,7 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
         }else {
             topicId = mTopicId;
         }
-
+        mDetailPresenter.initTopicInfo(topicId);
         mDetailPresenter.initStoryInfo(topicId, page, size);
     }
 
@@ -267,6 +248,22 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    @Override
+    public void initTopicInfo(ResponseTopicContentBean topicInfo) {
+        if (topicInfo == null){
+            return;
+        }
+        String background = topicInfo.getBackground();
+        String title = topicInfo.getTitle();
+        String intro = topicInfo.getIntro();
+        int readNum = topicInfo.getReadNum();
+        int discussNum = topicInfo.getStoryNum();
+        GlideUtils.load(mContext, background, mIvHeadTopicImg, 0);
+        mTvHeadTopic.setText("#" + title + "#");
+        mTvHeadTopicDes.setText(intro);
+        mTvHeadTopicDiscussRead.setText(discussNum + "讨论" + "  " + readNum + "阅读");
     }
 
     @Override

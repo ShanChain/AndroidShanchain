@@ -263,7 +263,7 @@ public class RichEditor extends AppCompatEditText {
         if (insertModelList != null && insertModelList.size() > 0) {
             for (int i = 0; i < insertModelList.size(); i++) {
                 InsertModel inertModel = insertModelList.get(i);
-                objectsList.add(new InsertModel(inertModel.getInsertRule(), inertModel.getInsertContent().replace(inertModel.getInsertRule(), ""), inertModel.getInsertColor()));
+                objectsList.add(new InsertModel(inertModel.getInsertRule(), inertModel.getInsertContent().replace(inertModel.getInsertRule(), ""), inertModel.getInsertColor(),inertModel.getInsertId()));
             }
         }
         return objectsList;
