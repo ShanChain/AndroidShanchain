@@ -73,8 +73,8 @@ public class CommonCacheHelper {
 
     public String getCacheAndTime(String userId , String key){
 
-        if (TextUtils.isEmpty(key)){
-            return null;
+        if (TextUtils.isEmpty(key) || TextUtils.isEmpty(userId)){
+            return "";
         }
         String value =  mMemoryCache.get(userId + key);
         if ( !TextUtils.isEmpty(value)){
