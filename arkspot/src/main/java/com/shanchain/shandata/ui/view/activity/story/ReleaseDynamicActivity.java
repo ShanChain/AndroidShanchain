@@ -622,4 +622,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             mEtReleaseDynamicContent.setText(dynamicContent);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        onLeftClick(new View(this));
+    }
 }

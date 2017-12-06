@@ -241,6 +241,9 @@
         </activity>
         <activity android:name=".ui.view.activity.chat.ChatAtActivity">
         </activity>
+        <activity android:name=".ui.view.activity.login.GuideActivity"
+            android:theme="@style/FullScreenTheme">
+        </activity>
     </application>
 
 </manifest>
