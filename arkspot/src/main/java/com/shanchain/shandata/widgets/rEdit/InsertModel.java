@@ -10,6 +10,7 @@ public class InsertModel {
     private String insertContent;
     private String insertColor;
     private int insertId;
+    private String extra;
 
     public InsertModel(String insertRule, String insertContent, String insertColor, int insertId) {
         this.insertRule = insertRule;
@@ -17,6 +18,15 @@ public class InsertModel {
         this.insertColor = insertColor;
         this.insertId = insertId;
     }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
     public int getInsertId() {
         return insertId;
     }

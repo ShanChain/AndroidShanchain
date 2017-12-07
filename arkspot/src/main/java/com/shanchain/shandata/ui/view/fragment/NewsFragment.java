@@ -9,15 +9,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MessageHomeAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.ui.model.ConversationInfo;
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
 import com.shanchain.shandata.ui.model.NewsCharacterBean;
 import com.shanchain.shandata.ui.model.NewsGroupBean;
@@ -37,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
-
 
 
 /**
@@ -62,17 +65,15 @@ public class NewsFragment extends BaseFragment implements NewsView {
         mPresenter = new NewsPresenterImpl(this);
         initConversation();
         initRecyclerView();
+
     }
 
     private void initRecyclerView() {
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         mRvFragmentNews.setLayoutManager(layoutManager);
-
         mRvFragmentNews.addItemDecoration(new RecyclerViewDivider(mActivity));
         mMessageHomeAdapter = new MessageHomeAdapter(R.layout.item_msg_home, sourceDatas);
         mRvFragmentNews.setAdapter(mMessageHomeAdapter);
-
         mMessageHomeAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -81,8 +82,8 @@ public class NewsFragment extends BaseFragment implements NewsView {
                 String toChatName = messageHomeInfo.getEMConversation().conversationId();
                 boolean isGroup = messageHomeInfo.getEMConversation().isGroup();
                 intent.putExtra("toChatName", toChatName);
-                intent.putExtra("isGroup",isGroup);
-                intent.putExtra("name",messageHomeInfo.getName());
+                intent.putExtra("isGroup", isGroup);
+                intent.putExtra("name", messageHomeInfo.getName());
                 startActivity(intent);
             }
         });
@@ -93,37 +94,50 @@ public class NewsFragment extends BaseFragment implements NewsView {
                 //showDialog(position);
 
 
-
                 return true;
             }
         });
 
-
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(EMMessage message){
+    public void onEvent(EMMessage message) {
         //有新消息到来
         LogUtils.d("会话fragment接收到新消息");
         initConversation();
-        if (mMessageHomeAdapter != null){
+        if (mMessageHomeAdapter != null) {
             LogUtils.d("适配器不为null");
+            String msgAttr = message.getStringAttribute(Constants.MSG_AT_LIST, "");
+            LogUtils.i("@的人的数组 = " + msgAttr + "; \n 当前环信用户 = " + EMClient.getInstance().getCurrentUser());
+            List<String> atList = JSONObject.parseArray(msgAttr, String.class);
+            if (atList.contains(SCCacheUtils.getCacheHxUserName())) {
+                LogUtils.i("有人at你啦");
+            }
             mMessageHomeAdapter.notifyDataSetChanged();
-        }else {
+            //updateCache(message);
+            initConversationCache();
+        } else {
             LogUtils.d("适配器为null");
         }
+    }
+
+    /**
+     *  描述：更新缓存的会话头像和昵称信息
+     *  当接收到消息时更新本地的会话列表的头像名称等信息
+     */
+    private void updateCache(EMMessage message) {
+        mPresenter.updateCache(message);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initConversation();
-        if (mMessageHomeAdapter != null){
+        if (mMessageHomeAdapter != null) {
             mMessageHomeAdapter.notifyDataSetChanged();
         }
-        if (sourceDatas != null && sourceDatas.size() > 0){
-            mPresenter.initConversationInfo(sourceDatas);
+        if (sourceDatas != null && sourceDatas.size() > 0) {
+            initConversationCache();
         }
 
     }
@@ -195,11 +209,19 @@ public class NewsFragment extends BaseFragment implements NewsView {
                 return (int) (o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime());
             }
         });
+
         for (int i = 0; i < mEMConversations.size(); i++) {
             EMConversation emConversation = mEMConversations.get(i);
+            EMMessage.ChatType chatType = emConversation.getLastMessage().getChatType();
+            String userName = "";
+            if (chatType == EMMessage.ChatType.GroupChat){
+                userName = emConversation.getLastMessage().getTo();
+            }else {
+                userName = emConversation.getLastMessage().getUserName();
+            }
             MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
             messageHomeInfo.setEMConversation(emConversation);
-            String userName = emConversation.getLastMessage().getUserName();
+
             LogUtils.i("对方的环信id = " + userName);
             LogUtils.d("会话列表 = " + emConversation.getLastMessage().getBody().toString());
             messageHomeInfo.setHxUser(userName);
@@ -207,36 +229,35 @@ public class NewsFragment extends BaseFragment implements NewsView {
         }
     }
 
+
+
     @Override
     public void initGroupInfoSuc(List<NewsGroupBean> newsGroupBeanList) {
-        if (newsGroupBeanList == null){
-            return;
-        }
-        for (int i = 0; i < sourceDatas.size(); i ++) {
-            MessageHomeInfo messageHomeInfo = sourceDatas.get(i);
-            String hxUser = messageHomeInfo.getHxUser();
-            for(NewsGroupBean bean : newsGroupBeanList){
-                if (TextUtils.equals(hxUser,bean.getGroupId())){
-                    messageHomeInfo.setImg(bean.getIconUrl());
-                    messageHomeInfo.setName(bean.getGroupName());
-                }
-            }
-        }
-        mMessageHomeAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void initCharacterSuc(List<NewsCharacterBean> characterBeanList) {
-        if (characterBeanList == null){
+
+    }
+
+    private void initConversationCache() {
+        mPresenter.initConversationCache(sourceDatas);
+    }
+
+    @Override
+    public void initCacheSuc(List<ConversationInfo> conversationCache) {
+        if (conversationCache == null || conversationCache.size()== 0) {
+            LogUtils.i("===缓存null===");
             return;
         }
-        for (int i = 0; i < sourceDatas.size(); i ++) {
+        LogUtils.i("缓存 === " + conversationCache.get(0).getName());
+        for (int i = 0; i < sourceDatas.size(); i++) {
             MessageHomeInfo messageHomeInfo = sourceDatas.get(i);
             String hxUser = messageHomeInfo.getHxUser();
-            for (NewsCharacterBean bean : characterBeanList){
-                if (TextUtils.equals(hxUser,bean.getHxUserName())){
-                    messageHomeInfo.setName(bean.getName());
-                    messageHomeInfo.setImg(bean.getHeadImg());
+            for (ConversationInfo info : conversationCache) {
+                if (TextUtils.equals(hxUser, info.getHxUser())) {
+                    messageHomeInfo.setName(info.getName());
+                    messageHomeInfo.setImg(info.getHeadImg());
                 }
             }
         }

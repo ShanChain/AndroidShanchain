@@ -39,7 +39,8 @@
             android:background="@drawable/selector_guide_point"/>
     </LinearLayout>
 
-    <Button
+    <TextView
+        android:gravity="center"
         android:visibility="gone"
         android:id="@+id/btn_guide_join"
         android:background="@drawable/shape_bg_guide_btn"

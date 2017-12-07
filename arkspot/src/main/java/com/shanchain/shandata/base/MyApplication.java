@@ -20,17 +20,10 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.shanchain.data.common.BaseApplication;
-import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.PrefUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
-import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
 import com.shanchain.shandata.manager.CharacterManager;
@@ -43,11 +36,8 @@ import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
-import com.umeng.message.common.inter.ITagManager;
 import com.umeng.message.entity.UMessage;
-import com.umeng.message.tag.TagManager;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
@@ -60,14 +50,10 @@ import java.util.concurrent.TimeUnit;
 
 import me.shaohui.shareutil.ShareConfig;
 import me.shaohui.shareutil.ShareManager;
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
-import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
-import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE;
-import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_STATUS;
 
 
 public class MyApplication extends BaseApplication {

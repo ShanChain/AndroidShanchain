@@ -90,7 +90,7 @@
                         android:id="@+id/iv_chat_idle_frame"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimens_5dp"
+                        android:layout_marginLeft="@dimen/dimens_10dp"
                         android:padding="@dimen/dimens_5dp"
                         android:src="@mipmap/abs_release_btn_frame_default"/>
 
@@ -108,37 +108,33 @@
                     <ImageView
                         android:visibility="gone"
                         android:id="@+id/iv_chat_against_drama"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimens_10dp"
-                        android:layout_weight="1"
                         android:padding="@dimen/dimens_5dp"
                         android:src="@mipmap/abs_dialogue_btn_drama_default"/>
 
                     <ImageView
                         android:id="@+id/iv_chat_against_scene"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimens_5dp"
-                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/dimens_10dp"
                         android:padding="@dimen/dimens_5dp"
                         android:src="@mipmap/abs_dialogue_btn_scene_default"/>
 
                     <ImageView
                         android:id="@+id/iv_chat_against_at"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimens_10dp"
-                        android:layout_weight="1"
                         android:padding="@dimen/dimens_5dp"
                         android:src="@mipmap/abs_release_btn_at_default"/>
 
                     <ImageView
                         android:id="@+id/iv_chat_against_frame"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimens_5dp"
-                        android:layout_weight="1"
+                        android:layout_marginLeft="@dimen/dimens_10dp"
                         android:padding="@dimen/dimens_5dp"
                         android:src="@mipmap/abs_release_btn_frame_default"/>
 
@@ -154,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <com.shanchain.shandata.widgets.rEdit.RichEditor
                     android:id="@+id/et_chat_msg"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

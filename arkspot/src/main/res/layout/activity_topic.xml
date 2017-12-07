@@ -20,6 +20,7 @@
             android:textColorHint="@color/colorHint"
             android:drawablePadding="@dimen/dimens_20dp"
             android:lines="1"
+            android:maxLength="25"
             android:textSize="14sp"
             android:textColor="@color/colorTextDefault"
             android:textCursorDrawable="@null"

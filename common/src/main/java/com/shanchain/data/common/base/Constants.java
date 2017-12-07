@@ -38,6 +38,9 @@ public interface Constants {
         /**消息扩展参数是否是群信息key值*/
         String MSG_IS_GROUP = "isGroup";
 
+        /** 消息扩展参数消息中@人的数组*/
+        String MSG_AT_LIST = "msgAtList";
+
         /*************本地缓存常量************/
         String CACHE_USER_INFO = "userInfo";
         String CACHE_CUR_USER = "curUser";

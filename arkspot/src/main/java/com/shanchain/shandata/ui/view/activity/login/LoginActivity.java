@@ -404,6 +404,7 @@ public class LoginActivity extends BaseActivity {
                                  @Override
                                  public void onResponse(String response, int id) {
                                      try {
+                                         LogUtils.i("第三方注册结果 = " + response);
                                          String code = SCJsonUtils.parseCode(response);
                                          if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                              String data = SCJsonUtils.parseData(response);

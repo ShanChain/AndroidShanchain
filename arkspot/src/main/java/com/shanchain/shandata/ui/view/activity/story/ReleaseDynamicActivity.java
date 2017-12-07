@@ -160,6 +160,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                     mLlReleaseFunctionCommon.setVisibility(View.GONE);
                     mIvReleaseIconAt.setVisibility(View.GONE);
                     mIvReleaseIconTopic.setVisibility(View.GONE);
+                    imgData.clear();
+                    mImagesAdapter.notifyDataSetChanged();
                     imgCounts = 1;
                     isEditLong = true;
                 } else {

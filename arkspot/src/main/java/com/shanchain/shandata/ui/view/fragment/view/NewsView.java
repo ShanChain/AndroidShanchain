@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.fragment.view;
 
+import com.shanchain.shandata.ui.model.ConversationInfo;
 import com.shanchain.shandata.ui.model.NewsCharacterBean;
 import com.shanchain.shandata.ui.model.NewsGroupBean;
 
@@ -13,4 +14,6 @@ public interface NewsView {
     void initGroupInfoSuc(List<NewsGroupBean> newsGroupBeanList);
 
     void initCharacterSuc(List<NewsCharacterBean> characterBeanList);
+
+    void initCacheSuc(List<ConversationInfo> conversationCache);
 }

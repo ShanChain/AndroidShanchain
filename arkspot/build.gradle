@@ -56,22 +56,30 @@ android {
         }
     }
 
-    /*productFlavors {
+    productFlavors {
 
         wandoujia {}
-        *//* baidu {}
-         c360 {}
-         shanchain {}
-         huawei {}
-         xiaomi {}
-         yingyongbao {}*//*
-
+        baidu {}
+        c360 {}
+        arkspot {}
+        huawei {}
+        xiaomi {}
+        yingyongbao {}
+        googlePlay {}
+        oppo {}
+        vivo {}
+        meizu {}
+        anzhi {}
+        androidmarket {}
+        zhushou91 {}
+        ali {}
+        pugongying {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
 
-    }*/
+    }
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'

@@ -2,8 +2,8 @@ package com.shanchain.shandata.ui.view.activity.login;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.utils.PrefUtils;
@@ -28,7 +28,7 @@ public class GuideActivity extends BaseActivity {
     @Bind(R.id.ll_guide_points)
     LinearLayout mLlGuidePoints;
     @Bind(R.id.btn_guide_join)
-    Button mBtnGuideJoin;
+    TextView mBtnGuideJoin;
 
     @Override
     protected int getContentViewLayoutID() {

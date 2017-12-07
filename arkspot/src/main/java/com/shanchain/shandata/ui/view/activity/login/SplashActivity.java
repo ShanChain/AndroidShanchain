@@ -19,6 +19,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.manager.ConversationManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
@@ -104,6 +105,8 @@ public class SplashActivity extends AppCompatActivity {
                 LogUtils.i("耗时 = " + (endTime - startTime));
                 EMClient.getInstance().chatManager().loadAllConversations();
                 EMClient.getInstance().groupManager().loadAllGroups();
+                //初始化对话信息
+                ConversationManager.getInstance().obtainConversationInfoFromServer();
             }
 
             @Override

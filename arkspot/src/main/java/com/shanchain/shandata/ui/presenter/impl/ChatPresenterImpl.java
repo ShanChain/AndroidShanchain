@@ -7,20 +7,19 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.ui.model.GroupMembersInfo;
 import com.shanchain.shandata.ui.model.MsgInfo;
 import com.shanchain.shandata.ui.model.ResponseGroupMemberBean;
 import com.shanchain.shandata.ui.model.ResponseSceneDetailInfo;
 import com.shanchain.shandata.ui.presenter.ChatPresenter;
 import com.shanchain.shandata.ui.view.activity.chat.view.ChatView;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,16 +75,19 @@ public class ChatPresenterImpl implements ChatPresenter {
      * @param chatType 聊天类型
      * @param headImg 发送消息时附带头像信息
      * @param nickName 发送消息时附带昵称信息
+     * @param atMembers 艾特的人数组
      */
     @Override
-    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg,String nickName,boolean isGroup,String groupImg) {
+    public void sendMsg(String msg, String toChatName, int msgAttr, EMMessage.ChatType chatType,String headImg,String nickName,boolean isGroup,String groupImg,List<String> atMembers) {
         EMMessage txtSendMessage = EMMessage.createTxtSendMessage(msg, toChatName);
         //设置扩展消息类型
+        String atArr = JSONObject.toJSONString(atMembers);
         txtSendMessage.setAttribute(Constants.MSG_ATTR,msgAttr);
         txtSendMessage.setAttribute(Constants.MSG_HEAD_IMG,headImg);
         txtSendMessage.setAttribute(Constants.MSG_NICK_NAME,nickName);
         txtSendMessage.setAttribute(Constants.MSG_IS_GROUP,isGroup);
         txtSendMessage.setAttribute(Constants.MSG_GROUP_IMG,groupImg);
+        txtSendMessage.setAttribute(Constants.MSG_AT_LIST,atArr);
         txtSendMessage.setChatType(chatType);
         txtSendMessage.setStatus(EMMessage.Status.INPROGRESS);
         mEMMessageList.add(txtSendMessage);
@@ -125,6 +127,10 @@ public class ChatPresenterImpl implements ChatPresenter {
         });
 
         EMClient.getInstance().chatManager().sendMessage(txtSendMessage);
+        String from = txtSendMessage.getFrom();
+        String userName = txtSendMessage.getUserName();
+        String to = txtSendMessage.getTo();
+        LogUtils.i("发送消息  username = " + userName + "; from = " + from + "; to = " + to);
     }
 
     /**

@@ -19,6 +19,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
@@ -58,15 +59,16 @@ public class CharacterManager {
         EventBus.getDefault().register(instance);
         return instance;
     }
+
     @Subscribe
     public void onEventMainThread(SCBaseEvent event) {
-        if(event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_SWITCH_ROLE)){
-            JSONObject jsonObject = (JSONObject)event.params;
-            if(!TextUtils.isEmpty(jsonObject.getString("modelId")) && !TextUtils.isEmpty(jsonObject.getString("spaceId"))){
-                switchRole(jsonObject.getString("modelId"),jsonObject.getString("spaceId"),jsonObject.getString("spaceInfo"));
+        if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_SWITCH_ROLE)) {
+            JSONObject jsonObject = (JSONObject) event.params;
+            if (!TextUtils.isEmpty(jsonObject.getString("modelId")) && !TextUtils.isEmpty(jsonObject.getString("spaceId"))) {
+                switchRole(jsonObject.getString("modelId"), jsonObject.getString("spaceId"), jsonObject.getString("spaceInfo"));
             }
 
-        }else if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT)&&event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_LOGOUT)){
+        } else if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_LOGOUT)) {
             logout();
         }
     }
@@ -81,17 +83,17 @@ public class CharacterManager {
         context.startActivity(intent);
     }
 
-    private void switchRole(String modelId, String spaceId, String spaceInfo){
-        if(!TextUtils.isEmpty(spaceInfo)){
+    private void switchRole(String modelId, String spaceId, String spaceInfo) {
+        if (!TextUtils.isEmpty(spaceInfo)) {
             mSpaceInfo = spaceInfo;
-        }else {
+        } else {
             mSpaceInfo = "";
         }
         showLoadingDialog();
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHARACTER_CHANGE)
                 .addParams("spaceId", spaceId)
-                .addParams("modelId",modelId)
+                .addParams("modelId", modelId)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -104,22 +106,22 @@ public class CharacterManager {
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             String data = JSONObject.parseObject(response).getString("data");
                             String character = JSONObject.parseObject(data).getString("characterInfo");
                             final String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
-                            if (TextUtils.isEmpty(character)||TextUtils.isEmpty(hxAccount)){
+                            if (TextUtils.isEmpty(character) || TextUtils.isEmpty(hxAccount)) {
                                 error();
-                            }else {
+                            } else {
                                 String spaceId = JSONObject.parseObject(character).getString("spaceId");
-                                mCharacterInfo =JSONObject.parseObject(character,CharacterInfo.class);
-                                mRegisterHxBean = JSONObject.parseObject(hxAccount,RegisterHxBean.class);
+                                mCharacterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                                mRegisterHxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 String currentUser = EMClient.getInstance().getCurrentUser();
                                 obtainSpaceInfo(spaceId);
                                 changePushTags();
-                                if (TextUtils.isEmpty(currentUser)){
+                                if (TextUtils.isEmpty(currentUser)) {
                                     loginHx();
-                                }else {
+                                } else {
                                     EMClient.getInstance().logout(false, new EMCallBack() {
                                         @Override
                                         public void onSuccess() {
@@ -147,47 +149,45 @@ public class CharacterManager {
     }
 
     private void loginHx() {
-        String hxUserName = mRegisterHxBean.getHxUserName();
-        String hxPassword = mRegisterHxBean.getHxPassword();
-        EMClient.getInstance().login(hxUserName, hxPassword, new EMCallBack() {
+
+
+        final String hxUserName = mRegisterHxBean.getHxUserName();
+        final String hxPassword = mRegisterHxBean.getHxPassword();
+        ThreadUtils.runOnSubThread(new Runnable() {
             @Override
-            public void onSuccess() {
-                ActivityStackManager.getInstance().getTopActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                EMClient.getInstance().login(hxUserName, hxPassword, new EMCallBack() {
                     @Override
-                    public void run() {
+                    public void onSuccess() {
                         isHxLogin = true;
-                        closeLoadingDialog();
                         LogUtils.i("登录环信账号成功");
                         EMClient.getInstance().chatManager().loadAllConversations();
                         EMClient.getInstance().groupManager().loadAllGroups();
-                        saveToCache();
-                        ToastUtils.showToast(AppManager.getInstance().getContext(),"欢迎进入新世界");
-                        Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
-                        ActivityStackManager.getInstance().finishAllActivity();
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        AppManager.getInstance().getContext().startActivity(intent);
+                        saveHxCache();
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        LogUtils.i("环信登录失败 = " + s + "错误码 = " + i);
+                        error();
+                    }
+
+                    @Override
+                    public void onProgress(int i, String s) {
+
                     }
                 });
             }
-
-            @Override
-            public void onError(int i, String s) {
-                LogUtils.i("环信登录失败 = " + s + "错误码 = " + i);
-                error();
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
         });
+
+
     }
 
     private void obtainSpaceInfo(final String spaceId) {
         //获取space详情并缓存
         SCHttpUtils.post()
                 .url(HttpApi.SPACE_GET_ID)
-                .addParams("spaceId",spaceId)
+                .addParams("spaceId", spaceId)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -201,10 +201,16 @@ public class CharacterManager {
                     public void onResponse(String response, int id) {
                         LogUtils.d("space详情 = " + response);
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             mSpaceInfo = JSONObject.parseObject(response).getString("data");
-                            saveToCache();
-                        }else {
+                            saveCharacherCache();
+                            closeLoadingDialog();
+                            ToastUtils.showToast(AppManager.getInstance().getContext(), "欢迎进入新世界");
+                            Intent intent = new Intent(ActivityStackManager.getInstance().getTopActivity(), MainActivity.class);
+                            ActivityStackManager.getInstance().finishAllActivity();
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            AppManager.getInstance().getContext().startActivity(intent);
+                        } else {
                             error();
                         }
                     }
@@ -224,27 +230,39 @@ public class CharacterManager {
         }
     }
 
-    private void error(){
+    private void error() {
         ActivityStackManager.getInstance().getTopActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ToastUtils.showToast(AppManager.getInstance().getContext(),"穿越失败！");
+                ToastUtils.showToast(AppManager.getInstance().getContext(), "穿越失败！");
                 closeLoadingDialog();
             }
         });
 
     }
 
-    private void saveToCache(){
-        if(isHxLogin && mCharacterInfo != null && mRegisterHxBean != null && mSpaceInfo != null){
-            RoleManager.switchRoleCache(mCharacterInfo.getCharacterId(),JSON.toJSONString(mCharacterInfo),mCharacterInfo.getSpaceId(),mSpaceInfo,mRegisterHxBean.getHxUserName(),mRegisterHxBean.getHxPassword());
+    private void saveToCache() {
+        if (isHxLogin && mCharacterInfo != null && mRegisterHxBean != null && mSpaceInfo != null) {
+            RoleManager.switchRoleCache(mCharacterInfo.getCharacterId(), JSON.toJSONString(mCharacterInfo), mCharacterInfo.getSpaceId(), mSpaceInfo, mRegisterHxBean.getHxUserName(), mRegisterHxBean.getHxPassword());
         }
     }
 
-    private void changePushTags(){
+    private void saveCharacherCache() {
+        if (mCharacterInfo != null && mSpaceInfo != null) {
+            RoleManager.switchRoleCacheComment(mCharacterInfo.getCharacterId() + "", JSONObject.toJSONString(mCharacterInfo), mCharacterInfo.getSpaceId() + "", mSpaceInfo);
+        }
+    }
+
+    private void saveHxCache() {
+        if (isHxLogin && mRegisterHxBean != null) {
+            RoleManager.switchRoleCacheHx(mRegisterHxBean.getHxUserName(), mRegisterHxBean.getHxPassword());
+        }
+    }
+
+    private void changePushTags() {
         final String spaceId = mCharacterInfo.getSpaceId() + "";
         final String modelId = mCharacterInfo.getModelId() + "";
-        if(!TextUtils.isEmpty(spaceId) && !TextUtils.isEmpty(modelId)){
+        if (!TextUtils.isEmpty(spaceId) && !TextUtils.isEmpty(modelId)) {
             final PushAgent mPushAgent = PushAgent.getInstance(AppManager.getInstance().getContext());
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -255,11 +273,11 @@ public class CharacterManager {
                             mPushAgent.getTagManager().list(new TagManager.TagListCallBack() {
                                 @Override
                                 public void onMessage(boolean isSuccess, List<String> result) {
-                                   LogUtils.e("flyye",result.toString());
+                                    LogUtils.e("flyye", result.toString());
                                 }
                             });
                         }
-                    },  "MODEL_" + modelId,"SPACE_" +spaceId);
+                    }, "MODEL_" + modelId, "SPACE_" + spaceId);
                 }
             });
             thread.start();

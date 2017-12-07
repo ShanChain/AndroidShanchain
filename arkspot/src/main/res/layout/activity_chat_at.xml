@@ -11,9 +11,6 @@
         android:id="@+id/tb_chat_at"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
-        app:rightText="确定"
-        app:rightTextColor="@color/colorTextDefault"
-        app:rightTextSize="14"
         app:titleColor="@color/colorTextDefault"
         app:titleText="选择联系人"
         app:titleTextSize="16"/>
@@ -49,27 +46,11 @@
 
     <View style="@style/style_text_line_match"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_chat_at"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.gjiazhe.wavesidebar.WaveSideBar
-            android:id="@+id/sb_chat_at"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingRight="10dp"
-            app:sidebar_lazy_respond="false"
-            app:sidebar_max_offset="80dp"
-            app:sidebar_position="right"
-            app:sidebar_text_alignment="center"
-            app:sidebar_text_color="@color/colorHint"
-            app:sidebar_text_size="12sp"/>
 
-    </RelativeLayout>
 
 </LinearLayout>

@@ -39,7 +39,7 @@
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Channel ID"/>
+            android:value="${UMENG_CHANNEL_VALUE}"/>
         <!-- 友盟消息处理服务 -->
         <!-- <service android:name=".service.MyPushIntentService" /> -->
 

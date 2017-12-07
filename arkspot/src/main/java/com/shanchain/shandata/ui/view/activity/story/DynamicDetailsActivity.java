@@ -251,7 +251,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                             bundle.putString(NavigatorModule.REACT_PROPS, json);
                             NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
                         }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
-
+                            Intent intent = new Intent(mContext,TopicDetailsActivity.class);
+                            intent.putExtra("from",1);
+                            intent.putExtra("topicId",clickData.getBeanId()+"");
+                            startActivity(intent);
                         }
                     }
                 });

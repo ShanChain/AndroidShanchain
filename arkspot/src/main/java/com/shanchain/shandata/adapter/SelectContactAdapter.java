@@ -28,7 +28,6 @@ public class SelectContactAdapter extends BaseQuickAdapter<BdAtContactInfo, Base
     @Override
     protected void convert(BaseViewHolder helper, BdAtContactInfo item) {
         int layoutPosition = helper.getLayoutPosition();
-        boolean isAt = item.isAt();
         if (layoutPosition != 0) {
 
             if (datas.get(layoutPosition-1).getContactInfo().getLetter().equals(datas.get(layoutPosition).getContactInfo().getLetter())){

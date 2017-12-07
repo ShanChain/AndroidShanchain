@@ -26,12 +26,14 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.ChatRoomMsgAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.GroupBriefBean;
 import com.shanchain.shandata.ui.model.MsgInfo;
 import com.shanchain.shandata.ui.presenter.ChatPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ChatPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.chat.view.ChatView;
-import com.shanchain.shandata.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
+import com.shanchain.shandata.widgets.rEdit.InsertModel;
+import com.shanchain.shandata.widgets.rEdit.RichEditor;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -73,7 +75,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Bind(R.id.ll_chat_against)
     LinearLayout mLlChatAgainst;
     @Bind(R.id.et_chat_msg)
-    EditText mEtChatMsg;
+    RichEditor mEtChatMsg;
     @Bind(R.id.tv_chat_send)
     TextView mTvChatSend;
     @Bind(R.id.rv_chat_msg)
@@ -88,7 +90,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private ChatRoomMsgAdapter mChatRoomMsgAdapter;
     private LinearLayoutManager mLayoutManager;
     //群成员列表
-    List<String> memberList = new ArrayList<>();
+    ArrayList<String> memberList = new ArrayList<>();
     //是否是群聊
     private boolean mIsGroup;
     private boolean move;
@@ -96,7 +98,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     String myHeadImg = "";
     String nickName = "";
     private String groupHeadImg = "";
-
+    private List<String> atMembers = new ArrayList<>();
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_chat;
@@ -163,6 +165,15 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
          */
         mChatPresenter.initChat(toChatName);
         mSrlPullHistoryMsg.setOnRefreshListener(this);
+
+        //消息输入栏监听
+        mEtChatMsg.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
+            @Override
+            public void textChange(CharSequence s, int start, int before, int count) {
+
+            }
+        });
+
     }
 
     /**
@@ -180,8 +191,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         nickName = characterInfo.getName();
         if (mIsGroup) {
             mChatType = EMMessage.ChatType.GroupChat;
+            mIvChatAgainstAt.setVisibility(View.VISIBLE);
+            mIvChatIdleAt.setVisibility(View.VISIBLE);
         } else {
             mChatType = EMMessage.ChatType.Chat;
+            mIvChatAgainstAt.setVisibility(View.GONE);
+            mIvChatIdleAt.setVisibility(View.GONE);
         }
         this.toChatName = s;
         mChatPresenter = new ChatPresenterImpl(this);
@@ -260,8 +275,9 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
      * 描述：@群成员
      */
     private void atMember() {
-        Intent intent = new Intent(this, SelectContactActivity.class);
-        intent.putExtra("isAt", true);
+        Intent intent = new Intent(this, ChatAtActivity.class);
+        intent.putExtra("groupId", toChatName);
+        intent.putStringArrayListExtra("members",memberList);
         startActivityForResult(intent, REQUEST_CODE_AT);
     }
 
@@ -269,22 +285,20 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
-            ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
-            String msg = mEtChatMsg.getText().toString().trim();
-            String at = "";
-            for (int i = 0; i < contacts.size(); i++) {
-                at += "@" + contacts.get(i) + " ";
-            }
-            mEtChatMsg.setText(msg + at);
-            mEtChatMsg.setSelection((msg + at).length());
+            GroupBriefBean atBean = (GroupBriefBean) data.getSerializableExtra("at");
+            String name = atBean.getName();
+            String hxUserName = atBean.getHxUserName();
+            InsertModel model = new InsertModel("@",name,"",0);
+            model.setExtra(hxUserName);
+            mEtChatMsg.insertSpecialStr(model);
         }
     }
 
     private void insertFrame() {
-        String content = mEtChatMsg.getText().toString();
-        content += "【】";
-        mEtChatMsg.setText(content);
-        mEtChatMsg.setSelection(content.length() - 1);
+        int selectionStart = mEtChatMsg.getSelectionStart();
+        Editable editable = mEtChatMsg.getText();
+        editable.insert(selectionStart,"【】");
+        mEtChatMsg.setSelection(selectionStart + 1);
     }
 
     /**
@@ -312,7 +326,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
                     return;
                 }
                 int msgAttr = Constants.ATTR_SCENE;
-                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg);
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg,atMembers);
                 dialog.dismiss();
             }
         });
@@ -331,13 +345,18 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         if (on) {
             //闲聊
             msgAttr = Constants.ATTR_DEFAULT;
-
         } else {
             //对戏
             msgAttr = Constants.ATTR_AGAINST;
         }
 
-        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg);
+        List<InsertModel> models = mEtChatMsg.getRichInsertList();
+        for (int i = 0; i < models.size(); i ++) {
+            String hxId = models.get(i).getExtra();
+            atMembers.add(hxId);
+        }
+
+        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg,atMembers);
         mEtChatMsg.getText().clear();
     }
 
@@ -458,7 +477,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         } else {
             String groupName = members.get(0);
             members.remove(0);
-            memberList = members;
+            memberList = new ArrayList<>(members);
             mTbChat.setTitleText(groupName);
             for (int i = 0; i < memberList.size(); i ++) {
                 LogUtils.i("群成员有 = " + members.get(i));
