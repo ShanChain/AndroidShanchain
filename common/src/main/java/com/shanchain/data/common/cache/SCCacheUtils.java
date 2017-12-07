@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import com.shanchain.data.common.base.Constants;
 
+import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
+import static com.shanchain.data.common.base.Constants.CACHE_GDATA;
+
 /**
  * Created by zhoujian on 2017/10/18.
  */
@@ -36,7 +39,7 @@ public class SCCacheUtils {
 
 
     public static String getCacheUserId(){
-      return  getCache("0", Constants.CACHE_CUR_USER);
+      return  getCache("0", CACHE_CUR_USER);
     }
 
     public static String getCacheCharacterId(){
@@ -77,7 +80,8 @@ public class SCCacheUtils {
     public static void clearCache() {
         String userId = getCacheUserId();
         CommonCacheHelper.getInstance().deleteCache(userId);
-        CommonCacheHelper.getInstance().deleteCache("0");
+        CommonCacheHelper.getInstance().setCache("0",CACHE_CUR_USER,"");
+        CommonCacheHelper.getInstance().setCache("0",CACHE_GDATA,"");
         CommonCacheHelper.getInstance().clearMemoryCache();
     }
 

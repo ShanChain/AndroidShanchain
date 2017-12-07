@@ -65,8 +65,10 @@ import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
+import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_READ_STATUS;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
@@ -84,7 +86,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     private BadgeItem mNewsBadge;
     private BadgeItem mSquareBadge;
     private BadgeItem mMineBadge;
-    private   long downloadId;
+    private long downloadId;
     private boolean isMsgRead = true;
 
     @Override
@@ -121,11 +123,11 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     }
 
-    private void initDeviceToken(){
+    private void initDeviceToken() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-             setDeviceToken();
+                setDeviceToken();
             }
         });
         thread.start();
@@ -245,13 +247,13 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
         mMineBadge = new BadgeItem();
         mMineBadge.setText("  ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
-        String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
-        String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_READ_STATUS);
+        String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
+        String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId, CACHE_USER_MSG_READ_STATUS);
         btmItemMine.setBadgeItem(mMineBadge);
-        if(!TextUtils.isEmpty(msgReadStatus) && !Boolean.parseBoolean(msgReadStatus)){
+        if (!TextUtils.isEmpty(msgReadStatus) && !Boolean.parseBoolean(msgReadStatus)) {
             isMsgRead = Boolean.parseBoolean(msgReadStatus);
             mMineBadge.show();
-        }else {
+        } else {
             isMsgRead = true;
             mMineBadge.hide();
         }
@@ -439,9 +441,9 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                 mTbMain.setOnRightClickListener(this);
                 break;
             case 3:
-                if(isMsgRead){
+                if (isMsgRead) {
                     mTbMain.setRightImage(R.mipmap.abs_mine_btn_information_default);
-                }else {
+                } else {
                     mTbMain.setRightImage(R.mipmap.abs_mine_btn_haveinformation_default);
                 }
                 mTbMain.setBtnEnabled(false, true);
@@ -475,8 +477,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void notifyRightClick() {
-        String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
-        CommonCacheHelper.getInstance().setCache(userId,CACHE_USER_MSG_READ_STATUS,"true");
+        String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
+        CommonCacheHelper.getInstance().setCache(userId, CACHE_USER_MSG_READ_STATUS, "true");
         mMineBadge.hide();
         isMsgRead = true;
         Bundle bundle = new Bundle();
@@ -686,7 +688,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     @Override
-    public void invokeDefaultOnBackPressed() {}
+    public void invokeDefaultOnBackPressed() {
+    }
 
     @Subscribe
     public void onEventMainThread(SCBaseEvent event) {
@@ -697,21 +700,22 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
 
-    private void setDeviceToken(){
-        if(PrefUtils.getBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_STATUS,false)){
+    private void setDeviceToken() {
+        final String userId = SCCacheUtils.getCacheUserId();
+
+        if (!TextUtils.isEmpty(CommonCacheHelper.getInstance().getCache(userId, CACHE_DEVICE_TOKEN_STATUS)) && CommonCacheHelper.getInstance().getCache(userId, CACHE_DEVICE_TOKEN_STATUS).equalsIgnoreCase("true")) {
             return;
         }
-        String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
-        if(TextUtils.isEmpty(token)){
+        if (TextUtils.isEmpty(token)) {
             return;
         }
-        if(!TextUtils.isEmpty(CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))){
+        if (!TextUtils.isEmpty(PrefUtils.getString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, ""))) {
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.SET_DEVICE_TOKEN)
-                    .addParams("osType","android")
-                    .addParams("token",token)
-                    .addParams("deviceToken",CommonCacheHelper.getInstance().getCache("0",CACHE_DEVICE_TOKEN))
+                    .addParams("osType", "android")
+                    .addParams("token", token)
+                    .addParams("deviceToken", PrefUtils.getString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, ""))
                     .build()
                     .execute(new SCHttpStringCallBack() {
                         @Override
@@ -724,7 +728,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         public void onResponse(String response, int id) {
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                PrefUtils.putBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_STATUS,true);
+                                CommonCacheHelper.getInstance().setCache(userId, CACHE_DEVICE_TOKEN_STATUS, "true");
                             }
 
                         }

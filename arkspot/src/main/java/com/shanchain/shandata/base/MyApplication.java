@@ -67,6 +67,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_STATUS;
 
 
@@ -85,33 +86,31 @@ public class MyApplication extends BaseApplication {
     UmengNotificationClickHandler mNotificationClickHandler = new UmengNotificationClickHandler() {
         @Override
         public void dealWithCustomAction(Context context, UMessage msg) {
-            String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
+            String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
 
-            String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_IS_RECEIVE);
-            if(TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")){
-                PushManager.dealWithCustomClickAction(context,msg);
+            String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId, CACHE_USER_MSG_IS_RECEIVE);
+            if (TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")) {
+                PushManager.dealWithCustomClickAction(context, msg);
             }
         }
     };
 
-    UmengMessageHandler messageHandler = new UmengMessageHandler(){
+    UmengMessageHandler messageHandler = new UmengMessageHandler() {
         @Override
         public void dealWithCustomMessage(final Context context, final UMessage msg) {
             new Handler(getMainLooper()).post(new Runnable() {
 
                 @Override
                 public void run() {
-                    String userId = CommonCacheHelper.getInstance().getCache("0",CACHE_CUR_USER);
-                    String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId,CACHE_USER_MSG_IS_RECEIVE);
-                    if(TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")){
-                        PushManager.dealWithCustomMessage(context,msg);
+                    String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
+                    String isReceiveMsg = CommonCacheHelper.getInstance().getCache(userId, CACHE_USER_MSG_IS_RECEIVE);
+                    if (TextUtils.isEmpty(isReceiveMsg) || isReceiveMsg.equalsIgnoreCase("true")) {
+                        PushManager.dealWithCustomMessage(context, msg);
                     }
                 }
             });
         }
     };
-
-
 
 
     @Override
@@ -134,7 +133,7 @@ public class MyApplication extends BaseApplication {
 
     }
 
-    private void initInstance(){
+    private void initInstance() {
         CharacterManager.getInstance();
         LoginManager.getInstance(this);
     }
@@ -171,7 +170,7 @@ public class MyApplication extends BaseApplication {
     }
 
     private void initUPush() {
-       final PushAgent mPushAgent = PushAgent.getInstance(this);
+        final PushAgent mPushAgent = PushAgent.getInstance(this);
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -180,12 +179,10 @@ public class MyApplication extends BaseApplication {
                 mPushAgent.register(new IUmengRegisterCallback() {
                     @Override
                     public void onSuccess(String deviceToken) {
-                        Log.i("flyye",deviceToken);
-                        //注册成功会返回device token
-                        if(TextUtils.isEmpty(deviceToken)){
+                        if (TextUtils.isEmpty(deviceToken)) {
                             return;
                         }
-                        CommonCacheHelper.getInstance().setCache("0", Constants.CACHE_DEVICE_TOKEN,deviceToken);
+                        PrefUtils.putString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, deviceToken);
                     }
 
                     @Override
@@ -279,7 +276,7 @@ public class MyApplication extends BaseApplication {
                 //当接收到消息的回调
                 if (list != null && list.size() > 0) {
 
-                    if (isRunningBackground()){
+                    if (isRunningBackground()) {
                         sendNotification(list.get(0));
                     }
 
@@ -320,9 +317,9 @@ public class MyApplication extends BaseApplication {
      */
     private void initOkhttpUtils() {
         try {
-            if(Constants.SC_ENV_PRD){
-                            HttpsUtils.SSLParams sslParams =
-                    HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
+            if (Constants.SC_ENV_PRD) {
+                HttpsUtils.SSLParams sslParams =
+                        HttpsUtils.getSslSocketFactory(new InputStream[]{getAssets().open("certificates.cer")}, null, null);
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
                         .addInterceptor(new LoggerInterceptor("TAG"))
                         .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
@@ -331,7 +328,7 @@ public class MyApplication extends BaseApplication {
                         //其他配置
                         .build();
                 OkHttpUtils.initClient(okHttpClient);
-            }else {
+            } else {
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
                         .addInterceptor(new LoggerInterceptor("TAG"))
                         .connectTimeout(60000L, TimeUnit.MILLISECONDS)
@@ -340,7 +337,6 @@ public class MyApplication extends BaseApplication {
                         .build();
                 OkHttpUtils.initClient(okHttpClient);
             }
-
 
 
         } catch (Exception e) {
@@ -388,26 +384,26 @@ public class MyApplication extends BaseApplication {
         /**
          * 参数2：请求码 大于1
          */
-        Intent mainIntent = new Intent(this,MainActivity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent chatIntent = new Intent(this, ChatRoomActivity.class);
-        chatIntent.putExtra("toChatName",message.getFrom());
+        chatIntent.putExtra("toChatName", message.getFrom());
 
-        chatIntent.putExtra("isGroup",message.getChatType() == EMMessage.ChatType.GroupChat?true:false);
+        chatIntent.putExtra("isGroup", message.getChatType() == EMMessage.ChatType.GroupChat ? true : false);
 
-        Intent[] intents = {mainIntent,chatIntent};
-        PendingIntent pendingIntent = PendingIntent.getActivities(this,1,intents,PendingIntent.FLAG_UPDATE_CURRENT) ;
+        Intent[] intents = {mainIntent, chatIntent};
+        PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(this)
                 .setAutoCancel(true) //当点击后自动删除
                 .setSmallIcon(R.mipmap.abs_home_btn_comment_default) //必须设置
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.abs_addanewrole_def_photo_default))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.abs_addanewrole_def_photo_default))
                 .setContentTitle("您有一条新消息")
                 .setContentText(messageBody.getMessage())
                 .setContentInfo(message.getFrom())
                 .setContentIntent(pendingIntent)
                 .setPriority(Notification.PRIORITY_MAX)
                 .build();
-        notificationManager.notify(1,notification);
+        notificationManager.notify(1, notification);
     }
 
 }

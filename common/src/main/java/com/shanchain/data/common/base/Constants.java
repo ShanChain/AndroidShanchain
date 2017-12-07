@@ -51,6 +51,7 @@ public interface Constants {
         String CACHE_HX_USER_NAME = "hxUserName";
         String CACHE_HX_PWD = "hxPwd";
         String CACHE_DEVICE_TOKEN = "deviceToken";
+        String CACHE_DEVICE_TOKEN_STATUS = "deviceTokenStatus";
         String CACHE_APP_ENV = "true";
         String CACHE_USER_MSG = "userMessage";
         String CACHE_USER_MSG_READ_STATUS = "cache_user_msg_read_status";
@@ -70,6 +71,7 @@ public interface Constants {
         /*************SP中的key值***************/
         String SP_KEY_DRAFT = "draft";
         String SP_KEY_DEVICE_TOKEN_STATUS = "sp_key_device_token_status";
+        String SP_KEY_DEVICE_TOKEN = "sp_key_device_token";
         /** config.gradle中定义的常量 */
 
         boolean SC_RN_DEBUG = Boolean.valueOf(BuildConfig.RN_DEBUG);
