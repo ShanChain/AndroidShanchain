@@ -23,7 +23,6 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
 import com.shanchain.data.common.base.ActivityStackManager;
-import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
@@ -39,7 +38,6 @@ import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.R;
@@ -67,7 +65,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_READ_STATUS;
-import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN_STATUS;
+import static com.shanchain.data.common.base.Constants.USER_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
 
 
@@ -698,10 +696,10 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
 
     private void setDeviceToken(){
-        if(PrefUtils.getBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_STATUS,false)){
+       final String userId = SCCacheUtils.getCache("0", "curUser");
+        if(!TextUtils.isEmpty(CommonCacheHelper.getInstance().getCache(userId,USER_DEVICE_TOKEN_STATUS)) && CommonCacheHelper.getInstance().getCache(userId,USER_DEVICE_TOKEN_STATUS).equalsIgnoreCase("true")){
             return;
         }
-        String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
         if(TextUtils.isEmpty(token)){
             return;
@@ -724,7 +722,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         public void onResponse(String response, int id) {
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                PrefUtils.putBoolean(AppManager.getInstance().getContext(),SP_KEY_DEVICE_TOKEN_STATUS,true);
+                                CommonCacheHelper.getInstance().setCache(userId,USER_DEVICE_TOKEN_STATUS,"true");
                             }
 
                         }

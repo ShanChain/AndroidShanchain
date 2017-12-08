@@ -180,11 +180,23 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtils.i("绑定成功 = " + response);
-                        if (isNeedPW) {
-                            resetPassWord(time, mEncryptAccount, mPasswordAccount);
-                        } else {
-                            ToastUtils.showToast(mContext, "绑定成功");
-                            finish();
+                        try {
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                                if (isNeedPW) {
+                                    resetPassWord(time, mEncryptAccount, mPasswordAccount);
+                                } else {
+                                    ToastUtils.showToast(mContext, "绑定成功");
+                                    finish();
+                                }
+                            }else if (TextUtils.equals(code , NetErrCode.ACCOUNT_HAS_BINDED)){
+                                ToastUtils.showToast(mContext, "此账号已被使用");
+                            }else {
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
                         }
 
                     }

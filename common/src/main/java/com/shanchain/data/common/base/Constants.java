@@ -58,6 +58,7 @@ public interface Constants {
         String CACHE_USER_MSG = "userMessage";
         String CACHE_USER_MSG_READ_STATUS = "cache_user_msg_read_status";
         String CACHE_USER_MSG_IS_RECEIVE = "isMsgReceive";
+        String USER_DEVICE_TOKEN_STATUS = "deviceTokenStatus";
 
 
         /*************本地缓存常量************/

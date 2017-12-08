@@ -16,6 +16,8 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.shanchain.shandata.base.MyApplication;
 
+import static com.shanchain.data.common.rn.modules.NavigatorModule.REACT_PROPS;
+
 /**
  * Created by flyye on 2017/8/16.
  */

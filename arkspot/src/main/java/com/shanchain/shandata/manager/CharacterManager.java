@@ -273,7 +273,7 @@ public class CharacterManager {
                             mPushAgent.getTagManager().list(new TagManager.TagListCallBack() {
                                 @Override
                                 public void onMessage(boolean isSuccess, List<String> result) {
-                                    LogUtils.e("flyye", result.toString());
+
                                 }
                             });
                         }
