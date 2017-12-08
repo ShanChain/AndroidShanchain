@@ -15,6 +15,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
@@ -75,6 +76,12 @@ public class TopicDetailsActivity extends BaseActivity implements ArthurToolBar.
         } else if (from == 1) {   //主页点击过来
             mTopicId= intent.getStringExtra("topicId");
         }
+
+        if(TextUtils.isEmpty(mTopicId)){
+            LogUtils.i("话题id为空  finish掉");
+            return;
+        }
+
         mDetailPresenter = new TopicDetailPresenterImpl(this);
         initToolBar();
         initRecyclerView();

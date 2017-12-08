@@ -22,7 +22,7 @@
         android:layout_below="@id/tb_forward_dynamic"
         style="@style/style_text_line_match"/>
 
-    <EditText
+    <com.shanchain.shandata.widgets.rEdit.RichEditor
         android:layout_below="@id/tb_forward_dynamic"
         android:id="@+id/et_forward_dynamic_content"
         android:layout_width="match_parent"

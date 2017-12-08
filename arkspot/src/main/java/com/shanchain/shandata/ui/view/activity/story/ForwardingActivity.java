@@ -9,10 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -32,14 +33,16 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicImagesAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.AtBean;
 import com.shanchain.shandata.ui.model.DynamicImageInfo;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
+import com.shanchain.shandata.ui.model.SpanBean;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.TopicInfo;
-import com.shanchain.shandata.utils.StringUtils;
+import com.shanchain.shandata.widgets.rEdit.InsertModel;
+import com.shanchain.shandata.widgets.rEdit.RichEditor;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,7 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
     @Bind(R.id.tb_forward_dynamic)
     ArthurToolBar mTbForwardDynamic;
     @Bind(R.id.et_forward_dynamic_content)
-    EditText mEtForwardDynamicContent;
+    RichEditor mEtForwardDynamicContent;
     @Bind(R.id.iv_forward_from)
     ImageView mIvForwardFrom;
     @Bind(R.id.tv_forward_from_at)
@@ -124,6 +127,22 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
 
         mTvForwardFromAt.setText("@" + mBean.getCharacterName());
         mTvForwardFromContent.setText(content);
+
+        mEtForwardDynamicContent.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
+            @Override
+            public void textChange(CharSequence s, int start, int before, int count) {
+
+                int selectionStart = mEtForwardDynamicContent.getSelectionStart();
+                String string = s.toString();
+                String sub = string.substring(0, selectionStart);
+
+                if (sub.endsWith("@")){
+                    clickAt();
+                }else if (sub.endsWith("#")){
+                    clickTopic();
+                }
+            }
+        });
 
         initRecyclerView();
     }
@@ -242,49 +261,36 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
                 TopicInfo topicInfo = (TopicInfo) data.getSerializableExtra("topic");
                 String topic = topicInfo.getTopic();
                 int topicId = topicInfo.getTopicId();
-                topicIds.add(topicId);
-                replaceTopic.add("#" + topic + "#");
 
-                String content = mEtForwardDynamicContent.getText().toString();
-                content += "#" + topic + "#";
-
-                for (int i = 0; i < replaceTopic.size(); i++) {
-                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
+                int start = mEtForwardDynamicContent.getSelectionStart();
+                Editable text = mEtForwardDynamicContent.getText();
+                LogUtils.i("txt = " + text.toString());
+                String sub = text.toString().substring(0, start);
+                if (sub.endsWith("#")){
+                    text.delete(start-1,start);
                 }
-
-                for (int i = 0; i < replaceAt.size(); i++) {
-                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
-                }
-
-                mEtForwardDynamicContent.setText(Html.fromHtml(content));
-
-                mEtForwardDynamicContent.setSelection(mEtForwardDynamicContent.getText().toString().length());
+                InsertModel model = new InsertModel("#",topic,"#3bbac8",topicId);
+                mEtForwardDynamicContent.insertSpecialStr(model);
             }
         } else if (requestCode == REQUEST_CODE_AT) {
             //@页面返回的数据
             if (data != null) {
-                ArrayList<String> contacts = data.getStringArrayListExtra("contacts");
-                atIds = data.getIntegerArrayListExtra("moduleIds");
-                String s = " ";
-                for (int i = 0; i < contacts.size(); i++) {
-                    LogUtils.d("@的人" + contacts.get(i));
-                    s += "@" + contacts.get(i) + ", ";
-                    replaceAt.add("@" + contacts.get(i) + ", ");
+
+                ArrayList<AtBean> list = (ArrayList<AtBean>) data.getSerializableExtra("atBeans");
+
+                for (int i = 0; i < list.size(); i ++) {
+
+                    int start = mEtForwardDynamicContent.getSelectionStart();
+                    Editable text = mEtForwardDynamicContent.getText();
+                    LogUtils.i("txt = " + text.toString());
+                    String sub = text.toString().substring(0, start);
+                    if (sub.endsWith("@")){
+                        text.delete(start-1,start);
+                    }
+
+                    InsertModel model = new InsertModel("@",list.get(i).getName(),"#3bbac8",list.get(i).getAtId());
+                    mEtForwardDynamicContent.insertSpecialStr(model);
                 }
-                String content = mEtForwardDynamicContent.getText().toString();
-
-                content += s;
-
-                for (int i = 0; i < replaceAt.size(); i++) {
-                    content = content.replace(replaceAt.get(i), StringUtils.getThemeColorStrAt(replaceAt.get(i)));
-                }
-
-                for (int i = 0; i < replaceTopic.size(); i++) {
-                    content = content.replace(replaceTopic.get(i), StringUtils.getThemeColorStrAt(replaceTopic.get(i)));
-                }
-
-                mEtForwardDynamicContent.setText(Html.fromHtml(content));
-                mEtForwardDynamicContent.setSelection(mEtForwardDynamicContent.getText().toString().length());
             }
         }
     }
@@ -336,18 +342,41 @@ public class ForwardingActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void forward(String content, List<String> urls) {
+        List<InsertModel> insertList = mEtForwardDynamicContent.getRichInsertList();
+        List<Integer> topicIds = new ArrayList<>();
+        List<Integer> atList = new ArrayList<>();
+        List<SpanBean> spanBeanList = new ArrayList<>();
+        for (InsertModel model : insertList) {
+            SpanBean spanBean = new SpanBean();
+            String insertContent = model.getInsertContent();
+            String insertRule = model.getInsertRule();
+            int insertId = model.getInsertId();
+            spanBean.setStr(insertContent);
+            spanBean.setSpaceId(Integer.parseInt(SCCacheUtils.getCacheSpaceId()));
+            if (TextUtils.equals(insertRule, "@")) {
+                atList.add(insertId);
+                spanBean.setType(Constants.SPAN_TYPE_AT);
+            } else if (TextUtils.equals(insertRule, "#")) {
+                topicIds.add(insertId);
+                spanBean.setType(Constants.SPAN_TYPE_TOPIC);
+            }
+            spanBean.setBeanId(insertId);
+            spanBeanList.add(spanBean);
+        }
+
+
         ReleaseContentInfo releaseContentInfo = new ReleaseContentInfo();
         releaseContentInfo.setContent(content);
         releaseContentInfo.setImgs(urls);
+        releaseContentInfo.setSpanBeanList(spanBeanList);
         String data = JSONObject.toJSONString(releaseContentInfo);
 
         ReleaseStoryContentInfo contentInfo = new ReleaseStoryContentInfo();
         contentInfo.setIntro(data);
         String dataString = JSONObject.toJSONString(contentInfo);
         String topicArr = JSONObject.toJSONString(topicIds);
-        final String referedModel = JSONObject.toJSONString(atIds);
         JSONArray jsonArray = new JSONArray();
-        for (Integer val:atIds) {
+        for (Integer val:atList) {
             JSONObject tagJson = new JSONObject();
             tagJson.put("tag","MODEL_"+ val);
             jsonArray.add(tagJson);

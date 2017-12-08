@@ -31,7 +31,7 @@
     <TextView
         android:id="@+id/tv_dynamic_details_comment"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:drawableLeft="@mipmap/abs_home_btn_comment_default"
         android:drawablePadding="@dimen/dimens_20dp"
         android:gravity="center_vertical"
