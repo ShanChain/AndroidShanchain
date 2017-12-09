@@ -16,8 +16,7 @@
             android:id="@+id/iv_item_dynamic_comment_avatar"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/photo_yue"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:layout_marginTop="3dp"

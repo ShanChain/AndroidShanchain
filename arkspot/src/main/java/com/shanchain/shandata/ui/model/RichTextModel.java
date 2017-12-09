@@ -8,7 +8,7 @@ public class RichTextModel {
 
     private String text;
     private String imgPath;
-    private boolean isImg;
+    private String img;
     private int index;
 
     public int getIndex() {
@@ -35,11 +35,11 @@ public class RichTextModel {
         this.imgPath = imgPath;
     }
 
-    public boolean isImg() {
-        return isImg;
+    public String getImg() {
+        return img;
     }
 
-    public void setImg(boolean img) {
-        isImg = img;
+    public void setImg(String img) {
+        this.img = img;
     }
 }

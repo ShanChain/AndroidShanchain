@@ -12,8 +12,7 @@
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimens_15dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/photo_yue"/>
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tv_item_contact_child_name"

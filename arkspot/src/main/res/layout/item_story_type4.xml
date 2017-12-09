@@ -20,7 +20,6 @@
 
     <ImageView
         android:id="@+id/iv_item_story_img"
-        android:src="@drawable/photo_city"
         android:scaleType="centerCrop"
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginRight="@dimen/dimens_15dp"
@@ -33,7 +32,6 @@
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:textColor="@color/colorTextDefault"
         android:ellipsize="end"
-        android:text="建军节活动墙上来袭"
         android:textSize="@dimen/sp_12"
         android:maxLines="2"
         android:layout_marginLeft="@dimen/dimens_15dp"

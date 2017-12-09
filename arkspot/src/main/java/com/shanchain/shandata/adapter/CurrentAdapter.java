@@ -85,7 +85,8 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
             holder.setVisible(R.id.tv_item_story_from, false);
         } else {
             holder.setVisible(R.id.tv_item_story_from, true);
-            holder.setText(R.id.tv_item_story_from, "来自" + bean.getSpaceName());
+            String spaceName = bean.getSpaceName();
+            holder.setText(R.id.tv_item_story_from, TextUtils.isEmpty(spaceName) ? "" : "来自" + spaceName);
         }
         TextView tvLike = holder.getView(R.id.tv_item_story_like);
 

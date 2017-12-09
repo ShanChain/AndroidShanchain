@@ -687,6 +687,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 
     @Override
     public void invokeDefaultOnBackPressed() {
+        onBackPressed();
     }
 
     @Subscribe

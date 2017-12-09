@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="170dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/photo_city"/>
+            android:src="@drawable/friend_home_bg"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_friend_home_head"

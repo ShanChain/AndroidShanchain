@@ -11,8 +11,7 @@
         android:layout_marginBottom="@dimen/dimens_10dp"
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginRight="@dimen/dimens_15dp"
-        android:layout_marginTop="@dimen/dimens_10dp"
-        android:src="@drawable/photo_yue"/>
+        android:layout_marginTop="@dimen/dimens_10dp"/>
 
     <TextView
         android:id="@+id/tv_item_all_nick"

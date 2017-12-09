@@ -5,17 +5,16 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.RichTextModel;
 import com.shanchain.shandata.widgets.richEditor.RichTextView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.List;
 
@@ -90,8 +89,8 @@ public class ReadModelActivity extends BaseActivity implements ArthurToolBar.OnL
 
         for (int i = 0; i < modelList.size(); i++) {
             RichTextModel model = modelList.get(i);
-            boolean img = model.isImg();
-            if (img) {
+            String img = model.getImg();
+            if (TextUtils.equals(img,"true")) {
                 String imgPath = model.getImgPath();
                 mTvReadContent.addImageViewAtIndex(model.getIndex(), imgPath);
             } else {

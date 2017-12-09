@@ -30,10 +30,10 @@ import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.FriendHomePresenter;
 import com.shanchain.shandata.ui.presenter.impl.FriendHomePresenterImpl;
-import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.ui.view.activity.mine.view.FriendHomeView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
 import com.shanchain.shandata.ui.view.activity.story.NovelDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-
 
 
 public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnClickListener, FriendHomeView, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
@@ -70,6 +69,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     private boolean isLoadMore = false;
     private LinearLayout mLlConversation;
     private String mName = "";
+    private String spaceName = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -78,15 +78,14 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
-        mCharacterId = getIntent().getIntExtra("characterId", 0);
-
-        String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
         if(!getIntent().hasExtra("characterId")){
+            String rnExtra = getIntent().getStringExtra(NavigatorModule.REACT_EXTRA);
             JSONObject jsonObject = JSONObject.parseObject(rnExtra);
             JSONObject rnGData = jsonObject.getJSONObject("gData");
             JSONObject rnData = jsonObject.getJSONObject("data");
             mCharacterId = Integer.parseInt(rnData.getString("characterId"));
-
+        }else {
+            mCharacterId = getIntent().getIntExtra("characterId", 0);
         }
 
         mPresenter = new FriendHomePresenterImpl(this);
@@ -168,13 +167,17 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             if (TextUtils.equals(cacheUserId, userId + "")) {
                 mBtnFocus.setVisibility(View.GONE);
                 mLlConversation.setVisibility(View.GONE);
+                if (!TextUtils.equals(cacheSpaceId,spaceId+"")){
+                    mPresenter.initSpaceInfo(spaceId);
+                }
             } else {
-                if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
+                if (TextUtils.equals(cacheSpaceId, spaceId + "")) {     //同时空
                     mBtnFocus.setVisibility(View.VISIBLE);
                     mLlConversation.setVisibility(View.VISIBLE);
-                } else {
+                } else {        //不同时空
                     mBtnFocus.setVisibility(View.GONE);
                     mLlConversation.setVisibility(View.GONE);
+                    mPresenter.initSpaceInfo(spaceId);
                 }
             }
             mName = friendInfo.getName();
@@ -205,6 +208,23 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
+    public void initSpaceSuc(String name) {
+        if (TextUtils.isEmpty(name)){
+            return;
+        }
+        spaceName = name;
+        List<StoryBeanModel> data = mAdapter.getData();
+        if (data == null || data.size() == 0){
+
+        }else {
+            for (int i = 0; i < data.size(); i ++) {
+                data.get(i).getStoryModel().getModelInfo().getBean().setSpaceName(spaceName);
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void getStoryInfoSuc(List<StoryBeanModel> list, Boolean isLast) {
         if (list == null) {
             if (isLast) {
@@ -218,6 +238,10 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
             } else {
                 mAdapter.setNewData(list);
                 mAdapter.disableLoadMoreIfNotFullPage(mRvFriendHome);
+            }
+            List<StoryBeanModel> data = mAdapter.getData();
+            for (int i = 0; i < data.size(); i ++) {
+                data.get(i).getStoryModel().getModelInfo().getBean().setSpaceName(spaceName);
             }
             mAdapter.notifyDataSetChanged();
             if (isLast) {

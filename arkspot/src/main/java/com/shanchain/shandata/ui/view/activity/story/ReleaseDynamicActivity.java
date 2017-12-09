@@ -394,8 +394,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
             List<RichTextModel> editData = getEditData();
             RichTextModel model = editData.get(0);
-            boolean isImg = model.isImg();
-            if (isImg) {
+            String isImg = model.getImg();
+            if (TextUtils.equals(isImg,"true")) {
                 popDialog();
             } else {
                 String text = model.getText();
@@ -536,11 +536,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             model.setIndex(i);
             if (!TextUtils.isEmpty(editData.inputStr)) {
                 LogUtils.i("str " + i + " = " + editData.inputStr);
-                model.setImg(false);
+                model.setImg("false");
                 model.setText(editData.inputStr);
             } else if (!TextUtils.isEmpty(editData.imagePath)) {
                 LogUtils.i("img " + i + " = " + editData.imagePath);
-                model.setImg(true);
+                model.setImg("true");
                 model.setImgPath(editData.imagePath);
             }
             list.add(model);
@@ -601,8 +601,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             mEtReleaseDynamicLong.clearAllLayout();
             for (int i = 0; i < richTextList.size(); i++) {
                 RichTextModel model = richTextList.get(i);
-                boolean img = model.isImg();
-                if (img) {
+                String img = model.getImg();
+                if (TextUtils.equals(img,"true")) {
                     LogUtils.i("位置 = " + mEtReleaseDynamicLong.getLastIndex() + " ; 图片地址 = " + model.getImgPath());
                     int lastIndex = mEtReleaseDynamicLong.getLastIndex();
                     mEtReleaseDynamicLong.addImageViewAtIndex(lastIndex, model.getImgPath());

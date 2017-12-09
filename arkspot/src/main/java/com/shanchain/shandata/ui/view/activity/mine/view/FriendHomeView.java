@@ -24,4 +24,6 @@ public interface FriendHomeView {
     void supportCancelSuccess(boolean suc, int position);
 
     void focusCancelSuc(boolean suc);
+
+    void initSpaceSuc(String name);
 }

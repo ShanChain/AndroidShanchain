@@ -261,4 +261,11 @@ public interface HttpApi {
 
     /** 获取话题-通过id*/
     String TOPIC_QUERY_ID = BASE_URL + "/v1/topic/query/id";
+
+    /** 获取时空简要信息  通过id数组*/
+    String SPACE_QUERY_BRIEF = BASE_URL + "/v1/space/query/brief";
+
+    /** 获取时空简要信息  通过id*/
+    String SPACE_BRIEF_ID = BASE_URL + "/v1/space/query/brief/id";
+
 }

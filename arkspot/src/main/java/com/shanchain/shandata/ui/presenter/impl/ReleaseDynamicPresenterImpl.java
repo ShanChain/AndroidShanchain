@@ -199,7 +199,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         mImgModels = new ArrayList<>();
         mData = new ArrayList<>(editData);
         RichTextModel titleModel = new RichTextModel();
-        titleModel.setImg(false);
+        titleModel.setImg("false");
         titleModel.setText(title);
         mData.add(0, titleModel);
 
@@ -207,7 +207,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
         for (int i = 0; i < mData.size(); i++) {
             RichTextModel model = mData.get(i);
             model.setIndex(i);
-            if (model.isImg()) {
+            if (TextUtils.equals(model.getImg(),"true")) {
                 mImgModels.add(model);
                 imgPaths.add(model.getImgPath());
             }
@@ -251,7 +251,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                 }
             }
 
-            if (!model.isImg()) {
+            if (!TextUtils.equals(model.getImg(),"true")) {
                 if (i == mData.size() - 1) {
                     String text = model.getText();
                     if (!TextUtils.isEmpty(text)) {

@@ -3,7 +3,13 @@ package com.shanchain.shandata.ui.presenter.impl;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.encryption.SCJsonUtils;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryModel;
@@ -11,12 +17,6 @@ import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.presenter.FriendHomePresenter;
 import com.shanchain.shandata.ui.view.activity.mine.view.FriendHomeView;
-import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -335,6 +335,40 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
                             mView.focusCancelSuc(false);
                         }
 
+                    }
+                });
+    }
+
+    @Override
+    public void initSpaceInfo(int spaceId) {
+        SCHttpUtils.post()
+                .url(HttpApi.SPACE_BRIEF_ID)
+                .addParams("spaceId","" + spaceId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e("获取时空简要信息失败");
+                        e.printStackTrace();
+                        mView.initSpaceSuc(null);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取到时空简要信息 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
+                                String data = SCJsonUtils.parseData(response);
+                                String name = JSONObject.parseObject(data).getString("name");
+                                mView.initSpaceSuc(name);
+                            }else{
+                                mView.initSpaceSuc(null);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            mView.initSpaceSuc(null);
+                        }
                     }
                 });
     }

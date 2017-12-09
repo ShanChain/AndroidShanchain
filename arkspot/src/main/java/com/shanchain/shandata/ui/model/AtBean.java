@@ -30,4 +30,7 @@ public class AtBean implements Serializable{
     public void setAtId(int atId) {
         this.atId = atId;
     }
+
+
+
 }

@@ -55,8 +55,7 @@
                 android:layout_height="200dp"
                 android:layout_marginLeft="@dimen/dimens_15dp"
                 android:layout_marginRight="@dimen/dimens_15dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/photo_bear"/>
+                android:scaleType="centerCrop"/>
         </LinearLayout>
 
     </ScrollView>
