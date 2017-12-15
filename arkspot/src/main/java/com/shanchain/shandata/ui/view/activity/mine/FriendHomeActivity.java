@@ -90,8 +90,8 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
 
         mPresenter = new FriendHomePresenterImpl(this);
         initToolBar();
-        initData();
         initRecyclerView();
+        initData();
 
     }
 
