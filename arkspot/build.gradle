@@ -9,7 +9,7 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
+        versionCode 3
         versionName "1.3.1"
 
 
@@ -57,23 +57,7 @@ android {
     }
 
     productFlavors {
-
-        wandoujia {}
-        //baidu {}
-        c360 {}
         arkspot {}
-        huawei {}
-        xiaomi {}
-        //yingyongbao {}
-        googlePlay {}
-        oppo {}
-        vivo {}
-        //meizu {}
-        //anzhi {}
-        androidmarket {}
-        //zhushou91 {}
-        ali {}
-        pugongying {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
@@ -83,6 +67,10 @@ android {
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+
+    repositories {
+        flatDir { dirs 'libs' }
     }
 
 }
@@ -120,4 +108,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.umeng.analytics:analytics:latest.integration'
     testCompile 'junit:junit:4.12'
+    compile(name: 'AlivcPlayer', ext: 'aar')
+    compile(name: 'AliyunVodPlayer', ext: 'aar')
+    compile(name: 'AliyunVodPlayerView', ext: 'aar')
 }

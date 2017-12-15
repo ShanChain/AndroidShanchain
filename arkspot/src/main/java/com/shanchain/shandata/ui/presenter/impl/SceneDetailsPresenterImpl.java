@@ -10,7 +10,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.ui.model.BdGroupMemberInfo;
 import com.shanchain.shandata.ui.model.ContactBean;
 import com.shanchain.shandata.ui.model.GroupOwnerBean;
@@ -20,7 +20,6 @@ import com.shanchain.shandata.ui.model.ResponseGroupMemberBean;
 import com.shanchain.shandata.ui.model.SceneDetailData;
 import com.shanchain.shandata.ui.presenter.SceneDetailsPresenter;
 import com.shanchain.shandata.ui.view.activity.chat.view.SceneDetailsView;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.ui.model.CharacterConversationBean;
 import com.shanchain.shandata.ui.model.ConversationInfo;
 import com.shanchain.shandata.ui.model.GroupConversationBean;

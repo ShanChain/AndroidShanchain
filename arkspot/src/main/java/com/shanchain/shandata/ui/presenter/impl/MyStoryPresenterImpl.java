@@ -9,13 +9,12 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.ui.model.IsFavBean;
 import com.shanchain.shandata.ui.model.StoryDetailInfo;
 import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.presenter.MyStoryPresenter;
 import com.shanchain.shandata.ui.view.activity.mine.view.MyStoryView;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;

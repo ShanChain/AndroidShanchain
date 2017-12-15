@@ -193,8 +193,8 @@ public class CurrentAdapter extends BaseMultiItemQuickAdapter<StoryBeanModel, Ba
                                     NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
                                 }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
                                     String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
-                                    int spaceId = clickData.getSpaceId();
-                                    if (TextUtils.equals(cacheSpaceId,spaceId+"")){
+                                    String spaceId = clickData.getSpaceId();
+                                    if (TextUtils.equals(cacheSpaceId,spaceId)){
                                         int beanId = clickData.getBeanId();
                                         Intent intent = new Intent(mContext, TopicDetailsActivity.class);
                                         intent.putExtra("topicId",beanId + "");

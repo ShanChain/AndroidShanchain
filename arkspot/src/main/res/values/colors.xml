@@ -39,4 +39,5 @@
     <color name="colorGuideSecond">#F5B32B</color>
     <color name="colorGuideThird">#80C40D</color>
     <color name="colorGuidePointSelected">#dfdfdf</color>
+    <color name="colorShareCancel">#f4f4f4</color>
 </resources>

@@ -6,7 +6,7 @@ package com.shanchain.shandata.ui.model;
 
 public class SpanBean {
     private String str;
-    private int spaceId;
+    private String spaceId;
     private int type;
     private int beanId;
 
@@ -18,11 +18,11 @@ public class SpanBean {
         this.str = str;
     }
 
-    public int getSpaceId() {
+    public String getSpaceId() {
         return spaceId;
     }
 
-    public void setSpaceId(int spaceId) {
+    public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }
 

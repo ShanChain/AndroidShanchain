@@ -61,6 +61,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import me.shaohui.shareutil.ShareUtil;
+import me.shaohui.shareutil.share.ShareListener;
+import me.shaohui.shareutil.share.SharePlatform;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, BaseQuickAdapter.RequestLoadMoreListener, DynamicDetailView {
 
@@ -315,8 +318,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void report() {
-        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+        final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_share_report,
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel,R.id.tv_dialog_share});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -333,10 +336,70 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                         //取消
                         customDialog.dismiss();
                         break;
+                    case R.id.tv_dialog_share:
+                        showShare();
+                        customDialog.dismiss();
+                        break;
+
                 }
             }
         });
         customDialog.show();
+    }
+
+    private void showShare() {
+        final CustomDialog shareDialog = new CustomDialog(mContext,true,1.0,R.layout.dialog_share,new int[]{
+                R.id.iv_share_weichat,R.id.iv_share_circle,R.id.iv_share_qq,
+                R.id.iv_share_qzone,R.id.iv_share_weibo,R.id.tv_dialog_share_cancel
+        });
+
+        shareDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.iv_share_weichat:
+                        ShareUtil.shareMedia(mContext, SharePlatform.WX,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧！","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        break;
+                    case R.id.iv_share_circle:
+                        ShareUtil.shareMedia(mContext, SharePlatform.WX_TIMELINE,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        break;
+                    case R.id.iv_share_qq:
+                        ShareUtil.shareMedia(mContext, SharePlatform.QQ,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        break;
+                    case R.id.iv_share_qzone:
+                        ShareUtil.shareMedia(mContext, SharePlatform.QZONE,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        break;
+                    case R.id.iv_share_weibo:
+                        ShareUtil.shareMedia(mContext, SharePlatform.WEIBO,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        break;
+                    case R.id.tv_dialog_share_cancel:
+                        shareDialog.dismiss();
+                        break;
+                }
+            }
+        });
+
+        shareDialog.show();
+
+    }
+
+    private class SCShareListener extends ShareListener{
+
+        @Override
+        public void shareSuccess() {
+            LogUtils.i("分享成功");
+        }
+
+        @Override
+        public void shareFailure(Exception e) {
+            LogUtils.i("分享失败");
+            e.printStackTrace();
+        }
+
+        @Override
+        public void shareCancel() {
+            LogUtils.i("分享取消");
+        }
     }
 
 

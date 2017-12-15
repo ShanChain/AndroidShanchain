@@ -8,14 +8,13 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.ui.model.ContactBean;
 import com.shanchain.shandata.ui.model.IsFavBean;
 import com.shanchain.shandata.ui.model.StoryChainBean;
 import com.shanchain.shandata.ui.model.StoryChainModel;
 import com.shanchain.shandata.ui.presenter.StoryChainPresenter;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryChainView;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;

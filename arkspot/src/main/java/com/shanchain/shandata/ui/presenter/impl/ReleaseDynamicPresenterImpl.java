@@ -59,7 +59,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
             String insertRule = model.getInsertRule();
             int insertId = model.getInsertId();
             spanBean.setStr(insertContent);
-            spanBean.setSpaceId(Integer.parseInt(SCCacheUtils.getCacheSpaceId()));
+            spanBean.setSpaceId(SCCacheUtils.getCacheSpaceId());
             if (TextUtils.equals(insertRule, "@")) {
                 atList.add(insertId);
                 spanBean.setType(Constants.SPAN_TYPE_AT);

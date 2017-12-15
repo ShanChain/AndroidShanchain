@@ -1,8 +1,7 @@
 package com.shanchain.data.common.net;
 
 import com.shanchain.data.common.base.AppManager;
-import com.shanchain.data.common.base.RoleManager;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
 import okhttp3.Response;

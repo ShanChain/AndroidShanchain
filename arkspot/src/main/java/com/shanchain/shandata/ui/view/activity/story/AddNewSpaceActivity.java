@@ -30,7 +30,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.OssHelper;
 import com.shanchain.data.common.utils.SCImageUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.shanchain.data.common.utils.encryption.SCJsonUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;

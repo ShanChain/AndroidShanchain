@@ -137,7 +137,7 @@ public class ChainAdapter extends BaseQuickAdapter<StoryChainModel,BaseViewHolde
                             NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
                         }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
                             String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
-                            int spaceId = clickData.getSpaceId();
+                            String spaceId = clickData.getSpaceId() + "";
                             if (TextUtils.equals(cacheSpaceId,spaceId+"")){
                                 int beanId = clickData.getBeanId();
                                 Intent intent = new Intent(mContext, TopicDetailsActivity.class);
