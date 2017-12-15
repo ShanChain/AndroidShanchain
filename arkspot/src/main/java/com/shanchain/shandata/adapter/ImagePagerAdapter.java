@@ -3,9 +3,9 @@ package com.shanchain.shandata.adapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 
@@ -41,7 +41,8 @@ public class ImagePagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView imageView = new ImageView(container.getContext());
+        PhotoView imageView = new PhotoView(container.getContext());
+        //ImageView imageView = new ImageView(container.getContext());
         LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);

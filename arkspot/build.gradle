@@ -107,6 +107,7 @@ dependencies {
     compile 'com.gjiazhe:wavesidebar:1.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.github.chrisbanes:PhotoView:2.1.3'
     testCompile 'junit:junit:4.12'
     compile(name: 'AlivcPlayer', ext: 'aar')
     compile(name: 'AliyunVodPlayer', ext: 'aar')
