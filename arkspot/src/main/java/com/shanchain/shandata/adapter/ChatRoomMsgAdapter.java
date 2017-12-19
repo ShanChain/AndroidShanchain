@@ -27,6 +27,10 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
 
     private List<MsgInfo> mMsgInfoList;
 
+    public List<MsgInfo> getData(){
+        return mMsgInfoList;
+    }
+
     public ChatRoomMsgAdapter(List<MsgInfo> msgInfoList) {
         mMsgInfoList = msgInfoList;
     }

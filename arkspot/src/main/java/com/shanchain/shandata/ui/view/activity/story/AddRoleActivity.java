@@ -24,14 +24,12 @@ import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.OssHelper;
-import com.shanchain.data.common.utils.SCImageUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -39,7 +37,6 @@ import com.shanchain.shandata.ui.model.CharacterModel;
 import com.shanchain.shandata.ui.model.StoryTagInfo;
 import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -320,8 +317,28 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
 
     private void uploadImg() {
         showLoadingDialog();
+        List<String> imgSrc = new ArrayList<>();
+        imgSrc.add(mImgPath);
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                LogUtils.i("上传成功");
+                String url = urls.get(0);
+                commitData(url);
+            }
 
-        SCHttpUtils.post()
+            @Override
+            public void error() {
+                closeLoadingDialog();
+                ToastUtils.showToast(mContext, "上传头像失败");
+                LogUtils.i("oss上传失败");
+            }
+        });
+
+        helper.upLoadImg(mContext,imgSrc);
+
+      /*  SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num", 1 + "")
                 .build()
@@ -375,7 +392,7 @@ public class AddRoleActivity extends BaseActivity implements ArthurToolBar.OnLef
                             LogUtils.i("=====code不对？=====");
                         }
                     }
-                });
+                });*/
     }
 
 

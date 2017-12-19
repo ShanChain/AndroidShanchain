@@ -23,14 +23,12 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.OssHelper;
-import com.shanchain.data.common.utils.SCImageUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AddRoleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -38,7 +36,6 @@ import com.shanchain.shandata.ui.model.SpaceModel;
 import com.shanchain.shandata.ui.model.StoryTagInfo;
 import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -302,8 +299,27 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
 
     private void upLoad() {
         showLoadingDialog();
+        List<String> imgSrc = new ArrayList<>();
+        imgSrc.add(mImgPath);
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                String imgUrl = urls.get(0);
+                commitData(imgUrl);
+            }
 
-        SCHttpUtils.post()
+            @Override
+            public void error() {
+                closeLoadingDialog();
+                ToastUtils.showToast(mContext,"上传时空背景失败");
+                LogUtils.i("oss上传失败");
+            }
+        });
+
+        helper.upLoadImg(mContext,imgSrc);
+
+     /*   SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num", 1 + "")
                 .build()
@@ -357,7 +373,7 @@ public class AddNewSpaceActivity extends BaseActivity implements ArthurToolBar.O
                             LogUtils.i("=====code不对？=====");
                         }
                     }
-                });
+                });*/
 
     }
 

@@ -523,8 +523,13 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onError(int i, String s) {
                 //closeProgress();
-                ToastUtils.showToast(mContext, "网络异常");
                 LogUtils.i("登录环信账号失败 = " + s + "code" + i);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(mContext, "网络异常");
+                    }
+                });
                 if (i == 200) {
 
                 }

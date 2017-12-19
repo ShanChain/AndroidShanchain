@@ -11,19 +11,16 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.push.PushFilterBuilder;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.OssHelper;
 import com.shanchain.data.common.utils.SCImageUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.shandata.ui.model.ReleaseContentInfo;
 import com.shanchain.shandata.ui.model.ReleaseStoryContentInfo;
 import com.shanchain.shandata.ui.model.RichTextModel;
 import com.shanchain.shandata.ui.model.SpanBean;
-import com.shanchain.shandata.ui.model.UpLoadImgBean;
 import com.shanchain.shandata.ui.presenter.ReleaseDynamicPresenter;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseDynamicView;
 import com.shanchain.shandata.widgets.rEdit.InsertModel;
@@ -134,7 +131,24 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
 
         final List<String> compressImages = compressImages(context, imgPaths);
 
-        SCHttpUtils.post()
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                LogUtils.i("上传阿里云成功");
+                releaseDynamic(word,urls,tailId,richInsertList);
+            }
+
+            @Override
+            public void error() {
+                LogUtils.i("上传阿里云失败");
+                Exception e = new Exception("上传阿里云失败");
+                mReleaseDynamicView.releaseFailed("", e);
+            }
+        });
+        helper.upLoadImg(context,imgPaths);
+
+      /*  SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num", compressImages.size() + "")
                 .build()
@@ -161,8 +175,11 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                         String accessKeyId = response.getAccessKeyId();
                         String accessKeySecret = response.getAccessKeySecret();
                         String securityToken = response.getSecurityToken();
+                        String endPoint = response.getEndPoint();
+                        String bucket = response.getBucket();
+                        String host = response.getHost();
                         LogUtils.d("图片名字集合 = " + imgUrls.toString());
-                        final OssHelper ossHelper = new OssHelper(context, accessKeyId, accessKeySecret, securityToken);
+                        final OssHelper ossHelper = new OssHelper(context, accessKeyId, accessKeySecret, securityToken,endPoint,bucket,host);
                         ossHelper.setOnUploadListener(new OssHelper.OnUploadListener() {
                             @Override
                             public void upLoadSuccess(boolean isSuccess) {
@@ -190,7 +207,7 @@ public class ReleaseDynamicPresenterImpl implements ReleaseDynamicPresenter {
                         ossHelper.ossUpload(compressImages, imgUrls);
 
                     }
-                });
+                });*/
 
     }
 

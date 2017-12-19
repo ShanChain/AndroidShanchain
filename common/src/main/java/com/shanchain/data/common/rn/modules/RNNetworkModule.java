@@ -16,18 +16,13 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
-import com.shanchain.data.common.bean.UpLoadImgBean;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetDataFormatUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.NetworkUtils;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.OssHelper;
-import com.shanchain.data.common.utils.SCImageUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
 
 import org.json.JSONObject;
 
@@ -171,8 +166,27 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
         for (int i = 0; i < filePaths.size(); i ++) {
             files.add(filePaths.getString(i));
         }
+        Activity topActivity =
+                ActivityStackManager.getInstance().getTopActivity();
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                WritableArray urlList = new WritableNativeArray();
+                for (int i = 0; i < urls.size(); i ++) {
+                    urlList.pushString(urls.get(i));
+                }
+                callback.invoke(urlList);
+            }
 
-        SCHttpUtils.post()
+            @Override
+            public void error() {
+                errorCallBack.invoke("阿里云文件上传失败");
+            }
+        });
+        helper.upLoadImg(topActivity,files);
+
+ /*       SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)
                 .addParams("num",files.size()+"")
                 .build()
@@ -192,6 +206,7 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                             String accessKeySecret = response.getAccessKeySecret();
                             String securityToken = response.getSecurityToken();
                             List<String> uuidList = response.getUuidList();
+
                             upLoadOss(accessKeyId,accessKeySecret,securityToken,files,uuidList,callback,errorCallBack);
                         } catch (Exception e) {
                             LogUtils.i("获取图片地址失败");
@@ -200,11 +215,11 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
                         }
 
                     }
-                });
+                });*/
 
     }
 
-    private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken, List<String> files, final List<String> uuidList, final Callback callback,final Callback errorCallBack) {
+   /* private void upLoadOss(String accessKeyId, String accessKeySecret, String securityToken, List<String> files, final List<String> uuidList, final Callback callback,final Callback errorCallBack) {
 
         Activity topActivity =
                 ActivityStackManager.getInstance().getTopActivity();
@@ -233,5 +248,5 @@ public class RNNetworkModule extends ReactContextBaseJavaModule {
         });
         helper.ossUpload(compressImages,uuidList);
     }
-
+*/
 }

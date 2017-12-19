@@ -20,7 +20,12 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.ChatRoomMsgAdapter;
@@ -31,6 +36,7 @@ import com.shanchain.shandata.ui.model.MsgInfo;
 import com.shanchain.shandata.ui.presenter.ChatPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ChatPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.chat.view.ChatView;
+import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.rEdit.InsertModel;
 import com.shanchain.shandata.widgets.rEdit.RichEditor;
@@ -45,6 +51,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 
 public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, ChatView, SwipeRefreshLayout.OnRefreshListener {
@@ -99,6 +106,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     String nickName = "";
     private String groupHeadImg = "";
     private List<String> atMembers = new ArrayList<>();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_chat;
@@ -277,7 +285,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void atMember() {
         Intent intent = new Intent(this, ChatAtActivity.class);
         intent.putExtra("groupId", toChatName);
-        intent.putStringArrayListExtra("members",memberList);
+        intent.putStringArrayListExtra("members", memberList);
         startActivityForResult(intent, REQUEST_CODE_AT);
     }
 
@@ -288,7 +296,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             GroupBriefBean atBean = (GroupBriefBean) data.getSerializableExtra("at");
             String name = atBean.getName();
             String hxUserName = atBean.getHxUserName();
-            InsertModel model = new InsertModel("@",name,"",0);
+            InsertModel model = new InsertModel("@", name, "", 0);
             model.setExtra(hxUserName);
             mEtChatMsg.insertSpecialStr(model);
         }
@@ -297,7 +305,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void insertFrame() {
         int selectionStart = mEtChatMsg.getSelectionStart();
         Editable editable = mEtChatMsg.getText();
-        editable.insert(selectionStart,"【】");
+        editable.insert(selectionStart, "【】");
         mEtChatMsg.setSelection(selectionStart + 1);
     }
 
@@ -321,12 +329,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             @Override
             public void onClick(View v) {
                 String sceneContent = etSceneContent.getText().toString().trim();
-                if (TextUtils.isEmpty(sceneContent)){
-                    ToastUtils.showToast(mContext,"不能发布空的情境");
+                if (TextUtils.isEmpty(sceneContent)) {
+                    ToastUtils.showToast(mContext, "不能发布空的情境");
                     return;
                 }
                 int msgAttr = Constants.ATTR_SCENE;
-                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg,atMembers);
+                mChatPresenter.sendMsg(sceneContent, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg, atMembers);
                 dialog.dismiss();
             }
         });
@@ -351,12 +359,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         }
 
         List<InsertModel> models = mEtChatMsg.getRichInsertList();
-        for (int i = 0; i < models.size(); i ++) {
+        for (int i = 0; i < models.size(); i++) {
             String hxId = models.get(i).getExtra();
             atMembers.add(hxId);
         }
 
-        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg,atMembers);
+        mChatPresenter.sendMsg(msg, toChatName, msgAttr, mChatType, myHeadImg, nickName, mIsGroup, groupHeadImg, atMembers);
         mEtChatMsg.getText().clear();
     }
 
@@ -370,8 +378,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         //群信息或者好友信息
         Intent intent = new Intent(this, SceneDetailsActivity.class);
         intent.putExtra("isGroup", mIsGroup);
-        if (mIsGroup){
-            intent.putExtra("","");
+        if (mIsGroup) {
+            intent.putExtra("", "");
         }
         intent.putExtra("toChatName", toChatName);
         startActivity(intent);
@@ -428,10 +436,56 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
         mChatRoomMsgAdapter.setOnAvatarClickListener(new ChatRoomMsgAdapter.OnAvatarClickListener() {
             @Override
             public void onAvatarClick(View v, int position) {
-
+                MsgInfo msgInfo = mChatRoomMsgAdapter.getData().get(position);
+                String character = msgInfo.getEMMessage().getStringAttribute(Constants.MSG_CHARACTER_ID, "");
+                String userName = msgInfo.getEMMessage().getUserName();
+                if (TextUtils.isEmpty(character)) {
+                    obtainCharacterId(userName);
+                } else {
+                    goFriendHomePage(character);
+                }
             }
         });
 
+    }
+
+    private void obtainCharacterId(String userName) {
+        SCHttpUtils.post()
+                .url(HttpApi.HX_USER_QUERY)
+                .addParams("userName", userName)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.e("获取用户character信息失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            LogUtils.i("获取到character信息 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                String data = SCJsonUtils.parseData(response);
+                                String characterId = SCJsonUtils.parseString(data, "characterId");
+                                goFriendHomePage(characterId);
+                            } else {
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                });
+    }
+
+    private void goFriendHomePage(String characterId) {
+        Intent intent = new Intent(mContext, FriendHomeActivity.class);
+        int character = Integer.parseInt(characterId);
+        intent.putExtra("characterId",character);
+        startActivity(intent);
     }
 
     /**
@@ -479,7 +533,7 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             members.remove(0);
             memberList = new ArrayList<>(members);
             mTbChat.setTitleText(groupName);
-            for (int i = 0; i < memberList.size(); i ++) {
+            for (int i = 0; i < memberList.size(); i++) {
                 LogUtils.i("群成员有 = " + members.get(i));
             }
         }

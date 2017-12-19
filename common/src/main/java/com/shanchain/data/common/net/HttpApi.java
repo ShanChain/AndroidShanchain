@@ -268,4 +268,6 @@ public interface HttpApi {
     /** 获取时空简要信息  通过id*/
     String SPACE_BRIEF_ID = BASE_URL + "/v1/space/query/brief/id";
 
+    String HX_USER_QUERY = BASE_URL_IM + "/hx/user/query";
+
 }

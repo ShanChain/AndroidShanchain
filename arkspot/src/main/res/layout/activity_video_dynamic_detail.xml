@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_dynamic_comment"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightImage="@mipmap/abs_home_btn_more_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="动态"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <include layout="@layout/layout_story_person_info" />
+
+    <TextView
+        android:id="@+id/tv_video_dynamic_title"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextThree"
+        android:text="你离理想有多远？"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="史蒂夫和技术规范 杀手信息：惊云楼大煞风景客户秘密刺客 （以下是杀手提供的杀贴）大家反馈就是 世界最不容易被"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorTextDefault"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"/>
+
+
+
+</LinearLayout>

@@ -8,6 +8,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -37,6 +38,7 @@ public class ChatPresenterImpl implements ChatPresenter {
     private List<MsgInfo> mMsgInfoList = new ArrayList<>();
     private List<EMMessage> copyMessageList = new ArrayList();
     private List<String> members = new ArrayList<>();
+    private String characherId = SCCacheUtils.getCacheCharacterId();
     public ChatPresenterImpl(ChatView chatView) {
         mChatView = chatView;
     }
@@ -88,6 +90,7 @@ public class ChatPresenterImpl implements ChatPresenter {
         txtSendMessage.setAttribute(Constants.MSG_IS_GROUP,isGroup);
         txtSendMessage.setAttribute(Constants.MSG_GROUP_IMG,groupImg);
         txtSendMessage.setAttribute(Constants.MSG_AT_LIST,atArr);
+        txtSendMessage.setAttribute(Constants.MSG_CHARACTER_ID,characherId);
         txtSendMessage.setChatType(chatType);
         txtSendMessage.setStatus(EMMessage.Status.INPROGRESS);
         mEMMessageList.add(txtSendMessage);

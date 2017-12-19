@@ -8,7 +8,6 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,11 @@ import okhttp3.Call;
 
 public class SCUploadImgHelper {
 
-    public void upLoadImg(final Context context,final List<String> srcPaths){
+    private String mBucket;
+    private String mEndPoint;
+    private String mHost;
+
+    public void upLoadImg(final Context context, final List<String> srcPaths){
         int size = srcPaths.size();
         SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)
@@ -44,6 +47,9 @@ public class SCUploadImgHelper {
                                 String accessKeyId = JSONObject.parseObject(dataStr).getString("accessKeyId");
                                 String accessKeySecret = JSONObject.parseObject(dataStr).getString("accessKeySecret");
                                 String securityToken = JSONObject.parseObject(dataStr).getString("securityToken");
+                                mBucket = JSONObject.parseObject(dataStr).getString("bucket");
+                                mEndPoint = JSONObject.parseObject(dataStr).getString("endPoint");
+                                mHost = JSONObject.parseObject(dataStr).getString("host");
                                 String arr = JSONObject.parseObject(dataStr).getString("uuidList");
                                 List<String> uuidList = JSONObject.parseArray(arr, String.class);
                                 LogUtils.i("accessKeyId = " + accessKeyId + ";\n accessKeySecret = " + accessKeySecret + ";\n securityToken = "+securityToken
@@ -62,7 +68,7 @@ public class SCUploadImgHelper {
     }
 
     private void upLoadOss(Context context, List<String> srcPaths, String accessKeyId, String accessKeySecret, String securityToken, List<String> uuidList) {
-        final OssHelper helper = new OssHelper(context,accessKeyId,accessKeySecret,securityToken);
+        final OssHelper helper = new OssHelper(context,accessKeyId,accessKeySecret,securityToken,mEndPoint,mBucket,mHost);
 
         final List<String> tempUrls = new ArrayList<>(uuidList);
 
@@ -101,5 +107,7 @@ public class SCUploadImgHelper {
     public void setUploadListener(UploadListener listener){
         this.mListener = listener;
     }
+
+
 
 }
