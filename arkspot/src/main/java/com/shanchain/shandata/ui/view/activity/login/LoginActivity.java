@@ -546,7 +546,7 @@ public class LoginActivity extends BaseActivity {
     public void showProgress() {
         mDialog = new ProgressDialog(this);
         mDialog.setMax(100);
-        mDialog.setMessage("登录中。。");
+        mDialog.setMessage("登录中..");
         mDialog.setCancelable(false);
         mDialog.show();
     }
