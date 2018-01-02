@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.story;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,6 +63,7 @@ public class VideoDynamicDetailActivity extends BaseActivity implements DynamicV
 
     @Override
     protected void initViewsAndEvents() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         initToolBar();
         initRecyclerView();
         initData();
@@ -71,7 +73,6 @@ public class VideoDynamicDetailActivity extends BaseActivity implements DynamicV
         String id = "9";
         mPresenter = new DynamicVideoPresenterImpl(this);
         mPresenter.initData(id);
-
     }
 
     private void initRecyclerView() {
@@ -125,7 +126,6 @@ public class VideoDynamicDetailActivity extends BaseActivity implements DynamicV
     public void onRightClick(View v) {
 
     }
-
 
     @Override
     public void onLoadMoreRequested() {
