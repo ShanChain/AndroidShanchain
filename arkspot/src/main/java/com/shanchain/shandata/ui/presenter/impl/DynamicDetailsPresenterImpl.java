@@ -147,7 +147,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
 
     @Override
     public void supportCancel(String storyId) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId)
                 .build()
@@ -259,7 +259,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
 
     @Override
     public void supportCancelComment(int commentId, final int position) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_COMMENT_SUPPORT_CANCEL)
                 .addParams("commentId", "" + commentId)
                 .build()

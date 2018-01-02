@@ -155,7 +155,7 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
 
         String dataArray = JSONObject.toJSONString(list);
         LogUtils.i("dataArray = " + dataArray);
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()
@@ -244,7 +244,7 @@ public class TopicDetailPresenterImpl implements TopicDetailPresenter {
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId)
                 .build()

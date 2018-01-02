@@ -79,7 +79,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
 
     @Override
     public void supportCancel(int storyId,final int position) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
@@ -200,7 +200,7 @@ public class PraisedPresenterImpl implements PraisedPresenter {
         }
         String jArr = JSONObject.toJSONString(checkList);
 
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_ISFAV_LIST)
                 .addParams("checkIdList",jArr)
                 .build()

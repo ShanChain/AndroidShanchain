@@ -94,6 +94,11 @@ public class SCHttpUtils {
                 .addParams("userId",userId);
     }
 
+    public static PostFormBuilder postWithUidAndCharId(){
+        String cacheCharacterId = SCCacheUtils.getCacheCharacterId();
+        return postWithUserId().addParams("characterId",cacheCharacterId);
+    }
+
 
     public static PostFormBuilder postWithUidSpaceIdAndCharId(){
         String userId = SCCacheUtils.getCacheUserId();

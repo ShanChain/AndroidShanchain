@@ -17,6 +17,7 @@ public class NetErrCode {
     public static final String COMMON_TOKEN_OVERDUE_CODE = "999991";    //token过期
     public static final String COMMON_SPACE_PERMISSION = "999990";
     public static final String ACCOUNT_HAS_BINDED = "999989";   //账号已绑定
+    public static final String VOD_UNCOMPLETED_TRANSCODING = "999988";  //视频转码中。。。
     //本地访问错误码
     public static final String REQUEST_NO_NETWORK = "L_00000";
     public static final String REQUEST_NO_PARAMS = "L_00001";

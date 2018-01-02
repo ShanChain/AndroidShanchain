@@ -81,7 +81,7 @@ public class MyStoryPresenterImpl implements MyStoryPresenter {
 
     @Override
     public void supportCancel(int storyId, final int position) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
@@ -152,7 +152,7 @@ public class MyStoryPresenterImpl implements MyStoryPresenter {
         }
         String jArr = JSONObject.toJSONString(chechList);
 
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_ISFAV_LIST)
                 .addParams("checkIdList",jArr)
                 .build()

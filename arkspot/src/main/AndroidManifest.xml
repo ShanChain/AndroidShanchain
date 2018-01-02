@@ -19,6 +19,9 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <application
         android:name=".base.MyApplication"
@@ -260,6 +263,18 @@
         </provider>
 
         <activity android:name=".ui.view.activity.story.VideoDynamicDetailActivity">
+        </activity>
+        <activity android:name=".ui.view.activity.story.CreateDynamicActivity">
+        </activity>
+        <activity
+            android:name=".ui.view.activity.story.ReleaseVideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.view.activity.story.RecordVideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 

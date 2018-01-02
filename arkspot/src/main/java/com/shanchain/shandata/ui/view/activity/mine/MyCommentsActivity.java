@@ -379,7 +379,7 @@ public class MyCommentsActivity extends BaseActivity implements ArthurToolBar.On
                     }
                 });
 
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_IS_FAV)
                 .addParams("checkId",""+storyId)
                 .build()

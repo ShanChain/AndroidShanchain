@@ -67,7 +67,6 @@ public class CharacterManager {
             if (!TextUtils.isEmpty(jsonObject.getString("modelId")) && !TextUtils.isEmpty(jsonObject.getString("spaceId"))) {
                 switchRole(jsonObject.getString("modelId"), jsonObject.getString("spaceId"), jsonObject.getString("spaceInfo"));
             }
-
         } else if (event.receiver.equalsIgnoreCase(EventConstant.EVENT_MODULE_ARKSPOT) && event.key.equalsIgnoreCase(EventConstant.EVENT_KEY_LOGOUT)) {
             logout();
         }
@@ -149,8 +148,6 @@ public class CharacterManager {
     }
 
     private void loginHx() {
-
-
         final String hxUserName = mRegisterHxBean.getHxUserName();
         final String hxPassword = mRegisterHxBean.getHxPassword();
         ThreadUtils.runOnSubThread(new Runnable() {

@@ -12,7 +12,7 @@ public class EventConstant {
     public static final String EVENT_KEY_NEW_MSG = "EVENT_KEY_NEW_MSG";
     public static final String EVENT_KEY_BIND_OTHER_ACCOUNT = "EVENT_KEY_BIND_OTHER_ACCOUNT";
 
-
+    public static final String EVENT_KEY_SHARE_WEB = "EVENT_KEY_SHARE_WEB";
 
     public static final String EVENT_KEY_LOGOUT = "EVENT_KEY_LOGOUT";
 

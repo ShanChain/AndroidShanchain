@@ -247,7 +247,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId",storyId)
                 .build()
@@ -376,7 +376,7 @@ public class FriendHomePresenterImpl implements FriendHomePresenter {
     private void obtainStoryInfo(final Boolean last, List<String> detailIds) {
         String dataArray = JSONObject.toJSONString(detailIds);
         LogUtils.i("dataArray = " + dataArray);
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()

@@ -100,7 +100,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
 
     @Override
     public void supportCancel(int storyId,final int position) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId + "")
                 .build()
@@ -172,7 +172,7 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
 
         String jArr = JSONObject.toJSONString(ids);
 
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_ISFAV_LIST)
                 .addParams("checkIdList", jArr)
                 .build()
@@ -260,7 +260,5 @@ public class StoryChainPresenterImpl implements StoryChainPresenter {
                         }
                     }
                 });
-
-
     }
 }

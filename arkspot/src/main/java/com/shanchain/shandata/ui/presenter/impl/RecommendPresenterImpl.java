@@ -120,7 +120,7 @@ public class RecommendPresenterImpl implements RecommendPresenter {
 
         String dataArray = JSONObject.toJSONString(list);
         LogUtils.d("dataArray = " + dataArray);
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()
@@ -282,7 +282,7 @@ public class RecommendPresenterImpl implements RecommendPresenter {
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId)
                 .build()

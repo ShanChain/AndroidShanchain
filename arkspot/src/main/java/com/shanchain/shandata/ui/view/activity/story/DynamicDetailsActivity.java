@@ -23,6 +23,8 @@ import com.jaeger.ninegridimageview.NineGridImageView;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
+import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
@@ -55,13 +57,14 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import me.shaohui.shareutil.ShareUtil;
 import me.shaohui.shareutil.share.ShareListener;
 import me.shaohui.shareutil.share.SharePlatform;
 
@@ -161,13 +164,13 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                         }
                         int headerLayoutCount = mDynamicCommentAdapter.getHeaderLayoutCount();
 
-                        TextView tvLike= (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
+                        TextView tvLike = (TextView) mDynamicCommentAdapter.getViewByPosition(position + headerLayoutCount, R.id.tv_item_comment_like);
                         tvLike.setEnabled(false);
                         break;
                     case R.id.iv_item_dynamic_comment_avatar:
                         BdCommentBean bean = mDynamicCommentAdapter.getData().get(position);
                         int characterId = bean.getCharacterId();
-                        Intent intent = new Intent(mContext,FriendHomeActivity.class);
+                        Intent intent = new Intent(mContext, FriendHomeActivity.class);
                         Intent intentFriend = intent.putExtra("characterId", characterId);
                         startActivity(intentFriend);
                         break;
@@ -198,7 +201,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         tvName.setText(characterName);
         tvTime.setText(DateUtils.formatFriendly(new Date(mDynamicModel.getCreateTime())));
         tvForwarding.setText(mDynamicModel.getTranspond() + "");
-        if(mBean == null){
+        if (mBean == null) {
             //从rn转过来的页面暂时不可转发
             tvForwarding.setVisibility(View.INVISIBLE);
         }
@@ -249,14 +252,14 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                             gDataBean.setToken(token);
                             gDataBean.setUserId(uId);
                             detailExt.setgData(gDataBean);
-                            detailExt.setModelId(clickData.getBeanId()+"");
-                            String json =JSONObject.toJSONString(detailExt);
+                            detailExt.setModelId(clickData.getBeanId() + "");
+                            String json = JSONObject.toJSONString(detailExt);
                             bundle.putString(NavigatorModule.REACT_PROPS, json);
-                            NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen,bundle);
-                        }else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC){
-                            Intent intent = new Intent(mContext,TopicDetailsActivity.class);
-                            intent.putExtra("from",1);
-                            intent.putExtra("topicId",clickData.getBeanId()+"");
+                            NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen, bundle);
+                        } else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC) {
+                            Intent intent = new Intent(mContext, TopicDetailsActivity.class);
+                            intent.putExtra("from", 1);
+                            intent.putExtra("topicId", clickData.getBeanId() + "");
                             startActivity(intent);
                         }
                     }
@@ -319,7 +322,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     private void report() {
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_share_report,
-                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel,R.id.tv_dialog_share});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel, R.id.tv_dialog_share});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -348,29 +351,37 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void showShare() {
-        final CustomDialog shareDialog = new CustomDialog(mContext,true,1.0,R.layout.dialog_share,new int[]{
-                R.id.iv_share_weichat,R.id.iv_share_circle,R.id.iv_share_qq,
-                R.id.iv_share_qzone,R.id.iv_share_weibo,R.id.tv_dialog_share_cancel
+        final CustomDialog shareDialog = new CustomDialog(mContext, true, 1.0, R.layout.dialog_share, new int[]{
+                R.id.iv_share_weichat, R.id.iv_share_circle, R.id.iv_share_qq,
+                R.id.iv_share_qzone, R.id.iv_share_weibo, R.id.tv_dialog_share_cancel
         });
 
         shareDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
+
+                //obtainShareInfo(view);
+
                 switch (view.getId()) {
                     case R.id.iv_share_weichat:
-                        ShareUtil.shareMedia(mContext, SharePlatform.WX,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧！","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        postShareEvent(SharePlatform.WX);
+                        // ShareUtil.shareMedia(mContext, SharePlatform.WX, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧！", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_circle:
-                        ShareUtil.shareMedia(mContext, SharePlatform.WX_TIMELINE,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        postShareEvent(SharePlatform.WX_TIMELINE);
+                        //ShareUtil.shareMedia(mContext, SharePlatform.WX_TIMELINE, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_qq:
-                        ShareUtil.shareMedia(mContext, SharePlatform.QQ,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        postShareEvent(SharePlatform.QQ);
+                        //ShareUtil.shareMedia(mContext, SharePlatform.QQ, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_qzone:
-                        ShareUtil.shareMedia(mContext, SharePlatform.QZONE,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        postShareEvent(SharePlatform.QZONE);
+                        //ShareUtil.shareMedia(mContext, SharePlatform.QZONE, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_weibo:
-                        ShareUtil.shareMedia(mContext, SharePlatform.WEIBO,"千千世界","在这里，可以体验即兴表演的乐趣，快来加入吧","http://www.qianqianshijie.com","http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg",new SCShareListener());
+                        postShareEvent(SharePlatform.WEIBO);
+                        //ShareUtil.shareMedia(mContext, SharePlatform.WEIBO, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.tv_dialog_share_cancel:
                         shareDialog.dismiss();
@@ -383,7 +394,17 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     }
 
-    private class SCShareListener extends ShareListener{
+    private void postShareEvent(int shareType) {
+        String storyId = mStoryId;
+        JSONObject obj = new JSONObject();
+        obj.put("shareType",shareType);
+        obj.put("id",storyId);
+        obj.put("type",Constants.SHARE_ID_TYPE_STORY);
+        EventBus.getDefault().post(new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT, EventConstant.EVENT_KEY_SHARE_WEB, obj, null));
+    }
+
+
+    private class SCShareListener extends ShareListener {
 
         @Override
         public void shareSuccess() {
@@ -416,21 +437,21 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 int spaceId = mCharacterInfo.getSpaceId();
                 String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
 
-                if (TextUtils.equals(cacheSpaceId,spaceId+"")){
+                if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
                     Intent intent = new Intent(mActivity, ForwardingActivity.class);
                     intent.putExtra("forward", mBean);
                     startActivity(intent);
-                }else {
-                    ToastUtils.showToast(mContext,"不同世界不能进行转发操作");
+                } else {
+                    ToastUtils.showToast(mContext, "不同世界不能进行转发操作");
                 }
                 break;
             case R.id.tv_item_story_comment:
 
                 String comSpaceId = SCCacheUtils.getCacheSpaceId();
-                if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+                if (TextUtils.equals(comSpaceId, mSpaceId + "")) {
                     showPop();
-                }else {
-                    ToastUtils.showToast(mContext,"不同世界不能进行评论");
+                } else {
+                    ToastUtils.showToast(mContext, "不同世界不能进行评论");
                 }
 
                 break;
@@ -458,10 +479,10 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     @OnClick(R.id.tv_dynamic_details_comment)
     public void onClick() {
         String comSpaceId = SCCacheUtils.getCacheSpaceId();
-        if (TextUtils.equals(comSpaceId,mSpaceId + "")){
+        if (TextUtils.equals(comSpaceId, mSpaceId + "")) {
             showPop();
-        }else {
-            ToastUtils.showToast(mContext,"不同世界不能进行评论");
+        } else {
+            ToastUtils.showToast(mContext, "不同世界不能进行评论");
         }
 
     }
@@ -469,7 +490,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private void showPop() {
         FragmentManager manager = getSupportFragmentManager();
         CommentDialog dialog = new CommentDialog();
-        dialog.show(manager,"tag");
+        dialog.show(manager, "tag");
         dialog.setOnSendClickListener(new CommentDialog.OnSendClickListener() {
             @Override
             public void onSendClick(View v, String msg) {
@@ -580,7 +601,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             tvLike.setEnabled(true);
             Drawable drawable = getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_selected);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            tvLike.setCompoundDrawables( null, null,drawable, null);
+            tvLike.setCompoundDrawables(null, null, drawable, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 5));
             tvLike.setText(supportCount + 1 + "");
             commentBean.setSupportCount(supportCount + 1);
@@ -600,7 +621,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             tvLike.setEnabled(true);
             Drawable drawable = getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_default);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            tvLike.setCompoundDrawables( null, null,drawable, null);
+            tvLike.setCompoundDrawables(null, null, drawable, null);
             tvLike.setCompoundDrawablePadding(DensityUtils.dip2px(mContext, 5));
             if (supportCount - 1 <= 0) {
                 tvLike.setText("0");

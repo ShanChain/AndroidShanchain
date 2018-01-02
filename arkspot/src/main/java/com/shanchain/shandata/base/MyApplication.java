@@ -59,7 +59,6 @@ import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
 
-
 public class MyApplication extends BaseApplication {
 
     private static Context mContext;
@@ -116,10 +115,64 @@ public class MyApplication extends BaseApplication {
         initShareAndLogin();
         initInstance();
         initUmengSocial();
+        initBugly();
+    }
+
+    /** bugly崩溃日志上报*/
+    private void initBugly() {
+        //CrashReport.initCrashReport(getApplicationContext(),"1b75aa14d2",true);
     }
 
     private void initUmengSocial() {
+        //全局异常捕捉
+          /*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+              try {
+                    String product = Build.PRODUCT;
+                    String device = Build.DEVICE;
+                    String board = Build.BOARD;
+                    String bootloader = Build.BOOTLOADER;
+                    String brand = Build.BRAND;
+                    String display = Build.DISPLAY;
+                    String fingerprint = Build.FINGERPRINT;
+                    String hardware = Build.HARDWARE;
+                    String host = Build.HOST;
+                    String id = Build.ID;
+                    String manufacturer = Build.MANUFACTURER;
+                    String model = Build.MODEL;
+                    String serial = Build.SERIAL;
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("produt = " + product);
+                    sb.append("device = " + device);
+                    sb.append("board = " + board);
+                    sb.append("bootloader = " + bootloader);
+                    sb.append("brand = " + brand);
+                    sb.append("display = " + display);
+                    sb.append("fingerprint = " + fingerprint);
+                    sb.append("hardware = " + hardware);
+                    sb.append("host = " + host);
+                    sb.append("id = " + id);
+                    sb.append("manufacturer = " + manufacturer);
+                    sb.append("model = " + model);
+                    sb.append("serial = " + serial);
 
+                    Writer writer = new StringWriter();
+                    PrintWriter printWriter = new PrintWriter(writer);
+                    e.printStackTrace(printWriter);
+                    printWriter.flush();
+                    writer.flush();
+                    String s1 = writer.toString();
+                    writer.close();
+                    printWriter.close();
+                    sb.append(s1);
+                    String errorLog = sb.toString();
+                    LogUtils.i(errorLog);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });*/
     }
 
     private void initInstance() {

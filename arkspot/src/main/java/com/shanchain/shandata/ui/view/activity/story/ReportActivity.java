@@ -7,15 +7,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.net.SCHttpStringCallBack;
-import com.shanchain.shandata.R;
-import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -142,8 +141,8 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
                             LogUtils.i("举报失败！");
-                            ToastUtils.showToast(mContext, "举报失败");
                             e.printStackTrace();
+                            ToastUtils.showToast(mContext, "举报失败");
                         }
 
                         @Override
@@ -154,9 +153,6 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                             finish();
                         }
                     });
-
-        } else if (isCommit && mIsGroupReport) {
-            //群举报
 
         } else {
             ToastUtils.showToast(this, "请选择举报类型！");

@@ -268,6 +268,18 @@ public interface HttpApi {
     /** 获取时空简要信息  通过id*/
     String SPACE_BRIEF_ID = BASE_URL + "/v1/space/query/brief/id";
 
+    /** 环信用户查询*/
     String HX_USER_QUERY = BASE_URL_IM + "/hx/user/query";
+
+    /** 阿里云视频上传*/
+    String OSS_VIDEO_UPLOAD = BASE_URL + "/oss/video/uploadAuth/app";
+
+    /** 添加演绎动态*/
+    String PLAY_ADD = BASE_URL + "/v1/play/add";
+
+    /** 获取分享信息*/
+    String SHARE_SAVE = BASE_URL + "/v1/share/save";
+
+    String PLAY_GET_ID = BASE_URL + "/v1/play/get/id";
 
 }

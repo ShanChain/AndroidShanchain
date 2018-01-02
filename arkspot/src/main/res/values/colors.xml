@@ -34,10 +34,12 @@
     <color name="colorLoginHint">#ddd</color>
     <color name="colorTextSecondary">#333333</color>
     <color name="colorTextThree">#2e2e2e</color>
+    <color name="colorTextFourth">#ff9b6a</color>
     <color name="colorDialogBg">#4222</color>
     <color name="colorGuideFirst">#49B8FD</color>
     <color name="colorGuideSecond">#F5B32B</color>
     <color name="colorGuideThird">#80C40D</color>
     <color name="colorGuidePointSelected">#dfdfdf</color>
     <color name="colorShareCancel">#f4f4f4</color>
+    <color name="colorHintSecond">#c9c9cb</color>
 </resources>

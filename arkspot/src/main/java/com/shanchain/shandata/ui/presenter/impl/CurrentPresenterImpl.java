@@ -3,7 +3,11 @@ package com.shanchain.shandata.ui.presenter.impl;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.ui.model.ResponseStoryChainBean;
 import com.shanchain.shandata.ui.model.ResponseStoryIdBean;
 import com.shanchain.shandata.ui.model.ResponseStoryListInfo;
@@ -14,11 +18,6 @@ import com.shanchain.shandata.ui.model.StoryModelInfo;
 import com.shanchain.shandata.ui.model.StoryResponseInfo;
 import com.shanchain.shandata.ui.presenter.CurrentPresenter;
 import com.shanchain.shandata.ui.view.fragment.view.CurrentView;
-import com.shanchain.data.common.net.HttpApi;
-import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +115,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
         String dataArray = JSONObject.toJSONString(list);
         LogUtils.i("dataArray = " + dataArray);
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_RECOMMEND_DETAIL)
                 .addParams("dataArray", dataArray)
                 .build()
@@ -235,7 +234,7 @@ public class CurrentPresenterImpl implements CurrentPresenter {
 
     @Override
     public void storyCancelSupport(final int position, String storyId) {
-        SCHttpUtils.postWithChaId()
+        SCHttpUtils.postWithUidAndCharId()
                 .url(HttpApi.STORY_SUPPORT_CANCEL)
                 .addParams("storyId", storyId)
                 .build()

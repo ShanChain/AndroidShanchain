@@ -40,8 +40,8 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
-import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.rn.fragment.RNMineFragment;
@@ -50,7 +50,7 @@ import com.shanchain.shandata.rn.fragment.RNfragment;
 import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.model.SpaceInfo;
 import com.shanchain.shandata.ui.view.activity.chat.ContactActivity;
-import com.shanchain.shandata.ui.view.activity.story.ReleaseDynamicActivity;
+import com.shanchain.shandata.ui.view.activity.story.CreateDynamicActivity;
 import com.shanchain.shandata.ui.view.activity.story.SelectContactActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.ui.view.fragment.NewsFragment;
@@ -223,7 +223,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 //            String filePath = getCacheDir().getAbsoluteFile() + "arkspot-release.apk";
 //            File apkFile = new File(filePath);
 //            Uri.withAppendedPath(Uri.fromFile(getCacheDir()),"arkspot-release.apk");
-            down.setDestinationUri(Uri.withAppendedPath(Uri.fromFile(getExternalCacheDir()),"arkspot-release.apk"));
+            down.setDestinationUri(Uri.withAppendedPath(Uri.fromFile(getExternalCacheDir()), "arkspot-release.apk"));
             downloadId = manager.enqueue(down);
         }
     }
@@ -462,7 +462,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     public void onRightClick(View v) {
         switch (mFragmentId) {
             case 0:
-                readyGo(ReleaseDynamicActivity.class);
+                readyGo(CreateDynamicActivity.class);
+                overridePendingTransition(R.anim.activity_create_dynamic_in, R.anim.activity_anim_default);
                 break;
             case 1:
                 newsRightClick();

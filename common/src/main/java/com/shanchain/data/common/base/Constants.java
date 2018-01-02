@@ -104,4 +104,18 @@ public interface Constants {
         int SPAN_TYPE_TOPIC = 2;
 
         String SP_KEY_GUIDE = "sp_key_guide";
+
+        /**************上传的视频类型**************/
+        String VIDEO_UPLOAD_DYNAMIC = "dynamic";
+        String VIDEO_UPLOAD_NORMAL = "normal";
+
+        /**************分享相关**************/
+        String SHARE_ID_TYPE_STORY = "story";
+        String SHARE_ID_TYPE_NOVEL= "novel";
+        String SHARE_ID_TYPE_PLAY= "play";
+        String SHARE_ID_TYPE_REHEARSE= "rehearse";
+        String SHARE_ID_TYPE_SPACE= "space";
+
+        String share_platform_type_weixin = "";
+
 }

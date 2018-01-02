@@ -8,11 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ContactDao {
-    private static Context mContext;
+
+    private static DataBaseHelper helper;
 
     public static void initContactDao(Context context) {
-        mContext = context.getApplicationContext();
+        if (context == null) {
+            throw new RuntimeException("使用ContactDao之前请 现在Application中初始化！");
+        }
+        helper = new DataBaseHelper(context);
     }
 
 
@@ -20,11 +25,8 @@ public class ContactDao {
      * 描述：获取本地联系人
      */
     public static List<String> getContacts(String username) {
-        if (mContext == null) {
-            throw new RuntimeException("使用ContactDao之前请 现在Application中初始化！");
-        }
-        DataBaseHelper openHelper = new DataBaseHelper(mContext);
-        SQLiteDatabase database = openHelper.getReadableDatabase();
+
+        SQLiteDatabase database = helper.getReadableDatabase();
         Cursor cursor = database.query(DataBaseHelper.TABLE_CONTACT, new String[]{DataBaseHelper.CONTACT},
                 DataBaseHelper.USERNAME + "=?", new String[]{username}, null, null, DataBaseHelper.CONTACT);
         List<String> contactsList = new ArrayList<>();
@@ -45,8 +47,7 @@ public class ContactDao {
      *                     2. 再添加contactsList添加进去
      */
     public static void updateContacts(String username, List<String> contactsList) {
-        DataBaseHelper openHelper = new DataBaseHelper(mContext);
-        SQLiteDatabase database = openHelper.getWritableDatabase();
+        SQLiteDatabase database = helper.getWritableDatabase();
         database.beginTransaction();
         database.delete(DataBaseHelper.TABLE_CONTACT, DataBaseHelper.USERNAME + "=?", new String[]{username});
         ContentValues values = new ContentValues();
@@ -60,5 +61,6 @@ public class ContactDao {
         database.endTransaction();
         database.close();
     }
+
 
 }

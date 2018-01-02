@@ -49,6 +49,7 @@ dependencies {
     compile 'me.iwf.photopicker:PhotoPicker:0.9.5@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile 'cn.jzvd:jiaozivideoplayer:6.2.3'
 }
 
 task copyDownloadableDepsToLibs(type: Copy) {
