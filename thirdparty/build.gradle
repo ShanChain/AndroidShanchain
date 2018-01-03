@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
 
 project.ext.react = [
-        cliPath: "../react-native/node_modules/react-native/cli.js",
+       // cliPath: "../react-native/node_modules/react-native/cli.js",
+        cliPath: "../RN_improv/node_modules/react-native/cli.js",
+
         // the name of the generated asset file containing your JS bundle
         bundleAssetName: "index.android.bundle",
 
@@ -29,9 +31,10 @@ project.ext.react = [
         //         'devDisabledIn${buildType}'
 
         // the root of your project, i.e. where "package.json" lives
-        root: "../react-native/",
+//        root: "../react-native/",
+       root: "../RN_improv/",
 
-        // where to put the JS bundle asset in debug mode
+       // where to put the JS bundle asset in debug mode
         jsBundleDirDebug: "$buildDir/intermediates/assets/debug",
 
         // where to put the JS bundle asset in release mode
@@ -55,7 +58,9 @@ project.ext.react = [
         extraPackagerArgs: []
 ]
 
-apply from: "../react-native/node_modules/react-native/react.gradle"
+//apply from: "../react-native/node_modules/react-native/react.gradle"
+apply from: "../RN_improv/node_modules/react-native/react.gradle"
+
 
 
 
