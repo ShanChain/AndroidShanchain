@@ -110,6 +110,8 @@ public class VideoDynamicDetailActivity extends BaseActivity implements DynamicV
         mTvLike.setOnClickListener(this);
         mAvatar.setOnClickListener(this);
         mTvComment.setOnClickListener(this);
+        mPlayer.backButton.setVisibility(View.GONE);
+        mPlayer.batteryTimeLayout.setVisibility(View.GONE);
     }
 
     private void initToolBar() {

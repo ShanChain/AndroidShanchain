@@ -82,7 +82,7 @@ public class CreateDynamicActivity extends BaseActivity {
 
                 }
 
-                return false;
+                return true;
             }
         });
     }

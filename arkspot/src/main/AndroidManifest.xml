@@ -265,7 +265,9 @@
                 tools:replace="android:resource"/>
         </provider>
 
-        <activity android:name=".ui.view.activity.story.VideoDynamicDetailActivity">
+        <activity android:name=".ui.view.activity.story.VideoDynamicDetailActivity"
+                  android:configChanges="orientation|screenSize|keyboardHidden"
+                  android:screenOrientation="portrait">
         </activity>
         <activity android:name=".ui.view.activity.story.CreateDynamicActivity">
         </activity>
@@ -275,9 +277,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.view.activity.story.RecordVideoActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait">
+            android:name=".ui.view.activity.story.RecordVideoActivity">
         </activity>
     </application>
 

@@ -200,9 +200,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 String string = s.toString();
                 String sub = string.substring(0, selectionStart);
 
-                if (sub.endsWith("@")){
+                if (sub.endsWith("@")) {
                     atContact();
-                }else if (sub.endsWith("#")){
+                } else if (sub.endsWith("#")) {
                     selectTopic();
                 }
             }
@@ -349,10 +349,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
                 Editable text = mEtReleaseDynamicContent.getText();
                 LogUtils.i("txt = " + text.toString());
                 String sub = text.toString().substring(0, start);
-                if (sub.endsWith("#")){
-                    text.delete(start-1,start);
+                if (sub.endsWith("#")) {
+                    text.delete(start - 1, start);
                 }
-                InsertModel model = new InsertModel("#",topic,"#3bbac8",topicId);
+                InsertModel model = new InsertModel("#", topic, "#3bbac8", topicId);
                 mEtReleaseDynamicContent.insertSpecialStr(model);
             }
         } else if (requestCode == REQUEST_CODE_AT) {
@@ -362,17 +362,17 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
 
                 ArrayList<AtBean> list = (ArrayList<AtBean>) data.getSerializableExtra("atBeans");
 
-                for (int i = 0; i < list.size(); i ++) {
+                for (int i = 0; i < list.size(); i++) {
 
                     int start = mEtReleaseDynamicContent.getSelectionStart();
                     Editable text = mEtReleaseDynamicContent.getText();
                     LogUtils.i("txt = " + text.toString());
                     String sub = text.toString().substring(0, start);
-                    if (sub.endsWith("@")){
-                        text.delete(start-1,start);
+                    if (sub.endsWith("@")) {
+                        text.delete(start - 1, start);
                     }
 
-                    InsertModel model = new InsertModel("@",list.get(i).getName(),"#3bbac8",list.get(i).getAtId());
+                    InsertModel model = new InsertModel("@", list.get(i).getName(), "#3bbac8", list.get(i).getAtId());
                     mEtReleaseDynamicContent.insertSpecialStr(model);
                 }
             }
@@ -395,7 +395,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             List<RichTextModel> editData = getEditData();
             RichTextModel model = editData.get(0);
             String isImg = model.getImg();
-            if (TextUtils.equals(isImg,"true")) {
+            if (TextUtils.equals(isImg, "true")) {
                 popDialog();
             } else {
                 String text = model.getText();
@@ -602,7 +602,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             for (int i = 0; i < richTextList.size(); i++) {
                 RichTextModel model = richTextList.get(i);
                 String img = model.getImg();
-                if (TextUtils.equals(img,"true")) {
+                if (TextUtils.equals(img, "true")) {
                     LogUtils.i("位置 = " + mEtReleaseDynamicLong.getLastIndex() + " ; 图片地址 = " + model.getImgPath());
                     int lastIndex = mEtReleaseDynamicLong.getLastIndex();
                     mEtReleaseDynamicLong.addImageViewAtIndex(lastIndex, model.getImgPath());

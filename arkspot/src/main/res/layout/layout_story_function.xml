@@ -38,7 +38,7 @@
         android:drawablePadding="@dimen/dimens_10dp"
         android:gravity="center"
         android:text="232"
-        android:drawableLeft="@mipmap/abs_home_btn_thumbsup_selscted"
+        android:drawableLeft="@mipmap/abs_home_btn_thumbsup_default"
         android:layout_marginRight="@dimen/dimens_15dp"
         android:layout_width="60dp"
         android:layout_height="26dp"/>

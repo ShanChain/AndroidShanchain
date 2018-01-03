@@ -64,7 +64,7 @@ public class DynamicVideoPresenterImpl implements DynamicVideoPresenter {
                     }
                 });
 
-        SCHttpUtils.post()
+        SCHttpUtils.postWithUserId()
                 .url(HttpApi.STORY_IS_FAV)
                 .addParams("checkId", id)
                 .build()
