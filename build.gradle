@@ -22,6 +22,7 @@ allprojects {
             url "$rootDir/react-native/node_modules/react-native/android"
         }
     }
+
 }
 
 task clean(type: Delete) {
