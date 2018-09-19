@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@color/colorWhite"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:text="添加情境"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="@dimen/sp_14"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:gravity="center"
+        android:textColor="@color/colorHint"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12sp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:text="描述一下时间、地点的基本背景，场景气氛的说明等。"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+       style="@style/style_text_line_match"/>
+    
+    <EditText
+        android:paddingTop="@dimen/dimens_10dp"
+        android:paddingBottom="@dimen/dimens_10dp"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:paddingRight="@dimen/dimens_15dp"
+        android:hint="输入情境文字"
+        android:gravity="top"
+        android:textSize="14sp"
+        android:textColor="@color/colorTextDefault"
+        android:textColorHint="@color/colorHint"
+        android:background="@null"
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_dialog_add_scene"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"/>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dimens_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_dialog_add_scene_cancel"
+            android:textColor="@color/colorActive"
+            android:text="取消"
+            android:background="@drawable/shape_btn_dialog_cancel"
+            android:textSize="@dimen/sp_14"
+            android:layout_width="60dp"
+            android:layout_height="30dp"/>
+        <Button
+            android:id="@+id/btn_dialog_add_scene_sure"
+            android:textColor="@color/colorWhite"
+            android:layout_marginLeft="40dp"
+            android:text="确定"
+            android:background="@drawable/shape_btn_dialog_sure"
+            android:textSize="@dimen/sp_14"
+            android:layout_width="60dp"
+            android:layout_height="30dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

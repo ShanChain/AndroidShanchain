@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="90dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_search_role"
+        app:cardCornerRadius="8dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/iv_item_search_role"
+            android:layout_width="70dp"
+            android:layout_height="70dp"/>
+
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_toRightOf="@id/cv_search_role"
+        android:textColor="#333333"
+        android:text="庄颜"
+        android:layout_marginTop="11dp"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:lines="1"
+        android:id="@+id/tv_item_search_role_name"
+        android:textSize="@dimen/sp_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_item_search_role_des"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorHint"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:text="庄颜，中国科幻小说《三体|| 黑暗森林》中的人 物。“她”是逻辑构思的小说的主人公，是....."
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:layout_below="@id/tv_item_search_role_name"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="@dimen/dimens_20dp"
+        android:layout_toRightOf="@id/cv_search_role"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="sizeToolbarActive">17sp</dimen>
+    <dimen name="sizeToolbarInactive">15sp</dimen>
+    <dimen name="arthur_navigation_height">56dp</dimen>
+
+    <dimen name="arthur_toolbar_padding">16dp</dimen>
+    <dimen name="arthur_toolbar_title_text_size">18sp</dimen>
+    <dimen name="arthur_toolbar_button_text_size">15sp</dimen>
+    <dimen name="dimens_15dp">15dp</dimen>
+    <dimen name="dimens_22dp">22dp</dimen>
+    <dimen name="dimens_20dp">20dp</dimen>
+    <dimen name="dimens_10dp">10dp</dimen>
+    <dimen name="dimens_26dp">26dp</dimen>
+    <dimen name="dimens_5dp">5dp</dimen>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="sp_txt_size_content">14sp</dimen>
+
+</resources>

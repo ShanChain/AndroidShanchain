@@ -1,0 +1,6 @@
+[submodule "react-native"]
+	path = react-native
+	url = https://github.com/ShanChain2020/react-native
+[submodule "RN_improv"]
+	path = RN_improv
+	url = https://github.com/ShanChain2020/RN_improv

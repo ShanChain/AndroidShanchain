@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_story_person_info"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_chain_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:ellipsize="end"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:maxLines="4"
+        android:text="#太空局纪念建军节#不知道你们在说什么，@章北海 其实我也很迷茫，不知道为什么是我。\n好像有什么不太对。\n我也说不上来。\n肯定是我太傻"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="12sp"/>
+
+    <com.jaeger.ninegridimageview.NineGridImageView
+        android:id="@+id/ngiv_story_chain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        app:imgGap="8dp"
+        app:maxSize="3"
+        app:showStyle="grid"
+        app:singleImgSize="345dp"/>
+
+    <View
+        style="@style/style_text_line_match"
+        android:layout_height="2dp"
+        android:layout_marginTop="@dimen/dimens_10dp"/>
+
+    <include layout="@layout/layout_story_function"/>
+
+    <View style="@style/style_text_line_match"/>
+
+</LinearLayout>

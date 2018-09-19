@@ -1,0 +1,31 @@
+{
+  "name": "RN_improv",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "react-devtools": "react-devtools",
+    "flow": "flow",
+    "reverse": "adb reverse tcp:8081 tcp:8081",
+    "bundle-android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.android.js  --bundle-output ../improv/src/main/assets/index.android.bundle  --assets-dest ../improv/src/main/res/",
+    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ../RNBundle/index.ios.jsbundle --assets-dest ../ShanChain/RNBundle"
+  },
+  "dependencies": {
+    "react": "16.0.0",
+    "react-native": "^0.50.0",
+    "react-navigation": "^1.0.0-beta.22",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-jest": "22.0.4",
+    "babel-preset-react-native": "4.0.0",
+    "jest": "22.0.4",
+    "react-devtools": "^3.0.0",
+    "react-test-renderer": "16.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

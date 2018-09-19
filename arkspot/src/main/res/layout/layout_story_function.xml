@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="end|center"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    tools:showIn="@layout/item_story_type1">
+
+    <TextView
+        android:id="@+id/tv_item_story_forwarding"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/sp_12"
+        android:drawablePadding="@dimen/dimens_10dp"
+        android:gravity="center"
+        android:text="232"
+        android:drawableLeft="@mipmap/abs_home_btn_forwarding_default"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_comment"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/sp_12"
+        android:drawablePadding="@dimen/dimens_10dp"
+        android:gravity="center"
+        android:text="232"
+        android:drawableLeft="@mipmap/abs_home_btn_comment_default"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_like"
+        android:textColor="@color/colorHint"
+        android:textSize="@dimen/sp_12"
+        android:drawablePadding="@dimen/dimens_10dp"
+        android:gravity="center"
+        android:text="232"
+        android:drawableLeft="@mipmap/abs_home_btn_thumbsup_default"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="60dp"
+        android:layout_height="26dp"/>
+
+</LinearLayout>

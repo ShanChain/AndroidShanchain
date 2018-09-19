@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_announcement_details"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightImage="@mipmap/abs_home_btn_dynamic_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="公告详情"
+        app:titleTextSize="16"/>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_announcement_details_title"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="#ffeddb"
+                android:gravity="center"
+                android:text="新版本上线！请仔细阅读一下说明"
+                android:textColor="#ff8200"
+                android:textSize="@dimen/sp_12"/>
+
+
+            <TextView
+                android:id="@+id/tv_announcement_details_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:layout_marginTop="@dimen/dimens_10dp"
+                android:text="【新版本提醒】请仔细阅读穿越守则中的最新说明，特别是： 1.严禁崩皮，不要发布与人物不相符的言论，违者重罚。 2.不许涉三，留联系方式请小窗私聊。 谢谢配合！"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_12"/>
+
+            <ImageView
+                android:id="@+id/iv_announcement_details"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

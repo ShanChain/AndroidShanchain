@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:background="@color/colorWhite"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp">
+
+        <ImageView
+            android:id="@+id/iv_friend_home_bg"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/friend_home_bg"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_friend_home_head"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:scaleType="centerCrop"
+            app:civ_border_color="@color/colorWhite"
+            app:civ_border_width="2dp"/>
+
+        <TextView
+            android:id="@+id/tv_friend_home_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="95dp"
+            android:lines="1"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_friend_home_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:layout_marginTop="125dp"
+            android:lines="1"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_12"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:visibility="gone"
+        android:layout_marginTop="-18dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/btn_friend_home_focus"
+        android:layout_width="100dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_btn_focus"
+        android:elevation="20dp"
+        android:text="关注TA"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_conversation"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="82dp">
+
+        <TextView
+            android:id="@+id/tv_friend_home_conversation"
+            android:layout_marginTop="@dimen/dimens_10dp"
+            android:textSize="12sp"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingRight="@dimen/dimens_15dp"
+            android:textColor="@color/colorTextSecondary"
+            android:text="@string/str_friend_home_conversation"
+            android:gravity="center"
+            android:drawableTop="@mipmap/abs_friends_btn_dialogue_default"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+    
+</LinearLayout>

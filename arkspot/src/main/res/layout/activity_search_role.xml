@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_search_role"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightImage="@mipmap/abs_find_btn_addto_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="查找角色"
+        app:titleTextSize="16"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:visibility="gone"
+            android:textCursorDrawable="@null"
+            android:id="@+id/et_search_role_search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_15dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/shape_edit_search_pressed"
+            android:drawableLeft="@mipmap/abs_therrbody_icon_search_default"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:hint="搜索角色"
+            android:lines="1"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorHint"
+            android:textSize="@dimen/sp_14"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_search_role"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+</LinearLayout>

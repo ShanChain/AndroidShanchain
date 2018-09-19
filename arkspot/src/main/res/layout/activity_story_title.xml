@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_story_title"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:rightImage="@mipmap/abs_find_btn_addto_default"
+        app:titleText="三体"
+        app:titleTextSize="16"/>
+
+    <View
+        style="@style/style_text_line_match"/>
+
+    <LinearLayout
+        style="@style/style_obtain_focus"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+
+        <EditText
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/sp_14"
+            android:id="@+id/et_story_title_search"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/shape_edit_search_pressed"
+            android:cursorVisible="true"
+            android:drawableLeft="@mipmap/abs_therrbody_icon_search_default"
+            android:drawablePadding="20dp"
+            android:gravity="center_vertical"
+            android:hint="搜索世界"
+            android:lines="1"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorHint"/>
+
+        <TextView
+            android:id="@+id/tv_story_title_search"
+            android:layout_width="wrap_content"
+            android:text="搜索"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:textColor="@color/colorDialogBtn"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_story_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:id="@+id/rv_story_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

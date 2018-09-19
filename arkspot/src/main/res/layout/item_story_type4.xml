@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@color/colorWhite"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <include layout="@layout/layout_story_person_info"/>
+
+    <TextView
+        android:textSize="12sp"
+        android:lines="1"
+        android:id="@+id/tv_story_topic_title"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:textColor="@color/colorTextDefault"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_item_story_img"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_intro"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:textColor="@color/colorTextDefault"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_12"
+        android:maxLines="2"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginRight="@dimen/dimens_15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <View
+        style="@style/style_text_line_match"/>
+
+    <include
+        android:id="@+id/ll_topic_function"
+        layout="@layout/layout_story_function"/>
+
+</LinearLayout>

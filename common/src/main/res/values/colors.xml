@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#eeeeee</color>
+    <!--白色-->
+    <color name="colorWhite">#fff</color>
+    <!--主题色-->
+    <color name="colorTheme">#f00</color>
+    <!--透明色-->
+    <color name="colorTransparent">#0000</color>
+    <!--底部导航按钮被选中的颜色-->
+    <color name="colorActive">#3bbac8</color>
+    <!--底部导航按钮未被选中的颜色-->
+    <color name="colorInactive">#808080</color>
+    <!--默认字体颜色-->
+    <color name="colorTextDefault">#666</color>
+    <!--灰色字体-->
+    <color name="colorHint">#b3b3b3</color>
+    <!--按钮背景-->
+    <color name="colorBtnBg">#d8d8d8</color>
+    <color name="color_divider_line_gray">#e2e2e2</color>
+    <color name="color_gray_light_content_text">#5d5d5d</color>
+    <!--分割线颜色-->
+    <color name="colorDivider">#f6f6f6</color>
+    <!--对话框按钮字体颜色-->
+    <color name="colorDialogBtn">#0076ff</color>
+    <!--popup背景色-->
+    <color name="colorPopBg">#5000</color>
+    <!--黑色-->
+    <color name="colorBlack">#000</color>
+</resources>

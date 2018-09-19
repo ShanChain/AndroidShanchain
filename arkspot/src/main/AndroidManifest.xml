@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.shanchain.shandata">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!--SD卡读写操作-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!--通知栏-->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application
+        android:name=".base.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/app_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="HardcodedDebugMode">
+
+        <!-- 友盟消息推送 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59828961cae7e754170008ab"></meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="dfb65b759f7998b0b69b644d17303224"></meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
+        <!-- 友盟消息处理服务 -->
+        <!-- <service android:name=".service.MyPushIntentService" /> -->
+
+
+        <!-- 设置环信应用的AppKey -->
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="1145170810178434#shanchain" />
+        <!-- 声明SDK所需的service SDK核心功能 -->
+        <service
+            android:name="com.hyphenate.chat.EMChatService"
+            android:exported="true" />
+        <service
+            android:name="com.hyphenate.chat.EMJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- 声明SDK所需的receiver -->
+        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+            <!-- 可选filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.DownloadCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.view.activity.login.LoginActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_login" />
+        </activity>
+        <activity android:name=".ui.view.activity.MainActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_main" />
+        </activity>
+        <!--添加 FaceBook 的 ReactNative 调试的 activity-->
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+        <activity android:name=".ui.view.activity.story.StoryTitleActivity"></activity>
+        <activity android:name=".ui.view.activity.story.ChooseRoleActivity"></activity>
+        <activity android:name=".ui.view.activity.story.SearchRoleActivity"></activity>
+        <activity android:name=".ui.view.activity.story.ReportActivity"></activity>
+        <activity android:name=".ui.view.activity.story.AddRoleActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_add_role" />
+        </activity>
+        <activity android:name=".ui.view.activity.story.AddResultActivity"></activity>
+
+        <!-- 图片选择页面 -->
+        <activity
+            android:name="me.iwf.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_photo_picker" />
+        </activity>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_photo_pager" />
+        </activity>
+        <activity
+            android:name=".ui.view.activity.story.ReleaseDynamicActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".ui.view.activity.story.TopicActivity"></activity>
+        <activity android:name=".ui.view.activity.story.SelectContactActivity"></activity>
+        <activity android:name=".ui.view.activity.story.BoxActivity"></activity>
+        <activity android:name=".ui.view.activity.story.ReadModelActivity"></activity>
+        <activity android:name=".ui.view.activity.story.StoryChainActivity"></activity>
+        <activity android:name=".ui.view.activity.story.TopicDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_topic_details" />
+        </activity>
+        <activity
+            android:name=".ui.view.activity.story.ImageActivity"
+            android:theme="@style/FullScreenTheme">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_photo_image" />
+        </activity>
+        <activity android:name=".ui.view.activity.story.AddNewSpaceActivity"></activity>
+        <activity android:name=".ui.view.activity.story.DynamicDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_story_dynamic" />
+        </activity>
+        <activity android:name=".ui.view.activity.story.NovelDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_novel_dynamic" />
+        </activity>
+        <activity
+            android:name=".ui.view.activity.chat.ChatRoomActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".ui.view.activity.chat.ContactActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_contact" />
+        </activity>
+        <activity android:name=".ui.view.activity.chat.CreateDramaActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.SceneDetailsActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.SceneNumbersActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.AnnouncementActivity"></activity>
+        <activity
+            android:name=".ui.view.activity.chat.AddAnnouncementActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".ui.view.activity.chat.AnnouncementDetailsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_notice" />
+        </activity>
+        <activity android:name=".ui.view.activity.chat.EditSceneActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.MeetPersonActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.FindSceneActivity"></activity>
+        <activity android:name=".ui.view.activity.mine.PraisedActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_praised" />
+        </activity>
+        <activity android:name=".ui.view.activity.mine.MyCommentsActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_my_comments" />
+        </activity>
+        <activity android:name=".ui.view.activity.square.AddTopicActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_add_topic" />
+        </activity>
+        <activity android:name=".ui.view.activity.login.RegisterActivity"></activity>
+        <activity android:name=".ui.view.activity.login.ResetPwdActivity"></activity>
+        <activity android:name=".ui.view.activity.login.BindInfoActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="bind_info" />
+        </activity>
+        <activity android:name=".ui.view.activity.mine.FriendHomeActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_character_home" />
+        </activity>
+        <activity
+            android:name=".ui.view.activity.login.SplashActivity"
+            android:theme="@style/FullScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.view.activity.story.MoreTagActivity"></activity>
+        <activity
+            android:name=".ui.view.activity.story.ForwardingActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".ui.view.activity.story.ChainActivity"></activity>
+        <activity android:name=".ui.view.activity.mine.MyStoryActivity">
+            <meta-data
+                android:name="page_flag"
+                android:value="page_my_story" />
+        </activity>
+        <activity android:name=".ui.view.activity.chat.ChatAtActivity"></activity>
+        <activity
+            android:name=".ui.view.activity.login.GuideActivity"
+            android:theme="@style/FullScreenTheme"></activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.shanchain.shandata.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource" />
+        </provider>
+
+        <activity
+            android:name=".ui.view.activity.story.VideoDynamicDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.view.activity.story.CreateDynamicActivity"></activity>
+        <activity
+            android:name=".ui.view.activity.story.ReleaseVideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.view.activity.story.RecordVideoActivity"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="300dp"
+              android:background="@color/colorWhite"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/dimens_15dp"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:text="分享"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="18sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp">
+
+        <ImageView
+            android:id="@+id/iv_share_weichat"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:src="@mipmap/abs_shareit_btn_wechat_default"/>
+
+        <ImageView
+            android:id="@+id/iv_share_circle"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:src="@mipmap/abs_shareit_btn_circleoffriends_default"/>
+
+        <ImageView
+            android:id="@+id/iv_share_qq"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:src="@mipmap/abs_shareit_btn_qq_default"/>
+
+        <ImageView
+            android:id="@+id/iv_share_qzone"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:src="@mipmap/abs_shareit_btn_qzone_default"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="52dp">
+
+        <ImageView
+            android:id="@+id/iv_share_weibo"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:src="@mipmap/abs_shareit_btn_weibo_default"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_dialog_share_cancel"
+        android:background="@color/colorShareCancel"
+        android:text="取消分享"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/colorTextSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>

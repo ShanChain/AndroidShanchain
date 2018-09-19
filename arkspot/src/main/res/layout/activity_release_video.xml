@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_release_video"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:rightText="开始"
+        app:rightTextColor="@color/colorTextFourth"
+        app:rightTextSize="14"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="拍摄演绎短片"
+        app:titleTextSize="16"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <EditText
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_release_video_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:hint="请输入作品名称"
+        android:textColor="@color/colorTextDefault"
+        android:paddingRight="@dimen/dimens_15dp"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:textColorHint="@color/colorHintSecond"
+        android:textSize="15sp"/>
+
+    <View style="@style/style_text_line_match"/>
+
+    <EditText
+        android:textCursorDrawable="@null"
+        android:id="@+id/et_release_video_des"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="简介（可忽略）"
+        android:minHeight="120dp"
+        android:paddingBottom="@dimen/dimens_10dp"
+        android:paddingLeft="@dimen/dimens_15dp"
+        android:paddingRight="@dimen/dimens_15dp"
+        android:textColorHint="@color/colorHintSecond"
+        android:textColor="@color/colorTextDefault"
+        android:paddingTop="@dimen/dimens_10dp"
+        android:textSize="15sp"/>
+
+
+    
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rl_video_show"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_width="112dp"
+        android:layout_height="112dp">
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/iv_video_first"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/iv_video_delete"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/abs_release_btn_delete_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_centerInParent="true"
+            android:src="@mipmap/abs_release_btn_play_default"
+            android:layout_width="wrap_content"
+            android:id="@+id/iv_video_start"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

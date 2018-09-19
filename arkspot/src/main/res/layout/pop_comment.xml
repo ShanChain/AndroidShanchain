@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#4222"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_pop_comment_outside"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <LinearLayout
+        android:padding="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:textCursorDrawable="@null"
+            android:id="@+id/et_pop_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawableLeft="@mipmap/abs_home_btn_comment_default"
+            android:drawablePadding="@dimen/dimens_15dp"
+            android:gravity="center_vertical"
+            android:hint="在这里说点什么吧"
+            android:maxLines="5"
+            android:maxLength="140"
+            android:paddingBottom="@dimen/dimens_10dp"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingRight="@dimen/dimens_10dp"
+            android:paddingTop="@dimen/dimens_10dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorHint"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_pop_comment_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:enabled="false"
+            android:padding="5dp"
+            android:text="发送"
+            android:textColor="@color/selector_comment_txt"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
