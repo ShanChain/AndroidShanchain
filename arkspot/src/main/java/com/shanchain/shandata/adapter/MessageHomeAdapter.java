@@ -7,8 +7,11 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.DateUtils;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
@@ -47,8 +50,10 @@ public class MessageHomeAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         }
         //设置时间
         helper.setText(R.id.tv_item_msg_home_time, DateUtils.getTimestampString(new Date(emConversation.getLastMessage().getMsgTime())));
+        //获取EmMessage对象
+        EMMessage emMessage =  emConversation.getLastMessage();
         //设置最近一条消息
-        helper.setText(R.id.tv_item_msg_home_last, ((EMTextMessageBody) emConversation.getLastMessage().getBody()).getMessage());
+        helper.setText(R.id.tv_item_msg_home_last, emMessage.getStringAttribute(Constants.MSG_NICK_NAME,emMessage.getFrom())+":"+((EMTextMessageBody) emConversation.getLastMessage().getBody()).getMessage());
         //设置昵称
         EMConversation.EMConversationType type = emConversation.getType();
         helper.setText(R.id.tv_item_msg_home_name, item.getName());
