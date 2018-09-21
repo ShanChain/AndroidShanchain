@@ -148,9 +148,10 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
         LogUtils.d("加密后账号：" + mEncryptAccount);
         if (isNeedPW) {
             //加密后的密码
-            bindPhone(phone, time);
             mPasswordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
             LogUtils.d("加密后密码：" + mPasswordAccount);
+            //重置密码
+            resetPassWord(time,mEncryptAccount,mPasswordAccount);
         } else {
             bindPhone(phone, time);
         }
