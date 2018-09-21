@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.utils.MyInterpolator;
@@ -100,8 +101,9 @@ public class CreateDynamicActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ll_btn_video:
-                readyGo(ReleaseVideoActivity.class);
-                finish();
+                ToastUtils.showToastLong(mContext,"演绎功能正在开发中");
+//                readyGo(ReleaseVideoActivity.class);
+//                finish();
                 break;
         }
     }

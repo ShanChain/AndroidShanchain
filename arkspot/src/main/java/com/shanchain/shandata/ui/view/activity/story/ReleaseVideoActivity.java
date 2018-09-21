@@ -184,5 +184,6 @@ public class ReleaseVideoActivity extends BaseActivity implements ReleaseVideoVi
     public void suc(String data) {
         ToastUtils.showToast(mContext,"发布成功");
         finish();
+//        readyGo(VideoDynamicDetailActivity.class);
     }
 }
