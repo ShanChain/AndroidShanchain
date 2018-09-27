@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">千千世界</string>
+    <string name="app_name">马甲App</string>
     <string name="str_praised_empty_word">暂时还没赞过别人，可以现在去赞～</string>
     <string name="str_empty_my_comments">暂时还没评论过别人，可以现在去评论～</string>
     <string name="str_tb_title_praised">我赞过的</string>
@@ -20,7 +20,7 @@
     <string name="str_register_agree">同意服务条款并注册</string>
     <string name="str_register_code_input">请输入验证码</string>
     <string name="str_register_code_obtain">获取验证码</string>
-    <string name="str_title_tb_login">登录千千世界</string>
+    <string name="str_title_tb_login">登录马甲App</string>
     <string name="str_login_pwd">请输入密码</string>
     <string name="str_login_account">请请输入手机号</string>
     <string name="str_login_forget">忘记密码？</string>

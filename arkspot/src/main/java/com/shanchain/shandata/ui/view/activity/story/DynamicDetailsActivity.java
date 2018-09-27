@@ -341,6 +341,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                         break;
                     case R.id.tv_dialog_share:
                         showShare();
+//                        ToastUtils.showToast(mContext,"暂不支持分享");
                         customDialog.dismiss();
                         break;
 

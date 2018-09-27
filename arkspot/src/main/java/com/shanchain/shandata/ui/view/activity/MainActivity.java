@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
             DownloadManager.Request down = new DownloadManager.Request(Uri.parse(url));
             down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
             down.setVisibleInDownloadsUi(true);
-            down.setTitle("千千世界");
+            down.setTitle("马甲");
             down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
 //            //down.setDestinationInExternalFilesDir(this, null, "arkspot-release.apk");
 //            String filePath = getCacheDir().getAbsoluteFile() + "arkspot-release.apk";
