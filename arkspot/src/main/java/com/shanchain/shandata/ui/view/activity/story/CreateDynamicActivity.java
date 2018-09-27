@@ -101,7 +101,7 @@ public class CreateDynamicActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ll_btn_video:
-                ToastUtils.showToastLong(mContext,"演绎功能正在开发中");
+                ToastUtils.showToastLong(mContext,"暂时未开放");
 //                readyGo(ReleaseVideoActivity.class);
 //                finish();
                 break;
