@@ -226,6 +226,8 @@ public class LoginManager {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = SCJsonUtils.parseData(response);
                                 share(shareType, data);
+                            }else if (TextUtils.equals(code, NetErrCode.COMMON_UNOPENED_CODE)){
+                                ToastUtils.showToast(mContext, "暂不支持该功能");
                             } else {
                                 ToastUtils.showToast(mContext, "分享失败");
                             }
@@ -275,17 +277,20 @@ public class LoginManager {
         @Override
         public void shareSuccess() {
             LogUtils.i("分享成功");
+            ToastUtils.showToast(mContext,"分享成功");
         }
 
         @Override
         public void shareFailure(Exception e) {
             LogUtils.i("分享失败");
+            ToastUtils.showToast(mContext,"分享失败");
             e.printStackTrace();
         }
 
         @Override
         public void shareCancel() {
             LogUtils.i("分享取消");
+            ToastUtils.showToast(mContext,"分享取消");
         }
     }
 
