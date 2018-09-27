@@ -10,13 +10,16 @@ public interface HttpApi {
 
     /** IM相关接口*/
 //    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
-//    String BASE_URL_IM = "http://192.168.1.113:8081";
-    String BASE_URL_IM = "http://95.169.24.11:8082";
+//    String BASE_URL_IM = "http://95.169.24.11:8082"; //本地测试环境IM相关接口
+    String BASE_URL_IM = "http://api.qianqianshijie.com"; //生产环境IM相关接口
+//    String BASE_URL_IM = "http://47.100.20.170";
+
 
     /** 全局接口地址*/
 //    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
-//    String BASE_URL = "http://192.168.1.113:8080";
-    String BASE_URL = "http://95.169.24.11:8081";
+//    String BASE_URL = "http://95.169.24.11:8081"; //本地测试环境全局接口地址
+    String BASE_URL = "http://api.qianqianshijie.com"; //生产环境全局接口地址
+//    String BASE_URL = "http://47.100.20.170";
 
     /**注册环信聊天用户*/
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
@@ -66,10 +69,8 @@ public interface HttpApi {
 
 
     /** 获取上传图片的信息*/
-//    String UP_LOAD_FILE = BASE_URL + "/oss/upload/app";
-//    String UP_LOAD_FILE = "http://192.168.1.152:8082/oss/upload/app";
-//    String UP_LOAD_FILE = "http://192.168.1.113:8082/oss/upload/app";
-    String UP_LOAD_FILE = "http://95.169.24.11:8083/oss/upload/app";
+    String UP_LOAD_FILE = BASE_URL + "/oss/upload/app";
+//    String UP_LOAD_FILE = "http://95.169.24.11:8083/oss/upload/app";
 
 
     /** 查询标签*/
@@ -240,8 +241,8 @@ public interface HttpApi {
     String BIND_OTHER_ACCOUNT = BASE_URL + "/v1/user/bind_other_account";
 
     /** 获取最新apk信息*/
-//    String OSS_APK_GET_LASTEST = BASE_URL + "/oss/apk/get/latest";
-    String OSS_APK_GET_LASTEST = "http://95.169.24.11:8083" + "/oss/apk/get/latest";
+    String OSS_APK_GET_LASTEST = BASE_URL + "/oss/apk/get/latest";
+//    String OSS_APK_GET_LASTEST = "http://95.169.24.11:8083" + "/oss/apk/get/latest";
 
     /**判断故事是否点赞 -idList */
     String STORY_ISFAV_LIST = BASE_URL + "/v1/story/isFav/list";
@@ -281,8 +282,8 @@ public interface HttpApi {
     String HX_USER_QUERY = BASE_URL_IM + "/hx/user/query";
 
     /** 阿里云视频上传*/
-//    String OSS_VIDEO_UPLOAD = BASE_URL + "/oss/video/uploadAuth/app";
-    String OSS_VIDEO_UPLOAD = "http://95.169.24.11:8083" + "/oss/video/uploadAuth/app";
+    String OSS_VIDEO_UPLOAD = BASE_URL + "/oss/video/uploadAuth/app";
+//    String OSS_VIDEO_UPLOAD = "http://95.169.24.11:8083" + "/oss/video/uploadAuth/app";
 
     /** 添加演绎动态*/
     String PLAY_ADD = BASE_URL + "/v1/play/add";
