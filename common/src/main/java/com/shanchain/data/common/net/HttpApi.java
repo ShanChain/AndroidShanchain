@@ -9,16 +9,16 @@ import com.shanchain.data.common.base.Constants;
 public interface HttpApi {
 
     /** IM相关接口*/
-//    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
 //    String BASE_URL_IM = "http://95.169.24.11:8082"; //本地测试环境IM相关接口
-    String BASE_URL_IM = "http://api.qianqianshijie.com"; //生产环境IM相关接口
+//    String BASE_URL_IM = "http://api.qianqianshijie.com"; //生产环境IM相关接口
 //    String BASE_URL_IM = "http://47.100.20.170";
 
 
     /** 全局接口地址*/
-//    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
 //    String BASE_URL = "http://95.169.24.11:8081"; //本地测试环境全局接口地址
-    String BASE_URL = "http://api.qianqianshijie.com"; //生产环境全局接口地址
+//    String BASE_URL = "http://api.qianqianshijie.com"; //生产环境全局接口地址
 //    String BASE_URL = "http://47.100.20.170";
 
     /**注册环信聊天用户*/

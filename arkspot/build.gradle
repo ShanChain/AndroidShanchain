@@ -21,7 +21,7 @@ android {
 
 
         manifestPlaceholders = [
-                qq_id: "1106258060"
+                qq_id: "1106258060",
         ]
     }
 
@@ -78,7 +78,9 @@ android {
         xiaomi {}//投放小米手机应用商店
         wandoujia {}//投放豌豆荚
         androidmarket {}//投放安卓市场
-        ali {}//投放阿里平台
+        ali {
+            applicationId "com.shanchain.shandata.ali"
+        }//投放阿里平台
         googlePlay {}//投放google商店
 
 
