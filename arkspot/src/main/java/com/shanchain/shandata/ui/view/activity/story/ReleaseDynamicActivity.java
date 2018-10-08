@@ -143,9 +143,9 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
         mSvReleaseDynamic.setOnSwitchStateChangeListener(new SwitchView.OnSwitchStateChangeListener() {
             @Override
             public void onSwitchStateChange(boolean isOn) {
-                mEtReleaseDynamicTitle.setText("");
-                mEtReleaseDynamicContent.setText("");
-                imgData.clear();
+//                mEtReleaseDynamicTitle.setText("");
+//                mEtReleaseDynamicContent.setText("");
+//                imgData.clear();
                 if (mImagesAdapter != null) {
                     mImagesAdapter.notifyDataSetChanged();
                 }
