@@ -233,6 +233,9 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                             String code = responseContactInfo.getCode();
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
 
+                                if(responseContactInfo.getData() == null){ //数据判空，避免异常闪退
+                                    return;
+                                }
                                 List<ResponseFocusContactArr> array = responseContactInfo.getData().getArray();
 
                                 if (array != null && array.size() > 0) {
