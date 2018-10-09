@@ -145,7 +145,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ArthurToolBa
             public void onSwitchStateChange(boolean isOn) {
 //                mEtReleaseDynamicTitle.setText("");
 //                mEtReleaseDynamicContent.setText("");
-//                imgData.clear();
+                imgData.clear();
                 if (mImagesAdapter != null) {
                     mImagesAdapter.notifyDataSetChanged();
                 }

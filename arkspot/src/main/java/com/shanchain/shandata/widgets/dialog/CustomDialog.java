@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.shanchain.shandata.R;
 
@@ -20,13 +21,14 @@ import java.util.List;
  * Created by 周建 on 2017/5/30.
  */
 
-public class CustomDialog extends AlertDialog implements View.OnClickListener {
+public  class CustomDialog extends AlertDialog implements View.OnClickListener {
     private Context context;      // 上下文
     private boolean isBottom = false;     //是否在底部
     private boolean isAnimator = false;   //是否有动画效果
     private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
+    private Boolean isShow = null;  // 是否显示删除控件控件view
 
     public CustomDialog(Context context,int layoutResID, int[] listenedItems){
         super(context, R.style.dialog_custom); //dialog的样式
@@ -54,6 +56,16 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.listenedItems = listenedItems;
     }
 
+    public CustomDialog(Context context, boolean isBottom , double ratio, int layoutResID, int[] listenedItems,boolean isShow) {
+        super(context, R.style.dialog_custom); //dialog的样式
+        this.context = context;
+        this.isBottom = isBottom;
+        this.ratio = ratio;
+        this.layoutResID = layoutResID;
+        this.listenedItems = listenedItems;
+        this.isShow = isShow;
+    }
+
 
     public CustomDialog(Context context, double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
@@ -66,6 +78,12 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
 
 
 
+    public CustomDialog(Context context, int layoutResID, int listenedItems) {
+        super(context, R.style.dialog_custom); //dialog的样式
+        this.context = context;
+        this.layoutResID = layoutResID;
+    }
+
     public CustomDialog(Context context, boolean isBottom , boolean isAnimator,double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
@@ -75,6 +93,9 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.layoutResID = layoutResID;
         this.listenedItems = listenedItems;
     }
+
+    private OnItemClickListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,9 +125,21 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
                 findViewById(id).setOnClickListener(this);
             }
         }
+        if (isShow == null){
+            return;
+        }else {
+            if (isShow){
+                findViewById(R.id.tv_report_dialog_delete).setVisibility(View.VISIBLE);
+            }else {
+                findViewById(R.id.tv_report_dialog_delete).setVisibility(View.GONE);
+            }
+        }
+
+
+
+
     }
 
-    private OnItemClickListener listener;
 
     @Override
     public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
@@ -125,4 +158,5 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
         listener.OnItemClick(this, view);
     }
+
 }

@@ -262,8 +262,14 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
      * 描述：举报
      */
     private void report(final int position) {
+        //推荐故事详情
+        final StoryModelBean storyModelBean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
+        String currentCharacterId =  String.valueOf(storyModelBean.getCharacterId());//当前故事id
+        String myCharacterId = SCCacheUtils.getCacheCharacterId();
+        Boolean isShow = currentCharacterId.equals(myCharacterId);
+
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel});
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel,R.id.tv_report_dialog_delete},isShow);
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {

@@ -15,4 +15,6 @@ public interface RecommendPresenter {
     void storyCancelSupport(int position, String storyId);
 
     void storySupport(int position, String storyId);
+
+    void deleteSelfStory(int position ,String storyId);
 }

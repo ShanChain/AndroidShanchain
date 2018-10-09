@@ -334,4 +334,26 @@ public class RecommendPresenterImpl implements RecommendPresenter {
                     }
                 });
     }
+
+    @Override
+    public void deleteSelfStory(int position, String storyId) {
+        SCHttpUtils.post()
+                .addParams("storyId", storyId)
+                .url(HttpApi.STORY_DELETE)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("删除失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        LogUtils.i("删除成功 = " + response);
+
+                    }
+                });
+    }
 }

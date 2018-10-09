@@ -15,4 +15,6 @@ public interface CurrentView {
     void supportSuccess(boolean isSuccess,int position);
 
     void supportCancelSuccess(boolean isSuccess,int position);
+
+    void deleteStory(String storyId,int position);
 }

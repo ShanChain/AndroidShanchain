@@ -57,6 +57,7 @@ import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.umeng.commonsdk.UMConfigure;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         String cacheGData = SCCacheUtils.getCache(uId, Constants.CACHE_GDATA);
         LogUtils.i("缓存的gdata = " + cacheGData);
 
-
+//        UMConfigure.setLogEnabled(true); //显示友盟log日记
         initToolBar();
         //初始化底部导航栏
         initBottomNavigationBar();

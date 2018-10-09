@@ -87,6 +87,9 @@ public interface HttpApi {
 
     /**发布动态*/
     String STORY_ADD = BASE_URL + "/v1/story/add";
+    /**删除动态*/
+    String STORY_DELETE = BASE_URL + "/v1/story/delete";
+
     /**第三方登录*/
     String USER_THIRD_LOGIN = BASE_URL + "/v1/user/third_login";
 

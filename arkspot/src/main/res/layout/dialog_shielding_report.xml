@@ -21,6 +21,23 @@
         style="@style/style_text_line_match"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:layout_marginRight="@dimen/dimens_10dp"/>-->
+    <TextView
+        android:id="@+id/tv_report_dialog_delete"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_top"
+        android:gravity="center"
+        android:text="删除"
+        android:visibility="gone"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+    <View
+        style="@style/style_text_line_match"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"/>
 
     <TextView
         android:layout_marginLeft="@dimen/dimens_10dp"
@@ -28,7 +45,7 @@
         android:id="@+id/tv_report_dialog_report"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@drawable/shape_bg_dialog_item"
+        android:background="@drawable/shape_bg_dialog_bottom"
         android:gravity="center"
         android:text="举报"
         android:textColor="@color/colorDialogBtn"
