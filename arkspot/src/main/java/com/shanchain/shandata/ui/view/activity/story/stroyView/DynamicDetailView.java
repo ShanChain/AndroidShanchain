@@ -16,6 +16,8 @@ public interface DynamicDetailView {
 
     void addSuccess(boolean success);
 
+    void deleteSuccess(boolean success,int position);
+
     void supportSuc(boolean suc);
 
     void supportCancelSuc(boolean suc);

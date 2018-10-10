@@ -25,6 +25,7 @@ import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
@@ -55,6 +56,7 @@ import com.shanchain.shandata.utils.SCLinkMovementMethod;
 import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
+import com.shanchain.shandata.widgets.scrollView.SlidingButtonView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,7 +70,7 @@ import butterknife.OnClick;
 import me.shaohui.shareutil.share.ShareListener;
 import me.shaohui.shareutil.share.SharePlatform;
 
-public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, BaseQuickAdapter.RequestLoadMoreListener, DynamicDetailView {
+public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener,DynamicCommentAdapter.IonSlidingViewClickListener, BaseQuickAdapter.RequestLoadMoreListener, DynamicDetailView {
 
     @Bind(R.id.tb_dynamic_comment)
     ArthurToolBar mTbAddRole;
@@ -82,7 +84,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private DynamicCommentAdapter mDynamicCommentAdapter;
     private View mHeadView;
     private StoryModelBean mBean;
-    private String mStoryId;
+    private String mStoryId,mCommentId;
     private int mCharacterId;
     private boolean isBeFav;
     private DynamicModel mDynamicModel;
@@ -94,6 +96,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     private DynamicDetailsPresenter mPresenter;
     private boolean isLoadMore = false;
     private int mSpaceId;
+    private DynamicCommentAdapter.IonSlidingViewClickListener mIonSlidingViewClickListener;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -142,8 +145,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
     private void initRecyclerView() {
         initHeadView();
+//        initDeleteButton();
         mRvDynamicComment.setLayoutManager(new LinearLayoutManager(this));
-        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas);
+        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas,this);
         mRvDynamicComment.addItemDecoration(new RecyclerViewDivider(this));
         mDynamicCommentAdapter.setEnableLoadMore(true);
         mRvDynamicComment.setAdapter(mDynamicCommentAdapter);
@@ -180,7 +184,9 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
                 }
             }
         });
+
     }
+
 
     private void initHeadView() {
         mHeadView = View.inflate(this, R.layout.head_dynamic_comment, null);
@@ -404,6 +410,23 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
         EventBus.getDefault().post(new SCBaseEvent(EventConstant.EVENT_MODULE_ARKSPOT, EventConstant.EVENT_KEY_SHARE_WEB, obj, null));
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public void onDeleteBtnCilck(View view, int position) {
+      /*  if (mDynamicCommentAdapter.getData().size()<=1){
+
+        }*/
+        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
+        mDynamicCommentAdapter.notifyDataSetChanged();
+        mDynamicCommentAdapter.closeMenu();
+
+    }
+
 
     private class SCShareListener extends ShareListener {
 
@@ -496,6 +519,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             @Override
             public void onSendClick(View v, String msg) {
                 mPresenter.addComment(msg, mStoryId);
+                mDynamicCommentAdapter.notifyDataSetChanged();
             }
         });
         KeyboardUtils.showSoftInput(this);
@@ -550,6 +574,20 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
         }
 
+    }
+
+    @Override
+    public void deleteSuccess(boolean success, int position) {
+
+        if (success) {
+            //删除评论
+            String storyId = mStoryId;
+            page = 0;
+            isLoadMore = false;
+            mPresenter.initData(page, size, mStoryId);
+        } else {
+
+        }
     }
 
     @Override

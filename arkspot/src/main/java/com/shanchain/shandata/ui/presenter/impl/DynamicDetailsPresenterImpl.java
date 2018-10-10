@@ -117,6 +117,38 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                 });
     }
 
+    /*
+    * 删除评论
+    *
+    * */
+    @Override
+    public void deleteComment(String commentId, final int position) {
+        SCHttpUtils.post()
+                .addParams("commentId", commentId)
+                .url(HttpApi.DELETE_MINE_COMMENT)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("删除失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mView.deleteSuccess(true,position);
+                        } else {
+                            mView.deleteSuccess(false,position);
+                        }
+
+
+
+                    }
+                });
+    }
+
     @Override
     public void support(String storyId) {
         SCHttpUtils.postWithChaId()
@@ -268,7 +300,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("取消点赞点赞失败");
                         e.printStackTrace();
-                        mView.commentSupportCancelSuc(false,position);
+                        mView.commentSupportCancelSuc(false, position);
                     }
 
                     @Override
@@ -277,13 +309,13 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                             LogUtils.i("取消点赞评论结果 = " + response);
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                    mView.commentSupportCancelSuc(true,position);
+                                mView.commentSupportCancelSuc(true, position);
                             } else {
-                                mView.commentSupportCancelSuc(false,position);
+                                mView.commentSupportCancelSuc(false, position);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mView.commentSupportCancelSuc(false,position);
+                            mView.commentSupportCancelSuc(false, position);
                         }
                     }
                 });
@@ -300,7 +332,7 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("点赞失败");
                         e.printStackTrace();
-                        mView.commentSupportSuc(false,position);
+                        mView.commentSupportSuc(false, position);
                     }
 
                     @Override
@@ -309,13 +341,13 @@ public class DynamicDetailsPresenterImpl implements DynamicDetailsPresenter {
                             LogUtils.i("点赞评论结果 = " + response);
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                    mView.commentSupportSuc(true,position);
+                                mView.commentSupportSuc(true, position);
                             } else {
-                                mView.commentSupportSuc(false,position);
+                                mView.commentSupportSuc(false, position);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mView.commentSupportSuc(false,position);
+                            mView.commentSupportSuc(false, position);
                         }
                     }
                 });

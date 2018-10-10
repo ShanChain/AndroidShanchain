@@ -194,7 +194,13 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     }
 
     @Override
-    public void deleteStory(String storyId, int position) {
+    public void deleteStory(boolean isSuccess, int position) {
+        //刷新数据
+        if(isSuccess){
+            onRefresh();
+        }else {
+            ToastUtils.showToast(mActivity,"删除失败");
+        }
 
     }
 

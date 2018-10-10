@@ -45,7 +45,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, DynamicDetailView, BaseQuickAdapter.RequestLoadMoreListener {
+public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, DynamicCommentAdapter.IonSlidingViewClickListener,DynamicDetailView, BaseQuickAdapter.RequestLoadMoreListener {
 
     @Bind(R.id.tb_dynamic_comment)
     ArthurToolBar mTbAddRole;
@@ -118,7 +118,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private void initRecyclerView() {
         initHeadView();
         mRvDynamicComment.setLayoutManager(new LinearLayoutManager(this));
-        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas);
+        mDynamicCommentAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas,this);
         mRvDynamicComment.addItemDecoration(new RecyclerViewDivider(this));
         mDynamicCommentAdapter.setEnableLoadMore(true);
         mRvDynamicComment.setAdapter(mDynamicCommentAdapter);
@@ -326,6 +326,21 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         }
     }
 
+    //删除评论
+    @Override
+    public void deleteSuccess(boolean success, int position) {
+        if (success) {
+            //删除评论
+//            CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+            String storyId = mStoryId;
+            page = 0;
+            isLoadMore = false;
+            mPresenter.initData(page, size, mStoryId);
+        } else {
+
+        }
+    }
+
     @Override
     public void supportSuc(boolean suc) {
         mTvHeadLike.setEnabled(true);
@@ -427,5 +442,22 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         page ++;
         isLoadMore = true;
         mPresenter.initData(page,size,mStoryId);
+    }
+
+    /**
+     *
+     * 滑动删除评论的实现
+     */
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public void onDeleteBtnCilck(View view, int position) {
+        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
+        mDynamicCommentAdapter.notifyDataSetChanged();
+        mDynamicCommentAdapter.closeMenu();
     }
 }

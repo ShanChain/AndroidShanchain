@@ -78,7 +78,7 @@ public class VideoDynamicDetailActivity extends BaseActivity implements DynamicV
     private void initRecyclerView() {
         initHeadView();
         mRvVideoDynamic.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas);
+        mAdapter = new DynamicCommentAdapter(R.layout.item_dynamic_comment, datas,this);
         mRvVideoDynamic.addItemDecoration(new RecyclerViewDivider(this));
         mAdapter.setEnableLoadMore(true);
         mRvVideoDynamic.setAdapter(mAdapter);

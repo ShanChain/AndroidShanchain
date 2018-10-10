@@ -11,6 +11,8 @@ public interface DynamicDetailsPresenter {
 
     void addComment(String comment, String storyId);
 
+    void deleteComment( String commentId,int position);
+
     void support(String storyId);
 
     void supportCancel(String storyId);
