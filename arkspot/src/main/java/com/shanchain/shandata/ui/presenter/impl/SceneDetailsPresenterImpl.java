@@ -97,7 +97,8 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
         SCHttpUtils.post()
                 .url(HttpApi.HX_GROUP_REMOVE_MEMBERS)
                 .addParams("groupId", toChatName)
-                .addParams("jArray", jArr)
+//                .addParams("jArray", jArr)
+                .addParams("username", myHxUserName)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -114,8 +115,8 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = SCJsonUtils.parseData(response);
-                                List<LeaveGroupResult> results = JSONObject.parseArray(data, LeaveGroupResult.class);
-                                boolean result = results.get(0).isResult();
+                                LeaveGroupResult resultsBean = JSONObject.parseObject(data, LeaveGroupResult.class);
+                                boolean result = resultsBean.isResult();
                                     mView.leaveGroupSuc(result);
                             } else {
                                 mView.leaveGroupSuc(false);
