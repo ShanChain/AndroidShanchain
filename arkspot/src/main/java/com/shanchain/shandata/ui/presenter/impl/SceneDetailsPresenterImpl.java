@@ -122,8 +122,9 @@ public class SceneDetailsPresenterImpl implements SceneDetailsPresenter {
                                 mView.leaveGroupSuc(false);
                             }
                         } catch (Exception e) {
+                            LogUtils.d(e.toString());
                             e.printStackTrace();
-                            mView.leaveGroupSuc(false);
+//                            mView.leaveGroupSuc(false);
                         }
                     }
                 });

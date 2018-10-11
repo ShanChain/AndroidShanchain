@@ -416,14 +416,26 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
     @Override
-    public void onDeleteBtnCilck(View view, int position) {
-      /*  if (mDynamicCommentAdapter.getData().size()<=1){
-
-        }*/
-        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
-        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
-        mDynamicCommentAdapter.notifyDataSetChanged();
-        mDynamicCommentAdapter.closeMenu();
+    public void onDeleteBtnCilck(View view, final int position) {
+        final CustomDialog customDialog = new CustomDialog(this, false, 1.0, R.layout.common_dialog_comment_delete, new int[]{R.id.tv_dialog_delete_cancel, R.id.tv_dialog_delete_sure});
+        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.tv_dialog_delete_cancel:
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_dialog_delete_sure:
+                        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+                        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
+                        mDynamicCommentAdapter.notifyDataSetChanged();
+                        mDynamicCommentAdapter.closeMenu();
+                        customDialog.dismiss();
+                        break;
+                }
+            }
+        });
+        customDialog.show();
 
     }
 
@@ -568,7 +580,7 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             String storyId = mStoryId;
             page = 0;
             isLoadMore = false;
-            mPresenter.initData(page, size, storyId);
+            initData();
         } else {
             //添加评论失败
 
@@ -584,7 +596,8 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
             String storyId = mStoryId;
             page = 0;
             isLoadMore = false;
-            mPresenter.initData(page, size, mStoryId);
+            initData();
+            initRecyclerView();
         } else {
 
         }

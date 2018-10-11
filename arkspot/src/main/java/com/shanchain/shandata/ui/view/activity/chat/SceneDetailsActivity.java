@@ -306,7 +306,10 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
     public void leaveGroupSuc(boolean result) {
         if (result){
             ToastUtils.showToast(mContext,"退群成功");
-            ActivityStackManager.getInstance().finishActivity(ChatRoomActivity.class);
+            if (ChatRoomActivity.instance!=null){
+                ChatRoomActivity.instance.finish();
+            }
+//            ActivityStackManager.getInstance().finishActivity(ChatRoomActivity.class);
             finish();
         }else {
             ToastUtils.showToast(mContext,"退群失败");

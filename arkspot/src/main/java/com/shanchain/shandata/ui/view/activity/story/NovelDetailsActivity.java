@@ -35,6 +35,7 @@ import com.shanchain.shandata.ui.view.activity.story.stroyView.DynamicDetailView
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.dialog.CommentDialog;
+import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -335,7 +336,8 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             String storyId = mStoryId;
             page = 0;
             isLoadMore = false;
-            mPresenter.initData(page, size, mStoryId);
+            initData();
+            initRecyclerView();
         } else {
 
         }
@@ -454,10 +456,28 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     }
 
     @Override
-    public void onDeleteBtnCilck(View view, int position) {
-        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
-        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
-        mDynamicCommentAdapter.notifyDataSetChanged();
-        mDynamicCommentAdapter.closeMenu();
+    public void onDeleteBtnCilck(View view, final int position) {
+        final CustomDialog customDialog = new CustomDialog(this, false, 1.0, R.layout.common_dialog_comment_delete, new int[]{R.id.tv_dialog_delete_cancel, R.id.tv_dialog_delete_sure});
+        customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.tv_dialog_delete_cancel:
+                        customDialog.dismiss();
+                        break;
+                    case R.id.tv_dialog_delete_sure:
+                        CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
+                        mPresenter.deleteComment(String.valueOf(commentBean.getCommentId()),position);
+                        mDynamicCommentAdapter.notifyDataSetChanged();
+                        mDynamicCommentAdapter.closeMenu();
+                        customDialog.dismiss();
+                        break;
+                }
+            }
+        });
+        customDialog.show();
+
+
+
     }
 }

@@ -1,6 +1,8 @@
 package com.shanchain.shandata.ui.view.activity.chat;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -89,6 +91,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     RecyclerView mRvChatMsg;
     @Bind(R.id.srl_pull_history_msg)
     SwipeRefreshLayout mSrlPullHistoryMsg;
+
+    public static ChatRoomActivity instance;
     private EMMessage.ChatType mChatType;
     private String toChatName;
 
@@ -106,6 +110,12 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     String nickName = "";
     private String groupHeadImg = "";
     private List<String> atMembers = new ArrayList<>();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        instance = this;
+    }
 
     @Override
     protected int getContentViewLayoutID() {
