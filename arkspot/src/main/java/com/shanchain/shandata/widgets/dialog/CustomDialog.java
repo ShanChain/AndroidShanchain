@@ -3,6 +3,7 @@ package com.shanchain.shandata.widgets.dialog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -13,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
     private Boolean isShow = null;  // 是否显示删除控件控件view
+    private String dialogMsgs = null;  // 显示的消息
 
     public CustomDialog(Context context,int layoutResID, int[] listenedItems){
         super(context, R.style.dialog_custom); //dialog的样式
@@ -64,6 +67,16 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.layoutResID = layoutResID;
         this.listenedItems = listenedItems;
         this.isShow = isShow;
+    }
+
+    public CustomDialog(Context context, boolean isBottom , double ratio, int layoutResID, int[] listenedItems,String dialogMsgs) {
+        super(context, R.style.dialog_custom); //dialog的样式
+        this.context = context;
+        this.isBottom = isBottom;
+        this.ratio = ratio;
+        this.layoutResID = layoutResID;
+        this.listenedItems = listenedItems;
+        this.dialogMsgs = dialogMsgs;
     }
 
 
@@ -123,17 +136,37 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
         if (listenedItems != null){
             for (int id : listenedItems) {
                 findViewById(id).setOnClickListener(this);
-            }
+                switch (id){
+                    case R.id.tv_report_dialog_report:
+                        if (!isShow){
+                            TextView textView=(TextView) this.findViewById(id);
+                            textView.setBackgroundResource(R.drawable.shape_bg_dialog_item);
+                            findViewById(R.id.report_dialog_view).setVisibility(View.GONE);
+                        }
+                    break;
+                case R.id.dialog_msg:
+                    TextView textView=(TextView) this.findViewById(id);
+                    textView.setText(this.dialogMsgs);
+                    break;
+                }
+                }
+
         }
         if (isShow == null){
             return;
-        }else {
-            if (isShow){
+        }
+        if (isShow){
                 findViewById(R.id.tv_report_dialog_delete).setVisibility(View.VISIBLE);
             }else {
                 findViewById(R.id.tv_report_dialog_delete).setVisibility(View.GONE);
             }
-        }
+
+        //将传入的dialogMsg赋值个dialog_msg
+//        if (dialogMsgs!=null){
+//            TextView dialogMsgView = (TextView) findViewById(R.id.dialog_msg);
+//            dialogMsgView.setText("删除动态");
+//        }
+
 
 
 

@@ -119,6 +119,40 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
         }
     }
 
+    //初始化动态删除按钮
+    public void deleteDialog(final int position){
+        CustomDialog sureDialog = new CustomDialog(mActivity, false, 1.0, R.layout.common_dialog_comment_delete,
+                new int[]{R.id.tv_dialog_delete_cancel,R.id.tv_dialog_delete_sure,R.id.dialog_msg},"确定要删除此动态么");
+        sureDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()){
+                    case R.id.dialog_msg:
+                        break;
+                    case R.id.tv_dialog_delete_sure:
+
+                        int deleteStoryId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getRootId();
+                        mPresenter.deleteSelfStory(position,String.valueOf(deleteStoryId));
+
+                        break;
+                    case R.id.tv_dialog_delete_cancel:
+                        dialog.dismiss();
+
+                        break;
+                }
+            }
+        });
+        sureDialog.show();
+    }
+
+
+    @Override
+    public void deleteSuccess(boolean isSuccess, int position) {
+        if (isSuccess){
+            mPresenter.initData(page,size);
+        }
+    }
+
     @Override
     public void supportSuccess(boolean isSuccess, int position) {
         //ToastUtils.showToast(mActivity, isSuccess ? "点赞成功" : "点赞失败");
@@ -274,6 +308,10 @@ public class RecommendedFragment extends BaseFragment implements RecommendView, 
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
+                    case R.id.tv_report_dialog_delete:
+                        customDialog.dismiss();
+                        deleteDialog(position);
+                        break;
                     case R.id.tv_report_dialog_report:
                         //举报
                         Intent reportIntent = new Intent(mActivity, ReportActivity.class);

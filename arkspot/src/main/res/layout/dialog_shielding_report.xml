@@ -36,6 +36,7 @@
 
     <View
         style="@style/style_text_line_match"
+        android:id="@+id/report_dialog_view"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:layout_marginRight="@dimen/dimens_10dp"/>
 

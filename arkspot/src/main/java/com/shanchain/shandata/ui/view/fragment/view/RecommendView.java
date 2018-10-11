@@ -11,6 +11,8 @@ import java.util.List;
 public interface RecommendView {
     void initSuccess(List<StoryBeanModel> list, boolean isLast);
 
+    void deleteSuccess(boolean isSuccess, int position);
+
     void supportSuccess(boolean isSuccess, int position);
 
     void supportCancelSuccess(boolean isSuccess, int position);

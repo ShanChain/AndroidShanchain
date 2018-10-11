@@ -66,6 +66,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private int page = 0;
     private int size = 10;
     private boolean isLoadMore = false;
+    private String dialogMsgs = "确定删除此动态么";
 
     @Override
     public View initView() {
@@ -318,8 +319,8 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 //删除
                 switch (view.getId()) {
                     case R.id.tv_report_dialog_delete:
-                        int deleteStoryId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getRootId();
-                        mCurrentPresenter.deleteSelfStory(position,String.valueOf(deleteStoryId));
+                        customDialog.dismiss();
+                        deleteDialog(position);
 
                         break;
                     case R.id.tv_report_dialog_report:
@@ -340,6 +341,32 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
             }
         });
         customDialog.show();
+    }
+
+    //初始化动态删除按钮
+    public void deleteDialog(final int position){
+        CustomDialog sureDialog = new CustomDialog(mActivity, false, 1.0, R.layout.common_dialog_comment_delete,
+                new int[]{R.id.tv_dialog_delete_cancel,R.id.tv_dialog_delete_sure,R.id.dialog_msg},dialogMsgs);
+        sureDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()){
+                    case R.id.dialog_msg:
+                        break;
+                    case R.id.tv_dialog_delete_sure:
+
+                        int deleteStoryId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getRootId();
+                        mCurrentPresenter.deleteSelfStory(position,String.valueOf(deleteStoryId));
+
+                        break;
+                    case R.id.tv_dialog_delete_cancel:
+                        dialog.dismiss();
+
+                        break;
+                }
+            }
+        });
+        sureDialog.show();
     }
 
     @Override

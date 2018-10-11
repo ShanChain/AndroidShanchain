@@ -336,7 +336,7 @@ public class RecommendPresenterImpl implements RecommendPresenter {
     }
 
     @Override
-    public void deleteSelfStory(int position, String storyId) {
+    public void deleteSelfStory(final int position, String storyId) {
         SCHttpUtils.post()
                 .addParams("storyId", storyId)
                 .url(HttpApi.STORY_DELETE)
@@ -352,6 +352,11 @@ public class RecommendPresenterImpl implements RecommendPresenter {
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
                         LogUtils.i("删除成功 = " + response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            mRecommendView.deleteSuccess(true, position);
+                        } else {
+                            mRecommendView.deleteSuccess(false, position);
+                        }
 
                     }
                 });
