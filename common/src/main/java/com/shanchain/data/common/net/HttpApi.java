@@ -90,6 +90,9 @@ public interface HttpApi {
     /**删除动态*/
     String STORY_DELETE = BASE_URL + "/v1/story/delete";
 
+    /**删除评论*/
+    String DELETE_MINE_COMMENT = BASE_URL + "/v1/storyComment/delete";
+
     /**第三方登录*/
     String USER_THIRD_LOGIN = BASE_URL + "/v1/user/third_login";
 
