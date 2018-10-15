@@ -22,6 +22,7 @@ import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.shandata.widgets.scrollView.SlidingButtonView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,18 +36,19 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
     private Drawable likeSelected;
 
     boolean isScroll = false;
-    private  SlidingButtonView slidingButtonView;
+    private SlidingButtonView slidingButtonView;
     private IonSlidingViewClickListener mIDeleteBtnClickListener;
     private BaseViewHolder baseViewHolder;
     private BdCommentBean bdCommentBean;
     private SlidingButtonView mMenu = null;
+    private List tagList;
 
     public void setScrollEnable(boolean isScroll) {
         this.isScroll = isScroll;
 
     }
 
-    public DynamicCommentAdapter(@LayoutRes int layoutResId, @Nullable List<BdCommentBean> data,Context mContext) {
+    public DynamicCommentAdapter(@LayoutRes int layoutResId, @Nullable List<BdCommentBean> data, Context mContext) {
         super(layoutResId, data);
         this.mIDeleteBtnClickListener = (IonSlidingViewClickListener) mContext;
     }
@@ -58,8 +60,8 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
         helper.setText(R.id.tv_item_dynamic_comment, item.getCommentBean().getContent());
         helper.setText(R.id.tv_item_dynamic_comment_time, DateUtils.formatFriendly(new Date(item.getCommentBean().getCreateTime())));
         helper.addOnClickListener(R.id.tv_item_comment_like)
-        .addOnClickListener(R.id.iv_item_dynamic_comment_avatar);
-        helper.setText(R.id.tv_item_dynamic_comment_name,item.getContactBean().getName());
+                .addOnClickListener(R.id.iv_item_dynamic_comment_avatar);
+        helper.setText(R.id.tv_item_dynamic_comment_name, item.getContactBean().getName());
         TextView tvLike = helper.getView(R.id.tv_item_comment_like);
         tvLike.setText("" + item.getCommentBean().getSupportCount());
         ImageView ivHead = helper.getView(R.id.iv_item_dynamic_comment_avatar);
@@ -70,24 +72,15 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
         commentDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int n = helper.getLayoutPosition()-1;
+                int n = helper.getLayoutPosition() - 1;
                 mIDeleteBtnClickListener.onDeleteBtnCilck(v, n);
 
             }
         });
 
-        //获取SlidingButtonView
-        slidingButtonView = (SlidingButtonView) helper.getConvertView();
-        slidingButtonView.setSlidingButtonListener(DynamicCommentAdapter.this);
-        //删除自己
-        int characterId =  bdCommentBean.getCommentBean().getCharacterId();
-        if (characterId!=Integer.valueOf(SCCacheUtils.getCacheCharacterId())){
-            this.slidingButtonView.setCanTouch(false);
-        }
-
         //获取外部LinearLayout
-        ViewGroup  layoutContent = helper.getView(R.id.iv_item_dynamic_comment_show);
-        ViewGroup  relativeContent = helper.getView(R.id.rl_left);
+        ViewGroup layoutContent = helper.getView(R.id.iv_item_dynamic_comment_show);
+        ViewGroup relativeContent = helper.getView(R.id.rl_left);
 
 
         //设置内容布局的宽为屏幕宽度
@@ -105,27 +98,41 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
         }*/
 
 
-
-
-        GlideUtils.load(mContext,item.getContactBean().getHeadImg(),ivHead,0);
+        GlideUtils.load(mContext, item.getContactBean().getHeadImg(), ivHead, 0);
         if (likeDefault == null) {
             likeDefault = mContext.getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_default);
         }
 
-        if (likeSelected == null){
+        if (likeSelected == null) {
             likeSelected = mContext.getResources().getDrawable(R.mipmap.abs_dynamic_btn_like_selected);
         }
 
-        likeDefault.setBounds(0,0,likeDefault.getMinimumWidth(),likeDefault.getMinimumHeight());
-        likeSelected.setBounds(0,0,likeSelected.getMinimumWidth(),likeSelected.getMinimumHeight());
+        likeDefault.setBounds(0, 0, likeDefault.getMinimumWidth(), likeDefault.getMinimumHeight());
+        likeSelected.setBounds(0, 0, likeSelected.getMinimumWidth(), likeSelected.getMinimumHeight());
 
-        tvLike.setCompoundDrawables(null,null,item.getCommentBean().isMySupport()?likeSelected:likeDefault,null);
+        tvLike.setCompoundDrawables(null, null, item.getCommentBean().isMySupport() ? likeSelected : likeDefault, null);
 
+
+        //删除自己评论
+        int characterId = bdCommentBean.getCommentBean().getCharacterId();
+        //获取SlidingButtonView
+        slidingButtonView = (SlidingButtonView) helper.getConvertView();
+        slidingButtonView.setSlidingButtonListener(DynamicCommentAdapter.this);
+        if (characterId != Integer.valueOf(SCCacheUtils.getCacheCharacterId()) && slidingButtonView.getTag() != (Object) helper.getLayoutPosition()) {
+//            this.slidingButtonView.closeMenu();
+            this.slidingButtonView.setCanTouch(false);
+        } else {
+            this.slidingButtonView.setCanTouch(true);
+        }
+
+        int tag = helper.getLayoutPosition();
+        slidingButtonView.setTag(tag);
+
+        tagList = new ArrayList();
+        tagList.add(tag);
     }
 
     //关闭滑动功能
-
-
     @Override
     public Boolean setMenuCanTouch(SlidingButtonView slidingButtonView, Boolean isTouch) {
 
@@ -138,6 +145,7 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
     @Override
     public void onMenuIsOpen(View view) {
         mMenu = (SlidingButtonView) view;
+        tagList.size();
 
     }
 
@@ -153,17 +161,17 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
                 closeMenu();
             }
         }
-        int characterId =  bdCommentBean.getCommentBean().getCharacterId();
-        if (characterId!=Integer.valueOf(SCCacheUtils.getCacheCharacterId())){
-            this.slidingButtonView.setCanTouch(false);
-        }
+//        int characterId =  bdCommentBean.getCommentBean().getCharacterId();
+//        if (characterId!=Integer.valueOf(SCCacheUtils.getCacheCharacterId())){
+//            this.slidingButtonView.setCanTouch(false);
+//        }
     }
 
     /**
      * 关闭菜单
      */
     public void closeMenu() {
-        if (mMenu==null){
+        if (mMenu == null) {
             return;
         }
         mMenu.closeMenu();
@@ -192,7 +200,7 @@ public class DynamicCommentAdapter extends BaseQuickAdapter<BdCommentBean, BaseV
         void onDeleteBtnCilck(View view, int position);
     }
 
-    public void addData(List mDatas,int position) {
+    public void addData(List mDatas, int position) {
         mDatas.add(position, "添加项");
         notifyItemInserted(position);
     }

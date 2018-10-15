@@ -30,7 +30,7 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
     private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
-    private Boolean isShow = null;  // 是否显示删除控件控件view
+    private Boolean isShow;  // 是否显示删除控件控件view
     private String dialogMsgs = null;  // 显示的消息
 
     public CustomDialog(Context context,int layoutResID, int[] listenedItems){

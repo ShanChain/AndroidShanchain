@@ -9,8 +9,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.3.1"
+        versionCode 4
+        versionName "1.3.2"
 
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -73,17 +73,13 @@ android {
         ANZHI {}//投放安智市场
         oppo {}//投放OPPO手机应用商店
         vivo {}//投放VIVO手机应用商店
-        meizu {
-            applicationId "com.shanchain.shandata.majia"
-        }//投放魅族手机应用商店
+        meizu {}//投放魅族手机应用商店
         huawei {}//投放华为手机应用商店
-        xiaomi {
-            applicationId "com.shanchain.shandata.majia"
-        }//投放小米手机应用商店
+        xiaomi {}//投放小米手机应用商店
         wandoujia {}//投放豌豆荚
         androidmarket {}//投放安卓市场
         ali {
-            applicationId "com.shanchain.shandata.ali"
+            applicationId "com.shanchain.shandata.majia"
         }//投放阿里平台
         googlePlay {}//投放google商店
 

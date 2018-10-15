@@ -43,7 +43,9 @@ import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import okhttp3.Call;
@@ -111,6 +113,8 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             }
         });
 
+        mSbSelectContact.setIndexItems("A","B","C","D","E","F","G","H","I","J","K","L","M",
+                "N","O","P","Q","R","S","T","U","V","W","X","Y","Z","#");
         mSbSelectContact.setOnSelectIndexItemListener(new WaveSideBar.OnSelectIndexItemListener() {
             @Override
             public void onSelectIndexItem(String index) {
@@ -233,7 +237,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                             String code = responseContactInfo.getCode();
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
 
-                                if(responseContactInfo.getData() == null){ //数据判空，避免异常闪退
+                                if (responseContactInfo.getData() == null) { //数据判空，避免异常闪退
                                     return;
                                 }
                                 List<ResponseFocusContactArr> array = responseContactInfo.getData().getArray();
@@ -334,7 +338,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                     selected.add(name);
                     int moduleId = bdAtContactInfo.getContactInfo().getModuleId();
                     moduleIds.add(moduleId);
-                    AtBean bean = new AtBean(name,moduleId);
+                    AtBean bean = new AtBean(name, moduleId);
                     list.add(bean);
                 }
             }
@@ -344,9 +348,9 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
             } else {
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra("contacts", selected);
-                intent.putIntegerArrayListExtra("moduleIds",  moduleIds);
+                intent.putIntegerArrayListExtra("moduleIds", moduleIds);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("atBeans",list);
+                bundle.putSerializable("atBeans", list);
                 intent.putExtras(bundle);
                 setResult(RESULT_CODE_CONTACTS, intent);
                 finish();
@@ -402,9 +406,9 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                                     if (!TextUtils.isEmpty(groupId)) {
                                         LogUtils.i("创建群成功");
                                         Intent intent = new Intent(mContext, ChatRoomActivity.class);
-                                        intent.putExtra("isGroup",true);
-                                        intent.putExtra("toChatName",groupId);
-                                        intent.putExtra("name",name + "创建的群");
+                                        intent.putExtra("isGroup", true);
+                                        intent.putExtra("toChatName", groupId);
+                                        intent.putExtra("name", name + "创建的群");
                                         startActivity(intent);
                                         finish();
                                     } else {

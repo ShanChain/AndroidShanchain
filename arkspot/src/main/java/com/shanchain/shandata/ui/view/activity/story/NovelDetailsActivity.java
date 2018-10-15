@@ -23,6 +23,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.event.DynamicCommentEvent;
 import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CommentBean;
@@ -38,6 +39,10 @@ import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,6 +76,8 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     private TextView mTvHeadLike;
     private boolean mFav;
     private int mSpaceId;
+    private TextView tvHeadComment;
+    private boolean onece;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -170,7 +177,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
         TextView tvTitle = (TextView) mHeadView.findViewById(R.id.tv_head_comment_title);
         TextView tvForwarding = (TextView) mHeadView.findViewById(R.id.tv_item_story_forwarding);
         mTvHeadLike = (TextView) mHeadView.findViewById(R.id.tv_item_story_like);
-        TextView tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
+        tvHeadComment = (TextView) mHeadView.findViewById(R.id.tv_item_story_comment);
         tvForwarding.setVisibility(View.GONE);
         String characterImg = "";
         String characterName = "";
@@ -321,6 +328,7 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
             page = 0;
             isLoadMore = false;
             mPresenter.initData(page,size,mStoryId);
+            EventBus.getDefault().postSticky(new DynamicCommentEvent(true));
         }else {
             //添加评论失败
 
@@ -332,15 +340,20 @@ public class NovelDetailsActivity extends BaseActivity implements ArthurToolBar.
     public void deleteSuccess(boolean success, int position) {
         if (success) {
             //删除评论
-//            CommentBean commentBean = mDynamicCommentAdapter.getData().get(position).getCommentBean();
             String storyId = mStoryId;
             page = 0;
             isLoadMore = false;
-            initData();
-            initRecyclerView();
+            mPresenter.initData(page,size,storyId);
+//            initRecyclerView();
+            EventBus.getDefault().postSticky(new DynamicCommentEvent(false));
         } else {
 
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(DynamicCommentEvent event) {
+        tvHeadComment.setText(event.getCommentCount()+"");
     }
 
     @Override

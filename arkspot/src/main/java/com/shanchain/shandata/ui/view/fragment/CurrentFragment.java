@@ -22,6 +22,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CurrentAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.event.DynamicCommentEvent;
 import com.shanchain.shandata.event.ReleaseSucEvent;
 import com.shanchain.shandata.ui.model.StoryBeanModel;
 import com.shanchain.shandata.ui.model.StoryInfo;
@@ -40,6 +41,7 @@ import com.shanchain.shandata.ui.view.fragment.view.CurrentView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -66,6 +68,9 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private int page = 0;
     private int size = 10;
     private boolean isLoadMore = false;
+    private StoryBeanModel beanModel;
+    private StoryModelBean bean;
+    private  int commentCount;
     private String dialogMsgs = "确定删除此动态么";
 
     @Override
@@ -144,6 +149,26 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
+    public void onEvent(DynamicCommentEvent event) {
+        if (mAdapter.getData() != null && mAdapter.getData().size() >= 0) {
+            event.setBean(bean);
+            onRefresh();
+            //设置刷新后的评论总数
+            if (event.isAdd()) {
+                commentCount++;
+                event.setCommentCount(commentCount);
+            } else {
+                commentCount--;
+                event.setCommentCount(commentCount);
+
+            }
+        }
+
+
+    }
+
+
     @Override
     public void onLoadMoreRequested() {
         isLoadMore = true;
@@ -197,10 +222,10 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     @Override
     public void deleteStory(boolean isSuccess, int position) {
         //刷新数据
-        if(isSuccess){
+        if (isSuccess) {
             onRefresh();
-        }else {
-            ToastUtils.showToast(mActivity,"删除失败");
+        } else {
+            ToastUtils.showToast(mActivity, "删除失败");
         }
 
     }
@@ -259,12 +284,12 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
         StoryModelBean bean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
         int spaceId = bean.getSpaceId();
         String cacheSpaceId = SCCacheUtils.getCacheSpaceId();
-        if (TextUtils.equals(cacheSpaceId,spaceId + "")){
+        if (TextUtils.equals(cacheSpaceId, spaceId + "")) {
             Intent intent = new Intent(mActivity, ForwardingActivity.class);
             intent.putExtra("forward", bean);
             startActivity(intent);
-        }else {
-            ToastUtils.showToast(mActivity,"不同世界不能进行转发操作");
+        } else {
+            ToastUtils.showToast(mActivity, "不同世界不能进行转发操作");
         }
 
     }
@@ -273,8 +298,9 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
      * 描述：评论的点击事件
      */
     private void clickComment(int position) {
-        StoryBeanModel beanModel = mAdapter.getData().get(position);
-        StoryModelBean bean = beanModel.getStoryModel().getModelInfo().getBean();
+        beanModel = mAdapter.getData().get(position);
+        bean = beanModel.getStoryModel().getModelInfo().getBean();
+        commentCount = beanModel.getStoryModel().getModelInfo().getBean().getCommendCount();
         int itemType = beanModel.getItemType();
         if (itemType == StoryInfo.type1) {   //普通动态
             Intent intent = new Intent(mActivity, DynamicDetailsActivity.class);
@@ -306,12 +332,12 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     private void report(final int position) {
         //当前故事详情
         final StoryModelBean storyModelBean = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean();
-        String currentCharacterId =  String.valueOf(storyModelBean.getCharacterId());//当前故事id
+        String currentCharacterId = String.valueOf(storyModelBean.getCharacterId());//当前故事id
         String myCharacterId = SCCacheUtils.getCacheCharacterId();
         Boolean isShow = currentCharacterId.equals(myCharacterId);
 
         final CustomDialog customDialog = new CustomDialog(mActivity, true, 1.0, R.layout.dialog_shielding_report,
-                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel,R.id.tv_report_dialog_delete},isShow);
+                new int[]{R.id.tv_report_dialog_report, R.id.tv_report_dialog_cancel, R.id.tv_report_dialog_delete}, isShow);
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -344,19 +370,19 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
     }
 
     //初始化动态删除按钮
-    public void deleteDialog(final int position){
+    public void deleteDialog(final int position) {
         CustomDialog sureDialog = new CustomDialog(mActivity, false, 1.0, R.layout.common_dialog_comment_delete,
-                new int[]{R.id.tv_dialog_delete_cancel,R.id.tv_dialog_delete_sure,R.id.dialog_msg},dialogMsgs);
+                new int[]{R.id.tv_dialog_delete_cancel, R.id.tv_dialog_delete_sure, R.id.dialog_msg}, dialogMsgs);
         sureDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
-                switch (view.getId()){
+                switch (view.getId()) {
                     case R.id.dialog_msg:
                         break;
                     case R.id.tv_dialog_delete_sure:
 
                         int deleteStoryId = mAdapter.getData().get(position).getStoryModel().getModelInfo().getBean().getRootId();
-                        mCurrentPresenter.deleteSelfStory(position,String.valueOf(deleteStoryId));
+                        mCurrentPresenter.deleteSelfStory(position, String.valueOf(deleteStoryId));
 
                         break;
                     case R.id.tv_dialog_delete_cancel:
@@ -394,7 +420,7 @@ public class CurrentFragment extends BaseFragment implements CurrentView, SwipeR
                 Intent intentType3 = new Intent(mActivity, TopicDetailsActivity.class);
                 intentType3.putExtra("from", 1);
                 List<StoryBeanModel> data = mAdapter.getData();
-                String  topicId = data.get(position).getStoryModel().getModelInfo().getBean().getTopicModel().getTopicId()+"";
+                String topicId = data.get(position).getStoryModel().getModelInfo().getBean().getTopicModel().getTopicId() + "";
                 intentType3.putExtra("topicId", topicId);
                 startActivity(intentType3);
                 break;
