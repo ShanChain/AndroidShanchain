@@ -1,6 +1,8 @@
 package com.shanchain.data.common;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -29,6 +31,12 @@ public class BaseApplication extends Application implements ReactApplication {
         AppManager.getInstance().setContext(getApplicationContext());
         NativePages.initAllowJumpPages(this);
         BaseSqlDao.getInstance().init(getApplicationContext(), CommonConstants.APP_CHACHE_DB,1);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
