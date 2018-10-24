@@ -140,9 +140,8 @@ import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.rn.modules.NavigatorModule;
-        import com.umeng.message.PushAgent;
-
-        import org.greenrobot.eventbus.EventBus;
+import com.umeng.message.PushAgent;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.annotation.Nullable;
