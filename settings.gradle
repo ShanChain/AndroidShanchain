@@ -1,1 +1,1 @@
-include ':PushSDK', ':easeui', ':common', ':thirdparty', ':arkspot', ':improv', ':baidumap'
+include ':PushSDK', ':easeui', ':common', ':thirdparty', ':arkspot', ':improv', ':baidumap', ':chatinput', ':messagelist'

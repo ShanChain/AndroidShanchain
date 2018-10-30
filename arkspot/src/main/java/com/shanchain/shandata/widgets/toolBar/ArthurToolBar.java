@@ -85,6 +85,12 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
 
 
     /**
+     * 描述：收藏按钮
+     */
+    private DrawableCenterTextView mFavorite;
+
+
+    /**
      * 描述：中间标题
      */
     private TextView mTitleText;
@@ -102,6 +108,11 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     private OnLeftClickListener mLeftListener;
 
     /**
+     * 描述：左侧按钮点击回调接口
+     */
+    private OnFavoriteClickListener mFavoriteListener;
+
+    /**
      * 描述：右侧按钮点击回调接口
      */
     private OnRightClickListener mRightListener;
@@ -109,10 +120,10 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     // 构造方法 ---------------------------------------------------
 
     /**
-     *  描述：标题点击回调接口
-     *
+     * 描述：标题点击回调接口
      */
     private OnTitleClickListener mTitleListener;
+    private TextView chatRoomNum;
 
     /**
      * 描述：构造方法
@@ -246,9 +257,15 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mLeftText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mLeftText);
         mTitleText = (TextView) mTitleLayoutView.findViewById(R.id.mTitleText);
         mRightText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mRightText);
+        //聊天室标题
+        View relative = mTitleLayoutView.findViewById(R.id.relative_chatRoom);
+        mFavorite = mTitleLayoutView.findViewById(R.id.mFavorite);
+        chatRoomNum = mTitleLayoutView.findViewById(R.id.mRoomNum);
+
         mLeftText.setOnClickListener(this);
         mRightText.setOnClickListener(this);
         mTitleText.setOnClickListener(this);
+        mFavorite.setOnClickListener(this);
         // 载入子VIew
         addView(mImmersiveView);
         addView(mTitleLayoutView);
@@ -264,42 +281,59 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
             // 获取View ID
             int id = v.getId();
             // 根据ID处理不同的回调事件
-            if (id == R.id.mLeftText) { // 左侧按钮事件
-                // 执行点击事件回调
-                if (mLeftListener != null) {
-                    mLeftListener.onLeftClick(v);
-                }
-                // 执行动画
-                if (isOpenAnim) {
-                    if (!TextUtils.isEmpty(mLeftText.getText().toString().trim())) {
-                        ArthurNavigationHelper.updateTextSize(mLeftText, inactiveTextSize, activeTextSize);
-                        ArthurNavigationHelper.updateTextSize(mLeftText, activeTextSize, inactiveTextSize);
-                    } else {
-                        ArthurNavigationHelper.updateAlpha(mLeftText, 1, 0.60f);
-                        ArthurNavigationHelper.updateAlpha(mLeftText, 0.60f, 1);
+            switch (v.getId()) {
+                // 左侧按钮事件
+                case R.id.mLeftText:
+                    // 执行点击事件回调
+                    if (mLeftListener != null) {
+                        mLeftListener.onLeftClick(v);
                     }
-                }
-            } else if (id == R.id.mRightText) { // 右侧按钮事件
-                // 执行点击事件回调
-                if (mRightListener != null) {
-                    mRightListener.onRightClick(v);
-                }
-                // 执行动画
-                if (isOpenAnim) {
-                    if (!TextUtils.isEmpty(mRightText.getText().toString().trim())) {
-                        ArthurNavigationHelper.updateTextSize(mRightText, inactiveTextSize, activeTextSize);
-                        ArthurNavigationHelper.updateTextSize(mRightText, activeTextSize, inactiveTextSize);
-                    } else {
-                        ArthurNavigationHelper.updateAlpha(mRightText, 1, 0.60f);
-                        ArthurNavigationHelper.updateAlpha(mRightText, 0.60f, 1);
+                    // 执行动画
+                    if (isOpenAnim) {
+                        if (!TextUtils.isEmpty(mLeftText.getText().toString().trim())) {
+                            ArthurNavigationHelper.updateTextSize(mLeftText, inactiveTextSize, activeTextSize);
+                            ArthurNavigationHelper.updateTextSize(mLeftText, activeTextSize, inactiveTextSize);
+                        } else {
+                            ArthurNavigationHelper.updateAlpha(mLeftText, 1, 0.60f);
+                            ArthurNavigationHelper.updateAlpha(mLeftText, 0.60f, 1);
+                        }
                     }
-                }
-            } else if (id == R.id.mTitleText) {
-                if (mTitleListener != null) {
-                    mTitleListener.onTitleClick(v);
-                }
+                    break;
+                // 右侧按钮事件
+                case R.id.mRightText:
+                    // 执行点击事件回调
+                    if (mRightListener != null) {
+                        mRightListener.onRightClick(v);
+                    }
+                    // 执行动画
+                    if (isOpenAnim) {
+                        if (!TextUtils.isEmpty(mRightText.getText().toString().trim())) {
+                            ArthurNavigationHelper.updateTextSize(mRightText, inactiveTextSize, activeTextSize);
+                            ArthurNavigationHelper.updateTextSize(mRightText, activeTextSize, inactiveTextSize);
+                        } else {
+                            ArthurNavigationHelper.updateAlpha(mRightText, 1, 0.60f);
+                            ArthurNavigationHelper.updateAlpha(mRightText, 0.60f, 1);
+                        }
+                    }
+                    break;
+                //标题点击事件
+                case R.id.mTitleText:
+                    if (mTitleListener != null) {
+                        mTitleListener.onTitleClick(v);
+                    }
+                    break;
+                    //收藏点击事件
+                case R.id.mFavorite:
+                    if (mFavoriteListener !=null){
+                        mFavoriteListener.onFavoriteClick(v);
+                    }
+                    break;
 
+                default:
+
+                    break;
             }
+
         } catch (Exception e) {
             Log.e(TAG, "button == null !!! 按钮执行动画异常");
             e.printStackTrace();
@@ -358,6 +392,22 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     public TextView getTitleView() { // 获取标题View
         return this.mTitleText;
+    }
+
+    /**
+     * 时间：15:20
+     * 描述: 收藏控件
+     */
+    public TextView getFavoriteView() { // 聊天室控件
+        return this.mFavorite;
+    }
+
+    /**
+     * 时间：15:20
+     * 描述: 聊天室控件
+     */
+    public TextView getChatRoomNumView() { // 聊天室控件
+        return this.chatRoomNum;
     }
 
     // 左侧按钮 ------------------------------------------------------------
@@ -561,10 +611,17 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     }
 
     /**
-     *  描述：中间标题的点击事件回调接口
-     *
+     * 时间：15:07
+     * 描述: 收藏按钮点击事件回调接口
      */
-    public interface OnTitleClickListener{
+    public interface OnFavoriteClickListener {
+        void onFavoriteClick(View v);
+    }
+
+    /**
+     * 描述：中间标题的点击事件回调接口
+     */
+    public interface OnTitleClickListener {
         void onTitleClick(View v);
     }
 
@@ -584,9 +641,22 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         this.mLeftListener = listener;
     }
 
+    /**
+     * 时间：15:12
+     * 描述: 设置标题接口
+     */
     public void setOnTitleClickListener(OnTitleClickListener listener) {
         this.mTitleListener = listener;
     }
+
+    /**
+     * 时间：15:12
+     * 描述: 设置收藏接口
+     */
+    public void setOnFavoriteClickListener(OnFavoriteClickListener listener) {
+        this.mFavoriteListener = listener;
+    }
+
 
     /**
      * 时间：15:12

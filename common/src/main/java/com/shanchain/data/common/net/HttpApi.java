@@ -298,5 +298,9 @@ public interface HttpApi {
     String SHARE_SAVE = BASE_URL + "/v1/share/save";
     /** 获取演绎详情*/
     String PLAY_GET_ID = BASE_URL + "/v1/play/get/id";
+     /** 上传用户实时间位置 */
+    String USER_COORDINATE = BASE_URL + "/v1/lbs/coordinate";
+    /** 获取聊天室信息 */
+    String CHAT_ROOM_INFO = BASE_URL + "/v1/lbs/coordinate/info";
 
 }

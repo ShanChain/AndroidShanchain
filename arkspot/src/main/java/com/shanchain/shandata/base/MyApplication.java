@@ -12,6 +12,13 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.CoordType;
+import com.baidu.mapapi.SDKInitializer;
 import com.facebook.soloader.SoLoader;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMessageListener;
@@ -50,6 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.im.android.api.JMessageClient;
 import me.shaohui.shareutil.ShareConfig;
 import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
@@ -59,9 +67,10 @@ import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
 
-public class MyApplication extends BaseApplication {
+public class MyApplication extends BaseApplication implements BDLocationListener {
 
     private static Context mContext;
+    private LocationClient locationClient;
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
@@ -70,7 +79,7 @@ public class MyApplication extends BaseApplication {
     private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
     private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
-
+/*
     UmengNotificationClickHandler mNotificationClickHandler = new UmengNotificationClickHandler() {
         @Override
         public void dealWithCustomAction(Context context, UMessage msg) {
@@ -98,7 +107,7 @@ public class MyApplication extends BaseApplication {
                 }
             });
         }
-    };
+    };*/
 
 
     @Override
@@ -106,16 +115,30 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
         mContext = getApplicationContext();
         SoLoader.init(this, /* native exopackage */ false);
+        SDKInitializer.initialize(this);//初始化百度地图sdk
+        initBaiduMap();//初始化百度地图
         Utils.init(this);
         initOkhttpUtils();
-        initUPush();
-        initHuanXin();
+        initJMessage();
+//        initUPush();
+//        initHuanXin();
         initDB();
         initSCCache();
         initShareAndLogin();
-        initInstance();
-        initUmengSocial();
+//        initInstance();
+//        initUmengSocial();
         initBugly();
+    }
+
+    private void initBaiduMap() {
+        locationClient = new LocationClient(getApplicationContext());//声明LocationClient类
+        locationClient.registerLocationListener(this);//注册监听函数
+        LocationClientOption option = new LocationClientOption();//创建定位配置参数
+        //显示位置描述信息
+        option.setIsNeedLocationDescribe(true);
+
+        locationClient.setLocOption(option);//设置定位参数
+        locationClient.start();
     }
 
     /** bugly崩溃日志上报*/
@@ -123,62 +146,62 @@ public class MyApplication extends BaseApplication {
         //CrashReport.initCrashReport(getApplicationContext(),"1b75aa14d2",true);
     }
 
-    private void initUmengSocial() {
-        //全局异常捕捉
-          /*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-              try {
-                    String product = Build.PRODUCT;
-                    String device = Build.DEVICE;
-                    String board = Build.BOARD;
-                    String bootloader = Build.BOOTLOADER;
-                    String brand = Build.BRAND;
-                    String display = Build.DISPLAY;
-                    String fingerprint = Build.FINGERPRINT;
-                    String hardware = Build.HARDWARE;
-                    String host = Build.HOST;
-                    String id = Build.ID;
-                    String manufacturer = Build.MANUFACTURER;
-                    String model = Build.MODEL;
-                    String serial = Build.SERIAL;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("produt = " + product);
-                    sb.append("device = " + device);
-                    sb.append("board = " + board);
-                    sb.append("bootloader = " + bootloader);
-                    sb.append("brand = " + brand);
-                    sb.append("display = " + display);
-                    sb.append("fingerprint = " + fingerprint);
-                    sb.append("hardware = " + hardware);
-                    sb.append("host = " + host);
-                    sb.append("id = " + id);
-                    sb.append("manufacturer = " + manufacturer);
-                    sb.append("model = " + model);
-                    sb.append("serial = " + serial);
+//    private void initUmengSocial() {
+//        //全局异常捕捉
+//          /*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread t, Throwable e) {
+//              try {
+//                    String product = Build.PRODUCT;
+//                    String device = Build.DEVICE;
+//                    String board = Build.BOARD;
+//                    String bootloader = Build.BOOTLOADER;
+//                    String brand = Build.BRAND;
+//                    String display = Build.DISPLAY;
+//                    String fingerprint = Build.FINGERPRINT;
+//                    String hardware = Build.HARDWARE;
+//                    String host = Build.HOST;
+//                    String id = Build.ID;
+//                    String manufacturer = Build.MANUFACTURER;
+//                    String model = Build.MODEL;
+//                    String serial = Build.SERIAL;
+//                    StringBuilder sb = new StringBuilder();
+//                    sb.append("produt = " + product);
+//                    sb.append("device = " + device);
+//                    sb.append("board = " + board);
+//                    sb.append("bootloader = " + bootloader);
+//                    sb.append("brand = " + brand);
+//                    sb.append("display = " + display);
+//                    sb.append("fingerprint = " + fingerprint);
+//                    sb.append("hardware = " + hardware);
+//                    sb.append("host = " + host);
+//                    sb.append("id = " + id);
+//                    sb.append("manufacturer = " + manufacturer);
+//                    sb.append("model = " + model);
+//                    sb.append("serial = " + serial);
+//
+//                    Writer writer = new StringWriter();
+//                    PrintWriter printWriter = new PrintWriter(writer);
+//                    e.printStackTrace(printWriter);
+//                    printWriter.flush();
+//                    writer.flush();
+//                    String s1 = writer.toString();
+//                    writer.close();
+//                    printWriter.close();
+//                    sb.append(s1);
+//                    String errorLog = sb.toString();
+//                    LogUtils.i(errorLog);
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });*/
+//    }
 
-                    Writer writer = new StringWriter();
-                    PrintWriter printWriter = new PrintWriter(writer);
-                    e.printStackTrace(printWriter);
-                    printWriter.flush();
-                    writer.flush();
-                    String s1 = writer.toString();
-                    writer.close();
-                    printWriter.close();
-                    sb.append(s1);
-                    String errorLog = sb.toString();
-                    LogUtils.i(errorLog);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });*/
-    }
-
-    private void initInstance() {
-        CharacterManager.getInstance();
-        LoginManager.getInstance(this);
-    }
+//    private void initInstance() {
+//        CharacterManager.getInstance();
+//        LoginManager.getInstance(this);
+//    }
 
     private void initSCCache() {
         SCCacheUtils.initCache(this);
@@ -211,72 +234,78 @@ public class MyApplication extends BaseApplication {
         ShareManager.init(config);
     }
 
-    private void initUPush() {
-        final PushAgent mPushAgent = PushAgent.getInstance(this);
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //注册推送服务，每次调用register方法都会回调该接口
-                mPushAgent.register(new IUmengRegisterCallback() {
-                    @Override
-                    public void onSuccess(String deviceToken) {
-                        if (TextUtils.isEmpty(deviceToken)) {
-                            return;
-                        }
-                        PrefUtils.putString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, deviceToken);
-                    }
-
-                    @Override
-                    public void onFailure(String s, String s1) {
-
-                    }
-                });
-            }
-        });
-        thread.start();
-        mPushAgent.setNotificationClickHandler(mNotificationClickHandler);
-        mPushAgent.setMessageHandler(messageHandler);
-//        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
-    }
+//    private void initUPush() {
+//        final PushAgent mPushAgent = PushAgent.getInstance(this);
+//
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                //注册推送服务，每次调用register方法都会回调该接口
+//                mPushAgent.register(new IUmengRegisterCallback() {
+//                    @Override
+//                    public void onSuccess(String deviceToken) {
+//                        if (TextUtils.isEmpty(deviceToken)) {
+//                            return;
+//                        }
+//                        PrefUtils.putString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, deviceToken);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String s, String s1) {
+//
+//                    }
+//                });
+//            }
+//        });
+//        thread.start();
+//        mPushAgent.setNotificationClickHandler(mNotificationClickHandler);
+//        mPushAgent.setMessageHandler(messageHandler);
+////        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
+//    }
 
 
     /**
      * 描述：初始化环信
      */
-    private void initHuanXin() {
-        EMOptions options = new EMOptions();
-        //设置添加好友时需要验证
-        options.setAcceptInvitationAlways(false);
-        //禁止自动登录
-        options.setAutoLogin(false);
-        int pid = android.os.Process.myPid();
-        String processAppName = getAppName(pid);
-        // 如果APP启用了远程的service，此application:onCreate会被调用2次
-        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
-        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
+//    private void initHuanXin() {
+//        EMOptions options = new EMOptions();
+//        //设置添加好友时需要验证
+//        options.setAcceptInvitationAlways(false);
+//        //禁止自动登录
+//        options.setAutoLogin(false);
+//        int pid = android.os.Process.myPid();
+//        String processAppName = getAppName(pid);
+//        // 如果APP启用了远程的service，此application:onCreate会被调用2次
+//        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
+//        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
+//
+//        if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
+//            Log.e("myApplication", "enter the service process!");
+//
+//            // 则此application::onCreate 是被service 调用的，直接返回
+//            return;
+//        }
+//
+//        //初始化
+//        EMClient.getInstance().init(mContext, options);
+//        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
+//        EMClient.getInstance().setDebugMode(true);
+//        //初始化easeui
+//        //EaseUI.getInstance().init(mContext, options);
+//
+//        //添加全局消息监听
+//        initMsgListener();
+//
+//        //添加全局通讯录监听
+//        initContactListener();
+//    }
 
-        if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
-            Log.e("myApplication", "enter the service process!");
-
-            // 则此application::onCreate 是被service 调用的，直接返回
-            return;
-        }
-
-        //初始化
-        EMClient.getInstance().init(mContext, options);
-        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
-        EMClient.getInstance().setDebugMode(true);
-        //初始化easeui
-        //EaseUI.getInstance().init(mContext, options);
-
-        //添加全局消息监听
-        initMsgListener();
-
-        //添加全局通讯录监听
-        initContactListener();
+    /*
+    * 初始化极光IM
+    * */
+    private void initJMessage() {
+        JMessageClient.init(this,true);
     }
-
     private void initContactListener() {
         EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
             @Override
@@ -448,4 +477,8 @@ public class MyApplication extends BaseApplication {
         notificationManager.notify(1, notification);
     }
 
+    @Override
+    public void onReceiveLocation(BDLocation bdLocation) {
+
+    }
 }

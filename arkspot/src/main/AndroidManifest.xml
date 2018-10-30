@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.shanchain.shandata">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 极光官方定义的权限，允许应用接受JPUSH 内部代码发送的广播消息 -->
+    <permission
+        android:name="com.shanchain.shandata.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -20,11 +23,27 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <!--SD卡读写操作-->
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- SD卡读写操作 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <!--通知栏-->
+    <!-- 通知栏 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -43,71 +62,90 @@
         <!-- 友盟消息推送 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="59828961cae7e754170008ab"></meta-data>
+            android:value="59828961cae7e754170008ab" />
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
-            android:value="dfb65b759f7998b0b69b644d17303224"></meta-data>
+            android:value="dfb65b759f7998b0b69b644d17303224" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
+        <!-- 百度地图 -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE" />
+        <!-- 百度定位服务 -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
         <!-- 友盟消息处理服务 -->
         <!-- <service android:name=".service.MyPushIntentService" /> -->
 
 
         <!-- 设置环信应用的AppKey -->
-        <meta-data
-            android:name="EASEMOB_APPKEY"
-        android:value="1145170810178434#shanchain" />
+        <!-- <meta-data -->
+        <!-- android:name="EASEMOB_APPKEY" -->
+        <!-- android:value="1145170810178434#shanchain" /> -->
         <!-- 声明SDK所需的service SDK核心功能 -->
-        <service
-            android:name="com.hyphenate.chat.EMChatService"
-            android:exported="true" />
-        <service
-            android:name="com.hyphenate.chat.EMJobService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <!-- 声明SDK所需的receiver -->
-        <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+        <!-- <service -->
+        <!-- android:name="com.hyphenate.chat.EMChatService" -->
+        <!-- android:exported="true" /> -->
+        <!-- <service -->
+        <!-- android:name="com.hyphenate.chat.EMJobService" -->
+        <!-- android:exported="true" -->
+        <!-- android:permission="android.permission.BIND_JOB_SERVICE" /> -->
+        <!-- &lt;!&ndash; 声明SDK所需的receiver &ndash;&gt; -->
+        <!-- <receiver android:name="com.hyphenate.chat.EMMonitorReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PACKAGE_REMOVED" /> -->
 
-                <data android:scheme="package" />
-            </intent-filter>
-            <!-- 可选filter -->
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".receiver.DownloadCompleteReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
-            </intent-filter>
-        </receiver>
 
+        <!-- <data android:scheme="package" /> -->
+        <!-- </intent-filter> -->
+        <!-- &lt;!&ndash; 可选filter &ndash;&gt; -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
+        <!-- <action android:name="android.intent.action.USER_PRESENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <!-- <receiver android:name=".receiver.DownloadCompleteReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.DOWNLOAD_COMPLETE" /> -->
+        <!-- <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+
+
+        <!-- activity页面注册 -->
         <activity android:name=".ui.view.activity.login.LoginActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_login" />
         </activity>
+        <activity
+            android:name=".ui.view.activity.HomeActivity"
+            android:configChanges="locale" />
+        <activity
+            android:name=".ui.view.activity.jmessageui.MessageListActivity"
+            android:configChanges="locale" />
         <activity android:name=".ui.view.activity.MainActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_main" />
         </activity>
-        <!--添加 FaceBook 的 ReactNative 调试的 activity-->
-        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
-        <activity android:name=".ui.view.activity.story.StoryTitleActivity"></activity>
-        <activity android:name=".ui.view.activity.story.ChooseRoleActivity"></activity>
-        <activity android:name=".ui.view.activity.story.SearchRoleActivity"></activity>
-        <activity android:name=".ui.view.activity.story.ReportActivity"></activity>
+        <!-- 添加 FaceBook 的 ReactNative 调试的 activity -->
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+        <activity android:name=".ui.view.activity.story.StoryTitleActivity" />
+        <activity android:name=".ui.view.activity.story.ChooseRoleActivity" />
+        <activity android:name=".ui.view.activity.story.SearchRoleActivity" />
+        <activity android:name=".ui.view.activity.story.ReportActivity" />
         <activity android:name=".ui.view.activity.story.AddRoleActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_add_role" />
         </activity>
-        <activity android:name=".ui.view.activity.story.AddResultActivity"></activity>
+        <activity android:name=".ui.view.activity.story.AddResultActivity" />
 
         <!-- 图片选择页面 -->
         <activity
@@ -126,12 +164,12 @@
         </activity>
         <activity
             android:name=".ui.view.activity.story.ReleaseDynamicActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name=".ui.view.activity.story.TopicActivity"></activity>
-        <activity android:name=".ui.view.activity.story.SelectContactActivity"></activity>
-        <activity android:name=".ui.view.activity.story.BoxActivity"></activity>
-        <activity android:name=".ui.view.activity.story.ReadModelActivity"></activity>
-        <activity android:name=".ui.view.activity.story.StoryChainActivity"></activity>
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.view.activity.story.TopicActivity" />
+        <activity android:name=".ui.view.activity.story.SelectContactActivity" />
+        <activity android:name=".ui.view.activity.story.BoxActivity" />
+        <activity android:name=".ui.view.activity.story.ReadModelActivity" />
+        <activity android:name=".ui.view.activity.story.StoryChainActivity" />
         <activity android:name=".ui.view.activity.story.TopicDetailsActivity">
             <meta-data
                 android:name="page_flag"
@@ -144,7 +182,7 @@
                 android:name="page_flag"
                 android:value="page_photo_image" />
         </activity>
-        <activity android:name=".ui.view.activity.story.AddNewSpaceActivity"></activity>
+        <activity android:name=".ui.view.activity.story.AddNewSpaceActivity" />
         <activity android:name=".ui.view.activity.story.DynamicDetailsActivity">
             <meta-data
                 android:name="page_flag"
@@ -158,27 +196,27 @@
         <activity
             android:name=".ui.view.activity.chat.ChatRoomActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.view.activity.chat.ContactActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_contact" />
         </activity>
-        <activity android:name=".ui.view.activity.chat.CreateDramaActivity"></activity>
-        <activity android:name=".ui.view.activity.chat.SceneDetailsActivity"></activity>
-        <activity android:name=".ui.view.activity.chat.SceneNumbersActivity"></activity>
-        <activity android:name=".ui.view.activity.chat.AnnouncementActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.CreateDramaActivity" />
+        <activity android:name=".ui.view.activity.chat.SceneDetailsActivity" />
+        <activity android:name=".ui.view.activity.chat.SceneNumbersActivity" />
+        <activity android:name=".ui.view.activity.chat.AnnouncementActivity" />
         <activity
             android:name=".ui.view.activity.chat.AddAnnouncementActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.view.activity.chat.AnnouncementDetailsActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_notice" />
         </activity>
-        <activity android:name=".ui.view.activity.chat.EditSceneActivity"></activity>
-        <activity android:name=".ui.view.activity.chat.MeetPersonActivity"></activity>
-        <activity android:name=".ui.view.activity.chat.FindSceneActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.EditSceneActivity" />
+        <activity android:name=".ui.view.activity.chat.MeetPersonActivity" />
+        <activity android:name=".ui.view.activity.chat.FindSceneActivity" />
         <activity android:name=".ui.view.activity.mine.PraisedActivity">
             <meta-data
                 android:name="page_flag"
@@ -194,8 +232,8 @@
                 android:name="page_flag"
                 android:value="page_add_topic" />
         </activity>
-        <activity android:name=".ui.view.activity.login.RegisterActivity"></activity>
-        <activity android:name=".ui.view.activity.login.ResetPwdActivity"></activity>
+        <activity android:name=".ui.view.activity.login.RegisterActivity" />
+        <activity android:name=".ui.view.activity.login.ResetPwdActivity" />
         <activity android:name=".ui.view.activity.login.BindInfoActivity">
             <meta-data
                 android:name="page_flag"
@@ -215,20 +253,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.view.activity.story.MoreTagActivity"></activity>
+        <activity android:name=".ui.view.activity.story.MoreTagActivity" />
         <activity
             android:name=".ui.view.activity.story.ForwardingActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name=".ui.view.activity.story.ChainActivity"></activity>
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.view.activity.story.ChainActivity" />
         <activity android:name=".ui.view.activity.mine.MyStoryActivity">
             <meta-data
                 android:name="page_flag"
                 android:value="page_my_story" />
         </activity>
-        <activity android:name=".ui.view.activity.chat.ChatAtActivity"></activity>
+        <activity android:name=".ui.view.activity.chat.ChatAtActivity" />
         <activity
             android:name=".ui.view.activity.login.GuideActivity"
-            android:theme="@style/FullScreenTheme"></activity>
+            android:theme="@style/FullScreenTheme" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -245,13 +283,18 @@
         <activity
             android:name=".ui.view.activity.story.VideoDynamicDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.view.activity.story.CreateDynamicActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.view.activity.story.CreateDynamicActivity" />
         <activity
             android:name=".ui.view.activity.story.ReleaseVideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.view.activity.story.RecordVideoActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.view.activity.story.RecordVideoActivity" />
+        <activity
+            android:name=".ui.view.activity.jmessageui.SetingActivity"
+            android:label="@string/title_activity_seting"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.view.activity.square.FoodPrintActivity"></activity>
     </application>
 
 </manifest>

@@ -478,7 +478,7 @@ public class LoginActivity extends BaseActivity {
                                 ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        hxLogin(userName, pwd);
+//                                        hxLogin(userName, pwd);
                                     }
                                 });
                             } else {

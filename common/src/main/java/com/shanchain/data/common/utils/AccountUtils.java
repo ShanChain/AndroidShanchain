@@ -31,7 +31,7 @@ public class AccountUtils {
      *
      */
     public static boolean isPhone(String account){
-        return account.matches("1[3|5|7|8|]\\d{9}");
+        return account.matches("1[|3|5|6|7|8|9|]\\d{9}");
     }
 
     public static boolean isEmail(String account){

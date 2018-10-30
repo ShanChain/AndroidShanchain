@@ -1,43 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mToolbar"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/arthur_navigation_height">
+    android:layout_height="@dimen/arthur_navigation_height"
+    android:padding="@dimen/dp_4">
 
     <!-- 左侧按钮 -->
     <com.shanchain.shandata.widgets.toolBar.DrawableCenterTextView
-        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
         android:id="@+id/mLeftText"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:gravity="center"
-        android:textSize="@dimen/arthur_toolbar_button_text_size"
-        android:textColor="#0f0"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:background="@mipmap/my_info"
+        />
 
     <!-- 中间标题 -->
     <TextView
         android:id="@+id/mTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="@dimen/arthur_toolbar_title_text_size"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="title"
         android:textColor="#000"
-        android:text="title"/>
+        android:textSize="@dimen/arthur_toolbar_title_text_size" />
 
+    <!--收藏图片-->
+    <com.shanchain.shandata.widgets.toolBar.DrawableCenterTextView
+        android:id="@+id/mFavorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_toEndOf="@+id/mTitleText"
+        android:background="@mipmap/favorite"
+        />
+
+    <RelativeLayout
+        android:id="@+id/relative_chatRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mTitleText"
+        android:layout_centerHorizontal="true">
+
+        <!--聊天室的图片-->
+        <com.shanchain.shandata.widgets.toolBar.DrawableCenterTextView
+            android:id="@+id/mChatRoom"
+            android:layout_width="@dimen/dimens_15dp"
+            android:layout_height="@dimen/dimens_15dp"
+            android:layout_marginRight="@dimen/dimens_5dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/room_num"/>
+
+        <!-- 聊天室的人数 -->
+        <TextView
+            android:id="@+id/mRoomNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/mChatRoom"
+            android:layout_centerVertical="true"
+            android:text="885"
+            android:textColor="#000"
+            android:textSize="@dimen/sp_12" />
+    </RelativeLayout>
     <!--  右侧按钮 -->
     <com.shanchain.shandata.widgets.toolBar.DrawableCenterTextView
-        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
         android:id="@+id/mRightText"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:gravity="center"
-        android:textSize="@dimen/arthur_toolbar_button_text_size"
-        android:textColor="#0f0"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp_4"
+        android:background="@mipmap/close" />
 
-</FrameLayout>
+</RelativeLayout>

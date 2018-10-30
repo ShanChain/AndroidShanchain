@@ -17,15 +17,19 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.manager.ConversationManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
@@ -78,11 +82,14 @@ public class SplashActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
 
-                loginHx(hxUserName, hxPwd);
+                //loginHx(hxUserName, hxPwd);
+                loginJm("weal","123456");
+//                loginJm(hxUserName,hxPwd);
 
             }
         } else {
@@ -92,7 +99,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void loginHx(String hxUserName, String hxPwd) {
+  /*  private void loginHx(String hxUserName, String hxPwd) {
         final long startTime = System.currentTimeMillis();
         LogUtils.i("登录环信 = 开始时间 = " + startTime);
         EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
@@ -120,6 +127,48 @@ public class SplashActivity extends AppCompatActivity {
 
             }
         });
+    }*/
+
+    private void loginJm(String hxUserName, String hxPwd) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录极光IM = 开始时间 = " + startTime);
+        JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (s.contains("Success")){
+                    LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+
+                }else {
+                    LogUtils.d("极光IM############## 登录失败 ##############极光IM");
+                }
+            }
+        });
+
+//        EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
+//            @Override
+//            public void onSuccess() {
+//                LogUtils.i("登录极光IM账号成功");
+//                long endTime = System.currentTimeMillis();
+//                LogUtils.i("登录极光IM成功 = 结束时间 = " + endTime );
+//
+//                LogUtils.i("耗时 = " + (endTime - startTime));
+//                EMClient.getInstance().chatManager().loadAllConversations();
+//                EMClient.getInstance().groupManager().loadAllGroups();
+//                //初始化对话信息
+//                ConversationManager.getInstance().obtainConversationInfoFromServer();
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                LogUtils.i("极光IM登录失败 = " + s);
+//                exception();
+//            }
+//
+//            @Override
+//            public void onProgress(int i, String s) {
+//
+//            }
+//        });
     }
 
     private void checkServer() {
@@ -204,7 +253,8 @@ public class SplashActivity extends AppCompatActivity {
                                 final String data = JSONObject.parseObject(response).getString("data");
                                 //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
                                 RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
-                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                                 ActivityManager.getInstance().finishAllActivity();
                                 startActivity(intent);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
@@ -213,7 +263,7 @@ public class SplashActivity extends AppCompatActivity {
                                 ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        hxLogin(userName, pwd);
+                                        //hxLogin(userName, pwd);
                                     }
                                 });
 

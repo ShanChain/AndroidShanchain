@@ -22,7 +22,10 @@ android {
 
 
         manifestPlaceholders = [
-                qq_id: "1106258060",
+                qq_id        : "1106258060",
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "09be9a8f7cbb2b63b55f15f8", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
 
@@ -107,45 +110,71 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':common')
+    implementation project(':messagelist')
+    implementation project(':chatinput')
+
     //注解框架
+
     //事件总线框架
+
     //底部导航栏
+
     //九宫格图片
+
     //带下拉刷新和上拉加载的recycleview
+
     //cardview
+
     //recyclerview适配器
+
     //圆形imageview
+
     //slidebar
+
     //第三方登录分享
+
     /*compile(name: 'AlivcPlayer', ext: 'aar')
-            compile(name: 'AliyunVodPlayer', ext: 'aar')
-            compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
+                                compile(name: 'AliyunVodPlayer', ext: 'aar')
+                                compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
     implementation 'me.shaohui.shareutil:shareutil:1.3.8'
-    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.android.support:design:27.1.0'
     implementation 'com.jakewharton:butterknife:7.0.1'
     annotationProcessor 'com.jakewharton:butterknife:7.0.1'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     implementation 'com.jaeger.ninegridimageview:library:1.1.0'
-    implementation 'com.android.support:cardview-v7:27.0.0'
+    implementation 'com.android.support:cardview-v7:27.1.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.gjiazhe:wavesidebar:1.3'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
     //    compile 'com.umeng.analytics:analytics:latest.integration'
+
     /* 友盟SDK依赖 */
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.sdk:analytics:latest.integration'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation 'cjt.library.wheel:camera:1.1.9'
+    implementation 'pub.devrel:easypermissions:0.4.0'
+
+    /* 极光SDK依赖 */
+
+    implementation 'cn.jiguang.sdk:jmessage:2.7.0'// 此处以JMessage 2.7.0 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:1.2.3'// 此处以JCore 1.2.3 版本为例。
+
     //compile 'com.tencent.bugly:crashreport:2.6.6'
+
     /*react native依赖*/
     implementation 'com.facebook.react:react-native:+'
+
     // From node_modules
+
     /*react native调试依赖*/
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     testImplementation 'junit:junit:4.12'
 }

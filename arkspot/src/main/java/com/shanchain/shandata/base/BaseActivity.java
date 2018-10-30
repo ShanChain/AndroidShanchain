@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -19,6 +20,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
@@ -28,6 +30,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
+
+import static com.shanchain.data.common.utils.SystemUtils.*;
+import static com.shanchain.data.common.utils.SystemUtils.MIUISetStatusBarLightModeWithWhiteColor;
+import static com.shanchain.data.common.utils.SystemUtils.setImmersiveStatusBar_API21;
+import static com.shanchain.data.common.utils.SystemUtils.setStatusBarLightMode_API23;
 
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -68,6 +75,20 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     private CustomDialog mCustomDialog;
 
+    private PermissionHelper mPermissionHelper;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (mPermissionHelper.requestPermissionsResult(requestCode, permissions, grantResults)) {
+            //权限请求结果，并已经处理了该回调
+//            if (requestCode==10002){
+//                mLocationClient.restart();
+//            }
+
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     /**
      * 描述: onCreate 初始化
@@ -93,7 +114,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 初始化布局
         initLayout();
 
-
         // 初始化View和事件
         initViewsAndEvents();
         initStatusBar();
@@ -106,11 +126,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void initStatusBar() {
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
-            SystemUtils.setImmersiveStatusBar_API21(this, getResources().getColor(R.color.colorWhite));
-            SystemUtils.setStatusBarLightMode_API23(this);
+            setImmersiveStatusBar_API21(this, getResources().getColor(R.color.colorWhite));
+            setStatusBarLightMode_API23(this);
         }
-        SystemUtils.MIUISetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
-        SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
+        MIUISetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
+        FlymeSetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
     }
 
     /**
