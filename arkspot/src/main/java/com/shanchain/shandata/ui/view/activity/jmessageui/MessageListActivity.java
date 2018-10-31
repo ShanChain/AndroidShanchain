@@ -2,34 +2,28 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -43,18 +37,16 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 //import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 //import com.bumptech.glide.request.transition.Transition;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.DefaultUser;
-import com.shanchain.shandata.ui.model.MyMessage;
+import cn.jiguang.imui.model.DefaultUser;
+import cn.jiguang.imui.model.MyMessage;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -74,6 +66,7 @@ import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.CustomEvenMsgHolder;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
@@ -390,9 +383,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private void initToolBar() {
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
         mTbMain.setTitleText("聊天室");
-//        mTbMain.setTitleImage(R.mipmap.favorite);
-//        mTbMain.setLeftImage(R.mipmap.my_info);
-//        mTbMain.setRightImage(R.mipmap.close);
+        mTbMain.setLeftImage(R.mipmap.my_info);
+        mTbMain.setFavoriteImage(R.mipmap.favorite);
+        mTbMain.setRightImage(R.mipmap.close);
+        mTbMain.isShowChatRoom(true);
         mTbMain.setOnLeftClickListener(this);
         mTbMain.setOnRightClickListener(this);
         //设置收藏按钮的监听
@@ -404,6 +398,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         });
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private void registerProximitySensorListener() {
         try {
             mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -453,6 +448,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private void setScreenOff() {
         if (mWakeLock == null) {
             mWakeLock = mPowerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);
@@ -699,13 +695,22 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
         // Use default layout
         MsgListAdapter.HoldersConfig holdersConfig = new MsgListAdapter.HoldersConfig();
+        /*
+        *  If you want to customise your layout, try to create custom ViewHolder:
+        * holdersConfig.setSenderTxtMsg(CustomViewHolder.class, layoutRes);
+        * holdersConfig.setReceiverTxtMsg(CustomViewHolder.class, layoutRes);
+        * CustomViewHolder must extends ViewHolders defined in MsgListAdapter.
+        * Current ViewHolders are TxtViewHolder, VoiceViewHolder.
+        * */
+
+
+
+//        View itemView = getLayoutInflater().inflate(R.layout.item_custom_event_message,null);
+//        CustomEvenMsgHolder customEvenMsgHolder = new CustomEvenMsgHolder(itemView);
+        holdersConfig.setEventMessage(CustomEvenMsgHolder.class,R.layout.item_custom_event_message);
 
         mAdapter = new MsgListAdapter<>("0", holdersConfig, imageLoader);
-        // If you want to customise your layout, try to create custom ViewHolder:
-        // holdersConfig.setSenderTxtMsg(CustomViewHolder.class, layoutRes);
-        // holdersConfig.setReceiverTxtMsg(CustomViewHolder.class, layoutRes);
-        // CustomViewHolder must extends ViewHolders defined in MsgListAdapter.
-        // Current ViewHolders are TxtViewHolder, VoiceViewHolder.
+
 
 
         mAdapter.setOnMsgClickListener(new MsgListAdapter.OnMsgClickListener<MyMessage>() {

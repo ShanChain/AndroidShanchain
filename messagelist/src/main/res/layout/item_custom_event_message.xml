@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/shape_bg_even_msg"
+    android:layout_margin="20dp"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/even_message_bounty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:text="赏金：0.0001 SEAT"/>
+
+    <TextView
+        android:id="@+id/even_message_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginRight="44dp"
+        android:maxLines="5"
+        android:textStyle="bold"
+        android:lineSpacingExtra="4dp"
+        android:ellipsize="end"
+        android:textSize="14sp"
+        android:textColor="@color/aurora_event_msg_text_color"
+        android:text="谁能帮我去大润发买两块电池，只要南孚。7号电池，非常感谢！！"/>
+
+    <TextView
+        android:id="@+id/even_message_last_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/aurora_event_msg_text_color"
+        android:text="完成时限：12:00 2018-10-20"/>
+
+    <Button
+        android:id="@+id/btn_event_task"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:text="领取任务"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_btn_even_message_task"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/aurora_msg_date_bg_color">
+    </View>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp">
+
+        <TextView
+            android:id="@+id/item_tv_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:drawableLeft="@drawable/comment"
+            android:drawablePadding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="54dp"
+            android:text="115"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="4dp"
+            android:background="@color/aurora_msg_date_bg_color">
+        </View>
+
+
+        <TextView
+            android:id="@+id/item_tv_like"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/like"
+            android:drawablePadding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="54dp"
+            android:text="225"/>
+    </RelativeLayout>
+
+    <cn.jiguang.imui.view.RoundTextView
+        android:id="@+id/aurora_tv_msgitem_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cornerRadius="@dimen/aurora_event_bg_corner_radius"
+        app:backgroundColor="@color/aurora_event_msg_bg_color"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="TextView"
+        android:visibility="gone"
+        android:textColor="#000000" />
+
+</LinearLayout>

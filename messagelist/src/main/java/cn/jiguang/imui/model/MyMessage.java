@@ -1,11 +1,11 @@
-package com.shanchain.shandata.ui.model;
+package cn.jiguang.imui.model;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.commons.models.IUser;
-import cn.jpush.im.android.api.enums.MessageStatus;
+import cn.jiguang.imui.messages.ChatEventMessage;
 
 
 public class MyMessage implements IMessage {
@@ -18,6 +18,7 @@ public class MyMessage implements IMessage {
     private String mediaFilePath;
     private long duration;
     private String progress;
+    private ChatEventMessage chatEventMessage;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
 
     public MyMessage(String text, int type) {
@@ -33,6 +34,15 @@ public class MyMessage implements IMessage {
 
     public long getId() {
         return this.id;
+    }
+
+
+    public ChatEventMessage getChatEventMessage() {
+        return chatEventMessage;
+    }
+
+    public void setChatEventMessage(ChatEventMessage chatEventMessage) {
+        this.chatEventMessage = chatEventMessage;
     }
 
     @Override

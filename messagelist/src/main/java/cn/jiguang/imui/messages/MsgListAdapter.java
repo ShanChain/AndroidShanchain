@@ -755,7 +755,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             mReceiveVideoLayout = R.layout.item_receive_video;
 
             mEventMsgHolder = DefaultEventMsgViewHolder.class;
-            mEventLayout = R.layout.item_event_message;
+//            mEventMsgHolder =CustomEvenMsgHolder.class;
+//            mEventLayout = R.layout.item_event_message;
+            mEventLayout = R.layout.item_custom_event_message;
         }
 
         /**

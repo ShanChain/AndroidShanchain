@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:padding="@dimen/dimens_10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_item_map_icon"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_centerVertical="true"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_toEndOf="@+id/iv_item_map_icon">
+
+        <ImageView
+            android:id="@+id/iv_item_location"
+            android:layout_width="@dimen/dimens_20dp"
+            android:layout_height="@dimen/dimens_20dp"
+            android:background="@mipmap/home_location"/>
+
+        <TextView
+            android:id="@+id/tv_item_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_item_location"
+            android:layout_marginLeft="@dimen/dimens_5dp"
+            android:lines="1"
+            android:text="@string/text_ack_msg"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/iv_item_room_num"
+            android:layout_width="@dimen/dimens_20dp"
+            android:layout_height="@dimen/dimens_20dp"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:layout_below="@+id/iv_item_location"
+            android:background="@mipmap/room_num"/>
+
+        <TextView
+            android:id="@+id/tv_item_room_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_item_location"
+            android:layout_toEndOf="@+id/iv_item_room_num"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:layout_marginLeft="@dimen/dimens_5dp"
+            android:lines="1"
+            android:text="885"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/tv_item_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_item_room_num"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:layout_marginLeft="@dimen/dimens_5dp"
+            android:lines="1"
+            android:text="上次来访"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_item_last_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_item_hint"
+            android:layout_toEndOf="@+id/tv_item_hint"
+            android:layout_marginLeft="@dimen/dimens_5dp"
+            android:layout_toRightOf="@+id/iv_item_room_num"
+            android:lines="1"
+            android:text="12:30"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_item_join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="进入"
+        android:textColor="@color/colorActive"
+        android:background="@drawable/shape_item_btn_join"/>
+
+
+</RelativeLayout>

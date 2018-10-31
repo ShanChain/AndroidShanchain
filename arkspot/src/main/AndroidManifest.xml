@@ -294,7 +294,11 @@
             android:name=".ui.view.activity.jmessageui.SetingActivity"
             android:label="@string/title_activity_seting"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.square.FoodPrintActivity"></activity>
+        <activity android:name=".ui.view.activity.square.FoodPrintActivity" />
+        <activity
+            android:name=".ui.view.activity.jmessageui.SingleChatActivity"
+            android:label="@string/title_activity_single_chat"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

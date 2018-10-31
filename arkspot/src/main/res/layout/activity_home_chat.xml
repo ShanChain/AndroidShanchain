@@ -13,6 +13,22 @@
         app:titleColor="@color/colorTextDefault"
         app:titleTextSize="16"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_below="@+id/tb_main"
+        android:background="@drawable/float_btn"
+        android:src="@android:drawable/ic_menu_add"
+        app:backgroundTint="#4FD1F6"
+        app:rippleColor="@color/colorActive"
+        app:layout_anchorGravity="center"
+        app:elevation="6dp"
+        app:pressedTranslationZ="@dimen/dimens_15dp"
+        />
+
 
     <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
         android:id="@+id/pull_to_refresh_layout"

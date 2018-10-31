@@ -59,6 +59,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.square.FoodPrintActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.utils.CoordinateTransformUtil;
 import com.shanchain.shandata.utils.PermissionHelper;
@@ -73,7 +74,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
-public class HomeActivity extends BaseActivity implements PermissionInterface {
+public class HomeActivity extends BaseActivity implements PermissionInterface{
     private BaiduMap baiduMap;
     private long downloadId;
     private LocationClient locationClient;
@@ -489,20 +490,30 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mapView.onDestroy();
         locationClient.stop();
+        super.onDestroy();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         mapView.onPause();
+        super.onPause();
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         mapView.onResume();
+        super.onResume();
+    }
+
+    @OnClick({R.id.image_view_history})
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.image_view_history:
+                readyGo(FoodPrintActivity.class);
+                break;
+        }
+
     }
 }

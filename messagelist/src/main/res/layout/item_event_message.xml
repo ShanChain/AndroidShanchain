@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center_horizontal"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/shape_bg_even_msg"
     android:padding="5dp">
 
     <cn.jiguang.imui.view.RoundTextView
@@ -16,5 +18,5 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="TextView"
-        android:textColor="#ffffff" />
+        android:textColor="#000000" />
 </LinearLayout>

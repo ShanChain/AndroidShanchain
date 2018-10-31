@@ -15,7 +15,9 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.shanchain.shandata.R;
@@ -96,9 +98,16 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     private TextView mTitleText;
 
     /**
+     * 描述：房间人数
+     */
+    private TextView chatRoomNum;
+
+    /**
      * 描述：右侧按钮
      */
     private DrawableCenterTextView mRightText;
+
+    private RelativeLayout relativeChatRoom;
 
     // 回调接口 ---------------------------------------------------
 
@@ -123,7 +132,6 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述：标题点击回调接口
      */
     private OnTitleClickListener mTitleListener;
-    private TextView chatRoomNum;
 
     /**
      * 描述：构造方法
@@ -258,9 +266,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mTitleText = (TextView) mTitleLayoutView.findViewById(R.id.mTitleText);
         mRightText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mRightText);
         //聊天室标题
-        View relative = mTitleLayoutView.findViewById(R.id.relative_chatRoom);
-        mFavorite = mTitleLayoutView.findViewById(R.id.mFavorite);
-        chatRoomNum = mTitleLayoutView.findViewById(R.id.mRoomNum);
+        relativeChatRoom = mTitleLayoutView.findViewById(R.id.relative_chatRoom);
+        mFavorite = mTitleLayoutView.findViewById(R.id.mFavorite); //收藏按钮
+        chatRoomNum = mTitleLayoutView.findViewById(R.id.mRoomNum);//聊天室人数
 
         mLeftText.setOnClickListener(this);
         mRightText.setOnClickListener(this);
@@ -322,9 +330,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
                         mTitleListener.onTitleClick(v);
                     }
                     break;
-                    //收藏点击事件
+                //收藏点击事件
                 case R.id.mFavorite:
-                    if (mFavoriteListener !=null){
+                    if (mFavoriteListener != null) {
                         mFavoriteListener.onFavoriteClick(v);
                     }
                     break;
@@ -385,6 +393,36 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         mTitleText.setCompoundDrawables(drawable, null, null, null);
     }
+
+    /**
+     * 时间：15:13
+     * 描述: 设置标题图标
+     */
+    public void setFavoriteImage(int image) { // 图标
+        if (null == mFavorite) return;
+        Drawable drawable = ContextCompat.getDrawable(mContext, image);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        mFavorite.setCompoundDrawables(drawable, null, null, null);
+    }
+
+    /**
+     * 时间：15:13
+     * 描述: 设置聊天室信息是否显示
+     */
+    public void isShowChatRoom(boolean iShow) {
+        if (!iShow) {
+            relativeChatRoom.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * 时间：15:13
+     * 描述: 设置聊天室信息
+     */
+    public void setChatRoomNum(String s) {
+        chatRoomNum.setText(s);
+    }
+
 
     /**
      * 时间：15:20

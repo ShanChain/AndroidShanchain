@@ -1,4 +1,4 @@
-package com.shanchain.shandata.ui.model;
+package cn.jiguang.imui.model;
 
 import cn.jiguang.imui.commons.models.IUser;
 

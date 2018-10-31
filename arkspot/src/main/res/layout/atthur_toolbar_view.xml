@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dp_4"
-        android:background="@mipmap/my_info"
+
         />
 
     <!-- 中间标题 -->
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_4"
-        android:text="title"
+        android:text=""
         android:textColor="#000"
         android:textSize="@dimen/arthur_toolbar_title_text_size" />
 
@@ -34,7 +34,6 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_toEndOf="@+id/mTitleText"
-        android:background="@mipmap/favorite"
         />
 
     <RelativeLayout
@@ -71,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dp_4"
-        android:background="@mipmap/close" />
+        android:layout_marginRight="@dimen/dp_4" />
 
 </RelativeLayout>
