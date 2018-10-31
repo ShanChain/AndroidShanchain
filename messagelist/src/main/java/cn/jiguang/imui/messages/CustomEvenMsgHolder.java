@@ -3,13 +3,7 @@ package cn.jiguang.imui.messages;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import cn.jiguang.imui.messages.ChatEventMessage;
-
 import cn.jiguang.imui.R;
-import cn.jiguang.imui.messages.BaseMessageViewHolder;
-import cn.jiguang.imui.messages.MessageListStyle;
-import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.model.MyMessage;
 
 public class CustomEvenMsgHolder
