@@ -30,7 +30,7 @@ import com.shanchain.shandata.ui.model.StoryInfo;
 import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.presenter.FriendHomePresenter;
 import com.shanchain.shandata.ui.presenter.impl.FriendHomePresenterImpl;
-import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+//import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.ui.view.activity.mine.view.FriendHomeView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.story.ForwardingActivity;
@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import cn.jiguang.imui.messages.MessageList;
 
 
 public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, View.OnClickListener, FriendHomeView, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
@@ -257,7 +258,7 @@ public class FriendHomeActivity extends BaseActivity implements ArthurToolBar.On
         if (TextUtils.isEmpty(hxUserName)) {
             ToastUtils.showToast(mContext, "当前用户异常");
         } else {
-            Intent intent = new Intent(mContext, ChatRoomActivity.class);
+            Intent intent = new Intent(mContext, MessageList.class);
             intent.putExtra("isGroup", false);
             intent.putExtra("toChatName", hxUserName);
             intent.putExtra("name",mName);

@@ -3,6 +3,7 @@ package cn.jiguang.imui.messages;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +66,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     private OnMsgLongClickListener<MESSAGE> mMsgLongClickListener;
     private OnAvatarClickListener<MESSAGE> mAvatarClickListener;
     private OnMsgStatusViewClickListener<MESSAGE> mMsgStatusViewClickListener;
+    private OnBtnEventTaskClickListener<MESSAGE> onBtnEventTaskClickListener;
+    private OnTvEventCommentClickListener<MESSAGE> onTvEventCommentClickListener;
+    private OnTvEventLikeClickListener<MESSAGE> onTvEventLikeClickListener;
     private SelectionListener mSelectionListener;
     private int mSelectedItemCount;
     private LinearLayoutManager mLayoutManager;
@@ -72,6 +76,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     private MediaPlayer mMediaPlayer;
     private List<Wrapper> mItems;
     private boolean mScroll;
+    private static ViewGroup parent;
 
     public MsgListAdapter(String senderId, ImageLoader imageLoader) {
         this(senderId, new HoldersConfig(), imageLoader);
@@ -222,7 +227,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         return TYPE_SEND_TXT;
     }
 
-    private <HOLDER extends ViewHolder> ViewHolder getHolder(ViewGroup parent, @LayoutRes int layout,
+    public  <HOLDER extends ViewHolder> ViewHolder getHolder(ViewGroup parent, @LayoutRes int layout,
             Class<HOLDER> holderClass, boolean isSender) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
@@ -254,6 +259,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             ((BaseMessageViewHolder) holder).mMsgClickListener = this.mMsgClickListener;
             ((BaseMessageViewHolder) holder).mAvatarClickListener = this.mAvatarClickListener;
             ((BaseMessageViewHolder) holder).mMsgStatusViewClickListener = this.mMsgStatusViewClickListener;
+            ((BaseMessageViewHolder) holder).onBtnEventTaskClickListener = this.onBtnEventTaskClickListener;
+            ((BaseMessageViewHolder) holder).onTvEventCommentClickListener = this.onTvEventCommentClickListener;
+            ((BaseMessageViewHolder) holder).onTvEventLikeClickListener = this.onTvEventLikeClickListener;
             ((BaseMessageViewHolder) holder).mMediaPlayer = this.mMediaPlayer;
             ((BaseMessageViewHolder) holder).mScroll = this.mScroll;
             ((BaseMessageViewHolder) holder).mData = this.mItems;
@@ -330,6 +338,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      * @param messages Last page of messages.
      */
     public void addToEndChronologically(List<MESSAGE> messages) {
+        if (messages==null){ return; }
         int oldSize = mItems.size();
         for (int i = messages.size() - 1; i >= 0; i--) {
             MESSAGE message = messages.get(i);
@@ -681,6 +690,35 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     public interface OnMsgStatusViewClickListener<MESSAGE extends IMessage> {
         void onStatusViewClick(MESSAGE message);
+    }
+
+
+    //领取任务的监听事件
+    public void setBtnEventTaskClickListener(OnBtnEventTaskClickListener <MESSAGE> listener){
+        this.onBtnEventTaskClickListener = listener;
+    }
+
+    //评论监听事件
+    public void setOnTvEventLikeClickListener(OnTvEventLikeClickListener <MESSAGE> listener){
+        this.onTvEventLikeClickListener = listener;
+    }
+
+    //点赞监听事件
+    public void setOnTvEventCommentClickListener(OnTvEventCommentClickListener <MESSAGE> listener){
+        this.onTvEventCommentClickListener = listener;
+    }
+
+
+    public interface OnBtnEventTaskClickListener <MESSAGE extends IMessage>{
+        void TaskEventMessageClick();
+    }
+
+    public interface OnTvEventCommentClickListener <MESSAGE extends IMessage>{
+        void CommentEventMessageClick();
+    }
+
+    public interface OnTvEventLikeClickListener <MESSAGE extends IMessage>{
+        void LikeEventMessageClick();
     }
 
     /**

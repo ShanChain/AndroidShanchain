@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hyphenate.chat.EMClient;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -110,7 +109,7 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
         Intent intent = getIntent();
         mIsGroup = intent.getBooleanExtra("isGroup", false);
         mToChatName = intent.getStringExtra("toChatName");
-        mCurrentUser = EMClient.getInstance().getCurrentUser();
+//        mCurrentUser = EMClient.getInstance().getCurrentUser();
         LogUtils.d("是否是群组 " + mIsGroup);
         LogUtils.d("聊天对象 " + mToChatName);
         if (mIsGroup) {
@@ -306,9 +305,9 @@ public class SceneDetailsActivity extends BaseActivity implements SceneDetailsVi
     public void leaveGroupSuc(boolean result) {
         if (result){
             ToastUtils.showToast(mContext,"退群成功");
-            if (ChatRoomActivity.instance!=null){
-                ChatRoomActivity.instance.finish();
-            }
+//            if (ChatRoomActivity.instance!=null){
+//                ChatRoomActivity.instance.finish();
+//            }
 //            ActivityStackManager.getInstance().finishActivity(ChatRoomActivity.class);
             finish();
         }else {

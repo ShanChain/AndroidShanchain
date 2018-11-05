@@ -14,6 +14,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
+import com.shanchain.shandata.ui.presenter.impl.FriendHomePresenterImpl;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
@@ -28,6 +29,8 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
 
@@ -120,12 +123,16 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
 
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
-        String encryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
+        final String encryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
         //加密后的密码
-        String passwordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
+        final String passwordAccount = Base64.encode(AESUtils.encrypt(MD5Utils.md5(pwd), Base64.encode(UserType.USER_TYPE_MOBILE + time + phone)));
 
         LogUtils.d("加密后账号：" + encryptAccount);
         LogUtils.d("加密后密码：" + passwordAccount);
+
+        /**注册环信聊天用户URL*/
+//        String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
+
 
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_REGISTER)
@@ -151,6 +158,13 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                         }else {
                             ToastUtils.showToast(mContext,"注册成功");
                             LogUtils.d("userID = " + response.getUserInfo().getUserId());
+
+//                            JMessageClient.register(encryptAccount, passwordAccount, new BasicCallback() {
+//                                @Override
+//                                public void gotResult(int i, String s) {
+//                                    LogUtils.d("注册极光用户成功");
+//                                }
+//                            });
 
                             finish();
                         }

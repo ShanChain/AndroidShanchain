@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
 
 import java.util.ArrayList;
@@ -289,7 +290,9 @@ public class RichTextEditor extends ScrollView {
 	public void addImageViewAtIndex(final int index, String imagePath) {
 		final RelativeLayout imageLayout = createImageLayout();
 		DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
-		Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
+		RequestOptions options = new RequestOptions();
+		options.centerCrop();
+		Glide.with(getContext()).load(imagePath).apply(options).into(imageView);
 		imageView.setAbsolutePath(imagePath);//保留这句，后面保存数据会用
 
 		// 调整imageView的高度，根据宽度来调整高度

@@ -1,8 +1,9 @@
 package com.shanchain.shandata.ui.model;
 
-import com.hyphenate.chat.EMConversation;
 
 import java.io.Serializable;
+
+import cn.jpush.im.android.api.model.Conversation;
 
 /**
  * Created by zhoujian on 2017/9/7.
@@ -18,15 +19,15 @@ public class MessageHomeInfo implements Serializable{
     private int unRead;
     private boolean isTop;
 
-    private EMConversation mEMConversation;
+    private Conversation mJMConversation;
 
 
-    public EMConversation getEMConversation() {
-        return mEMConversation;
+    public Conversation getEMConversation() {
+        return mJMConversation;
     }
 
-    public void setEMConversation(EMConversation EMConversation) {
-        mEMConversation = EMConversation;
+    public void setEMConversation(Conversation EMConversation) {
+        mJMConversation = EMConversation;
     }
 
     public boolean isTop() {

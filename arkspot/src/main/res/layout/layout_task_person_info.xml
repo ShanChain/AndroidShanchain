@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/dimens_20dp"
+    android:layout_marginTop="@dimen/dimens_22dp"
+    android:paddingLeft="@dimen/dimens_15dp"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    tools:showIn="@layout/item_task_type1">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_item_story_avatar"
+        android:scaleType="centerCrop"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
+    <TextView
+        android:id="@+id/even_message_bounty"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:padding="@dimen/dimens_5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="赏金：0.0001 SEAT"
+        android:textColor="#000000" />
+
+    <TextView
+        android:lines="1"
+        android:id="@+id/tv_item_story_name"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/colorTextDefault"
+        android:text="于伟 发布的："
+        android:layout_toRightOf="@id/iv_item_story_avatar"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:textSize="@dimen/sp_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:lines="1"
+        android:id="@+id/tv_item_story_time"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/colorHint"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/iv_item_story_avatar"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:text="20分钟前"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_item_story_from"
+        android:lines="1"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/tv_item_story_time"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/colorActive"
+        android:text=""
+        android:textSize="@dimen/sp_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -67,8 +67,7 @@
         android:id="@+id/aurora_fl_menu_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone">
+        android:gravity="center">
 
         <include
             android:id="@+id/aurora_rl_recordvoice_container"

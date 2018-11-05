@@ -1,7 +1,6 @@
 package com.shanchain.shandata.ui.model;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.hyphenate.chat.EMMessage;
 
 /**
  * Created by zhoujian on 2017/9/11.
@@ -15,7 +14,7 @@ public class MsgInfo  implements MultiItemEntity{
 
     private int itemType;
 
-    private EMMessage mEMMessage;
+//    private EMMessage mEMMessage;
 
     @Override
     public int getItemType() {
@@ -26,11 +25,11 @@ public class MsgInfo  implements MultiItemEntity{
         this.itemType = type;
     }
 
-    public EMMessage getEMMessage() {
-        return mEMMessage;
-    }
+//    public EMMessage getEMMessage() {
+//        return mEMMessage;
+//    }
 
-    public void setEMMessage(EMMessage EMMessage) {
-        mEMMessage = EMMessage;
-    }
+//    public void setEMMessage(EMMessage EMMessage) {
+//        mEMMessage = EMMessage;
+//    }
 }

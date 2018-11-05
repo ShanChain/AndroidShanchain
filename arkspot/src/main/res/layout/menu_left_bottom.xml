@@ -1,0 +1,80 @@
+<com.shanchain.shandata.widgets.arcMenu.ArcMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hyman="http://schemas.android.com/apk/res/com.shanchain.shandata"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fbn_menu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="50dp"
+    android:layout_marginRight="@dimen/dimens_20dp"
+    hyman:position="right_top"
+    hyman:radius="120dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/float_btn">
+
+        <ImageView
+            android:id="@+id/id_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/composer_icn_plus" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_add_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:tag="queryTask"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/float_btn"
+            android:src="@drawable/composer_icn_plus"
+            android:tag="Place" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查看任务"
+            android:textColor="@color/colorBlack" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:tag="addTask"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/float_btn"
+            android:src="@drawable/composer_icn_plus" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发布任务"
+            android:textColor="@color/colorBlack" />
+    </LinearLayout>
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/composer_thought"-->
+    <!--android:tag="Sun" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/composer_with"-->
+    <!--android:tag="People" />-->
+
+</com.shanchain.shandata.widgets.arcMenu.ArcMenu>

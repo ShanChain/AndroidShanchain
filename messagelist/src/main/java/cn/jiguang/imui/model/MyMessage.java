@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.commons.models.IUser;
-import cn.jiguang.imui.messages.ChatEventMessage;
 
 
 public class MyMessage implements IMessage {
@@ -20,6 +19,12 @@ public class MyMessage implements IMessage {
     private String progress;
     private ChatEventMessage chatEventMessage;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
+
+    public MyMessage(int type) {
+        this.text = text;
+        this.type = type;
+        this.id = UUID.randomUUID().getLeastSignificantBits();
+    }
 
     public MyMessage(String text, int type) {
         this.text = text;
@@ -37,6 +42,18 @@ public class MyMessage implements IMessage {
     }
 
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public MessageStatus getmMsgStatus() {
+        return mMsgStatus;
+    }
+
+    public void setmMsgStatus(MessageStatus mMsgStatus) {
+        this.mMsgStatus = mMsgStatus;
+    }
+
     public ChatEventMessage getChatEventMessage() {
         return chatEventMessage;
     }
@@ -48,7 +65,7 @@ public class MyMessage implements IMessage {
     @Override
     public IUser getFromUser() {
         if (user == null) {
-            return new DefaultUser("0", "user1", null);
+            return new DefaultUser( 0, "user1", null);
         }
         return user;
     }

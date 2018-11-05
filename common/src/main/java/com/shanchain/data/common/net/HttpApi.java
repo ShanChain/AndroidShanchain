@@ -302,5 +302,12 @@ public interface HttpApi {
     String USER_COORDINATE = BASE_URL + "/v1/lbs/coordinate";
     /** 获取聊天室信息 */
     String CHAT_ROOM_INFO = BASE_URL + "/v1/lbs/coordinate/info";
+    /* 查询广场上的所有任务列表 */
+    String GROUP_TASK_LIST = BASE_URL + "/v1/task/grouptask/list";
+    /* 查询广场上的所有任务列表 */
+    String USER_TASK_LIST = BASE_URL + "/v1/task/individual/list";
+    /* 添加任务 */
+    String GROUP_TASK_add = BASE_URL + "/v1/task/grouptask/list";
+
 
 }

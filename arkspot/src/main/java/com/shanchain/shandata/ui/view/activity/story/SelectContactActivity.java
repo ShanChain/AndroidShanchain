@@ -38,7 +38,8 @@ import com.shanchain.shandata.ui.model.ResponseFocusContactBean;
 import com.shanchain.shandata.ui.model.ResponseFocusContactInfo;
 import com.shanchain.shandata.ui.model.ResponseHxUerBean;
 import com.shanchain.shandata.ui.model.ResponseHxUserListInfo;
-import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+//import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -405,7 +406,7 @@ public class SelectContactActivity extends BaseActivity implements ArthurToolBar
                                     String groupId = JSONObject.parseObject(data).getString("groupid");
                                     if (!TextUtils.isEmpty(groupId)) {
                                         LogUtils.i("创建群成功");
-                                        Intent intent = new Intent(mContext, ChatRoomActivity.class);
+                                        Intent intent = new Intent(mContext, MessageListActivity.class);
                                         intent.putExtra("isGroup", true);
                                         intent.putExtra("toChatName", groupId);
                                         intent.putExtra("name", name + "创建的群");

@@ -3,8 +3,6 @@ package com.shanchain.data.common.base;
 import android.app.Application;
 import android.content.Context;
 
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMConversation;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
 import com.shanchain.data.common.utils.LogUtils;
@@ -64,16 +62,16 @@ public class AppManager {
         EventBus.getDefault().post(baseEvent);
     }
 
-    public void clearCache(){
-        Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
-        Iterator<String> iterator = conversations.keySet().iterator();
-
-        while (iterator.hasNext()){
-            String user = iterator.next();
-            LogUtils.i("删除的会话记录 = " + user);
-            EMClient.getInstance().chatManager().deleteConversation(user,true);
-        }
-
-    }
+//    public void clearCache(){
+//        Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
+//        Iterator<String> iterator = conversations.keySet().iterator();
+//
+//        while (iterator.hasNext()){
+//            String user = iterator.next();
+//            LogUtils.i("删除的会话记录 = " + user);
+//            EMClient.getInstance().chatManager().deleteConversation(user,true);
+//        }
+//
+//    }
 
 }

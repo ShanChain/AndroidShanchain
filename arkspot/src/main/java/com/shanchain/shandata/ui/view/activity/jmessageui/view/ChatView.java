@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,6 +40,8 @@ public class ChatView extends RelativeLayout {
     private RecordVoiceButton mRecordVoiceBtn;
     private PullToRefreshLayout mPtrLayout;
     private ImageButton mSelectAlbumIb;
+    private Button btnInputJoin;
+    private OnBtnInputClickListener onBtnInputClickListener;
 
     public ChatView(Context context) {
         super(context);
@@ -58,6 +61,7 @@ public class ChatView extends RelativeLayout {
         mMsgList = (MessageList) findViewById(R.id.msg_list);
         mChatInput = (ChatInputView) findViewById(R.id.chat_input);
         mPtrLayout = (PullToRefreshLayout) findViewById(R.id.pull_to_refresh_layout);
+        btnInputJoin = findViewById(R.id.bt_chat_input_join);
 
         /**
          * Should set menu container height once the ChatInputView has been initialized.
@@ -131,6 +135,30 @@ public class ChatView extends RelativeLayout {
         mTitle.setText(title);
     }
 
+    public void isShowBtnInputJoin(boolean isShow){
+        if (isShow){
+            btnInputJoin.setVisibility(VISIBLE);
+            mChatInput.getInputView().setVisibility(GONE);
+        }else {
+            btnInputJoin.setVisibility(GONE);
+            mChatInput.getInputView().setVisibility(VISIBLE);
+        }
+
+    }
+
+    public void setOnBtnInputClickListener(final OnBtnInputClickListener listener){
+        onBtnInputClickListener = listener;
+        btnInputJoin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onBtnInputClickListener!=null){
+                    onBtnInputClickListener.OnBtnInputClick();
+                }
+            }
+        });
+
+    }
+
     public void setMenuClickListener(OnMenuClickListener listener) {
         mChatInput.setMenuClickListener(listener);
     }
@@ -183,5 +211,9 @@ public class ChatView extends RelativeLayout {
 
     public ImageButton getSelectAlbumBtn() {
         return this.mSelectAlbumIb;
+    }
+
+    public interface OnBtnInputClickListener{
+        void OnBtnInputClick();
     }
 }

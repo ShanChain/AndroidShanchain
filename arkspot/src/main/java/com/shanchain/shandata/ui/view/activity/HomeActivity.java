@@ -37,6 +37,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolygonOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -66,20 +68,25 @@ import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
-public class HomeActivity extends BaseActivity implements PermissionInterface{
+public class HomeActivity extends BaseActivity implements PermissionInterface {
     private BaiduMap baiduMap;
     private long downloadId;
     private LocationClient locationClient;
     private BDLocationListener bdLocationListener;
     private PermissionHelper mPermissionHelper;
+    private MapStatusUpdate mapstatusupdate;
     private LatLng point;
     private double[] WGS84point;
     private Runnable runnable;
@@ -97,6 +104,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
     @Bind(R.id.image_view_history)
     ImageView imgHistory;
     private double[] gcj02point;
+    private UiSettings uiSettings;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -392,9 +400,12 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
                 MyLocationConfiguration.LocationMode.FOLLOWING, true, mCurrentMarker,
                 accuracyCircleFillColor, accuracyCircleStrokeColor));
 //        baiduMap.setMyLocationConfiguration();
+        uiSettings = baiduMap.getUiSettings();
+        baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
 
 
         bdLocationListener = new BDLocationListener() {
+
             @Override
             public void onReceiveLocation(final BDLocation bdLocation) {
 
@@ -409,7 +420,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
                         WGS84point = CoordinateTransformUtil.gcj02towgs84(bdLocation.getLongitude(), bdLocation.getLatitude());
                         LogUtils.d(bdLocation.getLocType() + "百度地图坐标 转换为 WGS84类型 " + WGS84point[0] + " " + WGS84point[1]);
                         handler = new Handler();
-                        handler.postDelayed(runnable,1000);
+                        handler.postDelayed(runnable, 1000);
                     }
                 });
                 // 构造定位数据
@@ -421,13 +432,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
                         .longitude(gcj02point[0]).build();
 //                baiduMap.setMyLocationData(locData);// 设置定位数据
 
-                //设置经纬度（参数一是纬度，参数二是经度）
-                MapStatusUpdate mapstatusupdate = MapStatusUpdateFactory.newLatLng(new LatLng(gcj02point[1], gcj02point[0]));
-                //对地图的中心点进行更新，
-                baiduMap.setMapStatus(mapstatusupdate);
-
                 //构建Marker图标
                 LatLng point = new LatLng(gcj02point[1], gcj02point[0]);
+//                LatLng point = new LatLng(20.045065, 110.324457);
                 BitmapDescriptor bitmap = BitmapDescriptorFactory
                         .fromResource(R.drawable.map_marker);
                 //构建MarkerOption，用于在地图上添加Marker
@@ -442,6 +449,33 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
         };
         locationClient.registerLocationListener(bdLocationListener);//注册监听函数
         locationClient.start();
+        //设置经纬度（参数一是纬度，参数二是经度）
+//         MapStatusUpdate mapstatusupdate = MapStatusUpdateFactory.newLatLng(new LatLng(gcj02point[1], gcj02point[0]));
+        mapstatusupdate = MapStatusUpdateFactory.newLatLng(new LatLng(20.045065, 110.324457));// 39.93923,116.357428(北京坐标)
+        //对地图的中心点进行更新
+        baiduMap.setMapStatus(mapstatusupdate);
+
+        /*
+         * 在地图上画一个矩形
+         * */
+        LatLng pt1 = new LatLng(20.047514, 110.323298);
+        LatLng pt2 = new LatLng(20.047896, 110.327493);
+        LatLng pt3 = new LatLng(20.045231,110.328652);
+        LatLng pt4 = new LatLng(20.043957,110.323936);
+        List<LatLng> pts = new ArrayList<LatLng>();
+        pts.add(pt1);
+        pts.add(pt2);
+        pts.add(pt3);
+        pts.add(pt4);
+
+        //构建用户绘制多边形的Option对象
+        OverlayOptions polygonOption = new PolygonOptions()
+                .points(pts)
+                .stroke(new Stroke(5, 0xAA00FF00))
+                .fillColor(0xAAFFFF00);
+
+        //在地图上添加多边形Option，用于显示
+        baiduMap.addOverlay(polygonOption);
 
     }
 
@@ -492,6 +526,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
     protected void onDestroy() {
         mapView.onDestroy();
         locationClient.stop();
+        JMessageClient.logout();
         super.onDestroy();
     }
 
@@ -509,7 +544,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface{
 
     @OnClick({R.id.image_view_history})
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.image_view_history:
                 readyGo(FoodPrintActivity.class);
                 break;

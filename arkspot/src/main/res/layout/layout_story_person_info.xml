@@ -6,8 +6,7 @@
     android:layout_marginTop="@dimen/dimens_22dp"
     android:paddingLeft="@dimen/dimens_15dp"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    tools:showIn="@layout/item_story_type1">
+    android:layout_height="40dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_item_story_avatar"

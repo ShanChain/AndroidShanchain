@@ -5,6 +5,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.common.R;
 
 public class GlideUtils {
@@ -22,7 +23,9 @@ public class GlideUtils {
         if (placeHolderResId == 0){
             placeHolderResId = R.drawable.shape_pic_default;
         }
-        Glide.with(context).load(url).dontAnimate().placeholder(placeHolderResId).into(iv);
+        RequestOptions options = new RequestOptions();
+        options.dontAnimate().placeholder(placeHolderResId);
+        Glide.with(context).load(url).apply(options).into(iv);
     }
 
 
@@ -30,7 +33,9 @@ public class GlideUtils {
      *  描述：加载圆形图片
      */
     public static void loadCircle(Context context,String url,ImageView iv){
-        Glide.with(context).load(url).transform(new GlideCircleTransform(context)).into(iv);
+        RequestOptions options = new RequestOptions();
+        options.transform(new GlideCircleTransform(context));
+        Glide.with(context).load(url).apply(options).into(iv);
     }
 
 }

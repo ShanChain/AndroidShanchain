@@ -20,12 +20,6 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.soloader.SoLoader;
-import com.hyphenate.EMContactListener;
-import com.hyphenate.EMMessageListener;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMMessage;
-import com.hyphenate.chat.EMOptions;
-import com.hyphenate.chat.EMTextMessageBody;
 import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
@@ -35,11 +29,11 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
-import com.shanchain.shandata.manager.CharacterManager;
+//import com.shanchain.shandata.manager.CharacterManager;
 import com.shanchain.shandata.manager.LoginManager;
 import com.shanchain.shandata.push.PushManager;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
-import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+//import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
@@ -306,82 +300,82 @@ public class MyApplication extends BaseApplication implements BDLocationListener
     private void initJMessage() {
         JMessageClient.init(this,true);
     }
-    private void initContactListener() {
-        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
-            @Override
-            public void onContactAdded(String s) {
-                //好友请求被同意
+//    private void initContactListener() {
+//        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+//            @Override
+//            public void onContactAdded(String s) {
+//                //好友请求被同意
+//
+//            }
+//
+//            @Override
+//            public void onContactDeleted(String s) {
+//                //被删除时回调此方法
+//
+//            }
+//
+//            @Override
+//            public void onContactInvited(String s, String s1) {
+//                //收到好友邀请
+//
+//            }
+//
+//            @Override
+//            public void onFriendRequestAccepted(String s) {
+//                //添加好友成功时的回调
+//
+//            }
+//
+//            @Override
+//            public void onFriendRequestDeclined(String s) {
+//                //添加好友呗拒绝的回调
+//
+//            }
+//        });
+//    }
 
-            }
-
-            @Override
-            public void onContactDeleted(String s) {
-                //被删除时回调此方法
-
-            }
-
-            @Override
-            public void onContactInvited(String s, String s1) {
-                //收到好友邀请
-
-            }
-
-            @Override
-            public void onFriendRequestAccepted(String s) {
-                //添加好友成功时的回调
-
-            }
-
-            @Override
-            public void onFriendRequestDeclined(String s) {
-                //添加好友呗拒绝的回调
-
-            }
-        });
-    }
-
-    private void initMsgListener() {
-        EMClient.getInstance().chatManager().addMessageListener(new EMMessageListener() {
-            @Override
-            public void onMessageReceived(List<EMMessage> list) {
-                //当接收到消息的回调
-                if (list != null && list.size() > 0) {
-
-                    if (isRunningBackground()) {
-                        sendNotification(list.get(0));
-                    }
-
-                    EventBus.getDefault().post(list.get(0));
-                    LogUtils.d("接收到消息" + list.get(0).getBody().toString());
-                }
-            }
-
-            @Override
-            public void onCmdMessageReceived(List<EMMessage> list) {
-
-            }
-
-            @Override
-            public void onMessageRead(List<EMMessage> list) {
-
-            }
-
-            @Override
-            public void onMessageDelivered(List<EMMessage> list) {
-
-            }
-
-            @Override
-            public void onMessageRecalled(List<EMMessage> list) {
-
-            }
-
-            @Override
-            public void onMessageChanged(EMMessage emMessage, Object o) {
-
-            }
-        });
-    }
+//    private void initMsgListener() {
+//        EMClient.getInstance().chatManager().addMessageListener(new EMMessageListener() {
+//            @Override
+//            public void onMessageReceived(List<EMMessage> list) {
+//                //当接收到消息的回调
+//                if (list != null && list.size() > 0) {
+//
+//                    if (isRunningBackground()) {
+//                        sendNotification(list.get(0));
+//                    }
+//
+//                    EventBus.getDefault().post(list.get(0));
+//                    LogUtils.d("接收到消息" + list.get(0).getBody().toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onCmdMessageReceived(List<EMMessage> list) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageRead(List<EMMessage> list) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageDelivered(List<EMMessage> list) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageRecalled(List<EMMessage> list) {
+//
+//            }
+//
+//            @Override
+//            public void onMessageChanged(EMMessage emMessage, Object o) {
+//
+//            }
+//        });
+//    }
 
     /**
      * 描述：初始化网络请求框架OkhttpUtils
@@ -448,34 +442,34 @@ public class MyApplication extends BaseApplication implements BDLocationListener
         }
     }
 
-    private void sendNotification(EMMessage message) {
-        EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //延时意图
-        /**
-         * 参数2：请求码 大于1
-         */
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Intent chatIntent = new Intent(this, ChatRoomActivity.class);
-        chatIntent.putExtra("toChatName", message.getFrom());
-
-        chatIntent.putExtra("isGroup", message.getChatType() == EMMessage.ChatType.GroupChat ? true : false);
-
-        Intent[] intents = {mainIntent, chatIntent};
-        PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification.Builder(this)
-                .setAutoCancel(true) //当点击后自动删除
-                .setSmallIcon(R.mipmap.abs_home_btn_comment_default) //必须设置
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.abs_addanewrole_def_photo_default))
-                .setContentTitle("您有一条新消息")
-                .setContentText(messageBody.getMessage())
-                .setContentInfo(message.getFrom())
-                .setContentIntent(pendingIntent)
-                .setPriority(Notification.PRIORITY_MAX)
-                .build();
-        notificationManager.notify(1, notification);
-    }
+//    private void sendNotification(EMMessage message) {
+//        EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
+//        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        //延时意图
+//        /**
+//         * 参数2：请求码 大于1
+//         */
+//        Intent mainIntent = new Intent(this, MainActivity.class);
+//        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        Intent chatIntent = new Intent(this, ChatRoomActivity.class);
+//        chatIntent.putExtra("toChatName", message.getFrom());
+//
+//        chatIntent.putExtra("isGroup", message.getChatType() == EMMessage.ChatType.GroupChat ? true : false);
+//
+//        Intent[] intents = {mainIntent, chatIntent};
+//        PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Notification notification = new Notification.Builder(this)
+//                .setAutoCancel(true) //当点击后自动删除
+//                .setSmallIcon(R.mipmap.abs_home_btn_comment_default) //必须设置
+//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.abs_addanewrole_def_photo_default))
+//                .setContentTitle("您有一条新消息")
+//                .setContentText(messageBody.getMessage())
+//                .setContentInfo(message.getFrom())
+//                .setContentIntent(pendingIntent)
+//                .setPriority(Notification.PRIORITY_MAX)
+//                .build();
+//        notificationManager.notify(1, notification);
+//    }
 
     @Override
     public void onReceiveLocation(BDLocation bdLocation) {

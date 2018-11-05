@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,25 +25,26 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment {
     public String TAG = null;
 
-    /** 描述：fragment所依赖的activity*/
+    /**
+     * 描述：fragment所依赖的activity
+     */
     public MainActivity mActivity;
+    public TaskListActivity mTaskListActivity;
 
     /**
-     *  描述：fragment创建时调用的方法,在此获取fragment所依赖的activitty对象
-     *  
+     * 描述：fragment创建时调用的方法,在此获取fragment所依赖的activitty对象
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = (MainActivity) getActivity();
+//        mTaskListActivity = (TaskListActivity) getActivity();
         TAG = this.getClass().getSimpleName();
 
     }
 
 
     /**
-     *  描述：为fragment填充布局
-     *
+     * 描述：为fragment填充布局
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,26 +54,25 @@ public abstract class BaseFragment extends Fragment {
 
 
     /**
-     *  描述：fragment创建完成后
-     *
+     * 描述：fragment创建完成后
      */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // 注册ButterKnife
         ButterKnife.bind(this, view);
-        if (!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         initData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(Object obj){
+    public void onEvent(Object obj) {
 
     }
 
     /**
-     *  描述：友盟统计
+     * 描述：友盟统计
      */
     public void onResume() {
         super.onResume();
@@ -95,12 +97,10 @@ public abstract class BaseFragment extends Fragment {
     public abstract View initView();
 
     /**
-     *  2017/5/22
-     *  描述：给视图填充数据
-     *
+     * 2017/5/22
+     * 描述：给视图填充数据
      */
     public abstract void initData();
-
 
 
     /**

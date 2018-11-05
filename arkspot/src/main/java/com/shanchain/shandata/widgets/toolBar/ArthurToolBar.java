@@ -59,6 +59,11 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     private boolean isOpenAnim = false; // 默认关闭
 
     /**
+     * 描述：是否显示聊天室的信息
+     */
+    private boolean isShowChatRoom = false; // 默认不显示
+
+    /**
      * 描述：活跃(选中)时Text大小
      */
     private float activeTextSize = 0;
@@ -107,6 +112,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     private DrawableCenterTextView mRightText;
 
+    /**
+     * 描述：聊天室信息
+     */
     private RelativeLayout relativeChatRoom;
 
     // 回调接口 ---------------------------------------------------
@@ -117,9 +125,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     private OnLeftClickListener mLeftListener;
 
     /**
-     * 描述：左侧按钮点击回调接口
+     * 描述：收藏按钮点击回调接口
      */
     private OnFavoriteClickListener mFavoriteListener;
+
+    /**
+     * 描述：左侧按钮点击回调接口
+     */
+    private OnRelativeChatRoomClickListener mRelativeChatRoomClickListener;
 
     /**
      * 描述：右侧按钮点击回调接口
@@ -274,6 +287,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mRightText.setOnClickListener(this);
         mTitleText.setOnClickListener(this);
         mFavorite.setOnClickListener(this);
+        relativeChatRoom.setOnClickListener(this);
         // 载入子VIew
         addView(mImmersiveView);
         addView(mTitleLayoutView);
@@ -334,6 +348,11 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
                 case R.id.mFavorite:
                     if (mFavoriteListener != null) {
                         mFavoriteListener.onFavoriteClick(v);
+                    }
+                    //聊天室点击事件
+                case R.id.relative_chatRoom:
+                    if (mRelativeChatRoomClickListener != null) {
+                        mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
                     }
                     break;
 
@@ -409,10 +428,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 时间：15:13
      * 描述: 设置聊天室信息是否显示
      */
-    public void isShowChatRoom(boolean iShow) {
-        if (!iShow) {
+    public boolean isShowChatRoom(boolean iShow) {
+        if (isShowChatRoom == true) {
+            relativeChatRoom.setVisibility(VISIBLE);
+
+        } else {
             relativeChatRoom.setVisibility(GONE);
         }
+        return isShowChatRoom;
     }
 
     /**
@@ -657,6 +680,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     }
 
     /**
+     * 时间：15:07
+     * 描述: 收藏按钮点击事件回调接口
+     */
+    public interface OnRelativeChatRoomClickListener {
+        void onRelativeChatRoomClick(View v);
+    }
+
+    /**
      * 描述：中间标题的点击事件回调接口
      */
     public interface OnTitleClickListener {
@@ -693,6 +724,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     public void setOnFavoriteClickListener(OnFavoriteClickListener listener) {
         this.mFavoriteListener = listener;
+    }
+
+    /**
+     * 时间：15:12
+     * 描述: 设置聊天室信息按钮接口
+     */
+    public void setOnRelativeChatRoomClickListener(OnRelativeChatRoomClickListener listener) {
+        this.mRelativeChatRoomClickListener = listener;
     }
 
 

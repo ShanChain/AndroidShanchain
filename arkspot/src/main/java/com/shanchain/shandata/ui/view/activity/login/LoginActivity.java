@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.base.UserType;
@@ -37,7 +35,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -106,7 +104,7 @@ public class LoginActivity extends BaseActivity {
                 checkServer();
             } else {
                 closeProgress();
-                readyGo(MainActivity.class);
+                readyGo(HomeActivity.class);
                 finish();
             }
 
@@ -464,7 +462,7 @@ public class LoginActivity extends BaseActivity {
                                 final String data = JSONObject.parseObject(response).getString("data");
                                 RoleManager.switchRoleCacheComment(characterId, characterInfoJson, spaceId, data);
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
-                                Intent intent = new Intent(mContext, MainActivity.class);
+                                Intent intent = new Intent(mContext, HomeActivity.class);
                                 ActivityManager.getInstance().finishAllActivity();
                                 boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
                                 if (guided) {
@@ -496,52 +494,52 @@ public class LoginActivity extends BaseActivity {
                 });
     }
 
-    private void hxLogin(final String userName, final String pwd) {
-        final long startTime = System.currentTimeMillis();
-        LogUtils.i("登录环信 = 开始时间 = " + startTime);
-        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        long endTime = System.currentTimeMillis();
-                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime);
-
-                        LogUtils.i("耗时 = " + (endTime - startTime));
-                        EMClient.getInstance().chatManager().loadAllConversations();
-                        EMClient.getInstance().groupManager().loadAllGroups();
-                        //RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
-                        RoleManager.switchRoleCacheHx(userName, pwd);
-                        //ToastUtils.showToast(mContext, "欢迎来到千千世界");
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                //closeProgress();
-                LogUtils.i("登录环信账号失败 = " + s + "code" + i);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(mContext, "网络异常");
-                    }
-                });
-                if (i == 200) {
-
-                }
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s);
-            }
-        });
-
-    }
+//    private void hxLogin(final String userName, final String pwd) {
+//        final long startTime = System.currentTimeMillis();
+//        LogUtils.i("登录环信 = 开始时间 = " + startTime);
+//        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+//            @Override
+//            public void onSuccess() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        long endTime = System.currentTimeMillis();
+//                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime);
+//
+//                        LogUtils.i("耗时 = " + (endTime - startTime));
+//                        EMClient.getInstance().chatManager().loadAllConversations();
+//                        EMClient.getInstance().groupManager().loadAllGroups();
+//                        //RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
+//                        RoleManager.switchRoleCacheHx(userName, pwd);
+//                        //ToastUtils.showToast(mContext, "欢迎来到千千世界");
+//
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                //closeProgress();
+//                LogUtils.i("登录环信账号失败 = " + s + "code" + i);
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ToastUtils.showToast(mContext, "网络异常");
+//                    }
+//                });
+//                if (i == 200) {
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onProgress(int i, String s) {
+//                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s);
+//            }
+//        });
+//
+//    }
 
     public void showProgress() {
         mDialog = new ProgressDialog(this);

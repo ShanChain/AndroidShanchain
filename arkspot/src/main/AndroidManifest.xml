@@ -298,7 +298,9 @@
         <activity
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.view.activity.tasklist.TaskListActivity"></activity>
+        <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity"></activity>
     </application>
 
 </manifest>

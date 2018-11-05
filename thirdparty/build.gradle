@@ -99,7 +99,6 @@ dependencies {
     api 'com.facebook.react:react-native:+'
     testImplementation 'junit:junit:4.12'
     api project(':PushSDK')
-    api project(':easeui')
     api project(':baidumap')
 }
 

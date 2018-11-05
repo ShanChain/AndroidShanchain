@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.utils.PermissionHelper;
@@ -30,6 +31,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.MessageEvent;
 
 import static com.shanchain.data.common.utils.SystemUtils.*;
 import static com.shanchain.data.common.utils.SystemUtils.MIUISetStatusBarLightModeWithWhiteColor;
@@ -97,6 +100,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // 调用父类onCreate
         super.onCreate(savedInstanceState);
+        //注册聊天会话接收事件
+//        JMessageClient.registerEventReceiver(this);
         // 注册EventBus
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -204,7 +209,8 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述: 接收EventBus通知
      */
     @Subscribe
-    public void onEventMainThread(Object object) {
+    public void onEventMainThread(MessageEvent event) {
+        ToastUtils.showToastLong(this,"baseActivity执行");
         // 获取到全部消息，暂不处理
     }
 
@@ -227,6 +233,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         // 调用父类方法
         super.onDestroy();
+        //解绑聊天会话事件
+//        JMessageClient.unRegisterEventReceiver(this);
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus

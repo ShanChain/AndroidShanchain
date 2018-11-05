@@ -1,6 +1,6 @@
 package com.shanchain.shandata.ui.presenter;
 
-import com.hyphenate.chat.EMMessage;
+
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
 
 import java.util.List;
@@ -14,5 +14,5 @@ public interface NewsPresenter {
 
     void initConversationCache(List<MessageHomeInfo> sourceDatas);
 
-    void updateCache(EMMessage message);
+//    void updateCache(EMMessage message);
 }

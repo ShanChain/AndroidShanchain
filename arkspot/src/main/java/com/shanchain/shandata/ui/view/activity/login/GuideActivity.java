@@ -10,6 +10,7 @@ import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.GuidePagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 
 import butterknife.Bind;
@@ -68,7 +69,7 @@ public class GuideActivity extends BaseActivity {
     @OnClick(R.id.btn_guide_join)
     public void onClick() {
         PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE,true);
-        readyGo(MainActivity.class);
+        readyGo(HomeActivity.class);
         finish();
     }
 

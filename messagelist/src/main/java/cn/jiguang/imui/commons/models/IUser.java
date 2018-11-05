@@ -7,7 +7,7 @@ public interface IUser {
      * User id.
      * @return user id, unique
      */
-    String getId();
+    long getId();
 
     /**
      * Display name of user

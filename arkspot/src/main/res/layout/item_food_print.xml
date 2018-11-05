@@ -31,7 +31,7 @@
             android:layout_toRightOf="@+id/iv_item_location"
             android:layout_marginLeft="@dimen/dimens_5dp"
             android:lines="1"
-            android:text="@string/text_ack_msg"
+            android:text=""
             android:textColor="@color/colorTextDefault"
             android:textSize="14sp" />
 

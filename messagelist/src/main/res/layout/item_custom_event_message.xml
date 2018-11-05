@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:background="@drawable/shape_bg_even_msg"
     android:layout_margin="20dp"
-    android:padding="5dp">
+    android:paddingTop="15dp">
 
     <TextView
         android:id="@+id/even_message_bounty"
@@ -45,7 +45,7 @@
         android:id="@+id/btn_event_task"
         android:layout_width="wrap_content"
         android:layout_height="27dp"
-        android:text="领取任务"
+        android:text="查看任务"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
@@ -60,7 +60,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp">
+        android:layout_height="32dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/item_tv_comment"

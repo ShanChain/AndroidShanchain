@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.net.HttpApi;
@@ -20,7 +18,6 @@ import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
-import com.shanchain.shandata.manager.ConversationManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
@@ -44,6 +41,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initAPP();
+        loginJm("weal","123456");
+
     }
 
     @Override
@@ -87,7 +86,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
 
-                //loginHx(hxUserName, hxPwd);
                 loginJm("weal","123456");
 //                loginJm(hxUserName,hxPwd);
 
@@ -135,7 +133,8 @@ public class SplashActivity extends AppCompatActivity {
         JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                if (s.contains("Success")){
+                String ss = s;
+                if (s.equals("Success")){
                     LogUtils.d("极光IM############## 登录成功 ##############极光IM");
 
                 }else {
@@ -255,8 +254,9 @@ public class SplashActivity extends AppCompatActivity {
                                 RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
 //                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                                 Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-                                ActivityManager.getInstance().finishAllActivity();
                                 startActivity(intent);
+//                                ActivityManager.getInstance().finishAllActivity();
+                                finish();
                                 RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                 final String userName = hxBean.getHxUserName();
                                 final String pwd = hxBean.getHxPassword();
@@ -264,6 +264,7 @@ public class SplashActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         //hxLogin(userName, pwd);
+//                                        loginJm(userName,pwd);
                                     }
                                 });
 
@@ -276,41 +277,41 @@ public class SplashActivity extends AppCompatActivity {
                 });
     }
 
-    private void hxLogin(final String userName, final String pwd) {
-        final long startTime = System.currentTimeMillis();
-        LogUtils.i("登录环信 = 开始时间 = " + startTime);
-        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LogUtils.i("登录环信账号成功");
-                        long endTime = System.currentTimeMillis();
-                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
-
-                        LogUtils.i("耗时 = " + (endTime - startTime));
-                        EMClient.getInstance().chatManager().loadAllConversations();
-                        EMClient.getInstance().groupManager().loadAllGroups();
-                        //RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
-                        RoleManager.switchRoleCacheHx(userName,pwd);
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                LogUtils.i("登录环信账号失败 = " + s);
-                exception();
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
-    }
+//    private void hxLogin(final String userName, final String pwd) {
+//        final long startTime = System.currentTimeMillis();
+//        LogUtils.i("登录环信 = 开始时间 = " + startTime);
+//        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
+//            @Override
+//            public void onSuccess() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        LogUtils.i("登录环信账号成功");
+//                        long endTime = System.currentTimeMillis();
+//                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+//
+//                        LogUtils.i("耗时 = " + (endTime - startTime));
+//                        EMClient.getInstance().chatManager().loadAllConversations();
+//                        EMClient.getInstance().groupManager().loadAllGroups();
+//                        //RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
+//                        RoleManager.switchRoleCacheHx(userName,pwd);
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                LogUtils.i("登录环信账号失败 = " + s);
+//                exception();
+//            }
+//
+//            @Override
+//            public void onProgress(int i, String s) {
+//
+//            }
+//        });
+//    }
 
 
     private void error() {

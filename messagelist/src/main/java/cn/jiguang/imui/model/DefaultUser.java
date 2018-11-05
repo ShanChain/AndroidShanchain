@@ -5,18 +5,18 @@ import cn.jiguang.imui.commons.models.IUser;
 
 public class DefaultUser implements IUser {
 
-    private String id;
+    private long id;
     private String displayName;
     private String avatar;
 
-    public DefaultUser(String id, String displayName, String avatar) {
+    public DefaultUser(long id, String displayName, String avatar) {
         this.id = id;
         this.displayName = displayName;
         this.avatar = avatar;
     }
 
     @Override
-    public String getId() {
+    public long getId() {
         return id;
     }
 

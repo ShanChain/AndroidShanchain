@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sat="http://schemas.android.com/tools"
     android:id="@+id/chat_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,84 +12,100 @@
         android:id="@+id/tb_main"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"
-        app:titleTextSize="16"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_below="@+id/tb_main"
-        android:background="@drawable/float_btn"
-        android:src="@android:drawable/ic_menu_add"
-        app:backgroundTint="#4FD1F6"
-        app:rippleColor="@color/colorActive"
-        app:layout_anchorGravity="center"
-        app:elevation="6dp"
-        app:pressedTranslationZ="@dimen/dimens_15dp"
-        />
-
+        app:titleTextSize="16" />
 
     <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
         android:id="@+id/pull_to_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/chat_input"
+        android:layout_below="@+id/tb_main"
         app:PtrCloseDuration="300"
         app:PtrCloseHeaderDuration="2000"
         app:PtrKeepHeaderWhenRefresh="true"
         app:PtrPullToRefresh="true"
         app:PtrRatioHeightToRefresh="1.2"
-        app:PtrResistance="1.2"
-        android:layout_above="@+id/chat_input"
-        android:layout_below="@+id/tb_main">
-
-        <!--<cn.jiguang.imui.messages.MessageList-->
-            <!--android:id="@+id/msg_list"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:avatarHeight="48dp"-->
-            <!--app:avatarWidth="48dp"-->
-            <!--app:showReceiverDisplayName="true"-->
-            <!--app:showSenderDisplayName="false"-->
-            <!--app:avatarRadius="5dp"-->
-            <!--app:bubbleMaxWidth="0.70"-->
-            <!--app:dateTextSize="14sp"-->
-            <!--app:receiveBubblePaddingLeft="16dp"-->
-            <!--app:receiveBubblePaddingRight="8dp"-->
-            <!--app:receiveTextColor="#000000"-->
-            <!--app:receiveTextSize="16sp"-->
-            <!--app:sendBubblePaddingLeft="8dp"-->
-            <!--app:sendBubblePaddingRight="16dp"-->
-            <!--app:sendTextColor="#000000"-->
-            <!--app:sendTextSize="16sp" />-->
+        app:PtrResistance="1.2">
 
         <cn.jiguang.imui.messages.MessageList
-        android:id="@+id/msg_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:avatarHeight="48dp"
-        app:avatarWidth="48dp"
-        app:showReceiverDisplayName="true"
-        app:showSenderDisplayName="false"
-        app:avatarRadius="5dp"
-        app:bubbleMaxWidth="0.70"
-        app:dateTextSize="14sp"
-            app:sendBubblePaddingRight="15dp"
-            app:sendBubblePaddingLeft="15dp"
-            app:sendBubblePaddingBottom="10dp"
-            app:sendBubblePaddingTop="10dp"
-            app:receiveBubblePaddingRight="15dp"
-            app:receiveBubblePaddingLeft="15dp"
+            android:id="@+id/msg_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:avatarHeight="48dp"
+            app:avatarRadius="5dp"
+            app:avatarWidth="48dp"
+            app:bubbleMaxWidth="0.70"
+            app:dateTextSize="14sp"
             app:receiveBubblePaddingBottom="10dp"
+            app:receiveBubblePaddingLeft="15dp"
+            app:receiveBubblePaddingRight="15dp"
             app:receiveBubblePaddingTop="10dp"
-            app:sendTextColor="@color/black_deep"
-            app:receiveTextColor="@color/black_deep"
-        app:receiveTextSize="16sp"
-        app:sendTextSize="16sp" />
+            app:receiveTextColor="@color/colorBlack"
+            app:receiveTextSize="16sp"
+            app:sendBubblePaddingBottom="10dp"
+            app:sendBubblePaddingLeft="15dp"
+            app:sendBubblePaddingRight="15dp"
+            app:sendBubblePaddingTop="10dp"
+            app:sendTextColor="@color/colorBlack"
+            app:sendTextSize="16sp"
+            app:showReceiverDisplayName="true"
+            app:showSenderDisplayName="false" />
 
     </cn.jiguang.imui.messages.ptr.PullToRefreshLayout>
 
+    <include
+        android:padding="20dp"
+        layout="@layout/menu_left_bottom" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb_main"
+        android:padding="20dp"
+        android:visibility="gone"
+        android:layout_alignParentRight="true">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/float_btn"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_menu_add"
+            app:backgroundTint="#4FD1F6"
+            app:elevation="16dp"
+            app:layout_anchorGravity="center"
+            app:pressedTranslationZ="@dimen/dimens_15dp"
+            app:rippleColor="@color/colorActive" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_btn_task_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/floating_btn"
+            android:background="@drawable/float_btn"
+            android:layout_marginRight="54dp"
+            app:backgroundTint="#4FD1F6"
+            app:elevation="16dp"
+            app:layout_anchorGravity="center"
+            app:pressedTranslationZ="@dimen/dimens_15dp"
+            app:rippleColor="@color/colorActive" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_btn_task_query"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/floating_btn"
+            android:background="@drawable/float_btn"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="50dp"
+            android:src="@android:drawable/ic_menu_add"
+            app:backgroundTint="#4FD1F6"
+            app:elevation="16dp"
+            app:layout_anchorGravity="center"
+            app:pressedTranslationZ="@dimen/dimens_15dp"
+            app:rippleColor="@color/colorActive" />
+    </RelativeLayout>
 
     <cn.jiguang.imui.chatinput.ChatInputView
         android:id="@+id/chat_input"
@@ -97,7 +114,7 @@
         android:layout_alignParentBottom="true"
         app:inputMarginLeft="3dp"
         app:inputMarginRight="3dp"
-        app:showSelectAlbum="true"/>
+        app:showSelectAlbum="true" />
 
 
 </com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView>

@@ -50,7 +50,7 @@ public class AppManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void clearCache(){
-        AppManager.getInstance().clearCache();
+//        AppManager.getInstance().clearCache();
     }
 
 }

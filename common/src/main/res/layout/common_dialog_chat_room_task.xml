@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:background="@drawable/shape_bg_dialog_item"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_input_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="@dimen/dimens_10dp"
+            android:text="发布任务"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/iv_dialog_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@mipmap/close" />
+
+    </RelativeLayout>
+
+    <View style="@style/style_text_line_match" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="任务"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_input_dialog_describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:background="@drawable/shape_bg_dialog_task_edit"
+            android:gravity="top"
+            android:hint="描述你的任务"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingTop="@dimen/dimens_10dp"
+            android:paddingRight="@dimen/dimens_15dp"
+            android:paddingBottom="@dimen/dimens_10dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorHint"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_bounty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimens_20dp"
+        android:paddingLeft="@dimen/dimens_20dp"
+        android:paddingRight="@dimen/dimens_20dp"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="赏金"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_input_dialog_bounty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:background="@drawable/shape_bg_dialog_task_edit"
+            android:gravity="top"
+            android:hint="输入赏金"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingTop="@dimen/dimens_10dp"
+            android:paddingRight="@dimen/dimens_15dp"
+            android:paddingBottom="@dimen/dimens_10dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorHint"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/linear_bounty"
+        android:layout_marginRight="@dimen/dimens_20dp"
+        android:layout_gravity="right"
+        android:text="1 SEAT≈n 人民币"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时限"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/dialog_select_task_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/shape_bg_dialog_task_edit"
+            android:paddingLeft="@dimen/dimens_15dp"
+            android:paddingTop="@dimen/dimens_10dp"
+            android:paddingRight="@dimen/dimens_15dp"
+            android:paddingBottom="@dimen/dimens_10dp">
+
+
+            <TextView
+                android:id="@+id/tv_limited_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="选择时间"
+                android:textColor="@color/colorHint"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!--<EditText-->
+        <!--android:id="@+id/et_input_dialog_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@null"-->
+        <!--android:gravity="top"-->
+        <!--android:hint="选择时间"-->
+        <!--android:paddingBottom="@dimen/dimens_10dp"-->
+        <!--android:paddingLeft="@dimen/dimens_15dp"-->
+        <!--android:paddingRight="@dimen/dimens_15dp"-->
+        <!--android:paddingTop="@dimen/dimens_10dp"-->
+        <!--android:layout_marginLeft="@dimen/dimens_15dp"-->
+        <!--android:textColor="@color/colorTextDefault"-->
+        <!--android:textColorHint="@color/colorHint"-->
+        <!--android:textCursorDrawable="@null"-->
+        <!--android:textSize="14sp"/>-->
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dimens_15dp">
+
+
+        <Button
+            android:id="@+id/btn_dialog_input_sure"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/shape_btn_dialog_sure"
+            android:text="立即发布"
+            android:textColor="#fff"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

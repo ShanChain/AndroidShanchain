@@ -7,10 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.hyphenate.chat.EMMessage;
-import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.util.DateUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.shandata.ui.model.MsgInfo;
@@ -42,16 +38,16 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        MsgInfo msgInfo = mMsgInfoList.get(position);
-        EMMessage emMessage = msgInfo.getEMMessage();
-        int msgAttr = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
-        if (msgAttr == 3) {
-            return 3;
-        } else if (emMessage.direct() == EMMessage.Direct.RECEIVE) {
-            return 0;
-        } else if (emMessage.direct() == EMMessage.Direct.SEND) {
-            return 1;
-        }
+//        MsgInfo msgInfo = mMsgInfoList.get(position);
+//        EMMessage emMessage = msgInfo.getEMMessage();
+//        int msgAttr = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
+//        if (msgAttr == 3) {
+//            return 3;
+//        } else if (emMessage.direct() == EMMessage.Direct.RECEIVE) {
+//            return 0;
+//        } else if (emMessage.direct() == EMMessage.Direct.SEND) {
+//            return 1;
+//        }
         return 0;
     }
 
@@ -73,7 +69,7 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         MsgInfo msgInfo = mMsgInfoList.get(position);
-        holder.bindData(msgInfo, position);
+//        holder.bindData(msgInfo, position);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,91 +172,91 @@ public class ChatRoomMsgAdapter extends RecyclerView.Adapter<ChatRoomMsgAdapter.
             getTvItemMsgSceneContent = (TextView) itemView.findViewById(R.id.tv_item_msg_scene_content);
         }
 
-        public void bindData(MsgInfo msgInfo, int position) {
-            EMMessage emMessage = msgInfo.getEMMessage();
-            EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
-            String msg = body.getMessage();
-            int msgAttribute = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
-            String nick = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
-            if (msgAttribute == Constants.ATTR_SCENE) {
-
-                //场景
-                if (tvItemMsgSceneTitle != null){
-                    tvItemMsgSceneTitle.setText("情境");
-                    getTvItemMsgSceneContent.setText(msg+" --("+nick+")");
-                }
-
-            } else if (msgAttribute == Constants.ATTR_DEFAULT) {
-                //闲聊(本人说话)
-                if (tvReceiveRole != null) {
-                    tvReceiveRole.setVisibility(View.VISIBLE);
-                    tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_normal);
-                    tvReceiveContent.setTextColor(Color.parseColor("#ffffff"));
-                }
-                if (tvSendRole != null) {
-                    tvSendRole.setVisibility(View.VISIBLE);
-                    tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_normal);
-                }
-                setMsgContent(position, emMessage, msg);
-            } else if (msgAttribute == Constants.ATTR_AGAINST) {
-                //对戏(角色说话)
-                if (tvReceiveRole != null) {
-                    tvReceiveRole.setVisibility(View.GONE);
-                    tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_white);
-                    tvReceiveContent.setTextColor(Color.parseColor("#666666"));
-                }
-                if (tvSendRole != null) {
-                    tvSendRole.setVisibility(View.GONE);
-                    tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_theme);
-                }
-                setMsgContent(position, emMessage, msg);
-            }
-
-        }
+//        public void bindData(MsgInfo msgInfo, int position) {
+//            EMMessage emMessage = msgInfo.getEMMessage();
+//            EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
+//            String msg = body.getMessage();
+//            int msgAttribute = emMessage.getIntAttribute(Constants.MSG_ATTR, 0);
+//            String nick = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
+//            if (msgAttribute == Constants.ATTR_SCENE) {
+//
+//                //场景
+//                if (tvItemMsgSceneTitle != null){
+//                    tvItemMsgSceneTitle.setText("情境");
+//                    getTvItemMsgSceneContent.setText(msg+" --("+nick+")");
+//                }
+//
+//            } else if (msgAttribute == Constants.ATTR_DEFAULT) {
+//                //闲聊(本人说话)
+//                if (tvReceiveRole != null) {
+//                    tvReceiveRole.setVisibility(View.VISIBLE);
+//                    tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_normal);
+//                    tvReceiveContent.setTextColor(Color.parseColor("#ffffff"));
+//                }
+//                if (tvSendRole != null) {
+//                    tvSendRole.setVisibility(View.VISIBLE);
+//                    tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_normal);
+//                }
+//                setMsgContent(position, emMessage, msg);
+//            } else if (msgAttribute == Constants.ATTR_AGAINST) {
+//                //对戏(角色说话)
+//                if (tvReceiveRole != null) {
+//                    tvReceiveRole.setVisibility(View.GONE);
+//                    tvReceiveContent.setBackgroundResource(R.drawable.selector_bg_msg_receive_white);
+//                    tvReceiveContent.setTextColor(Color.parseColor("#666666"));
+//                }
+//                if (tvSendRole != null) {
+//                    tvSendRole.setVisibility(View.GONE);
+//                    tvSendContent.setBackgroundResource(R.drawable.selector_bg_msg_send_theme);
+//                }
+//                setMsgContent(position, emMessage, msg);
+//            }
+//
+//        }
 
         /**
          *  描述：设置消息内容
          */
-        private void setMsgContent(int position, EMMessage emMessage, String msg) {
-            long msgTime = emMessage.getMsgTime();
-            String timestampString = DateUtils.getTimestampString(new Date(msgTime));
-            String headImg = emMessage.getStringAttribute(Constants.MSG_HEAD_IMG, "http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg");
-            String nickName = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
-            if (emMessage.direct() == EMMessage.Direct.SEND) {
-                //发送
-                tvSendContent.setText(msg);
-                tvSendTime.setText(timestampString);
-                tvSendNick.setText(nickName);
-                GlideUtils.load(ivSendAvatar.getContext(),headImg,ivSendAvatar,0);
-                if (position == 0) {
-                    tvSendTime.setVisibility(View.VISIBLE);
-                } else {
-                    long msgSendTimePre = mMsgInfoList.get(position - 1).getEMMessage().getMsgTime();
-                    if (DateUtils.isCloseEnough(msgSendTimePre, msgTime)) {
-                        tvSendTime.setVisibility(View.GONE);
-                    } else {
-                        tvSendTime.setVisibility(View.VISIBLE);
-                    }
-                }
-
-            } else {
-                //接收
-                tvReceiveContent.setText(msg);
-                tvReceiveTime.setText(timestampString);
-                tvReceiverNick.setText(nickName);
-                GlideUtils.load(ivReceiverAvatar.getContext(),headImg,ivReceiverAvatar,0);
-                if (position == 0) {
-                    tvReceiveTime.setVisibility(View.VISIBLE);
-                } else {
-                    long msgSendTimePre = mMsgInfoList.get(position - 1).getEMMessage().getMsgTime();
-                    if (DateUtils.isCloseEnough(msgSendTimePre, msgTime)) {
-                        tvReceiveTime.setVisibility(View.GONE);
-                    } else {
-                        tvReceiveTime.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        }
+//        private void setMsgContent(int position, EMMessage emMessage, String msg) {
+//            long msgTime = emMessage.getMsgTime();
+//            String timestampString = DateUtils.getTimestampString(new Date(msgTime));
+//            String headImg = emMessage.getStringAttribute(Constants.MSG_HEAD_IMG, "http://pic.xoyo.com/bbs/2011/05/05/11050521189a7010baf80224d6.jpg");
+//            String nickName = emMessage.getStringAttribute(Constants.MSG_NICK_NAME, emMessage.getFrom());
+//            if (emMessage.direct() == EMMessage.Direct.SEND) {
+//                //发送
+//                tvSendContent.setText(msg);
+//                tvSendTime.setText(timestampString);
+//                tvSendNick.setText(nickName);
+//                GlideUtils.load(ivSendAvatar.getContext(),headImg,ivSendAvatar,0);
+//                if (position == 0) {
+//                    tvSendTime.setVisibility(View.VISIBLE);
+//                } else {
+//                    long msgSendTimePre = mMsgInfoList.get(position - 1).getEMMessage().getMsgTime();
+//                    if (DateUtils.isCloseEnough(msgSendTimePre, msgTime)) {
+//                        tvSendTime.setVisibility(View.GONE);
+//                    } else {
+//                        tvSendTime.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//
+//            } else {
+//                //接收
+//                tvReceiveContent.setText(msg);
+//                tvReceiveTime.setText(timestampString);
+//                tvReceiverNick.setText(nickName);
+//                GlideUtils.load(ivReceiverAvatar.getContext(),headImg,ivReceiverAvatar,0);
+//                if (position == 0) {
+//                    tvReceiveTime.setVisibility(View.VISIBLE);
+//                } else {
+//                    long msgSendTimePre = mMsgInfoList.get(position - 1).getEMMessage().getMsgTime();
+//                    if (DateUtils.isCloseEnough(msgSendTimePre, msgTime)) {
+//                        tvReceiveTime.setVisibility(View.GONE);
+//                    } else {
+//                        tvReceiveTime.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//            }
+//        }
     }
 
     private OnBubbleClickListener clickListener;

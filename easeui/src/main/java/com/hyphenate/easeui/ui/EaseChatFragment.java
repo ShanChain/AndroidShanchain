@@ -1052,7 +1052,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         }
 
         @Override
-        public void onRemovedFromChatRoom(final String roomId, final String roomName, final String participant) {
+        public void onRemovedFromChatRoom(int i, final String roomId, final String roomName, final String participant) {
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     if (roomId.equals(toChatUsername)) {
@@ -1064,6 +1064,10 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                     }
                 }
             });
+        }
+
+        public void onRemovedFromChatRoom(final String roomId, final String roomName, final String participant) {
+
         }
 
 
@@ -1089,6 +1093,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 });
             }
         }
+
+
 
 
     }

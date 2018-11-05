@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyboardShortcutGroup;
@@ -173,6 +174,11 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     }
 
+    public View getByIdView(View view, @IdRes int Id){
+        view = findViewById(Id);
+        return view;
+    }
+
 
     @Override
     public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
@@ -188,7 +194,7 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
+        //dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
         listener.OnItemClick(this, view);
     }
 
