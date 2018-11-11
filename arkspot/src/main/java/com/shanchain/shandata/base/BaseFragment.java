@@ -29,7 +29,7 @@ public abstract class BaseFragment extends Fragment {
      * 描述：fragment所依赖的activity
      */
     public MainActivity mActivity;
-    public TaskListActivity mTaskListActivity;
+    public TaskListActivity mTaskListActivity ;
 
     /**
      * 描述：fragment创建时调用的方法,在此获取fragment所依赖的activitty对象
@@ -114,4 +114,6 @@ public abstract class BaseFragment extends Fragment {
         ButterKnife.unbind(getActivity());
         EventBus.getDefault().unregister(this);
     }
+
+//    public
 }

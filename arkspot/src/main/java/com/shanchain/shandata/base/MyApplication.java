@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -61,7 +62,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
 
-public class MyApplication extends BaseApplication implements BDLocationListener {
+public class MyApplication extends BaseApplication {
 
     private static Context mContext;
     private LocationClient locationClient;
@@ -124,9 +125,15 @@ public class MyApplication extends BaseApplication implements BDLocationListener
         initBugly();
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     private void initBaiduMap() {
         locationClient = new LocationClient(getApplicationContext());//声明LocationClient类
-        locationClient.registerLocationListener(this);//注册监听函数
+//        locationClient.registerLocationListener(this);//注册监听函数
         LocationClientOption option = new LocationClientOption();//创建定位配置参数
         //显示位置描述信息
         option.setIsNeedLocationDescribe(true);
@@ -299,6 +306,7 @@ public class MyApplication extends BaseApplication implements BDLocationListener
     * */
     private void initJMessage() {
         JMessageClient.init(this,true);
+        JMessageClient.setDebugMode(true);
     }
 //    private void initContactListener() {
 //        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
@@ -471,8 +479,8 @@ public class MyApplication extends BaseApplication implements BDLocationListener
 //        notificationManager.notify(1, notification);
 //    }
 
-    @Override
-    public void onReceiveLocation(BDLocation bdLocation) {
-
-    }
+//    @Override
+//    public void onReceiveLocation(BDLocation bdLocation) {
+//
+//    }
 }

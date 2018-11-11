@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.sdk.android.oss.common.utils.DateUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -51,12 +52,17 @@ import com.bumptech.glide.request.transition.Transition;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.h5.SCWebViewActivity;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 
+import cn.jiguang.imui.commons.models.IUser;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
@@ -64,10 +70,14 @@ import cn.jiguang.imui.model.MyMessage;
 
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.story.DynamicDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
+import com.shanchain.shandata.ui.view.fragment.view.TaskView;
+import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -78,8 +88,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
@@ -97,7 +109,10 @@ import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.RequestCallback;
+import cn.jpush.im.android.api.content.CustomContent;
+import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.ChatRoomInfo;
@@ -105,6 +120,7 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
+import okhttp3.Call;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -112,7 +128,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         EasyPermissions.PermissionCallbacks,
         SensorEventListener, ArthurToolBar.OnLeftClickListener,
         ArthurToolBar.OnRightClickListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,TaskView{
 
     private final static String TAG = "MessageListActivity";
     private final int RC_RECORD_VOICE = 0x0001;
@@ -125,6 +141,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
     private List<MyMessage> mData;
+    private String formatDate;
 
     private InputMethodManager mImm;
     private Window mWindow;
@@ -134,8 +151,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
     private ArcMenu mArcMenu;
-    private long roomID = 15188952;
+    private long roomID = 15198852;
     private Handler handler;
+    private List<Conversation> conversationList;
+
     /**
      * Store all image messages' path, pass it to {@link BrowserImageActivity},
      * so that click image message can browser all images.
@@ -143,10 +162,16 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
     private ChatEventMessage chatEventMessage;
-    private List<Message> messageList = new ArrayList<>();
+    private List<MyMessage> messageList = new ArrayList<>();
     private Conversation chatRoomConversation;
+
     private TextView limitedTime;
     private Thread addTaskThread;
+    private String timeStamp;
+    private TaskPresenter taskPresenter;
+    private SCTimePickerView scTimePickerView;
+    private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
+    private ChatEventMessage chatEventMessage1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,6 +180,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             EventBus.getDefault().register(this, 100);
             JMessageClient.registerEventReceiver(this);
         }
+
+     String  s =   SCCacheUtils.getCacheCharacterId();
 
     }
 
@@ -194,12 +221,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     return false;
                 }
 
-                // 发送聊天室消息
-                Conversation conv = JMessageClient.getChatRoomConversation(roomID);
-                if (null == conv) {
-                    conv = Conversation.createChatRoomConversation(roomID);
+                if (null == chatRoomConversation) {
+                    chatRoomConversation = Conversation.createChatRoomConversation(roomID);
                 }
-                final Message msg = conv.createSendTextMessage(input.toString());//实际聊天室可以支持所有类型的消息发送，demo为了简便，仅仅实现了文本类型的消息发送
+                final Message msg = chatRoomConversation.createSendTextMessage(input.toString());//实际聊天室可以支持所有类型的消息发送，demo为了简便，仅仅实现了文本类型的消息发送
                 msg.setOnSendCompleteCallback(new BasicCallback() {
                     @Override
                     public void gotResult(int responseCode, String responseMessage) {
@@ -207,6 +232,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         if (0 == responseCode) {
 
                             Toast.makeText(MessageListActivity.this, "发送消息成功", Toast.LENGTH_SHORT);
+                            LogUtils.d("发送聊天室消息", "code: " + responseCode + " 回调信息：" + responseMessage);
 
                             message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatar()));
                             message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -418,10 +444,41 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     //初始化聊天数据
     private void initData() {
+
+        taskPresenter = new TaskPresenterImpl(this);
+
         ChatRoomManager.enterChatRoom(roomID, new RequestCallback<Conversation>() {
+
+
             @Override
             public void gotResult(int i, String s, Conversation conversation) {
+                String ss = s;
+
                 LogUtils.d("聊天室信息：######### " + i + "回调的信息" + s);
+                if (TextUtils.equals("member has in the chatroom",s)){
+//                    conversationList = JMessageClient.getChatRoomConversationList();
+//                    SCHttpUtils.postNoToken()
+//                            .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
+//                            .addParams("roomId",roomID+"")
+//                            .addParams("timeStamp",String.valueOf(System.currentTimeMillis()))
+//                            .build()
+//                            .execute(new SCHttpStringCallBack() {
+//                                @Override
+//                                public void onError(Call call, Exception e, int id) {
+//                                    LogUtils.d("获取聊天室历史消息失败");
+//                                }
+//
+//                                @Override
+//                                public void onResponse(String response, int id) {
+//                                    String code = JSONObject.parseObject(response).getString("code");
+//                                    if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+//
+//                                    }
+//
+//                                }
+//                            });
+                }
+
             }
         });
 
@@ -430,27 +487,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             chatRoomConversation = Conversation.createChatRoomConversation(roomID);
         }
 
-        messageList = chatRoomConversation.getAllMessage();
         mData = getMessages(messageList);
     }
-
-    // 接收聊天室任务消息
-//    public void onEvent(ChatRoomMessageEvent event) {
-//        Log.d("tag", "ChatRoomMessageEvent received .");
-//        ToastUtils.showToastLong(this,"子线程执行了该方法");
-//        List<Message> msgs = event.getMessages();
-//        for (Message msg : msgs) {
-//            //这个页面仅仅展示聊天室会话的消息
-////            postMessageToDisplay("MessageReceived", event.getResponseCode(), event.getResponseDesc(), msg);
-//            TextContent textcontent=(TextContent) msg.getContent();
-//            LogUtils.d("文字消息 "+textcontent.getText());
-//            LogUtils.d("聊天室会话事件的消息########## " + event.getResponseDesc() + "事件回调码 " + event.getResponseCode() + "消息数" + event.getMessages().size());
-//            messageList.add(msg);
-//        }
-//
-//        mData = getMessages(messageList);
-//        mAdapter.addToEnd(mData);
-//    }
 
 
     private void initView() {
@@ -500,11 +538,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mArcMenu.setOnMenuItemClickListener(new ArcMenu.OnMenuItemClickListener() {
             @Override
             public void onClick(View view, int pos) {
-//                Toast.makeText(MessageListActivity.this, pos + ":" + view.getTag(), Toast.LENGTH_SHORT).show();
+                mChatView.getChatInputView().setFocusable(false);
                 switch (view.getId()) {
                     //查询任务
                     case R.id.linear_add_query:
-                        Toast.makeText(MessageListActivity.this, pos + "查询任务:" + view.getTag(), Toast.LENGTH_SHORT).show();
+
+                        readyGo(TaskListActivity.class);
+
                         break;
                     //添加任务
                     case R.id.linear_add_task:
@@ -519,6 +559,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         });
                         addTaskThread.start();
 
+
                         break;
 
                 }
@@ -526,43 +567,44 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
 
-        /*
-         * 初始化弹窗
-         * */
+        initTaskDialog();
+
+
+    }
+
+    /*
+     * 初始化弹窗
+     *
+     * */
+    private void initTaskDialog() {
+
         final int[] idItems = new int[]{R.id.et_input_dialog_describe, R.id.et_input_dialog_bounty, R.id.dialog_select_task_time, R.id.btn_dialog_input_sure, R.id.iv_dialog_close};
         final CustomDialog dialog = new CustomDialog(MessageListActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
+        View layout = View.inflate(MessageListActivity.this, R.layout.common_dialog_chat_room_task,null);
+        dialog.setView(layout);
         handler = new Handler() {
             @Override
-            public void handleMessage(android.os.Message msg) {
+            public void handleMessage(final android.os.Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 1:
-//                        Toast.makeText(MessageListActivity.this, pos + "添加任务:" + view.getTag(), Toast.LENGTH_SHORT).show();
                         dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                             @Override
-                            public void OnItemClick(CustomDialog dialog, View view) {
+                            public void OnItemClick(final CustomDialog dialog, View view) {
+                                EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
+                                EditText bountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
+                                limitedTime = (TextView) dialog.getByIdView(R.id.dialog_select_task_time);
+
                                 switch (view.getId()) {
+                                    case R.id.et_input_dialog_describe:
+                                        ToastUtils.showToast(MessageListActivity.this, "输入任务描述");
+                                        break;
+                                    case R.id.et_input_dialog_bounty:
+                                        ToastUtils.showToast(MessageListActivity.this, "输入赏金");
+                                        break;
                                     case R.id.btn_dialog_input_sure:
 
-                                        EditText describeEditText = (EditText) dialog.getByIdView(new EditText(MessageListActivity.this),R.id.et_input_dialog_describe);
-                                        EditText bountyEditText = (EditText) dialog.getByIdView(new EditText(MessageListActivity.this),R.id.et_input_dialog_bounty);
-                                        if (describeEditText.getText() != null && bountyEditText.getText() != null) {
-                                            String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
-                                            String bounty = bountyEditText.getText().toString();
-                                            String dataString = describeEditText.getText().toString();
-                                            String time = String.valueOf(System.currentTimeMillis());
-                                            TaskPresenter taskPresenter = new TaskPresenterImpl();
-                                            taskPresenter.releaseTask(spaceId, bounty, dataString, time);
-                                            ChatEventMessage eventMessage = new ChatEventMessage("chat", IMessage.MessageType.EVENT.ordinal());
-                                            eventMessage.setBounty(bounty);
-                                            eventMessage.setIntro(dataString);
-                                            eventMessage.setLimitedTime(time);
-                                            eventMessage.setSupportCount(0);
-                                            eventMessage.setCommentCount(0);
-                                            mAdapter.addToStart(eventMessage,true);
-                                        } else {
-                                            ToastUtils.showToast(MessageListActivity.this, "请输入完整信息");
-                                        }
+                                        releaseTask(dialog, describeEditText, bountyEditText,limitedTime);
 
                                         break;
                                     case R.id.iv_dialog_close:
@@ -570,51 +612,114 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                         break;
                                     //选择时间
                                     case R.id.dialog_select_task_time:
-                                        LogUtils.d("发布任务", "点击发布任务事件");
-                                        final Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
-                                        topActivity.runOnUiThread(new Runnable() {
+                                        initPickerView();
+                                        scTimePickerView.setOnTimeSelectListener(onTimeSelectListener);
+                                        scTimePickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
                                             @Override
-                                            public void run() {
-                                                SCTimePickerView pickerView = new SCTimePickerView.Builder(topActivity, new SCTimePickerView.OnTimeSelectListener() {
-                                                    @Override
-                                                    public void onTimeSelect(Date date, View v) {
-                                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                                        String format = simpleDateFormat.format(date);
-                                                        LogUtils.d("SCTimePickerView", "点击了SCTimePickerView" + format);
-                                                    }
+                                            public void onCancelClick(View v) {
 
-                                                })
-                                                        .setType(new boolean[]{true, true, true, false, false, false})
-                                                        .isCenterLabel(false)
-                                                        .setCancelText("清除")
-                                                        .setCancelColor(topActivity.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                                                        .setSubmitText("完成")
-                                                        .setSubCalSize(14)
-                                                        .setTitleBgColor(topActivity.getResources().getColor(com.shanchain.common.R.color.colorWhite))
-                                                        .setSubmitColor(topActivity.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                                                        .build();
-                                                pickerView.setDate(Calendar.getInstance());
-                                                pickerView.show();
-
-                                                pickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
-                                                    @Override
-                                                    public void onCancelClick(View v) {
-                                                        ToastUtils.showToastLong(topActivity.getBaseContext(), "取消选择");
-                                                    }
-                                                });
                                             }
                                         });
-                                        break;
+                                        scTimePickerView.show(limitedTime);
 
+                                        break;
                                 }
                             }
                         });
                         dialog.show();
-
                         break;
                 }
             }
         };
+    }
+
+    //初始化时间选择弹窗
+    private void initPickerView() {
+        SCTimePickerView.Builder builder = new SCTimePickerView.Builder(MessageListActivity.this);
+        builder.setType(new boolean[]{true, true, true, true, false, false})//设置显示年、月、日、时、分、秒
+                .setDecorView((ViewGroup) findViewById(android.R.id.content).getRootView())
+//                .setDecorView((ViewGroup) dialog.getWindow().getDecorView().getRootView())
+                .isCenterLabel(true)
+                .setLabel("年", "月", "日", "时", "分", "秒")
+                .setCancelText("清除")
+                .setCancelColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
+                .setSubmitText("完成")
+                .setSubCalSize(14)
+                .setTitleBgColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorWhite))
+                .setSubmitColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
+                .isDialog(true)
+                .build();
+
+        scTimePickerView = new SCTimePickerView(builder);
+        scTimePickerView.setDate(Calendar.getInstance());
+
+        onTimeSelectListener = new SCTimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                formatDate = simpleDateFormat.format(date);
+                timeStamp = String.valueOf(date.getTime());
+                LogUtils.d("SCTimePickerView", "点击了SCTimePickerView" + formatDate);
+                TextView clickView = (TextView) v;
+                clickView.setText(formatDate);
+                scTimePickerView.show(limitedTime);
+            }
+        };
+    }
+
+    /*
+    * 发布任务
+    *
+    * */
+    private void releaseTask(CustomDialog dialog, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
+        if (TextUtils.isEmpty(describeEditText.getText().toString()) && TextUtils.isEmpty(bountyEditText.getText().toString()) && TextUtils.isEmpty(textViewTime.getText().toString())) {
+            ToastUtils.showToast(MessageListActivity.this, "请输入完整信息");
+        } else {
+            final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
+            final String bounty = bountyEditText.getText().toString();
+            final String dataString = describeEditText.getText().toString();
+            final String LimitedTtime = textViewTime.getText().toString();
+            chatEventMessage1 = new ChatEventMessage("task", IMessage.MessageType.EVENT.ordinal());
+
+            final String formatDate = DateUtils.timeStamp2Date(timeStamp, "yyyy-MM-dd HH:mm:ss");
+
+            chatEventMessage1.setBounty(Double.parseDouble(bounty));
+            chatEventMessage1.setIntro(dataString);
+            chatEventMessage1.setTimeString(LimitedTtime);
+
+            Map customMap = new HashMap();
+            customMap.put("bounty", bounty);
+            customMap.put("dataString", dataString);
+            customMap.put("time", LimitedTtime);
+//                                            customMap.put("eventMessage",eventMessage);
+
+            Message sendCustomMessage = chatRoomConversation.createSendCustomMessage(customMap);
+            sendCustomMessage.setOnSendCompleteCallback(new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    String s1 = s;
+                    if (0 == i) {
+                        Toast.makeText(MessageListActivity.this, "发送任务消息成功", Toast.LENGTH_SHORT);
+                        LogUtils.d("发送任务消息", "code: " + i + " 回调信息：" + s);
+
+                        //向服务器请求添加任务
+                        String characterId = SCCacheUtils.getCacheCharacterId();
+                        taskPresenter.releaseTask(characterId, String.valueOf(roomID),bounty,dataString, timeStamp);
+
+                        chatEventMessage1.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        mAdapter.addToStart(chatEventMessage1, true);
+                    } else {
+                        Toast.makeText(MessageListActivity.this, "发送任务消息失败", Toast.LENGTH_SHORT);
+                        chatEventMessage1.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                        mAdapter.addToStart(chatEventMessage1, true);
+                    }
+                }
+            });
+            JMessageClient.sendMessage(sendCustomMessage);
+            dialog.dismiss();
+        }
     }
 
     private void initToolBar() {
@@ -709,6 +814,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     //标题栏右侧按钮实现
     @Override
     public void onRightClick(View v) {
+        finish();
 
     }
 
@@ -754,27 +860,55 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         if (id == R.id.nav_my_wallet) {
             Intent intent = new Intent(mContext, SCWebViewActivity.class);
             JSONObject obj = new JSONObject();
-            obj.put("url","http://www.qianqianshijie.com/#/agreement");
-            obj.put("title","我的资产");
+            obj.put("url", "http://www.qianqianshijie.com/#/agreement");
+            obj.put("title", "我的资产");
             String webParams = obj.toJSONString();
-            intent.putExtra("webParams",webParams);
+            intent.putExtra("webParams", webParams);
             startActivity(intent);
         } else if (id == R.id.nav_my_task) {
             readyGo(TaskListActivity.class);
 
         } else if (id == R.id.nav_my_message) {
+            readyGo(MyMessageActivity.class);
 
         } else if (id == R.id.nav_my_favorited) {
+            readyGo(FootPrintActivity.class);
 
         } else if (id == R.id.real_identity) {
 
-        }else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_manage) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void initTask(List<ChatEventMessage> list, boolean isLast) {
+
+    }
+
+    @Override
+    public void releaseTaskView(List<ChatEventMessage> list, boolean isSuccess) {
+        chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+        mAdapter.addToStart(chatEventMessage1, true);
+    }
+
+    @Override
+    public void supportSuccess(boolean isSuccess, int position) {
+
+    }
+
+    @Override
+    public void supportCancelSuccess(boolean isSuccess, int position) {
+
+    }
+
+    @Override
+    public void deleteTaskView(boolean isSuccess, int position) {
+
     }
 
 
@@ -810,28 +944,22 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
-    private List<MyMessage> getMessages(List<Message> messageList) {
+    private List<MyMessage> getMessages(List messageList) {
 
         List<MyMessage> list = new ArrayList<>();
         Resources res = getResources();
         String[] messages = res.getStringArray(R.array.messages_array);
         chatEventMessage = new ChatEventMessage("chat", IMessage.MessageType.EVENT.ordinal());
-        chatEventMessage.setBounty("80");
+        chatEventMessage.setBounty(80);
         chatEventMessage.setIntro("南孚？我觉得555电池挺好用的");
         chatEventMessage.setCommentCount(1180);
-        chatEventMessage.setLimitedTime("12:00 2018-10-20");
+        chatEventMessage.setTimeString("12:00 2018-10-20");
         chatEventMessage.setSupportCount(1891);
         //聊天室里是否有消息，没有消息加载本地假数据
         if (messageList != null && messageList.size() > 0) {
             for (int i = 0; i < messageList.size(); i++) {
-                Message conversationMessage = messageList.get(i);
-
-                MyMessage message = new MyMessage(conversationMessage.getCreateTime() + "时间", conversationMessage.getContentType().ordinal());
-                DefaultUser defaultUser = new DefaultUser(conversationMessage.getFromUser().getUserID(),
-                        conversationMessage.getFromUser().getDisplayName(), conversationMessage.getFromUser().getAvatar());
-                message.setUserInfo(defaultUser);
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                list.add(message);
+                MyMessage myMessage = (MyMessage) messageList.get(i);
+                list.add(myMessage);
             }
         } else {
             MyMessage message;
@@ -893,17 +1021,72 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     // 接收聊天室消息
     public void onEventMainThread(ChatRoomMessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
+        chatRoomConversation = JMessageClient.getChatRoomConversation(roomID);
         List<Message> msgs = event.getMessages();
+        MyMessage myMessage;
         for (Message msg : msgs) {
             //这个页面仅仅展示聊天室会话的消息
-            postMessageToDisplay("MessageReceived", event.getResponseCode(), event.getResponseDesc(), msg);
+            switch (msg.getContentType()) {
+                case text:
+                    TextContent textContent = (TextContent) msg.getContent();
+                    myMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                    long id = msg.getFromUser().getUserID();
+                    String displayName = msg.getFromUser().getDisplayName();
+                    String avatar = msg.getFromUser().getAvatar();
+                    IUser user = new DefaultUser(id, displayName, avatar);
+                    myMessage.setUserInfo(user);
+                    myMessage.setText(textContent.getText());
+                    messageList.add(myMessage);
+                    mAdapter.addToStart(myMessage, true);
+                    break;
+                case custom:
+                    CustomContent customContent = (CustomContent) msg.getContent();
+                    myMessage = new MyMessage("event", IMessage.MessageType.EVENT.ordinal());
+                    Map eventMap = customContent.getAllStringValues();
+//                    long userId = (long) customContent.getNumberValue("id");//获取发布任务的用户ID
+//                    String userName = customContent.getStringValue("userName");//获取发布任务的用户名
+                    ChatEventMessage eventMessage = new ChatEventMessage("event", IMessage.MessageType.EVENT.ordinal());
+                    //设置发布任务参数
+                    eventMessage.setBounty(Double.parseDouble((String) eventMap.get("bounty")));
+                    eventMessage.setIntro((String) eventMap.get("dataString"));
+                    String time = (String) eventMap.get("time");
+                    eventMessage.setTimeString((String) eventMap.get("time"));
+
+                    myMessage.setChatEventMessage(eventMessage);
+//                    messageList.add(myMessage);
+                    mAdapter.addToStart(myMessage, true);
+                    break;
+                default:
+
+                    break;
+            }
+
+
         }
     }
 
-    private void postMessageToDisplay(String messageType, int responseCode, String responseDesc, Message msg) {
-
-
-    }
+//    public void onEventMainThread(MessageEvent event) {
+//        Message msg = event.getMessage();
+//        MyMessage myMessage;
+//        switch (msg.getContentType()) {
+//            case custom:
+//                CustomContent customContent = (CustomContent) msg.getContent();
+//                myMessage = new MyMessage("event", IMessage.MessageType.EVENT.ordinal());
+//                Map eventMap = customContent.getAllStringValues();
+//                long userId = (long) customContent.getNumberValue("id");//获取发布任务的用户ID
+//                String userName = customContent.getStringValue("userName");//获取发布任务的用户名
+//                ChatEventMessage eventMessage = new ChatEventMessage("event", IMessage.MessageType.EVENT.ordinal());
+//                //设置发布任务参数
+//                eventMessage.setBounty(Double.parseDouble((String) eventMap.get("bounty")));
+//                eventMessage.setIntro((String) eventMap.get("dataString"));
+//                eventMessage.setTimeString((String) eventMap.get("time"));
+//
+//                myMessage.setChatEventMessage(eventMessage);
+//                messageList.add(myMessage);
+//                mAdapter.addToStart(myMessage, true);
+//                break;
+//        }
+//    }
 
     private void initMsgAdapter() {
         final float density = getResources().getDisplayMetrics().density;
@@ -1073,14 +1256,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
 
+        //头像点击事件
         mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
             @Override
             public void onAvatarClick(MyMessage message) {
-                DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.avatar_click_hint),
-                        Toast.LENGTH_SHORT).show();
-                // do something
+                DefaultUser userInfo = new DefaultUser(message.getFromUser().getId(), message.getFromUser().getDisplayName(), message.getFromUser().getAvatarFilePath());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("userInfo", userInfo);
+                readyGo(SetFragmentActivity.class, bundle);
             }
         });
 
@@ -1108,30 +1291,15 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
         sendVoiceMsg.setDuration(4);
         mAdapter.addToStart(sendVoiceMsg, true);*/
-        //添加任务事件
+        //添加任务点击事件
 //        MyMessage eventMsg = new MyMessage("", IMessage.MessageType.EVENT.ordinal());
         mAdapter.addToStart(chatEventMessage, true);
         mAdapter.setBtnEventTaskClickListener(new MsgListAdapter.OnBtnEventTaskClickListener() {
             @Override
             public void TaskEventMessageClick() {
-//                ToastUtils.showToastLong(MessageListActivity.this, "点击了领取任务事件");
-                Log.d("###############", "点击领取任务按钮事件");
-            }
-        });
-        mAdapter.setOnTvEventCommentClickListener(new MsgListAdapter.OnTvEventCommentClickListener<MyMessage>() {
-            @Override
-            public void CommentEventMessageClick() {
-                ToastUtils.showToastLong(MessageListActivity.this, "点击了评论按钮事件");
-                Log.d("###############", "点击评论按钮事件");
-                readyGo(DynamicDetailsActivity.class);
-            }
-        });
+//                Log.d("###############", "点击查看任务按钮事件");
+               readyGo(TaskDetailActivity.class);
 
-        mAdapter.setOnTvEventLikeClickListener(new MsgListAdapter.OnTvEventLikeClickListener<MyMessage>() {
-            @Override
-            public void LikeEventMessageClick() {
-                ToastUtils.showToastLong(MessageListActivity.this, "点击了点赞按钮事件");
-                Log.d("###############", "点击点赞按钮事件");
             }
         });
 
@@ -1200,14 +1368,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }, 200);
     }
 
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (mArcMenu.isOpen()) {
+                    mArcMenu.toggleMenu(300);
+                }
                 ChatInputView chatInputView = mChatView.getChatInputView();
                 if (chatInputView.getMenuState() == View.VISIBLE) {
                     chatInputView.dismissMenuLayout();
                 }
+
                 try {
                     View v = getCurrentFocus();
                     if (mImm != null && v != null) {
@@ -1229,11 +1402,25 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        addTaskThread.stop();
+//        addTaskThread.stop();
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
         EventBus.getDefault().unregister(this);
         JMessageClient.unRegisterEventReceiver(this);
     }
+
+    public class customContent extends MessageContent {
+
+        @Override
+        public boolean needAutoDownloadWhenRecv() {
+            return false;
+        }
+
+        @Override
+        protected void setContentType(ContentType contentType) {
+            super.setContentType(contentType);
+        }
+    }
+
 
 }

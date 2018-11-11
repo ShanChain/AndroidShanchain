@@ -32,6 +32,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.CustomContent;
+import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.event.MessageEvent;
 
 import static com.shanchain.data.common.utils.SystemUtils.*;
@@ -106,6 +108,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        //极光消息监听注册
+        JMessageClient.registerEventReceiver(this);
+
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
@@ -209,9 +214,13 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述: 接收EventBus通知
      */
     @Subscribe
-    public void onEventMainThread(MessageEvent event) {
-        ToastUtils.showToastLong(this,"baseActivity执行");
+    public void onEventMainThread(Object event) {
+        event.toString();
+        LogUtils.d("event",event.toString());
+//        ToastUtils.showToastLong(this,"baseActivity执行");
         // 获取到全部消息，暂不处理
+//        CustomContent customContent = (CustomContent) event;
+//        customContent.getAllStringValues();
     }
 
     /**
@@ -238,9 +247,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
-          EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
+        //极光消息解绑
+        JMessageClient.unRegisterEventReceiver(this);
     }
 
     /**

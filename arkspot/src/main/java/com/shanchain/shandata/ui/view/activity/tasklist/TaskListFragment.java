@@ -21,17 +21,12 @@ public class TaskListFragment extends BaseFragment {
 
     @Override
     public View initView() {
-        return View.inflate(getActivity(), R.layout.fragment_task, null);
+        return View.inflate(mTaskListActivity, R.layout.fragment_task, null);
     }
 
     @Override
     public void initData() {
-        String[] titles = {"任务列表","我的任务"};
-        TaskPagerAdapter adapter = new TaskPagerAdapter(getChildFragmentManager(), titles);
-        mVpStory.setOffscreenPageLimit(2);
-        mVpStory.setAdapter(adapter);
-        mTabStory.setupWithViewPager(mVpStory);
-        mVpStory.setCurrentItem(1);
+
     }
 
 }

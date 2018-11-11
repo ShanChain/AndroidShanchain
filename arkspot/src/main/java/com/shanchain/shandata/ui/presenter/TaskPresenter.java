@@ -7,11 +7,11 @@ package com.shanchain.shandata.ui.presenter;
 
 public interface TaskPresenter {
 
-    void initTask(int characterId,String squareId);    //初始化广场的任务列表
+    void initTask(String characterId, String roomId );    //初始化广场的任务列表
 
     void notFinishTask(int characterId,String squareId);    //获取广场未完成任务列表
 
-    void releaseTask(String squareId,String bounty,String dataString,String time);    //发布任务
+    void releaseTask(String characterId,String roomId,String bounty,String dataString,String time);    //发布任务
 
     void deleteTask(int taskId);//    删除任务
 

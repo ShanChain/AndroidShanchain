@@ -428,14 +428,12 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 时间：15:13
      * 描述: 设置聊天室信息是否显示
      */
-    public boolean isShowChatRoom(boolean iShow) {
-        if (isShowChatRoom == true) {
+    public void isShowChatRoom(boolean iShow) {
+        if (iShow == true) {
             relativeChatRoom.setVisibility(VISIBLE);
-
         } else {
             relativeChatRoom.setVisibility(GONE);
         }
-        return isShowChatRoom;
     }
 
     /**

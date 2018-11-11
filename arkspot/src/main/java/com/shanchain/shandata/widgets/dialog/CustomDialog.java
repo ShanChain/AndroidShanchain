@@ -174,16 +174,15 @@ public  class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     }
 
-    public View getByIdView(View view, @IdRes int Id){
-        view = findViewById(Id);
+    public View getByIdView( @IdRes int Id){
+       View view = findViewById(Id);
         return view;
     }
 
-
-    @Override
-    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
-
-    }
+//    @Override
+//    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
+//
+//    }
 
     public interface OnItemClickListener {
         void OnItemClick(CustomDialog dialog, View view);

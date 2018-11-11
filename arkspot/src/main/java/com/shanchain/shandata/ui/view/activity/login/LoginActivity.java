@@ -43,6 +43,8 @@ import com.tencent.tauth.Tencent;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import me.shaohui.shareutil.LoginUtil;
 import me.shaohui.shareutil.login.LoginListener;
 import me.shaohui.shareutil.login.LoginPlatform;
@@ -133,29 +135,39 @@ public class LoginActivity extends BaseActivity {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 if (TextUtils.isEmpty(data)) {
                                     closeProgress();
-                                    readyGo(StoryTitleActivity.class);
+                                    readyGo(LoginActivity.class);
                                     finish();
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
-                                    readyGo(StoryTitleActivity.class);
+                                    readyGo(LoginActivity.class);
                                     finish();
                                     return;
                                 } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null) {
                                         closeProgress();
-                                        readyGo(StoryTitleActivity.class);
+                                        readyGo(LoginActivity.class);
                                         finish();
                                     } else {
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                                        RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+                                        //注册/登录 极光IM账号
+                                        registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword());
+
                                         int spaceId = characterInfo.getSpaceId();
                                         int characterId = characterInfo.getCharacterId();
-                                        obtainSpaceInfo(characterId + "", character, spaceId + "", hxAccount);
+                                        String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
+                                        String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
+
+                                        RoleManager.switchJmRoleCache(String.valueOf(characterId),jmUser,jmPassword);
+
                                     }
+
                                 }
+
                             } else {
                                 //code错误
                                 closeProgress();
@@ -170,6 +182,54 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
                 });
+
+    }
+
+    public void registerJmUser(final String jmUser, final String jmPassword) {
+        RoleManager.switchRoleCacheHx(jmUser, jmPassword);
+        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
+        //是否第一次打开app
+        if (guided) {
+            //登录极光账号
+            JMessageClient.login(jmUser, jmPassword, new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (s.equals("Success")) {
+                        LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+
+                    } else {
+                        LogUtils.d("极光IM############## 登录失败 ##############极光IM");
+                        ToastUtils.showToast(LoginActivity.this, "登录消息服务失败");
+                    }
+                }
+            });
+
+            Intent intent = new Intent(mContext, HomeActivity.class);
+            ActivityManager.getInstance().finishAllActivity();
+            startActivity(intent);
+        } else {
+            //注册极光账号
+            ThreadUtils.runOnSubThread(new Runnable() {
+                @Override
+                public void run() {
+                    JMessageClient.register(jmUser, jmPassword, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (s.equals("Success")) {
+                                LogUtils.d("极光IM############## 注册成功 ##############极光IM");
+
+                            } else {
+                                LogUtils.d("极光IM############## 注册失败 ##############极光IM");
+                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
+
+                            }
+
+                        }
+                    });
+                }
+            });
+            startActivity(new Intent(mContext, GuideActivity.class));
+        }
 
     }
 
@@ -436,110 +496,46 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
-        //获取space详情并缓存
-
-        SCHttpUtils.post()
-                .url(HttpApi.SPACE_GET_ID)
-                .addParams("spaceId", spaceId)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        closeProgress();
-                        ToastUtils.showToast(mContext, "网络错误");
-                        LogUtils.i("获取时空详情失败");
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        try {
-                            LogUtils.i("space详情 = " + response);
-                            String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                closeProgress();
-                                final String data = JSONObject.parseObject(response).getString("data");
-                                RoleManager.switchRoleCacheComment(characterId, characterInfoJson, spaceId, data);
-                                RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
-                                Intent intent = new Intent(mContext, HomeActivity.class);
-                                ActivityManager.getInstance().finishAllActivity();
-                                boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
-                                if (guided) {
-                                    startActivity(intent);
-                                } else {
-                                    startActivity(new Intent(mContext, GuideActivity.class));
-                                }
-
-                                final String userName = hxBean.getHxUserName();
-                                final String pwd = hxBean.getHxPassword();
-                                ThreadUtils.runOnSubThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-//                                        hxLogin(userName, pwd);
-                                    }
-                                });
-                            } else {
-                                //code错误
-                                closeProgress();
-                                ToastUtils.showToast(mContext, "网络错误");
-                            }
-                        } catch (IllegalArgumentException e) {
-                            closeProgress();
-                            LogUtils.i("解析数据错误");
-                            e.printStackTrace();
-                            ToastUtils.showToast(mContext, "网络异常");
-                        }
-                    }
-                });
-    }
-
-//    private void hxLogin(final String userName, final String pwd) {
-//        final long startTime = System.currentTimeMillis();
-//        LogUtils.i("登录环信 = 开始时间 = " + startTime);
-//        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-//            @Override
-//            public void onSuccess() {
-//                runOnUiThread(new Runnable() {
+//    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
+//        //获取space详情并缓存
+//
+//        SCHttpUtils.post()
+//                .url(HttpApi.SPACE_GET_ID)
+//                .addParams("spaceId", spaceId)
+//                .build()
+//                .execute(new SCHttpStringCallBack() {
 //                    @Override
-//                    public void run() {
-//                        long endTime = System.currentTimeMillis();
-//                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime);
+//                    public void onError(Call call, Exception e, int id) {
+//                        closeProgress();
+//                        ToastUtils.showToast(mContext, "网络错误");
+//                        LogUtils.i("获取时空详情失败");
+//                        e.printStackTrace();
+//                    }
 //
-//                        LogUtils.i("耗时 = " + (endTime - startTime));
-//                        EMClient.getInstance().chatManager().loadAllConversations();
-//                        EMClient.getInstance().groupManager().loadAllGroups();
-//                        //RoleManager.switchRoleCache(characterId, characterInfoJson, spaceId, data, userName, pwd);
-//                        RoleManager.switchRoleCacheHx(userName, pwd);
-//                        //ToastUtils.showToast(mContext, "欢迎来到千千世界");
-//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        try {
+//                            LogUtils.i("space详情 = " + response);
+//                            String code = JSONObject.parseObject(response).getString("code");
+//                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+//                                closeProgress();
+//                                final String data = JSONObject.parseObject(response).getString("data");
+//                                RoleManager.switchRoleCacheComment(characterId, characterInfoJson, spaceId, data);
+//                            } else {
+//                                //code错误
+//                                closeProgress();
+//                                ToastUtils.showToast(mContext, "网络错误");
+//                            }
+//                        } catch (IllegalArgumentException e) {
+//                            closeProgress();
+//                            LogUtils.i("解析数据错误");
+//                            e.printStackTrace();
+//                            ToastUtils.showToast(mContext, "网络异常");
+//                        }
 //                    }
 //                });
-//
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                //closeProgress();
-//                LogUtils.i("登录环信账号失败 = " + s + "code" + i);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtils.showToast(mContext, "网络异常");
-//                    }
-//                });
-//                if (i == 200) {
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onProgress(int i, String s) {
-//                LogUtils.i("登录进度 = " + i + " 进度信息 = " + s);
-//            }
-//        });
-//
 //    }
+
 
     public void showProgress() {
         mDialog = new ProgressDialog(this);

@@ -43,6 +43,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+
     <!-- 通知栏 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
@@ -69,6 +70,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
+
         <!-- 百度地图 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -78,44 +80,6 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
-
-        <!-- 友盟消息处理服务 -->
-        <!-- <service android:name=".service.MyPushIntentService" /> -->
-
-
-        <!-- 设置环信应用的AppKey -->
-        <!-- <meta-data -->
-        <!-- android:name="EASEMOB_APPKEY" -->
-        <!-- android:value="1145170810178434#shanchain" /> -->
-        <!-- 声明SDK所需的service SDK核心功能 -->
-        <!-- <service -->
-        <!-- android:name="com.hyphenate.chat.EMChatService" -->
-        <!-- android:exported="true" /> -->
-        <!-- <service -->
-        <!-- android:name="com.hyphenate.chat.EMJobService" -->
-        <!-- android:exported="true" -->
-        <!-- android:permission="android.permission.BIND_JOB_SERVICE" /> -->
-        <!-- &lt;!&ndash; 声明SDK所需的receiver &ndash;&gt; -->
-        <!-- <receiver android:name="com.hyphenate.chat.EMMonitorReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.PACKAGE_REMOVED" /> -->
-
-
-        <!-- <data android:scheme="package" /> -->
-        <!-- </intent-filter> -->
-        <!-- &lt;!&ndash; 可选filter &ndash;&gt; -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
-        <!-- <action android:name="android.intent.action.USER_PRESENT" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
-        <!-- <receiver android:name=".receiver.DownloadCompleteReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.DOWNLOAD_COMPLETE" /> -->
-        <!-- <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
-
 
         <!-- activity页面注册 -->
         <activity android:name=".ui.view.activity.login.LoginActivity">
@@ -291,16 +255,17 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.view.activity.story.RecordVideoActivity" />
         <activity
-            android:name=".ui.view.activity.jmessageui.SetingActivity"
+            android:name=".ui.view.activity.jmessageui.SetFragmentActivity"
             android:label="@string/title_activity_seting"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.square.FoodPrintActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.FootPrintActivity" />
         <activity
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.tasklist.TaskListActivity"></activity>
-        <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity"></activity>
+        <activity android:name=".ui.view.activity.tasklist.TaskListActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
+        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".ui.view.fragment.SingerChatFragment">
+
+    <RelativeLayout
+        android:id="@+id/relative_user_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb_main"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="85dp">
+
+        <cn.jiguang.imui.view.CircleImageView
+            android:id="@+id/iv_head_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/aurora_headicon_default" />
+
+        <TextView
+            android:id="@+id/tv_user_nike_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_head_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:text="阳光而又自信的boy" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tv_user_nike_name"
+            android:layout_marginTop="@dimen/dimens_15dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/real_identity" />
+
+            <TextView
+                android:id="@+id/tv_user_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:text="一直在路上" />
+        </LinearLayout>/
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_singer_chat_join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_btn_user_info"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/relative_user_info"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="88dp"
+        android:text="开启聊天"/>
+
+</LinearLayout>

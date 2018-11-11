@@ -41,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initAPP();
-        loginJm("weal","123456");
+//        loginJm("weal","123456");
 
     }
 
@@ -78,16 +78,16 @@ public class SplashActivity extends AppCompatActivity {
             String spaceInfo = getCache(userId, Constants.CACHE_SPACE_INFO);
             String hxUserName = getCacheHxUserName();
             String hxPwd = getCacheHxPwd();
-            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)) {
+            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
 //                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                loginJm("weal","123456");
+                loginJm(hxUserName,hxPwd);
                 Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
 
-                loginJm("weal","123456");
-//                loginJm(hxUserName,hxPwd);
 
             }
         } else {
@@ -96,36 +96,6 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     }
-
-  /*  private void loginHx(String hxUserName, String hxPwd) {
-        final long startTime = System.currentTimeMillis();
-        LogUtils.i("登录环信 = 开始时间 = " + startTime);
-        EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                LogUtils.i("登录环信账号成功");
-                long endTime = System.currentTimeMillis();
-                LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
-
-                LogUtils.i("耗时 = " + (endTime - startTime));
-                EMClient.getInstance().chatManager().loadAllConversations();
-                EMClient.getInstance().groupManager().loadAllGroups();
-                //初始化对话信息
-                ConversationManager.getInstance().obtainConversationInfoFromServer();
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                LogUtils.i("环信登录失败 = " + s);
-                exception();
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
-    }*/
 
     private void loginJm(String hxUserName, String hxPwd) {
         final long startTime = System.currentTimeMillis();
@@ -143,31 +113,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-//        EMClient.getInstance().login(hxUserName, hxPwd, new EMCallBack() {
-//            @Override
-//            public void onSuccess() {
-//                LogUtils.i("登录极光IM账号成功");
-//                long endTime = System.currentTimeMillis();
-//                LogUtils.i("登录极光IM成功 = 结束时间 = " + endTime );
-//
-//                LogUtils.i("耗时 = " + (endTime - startTime));
-//                EMClient.getInstance().chatManager().loadAllConversations();
-//                EMClient.getInstance().groupManager().loadAllGroups();
-//                //初始化对话信息
-//                ConversationManager.getInstance().obtainConversationInfoFromServer();
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                LogUtils.i("极光IM登录失败 = " + s);
-//                exception();
-//            }
-//
-//            @Override
-//            public void onProgress(int i, String s) {
-//
-//            }
-//        });
     }
 
     private void checkServer() {
@@ -191,28 +136,42 @@ public class SplashActivity extends AppCompatActivity {
                             if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                                 String data = JSONObject.parseObject(response).getString("data");
                                 if (TextUtils.isEmpty(data)){
-                                    Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                    LogUtils.d("获取数据","数据信息为空");
+                                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 if (TextUtils.isEmpty(character)){
-                                    Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                    LogUtils.d("获取角色信息","角色信息为空");
+                                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                     return;
                                 }else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null){
-                                        Intent intent = new Intent(SplashActivity.this,StoryTitleActivity.class);
+                                        LogUtils.d("获取角色ID","角色ID为空");
+                                        Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }else {
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
-                                        int spaceId = characterInfo.getSpaceId();
-                                        int characterId = characterInfo.getCharacterId();
-                                        obtainSpaceInfo(characterId+"",character,spaceId+"",hxAccount);
+                                        if (hxAccount==null){
+                                            Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }else {
+                                            String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
+                                            String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
+                                            loginJm(jmUser,jmPassword);
+                                            Intent intent = new Intent(SplashActivity.this,HomeActivity.class);
+                                            startActivity(intent);
+                                        }
+
+
+
                                     }
 
                                 }
@@ -228,89 +187,53 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
-        //获取space详情并缓存
-
-        SCHttpUtils.post()
-                .url(HttpApi.SPACE_GET_ID)
-                .addParams("spaceId",spaceId)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.i("获取时空详情失败");
-                        e.printStackTrace();
-                        exception();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        try {
-                            LogUtils.i("space详情 = " + response);
-                            String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
-                                final String data = JSONObject.parseObject(response).getString("data");
-                                //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
-                                RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
-//                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-                                startActivity(intent);
-//                                ActivityManager.getInstance().finishAllActivity();
-                                finish();
-                                RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
-                                final String userName = hxBean.getHxUserName();
-                                final String pwd = hxBean.getHxPassword();
-                                ThreadUtils.runOnSubThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //hxLogin(userName, pwd);
-//                                        loginJm(userName,pwd);
-                                    }
-                                });
-
-                            }
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
-                            exception();
-                        }
-                    }
-                });
-    }
-
-//    private void hxLogin(final String userName, final String pwd) {
-//        final long startTime = System.currentTimeMillis();
-//        LogUtils.i("登录环信 = 开始时间 = " + startTime);
-//        EMClient.getInstance().login(userName, pwd, new EMCallBack() {
-//            @Override
-//            public void onSuccess() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        LogUtils.i("登录环信账号成功");
-//                        long endTime = System.currentTimeMillis();
-//                        LogUtils.i("登录环信成功 = 结束时间 = " + endTime );
+//    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
+//        //获取space详情并缓存
 //
-//                        LogUtils.i("耗时 = " + (endTime - startTime));
-//                        EMClient.getInstance().chatManager().loadAllConversations();
-//                        EMClient.getInstance().groupManager().loadAllGroups();
-//                        //RoleManager.switchRoleCache(characterId,characterInfoJson,spaceId,data,userName,pwd);
-//                        RoleManager.switchRoleCacheHx(userName,pwd);
+//        SCHttpUtils.post()
+//                .url(HttpApi.SPACE_GET_ID)
+//                .addParams("spaceId",spaceId)
+//                .build()
+//                .execute(new SCHttpStringCallBack() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        LogUtils.i("获取时空详情失败");
+//                        e.printStackTrace();
+//                        exception();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        try {
+//                            LogUtils.i("space详情 = " + response);
+//                            String code = JSONObject.parseObject(response).getString("code");
+//                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+//                                final String data = JSONObject.parseObject(response).getString("data");
+//                                //SpaceInfo spaceInfo = JSONObject.parseObject(data, SpaceInfo.class);
+//                                RoleManager.switchRoleCacheComment(characterId,characterInfoJson,spaceId,data);
+////                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+//                                startActivity(intent);
+////                                ActivityManager.getInstance().finishAllActivity();
+//                                finish();
+//                                RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+//                                final String userName = hxBean.getHxUserName();
+//                                final String pwd = hxBean.getHxPassword();
+//                                ThreadUtils.runOnSubThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        //hxLogin(userName, pwd);
+////                                        loginJm(userName,pwd);
+//                                    }
+//                                });
+//
+//                            }
+//                        } catch (IllegalArgumentException e) {
+//                            e.printStackTrace();
+//                            exception();
+//                        }
 //                    }
 //                });
-//
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                LogUtils.i("登录环信账号失败 = " + s);
-//                exception();
-//            }
-//
-//            @Override
-//            public void onProgress(int i, String s) {
-//
-//            }
-//        });
 //    }
 
 

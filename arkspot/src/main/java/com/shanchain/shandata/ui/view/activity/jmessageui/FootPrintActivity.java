@@ -1,4 +1,4 @@
-package com.shanchain.shandata.ui.view.activity.square;
+package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +11,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
-public class FoodPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener{
+public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener{
 
     private ArthurToolBar arthurToolBar;
     private LinearLayout linearFootPrint;

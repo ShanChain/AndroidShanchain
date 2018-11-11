@@ -21,6 +21,10 @@
         <item name="android:windowNoTitle">false</item>       <!--是否有标题-->
         <item name="android:windowBackground">@android:color/transparent</item> <!--窗口背景色透明-->
         <item name="android:backgroundDimEnabled">true</item> <!--背景是否模糊显示-->
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!--<item name="android:windowSoftInputMode">stateVisible</item>&lt;!&ndash;显示软键盘&ndash;&gt;-->
     </style>
 
     <!-- dialog底部弹出菜单动画 -->
@@ -38,7 +42,7 @@
 
     <style name="style_toolbar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/colorWhite</item>
+        <item name="android:background">@color/white</item>
         <item name="android:layout_height">44dp</item>
     </style>
 

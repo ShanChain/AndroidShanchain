@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/layout_bg"
-    tools:context=".ui.view.activity.square.FoodPrintActivity">
+    tools:context=".ui.view.activity.jmessageui.FootPrintActivity">
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/toolbar_nav"
         android:layout_width="match_parent"
