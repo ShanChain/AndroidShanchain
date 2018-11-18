@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
+import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,7 +31,8 @@ public abstract class BaseFragment extends Fragment {
      * 描述：fragment所依赖的activity
      */
     public MainActivity mActivity;
-    public TaskListActivity mTaskListActivity ;
+    public TaskListActivity mTaskListActivity;
+    private CustomDialog mCustomDialog;
 
     /**
      * 描述：fragment创建时调用的方法,在此获取fragment所依赖的activitty对象
@@ -82,6 +85,18 @@ public abstract class BaseFragment extends Fragment {
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
+    }
+
+    protected void showLoadingDialog() {
+        mCustomDialog = new CustomDialog(getContext(), 0.4, R.layout.common_dialog_progress, null);
+        mCustomDialog.show();
+        mCustomDialog.setCancelable(false);
+    }
+
+    protected void closeLoadingDialog() {
+        if (mCustomDialog != null) {
+            mCustomDialog.dismiss();
+        }
     }
 
 

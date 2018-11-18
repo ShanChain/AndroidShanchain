@@ -26,6 +26,8 @@ import java.util.Date;
 public class SCTimePickerView extends BasePickerView implements View.OnClickListener {
     private int layoutRes;
     private CustomListener customListener;
+    private OnCancelClickListener mCancelClickListener;
+    private OnTimeSelectListener onTimeSelectListener;
 
     WheelTime wheelTime; //自定义控件
     private Button btnSubmit, btnCancel; //确定、取消按钮
@@ -166,6 +168,9 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
         private String label_year, label_month, label_day, label_hours, label_mins, label_seconds;//单位
 
         //Required
+        public Builder(Context context) {
+            this.context = context;
+        }
         public Builder(Context context, OnTimeSelectListener listener) {
             this.context = context;
             this.timeSelectListener = listener;
@@ -543,8 +548,23 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+        }else if (onTimeSelectListener!=null){
+            try {
+                Date date = WheelTime.dateFormat.parse(wheelTime.getTime());
+                onTimeSelectListener.onTimeSelect(date, clickView);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
+    public void setOnTimeSelectListener(OnTimeSelectListener onTimeSelectListener){
+        this.onTimeSelectListener = onTimeSelectListener;
+    }
+
+    public void setOnCancelClickListener(OnCancelClickListener onCancelClickListener) {
+        this.mCancelClickListener = onCancelClickListener;
+    }
+
 
     public interface OnTimeSelectListener {
         void onTimeSelect(Date date, View v);
@@ -553,10 +573,8 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
     public interface OnCancelClickListener{
         void onCancelClick(View v);
     }
-    private OnCancelClickListener mCancelClickListener;
-    public void setOnCancelClickListener(OnCancelClickListener onCancelClickListener){
-        this.mCancelClickListener = onCancelClickListener;
-    }
+
+
 
     @Override
     public boolean isDialog() {

@@ -92,7 +92,13 @@
             android:configChanges="locale" />
         <activity
             android:name=".ui.view.activity.jmessageui.MessageListActivity"
-            android:configChanges="locale" />
+            android:configChanges="locale">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name=".ui.view.activity.MainActivity">
             <meta-data
                 android:name="page_flag"
@@ -212,9 +218,9 @@
             android:name=".ui.view.activity.login.SplashActivity"
             android:theme="@style/FullScreenTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.view.activity.story.MoreTagActivity" />
@@ -263,9 +269,17 @@
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.tasklist.TaskListActivity" />
+        <activity android:name=".ui.view.activity.tasklist.TaskListActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
-        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity"></activity>
+        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity">
+
+        </activity>
     </application>
 
 </manifest>

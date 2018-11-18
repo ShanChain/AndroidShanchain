@@ -2,37 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
+    <!--android:icon="@mipmap/my_wallet"-->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_my_wallet"
-            android:icon="@mipmap/my_wallet"
             android:title="我的钱包"
             />
         <item
             android:id="@+id/nav_my_task"
-            android:icon="@mipmap/my_task"
             android:title="我的任务" />
 
         <item
             android:id="@+id/nav_my_message"
-            android:icon="@mipmap/my_message"
             android:title="我的消息" />
 
         <item
 
             android:id="@+id/nav_my_favorited"
-            android:icon="@mipmap/my_favorited"
             android:title="我的收藏" />
 
         <item
             android:id="@+id/real_identity"
-            android:icon="@mipmap/real_identity"
             android:title="实名认证" />
 
         <item
             android:id="@+id/nav_manage"
-            android:icon="@mipmap/setting"
             android:title="设置" />
     </group>
 

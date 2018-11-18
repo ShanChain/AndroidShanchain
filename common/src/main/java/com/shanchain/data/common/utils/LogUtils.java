@@ -9,7 +9,8 @@ public final class LogUtils {
 
     private LogUtils() {}
 
-    public static final int LOG_LEVEL = Constants.SC_ENV_PRD?0:6;// 如果想屏蔽所有log,可以设置为0
+//    public static final int LOG_LEVEL = Constants.SC_ENV_PRD?0:6;// 如果想屏蔽所有log,可以设置为0
+    public static final int LOG_LEVEL = 6;// 如果想屏蔽所有log,可以设置为0
 
     public static final int VERBOSE = 5;
     public static final int DEBUG = 4;

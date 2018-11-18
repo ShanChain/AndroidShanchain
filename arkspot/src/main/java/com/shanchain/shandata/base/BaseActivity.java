@@ -102,14 +102,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // 调用父类onCreate
         super.onCreate(savedInstanceState);
-        //注册聊天会话接收事件
-//        JMessageClient.registerEventReceiver(this);
         // 注册EventBus
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        //极光消息监听注册
-        JMessageClient.registerEventReceiver(this);
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().register(this);
+//        }
 
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
@@ -213,15 +209,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 描述: 接收EventBus通知
      */
-    @Subscribe
-    public void onEventMainThread(Object event) {
-        event.toString();
-        LogUtils.d("event",event.toString());
-//        ToastUtils.showToastLong(this,"baseActivity执行");
-        // 获取到全部消息，暂不处理
-//        CustomContent customContent = (CustomContent) event;
-//        customContent.getAllStringValues();
-    }
+//    @Subscribe
+//    public void onEventMainThread(Object event) {
+//
+//        ToastUtils.showToast(this,"baseActivity执行");
+//    }
 
     /**
      * 描述: 重写finish使Activity出栈
@@ -247,11 +239,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
         //极光消息解绑
-        JMessageClient.unRegisterEventReceiver(this);
+//        JMessageClient.unRegisterEventReceiver(this);
     }
 
     /**

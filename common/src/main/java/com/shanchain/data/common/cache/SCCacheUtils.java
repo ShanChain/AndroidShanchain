@@ -89,4 +89,9 @@ public class SCCacheUtils {
         String userId = getCacheUserId();
         return getCache(userId,Constants.CACHE_TOKEN);
     }
+
+    public static String getCacheRoomId(){
+        String userId = getCacheUserId();
+        return getCache(userId,Constants.CACHE_ROOM_ID);
+    }
 }

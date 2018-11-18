@@ -11,7 +11,6 @@
         android:id="@+id/tb_task_comment"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/back"
-        app:rightImage="@mipmap/more"
         app:titleColor="@color/colorWhite"
         app:titleText="任务详情"
         app:titleTextSize="16"/>
@@ -35,6 +34,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dimens_15dp"
         android:text="在这里说点什么吧"
+        android:visibility="gone"
         android:textColor="@color/colorHint"
         android:textSize="12sp"/>
 

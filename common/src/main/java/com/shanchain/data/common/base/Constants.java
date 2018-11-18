@@ -56,6 +56,7 @@ public interface Constants {
         String CACHE_SPACE_COLLECTION = "spaceCollection";
         String CACHE_HX_USER_NAME = "hxUserName";
         String CACHE_HX_PWD = "hxPwd";
+        String CACHE_ROOM_ID = "roomID";
         String CACHE_DEVICE_TOKEN = "deviceToken";
         String CACHE_DEVICE_TOKEN_STATUS = "deviceTokenStatus";
         String CACHE_APP_ENV = "true";

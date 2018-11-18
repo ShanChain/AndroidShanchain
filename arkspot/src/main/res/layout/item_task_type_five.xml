@@ -34,9 +34,9 @@
         android:layout_gravity="right"
         android:layout_marginTop="10dp"
         android:layout_marginRight="30dp"
-        android:background="@drawable/shape_item_btn_join"
-        android:text="已完成"
-        android:textColor="@color/colorHomeBtn"
+        android:background="@drawable/shape_btn_even_message_task_received"
+        android:text="正在完成"
+        android:textColor="@color/colorTextDefault"
         android:textStyle="bold" />
 
     <LinearLayout

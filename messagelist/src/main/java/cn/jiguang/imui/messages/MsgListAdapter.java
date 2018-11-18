@@ -710,15 +710,15 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
     public interface OnBtnEventTaskClickListener <MESSAGE extends IMessage>{
-        void TaskEventMessageClick();
+        void TaskEventMessageClick(MESSAGE message);
     }
 
     public interface OnTvEventCommentClickListener <MESSAGE extends IMessage>{
-        void CommentEventMessageClick();
+        void CommentEventMessageClick(MESSAGE message);
     }
 
     public interface OnTvEventLikeClickListener <MESSAGE extends IMessage>{
-        void LikeEventMessageClick();
+        void LikeEventMessageClick(MESSAGE message);
     }
 
     /**

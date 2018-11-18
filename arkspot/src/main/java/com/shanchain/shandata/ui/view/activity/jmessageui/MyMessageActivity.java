@@ -11,13 +11,19 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import java.util.List;
+
 import butterknife.Bind;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
 
 public class MyMessageActivity extends BaseActivity {
     @Bind({R.id.tb_main})
     ArthurToolBar toolBar;
     @Bind(R.id.rv_message_list)
     RecyclerView rvMessageList;
+
+    List<Conversation> conversationList;
 
 
     @Override
@@ -28,7 +34,12 @@ public class MyMessageActivity extends BaseActivity {
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
+        initData();
 
+    }
+
+    private void initData() {
+        conversationList =JMessageClient.getConversationList();
     }
 
     private void initToolBar() {

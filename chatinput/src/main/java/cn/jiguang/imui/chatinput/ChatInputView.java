@@ -97,6 +97,7 @@ public class ChatInputView extends LinearLayout
     private ImageButton mCameraBtn;
     private ImageButton mEmojiBtn;
     private ImageButton mSendBtn;
+    private ImageButton mSendBtnMore;
 
     private LinearLayout mChatInputContainer;
     private LinearLayout mMenuItemContainer;
@@ -213,6 +214,9 @@ public class ChatInputView extends LinearLayout
         mCameraBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_camera);
         mEmojiBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_emoji);
         mSendBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_send);
+//        mSendBtnMore = (ImageButton) findViewById(R.id.input_send_more);
+
+
 
         mVoiceBtnContainer = findViewById(R.id.aurora_ll_menuitem_voice_container);
         mPhotoBtnContainer = findViewById(R.id.aurora_ll_menuitem_photo_container);
@@ -223,6 +227,7 @@ public class ChatInputView extends LinearLayout
         mCameraBtnContainer.setOnClickListener(onMenuItemClickListener);
         mEmojiBtnContainer.setOnClickListener(onMenuItemClickListener);
         mSendBtn.setOnClickListener(onMenuItemClickListener);
+//        mSendBtnMore.setOnClickListener(onMenuItemClickListener);
 
         mSendCountTv = (TextView) findViewById(R.id.aurora_menuitem_tv_send_count);
         mInputMarginLeft = (Space) findViewById(R.id.aurora_input_margin_left);
@@ -256,6 +261,7 @@ public class ChatInputView extends LinearLayout
 
         mMenuContainer.setVisibility(GONE);
 
+        //输入框监听
         mChatInput.addTextChangedListener(this);
         mChatInput.setOnBackKeyClickListener(new EmoticonsEditText.OnBackKeyClickListener() {
             @Override
@@ -359,6 +365,8 @@ public class ChatInputView extends LinearLayout
         mCameraBtn.setImageResource(mStyle.getCameraBtnIcon());
         mSendBtn.setBackground(mStyle.getSendBtnBg());
         mSendBtn.setImageResource(mStyle.getSendBtnIcon());
+//        mSendBtnMore.setBackground(mStyle.getSendBtnBg());
+//        mSendBtnMore.setImageResource(mStyle.getSendBtnIcon());
         mSendCountTv.setBackground(mStyle.getSendCountBg());
         mSelectAlbumIb.setVisibility(mStyle.getShowSelectAlbum() ? VISIBLE : INVISIBLE);
 
@@ -530,6 +538,8 @@ public class ChatInputView extends LinearLayout
                             showEmojiLayout();
                         }
                     }
+                }else if (view.getId() == R.id.input_send_more){
+//                    setShowBottomMenu(false);
                 }
             }
         }

@@ -46,7 +46,7 @@
         android:visibility="gone"
         android:id="@+id/btn_guide_join"
         android:background="@drawable/shape_bg_guide_btn"
-        android:text="加入千千世界"
+        android:text="加入元社区"
         android:textSize="14sp"
         android:textColor="@color/colorWhite"
         android:layout_alignParentBottom="true"

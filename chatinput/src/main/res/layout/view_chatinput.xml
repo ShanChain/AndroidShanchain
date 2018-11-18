@@ -24,16 +24,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
+            android:layout_marginBottom="10dp"
             android:text="加入聊天"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:visibility="gone"
             android:background="@drawable/shape_btn_chatinput_join"/>
 
         <cn.jiguang.imui.chatinput.emoji.widget.EmoticonsEditText
             android:id="@+id/aurora_et_chat_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="6"
             android:background="@drawable/aurora_edittext_bg"
             android:cursorVisible="true"
             android:focusableInTouchMode="true"
@@ -41,16 +46,18 @@
             android:inputType="textMultiLine"
             android:maxLines="4"
             android:minHeight="48dp"
-            android:paddingBottom="5dp"
             android:paddingLeft="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:paddingRight="4dp"
             android:paddingTop="5dp"
+            android:paddingRight="4dp"
+            android:paddingBottom="5dp"
             android:textColor="@android:color/black"
-            android:visibility="gone"
             android:textCursorDrawable="@drawable/aurora_edittext_cursor_bg"
             android:textSize="18sp" />
+
+        <!--<include-->
+            <!--layout="@layout/menu_item_send">-->
+
+        <!--</include>-->
 
         <android.support.v4.widget.Space
             android:id="@+id/aurora_input_margin_right"

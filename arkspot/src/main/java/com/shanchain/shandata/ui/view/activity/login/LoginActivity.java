@@ -140,6 +140,7 @@ public class LoginActivity extends BaseActivity {
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
+                                RoleManager.switchRoleCacheCharacterInfo(character);
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
                                     readyGo(LoginActivity.class);
@@ -164,6 +165,7 @@ public class LoginActivity extends BaseActivity {
 
                                         RoleManager.switchJmRoleCache(String.valueOf(characterId),jmUser,jmPassword);
 
+
                                     }
 
                                 }
@@ -186,27 +188,31 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void registerJmUser(final String jmUser, final String jmPassword) {
-        RoleManager.switchRoleCacheHx(jmUser, jmPassword);
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
         //是否第一次打开app
         if (guided) {
             //登录极光账号
+//            showProgress();
             JMessageClient.login(jmUser, jmPassword, new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
                     if (s.equals("Success")) {
                         LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+                        closeProgress();
+                        Intent intent = new Intent(mContext, HomeActivity.class);
+                        ActivityManager.getInstance().finishAllActivity();
+                        startActivity(intent);
 
                     } else {
                         LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                        ToastUtils.showToast(LoginActivity.this, "登录消息服务失败");
+//                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请重新登录");
+                        registerJmUser(jmUser,jmPassword);
+                        closeProgress();
                     }
                 }
             });
 
-            Intent intent = new Intent(mContext, HomeActivity.class);
-            ActivityManager.getInstance().finishAllActivity();
-            startActivity(intent);
+
         } else {
             //注册极光账号
             ThreadUtils.runOnSubThread(new Runnable() {
@@ -217,10 +223,10 @@ public class LoginActivity extends BaseActivity {
                         public void gotResult(int i, String s) {
                             if (s.equals("Success")) {
                                 LogUtils.d("极光IM############## 注册成功 ##############极光IM");
-
+                                RoleManager.switchRoleCacheHx(jmUser, jmPassword);
                             } else {
                                 LogUtils.d("极光IM############## 注册失败 ##############极光IM");
-                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
+//                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
 
                             }
 
@@ -229,6 +235,7 @@ public class LoginActivity extends BaseActivity {
                 }
             });
             startActivity(new Intent(mContext, GuideActivity.class));
+            finish();
         }
 
     }
@@ -288,6 +295,7 @@ public class LoginActivity extends BaseActivity {
         String md5Pwd = MD5Utils.md5(pwd);
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
         KeyboardUtils.hideSoftInput(this);
+
         showProgress();
 
         SCHttpUtils.postWithParamsForLogin()
@@ -304,6 +312,7 @@ public class LoginActivity extends BaseActivity {
                         LogUtils.i("登录错误");
                         e.printStackTrace();
                         ToastUtils.showToast(mContext, "网络错误");
+                        closeProgress();
                     }
 
                     @Override
@@ -474,6 +483,7 @@ public class LoginActivity extends BaseActivity {
                                              SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                              SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                              SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                                             closeProgress();
                                              checkCache();
                                          } else {
                                              closeProgress();

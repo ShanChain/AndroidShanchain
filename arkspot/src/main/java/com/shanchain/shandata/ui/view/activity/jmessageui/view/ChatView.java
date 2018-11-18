@@ -152,7 +152,7 @@ public class ChatView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if (onBtnInputClickListener!=null){
-                    onBtnInputClickListener.OnBtnInputClick();
+                    onBtnInputClickListener.OnBtnInputClick(v);
                 }
             }
         });
@@ -214,6 +214,6 @@ public class ChatView extends RelativeLayout {
     }
 
     public interface OnBtnInputClickListener{
-        void OnBtnInputClick();
+        void OnBtnInputClick(View view);
     }
 }

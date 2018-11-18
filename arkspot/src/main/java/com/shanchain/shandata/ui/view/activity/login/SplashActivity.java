@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.net.HttpApi;
@@ -106,9 +107,15 @@ public class SplashActivity extends AppCompatActivity {
                 String ss = s;
                 if (s.equals("Success")){
                     LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+                    Intent intent = new Intent(SplashActivity.this,HomeActivity.class);
+                    startActivity(intent);
+                    finish();
 
                 }else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
+                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -166,8 +173,6 @@ public class SplashActivity extends AppCompatActivity {
                                             String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
                                             String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
                                             loginJm(jmUser,jmPassword);
-                                            Intent intent = new Intent(SplashActivity.this,HomeActivity.class);
-                                            startActivity(intent);
                                         }
 
 

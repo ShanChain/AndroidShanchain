@@ -12,7 +12,8 @@
         android:id="@+id/iv_item_story_avatar"
         android:scaleType="centerCrop"
         android:layout_width="40dp"
-        android:layout_height="40dp"/>
+        android:layout_height="40dp"
+        android:background="@drawable/aurora_headicon_default"/>
 
     <ImageView
         android:id="@+id/iv_item_story_more"

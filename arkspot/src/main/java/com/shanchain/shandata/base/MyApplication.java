@@ -305,8 +305,8 @@ public class MyApplication extends BaseApplication {
     * 初始化极光IM
     * */
     private void initJMessage() {
-        JMessageClient.init(this,true);
-        JMessageClient.setDebugMode(true);
+        JMessageClient.init(this);
+//        JMessageClient.setDebugMode(true);
     }
 //    private void initContactListener() {
 //        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {

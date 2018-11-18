@@ -73,6 +73,22 @@ public class RoleManager {
 
     }
 
+    public static void switchJmRoleCache(String characterId,String userName,String pwd){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+
+        SCCacheUtils.setCache(userId,Constants.CACHE_CHARACTER_ID,characterId);
+
+        String token = SCCacheUtils.getCache(userId, Constants.CACHE_TOKEN);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_USER_NAME,userName);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HX_PWD,pwd);
+        JSONObject gData = new JSONObject();
+        gData.put("userId",userId);
+        gData.put("token",token);
+        gData.put("characterId",characterId);
+        SCCacheUtils.setCache("0", Constants.CACHE_GDATA,gData.toString());
+
+    }
+
     public static void switchRoleCacheComment(String characterId,String characterInfo,String spaceId,String spaceInfo){
         String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         SCCacheUtils.setCache(userId,Constants.CACHE_SPACE_ID,spaceId);
@@ -93,5 +109,16 @@ public class RoleManager {
         SCCacheUtils.setCache(userId,Constants.CACHE_HX_USER_NAME,hxUser);
         SCCacheUtils.setCache(userId,Constants.CACHE_HX_PWD,pwd);
     }
+
+    public static void switchRoleCacheRoomId(String roomId){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,Constants.CACHE_ROOM_ID,roomId);
+    }
+
+    public static void switchRoleCacheCharacterInfo(String characterInfo){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,Constants.CACHE_CHARACTER_INFO,characterInfo);
+    }
+
 
 }

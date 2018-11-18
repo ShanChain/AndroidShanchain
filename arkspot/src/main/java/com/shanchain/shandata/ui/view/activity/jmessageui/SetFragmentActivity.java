@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,8 @@ import com.shanchain.shandata.ui.view.fragment.SingerChatFragment;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
+import cn.jiguang.imui.model.DefaultUser;
+import cn.jpush.im.android.api.model.UserInfo;
 
 public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
@@ -33,6 +36,7 @@ public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.O
     FrameLayout mFlMainContainer;
 
     private SingerChatFragment singerChatFragment;
+    private DefaultUser userInfo;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -41,6 +45,7 @@ public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.O
 
     @Override
     protected void initViewsAndEvents() {
+        userInfo =(DefaultUser) getIntent().getParcelableExtra("userInfo");
         initToolBar();
         setFragment();
     }

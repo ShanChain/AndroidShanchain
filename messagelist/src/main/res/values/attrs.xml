@@ -2,12 +2,12 @@
 <resources>
 
     <!-->Message List<-->
-    <attr name="message_list"/>
+    <attr name="message_list" />
     <declare-styleable name="MessageList">
-        <attr name="dateTextSize" format="dimension|reference"/>
-        <attr name="dateTextColor" format="color|reference"/>
-        <attr name="dateFormat" format="string|reference"/>
-        <attr name="datePaddingLeft" format="dimension|reference"/>
+        <attr name="dateTextSize" format="dimension|reference" />
+        <attr name="dateTextColor" format="color|reference" />
+        <attr name="dateFormat" format="string|reference" />
+        <attr name="datePaddingLeft" format="dimension|reference" />
         <attr name="datePaddingTop" format="dimension|reference" />
         <attr name="datePaddingRight" format="dimension|reference" />
         <attr name="datePaddingBottom" format="dimension|reference" />
@@ -22,8 +22,8 @@
         <attr name="eventCornerRadius" format="dimension|reference" />
         <attr name="eventBackgroundColor" format="color|reference" />
 
-        <attr name="avatarWidth" format="dimension|reference"/>
-        <attr name="avatarHeight" format="dimension|reference"/>
+        <attr name="avatarWidth" format="dimension|reference" />
+        <attr name="avatarHeight" format="dimension|reference" />
         <attr name="avatarRadius" format="dimension|reference" />
         <attr name="showSenderDisplayName" format="boolean" />
         <attr name="showReceiverDisplayName" format="boolean" />
@@ -31,35 +31,35 @@
         <attr name="displayNameTextColor" format="color|reference" />
         <attr name="displayNamePadding" format="dimension|reference" />
 
-        <attr name="receiveBubbleDrawable" format="reference"/>
-        <attr name="receiveBubbleColor" format="color|reference"/>
-        <attr name="receiveBubblePressedColor" format="color|reference"/>
-        <attr name="receiveBubbleSelectedColor" format="color|reference"/>
-        <attr name="receiveBubblePaddingLeft" format="dimension|reference"/>
-        <attr name="receiveBubblePaddingTop" format="dimension|reference"/>
-        <attr name="receiveBubblePaddingRight" format="dimension|reference"/>
-        <attr name="receiveBubblePaddingBottom" format="dimension|reference"/>
-        <attr name="receiveTextColor" format="color|reference"/>
-        <attr name="receiveTextSize" format="dimension|reference"/>
+        <attr name="receiveBubbleDrawable" format="reference" />
+        <attr name="receiveBubbleColor" format="color|reference" />
+        <attr name="receiveBubblePressedColor" format="color|reference" />
+        <attr name="receiveBubbleSelectedColor" format="color|reference" />
+        <attr name="receiveBubblePaddingLeft" format="dimension|reference" />
+        <attr name="receiveBubblePaddingTop" format="dimension|reference" />
+        <attr name="receiveBubblePaddingRight" format="dimension|reference" />
+        <attr name="receiveBubblePaddingBottom" format="dimension|reference" />
+        <attr name="receiveTextColor" format="color|reference" />
+        <attr name="receiveTextSize" format="dimension|reference" />
 
-        <attr name="sendBubbleDrawable" format="reference"/>
-        <attr name="sendBubbleColor" format="color|reference"/>
-        <attr name="sendBubblePressedColor" format="color|reference"/>
-        <attr name="sendBubbleSelectedColor" format="color|reference"/>
-        <attr name="sendBubblePaddingLeft" format="dimension|reference"/>
-        <attr name="sendBubblePaddingTop" format="dimension|reference"/>
-        <attr name="sendBubblePaddingRight" format="dimension|reference"/>
-        <attr name="sendBubblePaddingBottom" format="dimension|reference"/>
-        <attr name="sendTextColor" format="color|reference"/>
-        <attr name="sendTextSize" format="dimension|reference"/>
-        <attr name="bubbleMaxWidth" format="float|reference"/>
+        <attr name="sendBubbleDrawable" format="reference" />
+        <attr name="sendBubbleColor" format="color|reference" />
+        <attr name="sendBubblePressedColor" format="color|reference" />
+        <attr name="sendBubbleSelectedColor" format="color|reference" />
+        <attr name="sendBubblePaddingLeft" format="dimension|reference" />
+        <attr name="sendBubblePaddingTop" format="dimension|reference" />
+        <attr name="sendBubblePaddingRight" format="dimension|reference" />
+        <attr name="sendBubblePaddingBottom" format="dimension|reference" />
+        <attr name="sendTextColor" format="color|reference" />
+        <attr name="sendTextSize" format="dimension|reference" />
+        <attr name="bubbleMaxWidth" format="float|reference" />
         <attr name="sendingProgressDrawable" format="reference" />
         <attr name="sendingIndeterminateDrawable" format="reference" />
 
-        <attr name="sendVoiceDrawable" format="reference"/>
-        <attr name="receiveVoiceDrawable" format="reference"/>
-        <attr name="playSendVoiceAnim" format="reference"/>
-        <attr name="playReceiveVoiceAnim" format="reference"/>
+        <attr name="sendVoiceDrawable" format="reference" />
+        <attr name="receiveVoiceDrawable" format="reference" />
+        <attr name="playSendVoiceAnim" format="reference" />
+        <attr name="playReceiveVoiceAnim" format="reference" />
         <attr name="lineSpacingExtra" format="dimension|reference" />
         <attr name="lineSpacingMultiplier" format="float" />
 
@@ -67,11 +67,11 @@
         <attr name="bubbleVertexWidth" format="dimension|reference" />
         <attr name="bubbleHemlineHeight" format="dimension|reference" />
         <attr name="bubbleVertexY" format="dimension|reference" />
-        <attr name="sendPhotoMsgBg" format="reference"/>
-        <attr name="receivePhotoMsgBg" format="reference"/>
+        <attr name="sendPhotoMsgBg" format="reference" />
+        <attr name="receivePhotoMsgBg" format="reference" />
         <attr name="photoMessageRadius" format="dimension|reference" />
 
-        <attr name="videoMessageRadius" format="dimension|reference"/>
+        <attr name="videoMessageRadius" format="dimension|reference" />
         <attr name="videoDurationTextColor" format="color|reference" />
         <attr name="videoDurationTextSize" format="dimension|reference" />
     </declare-styleable>
@@ -89,4 +89,11 @@
         <attr name="cornerRadius" format="dimension|reference" />
         <attr name="backgroundColor" format="color|reference" />
     </declare-styleable>
+
+    <string-array name="spingarr">
+        <item>全部任务</item>
+        <item>我发布的</item>
+        <item>我领取的</item>
+        <item>已结束的</item>
+    </string-array>
 </resources>

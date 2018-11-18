@@ -17,6 +17,8 @@ import java.util.List;
 import cn.jiguang.imui.model.ChatEventMessage;
 import okhttp3.Call;
 
+import static com.alibaba.fastjson.JSON.parseObject;
+
 public class TaskPresenterImpl implements TaskPresenter {
 
     private TaskView taskView;
@@ -153,7 +155,36 @@ public class TaskPresenterImpl implements TaskPresenter {
     }
 
     @Override
-    public void cancelTask(int characterId, int taskId) {
+    public void cancelTask(String characterId, String taskId) {
 
+    }
+
+    @Override
+    public void addTaskComment(String characterId,String taskId, String comment) {
+
+        String dataString = "{\"content\": \"" + comment + "\",\"isAnon\":0}";
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.TASK_COMMENT_ADD)
+                .addParams("characterId",characterId)
+                .addParams("taskId",taskId)
+                .addParams("dataString",dataString)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        taskView.addSuccess(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        String data = JSONObject.parseObject(response).getString("data");
+                       if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            taskView.addSuccess(true);
+                        } else {
+                           taskView.addSuccess(false);
+                        }
+                    }
+                });
     }
 }

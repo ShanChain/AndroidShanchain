@@ -20,6 +20,12 @@ public class MyMessage implements IMessage {
     private ChatEventMessage chatEventMessage;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
 
+    public MyMessage() {
+        this.text = text;
+        this.type = type;
+        this.id = UUID.randomUUID().getLeastSignificantBits();
+    }
+
     public MyMessage(int type) {
         this.text = text;
         this.type = type;
@@ -112,9 +118,12 @@ public class MyMessage implements IMessage {
 
     public void setType(int type) {
         if (type >= 0 && type <= 12) {
+            this.type = type;
+        }else {
             throw new IllegalArgumentException("Message type should not take the value between 0 and 12");
         }
-        this.type = type;
+
+
     }
 
     @Override
