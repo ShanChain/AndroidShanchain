@@ -4,12 +4,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.MyMessage;
 
 public class CustomEvenMsgHolder
-        extends BaseMessageViewHolder<ChatEventMessage>
-        implements MsgListAdapter.DefaultMessageViewHolder,View.OnClickListener {
+        extends BaseMessageViewHolder<MyMessage>
+        implements MsgListAdapter.DefaultMessageViewHolder, View.OnClickListener {
 
     private TextView evenMessageTitle;
     private TextView evenMessageContent;
@@ -18,6 +23,7 @@ public class CustomEvenMsgHolder
     private TextView evenMessageComment;
     private TextView evenMessageLike;
     private LinearLayout linearLayout;
+    private ChatEventMessage chatEventMessage;
 //    private MsgListAdapter.OnBtnEventTaskClickListener onBtnEventTaskClickListener;
 //    private MsgListAdapter.OnTvEventLikeClickListener onTvEventLikeClickListener;
 //    private MsgListAdapter.OnTvEventCommentClickListener onTvEventCommentClickListener;
@@ -25,9 +31,10 @@ public class CustomEvenMsgHolder
     private int btnTaskID = R.id.btn_event_task;
     private int tvCommentID = R.id.item_tv_comment;
     private int tvLikeID = R.id.item_tv_like;
+    private String lastTime;
 
 
-    public CustomEvenMsgHolder(View itemView,boolean isSender) {
+    public CustomEvenMsgHolder(View itemView, boolean isSender) {
         super(itemView);
         evenMessageTitle = itemView.findViewById(R.id.even_message_bounty);
         evenMessageContent = itemView.findViewById(R.id.even_message_content);
@@ -39,18 +46,26 @@ public class CustomEvenMsgHolder
     }
 
     @Override
-    public void onBind(ChatEventMessage myMessage) {
-        ChatEventMessage eventMessage = (ChatEventMessage) myMessage;
-        if (eventMessage != null){
-        evenMessageTitle.setText("赏金: "+eventMessage.getBounty()+" SEAT");
-        evenMessageContent.setText(eventMessage.getIntro()+"");
-        evenMessageLastTime.setText("完成时限："+eventMessage.getLimitedTime());
-        evenMessageComment.setText(eventMessage.getCommentCount()+"");
-        evenMessageLike.setText(eventMessage.getSupportCount()+"");
+    public void onBind(MyMessage myMessage) {
+        if (myMessage != null) {
+            chatEventMessage =(ChatEventMessage) myMessage.getChatEventMessage();
+            evenMessageTitle.setText("赏金: " + chatEventMessage.getBounty() + " SEAT");
+            evenMessageContent.setText(chatEventMessage.getIntro() + "");
+            Long expiryTime = chatEventMessage.getExpiryTime();
+            if ( expiryTime instanceof Long){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                lastTime = sdf.format(new Date(expiryTime));
+                evenMessageLastTime.setText("完成时限：" + lastTime);
+            }else {
+                evenMessageLastTime.setText("完成时限：" + chatEventMessage.getExpiryTime());
+            }
 
-        buttonEventTask.setOnClickListener(this);
-        evenMessageComment.setOnClickListener(this);
-        evenMessageLike.setOnClickListener(this);
+//        evenMessageComment.setText(eventMessage.getCommentCount()+"");
+//        evenMessageLike.setText(eventMessage.getSupportCount()+"");
+
+            buttonEventTask.setOnClickListener(this);
+            evenMessageComment.setOnClickListener(this);
+            evenMessageLike.setOnClickListener(this);
         }
     }
 
@@ -65,17 +80,17 @@ public class CustomEvenMsgHolder
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btn_event_task) {
-           // Log.d("###############","点击领取任务按钮事件");
-            if (onBtnEventTaskClickListener!=null){
-                onBtnEventTaskClickListener.TaskEventMessageClick();
+            // Log.d("###############","点击领取任务按钮事件");
+            if (onBtnEventTaskClickListener != null) {
+                onBtnEventTaskClickListener.TaskEventMessageClick(chatEventMessage);
             }
-        }else if (i == R.id.item_tv_like){
-            if (onTvEventLikeClickListener!=null){
-                onTvEventLikeClickListener.LikeEventMessageClick();
+        } else if (i == R.id.item_tv_like) {
+            if (onTvEventLikeClickListener != null) {
+                onTvEventLikeClickListener.LikeEventMessageClick(chatEventMessage);
             }
-        } else if (i == R.id.item_tv_comment){
-            if (onTvEventCommentClickListener!=null){
-                onTvEventCommentClickListener.CommentEventMessageClick();
+        } else if (i == R.id.item_tv_comment) {
+            if (onTvEventCommentClickListener != null) {
+                onTvEventCommentClickListener.CommentEventMessageClick(chatEventMessage);
             }
         }
     }
