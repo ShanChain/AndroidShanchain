@@ -512,12 +512,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         JMessageClient.getChatRoomConversation(Long.valueOf(roomID)).getAllMessage();
 
                     } else if (i == 851003) {
-                        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                enterChatRoom();
-                            }
-                        });
+//                        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
+//                            @Override
+//                            public void gotResult(int i, String s) {
+////                                enterChatRoom();
+//                            }
+//                        });
                         closeLoadingDialog();
                     } else if (i == 871300) {
                         closeLoadingDialog();

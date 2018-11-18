@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp">
+        android:layout_height="44dp"
+        android:visibility="gone">
 
         <ImageView
             android:paddingLeft="@dimen/dimens_5dp"
@@ -30,7 +31,8 @@
 
     </RelativeLayout>
 
-    <View style="@style/style_text_line_match"/>
+    <View style="@style/style_text_line_match"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/pb_web"
