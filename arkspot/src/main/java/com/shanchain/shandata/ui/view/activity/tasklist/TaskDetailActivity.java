@@ -86,10 +86,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private List<BdCommentBean> commentList = new ArrayList();
     private BaseQuickAdapter taskCommentAdapter;
     private View mHeadView;
+    private TaskPresenter taskPresenter;
     private TextView mTvHeadComment;
     private TextView mTvHeadLike;
     private ChatEventMessage chatEventMessage;
-    private TaskPresenter taskPresenter;
     private CharacterInfo characterInfo;
 
     @Override
@@ -110,6 +110,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //        BdCommentBean bdCommentBean = commentList.get(0);
 //        chatEventMessage = bdCommentBean.getChatEventMessage();
         characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
+
 
         mHeadView = View.inflate(this, R.layout.item_task_details_head, null);
         ImageView ivAvatar = (ImageView) mHeadView.findViewById(R.id.iv_item_story_avatar);
@@ -446,14 +447,20 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     @Override
+    public void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess) {
+
+    }
+
+    @Override
     public void addSuccess(boolean success) {
 
     }
 
     @Override
-    public void releaseTaskView(List<ChatEventMessage> list, boolean isSuccess) {
+    public void releaseTaskView(boolean isSuccess) {
 
     }
+
 
     @Override
     public void supportSuccess(boolean isSuccess, int position) {

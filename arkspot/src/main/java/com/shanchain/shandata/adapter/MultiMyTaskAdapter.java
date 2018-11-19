@@ -33,13 +33,13 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
     private ChatEventMessage itemData;
     private BaseViewHolder holder;
     private ProgressDialog mDialog;
-    private static final int UN_RECEIVE = 5;//未领取
-    private static final int RECEIVE = 10; //已领取/正在完成
-    private static final int CONFIRM = 15; //领取方已确认完成
-    private static final int DONE = 20; //发布方确认完成
-    private static final int UNDONE = 21; //发布方确认任务未完成
+    private static final int UN_RECEIVE = 5;//我发布的：未领取
+    private static final int RECEIVE = 10; //我领取的：正在完成/对方正在完成
+    private static final int CONFIRM = 15; //我领取的：已确认完成/等待对方确认
+    private static final int DONE = 20; //我发布的:去确认完成
+    private static final int UNDONE = 21; //我发布的：确认对方任务未完成
     private static final int OVERTIME = 22; //任务超时
-    private static final int CANCEL = 25; //领取方任务取消
+    private static final int CANCEL = 25; //我领取的：领取方任务取消
     //5未领取 10已领取/正在完成， //15领取方已确认完成
     //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
 
@@ -68,9 +68,9 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         holder.setTextView(R.id.even_message_bounty, "赏金： " + item.getBounty() + " SEAT");
         holder.setTextView(R.id.even_message_location, item.getRoomName() + "");
 
-        if (viewType!=0){
-            holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg());
-            holder.setTextView(R.id.tv_item_story_name,item.getName());
+        if (viewType != 0) {
+            holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg());
+            holder.setTextView(R.id.tv_item_story_name, item.getName());
         }
 
         this.chatEventMessage = list.get(holder.getLayoutPosition());
@@ -78,6 +78,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         LogUtils.d("复用问题", "" + holder.isRecyclable());
         holder.itemView.setTag(itemPosition);
 
+        //itemLayout点击事件
         holder.getConvertView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,9 +86,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             }
         });
         setViewOnClick(holder, item, viewType, position);
-
     }
-
     private void setViewOnClick(final BaseViewHolder holder, ChatEventMessage itemData, int viewType, int position) {
         int characterId = itemData.getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
@@ -97,9 +96,9 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         Button undone = (Button) holder.getViewId(R.id.item_task_undone);
         Button done = (Button) holder.getViewId(R.id.item_task_done);
         holder.setViewOnClick(R.id.item_task_urge, itemLayoutId, viewType, position, this);
-        /*
-         * 点击确认完成
-         * */
+        holder.setLayoutViewOnClick(itemLayoutId,viewType,itemData,this);
+
+        //     * 点击确认完成
         switch (viewType) {
             case 1:
                 holder.getViewId(R.id.btn_event_confirm).setOnClickListener(new View.OnClickListener() {
@@ -129,9 +128,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                     }
                 });
 
-                /*
-                 * 点击取消任务
-                 * */
+//     * 点击取消任务
                 holder.getViewId(R.id.item_task_cancel).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -163,9 +160,9 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                 });
                 break;
             case 3:
-                /*
-                 * 点击已完成
-                 * */
+
+
+//     * 点击已完成
                 holder.getViewId(R.id.item_task_done).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -196,9 +193,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                     }
                 });
 
-                /*
-                 * 点击未完成
-                 * */
+//     * 点击未完成
                 holder.getViewId(R.id.item_task_undone).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -232,10 +227,6 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
 
     }
 
-    public void initHolder(BaseViewHolder holder, ChatEventMessage itemData, int viewType) {
-
-    }
-
     @Override
     public long getItemId(int position) {
         return position;
@@ -248,22 +239,23 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         int characterId = list.get(position).getCharacterId();
         String myCharacterId = SCCacheUtils.getCacheCharacterId();
         // 0
-        if (status == UN_RECEIVE) {
-            return 0;
-        } else if (status == RECEIVE) {
+        if (status == RECEIVE) {
+            if (myCharacterId.equals(String.valueOf(characterId))) {
+                return 2;
+            } else {
+                return 1;
+            }
+        } else if (status == CANCEL || status == CONFIRM) {
             return 1;
-        } else if (status == CONFIRM ) {
-            return 4;
-        }else if(status == CANCEL){
-            return 0;
-        } else if (status == DONE ){
-            return 6;
-        }else if (status == UNDONE) {
-            return 7;
-        } else if (status == OVERTIME) {
-            return 8;
+        } else if (status == DONE || status == UNDONE) {
+            return 2;
         }
-        return 0;
+//        else if (status==OVERTIME){
+//            return 3;
+//        }
+        else {
+            return 0;
+        }
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {

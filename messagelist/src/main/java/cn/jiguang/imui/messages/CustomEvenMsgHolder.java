@@ -51,8 +51,8 @@ public class CustomEvenMsgHolder
             chatEventMessage =(ChatEventMessage) myMessage.getChatEventMessage();
             evenMessageTitle.setText("赏金: " + chatEventMessage.getBounty() + " SEAT");
             evenMessageContent.setText(chatEventMessage.getIntro() + "");
-            Long expiryTime = chatEventMessage.getExpiryTime();
-            if ( expiryTime instanceof Long){
+            long expiryTime = chatEventMessage.getExpiryTime();
+            if (!isValidLong(expiryTime)){
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 lastTime = sdf.format(new Date(expiryTime));
                 evenMessageLastTime.setText("完成时限：" + lastTime);
@@ -66,6 +66,15 @@ public class CustomEvenMsgHolder
             buttonEventTask.setOnClickListener(this);
             evenMessageComment.setOnClickListener(this);
             evenMessageLike.setOnClickListener(this);
+        }
+    }
+
+    private boolean isValidLong(long timeTamp){
+        try{
+            String s = String.valueOf(timeTamp);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
         }
     }
 

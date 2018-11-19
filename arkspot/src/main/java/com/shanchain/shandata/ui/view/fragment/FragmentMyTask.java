@@ -2,6 +2,7 @@ package com.shanchain.shandata.ui.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -33,6 +35,11 @@ import com.shanchain.shandata.adapter.MultiTaskListAdapter;
 import com.shanchain.shandata.adapter.TaskListAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.TaskMode;
+import com.shanchain.shandata.ui.presenter.TaskPresenter;
+import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
+import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.ViewAnimUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -56,9 +63,8 @@ import okhttp3.Call;
  * Created by zhoujian on 2017/8/23.
  */
 
-public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, TaskView {
 
-    private String roomId;
 //    private String roomId = "15198852";
 
     @Bind(R.id.rv_task_list)
@@ -66,10 +72,18 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     @Bind(R.id.srl_task_list)
     SwipeRefreshLayout srlTaskList;
 
-    private List<ChatEventMessage> taskList = new ArrayList();;
+    private List<ChatEventMessage> taskList = new ArrayList();
+    ;
     private MultiMyTaskAdapter adapter;
     private View.OnClickListener taskStatusListener;
     private ProgressDialog mDialog;
+    private TaskPresenter taskPresenter;
+    private String roomId;
+    String characterId = SCCacheUtils.getCacheCharacterId();
+    String userId = SCCacheUtils.getCacheUserId();
+    private int page = 0;
+    private int size = 10;
+    private boolean isLoadMore = false;
 
 
     @Override
@@ -77,244 +91,51 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
         return View.inflate(getContext(), R.layout.fragment_task_list, null);
     }
 
-    public void refreshUseTask(String characterId){
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.USER_TASK_LIST)
-                .addParams("characterId", characterId + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("TaskPresenterImpl", "查询任务失败");
-                        closeLoadingDialog();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.d("TaskPresenterImpl", "添加任务成功");
-                            String data = JSONObject.parseObject(response).getString("data");
-                            TaskMode taskMode = JSONObject.parseObject(data, TaskMode.class);
-
-                            String content = JSONObject.parseObject(data).getString("content");
-                            List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content, ChatEventMessage.class);
-
-                            for (int i = 0; i < chatEventMessageList.size(); i++) {
-                                taskList.add(chatEventMessageList.get(i));
-                            }
-                        }
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                        adapter = new MultiMyTaskAdapter(getContext(), taskList, new int[]{
-                                R.layout.item_task_type_two,//我的任务，未领取
-                                R.layout.item_task_type_four, //我的任务，领取任务去确认完成
-                                R.layout.item_task_type_donging,//我的任务，对方正在完成
-                        });
-                        rvTaskList.setLayoutManager(linearLayoutManager);
-                        adapter.setHasStableIds(true);
-                        rvTaskList.setAdapter(adapter);
-                        closeLoadingDialog();
-
-                       /* adapter.setOnClickListener(new MultiMyTaskAdapter.OnClickListener() {
-
-                            @Override
-                            public void OnClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder,int position) {
-                                final LinearLayout front = view.findViewById(R.id.item_task_front);
-                                final LinearLayout back = view.findViewById(R.id.item_task_back);
-                                ToastUtils.showToast(getContext(),""+item.getIntro());
-                                FrameLayout frame = view.findViewById(R.id.frame);
-                                int direction = 1;
-                                if (back.isShown()) {
-                                    direction = -1;
-                                }
-                                ViewAnimUtils.flip(frame, 500, direction);
-                                frame.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        switchViewVisibility(back, front);
-                                    }
-                                }, 500);
-
-                                TextView taskReleaseTime = (TextView) view.findViewById(R.id.task_release_time);
-                                TextView taskReceiveTime = (TextView) view.findViewById(R.id.task_receive_time);
-                                TextView taskFinishTime = (TextView) view.findViewById(R.id.task_finish_time);
-                                Button undone = (Button) view.findViewById(R.id.item_task_undone);
-                                Button done = (Button) view.findViewById(R.id.item_task_done);
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                switch (taskList.get(position).getStatus()) {
-                                    case 5:
-                                        String releaseTime = sdf.format(new Date(item.getCreateTime()));
-                                        taskReleaseTime.setText("发布时间：" + releaseTime);
-                                        break;
-                                    case 10:
-                                        String receiveTime = sdf.format(new Date(item.getReceiveTime()));
-                                        taskReceiveTime.setVisibility(View.VISIBLE);
-                                        taskReceiveTime.setText("领取时间：" + receiveTime);
-                                        break;
-                                    case 15:
-                                        done.setVisibility(View.VISIBLE);
-                                        undone.setVisibility(View.VISIBLE);
-                                        break;
-                                }
-                            }
-                        });*/
-
-                        adapter.setOnItemClickListener(new MultiMyTaskAdapter.OnItemClickListener() {
-                            @Override
-                            public void OnItemClick(ChatEventMessage item, final View view, final com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
-
-                                ToastUtils.showToast(getContext(),"点击了查看按钮"+item.getIntro());
-                                switch (view.getId()) {
-                                    case R.id.item_task_urge:
-                                        showProgress();
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.TASK_DETAIL_URGE)
-                                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                                .addParams("targetId", taskList.get(position).getTaskId() + "")
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        TextView release = view.getRootView().findViewById(R.id.task_release_time);
-                                                        TextView receive = view.getRootView().findViewById(R.id.task_receive_time);
-                                                        TextView finish = view.getRootView().findViewById(R.id.task_finish_time);
-//                                                        receive.setText("发布时间：");
-                                                        adapter.notifyDataSetChanged();
-                                                        closeProgress();
-                                                    }
-                                                });
-                                        break;
-                                    case R.id.btn_event_confirm:
-                                        showProgress();
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.TASK_DETAIL_ACCOMPLISH)
-                                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                                .addParams("targetId", taskList.get(position).getTaskId() + "")
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-                                                        closeProgress();
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        TextView release = view.getRootView().findViewById(R.id.task_release_time);
-                                                        TextView receive = view.getRootView().findViewById(R.id.task_receive_time);
-                                                        TextView finish = view.getRootView().findViewById(R.id.task_finish_time);
-//                                                        receive.setText("发布时间：");
-                                                        adapter.notifyDataSetChanged();
-                                                        showProgress();
-                                                    }
-                                                });
-
-                                        break;
-                                    case R.id.item_task_done:
-                                        showProgress();
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.TASK_DETAIL_DONE)
-                                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                                .addParams("targetId", taskList.get(position).getTaskId() + "")
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-                                                        closeProgress();
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        TextView release = view.getRootView().findViewById(R.id.task_release_time);
-                                                        TextView receive = view.getRootView().findViewById(R.id.task_receive_time);
-                                                        TextView finish = view.getRootView().findViewById(R.id.task_finish_time);
-//                                                        receive.setText("发布时间：");
-                                                        adapter.notifyDataSetChanged();
-                                                        closeProgress();
-                                                    }
-                                                });
-                                        break;
-                                    case R.id.item_task_undone:
-                                        showProgress();
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.TASK_DETAIL_UNDONE)
-                                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                                .addParams("targetId", item.getTaskId() + "")
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-                                                        closeProgress();
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        TextView release = view.getRootView().findViewById(R.id.task_release_time);
-                                                        TextView receive = view.getRootView().findViewById(R.id.task_receive_time);
-                                                        TextView finish = view.getRootView().findViewById(R.id.task_finish_time);
-//                                                        receive.setText("发布时间：");
-                                                        adapter.notifyDataSetChanged();
-                                                        closeProgress();
-
-                                                    }
-                                                });
-                                        break;
-                                    case R.id.item_task_cancel:
-                                        showProgress();
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.TASK_DETAIL_CANCEL)
-                                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                                .addParams("targetId", taskList.get(position).getTaskId() + "")
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-                                                        closeProgress();
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        TextView release = view.getRootView().findViewById(R.id.task_release_time);
-                                                        TextView receive = view.getRootView().findViewById(R.id.task_receive_time);
-                                                        TextView finish = view.getRootView().findViewById(R.id.task_finish_time);
-//                                                        receive.setText("发布时间：");
-                                                        adapter.notifyDataSetChanged();
-                                                        closeProgress();
-                                                    }
-                                                });
-                                        break;
-                                }
-                            }
-                        });
-
-                    }
-                });
-    }
-
     @Override
     public void initData() {
+        taskPresenter = new TaskPresenterImpl(this);
         roomId = SCCacheUtils.getCacheRoomId();
+        taskPresenter.initUserTaskList(characterId, page, size);
         srlTaskList.setOnRefreshListener(this);
+        for (int i = 2; i < 20; i++) {
+            ChatEventMessage chatEventMessage = new ChatEventMessage("测试", IMessage.MessageType.RECEIVE_TEXT.ordinal());
+            chatEventMessage.setIntro("测试" + i);
+            chatEventMessage.setTimeString("2018-12-10 12:12:12");
+            chatEventMessage.setBounty("80");
+            chatEventMessage.setName("测试" + i);
+            chatEventMessage.setRoomName("1235");
+            chatEventMessage.setExpiryTime(1542209938);
+            if (i == 0) {
+                chatEventMessage.setStatus(5);
+            } else if (i == 1) {
+                chatEventMessage.setStatus(15);
+            } else if (i == 2) {
+                chatEventMessage.setStatus(20);
+            } else if (i == 3) {
+                chatEventMessage.setStatus(21);
+            } else if (i == 4) {
+                chatEventMessage.setStatus(22);
+            } else {
+                chatEventMessage.setStatus(25);
+            }
+//            taskList.add(chatEventMessage);
+        }
+        //5未领取 10已领取/正在完成， //15领取方已确认完成
+        //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         adapter = new MultiMyTaskAdapter(getContext(), taskList, new int[]{
-                R.layout.item_task_type_two,//我的任务，未领取
-                R.layout.item_task_type_four, //我的任务，领取任务去确认完成/取消
-                R.layout.item_task_type_five,//我的任务，对方正在完成
-                R.layout.item_task_type_donging ,//确认对已完成/未完成
-                R.layout.item_task_type_four_finish, //等待对方确认完成
-                R.layout.item_task_type_recevice ,//任务已被领取
-                R.layout.item_task_type_donging_fnish, //对方收到赏金
-                R.layout.item_task_type_donging_unfnish, //退回赏金
-                R.layout.item_task_type_three, //已过期
+                R.layout.item_task_type_two,//我发布的，5:未领取
+                R.layout.item_task_type_three, //我领取的，10:正在完成
+                R.layout.item_task_type_four,//我发布的，20:去确认
+//                R.layout.item_task_type_donging,//我领取的,21发布方确认任务未完成
+//                R.layout.item_task_type_recevice,//任务已被领取
+//                R.layout.item_task_type_donging_fnish, //对方收到赏金
+//                R.layout.item_task_type_donging_unfnish, //退回赏金
+//                , //等待对方确认完成
+
+//                R.layout.item_task_type_three, //已过期
 
         });
-
-        final String characterId = SCCacheUtils.getCacheCharacterId();
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.USER_TASK_LIST)
                 .addParams("characterId", characterId + "")
@@ -350,100 +171,29 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                         adapter.setOnClickListener(new MultiMyTaskAdapter.OnClickListener() {
 
                             @Override
-                            public void OnClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder,int position) {
+                            public void OnClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
                                 final LinearLayout front = view.findViewById(R.id.item_task_front);
                                 final LinearLayout back = view.findViewById(R.id.item_task_back);
-                                ToastUtils.showToast(getContext(),adapter.getPosition()+"");
-//                                FrameLayout frame = view.findViewById(R.id.frame);
-//                                int direction = 1;
-//                                if (back.isShown()) {
-//                                    direction = -1;
-//                                }
-//                                ViewAnimUtils.flip(frame, 500, direction);
-//                                frame.postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        switchViewVisibility(back, front);
-//                                    }
-//                                }, 500);
-
-
+//                                ToastUtils.showToast(getContext(), adapter.getPosition() + "");
+                                FrameLayout frame = view.findViewById(R.id.frame);
+                                int direction = 1;
+                                if (back.isShown()) {
+                                    direction = -1;
+                                }
+                                ViewAnimUtils.flip(frame, 500, direction);
+                                frame.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        switchViewVisibility(back, front);
+                                    }
+                                }, 500);
                             }
                         });
-
-
                     }
                 });
 
-
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, true);
-//        TaskListAdapter adapter = new TaskListAdapter(getContext(), taskList);
-//        rvTaskList.setLayoutManager(linearLayoutManager);
-//        rvTaskList.setAdapter(adapter);
-
     }
 
-    /*
-     * 卡片监听状态
-     * */
-    private void taskStatusClickLisener(final ChatEventMessage chatEventMessage, final TextView completeTimeView) {
-        taskStatusListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (chatEventMessage == null) {
-                    return;
-                }
-                String characterId = SCCacheUtils.getCacheCharacterId();
-                String userId = SCCacheUtils.getCacheUserId();
-                String taskId = chatEventMessage.getTaskId() + "";
-
-                switch (v.getId()) {
-                    case R.id.item_task_undone:
-                        SCHttpUtils.postWithUserId()
-                                .url(HttpApi.TASK_DETAIL_UNDONE)
-                                .addParams("characterId", characterId)
-                                .addParams("taskId", taskId)
-                                .addParams("userId", userId)
-                                .build()
-                                .execute(new SCHttpStringCallBack() {
-                                    @Override
-                                    public void onError(Call call, Exception e, int id) {
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response, int id) {
-                                    }
-                                });
-                        break;
-                    case R.id.item_task_done:
-                        SCHttpUtils.postWithUserId()
-                                .url(HttpApi.TASK_DETAIL_DONE)
-                                .addParams("characterId", characterId)
-                                .addParams("taskId", taskId)
-                                .addParams("userId", userId)
-                                .build()
-                                .execute(new SCHttpStringCallBack() {
-                                    @Override
-                                    public void onError(Call call, Exception e, int id) {
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response, int id) {
-                                        String code = JSONObject.parseObject(response).getString("code");
-                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                            String data = JSONObject.parseObject(response).getString("data");
-                                            String completeTime = JSONObject.parseObject(data).getString("CompleteTime");
-                                            completeTimeView.setText(completeTime);
-                                        }
-
-                                    }
-                                });
-                        break;
-                }
-            }
-        };
-    }
 
     private void switchViewVisibility(LinearLayout back, LinearLayout front) {
         if (back.isShown()) {
@@ -467,11 +217,20 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
         EventBus.getDefault().unregister(this);
     }
 
+    /*
+     * 下拉刷新
+     * */
     @Override
     public void onRefresh() {
-        initData();
+        isLoadMore = false;
+        taskPresenter.initUserTaskList(characterId, page, size);
         srlTaskList.setRefreshing(false);
+
     }
+
+    /*
+     * 上拉加载
+     * */
 
     public void showProgress() {
         mDialog = new ProgressDialog(getContext());
@@ -486,4 +245,43 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
             mDialog.dismiss();
         }
     }
+
+    @Override
+    public void initTask(List<ChatEventMessage> list, boolean isSuccess) {
+        taskList.addAll(list);
+
+    }
+
+    @Override
+    public void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess) {
+        taskList.addAll(list);
+    }
+
+    @Override
+    public void addSuccess(boolean success) {
+
+    }
+
+    @Override
+    public void releaseTaskView(boolean isSuccess) {
+
+    }
+
+
+    @Override
+    public void supportSuccess(boolean isSuccess, int position) {
+
+    }
+
+    @Override
+    public void supportCancelSuccess(boolean isSuccess, int position) {
+
+    }
+
+    @Override
+    public void deleteTaskView(boolean isSuccess, int position) {
+
+    }
+
+
 }

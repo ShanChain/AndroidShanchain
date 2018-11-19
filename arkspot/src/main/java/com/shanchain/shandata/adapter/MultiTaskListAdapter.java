@@ -12,10 +12,12 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
+import com.shanchain.shandata.utils.DateUtils;
 
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import cn.jiguang.imui.model.ChatEventMessage;
@@ -47,33 +49,30 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
             this.position = (Integer) holder.itemView.getTag();
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String expiryTime0 = simpleDateFormat.format(item.getExpiryTime());
-        holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime0 + "");
+        String expiryTime = simpleDateFormat.format(new Date(item.getExpiryTime()));//截止时间
+        String createTime = DateUtils.formatFriendly(new Date(item.getCreateTime()));//创建时间
+
+        holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
         holder.setTextView(R.id.even_message_bounty, "赏金： " + item.getBounty() + " SEAT");
+
         holder.isRecyclable();
         int characterId = item.getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
-        if (String.valueOf(characterId).equals(character)&&viewType==0){
+        if (viewType==0){
+            holder.setTextView(R.id.tv_item_story_time,createTime+"");
             CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
             holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg()!=null?item.getHeadImg():characterInfo.getHeadImg());
             holder.setTextView(R.id.tv_item_story_name,item.getName()==null?"无昵称":item.getName());
-            String expiryTime1 = simpleDateFormat.format(item.getExpiryTime());
-            holder.setTextView(R.id.even_message_last_time,expiryTime1);
-            if (viewType==2){
-                holder.isRecyclable();
-                String expiryTime = simpleDateFormat.format(item.getExpiryTime());
-                holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg()!=null?item.getHeadImg():characterInfo.getHeadImg());
-                holder.setTextView(R.id.even_message_last_time,expiryTime+"");
-                holder.setTextView(R.id.even_message_location,item.getRoomName()+"");
-            }
+
         }else if(viewType==1){
-            String expiryTime = simpleDateFormat.format(item.getExpiryTime());
-            holder.setTextView(R.id.even_message_last_time,expiryTime+"");
-            holder.setTextView(R.id.tv_item_story_time,item.getCreateTime()+"");
+            holder.setTextView(R.id.tv_item_story_time,createTime+"");
+
             holder.setTextView(R.id.tv_item_story_name,item.getName()+"");
             CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
             holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg()!=null?item.getHeadImg():characterInfo.getHeadImg());
+        }else if(viewType==2){
+            holder.setTextView(R.id.even_message_location,""+item.getRoomName());
         }
         setViewOnClick(holder,item,viewType);
         holder.itemView.setTag(position);
@@ -99,15 +98,6 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
                 holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
             case 1:
                 holder.setIsRecyclable(false);
-                holder.setViewOnClick(R.id.item_task_cancel, itemLayoutId, viewType, position, this);
-                holder.setViewOnClick(R.id.btn_event_confirm, itemLayoutId, viewType, position, this);
-                holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
-                break;
-            case 2:
-                holder.setIsRecyclable(false);
-                holder.setViewOnClick(R.id.item_task_done, itemLayoutId, viewType, position, this);
-                holder.setViewOnClick(R.id.item_task_undone, itemLayoutId, viewType, position, this);
-//                holder.setViewOnClick(R.id.item_task_urge, itemLayoutId, viewType, position, this);
                 holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
                 break;
         }
@@ -120,12 +110,13 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         int characterId = list.get(position).getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
         if (status == 5) {
-            if (String.valueOf(characterId).equals(character)) {
+            if (character.equals(String.valueOf(characterId))){
                 return 2;
             }
             return 1;
+        }else {
+            return 0;
         }
-        return 0;
     }
 
 
@@ -149,7 +140,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
 
     @Override
     public void OnItemClick(View view) {
-        switch (view.getId()) {
+        /*switch (view.getId()) {
             case R.id.btn_event_task:
                 if (onItemClickListener != null) {
                     onItemClickListener.OnItemClick(chatEventMessage, view, holder, position);
@@ -180,8 +171,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
                     onItemClickListener.OnItemClick(chatEventMessage, view, holder, position);
                 }
                 break;
-        }
-
+        }*/
 
     }
 

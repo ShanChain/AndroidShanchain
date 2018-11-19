@@ -7,7 +7,9 @@ package com.shanchain.shandata.ui.presenter;
 
 public interface TaskPresenter {
 
-    void initTask(String characterId, String roomId);    //初始化广场的任务列表
+    void initTask(String characterId, String roomId,int page,int size);    //初始化广场的任务列表
+
+    void initUserTaskList(String characterId,int page,int size);    //初始化广场的任务列表
 
     void notFinishTask(int characterId, String squareId);    //获取广场未完成任务列表
 
@@ -21,9 +23,7 @@ public interface TaskPresenter {
 
     void taskProgressNotice(int targetId, int taskId, int type);//    催促完成任务通知
 
-    void queryUserReleaseTask(int characterId);//    查询角色发布任务
-
-    void queryAllTaskByUser(int characterId);//    查询用户的全部任务
+    void queryReleaseTaskByUserId(int characterId);//    查询角色发布任务
 
     void queryAllFinishTaskByUser(int characterId);//    查询用户完成的全部任务
 

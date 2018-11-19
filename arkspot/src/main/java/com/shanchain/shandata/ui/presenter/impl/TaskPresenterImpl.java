@@ -8,6 +8,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.shandata.ui.model.TaskMode;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 
@@ -23,17 +24,22 @@ public class TaskPresenterImpl implements TaskPresenter {
 
     private TaskView taskView;
     public TaskPresenterImpl taskPresenter;
+    private List<ChatEventMessage> taskList = new ArrayList<>();
+    List<ChatEventMessage> chatEventMessageList = new ArrayList<>();
 
     public TaskPresenterImpl(TaskView taskView) {
         this.taskView = taskView;
     }
 
     @Override
-    public void initTask(String characterId, String roomId) {
+    public void initTask(String characterId, String roomId,int page,int size) {
+        taskList.clear();
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.GROUP_TASK_LIST)
                 .addParams("characterId", characterId)
                 .addParams("roomId", roomId)
+                .addParams("page", ""+page)
+                .addParams("size", ""+size)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -48,7 +54,7 @@ public class TaskPresenterImpl implements TaskPresenter {
                             LogUtils.d("TaskPresenterIml", "请求任务列表i成功" +response);
                             String data = JSONObject.parseObject(response).getString("data");
                             String content = JSONObject.parseObject(data).getString("content");
-                            List<ChatEventMessage> taskList = JSONObject.parseArray(content, ChatEventMessage.class);
+                            taskList = JSONObject.parseArray(content, ChatEventMessage.class);
 
                             taskView.initTask(taskList, true);
                         } else {
@@ -60,10 +66,47 @@ public class TaskPresenterImpl implements TaskPresenter {
     }
 
     @Override
+    public void initUserTaskList(String characterId, int page, int size) {
+        chatEventMessageList.clear();
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.USER_TASK_LIST)
+                .addParams("characterId", characterId + "")
+                .addParams("page", page + "")
+                .addParams("size", size + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("TaskPresenterImpl", "查询任务失败");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            LogUtils.d("TaskPresenterImpl", "添加任务成功");
+                            String data = JSONObject.parseObject(response).getString("data");
+                            TaskMode taskMode = JSONObject.parseObject(data, TaskMode.class);
+
+                            String content = JSONObject.parseObject(data).getString("content");
+                            chatEventMessageList = JSONObject.parseArray(content, ChatEventMessage.class);
+                            taskView.initUserTaskList(chatEventMessageList,true);
+                        }else {
+                            taskView.initUserTaskList(null,false);
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void notFinishTask(int characterId, String squareId) {
 
     }
 
+    /*
+    * 发布任务
+    *
+    * */
     @Override
     public void releaseTask(String characterId, String roomId, String bounty, String dataString, String time) {
 
@@ -86,68 +129,52 @@ public class TaskPresenterImpl implements TaskPresenter {
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
                             LogUtils.d("TaskPresenterImpl","添加任务成功");
-//                            taskView.releaseTaskView();
+                            taskView.releaseTaskView(true);
+                        }else {
+                            taskView.releaseTaskView(false);
                         }
                     }
                 });
-//        SCHttpUtils.postNoToken()
-//                .url(HttpApi.CHAT_TASK_ADD)
-//                .addParams("token", "3_18de26a8218e4251b41932ef4de4ea491541670201558")
-//                .addParams("bounty", bounty)
-//                .addParams("currency","rmb")
-//                .addParams("roomId", roomId)
-//                .addParams("characterId", characterId)
-//                .addParams("dataString", dataString) //任务内容
-//                .addParams("time", time)
-//                .build()
-//                .execute(new SCHttpStringCallBack() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        LogUtils.d("TaskPresenterImpl", "添加任务失败");
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        String code = JSONObject.parseObject(response).getString("code");
-//                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-////                            taskView.releaseTaskView();
-//                            LogUtils.d("TaskPresenterImpl", "添加任务成功");
-//                        }
-//                    }
-//                });
-//        ;
 
     }
 
+    /*
+    * 删除任务
+    * */
     @Override
     public void deleteTask(int taskId) {
 
     }
 
+    /*
+    * 领取任务
+    * */
     @Override
     public void receiveTask(int characterId, String squareId, int taskId) {
 
     }
 
+    /*
+    * 确认完成任务
+    * */
     @Override
     public void confirmTaskProgress(int status, int characterId, int taskId) {
 
     }
 
+    /*
+    * */
     @Override
     public void taskProgressNotice(int targetId, int taskId, int type) {
 
     }
 
     @Override
-    public void queryUserReleaseTask(int characterId) {
+    public void queryReleaseTaskByUserId(int characterId) {
 
     }
 
-    @Override
-    public void queryAllTaskByUser(int characterId) {
 
-    }
 
     @Override
     public void queryAllFinishTaskByUser(int characterId) {
@@ -159,6 +186,9 @@ public class TaskPresenterImpl implements TaskPresenter {
 
     }
 
+    /*
+    * 添加任务评论
+    * */
     @Override
     public void addTaskComment(String characterId,String taskId, String comment) {
 

@@ -425,40 +425,17 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                     .color(0xAA121518).points(pointList);
                             Polyline mPolyline = (Polyline) baiduMap.addOverlay(ooPolyline);
                             mPolyline.setDottedLine(true);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLocation.setText(coordinates.getRoomName());
+                                }
+                            });
                         }
                     }
                 });
         closeProgress();
     }
-
-    /*
-    * 接受聊天室消息
-    * */
-
-//    // 接收聊天室消息
-//    public void onEventMainThread(ChatRoomMessageEvent event) {
-//        Log.d("tag", "ChatRoomMessageEvent received .");
-//        List<cn.jpush.im.android.api.model.Message> msgs = event.getMessages();
-//        JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-//
-//        MyMessage myMessage;
-//        for (cn.jpush.im.android.api.model.Message msg : msgs) {
-//            //这个页面仅仅展示聊天室会话的消息
-//            switch (msg.getContentType()) {
-//                case text:
-//                    TextContent textContent = (TextContent) msg.getContent();
-//                    break;
-//                case custom:
-//                    CustomContent customContent = (CustomContent) msg.getContent();
-//                    break;
-//                default:
-//
-//                    break;
-//            }
-//
-//
-//        }
-//    }
 
     private void initDeviceToken() {
         Thread thread = new Thread(new Runnable() {

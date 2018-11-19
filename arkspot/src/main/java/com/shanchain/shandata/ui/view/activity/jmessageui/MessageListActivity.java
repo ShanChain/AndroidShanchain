@@ -1000,6 +1000,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     @Override
+    public void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess) {
+
+    }
+
+    @Override
     public void addSuccess(boolean success) {
         if (success == true) {
 
@@ -1007,10 +1012,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     @Override
-    public void releaseTaskView(List<ChatEventMessage> list, boolean isSuccess) {
-        chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-        mAdapter.addToStart(chatEventMessage1, true);
+    public void releaseTaskView(boolean isSuccess) {
+
     }
+
 
     @Override
     public void supportSuccess(boolean isSuccess, int position) {

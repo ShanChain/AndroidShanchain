@@ -12,10 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/shape_bg_even_msg">
+
         <LinearLayout
             android:id="@+id/item_task_back"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
@@ -33,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:visibility="gone"
                 android:text="领取时间  2018-10-20 10:20" />
 
             <TextView
@@ -41,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:visibility="gone"
                 android:text="完成时间  2018-10-20 10:20" />
 
             <Button
@@ -50,57 +49,84 @@
                 android:layout_height="27dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
                 android:background="@drawable/shape_item_btn_join"
                 android:text="催他完成"
                 android:textColor="@color/colorHomeBtn"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/item_task_front"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_marginBottom="@dimen/dimens_20dp"
+                android:layout_marginTop="@dimen/dimens_22dp"
+                android:paddingLeft="@dimen/dimens_15dp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginBottom="@dimen/dimens_20dp"
-                android:paddingLeft="@dimen/dimens_15dp">
+                tools:showIn="@layout/item_task_type_one">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_item_story_avatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/task_receive"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/aurora_headicon_default"/>
 
                 <TextView
                     android:id="@+id/even_message_bounty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dimens_10dp"
                     android:padding="@dimen/dimens_5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="赏金：0.0001 SEAT"
                     android:textColor="#000000" />
 
                 <TextView
-                    android:id="@+id/tv_item_story_from"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/tv_item_story_time"
                     android:lines="1"
-                    android:text=""
+                    android:id="@+id/tv_item_story_name"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/colorTextDefault"
+                    android:text="于伟 发布的："
+                    android:layout_toRightOf="@id/iv_item_story_avatar"
+                    android:layout_marginLeft="@dimen/dimens_20dp"
+                    android:textSize="@dimen/sp_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:lines="1"
+                    android:id="@+id/tv_item_story_time"
+                    android:textSize="@dimen/sp_12"
+                    android:textColor="@color/colorHint"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/iv_item_story_avatar"
+                    android:layout_marginLeft="@dimen/dimens_20dp"
+                    android:text="20分钟前"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_item_story_from"
+                    android:lines="1"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/tv_item_story_time"
+                    android:layout_marginLeft="15dp"
                     android:textColor="@color/colorActive"
-                    android:textSize="@dimen/sp_12" />
+                    android:text=""
+                    android:textSize="@dimen/sp_12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             </RelativeLayout>
-
 
             <TextView
                 android:id="@+id/even_message_content"
@@ -117,19 +143,6 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btn_event_task"
-                android:layout_width="wrap_content"
-                android:layout_height="27dp"
-                android:layout_gravity="right"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/shape_item_btn_join"
-                android:text=""
-                android:textColor="@color/colorHomeBtn"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,24 +155,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:text="2018-10-20  12:00前"
                     android:textColor="@color/aurora_event_msg_text_color"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/even_message_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="来自 东经21°北纬35"
-                    android:textColor="@color/aurora_event_msg_text_color"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_event_task"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@drawable/shape_btn_even_message_task_received"
+                android:padding="@dimen/dimens_5dp"
+                android:text="任务已被领取"
+                android:textColor="@color/colorTextDefault"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

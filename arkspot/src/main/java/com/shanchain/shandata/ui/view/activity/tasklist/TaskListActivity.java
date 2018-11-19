@@ -103,8 +103,6 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
         String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
-
-
         initToolBar();
         setFragment();
 
@@ -144,7 +142,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         vpTask.setCurrentItem(0);
         vpTask.setOnPageChangeListener(this);
 
-        String type[] = new String[]{"全部任务", "未领取任务"};
+        String type[] = new String[]{"全部任务", "未领取任务","已结束"};
         onItemSelectedListener = new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -171,6 +169,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
                                         }
                                     }
                                 });
+//                        EventBus.getDefault().post();
 
                         break;
                     //未领取任务
@@ -390,7 +389,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
 
         switch (position) {
             case 0:
-                String type[] = new String[]{"全部任务", "未领取任务"};
+                String type[] = new String[]{"全部任务", "未领取任务","已结束"};
                 onItemSelectedListener = new Spinner.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -456,7 +455,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
                 spinnerTaskList.setOnItemSelectedListener(onItemSelectedListener);
                 break;
             case 1:
-                String type1[] = new String[]{"我发布的", "我领取的", "已结束"};
+                String type1[] = new String[]{"全部任务","我发布的", "我领取的", "已结束"};
                 onItemSelectedListener = new Spinner.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

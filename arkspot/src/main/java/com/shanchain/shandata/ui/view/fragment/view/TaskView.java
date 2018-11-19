@@ -11,9 +11,11 @@ public interface TaskView {
 
     void initTask(List<ChatEventMessage> list, boolean isSuccess);
 
+    void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess);
+
     void  addSuccess(boolean success);
 
-    void releaseTaskView(List<ChatEventMessage> list, boolean isSuccess);
+    void releaseTaskView(boolean isSuccess);
 
     void supportSuccess(boolean isSuccess,int position);
 
