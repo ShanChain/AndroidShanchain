@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.view.activity.jmessageui.impl.PhotoView;
-import com.shanchain.shandata.ui.view.activity.jmessageui.view.ImgBrowserViewPager;
+import com.shanchain.shandata.widgets.photochoose.ImgBrowserViewPager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class BrowserImageActivity extends Activity {
         setContentView(R.layout.activity_image_browser);
         mPathList = getIntent().getStringArrayListExtra("pathList");
         mMsgIdList = getIntent().getStringArrayListExtra("idList");
-        mViewPager = (ImgBrowserViewPager) findViewById(R.id.img_browser_viewpager);
+        mViewPager = findViewById(R.id.img_browser_viewpager);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mWidth = dm.widthPixels;
         mHeight = dm.heightPixels;
@@ -51,7 +51,7 @@ public class BrowserImageActivity extends Activity {
 
     private void initCurrentItem() {
         PhotoView photoView = new PhotoView(true, this);
-        String msgId = getIntent().getStringExtra("msgId");
+        String msgId = getIntent().getStringExtra("messageId");
         int position = mMsgIdList.indexOf(msgId);
         String path = mPathList.get(position);
         if (path != null) {

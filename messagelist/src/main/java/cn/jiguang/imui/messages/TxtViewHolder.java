@@ -11,6 +11,7 @@ import android.widget.TextView;
 import cn.jiguang.imui.BuildConfig;
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.view.RoundImageView;
 import cn.jiguang.imui.view.RoundTextView;
 
@@ -54,6 +55,9 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (isAvatarExists && mImageLoader != null) {
             mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath());
+//            String path = message.getFromUser().getAvatarFilePath();
+//            DefaultUser defaultUser = (DefaultUser) message.getFromUser();
+//            mImageLoader.loadAvatarImage(mAvatarIv, defaultUser.getAvatar());
         } else if (mImageLoader == null) {
             mAvatarIv.setVisibility(View.GONE);
         }

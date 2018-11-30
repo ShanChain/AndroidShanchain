@@ -84,6 +84,7 @@
                     android:id="@+id/even_message_bounty"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/dimens_10dp"
+                    android:layout_marginTop="12dp"
                     android:padding="@dimen/dimens_5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,6 +99,7 @@
                     android:text="于伟 发布的："
                     android:layout_toRightOf="@id/iv_item_story_avatar"
                     android:layout_marginLeft="@dimen/dimens_20dp"
+
                     android:textSize="@dimen/sp_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

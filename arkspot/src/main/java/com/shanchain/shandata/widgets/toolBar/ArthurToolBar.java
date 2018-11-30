@@ -20,8 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.shanchain.shandata.R;
 import com.shanchain.data.common.utils.SystemUtils;
+
+import cn.jiguang.imui.view.CircleImageView;
 
 
 /**
@@ -84,6 +87,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述：Toolbar View
      */
     private View mTitleLayoutView;
+    private CircleImageView userHeadImg;
 
     /**
      * 描述：左侧按钮
@@ -133,6 +137,10 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述：左侧按钮点击回调接口
      */
     private OnRelativeChatRoomClickListener mRelativeChatRoomClickListener;
+    /*
+    * 用户头像点击事件
+    * */
+    private OnUserHeadClickListener onUserHeadClickListener;
 
     /**
      * 描述：右侧按钮点击回调接口
@@ -276,6 +284,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mImmersiveView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, statusBarHeight));
         mTitleLayoutView = LayoutInflater.from(mContext).inflate(R.layout.atthur_toolbar_view, this, false);
         mLeftText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mLeftText);
+        userHeadImg = (CircleImageView) mTitleLayoutView.findViewById(R.id.toolbar_user_head_img);
         mTitleText = (TextView) mTitleLayoutView.findViewById(R.id.mTitleText);
         mRightText = (DrawableCenterTextView) mTitleLayoutView.findViewById(R.id.mRightText);
         //聊天室标题
@@ -288,6 +297,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mTitleText.setOnClickListener(this);
         mFavorite.setOnClickListener(this);
         relativeChatRoom.setOnClickListener(this);
+        userHeadImg.setOnClickListener(this);
         // 载入子VIew
         addView(mImmersiveView);
         addView(mTitleLayoutView);
@@ -353,6 +363,12 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
                 case R.id.relative_chatRoom:
                     if (mRelativeChatRoomClickListener != null) {
                         mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
+                    }
+                    break;
+                    //头像点击事件
+                case R.id.toolbar_user_head_img:
+                    if (onUserHeadClickListener != null) {
+                        onUserHeadClickListener.onUserHeadClick(v);
                     }
                     break;
 
@@ -510,6 +526,28 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mLeftText.setCompoundDrawables(drawable, null, null, null);
     }
 
+  /*
+  * 设置用户头像
+  * */
+    public void setUserHeadImg(Context context,String url) { // 图标
+        if (null != userHeadImg){
+        userHeadImg.setVisibility(VISIBLE);
+        Glide.with(context).load(url).into(userHeadImg);
+        }
+    }
+
+    /*
+     * 获取头像菜单
+     * */
+    public View getUserHeadImg() { // 图标
+        if (null != userHeadImg){
+            return userHeadImg;
+        }else {
+            return null;
+        }
+    }
+
+
     /**
      * 时间：15:20
      * 描述: 获取左侧按钮
@@ -566,6 +604,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     public TextView getRightView() { // 获取右侧View
         return this.mRightText;
+    }
+
+    /**
+     * 时间：15:20
+     * 描述: 用户头信按钮
+     */
+    public CircleImageView getCircleImageView() { // 获取右侧View
+        return this.userHeadImg;
     }
 
     /**
@@ -681,6 +727,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 时间：15:07
      * 描述: 收藏按钮点击事件回调接口
      */
+    public interface OnUserHeadClickListener {
+        void onUserHeadClick(View v);
+    }
+
+    /**
+     * 时间：15:07
+     * 描述: 收藏按钮点击事件回调接口
+     */
     public interface OnRelativeChatRoomClickListener {
         void onRelativeChatRoomClick(View v);
     }
@@ -698,6 +752,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     public interface OnRightClickListener {
         void onRightClick(View v);
+    }
+
+    /**
+     * 时间：15:12
+     * 描述: 用户头像
+     */
+    public void setOnUserHeadClickListener(OnUserHeadClickListener listener) {
+        this.onUserHeadClickListener = listener;
     }
 
     /**

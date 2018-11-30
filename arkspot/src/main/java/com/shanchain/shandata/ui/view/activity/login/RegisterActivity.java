@@ -8,13 +8,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shanchain.data.common.h5.SCWebViewActivity;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
+import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.ui.presenter.impl.FriendHomePresenterImpl;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.shanchain.data.common.net.HttpApi;
@@ -66,7 +72,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void initToolBar() {
-        mTbRegister.setBtnEnabled(true,false);
+        mTbRegister.setBtnEnabled(true, false);
         mTbRegister.setOnLeftClickListener(this);
     }
 
@@ -86,10 +92,10 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 //查看条款
                 Intent intent = new Intent(mContext, SCWebViewActivity.class);
                 JSONObject obj = new JSONObject();
-                obj.put("url","http://www.qianqianshijie.com/#/agreement");
-                obj.put("title","用户服务协议（草案）");
+                obj.put("url", "http://h5.qianqianshijie.com/agreement");
+                obj.put("title", "用户服务协议（草案）");
                 String webParams = obj.toJSONString();
-                intent.putExtra("webParams",webParams);
+                intent.putExtra("webParams", webParams);
                 startActivity(intent);
                 break;
         }
@@ -101,23 +107,23 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         String pwd = mEtRegisterPwd.getText().toString().trim();
         String pwdConfirm = mEtRegisterPwdConfirm.getText().toString().trim();
 
-        if (TextUtils.isEmpty(phone)||TextUtils.isEmpty(code)||TextUtils.isEmpty(pwd)||TextUtils.isEmpty(pwdConfirm)){
-            ToastUtils.showToast(this,"请填写完整数据");
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdConfirm)) {
+            ToastUtils.showToast(this, "请填写完整数据");
             return;
         }
 
-        if (!TextUtils.equals(code,verifyCode)){
-            ToastUtils.showToast(this,"验证码错误");
+        if (!TextUtils.equals(code, verifyCode)) {
+            ToastUtils.showToast(this, "验证码错误");
             return;
         }
 
-        if (!TextUtils.equals(phone,mMobile)){
-            ToastUtils.showToast(this,"账号错误");
+        if (!TextUtils.equals(phone, mMobile)) {
+            ToastUtils.showToast(this, "账号错误");
             return;
         }
 
-        if (!TextUtils.equals(pwd,pwdConfirm)){
-            ToastUtils.showToast(this,"两次输入的密码不相同");
+        if (!TextUtils.equals(pwd, pwdConfirm)) {
+            ToastUtils.showToast(this, "两次输入的密码不相同");
             return;
         }
 
@@ -137,7 +143,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_REGISTER)
                 .addParams("Timestamp", time)
-                .addParams("deviceToken","adhiakdh23424")
+                .addParams("deviceToken", "adhiakdh23424")
                 .addParams("encryptAccount", encryptAccount)
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
@@ -152,13 +158,12 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
 
                     @Override
                     public void onResponse(ResponseRegisteUserBean response, int id) {
-                        if (response == null){
+                        if (response == null) {
                             ToastUtils.showToast(mContext, "注册失败！");
                             LogUtils.d("注册失败 ; 错误码：" + id);
-                        }else {
-                            ToastUtils.showToast(mContext,"注册成功");
+                        } else {
+                            ToastUtils.showToast(mContext, "注册成功");
                             LogUtils.d("userID = " + response.getUserInfo().getUserId());
-
 //                            JMessageClient.register(encryptAccount, passwordAccount, new BasicCallback() {
 //                                @Override
 //                                public void gotResult(int i, String s) {
@@ -172,21 +177,40 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 });
     }
 
+    public void registerJmUser(final String jmUser, final String jmPassword) {
+        //注册极光账号
+        JMessageClient.register(jmUser, jmPassword, new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (s.equals("Success")) {
+                    LogUtils.d("极光IM############## 注册成功 ##############极光IM");
+                    RoleManager.switchRoleCacheHx(jmUser, jmPassword);
+                } else {
+                    LogUtils.d("极光IM############## 注册失败 ##############极光IM");
+//                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
+
+                }
+
+            }
+        });
+    }
+
+
     private void obtainCheckCode() {
         String phone = mEtRegisterPhone.getText().toString().trim();
-        if (TextUtils.isEmpty(phone)){
-            ToastUtils.showToast(this,"请填写手机号码");
+        if (TextUtils.isEmpty(phone)) {
+            ToastUtils.showToast(this, "请填写手机号码");
             return;
-        }else {
-            if (AccountUtils.isPhone(phone)){
-                getCheckCode(phone);
-            }else {
-                ToastUtils.showToast(this,"请输入正确格式的账号");
-                return;
-            }
+        } else {
+//            if (AccountUtils.isPhone(phone)){
+            getCheckCode(phone);
+//            }else {
+//                ToastUtils.showToast(this,"请输入正确格式的账号");
+//                return;
+//            }
         }
 
-        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(mTvRegisterCode,60*1000,1000);
+        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(mTvRegisterCode, 60 * 1000, 1000);
         countDownTimeUtils.start();
     }
 
@@ -194,7 +218,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void getCheckCode(String phone) {
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_UNLOGIN_VERIFYCODE)
-                .addParams("mobile",phone)
+                .addParams("mobile", phone)
                 .build()
                 .execute(new SCHttpCallBack<ResponseSmsBean>(ResponseSmsBean.class) {
                     @Override
@@ -208,7 +232,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                         if (response != null) {
                             verifyCode = response.getSmsVerifyCode();
                             mMobile = response.getMobile();
-                            LogUtils.d("从后台获取的验证码:" + verifyCode +"\n 手机账号 :" + mMobile);
+                            LogUtils.d("从后台获取的验证码:" + verifyCode + "\n 手机账号 :" + mMobile);
                         } else {
                             LogUtils.d("请求的数据为空");
                         }

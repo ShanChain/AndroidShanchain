@@ -80,7 +80,7 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
         mMsgListStyle.setSendBubblePressedColor(color);
     }
 
-    public void setSendBubbleTextSize(float size) {
+    public void setSeaurora_fl_msgitem_voice_containerndBubbleTextSize(float size) {
         mMsgListStyle.setSendBubbleTextSize(size);
     }
 

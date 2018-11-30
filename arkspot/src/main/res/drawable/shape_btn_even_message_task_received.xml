@@ -13,6 +13,6 @@
         android:color="@color/colorTextDefault"
         />
     <size
-        android:width="77dp"
+        android:width="90dp"
         android:height="30dp"/>
 </shape>

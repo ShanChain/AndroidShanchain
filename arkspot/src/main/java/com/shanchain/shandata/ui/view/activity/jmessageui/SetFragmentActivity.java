@@ -24,15 +24,15 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.view.fragment.SingerChatFragment;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import java.sql.RowId;
+
 import butterknife.Bind;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.model.UserInfo;
 
 public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
-    @Bind(R.id.tb_main)
     ArthurToolBar mTbMain;
-    @Bind(R.id.fl_main_container)
     FrameLayout mFlMainContainer;
 
     private SingerChatFragment singerChatFragment;
@@ -40,11 +40,13 @@ public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.O
 
     @Override
     protected int getContentViewLayoutID() {
-        return R.layout.activity_main;
+        return R.layout.activity_single_chat;
     }
 
     @Override
     protected void initViewsAndEvents() {
+        mTbMain = findViewById(R.id.tb_main);
+        mFlMainContainer = findViewById(R.id.fl_main_container);
         userInfo =(DefaultUser) getIntent().getParcelableExtra("userInfo");
         initToolBar();
         setFragment();
@@ -64,8 +66,8 @@ public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.O
 
     private void initToolBar() {
 
-        mTbMain.setBackgroundColor(Color.parseColor("#56D1F4"));
-        mTbMain.setTitleTextColor(Color.WHITE);
+        mTbMain.setBackgroundColor(getResources().getColor(R.color.colorHomeBtn));
+        mTbMain.setTitleTextColor(getResources().getColor(R.color.white));
         mTbMain.setTitleText("好友");
         mTbMain.setLeftImage(R.mipmap.back);
         mTbMain.setOnLeftClickListener(this);

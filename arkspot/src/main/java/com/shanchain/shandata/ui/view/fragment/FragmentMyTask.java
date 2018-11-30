@@ -95,8 +95,11 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     public void initData() {
         taskPresenter = new TaskPresenterImpl(this);
         roomId = SCCacheUtils.getCacheRoomId();
+        taskList.clear();
         taskPresenter.initUserTaskList(characterId, page, size);
         srlTaskList.setOnRefreshListener(this);
+
+//        ToastUtils.showToastLong(getContext(),SCCacheUtils.getCacheCharacterId());
         for (int i = 2; i < 20; i++) {
             ChatEventMessage chatEventMessage = new ChatEventMessage("测试", IMessage.MessageType.RECEIVE_TEXT.ordinal());
             chatEventMessage.setIntro("测试" + i);
@@ -124,17 +127,18 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
         //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         adapter = new MultiMyTaskAdapter(getContext(), taskList, new int[]{
-                R.layout.item_task_type_two,//我发布的，5:未领取
-                R.layout.item_task_type_three, //我领取的，10:正在完成
-                R.layout.item_task_type_four,//我发布的，20:去确认
-//                R.layout.item_task_type_donging,//我领取的,21发布方确认任务未完成
-//                R.layout.item_task_type_recevice,//任务已被领取
+                R.layout.item_task_type_two,//0我发布的，5:未领取
+                R.layout.item_task_type_one,//1、我发布的，10.对方正在完成
+                R.layout.item_task_type_three, //2、我发布的，15:去确认
+
+                R.layout.item_task_type_four,//3、我领取的，10:正在完成
+                R.layout.item_task_type_five,//4、我领取的，15:待赏主确认
+                R.layout.item_task_type_donging,//5、我领取的,20发布方确认任务完成
+                R.layout.item_task_type_donging2,//6、我领取的,21发布方确认任务未完成
+                R.layout.item_task_type_over_time,//7、22:过期的
+                R.layout.item_task_type_recevice,//8、25：任务已被取消
 //                R.layout.item_task_type_donging_fnish, //对方收到赏金
 //                R.layout.item_task_type_donging_unfnish, //退回赏金
-//                , //等待对方确认完成
-
-//                R.layout.item_task_type_three, //已过期
-
         });
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.USER_TASK_LIST)
@@ -165,7 +169,7 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                         }
 
                         rvTaskList.setLayoutManager(linearLayoutManager);
-                        adapter.setHasStableIds(true);
+//                        adapter.setHasStableIds(true);
                         rvTaskList.setAdapter(adapter);
 
                         adapter.setOnClickListener(new MultiMyTaskAdapter.OnClickListener() {
@@ -174,7 +178,7 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                             public void OnClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
                                 final LinearLayout front = view.findViewById(R.id.item_task_front);
                                 final LinearLayout back = view.findViewById(R.id.item_task_back);
-//                                ToastUtils.showToast(getContext(), adapter.getPosition() + "");
+//                                ToastUtils.showToast(getContext(), taskList.get(position).getTaskId() + "内容："+taskList.get(position).getIntro());
                                 FrameLayout frame = view.findViewById(R.id.frame);
                                 int direction = 1;
                                 if (back.isShown()) {
@@ -189,9 +193,35 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                                 }, 500);
                             }
                         });
+
+
                     }
                 });
 
+        adapter.setOnItemClickListener(new MultiMyTaskAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
+                switch (view.getId()){
+                    case R.id.btn_event_task:
+                        final LinearLayout front = holder.getConvertView().findViewById(R.id.item_task_front);
+                        final LinearLayout back = holder.getConvertView().findViewById(R.id.item_task_back);
+//              ToastUtils.showToast(getContext(), taskList.get(position).getTaskId() + "内容："+taskList.get(position).getIntro());
+                        FrameLayout frame = holder.getConvertView().findViewById(R.id.frame);
+                        int direction = 1;
+                        if (back.isShown()) {
+                            direction = -1;
+                        }
+                        ViewAnimUtils.flip(frame, 500, direction);
+                        frame.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                switchViewVisibility(back, front);
+                            }
+                        }, 500);
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -222,8 +252,9 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
      * */
     @Override
     public void onRefresh() {
-        isLoadMore = false;
-        taskPresenter.initUserTaskList(characterId, page, size);
+//        isLoadMore = false;
+//        taskPresenter.initUserTaskList(characterId, page, size);
+        initData();
         srlTaskList.setRefreshing(false);
 
     }
@@ -248,13 +279,13 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
 
     @Override
     public void initTask(List<ChatEventMessage> list, boolean isSuccess) {
-        taskList.addAll(list);
+//        taskList.addAll(list);
 
     }
 
     @Override
     public void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess) {
-        taskList.addAll(list);
+//        taskList.addAll(list);
     }
 
     @Override

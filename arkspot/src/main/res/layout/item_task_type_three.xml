@@ -46,7 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_item_btn_join"
-                android:text="正在完成"
+                android:text="去确认"
                 android:textColor="@color/colorHomeBtn"
                 android:textStyle="bold" />
 
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:gravity="left"
                     android:text="2018-10-20  12:00前"
                     android:textColor="@color/aurora_event_msg_text_color"
@@ -72,9 +72,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:gravity="right"
-                    android:text="来自 东经21°北纬35"
+                    android:text=""
                     android:textColor="@color/aurora_event_msg_text_color"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -101,14 +101,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="发布时间  2018-10-20 10:20" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/task_receive_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="领取时间  2018-10-20 10:20"
+                android:text=""
                  />
 
             <TextView
@@ -116,7 +116,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="完成时间  2018-10-20 10:20"
+                android:text=""
+                />
+            <TextView
+                android:id="@+id/task_verify_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10"
+                android:text=""
                 />
 
             <LinearLayout
@@ -128,20 +135,20 @@
             android:orientation="horizontal">
 
             <Button
-            android:id="@+id/item_task_cancel"
+            android:id="@+id/item_task_undone"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_gravity="left"
             android:layout_marginTop="10dp"
             android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/shape_item_btn_join"
-            android:text="取消任务"
+            android:text="未完成"
             android:visibility="visible"
             android:textColor="@color/colorHomeBtn"
             android:textStyle="bold" />
 
             <Button
-            android:id="@+id/btn_event_confirm"
+            android:id="@+id/item_task_done"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_gravity="right"

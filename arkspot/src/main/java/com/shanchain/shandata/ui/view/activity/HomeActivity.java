@@ -123,21 +123,19 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private List<Coordinates> coordinatesList;
     private List roomList = new ArrayList();
     private boolean isFirstLoc = true; // 是否首次定位
-    private String roomID , allRoomID;
+    private String roomID,clickRoomID;
+    private String roomName;
     private int joinRoomId;
     private ProgressDialog mDialog;
+    private LatLng myFocusPoint;
+    private boolean isIn;
 
 
-    @Bind(R.id.map_view_home)
-    MapView mapView;
-    @Bind(R.id.button_join)
-    Button btJoin;
-    @Bind(R.id.text_view_location)
     TextView tvLocation;
-    @Bind(R.id.image_view_info)
     ImageView imgInfo;
-    @Bind(R.id.image_view_history)
     ImageView imgHistory;
+    MapView mapView;
+    Button btJoin;
     private LatLng latLng;
     private CoordinateConverter coordinateConverter;
     private LatLng gpsLatLng;
@@ -152,7 +150,11 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
     @Override
     protected void initViewsAndEvents() {
-
+        tvLocation = findViewById(R.id.text_view_location);
+        mapView = findViewById(R.id.map_view_home);
+        btJoin = findViewById(R.id.button_join);
+        imgHistory = findViewById(R.id.image_view_history);
+        imgInfo = findViewById(R.id.image_view_info);
         String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
@@ -167,120 +169,174 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         SCCacheUtils.setCache(uId, Constants.CACHE_GDATA, jsonGData);
         String cacheGData = SCCacheUtils.getCache(uId, Constants.CACHE_GDATA);
         LogUtils.i("缓存的gdata = " + cacheGData);
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this,MessageListActivity.class);
-                intent.putExtra("roomId",roomID);
-                startActivity(intent);
-            }
-        };
 
-        /*
-         * 加入聊天室
-         *
-         * */
-        getRoomIdHandle = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 2:
-//                        btJoin.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_join_defal));
-                        joinRoomId = msg.arg1;
-                        btJoin.setOnClickListener(onClickListener);
-                        break;
-                }
+
+    getRoomIdHandle =new Handler() {
+        @Override
+        public void handleMessage (Message msg){
+            switch (msg.what) {
+                case 1:
+                    joinRoomId = msg.arg1;
+                    if (roomID.equals(clickRoomID)){
+                        isIn=true;
+                    }else {
+                        isIn=false;
+                    }
+                    roomID = String.valueOf(joinRoomId);
+                    roomName = (String) msg.obj;
+                    btJoin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                            intent.putExtra("roomId", roomID);
+                            intent.putExtra("roomName", roomName);
+                            intent.putExtra("isInCharRoom",isIn);
+                            startActivity(intent);
+                        }
+                    });
+                    break;
+                case 2:
+                    joinRoomId = msg.arg1;
+                    roomID = String.valueOf(joinRoomId);
+                    roomName = (String) msg.obj;
+                    btJoin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                            intent.putExtra("roomId", roomID);
+                            intent.putExtra("roomName", roomName);
+                            startActivity(intent);
+                        }
+                    });
+                    break;
             }
-        };
-//        UMConfigure.setLogEnabled(true); //显示友盟log日记
+        }
+    }
+
+        ;
+
+        //        UMConfigure.setLogEnabled(true); //显示友盟log日记
         //检查apk版本
         checkApkVersion();
+
         initDeviceToken();
+
         initView();
+
         initBaiduMap();
 
     }
 
     //点击请求方区
-   public void initCubeMap(LatLng point){
-       //获取聊天室信息
-       final ArrayList<LatLng> clickPointList = new ArrayList<>();
-       showProgress();
-       SCHttpUtils.get()
-               .url(HttpApi.CHAT_ROOM_INFO)
-               .addParams("longitude", point.longitude + "")
-               .addParams("latitude", point.latitude + "")
-               .build()
-               .execute(new SCHttpStringCallBack() {
-                   @Override
-                   public void onError(Call call, Exception e, int id) {
-                       LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
-                       closeProgress();
-                   }
+    public void initCubeMap(LatLng point) {
+        //获取聊天室信息
+        final ArrayList<LatLng> clickPointList = new ArrayList<>();
+        showProgress();
+        SCHttpUtils.get()
+                .url(HttpApi.CHAT_ROOM_INFO)
+                .addParams("longitude", point.longitude + "")
+                .addParams("latitude", point.latitude + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
+                        closeProgress();
+                    }
 
-                   @Override
-                   public void onResponse(String response, int id) {
-                       String code = JSONObject.parseObject(response).getString("code");
-                       if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                           LogUtils.d("####### " + "获取聊天室信息" + " ########");
-                           String data = JSONObject.parseObject(response).getString("data");
-                           coordinates = JSONObject.parseObject(data, Coordinates.class);
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
+                            String data = JSONObject.parseObject(response).getString("data");
+                            coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            clickRoomID = coordinates.getRoomId();
+                            String latLang = coordinates.getRoomName();
+                            String[] strings = latLang.split(",");
+                            final double lat = Double.valueOf(strings[0]);
+                            final double lang = Double.valueOf(strings[1]);
+                            final String latLocation, langLocation;
+                            if (lat < 0) {
+                                latLocation = "南纬" + Math.rint(lat);
 
-                           /*
-                            * 绘制所在位置的方区
-                            *
-                            * */
-                           for (int i = 0; i < coordinates.getCoordinates().size(); i++) {
-                               double pointLatitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLatitude());
-                               double pointLongitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLongitude());
-                               LatLng point = new LatLng(pointLatitude, pointLongitude);
-                               // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                               coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                               coordinateConverter.coord(point);
-                               LatLng desLatLng = coordinateConverter.convert();
+                            } else {
+                                latLocation = "北纬" + Math.rint(lat);
+                            }
+                            if (lang > 0) {
+                                langLocation = "东经" + Math.rint(lang);
+
+                            } else {
+                                langLocation = "西经" + Math.rint(lang);
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLocation.setText(langLocation + "," + latLocation);
+                                }
+                            });
+
+                            Message roomMessage = new Message();
+                            roomMessage.what = 1;
+                            roomMessage.obj = langLocation + "," + latLocation;
+                            roomMessage.arg1 = Integer.valueOf(clickRoomID);
+                            getRoomIdHandle.sendMessage(roomMessage);
+                            /*
+                             * 绘制所在位置的方区
+                             *
+                             * */
+                            for (int i = 0; i < coordinates.getCoordinates().size(); i++) {
+                                double pointLatitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLatitude());
+                                double pointLongitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLongitude());
+                                LatLng point = new LatLng(pointLatitude, pointLongitude);
+                                // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                coordinateConverter.coord(point);
+                                LatLng desLatLng = coordinateConverter.convert();
 //                                pointList.add(desLatLng);
 
-                               clickPointList.add(point);
-                           }
+                                clickPointList.add(point);
+                            }
 
-                           double focusLatitude = Double.parseDouble(coordinates.getFocusLatitude());
-                           double focusLongitude = Double.parseDouble(coordinates.getFocusLongitude());
-                           LatLng point = new LatLng(focusLatitude, focusLongitude);
-                           // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                           coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                           coordinateConverter.coord(point);
-                           LatLng desLatLng = coordinateConverter.convert();
-                           //设置显示地图中心点
+                            double focusLatitude = Double.parseDouble(coordinates.getFocusLatitude());
+                            double focusLongitude = Double.parseDouble(coordinates.getFocusLongitude());
+                            myFocusPoint = new LatLng(focusLatitude, focusLongitude);
+                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                            coordinateConverter.coord(myFocusPoint);
+                            LatLng desLatLng = coordinateConverter.convert();
+                            //设置显示地图中心点
 //                            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(desLatLng); //转换后的坐标
-                           MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(point); //未转换的坐标
-                           baiduMap.setMapStatus(mapStatusUpdate);
+                            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint); //未转换的坐标
+                            baiduMap.setMapStatus(mapStatusUpdate);
 
-                           //构建Marker图标
-                           BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                   .fromResource(R.mipmap.home_location);
-                           //构建MarkerOption，用于在地图上添加Marker
-                           OverlayOptions option = new MarkerOptions()
-                                   .position(point)
-                                   .icon(bitmap);
-                           //在地图上添加Marker，并显示
-                           baiduMap.addOverlay(option);
-                           //绘制虚线（需要多添加一个起点坐标，形成矩形）
-                           clickPointList.add(clickPointList.get(0));
-                           OverlayOptions ooPolyline = new PolylineOptions().width(4)
-                                   .color(0xAA121518).points(clickPointList);
-                           Polyline mPolyline = (Polyline) baiduMap.addOverlay(ooPolyline);
-                           mPolyline.setDottedLine(true);
-                       }
-                       closeProgress();
-                   }
+                            //构建Marker图标
+                            BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                    .fromResource(R.mipmap.home_location);
+                            //构建MarkerOption，用于在地图上添加Marker
+                            OverlayOptions option = new MarkerOptions()
+                                    .position(myFocusPoint)
+                                    .icon(bitmap);
+                            //在地图上添加Marker，并显示
+//                           baiduMap.addOverlay(option);
+                            //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                            clickPointList.add(clickPointList.get(0));
+                            OverlayOptions ooPolyline = new PolylineOptions().width(4)
+                                    .color(0xAA121518).points(clickPointList);
+                            Polyline mPolyline = (Polyline) baiduMap.addOverlay(ooPolyline);
+                            mPolyline.setDottedLine(true);
+                        }
+                        closeProgress();
+                    }
 
-               });
-   }
+                });
+    }
 
     //请求接口数据
     private void initData(LatLng gpsLatLng) {
 //        LatLng myLatLang = new LatLng(20.045082, 110.32447);
         //获取周边
+        showProgress();
         SCHttpUtils.get()
                 .url(HttpApi.CHAT_ROOM_COORDINATE)
                 .addParams("longitude", gpsLatLng.longitude + "")
@@ -290,10 +346,12 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("####### USER_COORDINATE 请求失败 #######");
+                        closeProgress();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        closeProgress();
                         LogUtils.d("####### USER_COORDINATE 请求成功 #######");
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
@@ -306,52 +364,59 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                              * 绘制附近的方区
                              *
                              * */
-                            for (int i = 0; i < coordinatesList.size(); i++) {
-                                LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
-                                LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
-                                //构建Marker图标
-                                BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                        .fromResource(R.mipmap.home_location);
-                                //构建MarkerOption，用于在地图上添加Marker
-                                OverlayOptions option = new MarkerOptions()
-                                        .position(srcLatLang)
-                                        .icon(bitmap);
-                                //在地图上添加Marker，并显示
-                                baiduMap.addOverlay(option);
-                                for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
-                                    double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
-                                    double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
-                                    LatLng point = new LatLng(pointLatitude, pointLongitude);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (int i = 0; i < coordinatesList.size(); i++) {
+                                        LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
+                                        LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
+                                        //构建Marker图标
+                                        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                                .fromResource(R.mipmap.home_location);
+                                        //构建MarkerOption，用于在地图上添加Marker
+                                        OverlayOptions option = new MarkerOptions()
+                                                .position(srcLatLang)
+                                                .icon(bitmap);
+                                        //在地图上添加Marker，并显示
+//                                baiduMap.addOverlay(option);
+                                        for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
+                                            double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
+                                            double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
+                                            LatLng point = new LatLng(pointLatitude, pointLongitude);
 
-                                    // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                    coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                    coordinateConverter.coord(point);
-                                    LatLng desLatLng = coordinateConverter.convert();
+                                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                            coordinateConverter.coord(point);
+                                            LatLng desLatLng = coordinateConverter.convert();
 
 //                                    roomList.add(desLatLng);
-                                    roomList.add(point);//未转换的坐标
+                                            roomList.add(point);//未转换的坐标
 
 
-                                }
-                                //
-                                double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
-                                double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
-                                LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
-                                // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                coordinateConverter.coord(indexPoint);
-                                LatLng firstLatLng = coordinateConverter.convert();
+                                        }
+                                        //
+                                        double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
+                                        double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
+                                        LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
+                                        // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                        coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                        coordinateConverter.coord(indexPoint);
+                                        LatLng firstLatLng = coordinateConverter.convert();
 //                                roomList.add(firstLatLng);
-                                //绘制虚线（需要多添加一个起点坐标，形成矩形）
-                                roomList.add(indexPoint);
-                                OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
-                                        .color(0xAA121518).points(roomList);
-                                Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
-                                roomPolyline.setDottedLine(true);
-                                roomList.clear();
-                            }
+                                        //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                                        roomList.add(indexPoint);
+                                        OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
+                                                .color(0xAA121518).points(roomList);
+                                        Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
+                                        roomPolyline.setDottedLine(true);
+                                        roomList.clear();
+                                    }
+                                }
+                            }).start();
+
 
                         }
+                        closeProgress();
                     }
                 });
 
@@ -378,11 +443,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
                             //房间roomId
                             roomID = coordinates.getRoomId();
+                            RoleManager.switchRoleCacheRoomId(roomID);
 //                            roomID = "12826211";
-                            Message roomMessage = new Message();
-                            roomMessage.what = 2;
-                            roomMessage.arg1 = Integer.valueOf(roomID);
-                            getRoomIdHandle.sendMessage(roomMessage);
+
                             /*
                              * 绘制所在位置的方区
                              *
@@ -418,23 +481,47 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                     .position(point)
                                     .icon(bitmap);
                             //在地图上添加Marker，并显示
-                                baiduMap.addOverlay(option);
+//                                baiduMap.addOverlay(option);
                             //绘制虚线（需要多添加一个起点坐标，形成矩形）
                             pointList.add(pointList.get(0));
                             OverlayOptions ooPolyline = new PolylineOptions().width(4)
                                     .color(0xAA121518).points(pointList);
                             Polyline mPolyline = (Polyline) baiduMap.addOverlay(ooPolyline);
                             mPolyline.setDottedLine(true);
+                            String latLang = coordinates.getRoomName();
+                            String[] strings = latLang.split(",");
+                            final double lat = Double.valueOf(strings[0]);
+                            final double lang = Double.valueOf(strings[1]);
+                            final String latLocation, langLocation;
+                            if (lat < 0) {
+                                latLocation = "南纬" + Math.rint(lat);
+
+                            } else {
+                                latLocation = "北纬" + Math.rint(lat);
+                            }
+                            if (lang > 0) {
+                                langLocation = "东经" + Math.rint(lang);
+
+                            } else {
+                                langLocation = "西经" + Math.rint(lang);
+                            }
+
+                            roomName = langLocation + "," + latLocation;
+                            Message roomMessage = new Message();
+                            roomMessage.what = 2;
+                            roomMessage.obj = roomName;
+                            roomMessage.arg1 = Integer.valueOf(roomID);
+                            getRoomIdHandle.sendMessage(roomMessage);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvLocation.setText(coordinates.getRoomName());
+                                    tvLocation.setText(langLocation + "," + latLocation);
                                 }
                             });
                         }
+                        closeProgress();
                     }
                 });
-        closeProgress();
     }
 
     private void initDeviceToken() {
@@ -594,6 +681,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         /*
          * 初始化定位
          * */
+        baiduMap = mapView.getMap();
         locationClient = new LocationClient(getApplicationContext());//创建LocationClient对象
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，设置定位模式,LocationMode.Hight_Accuracy：高精度；
@@ -617,7 +705,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         /*
          * 初始化地图显示
          * */
-        baiduMap = mapView.getMap();
+//        baiduMap = mapView.getMap();
         mapView.showZoomControls(false);
         //baiduMap.getUiSettings().setAllGesturesEnabled(false);//设置禁用所以有手势
         baiduMap.setMyLocationEnabled(true);//开启定位
@@ -686,8 +774,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
              * 地图单击事件回调函数
              * @param point 点击的地理坐标
              */
-            public void onMapClick(LatLng point){
+            public void onMapClick(LatLng point) {
                 initCubeMap(point);
+                locationClient.requestLocation();
             }
 
             @Override
@@ -804,7 +893,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             imgInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng((new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude())));
+//                bdLocation
+                    initCubeMap(latLng);
+                    MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint);
                     baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
                     baiduMap.setMapStatus(mapStatusUpdate);
                 }
@@ -823,7 +914,10 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 gpsLatLng = coordinateConverter.from(CoordinateConverter.CoordType.BD09LL).coord(latLng).convert();
                 //服务端请求数据
 //                handler.sendEmptyMessage(1);
-                showProgress();
+                //设置显示地图中心点
+                MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
+                baiduMap.setMapStatus(mapStatusUpdate);
+
                 initData(latLng);
                 baiduMap.setOnMapClickListener(MapListener);
 

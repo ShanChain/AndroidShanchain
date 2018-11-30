@@ -31,6 +31,7 @@ import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.manager.ActivityManager;
+import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
@@ -44,6 +45,7 @@ import com.tencent.tauth.Tencent;
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import me.shaohui.shareutil.LoginUtil;
 import me.shaohui.shareutil.login.LoginListener;
@@ -102,10 +104,13 @@ public class LoginActivity extends BaseActivity {
             String hxUserName = SCCacheUtils.getCacheHxUserName();
             String hxPwd = SCCacheUtils.getCacheHxPwd();
             String token = SCCacheUtils.getCacheToken();
-            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
+//            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
+            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
                 checkServer();
             } else {
                 closeProgress();
+                CharacterInfo characterInfo1 = JSONObject.parseObject(characterInfo,CharacterInfo.class);
+                loginJm(hxUserName,hxPwd,characterInfo1);
                 readyGo(HomeActivity.class);
                 finish();
             }
@@ -157,6 +162,7 @@ public class LoginActivity extends BaseActivity {
                                         RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
                                         //注册/登录 极光IM账号
                                         registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword());
+//                                        loginJm(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
 
                                         int spaceId = characterInfo.getSpaceId();
                                         int characterId = characterInfo.getCharacterId();
@@ -205,8 +211,9 @@ public class LoginActivity extends BaseActivity {
 
                     } else {
                         LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-//                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请重新登录");
-                        registerJmUser(jmUser,jmPassword);
+                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请重新登录");
+//                        loginJm(jmUser,jmPassword,null);
+
                         closeProgress();
                     }
                 }
@@ -239,7 +246,50 @@ public class LoginActivity extends BaseActivity {
         }
 
     }
+    private void loginJm(String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录极光IM = 开始时间 = " + startTime);
+        JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                String ss = s;
+                if (s.equals("Success")) {
+                    LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+                    UserInfo userInfo = JMessageClient.getMyInfo();
+                    if (userInfo!=null){
+                        userInfo.setNickname(characterInfo.getName());
+                        userInfo.setSignature(characterInfo.getSignature());
+                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                String s1 = s;
+                                int i1 = i;
+                            }
+                        });
 
+                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                String s1 = s;
+                                int i1 = i;
+                            }
+                        });
+                    }
+
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    LogUtils.d("极光IM############## 登录失败 ##############极光IM");
+                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+
+    }
 
     @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_wx, R.id.iv_login_wb, R.id.iv_login_qq})
     public void onClick(View view) {
@@ -295,9 +345,7 @@ public class LoginActivity extends BaseActivity {
         String md5Pwd = MD5Utils.md5(pwd);
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
         KeyboardUtils.hideSoftInput(this);
-
         showProgress();
-
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_LOGIN)
                 .addParams("Timestamp", time)
@@ -308,7 +356,6 @@ public class LoginActivity extends BaseActivity {
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        closeProgress();
                         LogUtils.i("登录错误");
                         e.printStackTrace();
                         ToastUtils.showToast(mContext, "网络错误");
@@ -321,6 +368,7 @@ public class LoginActivity extends BaseActivity {
                             LogUtils.d("登录返回数据 = " + response);
                             String code = JSONObject.parseObject(response).getString("code");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                closeProgress();
                                 //登录成功
                                 String data = JSONObject.parseObject(response).getString("data");
                                 ResponseLoginBean loginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
@@ -333,18 +381,33 @@ public class LoginActivity extends BaseActivity {
                                 SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                 SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                 SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                                if (getIntent()==null){
+                                    return;
+                                }else {
+                                    if (getIntent().getStringExtra("wallet")!=null){
+
+                                        Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
+                                        JSONObject obj = new JSONObject();
+                                        obj.put("url", HttpApi.SEAT_WALLET);
+                                        obj.put("title", "我的资产");
+                                        String webParams = obj.toJSONString();
+                                        intent.putExtra("webParams", webParams);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
                                 checkCache();
                             } else if (TextUtils.equals(code, NetErrCode.LOGIN_ERR_CODE)) {
-                                closeProgress();
                                 ToastUtils.showToast(mContext, "账号或密码错误");
-                            } else {
                                 closeProgress();
+                            } else {
                                 ToastUtils.showToast(mContext, "网络错误");
+                                closeProgress();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            closeProgress();
                             ToastUtils.showToast(mContext, "网络错误");
+                            closeProgress();
                         }
                     }
                 });

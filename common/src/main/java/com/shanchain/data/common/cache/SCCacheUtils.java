@@ -94,4 +94,9 @@ public class SCCacheUtils {
         String userId = getCacheUserId();
         return getCache(userId,Constants.CACHE_ROOM_ID);
     }
+
+    public static String getCacheHeadImg(){
+        String userId = getCacheUserId();
+        return getCache(userId,Constants.CACHE_HEAD_IMG);
+    }
 }

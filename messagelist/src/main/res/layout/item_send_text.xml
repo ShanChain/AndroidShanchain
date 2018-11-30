@@ -35,7 +35,7 @@
             android:layout_marginRight="3dp"
             android:layout_alignTop="@+id/aurora_tv_msgitem_message"
             android:layout_alignBottom="@+id/aurora_tv_msgitem_message"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/aurora_tv_msgitem_sender_display_name"

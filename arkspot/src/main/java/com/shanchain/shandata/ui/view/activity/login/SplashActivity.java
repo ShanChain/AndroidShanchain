@@ -1,15 +1,18 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -20,13 +23,21 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
+import com.shanchain.shandata.utils.ImageUtils;
+import com.shanchain.shandata.widgets.photochoose.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Set;
+
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
@@ -79,12 +90,13 @@ public class SplashActivity extends AppCompatActivity {
             String spaceInfo = getCache(userId, Constants.CACHE_SPACE_INFO);
             String hxUserName = getCacheHxUserName();
             String hxPwd = getCacheHxPwd();
-            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceInfo)||TextUtils.isEmpty(hxUserName)||TextUtils.isEmpty(hxPwd)) {
+            CharacterInfo cacheCharacter = JSONObject.parseObject(characterInfo, CharacterInfo.class);
+            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
 //                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
 //                loginJm("weal","123456");
-                loginJm(hxUserName,hxPwd);
+                loginJm(hxUserName, hxPwd,cacheCharacter);
                 Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
@@ -98,22 +110,44 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void loginJm(String hxUserName, String hxPwd) {
+    private void loginJm(String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
         final long startTime = System.currentTimeMillis();
         LogUtils.i("登录极光IM = 开始时间 = " + startTime);
         JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 String ss = s;
-                if (s.equals("Success")){
+                if (s.equals("Success")) {
                     LogUtils.d("极光IM############## 登录成功 ##############极光IM");
-                    Intent intent = new Intent(SplashActivity.this,HomeActivity.class);
+                    UserInfo userInfo = JMessageClient.getMyInfo();
+                    if (userInfo!=null){
+                        userInfo.setNickname(characterInfo.getName());
+                        userInfo.setSignature(characterInfo.getSignature());
+                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                String s1 = s;
+                                int i1 = i;
+                            }
+                        });
+
+                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                String s1 = s;
+                                int i1 = i;
+                            }
+                        });
+
+                    }
+
+                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
 
-                }else {
+                } else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -140,47 +174,48 @@ public class SplashActivity extends AppCompatActivity {
                         try {
                             LogUtils.i("获取当前角色成功 " + response);
                             String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
-                                if (TextUtils.isEmpty(data)){
-                                    LogUtils.d("获取数据","数据信息为空");
-                                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                                if (TextUtils.isEmpty(data)) {
+                                    LogUtils.d("获取数据", "数据信息为空");
+                                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
-                                if (TextUtils.isEmpty(character)){
-                                    LogUtils.d("获取角色信息","角色信息为空");
-                                    Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                                if (TextUtils.isEmpty(character)) {
+                                    LogUtils.d("获取角色信息", "角色信息为空");
+                                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                     finish();
                                     return;
-                                }else {
+                                } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                    if (characterInfo == null){
-                                        LogUtils.d("获取角色ID","角色ID为空");
-                                        Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                                    RoleManager.switchRoleCacheHeadImg(characterInfo.getHeadImg());
+                                    if (characterInfo == null) {
+                                        LogUtils.d("获取角色ID", "角色ID为空");
+                                        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
-                                    }else {
+                                    } else {
+
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
-                                        if (hxAccount==null){
-                                            Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+                                        if (hxAccount == null) {
+                                            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                                             startActivity(intent);
                                             finish();
-                                        }else {
+                                        } else {
                                             String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
                                             String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
-                                            loginJm(jmUser,jmPassword);
+                                            loginJm(jmUser, jmPassword, characterInfo);
                                         }
-
 
 
                                     }
 
                                 }
-                            }else {
+                            } else {
                                 exception();
                             }
                         } catch (Exception e) {
@@ -248,8 +283,8 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private void exception(){
-        Intent intent = new Intent(this,LoginActivity.class);
+    private void exception() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

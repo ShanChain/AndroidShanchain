@@ -19,6 +19,7 @@
     <TextView
         android:id="@+id/even_message_bounty"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="@dimen/dimens_10dp"
         android:padding="@dimen/dimens_5dp"
         android:layout_width="wrap_content"

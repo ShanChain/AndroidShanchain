@@ -381,4 +381,6 @@
    public static *** i(...);
    public static *** w(...);
  }
- #umeng push need
+ #腾旭Bugly,日志上报
+ -dontwarn com.tencent.bugly.**
+ -keep public class com.tencent.bugly.**{*;}

@@ -46,7 +46,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
                 android:padding="@dimen/dimens_5dp"
-                android:text="对方正在完成"
+                android:text="任务完成"
                 android:textColor="@color/aurora_event_msg_text_color"
                 android:textStyle="bold" />
 
@@ -147,49 +147,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="领取时间  2018-10-20 10:20"
-                />
+                android:text="领取时间  2018-10-20 10:20" />
+
 
             <TextView
                 android:id="@+id/task_finish_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="完成时间  2018-10-20 10:20"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:text="完成时间  2018-10-20 10:20" />
+
+            <TextView
+                android:id="@+id/task_verify_time"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10"
+                android:text="确认时间  2018-10-20 10:20" />
+
+            <Button
+                android:id="@+id/item_finish_show"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_10"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/item_task_undone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="27dp"
-                    android:layout_gravity="left"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:background="@drawable/shape_item_btn_join"
-                    android:text="未完成"
-                    android:visibility="visible"
-                    android:textColor="@color/colorHomeBtn"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_event_done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="27dp"
-                    android:layout_gravity="right"
-                    android:layout_marginLeft="@dimen/dp_10"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/shape_btn_bg_task"
-                    android:text="已完成"
-                    android:textColor="@color/colorHomeBtn"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_bg_even_msg"
+                android:padding="@dimen/dimens_5dp"
+                android:text="对方已收到赏金"
+                android:textColor="@color/colorTextDefault"
+                android:textStyle="bold"
+                android:visibility="visible" />
 
         </LinearLayout>
     </FrameLayout>

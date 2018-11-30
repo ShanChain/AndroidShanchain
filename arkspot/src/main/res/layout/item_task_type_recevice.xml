@@ -142,6 +142,19 @@
                 android:textColor="@color/aurora_event_msg_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+            <Button
+                android:id="@+id/btn_event_task"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@drawable/shape_btn_even_message_task_received"
+                android:padding="@dimen/dimens_5dp"
+                android:text="任务取消"
+                android:textColor="@color/colorTextDefault"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -161,19 +174,6 @@
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_event_task"
-                android:layout_width="wrap_content"
-                android:layout_height="27dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:background="@drawable/shape_btn_even_message_task_received"
-                android:padding="@dimen/dimens_5dp"
-                android:text="任务已被领取"
-                android:textColor="@color/colorTextDefault"
-                android:textStyle="bold" />
 
         </LinearLayout>
     </FrameLayout>

@@ -39,6 +39,7 @@ import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.adapter.StoryItemNineAdapter;
 import com.shanchain.shandata.adapter.TaskCommentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CommentBean;
@@ -51,6 +52,7 @@ import com.shanchain.shandata.ui.model.TaskCommentContent;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingerChatInfoActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
 import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
@@ -63,6 +65,8 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,7 +74,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jiguang.imui.commons.models.IUser;
 import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.DefaultUser;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import okhttp3.Call;
 
 public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener,
@@ -89,8 +98,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private TaskPresenter taskPresenter;
     private TextView mTvHeadComment;
     private TextView mTvHeadLike;
-    private ChatEventMessage chatEventMessage;
+    private ChatEventMessage detailsChatEventMessage;
     private CharacterInfo characterInfo;
+    private DefaultUser defaultUser;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -99,17 +109,17 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
-        chatEventMessage = (ChatEventMessage) getIntent().getSerializableExtra("chatEventMessage");
+        detailsChatEventMessage = (ChatEventMessage) getIntent().getSerializableExtra("chatEventMessage");
 
         initToolBar();
-        initData();
-        initRecyclerView();
+        initData(detailsChatEventMessage);
+
     }
 
-    private void initHeadView() {
+    private void initHeadView(final ChatEventMessage chatEventMessage) {
 //        BdCommentBean bdCommentBean = commentList.get(0);
 //        chatEventMessage = bdCommentBean.getChatEventMessage();
-        characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
+        characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
 
 
         mHeadView = View.inflate(this, R.layout.item_task_details_head, null);
@@ -125,28 +135,28 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         mTvHeadComment = (TextView) mHeadView.findViewById(R.id.even_message_comment_num);
 
         //获取角色信息
-        characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
+        characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
         String characterImg = characterInfo.getHeadImg();
         String characterName = characterInfo.getName();
 
-        if(chatEventMessage==null){
+        if (chatEventMessage == null) {
             return;
         }
-        if (chatEventMessage.getHeadImg()!=null&&chatEventMessage.getName()!=null){
+        if (chatEventMessage.getHeadImg() != null && chatEventMessage.getName() != null) {
             GlideUtils.load(mContext, chatEventMessage.getHeadImg(), ivAvatar, 0);//加载头像
-            tvName.setText(chatEventMessage.getName()==null?"无昵称":chatEventMessage.getName());
-        }else {
+            tvName.setText(chatEventMessage.getName() == null ? "无昵称" : chatEventMessage.getName());
+        } else {
             GlideUtils.load(mContext, characterInfo.getHeadImg(), ivAvatar, 0);//加载头像
-            tvName.setText(characterInfo.getName()==null?"无昵称":characterInfo.getName());
+            tvName.setText(characterInfo.getName() == null ? "无昵称" : characterInfo.getName());
         }
-        bounty.setText("赏金："+chatEventMessage.getBounty() + "SEAT");
+        bounty.setText("赏金：" + chatEventMessage.getBounty() + "SEAT");
         tvContent.setText(chatEventMessage.getIntro() + "");
         mTvHeadLike.setText(chatEventMessage.getSupportCount() + "");
         mTvHeadComment.setText(chatEventMessage.getCommentCount() + "");
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm");
         String expiryTime = sdf.format(chatEventMessage.getExpiryTime());
 
-        tvTime.setText(expiryTime+"");
+        tvTime.setText(expiryTime + "");
 
 
 //        tvTime.setText(DateUtils.formatFriendly(new Date(mDynamicModel.getCreateTime())));
@@ -162,70 +172,77 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
 
         //领取任务
-        if (chatEventMessage.getStatus()==10){
-            btnEvenTask.setText("已被领取")
-            ;btnEvenTask.setFocusable(false);
-        }
-        btnEvenTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final int[] idItems = new int[]{R.id.btn_dialog_task_detail_sure, R.id.iv_dialog_close};
-                final CustomDialog dialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_task_receive, idItems);
-                dialog.show();
-                TextView messageContent = (TextView) dialog.getByIdView(R.id.even_message_content);
-                TextView lastTime = (TextView) dialog.getByIdView(R.id.tv_task_detail_last_time);
-                messageContent.setText(chatEventMessage.getIntro()+"");
-                SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm");
-                String expiryTime = sdf.format(chatEventMessage.getExpiryTime());
-                lastTime.setText(expiryTime);
-                lastTime.setText(expiryTime+"");
-                dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                    @Override
-                    public void OnItemClick(final CustomDialog dialog, View view) {
-
-
-                        switch (view.getId()) {
-                            case R.id.btn_dialog_input_sure:
-                                Intent intent = new Intent(TaskDetailActivity.this, SingleChatActivity.class);
-                                startActivity(intent);
-                                break;
-                            case R.id.iv_dialog_close:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                });
-                //领取任务请求
-                SCHttpUtils.postWithUserId()
-                        .url(HttpApi.TASK_DETAIL_RECEIVE)
-                        .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
-                        .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                        .addParams("taskId", chatEventMessage.getTaskId() + "")
-                        .build()
-                        .execute(new SCHttpStringCallBack() {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                dialog.dismiss();
-                            }
-
-                            @Override
-                            public void onResponse(String response, int id) {
-                                String code = JSONObject.parseObject(response).getString("code");
-                                if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                    String data = JSONObject.parseObject(response).getString("data");
-//                                    if (message.equals("任务不存在")){
-//
-//                                    }
-                                    btnEvenTask.setText("已被领取");
-                                    dialog.dismiss();
+        if (chatEventMessage.getStatus() >=10) {
+            btnEvenTask.setText("已被领取");
+            btnEvenTask.setFocusable(false);
+            btnEvenTask.setOnClickListener(null);
+            btnEvenTask.setTextColor(getResources().getColor(R.color.aurora_bg_edittext_default));
+        } else {
+            btnEvenTask.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //领取任务请求
+                    SCHttpUtils.postWithUserId()
+                            .url(HttpApi.TASK_DETAIL_RECEIVE)
+                            .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
+                            .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
+                            .addParams("taskId", chatEventMessage.getTaskId() + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    ToastUtils.showToast(TaskDetailActivity.this, "任务已被领取");
                                 }
 
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                        String data = JSONObject.parseObject(response).getString("data");
+                                        final String HxUserName = JSONObject.parseObject(data).getString("HxUserName");
+                                        btnEvenTask.setText("已被领取");
+                                        if (chatEventMessage.getFromUser() != null) {
+                                            IUser user = chatEventMessage.getFromUser();
+                                            String displayName = chatEventMessage.getFromUser().getDisplayName();
+                                            defaultUser = new DefaultUser(0, displayName, user.getAvatarFilePath());
+                                            defaultUser.setHxUserId(HxUserName);
+                                        }
+                                    }
+                                }
+                            });
+                    final int[] idItems = new int[]{R.id.btn_dialog_task_detail_sure, R.id.iv_dialog_close};
+                    final CustomDialog dialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_task_receive, idItems);
+                    dialog.show();
+                    TextView messageContent = (TextView) dialog.getByIdView(R.id.even_message_content);
+                    TextView lastTime = (TextView) dialog.getByIdView(R.id.tv_task_detail_last_time);
+                    messageContent.setText(chatEventMessage.getIntro() + "");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm");
+                    String expiryTime = sdf.format(chatEventMessage.getExpiryTime());
+                    lastTime.setText(expiryTime + "");
+                    EventBus.getDefault().postSticky(new EventMessage<ChatEventMessage>(1));
+                    dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                        @Override
+                        public void OnItemClick(final CustomDialog dialog, View view) {
+
+                            switch (view.getId()) {
+                                case R.id.btn_dialog_task_detail_sure:
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("userInfo", defaultUser);
+                                    readyGo(SingerChatInfoActivity.class, bundle);
+                                    dialog.dismiss();
+                                    break;
+                                case R.id.iv_dialog_close:
+                                    dialog.dismiss();
+                                    break;
                             }
-                        });
-            }
+                        }
+                    });
 
-        });
+                }
 
+            });
+
+        }
 
        /* String intro = bdCommentBean.getChatEventMessage().getIntro();
         String content = "";
@@ -306,8 +323,8 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     }
 
-    private void initRecyclerView() {
-        initHeadView();
+    private void initRecyclerView(ChatEventMessage chatEventMessage) {
+        initHeadView(chatEventMessage);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(TaskDetailActivity.this, LinearLayoutManager.VERTICAL, false);
         rvTaskComment.setLayoutManager(linearLayoutManager);
         taskCommentAdapter = new TaskCommentAdapter(R.layout.item_task_details_comment, commentList, this);
@@ -318,15 +335,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     }
 
-    private void initData() {
+    private void initData(ChatEventMessage chatEventMessage) {
         taskPresenter = new TaskPresenterImpl(this);
-        if (chatEventMessage==null){
+        if (chatEventMessage == null) {
             return;
         }
-        String taskId = chatEventMessage.getTaskId()==null?"不限时":chatEventMessage.getTaskId()+"";
+        String taskId = chatEventMessage.getTaskId() == null ? "不限时" : chatEventMessage.getTaskId() + "";
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.TASK_DETAIL)
-                .addParams("taskId",taskId+"")
+                .addParams("taskId", taskId + "")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -338,8 +355,8 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
                         String data = JSONObject.parseObject(response).getString("data");
-                        chatEventMessage = JSONObject.parseObject(data,ChatEventMessage.class);
-                        initHeadView();
+                        ChatEventMessage chatEventMessage1 = JSONObject.parseObject(data, ChatEventMessage.class);
+                        initRecyclerView(chatEventMessage1);
                     }
                 });
         /*for (int i = 0; i < 10; i++) {
@@ -411,7 +428,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     @OnClick(R.id.tv_task_details_comment)
     public void onClick() {
-        showPop();
+//        showPop();
     }
 
     @Override
@@ -431,7 +448,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         dialog.setOnSendClickListener(new CommentDialog.OnSendClickListener() {
             @Override
             public void onSendClick(View v, String msg) {
-                String taskId = String.valueOf(chatEventMessage.getTaskId());
+                String taskId = String.valueOf(detailsChatEventMessage.getTaskId());
                 String characterId = SCCacheUtils.getCacheCharacterId();
 
                 taskPresenter.addTaskComment(characterId, taskId, msg);

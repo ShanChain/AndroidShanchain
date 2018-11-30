@@ -1,2 +1,2 @@
-include ':PushSDK', ':common', ':thirdparty', ':arkspot', ':improv', ':baidumap', ':chatinput', ':messagelist',':satellitemenu'
+include ':PushSDK', ':common', ':thirdparty', ':arkspot', ':improv', ':baidumap', ':chatinput', ':messagelist', ':satellitemenu', ':uploadImge'
 include ':arcmenu'

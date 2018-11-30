@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-           tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">common</string>
 
     <string name="request_no_param_error">请求参数异常</string>
@@ -7,7 +6,7 @@
     <string name="request_no_network_connect">网络异常，请检查网络</string>
     <string name="request_wrong_method">访问方法错误</string>
 
-
+    <string name="jmui_loading">正在加载</string>
     <string name="server_err">服务器错误</string>
 
 

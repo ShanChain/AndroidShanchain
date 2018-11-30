@@ -120,5 +120,10 @@ public class RoleManager {
         SCCacheUtils.setCache(userId,Constants.CACHE_CHARACTER_INFO,characterInfo);
     }
 
+    public static void switchRoleCacheHeadImg(String headImg){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,Constants.CACHE_HEAD_IMG,headImg);
+    }
+
 
 }

@@ -62,5 +62,4 @@
         app:inputMarginRight="3dp"
         app:showSelectAlbum="true" />
 
-
 </com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView>

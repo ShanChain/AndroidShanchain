@@ -15,6 +15,8 @@ public interface IUser {
      */
     String getDisplayName();
 
+    String getSignature();
+
     /**
      * Get user avatar file path.
      * @return avatar file path

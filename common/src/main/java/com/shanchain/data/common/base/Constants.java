@@ -52,6 +52,7 @@ public interface Constants {
         String CACHE_CHARACTER_ID = "characterId";
         String CACHE_SPACE_INFO = "spaceInfo";
         String CACHE_CHARACTER_INFO = "characterInfo";
+        String CACHE_HEAD_IMG = "headImg";
         String CACHE_GDATA = "gData";
         String CACHE_SPACE_COLLECTION = "spaceCollection";
         String CACHE_HX_USER_NAME = "hxUserName";

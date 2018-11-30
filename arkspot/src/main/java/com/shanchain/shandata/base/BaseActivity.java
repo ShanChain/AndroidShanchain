@@ -75,25 +75,24 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected float mScreenDensity = 0.0f;
     /**
-     *  描述：加载中。。。对话框
-     *
+     * 描述：加载中。。。对话框
      */
     private CustomDialog mCustomDialog;
 
     private PermissionHelper mPermissionHelper;
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (mPermissionHelper.requestPermissionsResult(requestCode, permissions, grantResults)) {
-            //权限请求结果，并已经处理了该回调
-//            if (requestCode==10002){
-//                mLocationClient.restart();
-//            }
-
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (mPermissionHelper.requestPermissionsResult(requestCode, permissions, grantResults)) {
+//            //权限请求结果，并已经处理了该回调
+////            if (requestCode==10002){
+////                mLocationClient.restart();
+////            }
+//
+//            return;
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
 
     /**
      * 描述: onCreate 初始化
@@ -102,11 +101,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // 调用父类onCreate
         super.onCreate(savedInstanceState);
-        // 注册EventBus
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
-
+//        // 注册EventBus
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+// 绑定注解
+//        ButterKnife.bind(this);
 //        RNManager.getInstance().init(getApplication());
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
@@ -126,17 +126,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         initPushAgent();
     }
 
-    private void initPushAgent(){
+    private void initPushAgent() {
         PushAgent.getInstance(this).onAppStart();
     }
 
     private void initStatusBar() {
-        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setImmersiveStatusBar_API21(this, getResources().getColor(R.color.colorWhite));
             setStatusBarLightMode_API23(this);
         }
-        MIUISetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
-        FlymeSetStatusBarLightModeWithWhiteColor(this,getWindow(), true);
+        MIUISetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
+        FlymeSetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
     }
 
     /**
@@ -209,11 +209,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 描述: 接收EventBus通知
      */
-//    @Subscribe
-//    public void onEventMainThread(Object event) {
-//
+    @Subscribe
+    public void onEventMainThread(Object event) {
 //        ToastUtils.showToast(this,"baseActivity执行");
-//    }
+    }
 
     /**
      * 描述: 重写finish使Activity出栈
@@ -239,7 +238,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
-//        EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
         //极光消息解绑
@@ -247,17 +246,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     *  描述：友盟数据统计埋点
+     * 描述：友盟数据统计埋点
      */
     public void onResume() {
         super.onResume();
-      //  MobclickAgent.onPageStart(this.getClass().getSimpleName()); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        //  MobclickAgent.onPageStart(this.getClass().getSimpleName()); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
         MobclickAgent.onResume(this);          //统计时长
     }
+
     public void onPause() {
         super.onPause();
 
-     //   MobclickAgent.onPageEnd(this.getClass().getSimpleName()); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        //   MobclickAgent.onPageEnd(this.getClass().getSimpleName()); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
         MobclickAgent.onPause(this);
     }
 
@@ -392,9 +392,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public Resources getResources() {
         Resources res = super.getResources();
-        Configuration config=new Configuration();
+        Configuration config = new Configuration();
         config.setToDefaults();
-        res.updateConfiguration(config,res.getDisplayMetrics() );
+        res.updateConfiguration(config, res.getDisplayMetrics());
         return res;
     }
 }

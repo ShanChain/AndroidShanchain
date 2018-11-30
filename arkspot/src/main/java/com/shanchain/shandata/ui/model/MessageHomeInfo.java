@@ -22,12 +22,12 @@ public class MessageHomeInfo implements Serializable{
     private Conversation mJMConversation;
 
 
-    public Conversation getEMConversation() {
+    public Conversation getJMConversation() {
         return mJMConversation;
     }
 
-    public void setEMConversation(Conversation EMConversation) {
-        mJMConversation = EMConversation;
+    public void setJMConversation(Conversation JConversation) {
+        mJMConversation = JConversation;
     }
 
     public boolean isTop() {

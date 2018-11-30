@@ -482,6 +482,10 @@ public interface HttpApi {
      * 获取演绎详情
      */
     String PLAY_GET_ID = BASE_URL + "/v1/play/get/id";
+    /*
+    * 修改角色信息
+    * */
+    String MODIFY_CHARACTER = BASE_URL + "/v1/character/modify";
     /**
      * 附近房间信息
      */
@@ -494,6 +498,10 @@ public interface HttpApi {
     //    String CHAT_ROOM_INFO = "http://95.169.24.11:8081" + "/v1/lbs/coordinate/info";
     /* 获取聊天室历史消息*/
     String CHAT_ROOM_HISTORY_MESSAGE = BASE_URL + "/jm/room/message";
+    /* 获取聊天室成员*/
+    String CHAT_ROOM_MEMBER = BASE_URL + "/jm/room/members";
+    /* 更新极光用户信息 */
+    String CHAT_USER_UPDATE = BASE_URL + "/jm/user/update";
     //    String CHAT_ROOM_HISTORY_MESSAGE = "http://95.169.24.11:8082" + "/jm/room/message";
 //    String CHAT_ROOM_HISTORY_MESSAGE = "http://67.218.159.56:8082" + "/jm/room/message";
     /* 查询广场上的所有任务列表 */
@@ -534,6 +542,13 @@ public interface HttpApi {
     String TASK_DETAIL_CANCEL = BASE_URL + "/v1/task/cancel";
     /* 领取方确认完成 */
     String TASK_DETAIL_ACCOMPLISH = BASE_URL + "/v1/task/receive/accomplish";
+    /* 获取当前汇率 */
+    String GET_SEAT_CURRENCY = BASE_URL + "/web/api/wallet/seat/currency";
+    /* 用户反馈 */
+    String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
+
+//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
 
 }

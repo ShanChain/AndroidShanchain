@@ -31,6 +31,9 @@ dependencies {
     implementation 'com.android.support:design:27.1.0'
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+    implementation 'cn.jiguang.sdk:jmessage:2.7.0'
+    // 此处以JCore 1.2.3 版本。
+    implementation 'cn.jiguang.sdk:jcore:1.2.3'
     implementation 'junit:junit:4.12'
 
 }

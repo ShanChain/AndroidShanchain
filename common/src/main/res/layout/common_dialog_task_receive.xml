@@ -94,6 +94,7 @@
             android:background="@drawable/shape_btn_dialog_sure"
             android:text="与赏主联系"
             android:textColor="#fff"
+            android:focusableInTouchMode="false"
             android:textSize="@dimen/sp_14" />
 
     </LinearLayout>

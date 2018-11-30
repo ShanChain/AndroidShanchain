@@ -31,6 +31,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,12 +40,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 /**
  * 图片操作工具包
-
  */
 public class ImageUtils {
 
@@ -855,6 +857,22 @@ public class ImageUtils {
         bos.close();
     }
 
+    //bitMap返回一个文件
+    public static File getFile(Bitmap bm, String fileName) throws Exception {
+        File dirFile = new File(fileName);
+        //检测图片是否存在
+        if (dirFile.exists()) {
+            dirFile.delete();  //删除原图片
+        }
+        File myCaptureFile = new File(fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        //100表示不进行压缩，70表示压缩率为30%
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        bos.flush();
+        bos.close();
+        return myCaptureFile;
+    }
+
     //存储进SD卡
     public static void saveFile(String fileName, int targetWidth,
                                 int targetHeight) throws Exception {
@@ -873,6 +891,70 @@ public class ImageUtils {
     }
 
 
+    /**
+     * 网络图片uri转bitmap
+     * Created by iningke on 2017/2/8.
+     */
+    public final static Bitmap returnBitMap(String url) {
+        URL myFileUrl = null;
+        Bitmap bitmap = null;
+        try {
+            myFileUrl = new URL(url);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setDoInput(true);
+            int length = conn.getContentLength();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is, length);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 2;// 设置缩放比例
+            Rect rect = new Rect(0, 0, 0, 0);
+            bitmap = BitmapFactory.decodeStream(bis, rect, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 
+    /**
+     * 将Bitmap转换成文件
+     * 保存文件
+     * @param bm
+     * @param fileName
+     * @throws IOException
+     */
+    public static File saveUrlImgFile(Bitmap bm, String fileName) {
+        String path = getSDPath() +"/shanchain/";
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
 
+        File myCaptureFile = new File(path + fileName);
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+            bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+            bos.flush();
+            bos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myCaptureFile;
+    }
+
+    //获取sd卡路径
+    public static String getSDPath(){
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        if(sdCardExist)
+        {
+            sdDir = Environment.getExternalStorageDirectory();//获取跟目录
+        }
+        return sdDir.toString();
+    }
 }

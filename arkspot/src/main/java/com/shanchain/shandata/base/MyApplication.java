@@ -36,6 +36,7 @@ import com.shanchain.shandata.push.PushManager;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 //import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengMessageHandler;
@@ -122,7 +123,7 @@ public class MyApplication extends BaseApplication {
         initShareAndLogin();
 //        initInstance();
 //        initUmengSocial();
-        initBugly();
+        initBugly();//bugly崩溃日志上报
     }
 
     @Override
@@ -144,7 +145,7 @@ public class MyApplication extends BaseApplication {
 
     /** bugly崩溃日志上报*/
     private void initBugly() {
-        //CrashReport.initCrashReport(getApplicationContext(),"1b75aa14d2",true);
+//        CrashReport.initCrashReport(getApplicationContext(),"adaaf0fcb3",true);
     }
 
 //    private void initUmengSocial() {
@@ -305,8 +306,8 @@ public class MyApplication extends BaseApplication {
     * 初始化极光IM
     * */
     private void initJMessage() {
-        JMessageClient.init(this);
-//        JMessageClient.setDebugMode(true);
+        JMessageClient.init(this,true);
+        JMessageClient.setDebugMode(true);
     }
 //    private void initContactListener() {
 //        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {

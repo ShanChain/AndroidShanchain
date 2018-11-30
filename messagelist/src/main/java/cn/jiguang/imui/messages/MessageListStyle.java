@@ -194,9 +194,9 @@ public class MessageListStyle extends Style {
                 context.getResources().getDimensionPixelSize(R.dimen.aurora_line_spacing_extra_default));
         style.lineSpacingMultiplier = typedArray.getFloat(R.styleable.MessageList_lineSpacingMultiplier, 1.0f);
         style.sendVoiceDrawable = typedArray.getResourceId(R.styleable.MessageList_sendVoiceDrawable,
-                R.drawable.aurora_sendvoice_send_3);
+                R.drawable.chat_voice_send_icon_3x);
         style.receiveVoiceDrawable = typedArray.getResourceId(R.styleable.MessageList_receiveVoiceDrawable,
-                R.drawable.aurora_receivevoice_receive_3);
+                R.drawable.chat_voice_receive_icon_3);
         style.playSendVoiceAnim = typedArray.getResourceId(R.styleable.MessageList_playSendVoiceAnim,
                 R.drawable.aurora_anim_send_voice);
         style.playReceiveVoiceAnim = typedArray.getResourceId(R.styleable.MessageList_playReceiveVoiceAnim,

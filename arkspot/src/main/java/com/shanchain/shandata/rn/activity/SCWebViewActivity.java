@@ -1,11 +1,14 @@
-package com.shanchain.data.common.h5;
+package com.shanchain.shandata.rn.activity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -22,11 +25,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
+import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.LongToIntFunction;
 
 public class SCWebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,7 +40,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private WebView mWbSc;
     private String mTitle;
     private String mUrl;
-    private String token,characterId,userId;
+    private String token, characterId, userId;
     private ProgressBar mPbWeb;
 
     @Override
@@ -55,7 +60,9 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 
     private void initWeb() {
         token = SCCacheUtils.getCacheToken();
-        characterId = SCCacheUtils.getCacheCharacterId();
+        CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+//        characterId = SCCacheUtils.getCacheCharacterId();
+        characterId = String.valueOf(characterInfo.getCharacterId());
         userId = SCCacheUtils.getCacheUserId();
         mTvWebTbTitle.setText(mTitle);
         WebSettings settings = mWbSc.getSettings();
@@ -64,24 +71,79 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         map.put("token", token);
         map.put("characterId", characterId);
         map.put("userId", userId);
-        mWbSc.loadUrl(mUrl+"?token="+map.get("token")+"&characterId="+map.get("characterId")+"&userId="+map.get("userId"));
+        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
         mWbSc.setWebViewClient(new WebViewClient() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(mUrl,map);
-                return true;
+                Map headers = request.getRequestHeaders();
+                String urlPath = request.getUrl().getPath();
+                String loadUrl = request.getUrl().toString();
+                String url = view.getUrl();
+                LogUtils.d("Url", url);
+                LogUtils.d("UrlPath", urlPath);
+                LogUtils.d("loadUrl", loadUrl);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                    if (loadUrl.contains("toPrev=true")) {
+                        finish();
+                        LogUtils.d("toPrev",url);
+                        return true;
+                    }
+                    if (loadUrl.contains("comfirm=true")) {
+                        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+//                    mWbSc.reload();
+                        LogUtils.d("comfirm", url);
+                        return true;
+                    }
+                    if (loadUrl.contains("toLogin=true")) {
+                        String url1 = url;
+                        Intent intent = new Intent(SCWebViewActivity.this, LoginActivity.class);
+                        intent.putExtra("wallet", "wallet");
+                        startActivity(intent);
+                        finish();
+                        LogUtils.d("toLogin",url);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+                    if (url.contains("toPrev=true")) {
+                        finish();
+                        LogUtils.d("toPrev",url);
+                        return true;
+                    }
+                    if (url.contains("comfirm=true")) {
+                        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+//                    mWbSc.reload();
+                        LogUtils.d("comfirm", url);
+                        return true;
+                    }
+                    if (url.contains("toLogin=true")) {
+                        String url1 = url;
+                        Intent intent = new Intent(SCWebViewActivity.this, LoginActivity.class);
+                        intent.putExtra("wallet", "wallet");
+                        startActivity(intent);
+                        finish();
+                        LogUtils.d("toLogin",url);
+                        return true;
+                    }
+                }
+                return false;
             }
 
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                if (url.contains("toPrev=true")){
-                    finish();
-                }else if (url.contains("toLogin")){
-                    Intent intent = new Intent();
-                    intent.setAction(".ui.view.activity.login");
-                    startActivity(intent);
-                }
                 return super.shouldInterceptRequest(view, url);
             }
         });
@@ -137,11 +199,11 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 mWbSc.goBack();
                 return true;
             } else {
-//                finish();
+                finish();
+                return true;
             }
-
         }
-        return super.onKeyDown(keyCode, event);
+        return false;
     }
 
 

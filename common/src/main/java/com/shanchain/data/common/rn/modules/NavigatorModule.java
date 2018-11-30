@@ -27,6 +27,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     public final static String REACT_SCREEN = "ReactScreen";
     public final static String REACT_INITIAL_PROPS = "activityParams";
     public static final String REACT_PROPS = "screenProps";
+//    public static final String SETTING_SCREEN = "SETTING_SCREEN";
     public NavigatorModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }

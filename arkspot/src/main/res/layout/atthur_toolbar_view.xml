@@ -14,8 +14,17 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dp_4"
-
         />
+    <!--左侧用户头像-->
+    <cn.jiguang.imui.view.CircleImageView
+        android:id="@+id/toolbar_user_head_img"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:background="@drawable/aurora_headicon_default"
+        android:layout_marginLeft="10dp"/>
 
     <!-- 中间标题 -->
     <TextView
@@ -33,6 +42,7 @@
         android:id="@+id/mFavorite"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:visibility="gone"
         android:layout_toEndOf="@+id/mTitleText"
         />
 
@@ -42,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/mTitleText"
         android:visibility="gone"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
 
         <!--聊天室的图片-->
@@ -59,8 +70,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/mChatRoom"
+            android:textAlignment="center"
             android:layout_centerVertical="true"
-            android:text="885"
+            android:text=""
             android:textColor="#000"
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>

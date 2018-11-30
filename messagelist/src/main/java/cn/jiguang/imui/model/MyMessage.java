@@ -13,7 +13,9 @@ public class MyMessage implements IMessage {
     private String text;
     private String timeString;
     private int type;
+    private String hxUserName;
     private IUser user;
+    private DefaultUser defaultUser;
     private String mediaFilePath;
     private long duration;
     private String progress;
@@ -70,14 +72,23 @@ public class MyMessage implements IMessage {
 
     @Override
     public IUser getFromUser() {
-        if (user == null) {
+        if (defaultUser == null) {
             return new DefaultUser( 0, "user1", null);
         }
+        return defaultUser;
+    }
+
+    public IUser getUser() {
         return user;
     }
 
-    public void setUserInfo(IUser user) {
+    public void setUser(IUser user) {
         this.user = user;
+    }
+
+    public void setUserInfo(DefaultUser user) {
+
+        this.defaultUser = user;
     }
 
     public void setMediaFilePath(String path) {

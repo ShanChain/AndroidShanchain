@@ -24,7 +24,7 @@ public class SCUploadImgHelper {
     private String mEndPoint;
     private String mHost;
 
-    public void upLoadImg(final Context context, final List<String> srcPaths){
+    public  void upLoadImg(final Context context, final List<String> srcPaths){
         int size = srcPaths.size();
         SCHttpUtils.post()
                 .url(HttpApi.UP_LOAD_FILE)

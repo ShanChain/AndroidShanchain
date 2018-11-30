@@ -56,13 +56,14 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
     private long createTime;
     private long expiryTime;
     private long receiveTime;
+    private long completeTime;
+    private long verifyTime;
+    private long unfinishedTime;
     private int status;
     private int receiveCount;
     private int commentCount;
     private int supportCount;
     private int characterId;
-    private Object verifyTime;
-    private Object unfinishedTime;
     private String currency;
     private String releaseHash;
     private String lastHash;
@@ -93,6 +94,14 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
 
     public void setiUser(IUser iUser) {
         this.iUser = iUser;
+    }
+
+    public long getCompleteTime() {
+        return completeTime;
+    }
+
+    public void setCompleteTime(long completeTime) {
+        this.completeTime = completeTime;
     }
 
     public String getName() {
@@ -290,19 +299,19 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
         this.characterId = characterId;
     }
 
-    public Object getVerifyTime() {
+    public long getVerifyTime() {
         return verifyTime;
     }
 
-    public void setVerifyTime(Object verifyTime) {
+    public void setVerifyTime(long verifyTime) {
         this.verifyTime = verifyTime;
     }
 
-    public Object getUnfinishedTime() {
+    public long getUnfinishedTime() {
         return unfinishedTime;
     }
 
-    public void setUnfinishedTime(Object unfinishedTime) {
+    public void setUnfinishedTime(long unfinishedTime) {
         this.unfinishedTime = unfinishedTime;
     }
 

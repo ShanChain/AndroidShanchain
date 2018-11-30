@@ -6,14 +6,13 @@ import android.os.Parcelable;
 import cn.jiguang.imui.commons.models.IUser;
 
 
-public class DefaultUser implements IUser ,Parcelable {
+public class DefaultUser implements IUser,Parcelable {
 
     private long id;
     private String displayName;
     private String avatar;
     private String signature;
-
-
+    private String hxUserId;
 
     public DefaultUser(long id, String displayName, String avatar) {
         this.id = id;
@@ -25,6 +24,8 @@ public class DefaultUser implements IUser ,Parcelable {
         id = in.readLong();
         displayName = in.readString();
         avatar = in.readString();
+        signature = in.readString();
+        hxUserId = in.readString();
     }
 
     public static final Creator<DefaultUser> CREATOR = new Creator<DefaultUser>() {
@@ -39,8 +40,39 @@ public class DefaultUser implements IUser ,Parcelable {
         }
     };
 
-    public String getSignature() {
-        return signature;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    public String getHxUserId() {
+        return hxUserId;
+    }
+
+    public void setHxUserId(String hxUserId) {
+        this.hxUserId = hxUserId;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return displayName;
     }
 
     public void setSignature(String signature) {
@@ -48,13 +80,8 @@ public class DefaultUser implements IUser ,Parcelable {
     }
 
     @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
+    public String getSignature() {
+        return signature;
     }
 
     @Override
@@ -72,5 +99,7 @@ public class DefaultUser implements IUser ,Parcelable {
         dest.writeLong(id);
         dest.writeString(displayName);
         dest.writeString(avatar);
+        dest.writeString(signature);
+        dest.writeString(hxUserId);
     }
 }

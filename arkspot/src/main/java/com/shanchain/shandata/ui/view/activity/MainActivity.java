@@ -77,8 +77,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     ArthurToolBar mTbMain;
     @Bind(R.id.fl_main_container)
     FrameLayout mFlMainContainer;
-    @Bind(R.id.bnb)
-    BottomNavigationBar mBnb;
+//    @Bind(R.id.bnb)
+//    BottomNavigationBar mBnb;
     private int mFragmentId;
     private String[] navigationBarTitles = {"故事", "对话", "广场", "我的"};
     private BadgeItem mStoryBadge;
@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
 //        UMConfigure.setLogEnabled(true); //显示友盟log日记
         initToolBar();
         //初始化底部导航栏
-        initBottomNavigationBar();
+//        initBottomNavigationBar();
         //检查apk版本
         checkApkVersion();
         initDeviceToken();
@@ -236,85 +236,84 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
     }
 
-    private void initBottomNavigationBar() {
-        BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
-        mStoryBadge = new BadgeItem();
-        mStoryBadge.hide();
-        //btmItemStory.setBadgeItem(mStoryBadge);
-        BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
-        mNewsBadge = new BadgeItem();
-        mNewsBadge.hide();
-        //btmItemNews.setBadgeItem(mNewsBadge);
-        BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
-        mSquareBadge = new BadgeItem();
-        mSquareBadge.hide();
-        //btmItemSquare.setBadgeItem(mSquareBadge);
-        BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
-        mMineBadge = new BadgeItem();
-        mMineBadge.setText("  ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
-        String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
-        String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId, CACHE_USER_MSG_READ_STATUS);
-        btmItemMine.setBadgeItem(mMineBadge);
-        if (!TextUtils.isEmpty(msgReadStatus) && !Boolean.parseBoolean(msgReadStatus)) {
-            isMsgRead = Boolean.parseBoolean(msgReadStatus);
-            mMineBadge.show();
-        } else {
-            isMsgRead = true;
-            mMineBadge.hide();
-        }
-
-        mBnb.setActiveColor(R.color.colorActive)
-                .setMode(BottomNavigationBar.MODE_FIXED)
-                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
-                .setInActiveColor(R.color.colorInactive)
-                .addItem(btmItemStory)
-                .addItem(btmItemNews)
-                .addItem(btmItemSquare)
-                .addItem(btmItemMine)
-                .setFirstSelectedPosition(mFragmentId)
-                .initialise();
-        mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(int position) {
-                mFragmentId = position;
-                setToolBar(mFragmentId);
-                switch (position) {
-                    case 0:
-                        setFragment(0);
-                        break;
-                    case 1:
-                        setFragment(1);
-                        break;
-                    case 2:
-                        setFragment(2);
-                        break;
-                    case 3:
-                        setFragment(3);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(int position) {
-
-            }
-
-            @Override
-            public void onTabReselected(int position) {
-
-            }
-
-        });
-
-        setSelectedPager();
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-    }
+//    private void initBottomNavigationBar() {
+//        BottomNavigationItem btmItemStory = new BottomNavigationItem(R.drawable.selector_tab_story, navigationBarTitles[0]);
+//        mStoryBadge = new BadgeItem();
+//        mStoryBadge.hide();
+//        //btmItemStory.setBadgeItem(mStoryBadge);
+//        BottomNavigationItem btmItemNews = new BottomNavigationItem(R.drawable.selector_tab_news, navigationBarTitles[1]);
+//        mNewsBadge = new BadgeItem();
+//        mNewsBadge.hide();
+//        //btmItemNews.setBadgeItem(mNewsBadge);
+//        BottomNavigationItem btmItemSquare = new BottomNavigationItem(R.drawable.selector_tab_square, navigationBarTitles[2]);
+//        mSquareBadge = new BadgeItem();
+//        mSquareBadge.hide();
+//        //btmItemSquare.setBadgeItem(mSquareBadge);
+//        BottomNavigationItem btmItemMine = new BottomNavigationItem(R.drawable.selector_tab_mine, navigationBarTitles[3]);
+//        mMineBadge = new BadgeItem();
+//        mMineBadge.setText("  ").setBorderWidth(DensityUtils.dip2px(mContext, 3)).setBorderColor(getResources().getColor(R.color.colorWhite));
+//        String userId = CommonCacheHelper.getInstance().getCache("0", CACHE_CUR_USER);
+//        String msgReadStatus = CommonCacheHelper.getInstance().getCache(userId, CACHE_USER_MSG_READ_STATUS);
+//        btmItemMine.setBadgeItem(mMineBadge);
+//        if (!TextUtils.isEmpty(msgReadStatus) && !Boolean.parseBoolean(msgReadStatus)) {
+//            isMsgRead = Boolean.parseBoolean(msgReadStatus);
+//            mMineBadge.show();
+//        } else {
+//            isMsgRead = true;
+//            mMineBadge.hide();
+//        }
+//
+//        mBnb.setActiveColor(R.color.colorActive)
+//                .setMode(BottomNavigationBar.MODE_FIXED)
+//                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
+//                .setInActiveColor(R.color.colorInactive)
+//                .addItem(btmItemStory)
+//                .addItem(btmItemNews)
+//                .addItem(btmItemSquare)
+//                .addItem(btmItemMine)
+//                .setFirstSelectedPosition(mFragmentId)
+//                .initialise();
+//        mBnb.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(int position) {
+//                mFragmentId = position;
+//                setToolBar(mFragmentId);
+//                switch (position) {
+//                    case 0:
+//                        setFragment(0);
+//                        break;
+//                    case 1:
+//                        setFragment(1);
+//                        break;
+//                    case 2:
+//                        setFragment(2);
+//                        break;
+//                    case 3:
+//                        setFragment(3);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(int position) {
+//
+//            }
+//
+//        });
+//
+//        setSelectedPager();
+//
+//    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//    }
 
     private StoryFragment mStoryFragment;
     private NewsFragment mNewsFragment;

@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -22,23 +21,12 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -52,26 +40,26 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
-import com.shanchain.shandata.ui.view.activity.tasklist.TaskListFragment;
-import com.shanchain.shandata.ui.view.fragment.SingerChatFragment;
-import com.shanchain.shandata.ui.view.fragment.SingerChatRoomFragment;
+import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.umeng.commonsdk.debug.D;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
@@ -80,7 +68,7 @@ import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
-import cn.jiguang.imui.messages.CustomEvenMsgHolder;
+import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
@@ -89,9 +77,18 @@ import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.CustomContent;
+import cn.jpush.im.android.api.content.FileContent;
+import cn.jpush.im.android.api.content.ImageContent;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.content.VideoContent;
+import cn.jpush.im.android.api.content.VoiceContent;
+import cn.jpush.im.android.api.enums.ContentType;
+import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.exceptions.JMFileSizeExceedException;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -99,9 +96,10 @@ import cn.jpush.im.api.BasicCallback;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class SingleChatActivity extends BaseActivity implements View.OnTouchListener,EasyPermissions.PermissionCallbacks,
+public class SingleChatActivity extends BaseActivity implements View.OnTouchListener, EasyPermissions.PermissionCallbacks,
         SensorEventListener, ArthurToolBar.OnLeftClickListener,
-        ArthurToolBar.OnRightClickListener{
+        ArthurToolBar.OnRightClickListener {
+
     @Bind(R.id.tb_main)
     ArthurToolBar mTbMain;
 
@@ -109,8 +107,12 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private final int RC_RECORD_VOICE = 0x0001;
     private final int RC_CAMERA = 0x0002;
     private final int RC_PHOTO = 0x0003;
-    private final static String JM_USER = SCCacheUtils.getCacheHxUserName() ;
-    private final static String FORM_USER_ID = "qwer";
+    private final static String JM_USER = SCCacheUtils.getCacheHxUserName();
+
+    PullToRefreshLayout pullToRefreshLayout;
+    //    private final static String FORM_USER_ID = "qwer";
+    private String FORM_USER_ID;
+    private String FORM_USER_NAME;
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
@@ -124,10 +126,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private PowerManager.WakeLock mWakeLock;
 
     private Conversation mConv;
-    private String mTargetId ;
+    private String mTargetId;
     private String mTargetAppKey;
     private Activity mContext;
     private UserInfo mMyInfo;
+    private DefaultUser userInfo;
 
 
     private ArrayList<String> mPathList = new ArrayList<>();
@@ -142,17 +145,37 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
     @Override
     protected void initViewsAndEvents() {
+        JMessageClient.registerEventReceiver(this);
+        mMyInfo = JMessageClient.getMyInfo();
+        final Bundle bundle = getIntent().getExtras();
+        userInfo = bundle.getParcelable("userInfo");
+        if (userInfo != null) {
+            FORM_USER_ID = userInfo.getHxUserId();
+            FORM_USER_NAME = userInfo.getDisplayName();
+
+            JMessageClient.getUserInfo(FORM_USER_NAME, new GetUserInfoCallback() {
+                @Override
+                public void gotResult(int i, String s, UserInfo userInfo) {
+
+                }
+            });
+        } else {
+            FORM_USER_NAME = "qwer";
+        }
+
         initToolbar();
         initData();
-
+        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
         mChatView = (ChatView) findViewById(R.id.activity_chat_view);
-
         mChatView.initModule();
-        mData = getConversationMessages();
-        initMsgAdapter();
+        mChatView.isShowBtnInputJoin(false);
+        if (FORM_USER_NAME != null) {
+            mData = getConversationMessages();
+            initMsgAdapter();
+        }
 
         mReceiver = new HeadsetDetectReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -167,33 +190,41 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (input.length() == 0) {
                     return false;
                 }
-                mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
+                mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
                 if (mConv == null) {
-                    mConv = Conversation.createSingleConversation(FORM_USER_ID);
+                    mConv = Conversation.createSingleConversation(FORM_USER_NAME);
                 }
-                final Message conversationMessage = mConv.createSendTextMessage(input.toString());
+                TextContent textContent = new TextContent(input.toString());
+                Map extrasMap = new HashMap();
+                extrasMap.put("userName", JMessageClient.getMyInfo().getUserName() + "");
+                extrasMap.put("conversationType", "single");
+//                extrasMap.put("appkey",conversationMessage.getFromUser().getDisplayName()+"");
+                textContent.setExtras(extrasMap);
+                final Message conversationMessage = mConv.createSendMessage(textContent);
+
                 conversationMessage.setOnSendCompleteCallback(new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        MyMessage myMessage = new MyMessage(""+input.toString(),IMessage.MessageType.SEND_TEXT.ordinal());
-                        if (i==0){
-                            mMyInfo =  JMessageClient.getMyInfo();
-                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(),mMyInfo.getDisplayName(),mMyInfo.getAvatar());
+                        MyMessage myMessage = new MyMessage("" + input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
+                        if (i == 0) {
+                            mMyInfo = JMessageClient.getMyInfo();
+                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
                             myMessage.setUserInfo(user);
                             myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             myMessage.setText(input.toString());
                             mData.add(myMessage);
-                            mAdapter.addToStart(myMessage,true);
-                        }else {
-                            ToastUtils.showToast(SingleChatActivity.this,"发送消息失败");
-                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(),mMyInfo.getDisplayName(),mMyInfo.getAvatar());
-                            myMessage.setUserInfo(user);
-                            myMessage.setText(input.toString());
-                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                            myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                            mAdapter.addToStart(myMessage,true);
+                            mAdapter.addToStart(myMessage, true);
                         }
+//                        }else {
+//                            ToastUtils.showToast(SingleChatActivity.this,"发送消息失败");
+//                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(),mMyInfo.getDisplayName(),mMyInfo.getAvatar());
+//                            myMessage.setUserInfo(user);
+//                            myMessage.setText(input.toString());
+//                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                            myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+//                            mAdapter.addToStart(myMessage,true);
+//                        }
 
                     }
                 });
@@ -206,9 +237,10 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (list == null || list.isEmpty()) {
                     return;
                 }
-
+                mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
                 MyMessage message;
                 for (FileItem item : list) {
+//                    Message msg = chatRoomConversation.createSendFileMessage(item,)
                     if (item.getType() == FileItem.Type.Image) {
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                         mPathList.add(item.getFilePath());
@@ -216,20 +248,36 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     } else if (item.getType() == FileItem.Type.Video) {
                         message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                         message.setDuration(((VideoItem) item).getDuration());
-
                     } else {
                         throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
                     }
+                    File videoFile = new File(item.getFilePath());
+                    try {
+                        Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
 
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    message.setMediaFilePath(item.getFilePath());
-                    message.setUserInfo(new DefaultUser(1, "Ironman", "R.drawable.ironman"));
+                                }
+                            }
+                        });
+                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMediaFilePath(item.getFilePath());
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        JMessageClient.sendMessage(msg);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (JMFileSizeExceedException e) {
+                        e.printStackTrace();
+                    }
 
                     final MyMessage fMsg = message;
                     SingleChatActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mAdapter.addToStart(fMsg, true);
+
                         }
                     });
                 }
@@ -312,13 +360,35 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             }
 
             @Override
-            public void onFinishRecord(File voiceFile, int duration) {
-                MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                message.setUserInfo(new DefaultUser(1, "Ironman", "R.drawable.ironman"));
-                message.setMediaFilePath(voiceFile.getPath());
-                message.setDuration(duration);
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                mAdapter.addToStart(message, true);
+            public void onFinishRecord(final File voiceFile, final int duration) {
+                mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
+                if (mConv == null) {
+                    mConv = Conversation.createSingleConversation(FORM_USER_NAME);
+                }
+                final Message msg;
+                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
+                try {
+                    msg = mConv.createSendVoiceMessage(voiceFile, duration);
+                    msg.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            int i1 = i;
+                            String s1 = s;
+                            if (i == 0) {
+                            }
+                        }
+                    });
+                    message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                    message.setMediaFilePath(voiceFile.getPath());
+                    message.setDuration(duration);
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    mAdapter.addToStart(message, true);
+                    JMessageClient.sendMessage(msg);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
             @Override
@@ -341,19 +411,28 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
              */
             @Override
             public void onPreviewSend() {
-
             }
         });
+
 
         mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
             @Override
             public void onTakePictureCompleted(String photoPath) {
+                final Message msg;
                 final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMediaFilePath(photoPath);
-                mPathList.add(photoPath);
-                mMsgIdList.add(message.getMsgId());
-                message.setUserInfo(new DefaultUser(1, "Ironman", "R.drawable.ironman"));
+                if (mConv != null) {
+                    try {
+                        msg = mConv.createSendImageMessage(new File(photoPath));
+                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMediaFilePath(photoPath);
+                        mPathList.add(photoPath);
+                        mMsgIdList.add(message.getMsgId());
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        JMessageClient.sendMessage(msg);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
                 SingleChatActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -397,6 +476,14 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
     private void initData() {
         mMyInfo = JMessageClient.getMyInfo();
+        final Bundle bundle = getIntent().getExtras();
+        userInfo = bundle.getParcelable("userInfo");
+        if (userInfo != null) {
+            FORM_USER_NAME = userInfo.getDisplayName();
+        } else {
+            FORM_USER_NAME = "qwer";
+        }
+
     }
 
     private void initToolbar() {
@@ -410,7 +497,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-        mTbMain.setTitleText("陌生好友");
+//        mTbMain.setTitleText("陌生好友");
         mTbMain.setRightImage(R.mipmap.more);
 
         mTbMain.setOnLeftClickListener(this);
@@ -490,6 +577,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
     private class HeadsetDetectReceiver extends BroadcastReceiver {
 
         @Override
@@ -523,40 +617,655 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     }
 
     private List<MyMessage> getConversationMessages() {
-        mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
+        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
         if (mConv == null) {
-            mConv = Conversation.createSingleConversation(FORM_USER_ID);
-        }
-        mConvData = mConv.getAllMessage();
-        MyMessage myMessage;
-        for (Message msg : mConvData) {
-            TextContent textContent = (TextContent) msg.getContent();
-            myMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
-            if (msg.getFromUser().getUserID()== mMyInfo.getUserID()){
-                myMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+            mConv = Conversation.createSingleConversation(FORM_USER_NAME);
+        } else if (mConv != null) {
+            mConvData = mConv.getAllMessage();
+
+            MyMessage myMessage;
+            for (int i = 0; i < mConvData.size(); i++) {
+                final Message msg = mConvData.get(i);
+                String s1 = msg.getFromUser().getSignature();
+                String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+                DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar);
+                defaultUser.setSignature(msg.getFromUser().getSignature().length() >= 0 ? msg.getFromUser().getSignature() : "该用户很懒，没有设置签名");
+                defaultUser.setHxUserId(msg.getFromID() + "");
+                switch (msg.getContent().getContentType()) {
+                    case text:
+                        TextContent textContent = (TextContent) msg.getContent();
+                        myMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        if (msg.getFromUser().getUserID() == mMyInfo.getUserID()) {
+                            myMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                        }
+                        myMessage.setUserInfo(defaultUser);
+                        mData.add(myMessage);
+                        break;
+                    case image:
+                        //处理图片消息
+                        LogUtils.d("ChatRoomMessageEvent image", "第" + i + "个" + msg.getContent().toJson().toString());
+                        final ImageContent imageContent = (ImageContent) msg.getContent();
+                        imageContent.getLocalPath();//图片本地地址
+                        imageContent.getLocalThumbnailPath();//图片对应缩略图的本地地址
+                        long imageId = msg.getFromUser().getUserID();
+                        msg.getFromID();
+                        final MyMessage imgMessage = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                        long currentimageId = JMessageClient.getMyInfo().getUserID();
+                        if (currentimageId == imageId) {
+                            imgMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                        }
+                        UserInfo userInfo = msg.getFromUser();
+//                    String s11 = userInfo.getAvatarFile().getAbsolutePath();
+//                    String s12 = userInfo.getAvatarFile().getPath();
+                        imgMessage.setUserInfo(defaultUser);
+                        String mediaID = imageContent.getMediaID();
+                        if (imageContent.getLocalPath() == null) {
+                            imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
+                                @Override
+                                public void onComplete(int i, String s, File file) {
+                                    mPathList.add(file.getAbsolutePath());
+                                    mMsgIdList.add(imgMessage.getMsgId() + "");
+                                    imgMessage.setMediaFilePath(file.getAbsolutePath());
+                                }
+                            });
+                        } else {
+                            mPathList.add(imageContent.getLocalPath());
+                            mMsgIdList.add(imgMessage.getMsgId() + "");
+                            imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
+                        }
+                        if (i > 0) {
+                            long messageTime = msg.getCreateTime();
+                            long preTime = mConvData.get(i - 1).getCreateTime();
+                            long diff = messageTime - preTime;
+                            if (diff > 3 * 60 * 1000) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                imgMessage.setTimeString(timeString);
+                            }
+                        } else {
+                            long messageTime = msg.getCreateTime();
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            imgMessage.setTimeString(timeString);
+                        }
+                        mData.add(imgMessage);
+                        break;
+                    case voice:
+                        //处理语音消息
+                        LogUtils.d("ChatRoomMessageEvent voice", "第" + i + "个" + msg.getContent().toJson().toString());
+                        final VoiceContent voiceContent = (VoiceContent) msg.getContent();
+                        voiceContent.getLocalPath();//语音文件本地地址
+                        voiceContent.getDuration();//语音文件时长
+                        final MyMessage voiceMessage = new MyMessage(null, IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                        long voiceId = msg.getFromUser().getUserID();
+                        msg.getFromID();
+                        long currentVoiceId = JMessageClient.getMyInfo().getUserID();
+                        if (currentVoiceId == voiceId) {
+                            voiceMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                        }
+                        String avatarMedialD = msg.getFromUser().getAvatar();
+//                    UserInfo userInfo = msg.getFromUser();
+//                    userInfo.getAvatarFile().getAbsolutePath();
+                        voiceMessage.setUserInfo(defaultUser);
+//                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+                        if (voiceContent.getLocalPath() != null) {
+                            voiceMessage.setMediaFilePath(voiceContent.getLocalPath());
+                            voiceMessage.setDuration(voiceContent.getDuration());
+                        } else {
+                            voiceContent.downloadVoiceFile(msg, new DownloadCompletionCallback() {
+                                @Override
+                                public void onComplete(int i, String s, File file) {
+                                    voiceMessage.setMediaFilePath(file.getAbsolutePath());
+                                    voiceMessage.setDuration(voiceContent.getDuration());
+                                }
+                            });
+                        }
+
+                        if (i > 0) {
+                            long messageTime = msg.getCreateTime();
+                            long preTime = mConvData.get(i - 1).getCreateTime();
+                            long diff = messageTime - preTime;
+                            if (diff > 3 * 60 * 1000) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                voiceMessage.setTimeString(timeString);
+                            }
+                        } else {
+                            long messageTime = msg.getCreateTime();
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            voiceMessage.setTimeString(timeString);
+                        }
+                        mData.add(voiceMessage);
+                        break;
+                    case location:
+                        break;
+                    case video:
+                        //处理视频消息
+                        LogUtils.d("ChatRoomMessageEvent video", "第" + i + "个" + msg.getContent().toJson().toString());
+                        final VideoContent videoContent = (VideoContent) msg.getContent();
+                        videoContent.getVideoLocalPath();//视频文件本地地址
+                        videoContent.getDuration();//语音文件时长
+                        final MyMessage videoMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                        long videoId = msg.getFromUser().getUserID();
+                        msg.getFromID();
+                        long currentVideoId = JMessageClient.getMyInfo().getUserID();
+                        if (currentVideoId == videoId) {
+                            videoMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                        }
+                        videoMessage.setUserInfo(defaultUser);
+//                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+                        if (videoContent.getVideoLocalPath() != null) {
+                            videoMessage.setMediaFilePath(videoContent.getThumbLocalPath());
+                            videoMessage.setDuration(videoContent.getDuration());
+                        } else {
+                            videoContent.downloadThumbImage(msg, new DownloadCompletionCallback() {
+                                @Override
+                                public void onComplete(int i, String s, File file) {
+                                    videoMessage.setMediaFilePath(file.getAbsolutePath());
+
+                                }
+                            });
+
+                            videoContent.downloadVideoFile(msg, new DownloadCompletionCallback() {
+                                @Override
+                                public void onComplete(int i, String s, File file) {
+                                    videoMessage.setMediaFilePath(file.getAbsolutePath());
+
+                                }
+                            });
+                        }
+                        if (i > 0) {
+                            long messageTime = msg.getCreateTime();
+                            long preTime = mConvData.get(i - 1).getCreateTime();
+                            long diff = messageTime - preTime;
+                            if (diff > 3 * 60 * 1000) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                videoMessage.setTimeString(timeString);
+                            }
+                        } else {
+                            long messageTime = msg.getCreateTime();
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            videoMessage.setTimeString(timeString);
+                        }
+                        mData.add(videoMessage);
+                        break;
+                    case file:
+                        LogUtils.d("ChatRoomMessageEvent file", "第" + i + "个" + msg.getContent().toJson().toString());
+                        final FileContent fileContent = (FileContent) msg.getContent();
+
+                        String format = fileContent.getFormat();
+                        final MyMessage fileMessage = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                        if (format == null) {
+                            Map hashMap = fileContent.getStringExtras();
+                            hashMap.get("video");
+                            String resourceId = fileContent.getResourceId();
+                            String VideoMediaID = fileContent.getMediaID();
+                            String fileName = fileContent.getFileName();
+                            fileMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                            long fileId1 = msg.getFromUser().getUserID();
+                            long currentFileId1 = JMessageClient.getMyInfo().getUserID();
+                            if (currentFileId1 == fileId1) {
+                                fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                            }
+                            fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
+                        } else {
+                            switch (fileContent.getFormat()) {
+                                case "jpg":
+                                    long fileId = msg.getFromUser().getUserID();
+                                    long currentFileId = JMessageClient.getMyInfo().getUserID();
+                                    if (currentFileId == fileId) {
+                                        fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                    }
+                                    if (fileContent.getLocalPath() != null) {
+                                        mPathList.add(fileContent.getLocalPath());
+                                        mMsgIdList.add(fileMessage.getMsgId() + "");
+                                    } else {
+                                        fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                            @Override
+                                            public void onComplete(int i, String s, File file) {
+                                                fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                                mPathList.add(fileContent.getLocalPath());
+                                                mMsgIdList.add(fileMessage.getMsgId() + "");
+                                            }
+                                        });
+                                    }
+
+                                    break;
+                                case "mp4":
+                                    fileMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                                    long fileId1 = msg.getFromUser().getUserID();
+                                    long currentFileId1 = JMessageClient.getMyInfo().getUserID();
+                                    if (currentFileId1 == fileId1) {
+                                        fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                                    }
+                                    if (fileContent.getLocalPath() != null) {
+                                        fileMessage.setMediaFilePath(fileContent.getLocalPath());
+                                    } else {
+                                        fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                            @Override
+                                            public void onComplete(int i, String s, File file) {
+                                                fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                                VideoContent videoContent1 = (VideoContent) msg.getContent();
+//                                            fileMessage.setMediaFilePath(videoContent1.getThumbLocalPath());
+                                            }
+                                        });
+                                    }
+                                    break;
+                                case "png":
+                                    long fileId2 = msg.getFromUser().getUserID();
+                                    long currentFileId2 = JMessageClient.getMyInfo().getUserID();
+                                    if (currentFileId2 == fileId2) {
+                                        fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                    }
+                                    if (fileContent.getLocalPath() != null) {
+                                        ImageContent imageContent1 = (ImageContent) msg.getContent();
+                                        fileMessage.setMediaFilePath(imageContent1.getLocalThumbnailPath());
+                                        mPathList.add(fileContent.getLocalPath());
+                                        mMsgIdList.add(fileMessage.getMsgId() + "");
+                                    } else {
+                                        fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                            @Override
+                                            public void onComplete(int i, String s, File file) {
+                                                fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                                mPathList.add(fileContent.getLocalPath());
+                                                mMsgIdList.add(fileMessage.getMsgId() + "");
+                                            }
+                                        });
+                                    }
+                                    break;
+//                            case "mp3":
+////                                fileMessage.setType(IMessage.MessageType.RECEIVE_VOICE.ordinal());
+////                                long fileId3 = msg.getFromUser().getUserID();
+////                                long currentFileId3 = JMessageClient.getMyInfo().getUserID();
+////                                if (currentFileId3 == fileId3) {
+////                                    fileMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+////                                }
+////                                VoiceContent voiceContent1 = (VoiceContent) msg.getContent();
+////                                fileMessage.setDuration(voiceContent1.getDuration());
+////                                fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+////                                    @Override
+////                                    public void onComplete(int i, String s, File file) {
+////                                        fileMessage.setMediaFilePath(file.getAbsolutePath());
+////                                    }
+////                                });
+//                                break;
+                            }
+                        }
+                }
             }
-            DefaultUser user = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatar());
-            myMessage.setUserInfo(user);
-            mData.add(myMessage);
         }
         return mData;
     }
 
+    // 接收聊天室消息
     public void onEventMainThread(MessageEvent event) {
-        mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
-        Message msg = event.getMessage();
-        MyMessage myMessage ;
-        switch (msg.getContentType()) {
-            case text:
-                TextContent textContent = (TextContent) msg.getContent();
-                myMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                DefaultUser user = new DefaultUser(msg.getFromUser().getUserID(),msg.getFromUser().getDisplayName(),msg.getFromUser().getAvatar());
-                myMessage.setUserInfo(user);
+        Log.d("tag", "ChatRoomMessageEvent received .");
+        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
+        mConvData = mConv.getAllMessage();
+        final Message evMsg = event.getMessage();
+        final MyMessage myMessage;
+//        showProgress();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < mConvData.size(); i++) {
+                    final Message msg = mConvData.get(i);
+                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
+                }
+            }
+        }).start();
+        for (int i = 0; i < mConvData.size(); i++) {
+            final Message msg = mConvData.get(i);
+            //这个页面仅仅展示聊天室会话的消息
+//            if (i > 47) {
 
-                mData.add(myMessage);
-                mAdapter.addToStart(myMessage,true);
-                break;
+            String s1 = msg.getFromUser().getSignature();
+            String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar);
+            defaultUser.setSignature(msg.getFromUser().getSignature().length() >= 0 ? msg.getFromUser().getSignature() : "该用户很懒，没有设置签名");
+            defaultUser.setHxUserId(msg.getFromID() + "");
+            switch (msg.getContentType()) {
+                case text:
+                    LogUtils.d("ChatRoomMessageEvent text", "第" + i + "个" + msg.getContent().toJson().toString());
+                    TextContent textContent = (TextContent) msg.getContent();
+                    if (textContent.getText() != null && !TextUtils.isEmpty(textContent.getText())) {
+                        MyMessage textMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        long id = msg.getFromUser().getUserID();
+                        msg.getFromID();
+                        long currentId = JMessageClient.getMyInfo().getUserID();
+                        if (currentId == id) {
+                            textMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                        }
+//                    String s1 = msg.getFromUser().getAvatar();
+                        textMessage.setUserInfo(defaultUser);
+                        textMessage.setText(textContent.getText());
+                        if (i > 0) {
+                            long messageTime = msg.getCreateTime();
+                            long preTime = mConvData.get(i - 1).getCreateTime();
+                            long diff = messageTime - preTime;
+                            if (diff > 3 * 60 * 1000) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                textMessage.setTimeString(timeString);
+                            }
+                        } else {
+                            long messageTime = msg.getCreateTime();
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            textMessage.setTimeString(timeString);
+                        }
+                        mData.add(textMessage);
+                        mAdapter.addToStart(textMessage, true);
+                    }
+                    break;
+                case image:
+                    //处理图片消息
+                    LogUtils.d("ChatRoomMessageEvent image", "第" + i + "个" + msg.getContent().toJson().toString());
+                    final ImageContent imageContent = (ImageContent) msg.getContent();
+                    imageContent.getLocalPath();//图片本地地址
+                    imageContent.getLocalThumbnailPath();//图片对应缩略图的本地地址
+                    long imageId = msg.getFromUser().getUserID();
+                    msg.getFromID();
+                    final MyMessage imgMessage = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                    long currentimageId = JMessageClient.getMyInfo().getUserID();
+                    if (currentimageId == imageId) {
+                        imgMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                    }
+                    UserInfo userInfo = msg.getFromUser();
+//                    String s11 = userInfo.getAvatarFile().getAbsolutePath();
+//                    String s12 = userInfo.getAvatarFile().getPath();
+                    imgMessage.setUserInfo(defaultUser);
+                    String mediaID = imageContent.getMediaID();
+                    if (imageContent.getLocalPath() == null) {
+                        imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                mPathList.add(file.getAbsolutePath());
+                                mMsgIdList.add(imgMessage.getMsgId() + "");
+                                imgMessage.setMediaFilePath(file.getAbsolutePath());
+                            }
+                        });
+                    } else {
+                        mPathList.add(imageContent.getLocalPath());
+                        mMsgIdList.add(imgMessage.getMsgId() + "");
+                        imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
+                    }
+                    if (i > 0) {
+                        long messageTime = msg.getCreateTime();
+                        long preTime = mConvData.get(i - 1).getCreateTime();
+                        long diff = messageTime - preTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            imgMessage.setTimeString(timeString);
+                        }
+                    } else {
+                        long messageTime = msg.getCreateTime();
+                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                        imgMessage.setTimeString(timeString);
+                    }
+                    mData.add(imgMessage);
+                    mAdapter.addToStart(imgMessage, true);
+                    break;
+                case voice:
+                    //处理语音消息
+                    LogUtils.d("ChatRoomMessageEvent voice", "第" + i + "个" + msg.getContent().toJson().toString());
+                    final VoiceContent voiceContent = (VoiceContent) msg.getContent();
+                    voiceContent.getLocalPath();//语音文件本地地址
+                    voiceContent.getDuration();//语音文件时长
+                    final MyMessage voiceMessage = new MyMessage(null, IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                    long voiceId = msg.getFromUser().getUserID();
+                    msg.getFromID();
+                    long currentVoiceId = JMessageClient.getMyInfo().getUserID();
+                    if (currentVoiceId == voiceId) {
+                        voiceMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                    }
+                    String avatarMedialD = msg.getFromUser().getAvatar();
+//                    UserInfo userInfo = msg.getFromUser();
+//                    userInfo.getAvatarFile().getAbsolutePath();
+                    voiceMessage.setUserInfo(defaultUser);
+//                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+                    if (voiceContent.getLocalPath() != null) {
+                        voiceMessage.setMediaFilePath(voiceContent.getLocalPath());
+                        voiceMessage.setDuration(voiceContent.getDuration());
+                    } else {
+                        voiceContent.downloadVoiceFile(msg, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                voiceMessage.setMediaFilePath(file.getAbsolutePath());
+                                voiceMessage.setDuration(voiceContent.getDuration());
+                            }
+                        });
+                    }
+
+                    if (i > 0) {
+                        long messageTime = msg.getCreateTime();
+                        long preTime = mConvData.get(i - 1).getCreateTime();
+                        long diff = messageTime - preTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            voiceMessage.setTimeString(timeString);
+                        }
+                    } else {
+                        long messageTime = msg.getCreateTime();
+                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                        voiceMessage.setTimeString(timeString);
+                    }
+                    mData.add(voiceMessage);
+                    mAdapter.addToStart(voiceMessage, true);
+                    break;
+                case location:
+                    break;
+                case video:
+                    //处理视频消息
+                    LogUtils.d("ChatRoomMessageEvent video", "第" + i + "个" + msg.getContent().toJson().toString());
+                    final VideoContent videoContent = (VideoContent) msg.getContent();
+                    videoContent.getVideoLocalPath();//视频文件本地地址
+                    videoContent.getDuration();//语音文件时长
+                    final MyMessage videoMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                    long videoId = msg.getFromUser().getUserID();
+                    msg.getFromID();
+                    long currentVideoId = JMessageClient.getMyInfo().getUserID();
+                    if (currentVideoId == videoId) {
+                        videoMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                    }
+                    videoMessage.setUserInfo(defaultUser);
+//                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+                    if (videoContent.getVideoLocalPath() != null) {
+                        videoMessage.setMediaFilePath(videoContent.getThumbLocalPath());
+                        videoMessage.setDuration(videoContent.getDuration());
+                    } else {
+                        videoContent.downloadThumbImage(msg, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                videoMessage.setMediaFilePath(file.getAbsolutePath());
+
+                            }
+                        });
+
+                        videoContent.downloadVideoFile(msg, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                videoMessage.setMediaFilePath(file.getAbsolutePath());
+
+                            }
+                        });
+                    }
+                    if (i > 0) {
+                        long messageTime = msg.getCreateTime();
+                        long preTime = mConvData.get(i - 1).getCreateTime();
+                        long diff = messageTime - preTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            videoMessage.setTimeString(timeString);
+                        }
+                    } else {
+                        long messageTime = msg.getCreateTime();
+                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                        videoMessage.setTimeString(timeString);
+                    }
+                    mData.add(videoMessage);
+                    mAdapter.addToStart(videoMessage, true);
+                    break;
+                case file:
+                    LogUtils.d("ChatRoomMessageEvent file", "第" + i + "个" + msg.getContent().toJson().toString());
+                    final FileContent fileContent = (FileContent) msg.getContent();
+
+                    String format = fileContent.getFormat();
+                    final MyMessage fileMessage = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                    if (format == null) {
+                        Map hashMap = fileContent.getStringExtras();
+                        hashMap.get("video");
+                        String resourceId = fileContent.getResourceId();
+                        String VideoMediaID = fileContent.getMediaID();
+                        String fileName = fileContent.getFileName();
+                        fileMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                        long fileId1 = msg.getFromUser().getUserID();
+                        long currentFileId1 = JMessageClient.getMyInfo().getUserID();
+                        if (currentFileId1 == fileId1) {
+                            fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                        }
+                        fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
+                    } else {
+                        switch (fileContent.getFormat()) {
+                            case "jpg":
+                                long fileId = msg.getFromUser().getUserID();
+                                long currentFileId = JMessageClient.getMyInfo().getUserID();
+                                if (currentFileId == fileId) {
+                                    fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                }
+                                if (fileContent.getLocalPath() != null) {
+                                    mPathList.add(fileContent.getLocalPath());
+                                    mMsgIdList.add(fileMessage.getMsgId() + "");
+                                } else {
+                                    fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                        @Override
+                                        public void onComplete(int i, String s, File file) {
+                                            fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                            mPathList.add(fileContent.getLocalPath());
+                                            mMsgIdList.add(fileMessage.getMsgId() + "");
+                                        }
+                                    });
+                                }
+
+                                break;
+                            case "mp4":
+                                fileMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                                long fileId1 = msg.getFromUser().getUserID();
+                                long currentFileId1 = JMessageClient.getMyInfo().getUserID();
+                                if (currentFileId1 == fileId1) {
+                                    fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                                }
+                                if (fileContent.getLocalPath() != null) {
+                                    fileMessage.setMediaFilePath(fileContent.getLocalPath());
+                                } else {
+                                    fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                        @Override
+                                        public void onComplete(int i, String s, File file) {
+                                            fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                            VideoContent videoContent1 = (VideoContent) msg.getContent();
+//                                            fileMessage.setMediaFilePath(videoContent1.getThumbLocalPath());
+                                        }
+                                    });
+                                }
+                                break;
+                            case "png":
+                                long fileId2 = msg.getFromUser().getUserID();
+                                long currentFileId2 = JMessageClient.getMyInfo().getUserID();
+                                if (currentFileId2 == fileId2) {
+                                    fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                }
+                                if (fileContent.getLocalPath() != null) {
+                                    ImageContent imageContent1 = (ImageContent) msg.getContent();
+                                    fileMessage.setMediaFilePath(imageContent1.getLocalThumbnailPath());
+                                    mPathList.add(fileContent.getLocalPath());
+                                    mMsgIdList.add(fileMessage.getMsgId() + "");
+                                } else {
+                                    fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                        @Override
+                                        public void onComplete(int i, String s, File file) {
+                                            fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                            mPathList.add(fileContent.getLocalPath());
+                                            mMsgIdList.add(fileMessage.getMsgId() + "");
+                                        }
+                                    });
+                                }
+                                break;
+//                            case "mp3":
+//                                fileMessage.setType(IMessage.MessageType.RECEIVE_VOICE.ordinal());
+//                                long fileId3 = msg.getFromUser().getUserID();
+//                                long currentFileId3 = JMessageClient.getMyInfo().getUserID();
+//                                if (currentFileId3 == fileId3) {
+//                                    fileMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+//                                }
+//                                VoiceContent voiceContent1 = (VoiceContent) msg.getContent();
+//                                fileMessage.setDuration(voiceContent1.getDuration());
+//                                fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+//                                    @Override
+//                                    public void onComplete(int i, String s, File file) {
+//                                        fileMessage.setMediaFilePath(file.getAbsolutePath());
+//                                    }
+//                                });
+//                                break;
+                        }
+                    }
+
+                    fileMessage.setUserInfo(defaultUser);
+                    if (i > 0) {
+                        long messageTime = msg.getCreateTime();
+                        long preTime = mConvData.get(i - 1).getCreateTime();
+                        long diff = messageTime - preTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            fileMessage.setTimeString(timeString);
+                        }
+                    } else {
+                        long messageTime = msg.getCreateTime();
+                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                        fileMessage.setTimeString(timeString);
+                    }
+                    mData.add(fileMessage);
+                case eventNotification:
+                    break;
+                case custom:
+                    LogUtils.d("ChatRoomMessageEvent custom", "第" + i + "个" + msg.getContent().toJson().toString());
+                    CustomContent customContent = (CustomContent) msg.getContent();
+                    MyMessage customMessage = new MyMessage("event", IMessage.MessageType.EVENT.ordinal());
+                    Map eventMap = customContent.getAllStringValues();
+                    ChatEventMessage eventMessage = new ChatEventMessage("event", IMessage.MessageType.EVENT.ordinal());
+                    //设置任务参数
+                    eventMessage.setTaskId((String) eventMap.get("taskId"));
+                    eventMessage.setBounty((String) eventMap.get("bounty"));
+                    eventMessage.setIntro((String) eventMap.get("dataString"));
+                    String expiryTime = (String) eventMap.get("time");
+//                    eventMessage.setExpiryTime(Long.valueOf(expiryTime));
+                    if (!DateUtils.isValidLong(expiryTime)) {
+                        String TimeStamp = DateUtils.date2TimeStamp(expiryTime, "yyyy-MM-dd HH:mm:ss");
+                        eventMessage.setExpiryTime(Long.valueOf(TimeStamp));
+                    } else {
+                        eventMessage.setExpiryTime(Long.valueOf(expiryTime));
+                    }
+
+                    customMessage.setChatEventMessage(eventMessage);
+                    DefaultUser user1 = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatar());
+                    user1.setHxUserId(msg.getFromID());
+                    customMessage.setUserInfo(user1);
+                    mData.add(customMessage);
+                    break;
+                case unknown:
+                    LogUtils.d("ChatRoomMessageEvent unknown", "第" + i + "个" + msg.getContent().toJson().toString());
+                    break;
+                case prompt:
+                    break;
+                default:
+//                    initMsgAdapter();
+                    break;
+            }
         }
+//        mAdapter.addToEndChronologically(mData);
+        initMsgAdapter();
     }
 
     private void initMsgAdapter() {
@@ -686,39 +1395,40 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
                     Intent intent = new Intent(SingleChatActivity.this, BrowserImageActivity.class);
-                    intent.putExtra("msgId", message.getMsgId());
+                    intent.putExtra("messageId", message.getMsgId());
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(getApplicationContext(),
-                            getApplicationContext().getString(R.string.message_click_hint),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(),
+//                            getApplicationContext().getString(R.string.message_click_hint),
+//                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
-            @Override
-            public void onMessageLongClick(View view, MyMessage message) {
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.message_long_click_hint),
-                        Toast.LENGTH_SHORT).show();
-                // do something
-            }
-        });
+//        mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
+//            @Override
+//            public void onMessageLongClick(View view, MyMessage message) {
+//                Toast.makeText(getApplicationContext(),
+//                        getApplicationContext().getString(R.string.message_long_click_hint),
+//                        Toast.LENGTH_SHORT).show();
+//                // do something
+//            }
+//        });
 
-        mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
-            @Override
-            public void onAvatarClick(MyMessage message) {
-                DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.avatar_click_hint),
-                        Toast.LENGTH_SHORT).show();
-                // do something
-            }
-        });
+//        mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
+//            @Override
+//            public void onAvatarClick(MyMessage message) {
+//                DefaultUser userInfo = (DefaultUser) message.getFromUser();
+//                Toast.makeText(getApplicationContext(),
+//                        getApplicationContext().getString(R.string.avatar_click_hint),
+//                        Toast.LENGTH_SHORT).show();
+//                // do something
+//            }
+//        });
 
+        //消息状态视图点击，重新发送或下载
         mAdapter.setMsgStatusViewClickListener(new MsgListAdapter.OnMsgStatusViewClickListener<MyMessage>() {
             @Override
             public void onStatusViewClick(MyMessage message) {
@@ -731,7 +1441,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         layout.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PullToRefreshLayout layout) {
-                Log.i("MessageListActivity", "Loading next page");
+                Log.i("SingleChatActivity", "Loading next page");
                 loadNextPage();
             }
         });
@@ -739,7 +1449,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         mAdapter.setOnLoadMoreListener(new MsgListAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore(int page, int totalCount) {
-//                Log.i("MessageListActivity", "Loading next page");
+//                Log.i("SingleChatActivity", "Loading next page");
 //                loadNextPage();
             }
         });
@@ -800,6 +1510,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
+        JMessageClient.unRegisterEventReceiver(this);
     }
 }
 

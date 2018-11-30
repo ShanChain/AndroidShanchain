@@ -29,6 +29,7 @@
             android:id="@+id/even_message_bounty"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dimens_10dp"
+            android:layout_marginTop="12dp"
             android:padding="@dimen/dimens_5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +39,7 @@
         <TextView
             android:lines="1"
             android:id="@+id/tv_item_story_name"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="12dp"
             android:textColor="@color/colorTextDefault"
             android:text="于伟 发布的："
             android:layout_toRightOf="@id/iv_item_story_avatar"

@@ -32,6 +32,7 @@ import com.shanchain.shandata.adapter.MultiMyTaskAdapter;
 import com.shanchain.shandata.adapter.MultiTaskListAdapter;
 import com.shanchain.shandata.adapter.TaskListAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.TaskMode;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
@@ -55,7 +56,7 @@ import cn.jpush.im.android.eventbus.EventBus;
 import okhttp3.Call;
 
 
-public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayout.OnRefreshListener,TaskView {
+public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, TaskView {
     //    private String roomId = "15198852";
 
     @Bind(R.id.rv_task_list)
@@ -65,7 +66,8 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
     private MultiTaskListAdapter adapter;
     private ProgressDialog mDialog;
     private TaskPresenter taskPresenter;
-    private String roomId = SCCacheUtils.getCacheRoomId();;
+    private String roomId = SCCacheUtils.getCacheRoomId();
+    ;
     String characterId = SCCacheUtils.getCacheCharacterId();
     String userId = SCCacheUtils.getCacheUserId();
     private int page = 0;
@@ -89,27 +91,28 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        taskList.clear();
         taskPresenter = new TaskPresenterImpl(this);
-        taskPresenter.initTask(characterId,roomId,page,size);
+        taskPresenter.initTask(characterId, roomId, page, size);
         srlTaskList.setOnRefreshListener(this);//下拉刷新
         initRecyclerView();
     }
 
     private void initRecyclerView() {
 
-        for (int i = 2; i <20; i++) {
+        for (int i = 2; i < 20; i++) {
             ChatEventMessage chatEventMessage = new ChatEventMessage("测试", IMessage.MessageType.RECEIVE_TEXT.ordinal());
-            chatEventMessage.setIntro("测试"+i);
+            chatEventMessage.setIntro("测试" + i);
             chatEventMessage.setTimeString("2018-12-10 12:12:12");
             chatEventMessage.setBounty("80");
-            chatEventMessage.setName("测试"+i);
+            chatEventMessage.setName("测试" + i);
             chatEventMessage.setRoomName("1235");
             chatEventMessage.setExpiryTime(1542209938);
-            if (i%2==0){
+            if (i % 2 == 0) {
                 chatEventMessage.setStatus(5);
-            }else if(i==7){
+            } else if (i == 7) {
                 chatEventMessage.setStatus(10);
-            }else {
+            } else {
                 chatEventMessage.setStatus(20);
             }
 //            taskList.add(chatEventMessage);
@@ -142,7 +145,7 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
                             }
                             //构造Adapter
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                            adapter = new MultiTaskListAdapter(getContext(), taskList,new int[]{
+                            adapter = new MultiTaskListAdapter(getContext(), taskList, new int[]{
                                     R.layout.item_task_list_type1, //所有任务，已被领取
                                     R.layout.item_task_list_type2,//所有任务，查看/领取任务
                                     R.layout.item_task_type_two,//我的任务，未领取
@@ -163,14 +166,16 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
      * */
     @Override
     public void onRefresh() {
-        taskPresenter.initTask(characterId,roomId,page,size);
-//        adapter.upData(taskList);
+//        taskPresenter.initTask(characterId, roomId, page, size);
+//        taskList.clear();
+        initData();
         srlTaskList.setRefreshing(false);
     }
 
     /*
      * 上拉加载
      * */
+
 
     public void showProgress() {
         mDialog = new ProgressDialog(getContext());
@@ -187,7 +192,7 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
 
     }
 
-    private void switchViewVisibility(LinearLayout back,LinearLayout front) {
+    private void switchViewVisibility(LinearLayout back, LinearLayout front) {
         if (back.isShown()) {
             back.setVisibility(View.GONE);
             front.setVisibility(View.VISIBLE);
@@ -204,8 +209,13 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
         return rootView;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void taskListEventBus(Object event){
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void taskListEventBus(EventMessage event) {
+        if (event.getCode()==1){
+            showProgress();
+            onRefresh();
+//            ToastUtils.showToast(getContext(),"Evenbus执行");
+        }
 
     }
 
@@ -219,7 +229,8 @@ public class FragmentTaskList extends BaseFragment implements  SwipeRefreshLayou
 
     @Override
     public void initTask(List<ChatEventMessage> list, boolean isSuccess) {
-        taskList.addAll(list);
+        closeProgress();
+//        taskList.addAll(list);
     }
 
     @Override

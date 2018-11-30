@@ -50,6 +50,7 @@ public class BaseApplication extends Application implements ReactApplication {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
                     new AppReactPackage()
+//                    new SettingReactPackage()
             );
         }
     };
