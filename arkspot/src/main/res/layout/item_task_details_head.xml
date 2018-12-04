@@ -87,6 +87,15 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/even_message_last_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/aurora_event_msg_text_color"
+        android:text="完成时限：12:00 2018-10-20"/>
+
     <Button
         android:id="@+id/btn_event_task"
         android:layout_width="wrap_content"

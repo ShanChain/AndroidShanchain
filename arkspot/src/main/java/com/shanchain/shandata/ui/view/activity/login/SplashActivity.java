@@ -94,8 +94,6 @@ public class SplashActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
-//                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-//                loginJm("weal","123456");
                 loginJm(hxUserName, hxPwd,cacheCharacter);
                 Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 startActivity(intent);
@@ -131,7 +129,7 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         });
 
-                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                        JMessageClient.updateMyInfo(UserInfo.Field.signature, userInfo, new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
                                 String s1 = s;
@@ -157,7 +155,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkServer() {
-
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHARACTER_GET_CURRENT)
                 .build()

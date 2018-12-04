@@ -68,6 +68,12 @@
             android:background="@drawable/aurora_headicon_default"
             style="@style/aurora_msgitem_sender_avatar_style"/>
 
+        <!--<cn.jiguang.imui.view.CircleImageView-->
+            <!--android:id="@+id/aurora_iv_msgitem_avatar"-->
+            <!--android:contentDescription="@string/aurora_avatar_desc"-->
+            <!--android:background="@drawable/aurora_headicon_default"-->
+            <!--style="@style/aurora_msgitem_sender_avatar_style"/>-->
+
     </RelativeLayout>
 
 </LinearLayout>

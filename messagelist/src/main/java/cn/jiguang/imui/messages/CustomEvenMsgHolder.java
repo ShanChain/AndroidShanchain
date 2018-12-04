@@ -49,7 +49,7 @@ public class CustomEvenMsgHolder
     public void onBind(MyMessage myMessage) {
         if (myMessage != null) {
             chatEventMessage =(ChatEventMessage) myMessage.getChatEventMessage();
-            evenMessageTitle.setText("赏金："+ chatEventMessage.getBounty() + "SEAT");
+            evenMessageTitle.setText("赏金：￥ "+ chatEventMessage.getBounty() );
             evenMessageContent.setText(chatEventMessage.getIntro() + "");
             long expiryTime = chatEventMessage.getExpiryTime();
             if (isValidLong(expiryTime)){

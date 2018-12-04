@@ -39,7 +39,7 @@
         <TextView
             android:lines="1"
             android:id="@+id/tv_item_story_name"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="2dp"
             android:textColor="@color/colorTextDefault"
             android:text="于伟 发布的："
             android:layout_toRightOf="@id/iv_item_story_avatar"

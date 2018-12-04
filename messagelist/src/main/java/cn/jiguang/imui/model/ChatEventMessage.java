@@ -29,6 +29,7 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
      * createTime : 1541664580000
      * expiryTime : 1543119840000
      * receiveTime : 1542268818000
+     * publishTime=1543807130000
      * status : 5
      * receiveCount : 0
      * commentCount : 0
@@ -58,6 +59,7 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
     private long receiveTime;
     private long completeTime;
     private long verifyTime;
+    private long publishTime;
     private long unfinishedTime;
     private int status;
     private int receiveCount;
@@ -309,6 +311,14 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
 
     public long getUnfinishedTime() {
         return unfinishedTime;
+    }
+
+    public long getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(long publishTime) {
+        this.publishTime = publishTime;
     }
 
     public void setUnfinishedTime(long unfinishedTime) {

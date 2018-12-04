@@ -149,12 +149,14 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("TaskPresenterImpl", "查询任务失败");
                         closeLoadingDialog();
+                        closeProgress();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
                         closeLoadingDialog();
+                        closeProgress();
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             LogUtils.d("TaskPresenterImpl", "添加任务成功");
                             String data = JSONObject.parseObject(response).getString("data");
@@ -254,6 +256,7 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     public void onRefresh() {
 //        isLoadMore = false;
 //        taskPresenter.initUserTaskList(characterId, page, size);
+        showProgress();
         initData();
         srlTaskList.setRefreshing(false);
 

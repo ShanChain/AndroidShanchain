@@ -126,6 +126,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         ImageView ivAvatar = (ImageView) mHeadView.findViewById(R.id.iv_item_story_avatar);
         TextView tvName = (TextView) mHeadView.findViewById(R.id.tv_item_story_name);
         TextView tvTime = (TextView) mHeadView.findViewById(R.id.tv_item_story_time);
+        TextView tvLastTime = (TextView) mHeadView.findViewById(R.id.even_message_last_time);
         TextView bounty = (TextView) mHeadView.findViewById(R.id.even_message_bounty);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.even_message_content);
 
@@ -149,14 +150,27 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             GlideUtils.load(mContext, characterInfo.getHeadImg(), ivAvatar, 0);//加载头像
             tvName.setText(characterInfo.getName() == null ? "无昵称" : characterInfo.getName());
         }
-        bounty.setText("赏金：" + chatEventMessage.getBounty() + "SEAT");
+        bounty.setText("赏金：￥ " + chatEventMessage.getBounty());
         tvContent.setText(chatEventMessage.getIntro() + "");
         mTvHeadLike.setText(chatEventMessage.getSupportCount() + "");
         mTvHeadComment.setText(chatEventMessage.getCommentCount() + "");
-        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm yyyy-MM-dd");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm MM-dd");
+        String createTime = sdf1.format(chatEventMessage.getPublishTime());
         String expiryTime = sdf.format(chatEventMessage.getExpiryTime());
+//        String expiryTime = DateUtils.formatFriendly(new Date(chatEventMessage.getExpiryTime()));
 
-        tvTime.setText(expiryTime + "");
+        tvTime.setText(createTime + "");
+        tvLastTime.setText("完成时限："+expiryTime + "");
+//        ivAvatar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable("userInfo", defaultUser);
+//                bundle.putString("hxUserId", defaultUser.getHxUserId());
+//                readyGo(SingerChatInfoActivity.class, bundle);
+//            }
+//        });
 
 
 //        tvTime.setText(DateUtils.formatFriendly(new Date(mDynamicModel.getCreateTime())));
@@ -201,10 +215,13 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                         String data = JSONObject.parseObject(response).getString("data");
                                         final String HxUserName = JSONObject.parseObject(data).getString("HxUserName");
                                         btnEvenTask.setText("已被领取");
+                                        btnEvenTask.setFocusable(false);
+                                        btnEvenTask.setOnClickListener(null);
+                                        btnEvenTask.setTextColor(getResources().getColor(R.color.aurora_bg_edittext_default));
                                         if (chatEventMessage.getFromUser() != null) {
                                             IUser user = chatEventMessage.getFromUser();
                                             String displayName = chatEventMessage.getFromUser().getDisplayName();
-                                            defaultUser = new DefaultUser(0, displayName, user.getAvatarFilePath());
+                                            defaultUser = new DefaultUser(user.getId(), displayName, user.getAvatarFilePath());
                                             defaultUser.setHxUserId(HxUserName);
                                         }
                                     }
@@ -228,6 +245,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                 case R.id.btn_dialog_task_detail_sure:
                                     Bundle bundle = new Bundle();
                                     bundle.putParcelable("userInfo", defaultUser);
+                                    bundle.putString("hxUserId", defaultUser.getHxUserId());
                                     readyGo(SingerChatInfoActivity.class, bundle);
                                     dialog.dismiss();
                                     break;

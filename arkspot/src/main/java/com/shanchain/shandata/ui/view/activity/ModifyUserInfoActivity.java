@@ -17,6 +17,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
@@ -115,7 +116,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                     String avatar = JSONObject.parseObject(data).getString("avatar");
                                     UserInfo jmUserInfo = JMessageClient.getMyInfo();
                                     if (jmUserInfo!=null){
-                                        if (null!=name){
+                                        if (null!=name&&TextUtils.isEmpty(name)){
                                             jmUserInfo.setNickname(name);//设置昵称
                                             JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
                                                 @Override
@@ -124,7 +125,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                                 }
                                             });
                                         }
-                                        if (null!=signature){
+                                        if (null!=signature&&TextUtils.isEmpty(signature)){
                                             jmUserInfo.setSignature(signature);//设置签名
                                             JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
                                                 @Override
