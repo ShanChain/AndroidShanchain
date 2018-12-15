@@ -384,3 +384,12 @@
  #腾旭Bugly,日志上报
  -dontwarn com.tencent.bugly.**
  -keep public class com.tencent.bugly.**{*;}
+
+ #极光分享
+ -dontwarn cn.jiguang.**
+ -keep class cn.jiguang.** { *; }
+ -dontwarn cn.jpush.**
+ -keep class cn.jpush.** { *; }
+ -keep public class com.sina.** {
+     *;
+ }

@@ -10,6 +10,7 @@
             android:title="我的钱包"
             />
         <item
+            android:visible="false"
             android:id="@+id/nav_my_task"
             android:title="我的任务" />
 

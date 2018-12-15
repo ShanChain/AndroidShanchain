@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONArray;
@@ -94,7 +95,7 @@ public class MemberActivity extends BaseActivity {
     }
 
     private void initToolBar() {
-        tbMain.setTitleTextColor(Color.WHITE);
+        tbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         tbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -103,7 +104,14 @@ public class MemberActivity extends BaseActivity {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
         tbMain.setTitleText("群成员");
-        tbMain.setBackgroundColor(Color.parseColor("#4FD1F6"));
+        tbMain.setBackgroundColor(getResources().getColor(R.color.white));
+        tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        tbMain.setOnLeftClickListener(new ArthurToolBar.OnLeftClickListener() {
+            @Override
+            public void onLeftClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

@@ -10,6 +10,7 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_login"
         style="@style/style_toolbar"
+        android:visibility="gone"
         app:titleColor="@color/colorTextDefault"
         app:titleText="@string/str_title_tb_login"
         app:titleTextSize="16"/>
@@ -91,7 +92,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/shape_btn_dialog_cancel"
         android:text="@string/str_login_btn_register"
-        android:textColor="@color/colorActive"/>
+        android:textColor="@color/colorViolet"/>
 
     <View
         android:layout_width="match_parent"
@@ -103,8 +104,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/str_txt_login_third"
-        android:textColor="@color/colorTextDefault"
         android:visibility="gone"
+        android:textColor="@color/colorTextDefault"
         android:textSize="14sp"/>
 
 

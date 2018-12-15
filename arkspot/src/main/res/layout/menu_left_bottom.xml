@@ -7,7 +7,7 @@
     android:layout_marginTop="50dp"
     android:layout_marginRight="@dimen/dimens_20dp"
     hyman:position="right_top"
-    hyman:radius="80dp">
+    hyman:radius="50dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -16,15 +16,15 @@
 
         <TextView
             android:id="@+id/id_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:textColor="@color/colorHomeBtn"
             android:textAlignment="center"
             android:gravity="center"
+            android:tag="circelText"
             android:background="@drawable/shape_guide_point_default"
-            android:textSize="20sp"
-            android:text="赏"
+            android:text=""
              />
     </RelativeLayout>
 
@@ -36,62 +36,21 @@
         android:tag="queryTask"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/float_btn"
-            android:src="@mipmap/query_task"
-            android:tag="Place" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/shape_fb_bg_role"-->
+            <!--android:src="@mipmap/query_task"-->
+            <!--android:tag="Place" />-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="查看任务"
-            android:textColor="@color/colorBlack" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linear_add_task1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:tag="addTask"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/float_btn"
-            android:src="@mipmap/add_task" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发布任务"
-            android:textColor="@color/colorBlack" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linear_add_query1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:tag="queryTask"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/float_btn"
-            android:src="@mipmap/query_task"
-            android:tag="Place" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="查看任务"
-            android:textColor="@color/colorBlack" />
+            android:text="玩"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/shape_fb_bg_role"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 
@@ -103,18 +62,47 @@
         android:tag="addTask"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/float_btn"
-            android:src="@mipmap/add_task" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/shape_fb_bg_role"-->
+            <!--android:src="@mipmap/add_task" />-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发布任务"
-            android:textColor="@color/colorBlack" />
+            android:text="帮"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/shape_fb_bg_role"
+            android:textColor="@color/white" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_invitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:tag="queryTask"
+        android:orientation="vertical">
+
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/shape_fb_bg_role"-->
+            <!--android:src="@mipmap/query_task"-->
+            <!--android:tag="Place" />-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="邀"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/shape_fb_bg_role"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
     <!--<ImageView-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->

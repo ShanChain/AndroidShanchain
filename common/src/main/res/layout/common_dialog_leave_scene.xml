@@ -13,24 +13,24 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dimens_20dp"
-        android:text="离开"
+        android:text="确定要离开广场吗？"
         android:textColor="#030303"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/dialog_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"
         android:layout_marginTop="@dimen/dimens_10dp"
-        android:text="确定要离开吗？"
+        android:layout_marginBottom="24dp"
         android:paddingLeft="@dimen/dimens_15dp"
         android:paddingRight="@dimen/dimens_15dp"
-        android:textSize="@dimen/sp_12"
-        android:textColor="#030303"/>
+        android:text=""
+        android:textColor="#030303"
+        android:textSize="@dimen/sp_12" />
 
-    <View style="@style/style_text_line_match"/>
+    <View style="@style/style_text_line_match" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,13 +43,14 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="取消"
+            android:focusableInTouchMode="false"
             android:textColor="@color/colorDialogBtn"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/colorAccent"/>
+            android:background="@color/colorAccent" />
 
         <TextView
             android:id="@+id/tv_dialog_leave_sure"
@@ -57,9 +58,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="确定"
+            android:text="确认"
+            android:focusableInTouchMode="false"
             android:textColor="@color/colorDialogBtn"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
 
     </LinearLayout>
 

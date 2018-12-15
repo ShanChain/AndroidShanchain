@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/share_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@mipmap/fb_circel_close" />
+
+        <RelativeLayout
+            android:id="@+id/share_window"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_above="@+id/relative_bottom"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/share_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/red_packege" />
+
+            <!-- 分享的内容 -->
+            <TextView
+                android:id="@+id/share_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/share_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="23dp"
+                android:text="分享到"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:id="@+id/linear_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_alignParentBottom="true">
+
+                <RelativeLayout
+                    android:id="@+id/mRlWechat"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/share_wx"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/share_wechat" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="17dp"
+                        android:gravity="center"
+                        android:text="微信"
+                        android:textColor="@color/colorTextThree"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/mRlWeixinCircle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/share_wx_timeline"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="0dp"
+                        android:src="@mipmap/share_moment" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="17dp"
+                        android:gravity="center"
+                        android:text="朋友圈"
+                        android:textColor="@color/colorTextThree"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/mRlQQ"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/share_qq"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/share_qq" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="17dp"
+                        android:gravity="center"
+                        android:text="QQ"
+                        android:textColor="@color/colorTextThree"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/mRlWeibo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/share_weibo"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/share_weibo" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="17dp"
+                        android:gravity="center"
+                        android:text="微博"
+                        android:textColor="@color/colorTextThree"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <!--<RelativeLayout-->
+                <!--android:id="@+id/mRlQzone"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1">-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/share_qzone"-->
+                <!--android:layout_width="35dp"-->
+                <!--android:layout_height="35dp"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:src="@mipmap/share_qzone" />-->
+
+                <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_marginBottom="17dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="QQ空间"-->
+                <!--android:textColor="#CCFFFFFF"-->
+                <!--android:textSize="13sp" />-->
+                <!--</RelativeLayout>-->
+            </LinearLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

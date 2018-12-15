@@ -120,7 +120,7 @@ public class SingerChatRoomFragment extends BaseFragment implements View.OnTouch
         mTbMain.setTitleTextColor(Color.WHITE);
         mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
         mTbMain.setBackgroundColor(Color.parseColor("#4FD1F6"));
-        mTbMain.setLeftImage(R.mipmap.back);
+        mTbMain.setLeftImage(R.mipmap.activity_back);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT

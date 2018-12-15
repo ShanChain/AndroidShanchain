@@ -30,7 +30,7 @@
             android:visibility="gone"
             android:background="@drawable/shape_btn_chatinput_join"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/input_voice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

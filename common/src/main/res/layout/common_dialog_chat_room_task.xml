@@ -94,7 +94,7 @@
             android:background="@drawable/shape_bg_dialog_task_edit"
             android:focusable="true"
             android:gravity="top"
-            android:hint="￥输入赏金"
+            android:hint="输入赏金"
             android:inputType="number|numberDecimal"
             android:paddingLeft="@dimen/dimens_15dp"
             android:paddingTop="@dimen/dimens_10dp"

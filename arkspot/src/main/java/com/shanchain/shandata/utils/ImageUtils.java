@@ -358,6 +358,36 @@ public class ImageUtils {
     }
 
     /**
+     * 裁剪
+     *
+     * @param bitmap 原图
+     * @return 裁剪后的图像
+     */
+    public static Bitmap cropBitmap(Bitmap bitmap) {
+        int width = bitmap.getWidth(); // 得到图片的宽，高
+        int height = bitmap.getHeight();
+        int cropWidth = width >= height ? height : width;// 裁切后所取的正方形区域边长
+        cropWidth /= 2;
+        int cropHeight = (int) (cropWidth / 1.2);
+        return Bitmap.createBitmap(bitmap, width / 3, 0, cropWidth, cropHeight, null, false);
+    }
+
+    /**
+     * 裁剪
+     *
+     * @param bitmap 原图
+     * @return 裁剪后的图像
+     */
+    public static Bitmap cropScreenBitmap(Bitmap bitmap) {
+        int width = bitmap.getWidth(); // 得到图片的宽，高
+        int height = bitmap.getHeight();
+        int cropWidth = width >= height ? height : width;// 裁切后所取的正方形区域边长
+        cropWidth /= 2;
+        int cropHeight = (int) (cropWidth / 1.2);
+        return Bitmap.createBitmap(bitmap, width / 3, 0, cropWidth, cropHeight, null, false);
+    }
+
+    /**
      * 创建缩略图
      *
      * @param context
@@ -843,7 +873,7 @@ public class ImageUtils {
     }
 
     //存储进SD卡  
-    public static void saveFile(Bitmap bm, String fileName) throws Exception {
+    public static File saveFile(Bitmap bm, String fileName) throws Exception {
         File dirFile = new File(fileName);
         //检测图片是否存在  
         if (dirFile.exists()) {
@@ -855,9 +885,10 @@ public class ImageUtils {
         bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
         bos.flush();
         bos.close();
+        return dirFile;
     }
 
-    //bitMap返回一个文件
+    //bitmap返回一个文件
     public static File getFile(Bitmap bm, String fileName) throws Exception {
         File dirFile = new File(fileName);
         //检测图片是否存在
@@ -946,6 +977,15 @@ public class ImageUtils {
         return myCaptureFile;
     }
 
+    public static Bitmap captureScreen(Activity activity) {
+
+        activity.getWindow().getDecorView().setDrawingCacheEnabled(true);
+
+        Bitmap bmp=activity.getWindow().getDecorView().getDrawingCache();
+
+        return bmp;
+
+    }
     //获取sd卡路径
     public static String getSDPath(){
         File sdDir = null;

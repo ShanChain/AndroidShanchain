@@ -40,19 +40,23 @@ import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.tencent.tauth.Tencent;
+//import com.tencent.tauth.Tencent;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.RequestCallback;
+import cn.jpush.im.android.api.model.DeviceInfo;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
-import me.shaohui.shareutil.LoginUtil;
-import me.shaohui.shareutil.login.LoginListener;
-import me.shaohui.shareutil.login.LoginPlatform;
-import me.shaohui.shareutil.login.LoginResult;
-import me.shaohui.shareutil.login.result.BaseToken;
-import me.shaohui.shareutil.login.result.BaseUser;
+//import me.shaohui.shareutil.LoginUtil;
+//import me.shaohui.shareutil.login.LoginListener;
+//import me.shaohui.shareutil.login.LoginPlatform;
+//import me.shaohui.shareutil.login.LoginResult;
+//import me.shaohui.shareutil.login.result.BaseToken;
+//import me.shaohui.shareutil.login.result.BaseUser;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
@@ -79,7 +83,8 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
     private ProgressDialog mDialog;
-    private Tencent mTencent;
+//    private Tencent mTencent;
+
 
     @Override
     protected int getContentViewLayoutID() {
@@ -138,20 +143,20 @@ public class LoginActivity extends BaseActivity {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 if (TextUtils.isEmpty(data)) {
                                     closeProgress();
-                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码");
+                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码1");
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 RoleManager.switchRoleCacheCharacterInfo(character);
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
-                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码");
+                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码2");
                                     return;
                                 } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null) {
                                         closeProgress();
-                                        ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码");
+                                        ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码3");
                                     } else {
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
                                         RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
@@ -196,6 +201,8 @@ public class LoginActivity extends BaseActivity {
             JMessageClient.login(jmUser, jmPassword, new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
+                    int i1 = i;
+                    String s1 = s;
                     if (i==0) {
                         LogUtils.d("极光IM############## 登录成功 ##############极光IM");
                         closeProgress();
@@ -222,13 +229,13 @@ public class LoginActivity extends BaseActivity {
 
                         }
 
-                        Intent intent = new Intent(mContext, HomeActivity.class);
-                        ActivityManager.getInstance().finishAllActivity();
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
+                        finish();
 
                     } else {
                         LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请检查用户名密码");
+//                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请检查用户名密码");
                         closeProgress();
                     }
                 }
@@ -299,6 +306,7 @@ public class LoginActivity extends BaseActivity {
                 } else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
                    ToastUtils.showToastLong(LoginActivity.this,"登录失败，请检查用户名密码");
+
                 }
             }
         });
@@ -322,15 +330,15 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.iv_login_wx:
                 //微信登录
-                LoginUtil.login(this, LoginPlatform.WX, listener, true);
+//                LoginUtil.login(this, LoginPlatform.WX, listener, true);
                 break;
             case R.id.iv_login_wb:
                 //微博登录
-                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
+//                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
                 break;
             case R.id.iv_login_qq:
                 //qq登录
-                LoginUtil.login(this, LoginPlatform.QQ, listener, true);
+//                LoginUtil.login(this, LoginPlatform.QQ, listener, true);
                 break;
             default:
                 break;
@@ -432,7 +440,7 @@ public class LoginActivity extends BaseActivity {
         readyGo(ResetPwdActivity.class);
     }
 
-    final LoginListener listener = new LoginListener() {
+/*    final LoginListener listener = new LoginListener() {
         @Override
         public void loginSuccess(LoginResult result) {
             //登录成功， 如果你选择了获取用户信息，可以通过
@@ -518,7 +526,7 @@ public class LoginActivity extends BaseActivity {
         public void loginCancel() {
             LogUtils.d("登录取消");
         }
-    };
+    };*/
 
     /**
      * 三方登录注册信息到服务器

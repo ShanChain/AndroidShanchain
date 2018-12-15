@@ -11,6 +11,7 @@ import android.widget.TextView;
 import cn.jiguang.imui.BuildConfig;
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.view.CircleImageView;
 import cn.jiguang.imui.view.RoundImageView;
 import cn.jiguang.imui.view.RoundTextView;
 import cn.jiguang.imui.view.ShapeImageView;
@@ -23,6 +24,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     private TextView mDisplayNameTv;
     private ShapeImageView mPhotoIv;
     private RoundImageView mAvatarIv;
+//    private CircleImageView mAvatarIv;
     private ProgressBar mSendingPb;
     private ImageButton mResendIb;
 
@@ -34,6 +36,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         mDateTv = (RoundTextView) itemView.findViewById(R.id.aurora_tv_msgitem_date);
         mPhotoIv = (ShapeImageView) itemView.findViewById(R.id.aurora_iv_msgitem_photo);
         mAvatarIv = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
+//        mAvatarIv = (CircleImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
         if (mIsSender) {
             mSendingPb = (ProgressBar) itemView.findViewById(R.id.aurora_pb_msgitem_sending);
             mResendIb = (ImageButton) itemView.findViewById(R.id.aurora_ib_msgitem_resend);
@@ -152,8 +155,8 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         } else {
             if (style.getShowReceiverDisplayName()) {
                 mDisplayNameTv.setVisibility(View.VISIBLE);
-            } else {
-                mDisplayNameTv.setVisibility(View.GONE);
+                mDisplayNameTv.setVisibility(View.GONE);            } else {
+
             }
             mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
         }

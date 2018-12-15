@@ -34,7 +34,7 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
         mMsgTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_message);
         mDateTv = (RoundTextView) itemView.findViewById(R.id.aurora_tv_msgitem_date);
         mAvatarIv = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
-//        mAvatarIv = itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
+//        mAvatarIv = (CircleImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
         if (isSender) {
             mDisplayNameTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_sender_display_name);
         } else {

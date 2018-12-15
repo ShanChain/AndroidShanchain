@@ -19,14 +19,15 @@
         android:id="@+id/tab_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/colorActive"
-        app:tabSelectedTextColor="@color/colorActive"
+        app:tabIndicatorColor="@color/colorViolet"
+        app:tabSelectedTextColor="@color/colorViolet"
         app:tabTextColor="@color/colorTextDefault"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"/>
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorWhite"

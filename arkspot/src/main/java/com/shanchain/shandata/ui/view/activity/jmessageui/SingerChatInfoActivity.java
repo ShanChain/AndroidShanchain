@@ -7,18 +7,20 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 
-public class SingerChatInfoActivity extends AppCompatActivity {
+public class SingerChatInfoActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener,ArthurToolBar.OnLeftClickListener{
 
     private Button btnSingerChat;
     private ImageView ivHeadImg;
@@ -26,6 +28,8 @@ public class SingerChatInfoActivity extends AppCompatActivity {
     private TextView tvUserSign;
     private DefaultUser userInfo;
     private View.OnClickListener onClickListener;
+    private ArthurToolBar mTbMain;
+    private String FORM_USER_NAME ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,7 @@ public class SingerChatInfoActivity extends AppCompatActivity {
         ivHeadImg = findViewById(R.id.iv_head_img);
         tvUserNikeName = findViewById(R.id.tv_user_nike_name);
         tvUserSign = findViewById(R.id.tv_user_sign);
-
+        mTbMain = findViewById(R.id.tb_main);
         final Bundle bundle = getIntent().getExtras();
         if (bundle.getParcelable("userInfo") != null) {
             userInfo = bundle.getParcelable("userInfo");
@@ -82,6 +86,7 @@ public class SingerChatInfoActivity extends AppCompatActivity {
             }
         });
 
+        initToolbar();
         onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,5 +98,34 @@ public class SingerChatInfoActivity extends AppCompatActivity {
             }
         };
         btnSingerChat.setOnClickListener(onClickListener);
+    }
+    private void initToolbar() {
+        mTbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
+        mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
+        mTbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mTbMain.getTitleView().setLayoutParams(layoutParams);
+        FORM_USER_NAME = userInfo.getDisplayName();
+        String title = TextUtils.isEmpty(FORM_USER_NAME)?FORM_USER_NAME:"好友";
+        mTbMain.setTitleText(title);
+        mTbMain.setRightImage(R.mipmap.more);
+
+        mTbMain.setOnLeftClickListener(this);
+        mTbMain.setOnRightClickListener(this);
+    }
+
+    @Override
+    public void onLeftClick(View v) {
+        finish();
+    }
+
+    @Override
+    public void onRightClick(View v) {
+        finish();
     }
 }

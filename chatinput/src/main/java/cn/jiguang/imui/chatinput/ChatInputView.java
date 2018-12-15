@@ -111,7 +111,6 @@ public class ChatInputView extends LinearLayout
     private RecordControllerView mRecordControllerView;
     private Chronometer mChronometer;
     private TextView mRecordHintTv;
-    private RecordVoiceButton mRecordVoiceBtn;
 
     SelectPhotoView mSelectPhotoView;
     private ImageButton mSelectAlbumIb;
@@ -178,6 +177,7 @@ public class ChatInputView extends LinearLayout
     private View mVoiceBtnContainer;
     private View mPhotoBtnContainer;
     private View mEmojiBtnContainer;
+    private RecordVoiceButton mRecordVoiceBtn;
 
 
     private MenuManager mMenuManager;
@@ -199,7 +199,7 @@ public class ChatInputView extends LinearLayout
 
     private void init(Context context) {
         mContext = context;
-        inflate(context, R.layout.view_chatinput, this);
+        inflate(context, R.layout.view_costom_chatinput, this);
 
         mChatInputContainer = (LinearLayout) findViewById(R.id.aurora_ll_input_container);
         mMenuItemContainer = (LinearLayout) findViewById(R.id.aurora_ll_menuitem_container);

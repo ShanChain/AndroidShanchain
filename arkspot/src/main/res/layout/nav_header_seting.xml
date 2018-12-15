@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="陈叔爱吃盐焗鸡"
+                android:text="设置名称"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_alignBaseline="@+id/tv_nike_name"
+                android:visibility="gone"
                 android:background="@mipmap/abs_home_btn_dynamic_default" />
 
         </LinearLayout>
@@ -68,6 +69,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:background="@mipmap/real_identity" />
 
             <TextView
@@ -76,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:textColor="@color/white"
-                android:text="一直在路上" />
+                android:text="设置签名" />
 
         </LinearLayout>
 

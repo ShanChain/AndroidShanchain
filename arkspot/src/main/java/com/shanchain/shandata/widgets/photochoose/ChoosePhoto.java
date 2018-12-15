@@ -80,9 +80,22 @@ public class ChoosePhoto {
         mDialog.show();
     }
 
+/*    public void setPhotosListener(final Context context) {
+        PhotoUtils.OnPhotoResultListener photoResultListener = new PhotoUtils.OnPhotoResultListener(){
+            @Override
+            public void onPhotoResult(Uri uri) {
 
+            }
+
+            @Override
+            public void onPhotoCancel() {
+
+            }
+        };
+        photoUtils = new PhotoUtils(photoResultListener);
+    }*/
     public void setPortraitChangeListener(final Context context, final ImageView iv_photo, final int count) {
-        PhotoUtils.OnPhotoResultListener photoResultListener = new PhotoUtils.OnPhotoResultListener() {
+        photoUtils = new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
             @Override
             public void onPhotoResult(final Uri uri) {
                 final Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath());
@@ -193,8 +206,7 @@ public class ChoosePhoto {
             @Override
             public void onPhotoCancel() {
             }
-        };
-        photoUtils = new PhotoUtils(photoResultListener);
+        });
     }
 
     //更新群组头像

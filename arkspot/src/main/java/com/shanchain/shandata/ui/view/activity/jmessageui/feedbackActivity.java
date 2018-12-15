@@ -1,9 +1,11 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -16,7 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 
-public class feedbackActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener {
+public class feedbackActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener,ArthurToolBar.OnLeftClickListener {
 
     @Bind(R.id.tb_main)
     ArthurToolBar tbMain;
@@ -28,13 +30,19 @@ public class feedbackActivity extends AppCompatActivity implements ArthurToolBar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feeback);
         ButterKnife.bind(this);
-
-        tbMain.setTitleText("反馈");
-        tbMain.setLeftImage(R.mipmap.back);
-        tbMain.setBackgroundColor(getResources().getColor(R.color.colorHomeBtn));
+        tbMain.setTitleTextColor(Color.BLACK);
+        tbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        tbMain.getTitleView().setLayoutParams(layoutParams);
+        tbMain.setTitleText("意见反馈");
         tbMain.setRightText("确定");
-        tbMain.setRightTextColor(getResources().getColor(R.color.__picker_black_40));
-        tbMain.setTitleTextColor(getResources().getColor(R.color.__picker_black_40));
+        tbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        tbMain.setOnLeftClickListener(this);
         tbMain.setOnRightClickListener(this);
 
     }
@@ -61,5 +69,10 @@ public class feedbackActivity extends AppCompatActivity implements ArthurToolBar
         } else {
             ToastUtils.showToast(feedbackActivity.this, "请输入反馈内容");
         }
+    }
+
+    @Override
+    public void onLeftClick(View v) {
+        finish();
     }
 }

@@ -47,7 +47,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_item_btn_join"
                 android:text="正在完成"
-                android:textColor="@color/colorHomeBtn"
+                android:textColor="@color/colorViolet"
                 android:textStyle="bold" />
 
             <LinearLayout

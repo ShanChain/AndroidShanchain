@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,11 +13,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +64,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
@@ -69,16 +73,29 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
+import com.shanchain.shandata.event.EventMessage;
+import com.shanchain.shandata.receiver.MessageReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.IsFavBean;
+import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CoordinateTransformUtil;
+import com.shanchain.shandata.utils.ImageUtils;
 import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
+import com.shanchain.shandata.utils.RequestCode;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +106,21 @@ import cn.jiguang.imui.commons.models.IUser;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
+import cn.jiguang.share.android.api.AuthListener;
+import cn.jiguang.share.android.api.JShareInterface;
+import cn.jiguang.share.android.api.PlatActionListener;
+import cn.jiguang.share.android.api.Platform;
+import cn.jiguang.share.android.api.ShareParams;
+import cn.jiguang.share.android.model.AccessTokenInfo;
+import cn.jiguang.share.android.model.BaseResponseInfo;
+import cn.jiguang.share.android.model.UserInfo;
+import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.qqmodel.QQ;
+import cn.jiguang.share.wechat.Wechat;
+import cn.jiguang.share.wechat.WechatMoments;
+import cn.jiguang.share.weibo.SinaWeibo;
+import cn.jpush.android.api.CustomPushNotificationBuilder;
+import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.RequestCallback;
@@ -97,6 +129,9 @@ import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.api.BasicCallback;
+//import me.shaohui.shareutil.ShareUtil;
+//import me.shaohui.shareutil.share.ShareListener;
+//import me.shaohui.shareutil.share.SharePlatform;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
@@ -123,25 +158,46 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private List<Coordinates> coordinatesList;
     private List roomList = new ArrayList();
     private boolean isFirstLoc = true; // 是否首次定位
-    private String roomID,clickRoomID;
+    private String roomID = "", clickRoomID = "";
     private String roomName;
     private int joinRoomId;
     private ProgressDialog mDialog;
     private LatLng myFocusPoint;
     private boolean isIn;
 
+    public static boolean isForeground = false;
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+    private Handler shareHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            String toastMsg = (String) msg.obj;
+            Toast.makeText(HomeActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+            closeLoadingDialog();
+        }
+    };
+    private PlatActionListener mPlatActionListener;
+    List<String> platformList = JShareInterface.getPlatformList();
+    List<String> dataList = new ArrayList<String>();
+
 
     TextView tvLocation;
     ImageView imgInfo;
     ImageView imgHistory;
     MapView mapView;
-    Button btJoin;
-    private LatLng latLng;
+    LinearLayout btJoin;
+    LinearLayout linearRule;
+    public static LatLng latLng;
     private CoordinateConverter coordinateConverter;
     private LatLng gpsLatLng;
     private LatLng bd09LatLng;
     private View.OnClickListener onClickListener;
     BaiduMap.OnMapClickListener MapListener;
+    private File imgeFile;
+    private Bitmap cropScreenBitmap;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -155,6 +211,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         btJoin = findViewById(R.id.button_join);
         imgHistory = findViewById(R.id.image_view_history);
         imgInfo = findViewById(R.id.image_view_info);
+        linearRule = findViewById(R.id.linear_rule); //活动规则
         String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
@@ -171,47 +228,47 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         LogUtils.i("缓存的gdata = " + cacheGData);
 
 
-    getRoomIdHandle =new Handler() {
-        @Override
-        public void handleMessage (Message msg){
-            switch (msg.what) {
-                case 1:
-                    joinRoomId = msg.arg1;
-                    if (roomID.equals(clickRoomID)){
-                        isIn=true;
-                    }else {
-                        isIn=false;
-                    }
-                    roomID = String.valueOf(joinRoomId);
-                    roomName = (String) msg.obj;
-                    btJoin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
-                            intent.putExtra("roomId", roomID);
-                            intent.putExtra("roomName", roomName);
-                            intent.putExtra("isInCharRoom",isIn);
-                            startActivity(intent);
-                        }
-                    });
-                    break;
-                case 2:
-                    joinRoomId = msg.arg1;
-                    roomID = String.valueOf(joinRoomId);
-                    roomName = (String) msg.obj;
-                    btJoin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
-                            intent.putExtra("roomId", roomID);
-                            intent.putExtra("roomName", roomName);
-                            startActivity(intent);
-                        }
-                    });
-                    break;
+        getRoomIdHandle = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        joinRoomId = msg.arg1;
+//                        if (roomID.equals(clickRoomID)) {
+//                            isIn = true;
+//                        } else {
+//                            isIn = false;
+//                        }
+                        roomID = String.valueOf(joinRoomId);
+                        roomName = (String) msg.obj;
+                        btJoin.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                                intent.putExtra("roomId", roomID);
+                                intent.putExtra("roomName", roomName);
+//                                intent.putExtra("isInCharRoom", isIn);
+                                startActivity(intent);
+                            }
+                        });
+                        break;
+                    case 2:
+                        joinRoomId = msg.arg1;
+                        roomID = String.valueOf(joinRoomId);
+                        roomName = (String) msg.obj;
+                        btJoin.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                                intent.putExtra("roomId", roomID);
+                                intent.putExtra("roomName", roomName);
+                                startActivity(intent);
+                            }
+                        });
+                        break;
+                }
             }
         }
-    }
 
         ;
 
@@ -251,35 +308,38 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
-                            clickRoomID = coordinates.getRoomId();
+//                            clickRoomID = coordinates.getRoomId();
+                            roomID = coordinates.getRoomId();
                             String latLang = coordinates.getRoomName();
                             String[] strings = latLang.split(",");
                             final double lat = Double.valueOf(strings[0]);
                             final double lang = Double.valueOf(strings[1]);
                             final String latLocation, langLocation;
+                            DecimalFormat df = new DecimalFormat("#.00");
                             if (lat < 0) {
-                                latLocation = "南纬" + Math.rint(lat);
+                                latLocation = "南纬" + df.format(lat);
 
                             } else {
-                                latLocation = "北纬" + Math.rint(lat);
+                                latLocation = "北纬" + df.format(lat);
                             }
                             if (lang > 0) {
-                                langLocation = "东经" + Math.rint(lang);
+                                langLocation = "东经" + df.format(lang);
 
                             } else {
-                                langLocation = "西经" + Math.rint(lang);
+                                langLocation = "西经" + df.format(lang);
                             }
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvLocation.setText(langLocation + "," + latLocation);
+                                    tvLocation.setText(langLocation + "°," + latLocation + "°");
                                 }
                             });
 
                             Message roomMessage = new Message();
                             roomMessage.what = 1;
-                            roomMessage.obj = langLocation + "," + latLocation;
-                            roomMessage.arg1 = Integer.valueOf(clickRoomID);
+                            roomMessage.obj = langLocation + "°," + latLocation + "°";
+//                            roomMessage.arg1 = Integer.valueOf(clickRoomID);
+                            roomMessage.arg1 = Integer.valueOf(roomID);
                             getRoomIdHandle.sendMessage(roomMessage);
                             /*
                              * 绘制所在位置的方区
@@ -493,20 +553,21 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             final double lat = Double.valueOf(strings[0]);
                             final double lang = Double.valueOf(strings[1]);
                             final String latLocation, langLocation;
+                            DecimalFormat df = new DecimalFormat("#.00");
                             if (lat < 0) {
-                                latLocation = "南纬" + Math.rint(lat);
+                                latLocation = "南纬" + df.format(lat);
 
                             } else {
-                                latLocation = "北纬" + Math.rint(lat);
+                                latLocation = "北纬" + df.format(lat);
                             }
                             if (lang > 0) {
-                                langLocation = "东经" + Math.rint(lang);
+                                langLocation = "东经" + df.format(lang);
 
                             } else {
-                                langLocation = "西经" + Math.rint(lang);
+                                langLocation = "西经" + df.format(lang);
                             }
 
-                            roomName = langLocation + "," + latLocation;
+                            roomName = langLocation + "°," + latLocation + "°";
                             Message roomMessage = new Message();
                             roomMessage.what = 2;
                             roomMessage.obj = roomName;
@@ -673,8 +734,25 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         //初始化并发起权限申请
         mPermissionHelper = new PermissionHelper(this, this);
         mPermissionHelper.requestPermissions();
-
-
+        linearRule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CustomDialog ruleDialog = new CustomDialog(HomeActivity.this, false, 1.0, R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
+                ruleDialog.show();
+                ruleDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(CustomDialog dialog, View view) {
+                        switch (view.getId()) {
+                            case R.id.btn_dialog_task_detail_sure:
+                                ruleDialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+        //通知栏
+        setStyleCustom();
     }
 
     private void initBaiduMap() {
@@ -787,6 +865,220 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         };
     }
 
+    //设置通知栏自定义消息
+   /* private void setCostomMsg(String msg){
+        if (null != msgText) {
+            msgText.setText(msg);
+            msgText.setVisibility(android.view.View.VISIBLE);
+        }
+    }*/
+
+
+    /**
+     * 设置通知栏样式 - 定义通知栏Layout
+     */
+    private void setStyleCustom() {
+        CustomPushNotificationBuilder builder = new CustomPushNotificationBuilder(HomeActivity.this, R.layout.customer_notitfication_layout, R.id.icon, R.id.title, R.id.text);
+        builder.layoutIconDrawable = R.mipmap.app_logo;
+        builder.developerArg0 = "developerArg2";
+        JPushInterface.setPushNotificationBuilder(2, builder);
+//        Toast.makeText(HomeActivity.this, "Custom Builder - 2", Toast.LENGTH_SHORT).show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void sharedChatRoom(EventMessage eventMessage) {
+        if (eventMessage.getCode() == RequestCode.SCREENSHOT) {
+//            ToastUtils.showToast(HomeActivity.this, "分享元社区");
+            LogUtils.d("sharedChatRoom:", "分享元社区");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap captureScreen = ImageUtils.captureScreen(HomeActivity.this);
+                    cropScreenBitmap = ImageUtils.cropScreenBitmap(captureScreen);
+                }
+            }).start();
+            //第三平台授权
+            final AuthListener mAuthListener = new AuthListener() {
+                @Override
+                public void onComplete(Platform platform, int action, BaseResponseInfo data) {
+                    Logger.dd(TAG, "onComplete:" + platform + ",action:" + action + ",data:" + data);
+                    String toastMsg = null;
+                    switch (action) {
+                        case Platform.ACTION_AUTHORIZING:
+                            if (data instanceof AccessTokenInfo) {        //授权信息
+                                String token = ((AccessTokenInfo) data).getToken();//token
+                                long expiration = ((AccessTokenInfo) data).getExpiresIn();//token有效时间，时间戳
+                                String refresh_token = ((AccessTokenInfo) data).getRefeshToken();//refresh_token
+                                String openid = ((AccessTokenInfo) data).getOpenid();//openid
+                                //授权原始数据，开发者可自行处理
+                                String originData = data.getOriginData();
+                                toastMsg = "授权成功:" + data.toString();
+                                Logger.dd(TAG, "openid:" + openid + ",token:" + token + ",expiration:" + expiration + ",refresh_token:" + refresh_token);
+                                Logger.dd(TAG, "originData:" + originData);
+                            }
+                            break;
+                        case Platform.ACTION_REMOVE_AUTHORIZING:
+                            toastMsg = "删除授权成功";
+                            break;
+                        case Platform.ACTION_USER_INFO:
+                            if (data instanceof UserInfo) {      //第三方个人信息
+                                String openid = ((UserInfo) data).getOpenid();  //openid
+                                String name = ((UserInfo) data).getName();  //昵称
+                                String imageUrl = ((UserInfo) data).getImageUrl();  //头像url
+                                int gender = ((UserInfo) data).getGender();//性别, 1表示男性；2表示女性
+                                //个人信息原始数据，开发者可自行处理
+                                String originData = data.getOriginData();
+                                toastMsg = "获取个人信息成功:" + data.toString();
+                                Logger.dd(TAG, "openid:" + openid + ",name:" + name + ",gender:" + gender + ",imageUrl:" + imageUrl);
+                                Logger.dd(TAG, "originData:" + originData);
+                            }
+                            break;
+                    }
+                    if (handler != null) {
+                        Message msg = handler.obtainMessage(1);
+                        msg.obj = toastMsg;
+                        msg.sendToTarget();
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int action, int errorCode, Throwable error) {
+                    Logger.dd(TAG, "onError:" + platform + ",action:" + action + ",error:" + error);
+                    String toastMsg = null;
+                    switch (action) {
+                        case Platform.ACTION_AUTHORIZING:
+                            toastMsg = "授权失败";
+                            break;
+                        case Platform.ACTION_REMOVE_AUTHORIZING:
+                            toastMsg = "删除授权失败";
+                            break;
+                        case Platform.ACTION_USER_INFO:
+                            toastMsg = "获取个人信息失败";
+                            break;
+                    }
+                    if (handler != null) {
+                        Message msg = handler.obtainMessage(1);
+                        msg.obj = toastMsg + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                        msg.sendToTarget();
+                    }
+                }
+
+                @Override
+                public void onCancel(Platform platform, int action) {
+                    Logger.dd(TAG, "onCancel:" + platform + ",action:" + action);
+                    String toastMsg = null;
+                    switch (action) {
+                        case Platform.ACTION_AUTHORIZING:
+                            toastMsg = "取消授权";
+                            break;
+                        // TODO: 2017/6/23 删除授权不存在取消
+                        case Platform.ACTION_REMOVE_AUTHORIZING:
+                            break;
+                        case Platform.ACTION_USER_INFO:
+                            toastMsg = "取消获取个人信息";
+                            break;
+                    }
+                    if (handler != null) {
+                        Message msg = handler.obtainMessage(1);
+                        msg.obj = toastMsg;
+                        msg.sendToTarget();
+                    }
+                }
+            };
+
+            final ShareParams shareParams = new ShareParams();//分享参数
+            final CustomDialog shareBottomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+            ImageView shareImage = (ImageView) shareBottomDialog.getView(HomeActivity.this, R.id.share_image);
+            shareImage.setImageBitmap(cropScreenBitmap);
+            try {
+                imgeFile = ImageUtils.saveFile(cropScreenBitmap, "cropScreen.png");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            shareBottomDialog.show();
+            mPlatActionListener = new PlatActionListener() {
+                @Override
+                public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
+                    if (handler != null) {
+                        Message message = handler.obtainMessage();
+                        message.obj = "分享成功";
+                        handler.sendMessage(message);
+                    }
+                }
+
+                @Override
+                public void onError(Platform platform, int action, int errorCode, Throwable error) {
+                    if (handler != null) {
+                        Message message = handler.obtainMessage();
+                        message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                        Logger.dd(TAG, message.obj + "");
+                        handler.sendMessage(message);
+                    }
+                }
+
+                @Override
+                public void onCancel(Platform platform, int action) {
+                    if (handler != null) {
+                        Message message = handler.obtainMessage();
+                        message.obj = "分享取消";
+                        handler.sendMessage(message);
+                    }
+                }
+            };
+            shareBottomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                @Override
+                public void OnItemClick(CustomDialog dialog, View view) {
+                    switch (view.getId()) {
+                        case R.id.mRlWechat:
+                            shareParams.setShareType(Platform.SHARE_TEXT);
+                            shareParams.setText("分享的文本！！");
+                            shareParams.setTitle("分享的标题！！");
+                            //调用分享接口share ，分享到QQ平台。
+                            JShareInterface.share(Wechat.Name, shareParams, mPlatActionListener);
+                            break;
+                        case R.id.mRlWeixinCircle:
+                            shareParams.setShareType(Platform.SHARE_TEXT);
+                            shareParams.setText("分享的文本！！");
+                            shareParams.setTitle("分享的标题！！");
+                            //调用分享接口share ，分享到QQ平台。
+                            JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
+                            break;
+                        case R.id.mRlQQ:
+                            if (!JShareInterface.isAuthorize(QQ.Name)) {
+                                JShareInterface.authorize(QQ.Name, mAuthListener);
+                            }
+//                            shareParams.setShareType(Platform.SHARE_TEXT);
+//                            shareParams.setText("身边的人都在这");
+//                            shareParams.setTitle("马甲App");
+                            Bitmap drawableBitmap = ImageUtils.drawableToBitmap(getResources().getDrawable(R.mipmap.app_logo));
+                            try {
+//                                imgeFile = ImageUtils.readBitmap()
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                            shareParams.setTitle("马甲APP");
+                            shareParams.setText("身边的人都在这");
+                            shareParams.setUrl(SCCacheUtils.getCacheHeadImg());
+                            //调用分享接口share ，分享到QQ平台。
+                            JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
+                            break;
+                        case R.id.mRlWeibo:
+                            shareParams.setShareType(Platform.SHARE_TEXT);
+                            shareParams.setShareType(Platform.SHARE_IMAGE);
+                            shareParams.setText("身边的人都在这");
+                            //调用分享接口share ，分享到QQ平台。
+                            JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
+                            break;
+                        case R.id.share_close:
+                            shareBottomDialog.dismiss();
+                            break;
+                    }
+                }
+            });
+        }
+    }
+
 
     @Override
     public int getPermissionsRequestCode() {
@@ -801,6 +1093,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO,
 
         };
     }
@@ -864,6 +1157,12 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 break;
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        closeProgress();
     }
 
     public class MyLocationListener implements BDLocationListener {

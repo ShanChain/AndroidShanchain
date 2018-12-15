@@ -9,7 +9,7 @@
         android:id="@+id/toolbar_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/toolbar_nav">
+        android:background="@color/colorWhite">
 
     </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
 

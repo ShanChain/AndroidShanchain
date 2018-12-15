@@ -9,7 +9,7 @@
         android:topRightRadius="30dp"
         />
     <solid
-        android:color="@color/colorHomeBtn"
+        android:color="@color/colorViolet"
         />
     <size
         android:width="120dp"

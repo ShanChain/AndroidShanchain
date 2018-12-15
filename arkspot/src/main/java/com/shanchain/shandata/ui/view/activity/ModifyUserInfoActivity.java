@@ -75,10 +75,10 @@ public class ModifyUserInfoActivity extends BaseActivity {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
         mTbMain.setTitleText("修改个人资料");
-        mTbMain.setTitleTextColor(Color.parseColor("#ffffff"));
+        mTbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         mTbMain.setRightText("确定");
-        mTbMain.setLeftImage(R.mipmap.back);
-        mTbMain.setBackgroundColor(Color.parseColor("#4FD1F6"));
+        mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        mTbMain.setBackgroundColor(getResources().getColor(R.color.white));
 
         mTbMain.setOnRightClickListener(new ArthurToolBar.OnRightClickListener() {
             @Override

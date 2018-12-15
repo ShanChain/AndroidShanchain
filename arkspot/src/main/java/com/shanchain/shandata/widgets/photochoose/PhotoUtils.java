@@ -34,7 +34,7 @@ public class PhotoUtils {
      **/
     public static final int INTENT_TAKE = 3;
     /**
-     * 拍照成功后返回
+     * 选择照片成功后返回
      **/
     public static final int INTENT_SELECT = 4;
 
@@ -88,7 +88,7 @@ public class PhotoUtils {
 
             Intent intent = new Intent(Intent.ACTION_PICK, null);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-
+            boolean isAvailable = isIntentAvailable(activity, intent);
             if (!isIntentAvailable(activity, intent)) {
                 return;
             }
@@ -118,6 +118,7 @@ public class PhotoUtils {
      */
     protected boolean isIntentAvailable(Activity activity, Intent intent) {
         PackageManager packageManager = activity.getPackageManager();
+
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
     }
@@ -233,12 +234,12 @@ public class PhotoUtils {
         void onPhotoCancel();
     }
 
-    public OnPhotoResultListener getOnPhotoResultListener() {
-        return onPhotoResultListener;
-    }
-
-    public void setOnPhotoResultListener(OnPhotoResultListener onPhotoResultListener) {
-        this.onPhotoResultListener = onPhotoResultListener;
-    }
+//    public OnPhotoResultListener getOnPhotoResultListener() {
+//        return onPhotoResultListener;
+//    }
+//
+//    public void setOnPhotoResultListener(OnPhotoResultListener onPhotoResultListener) {
+//        this.onPhotoResultListener = onPhotoResultListener;
+//    }
 
 }

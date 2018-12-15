@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.utils.BitmapCache;
+import cn.jiguang.imui.view.CircleImageView;
 import cn.jiguang.imui.view.RoundImageView;
 import cn.jiguang.imui.view.RoundTextView;
 
@@ -25,6 +26,7 @@ public class VideoViewHolder<Message extends IMessage> extends BaseMessageViewHo
 
     private final RoundTextView mDateTv;
     private final RoundImageView mImageAvatar;
+//    private final CircleImageView mImageAvatar;
     private TextView mDisplayNameTv;
     private final ImageView mImageCover;
     private final ImageView mImagePlay;
@@ -38,6 +40,7 @@ public class VideoViewHolder<Message extends IMessage> extends BaseMessageViewHo
         this.mIsSender = isSender;
         mDateTv = (RoundTextView) itemView.findViewById(R.id.aurora_tv_msgitem_date);
         mImageAvatar = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
+//        mImageAvatar = (CircleImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
         mImageCover = (ImageView) itemView.findViewById(R.id.aurora_iv_msgitem_cover);
         mImagePlay = (ImageView) itemView.findViewById(R.id.aurora_iv_msgitem_play);
         mTvDuration = (TextView) itemView.findViewById(R.id.aurora_tv_duration);

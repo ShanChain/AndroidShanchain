@@ -28,7 +28,6 @@ import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
-import com.shanchain.shandata.R;
 import com.shanchain.shandata.db.ContactDao;
 //import com.shanchain.shandata.manager.CharacterManager;
 import com.shanchain.shandata.manager.LoginManager;
@@ -36,12 +35,12 @@ import com.shanchain.shandata.push.PushManager;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 //import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.umeng.message.IUmengRegisterCallback;
-import com.umeng.message.PushAgent;
-import com.umeng.message.UmengMessageHandler;
-import com.umeng.message.UmengNotificationClickHandler;
-import com.umeng.message.entity.UMessage;
+//import com.tencent.bugly.crashreport.CrashReport;
+//import com.umeng.message.IUmengRegisterCallback;
+//import com.umeng.message.PushAgent;
+//import com.umeng.message.UmengMessageHandler;
+//import com.umeng.message.UmengNotificationClickHandler;
+//import com.umeng.message.entity.UMessage;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -53,9 +52,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.jiguang.share.android.api.JShareInterface;
+import cn.jiguang.share.android.api.PlatformConfig;
+//import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
-import me.shaohui.shareutil.ShareConfig;
-import me.shaohui.shareutil.ShareManager;
+//import me.shaohui.shareutil.ShareConfig;
+//import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
@@ -67,6 +70,14 @@ public class MyApplication extends BaseApplication {
 
     private static Context mContext;
     private LocationClient locationClient;
+    public static final int IMAGE_MESSAGE = 1;
+    public static final int TAKE_PHOTO_MESSAGE = 2;
+    public static final int TAKE_LOCATION = 3;
+    public static final int FILE_MESSAGE = 4;
+    public static final int TACK_VIDEO = 5;
+    public static final int TACK_VOICE = 6;
+    public static final int BUSINESS_CARD = 7;
+    public static final int REQUEST_CODE_SEND_FILE = 26;
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
@@ -75,6 +86,8 @@ public class MyApplication extends BaseApplication {
     private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
     private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
+    public static String PICTURE_DIR = "sdcard/JChatDemo/pictures/";
+    public static String FILE_DIR = "sdcard/JChatDemo/recvFiles/";
 /*
     UmengNotificationClickHandler mNotificationClickHandler = new UmengNotificationClickHandler() {
         @Override
@@ -226,14 +239,14 @@ public class MyApplication extends BaseApplication {
      * 初始化第三方登录和分享
      */
     public void initShareAndLogin() {
-        ShareConfig config = ShareConfig.instance()
-                .qqId(QQ_ID)
-                .wxId(WX_ID)
-                .weiboId(WEIBO_ID)
-                // 下面两个，如果不需要登录功能，可不填写
-                .weiboRedirectUrl(REDIRECT_URL)
-                .wxSecret(WX_SECRET);
-        ShareManager.init(config);
+//        ShareConfig config = ShareConfig.instance()
+//                .qqId(QQ_ID)
+//                .wxId(WX_ID)
+//                .weiboId(WEIBO_ID)
+//                // 下面两个，如果不需要登录功能，可不填写
+//                .weiboRedirectUrl(REDIRECT_URL)
+//                .wxSecret(WX_SECRET);
+//        ShareManager.init(config);
     }
 
 //    private void initUPush() {
@@ -306,8 +319,19 @@ public class MyApplication extends BaseApplication {
     * 初始化极光IM
     * */
     private void initJMessage() {
+        PlatformConfig platformConfig = new PlatformConfig()
+                .setWechat(WX_ID, WX_SECRET)
+                .setQQ(QQ_ID, QQ_KEY)
+                .setSinaWeibo(WEIBO_ID, WEIBO_SECRET, REDIRECT_URL);
+//                .setFacebook("1847959632183996", "JShareDemo")
+//                .setTwitter("fCm4SUcgYI1wUACGxB2erX5pL", "NAhzwYCgm15FBILWqXYDKxpryiuDlEQWZ5YERnO1D89VBtZO6q")
+//                .setJchatPro("1847959632183996");
+
         JMessageClient.init(this,true);
+        JPushInterface.init(this);//初始化极光推送
+        JShareInterface.init(this,platformConfig);//极光分享
         JMessageClient.setDebugMode(true);
+        JShareInterface.setDebugMode(true);
     }
 //    private void initContactListener() {
 //        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {

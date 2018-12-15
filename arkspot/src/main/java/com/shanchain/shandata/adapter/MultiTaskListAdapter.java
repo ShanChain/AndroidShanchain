@@ -54,7 +54,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
 
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
-        holder.setTextView(R.id.even_message_bounty, "赏金：￥ " + item.getBounty());
+        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
 
         holder.isRecyclable();
         int characterId = item.getCharacterId();

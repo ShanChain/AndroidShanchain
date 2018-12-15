@@ -1,2 +1,2 @@
-include ':PushSDK', ':common', ':thirdparty', ':arkspot', ':improv', ':baidumap', ':chatinput', ':messagelist', ':satellitemenu', ':uploadImge'
+include ':common', ':thirdparty', ':PushSDK',':arkspot', ':baidumap', ':chatinput', ':messagelist', ':KeyboardLibrary', ':reclib-chat', ':reclib-testeremoji'
 include ':arcmenu'

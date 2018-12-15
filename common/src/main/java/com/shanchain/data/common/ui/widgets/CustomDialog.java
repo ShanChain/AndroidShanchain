@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyboardShortcutGroup;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -24,15 +26,16 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
+    private View shareView;
 
-    public CustomDialog(Context context, int layoutResID, int[] listenedItems){
+    public CustomDialog(Context context, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
         this.layoutResID = layoutResID;
         this.listenedItems = listenedItems;
     }
 
-    public CustomDialog(Context context, boolean isBottom , int layoutResID, int[] listenedItems) {
+    public CustomDialog(Context context, boolean isBottom, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
         this.isBottom = isBottom;
@@ -41,8 +44,7 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     }
 
 
-
-    public CustomDialog(Context context, boolean isBottom , double ratio, int layoutResID, int[] listenedItems) {
+    public CustomDialog(Context context, boolean isBottom, double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
 
         this.context = context;
@@ -63,8 +65,7 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     }
 
 
-
-    public CustomDialog(Context context, boolean isBottom , boolean isAnimator, double ratio, int layoutResID, int[] listenedItems) {
+    public CustomDialog(Context context, boolean isBottom, boolean isAnimator, double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
         this.isBottom = isBottom;
@@ -79,12 +80,12 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
-        if (isBottom){
+        if (isBottom) {
             window.setGravity(Gravity.BOTTOM); // 此处可以设置dialog显示的位置为底部
-        }else {
+        } else {
             window.setGravity(Gravity.CENTER); // 此处可以设置dialog显示的位置为居中
         }
-        if (isAnimator){
+        if (isAnimator) {
             window.setWindowAnimations(R.style.bottom_menu_animation); // 添加动画效果
         }
 
@@ -93,19 +94,33 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams lp = getWindow().getAttributes();
 
-        lp.width = (int) (display.getWidth()*ratio); // 设置dialog宽度为屏幕的多少
+        lp.width = (int) (display.getWidth() * ratio); // 设置dialog宽度为屏幕的多少
 
         getWindow().setAttributes(lp);
         //点击Dialog外部消失
         setCanceledOnTouchOutside(true);
         //遍历控件id,添加点击事件
-        if (listenedItems != null){
+        if (listenedItems != null) {
             for (int id : listenedItems) {
                 findViewById(id).setOnClickListener(this);
             }
         }
 
 
+    }
+
+    public View getView(Context context, @IdRes int idRes) {
+        View layoutView = LayoutInflater.from(context).inflate(layoutResID, null);
+        shareView = layoutView.findViewById(idRes);
+        return shareView;
+    }
+
+    private void setDialogTitle() {
+        if (listenedItems != null) {
+            for (int id : listenedItems) {
+                findViewById(id);
+            }
+        }
     }
 
     private OnItemClickListener listener;
@@ -118,6 +133,7 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     public interface OnItemClickListener {
         void OnItemClick(CustomDialog dialog, View view);
     }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }

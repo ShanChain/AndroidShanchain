@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.Sensor;
@@ -15,16 +17,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +50,32 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.AppsAdapter;
+import com.shanchain.shandata.adapter.SimpleAppsGridView;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.MyEmojiFilter;
+import com.shanchain.shandata.utils.RequestCode;
+import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
+import com.shanchain.shandata.widgets.photochoose.ChoosePhoto;
+import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
+import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
+import com.shanchain.shandata.widgets.pickerimage.utils.Extras;
+import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
+import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
+import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
+import com.shanchain.shandata.widgets.takevideo.CameraActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +85,8 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.jiguang.imui.chatinput.ChatInputView;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
+import cn.jiguang.imui.chatinput.emoji.EmojiBean;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
@@ -96,6 +121,16 @@ import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import sj.keyboard.adpater.EmoticonsAdapter;
+import sj.keyboard.adpater.PageSetAdapter;
+import sj.keyboard.data.EmoticonPageEntity;
+import sj.keyboard.data.EmoticonPageSetEntity;
+import sj.keyboard.interfaces.EmoticonClickListener;
+import sj.keyboard.interfaces.EmoticonDisplayListener;
+import sj.keyboard.interfaces.PageViewInstantiateListener;
+import sj.keyboard.utils.imageloader.ImageBase;
+import sj.keyboard.widget.EmoticonPageView;
+import sj.keyboard.widget.FuncLayout;
 
 public class SingleChatActivity extends BaseActivity implements View.OnTouchListener, EasyPermissions.PermissionCallbacks,
         SensorEventListener, ArthurToolBar.OnLeftClickListener,
@@ -133,12 +168,14 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private UserInfo mMyInfo;
     private DefaultUser userInfo;
     private String hxUserId;
+    private ChoosePhoto mChoosePhoto = new ChoosePhoto();
 
 
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
     private List<MyMessage> mData = new ArrayList<>();
     private List<Message> mConvData = new ArrayList<>();
+    private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -151,9 +188,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         mMyInfo = JMessageClient.getMyInfo();
         final Bundle bundle = getIntent().getExtras();
         userInfo = bundle.getParcelable("userInfo");
-        if (bundle.getString("hxUserId")!=null){
+        if (bundle.getString("hxUserId") != null) {
             FORM_USER_ID = bundle.getString("hxUserId");
-        }else {
+        } else {
             FORM_USER_ID = userInfo.getHxUserId();
         }
 
@@ -176,7 +213,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
         initToolbar();
 //        initData();
-        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
+//        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
@@ -187,7 +224,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             mData = getConversationMessages();
             initMsgAdapter();
         }
-
+        xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
+        xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
+        initEmojiData();//初始化表情栏
         mReceiver = new HeadsetDetectReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
@@ -195,6 +234,46 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         mChatView.setOnTouchListener(this);
 
         //发送单聊消息
+        xhsEmoticonsKeyBoard.getBtnSend().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mcgContent = xhsEmoticonsKeyBoard.getEtChat().getText().toString();
+                scrollToBottom();
+                if (mcgContent.equals("")) {
+                    return;
+                }
+                Message msg;
+                TextContent content = new TextContent(mcgContent);
+                msg = mConv.createSendMessage(content);
+                JMessageClient.sendMessage(msg);
+                //构造消息
+                MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
+                if (msg.getFromUser().getAvatarFile() != null) {
+                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
+                    message.setUserInfo(defaultUser);
+                } else {
+                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
+                    message.setUserInfo(defaultUser);
+                }
+                message.setText(mcgContent);
+                long messageTime = msg.getCreateTime();
+                long preTime = new Date().getTime();
+                long diff = preTime - messageTime;
+                if (diff > 3 * 60 * 1000) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    String timeString = DateUtils.formatFriendly(new Date(messageTime));
+//                    message.setTimeString(timeString);
+                }
+//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+//                                messageList.add(message);
+                mAdapter.addToStart(message, true);
+                xhsEmoticonsKeyBoard.getEtChat().setText("");
+            }
+        });
+
+
         mChatView.setMenuClickListener(new OnMenuClickListener() {
             @Override
             public boolean onSendTextMessage(final CharSequence input) {
@@ -219,19 +298,19 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             mMyInfo = JMessageClient.getMyInfo();
                             DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
                             myMessage.setUserInfo(user);
-                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             myMessage.setText(input.toString());
                             mData.add(myMessage);
                             mAdapter.addToStart(myMessage, true);
-                        }else {
-                            ToastUtils.showToast(SingleChatActivity.this,"发送消息失败");
-                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(),mMyInfo.getDisplayName(),mMyInfo.getAvatar());
+                        } else {
+                            ToastUtils.showToast(SingleChatActivity.this, "发送消息失败");
+                            DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
                             myMessage.setUserInfo(user);
                             myMessage.setText(input.toString());
                             myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                            mAdapter.addToStart(myMessage,true);
+                            mAdapter.addToStart(myMessage, true);
                         }
 
                     }
@@ -353,6 +432,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 return true;
             }
         });
+
+        //发送语音
+        xhsEmoticonsKeyBoard.getBtnVoice().initConv(mConv, mAdapter, mChatView);
 
         mChatView.setRecordVoiceListener(new RecordVoiceListener() {
             @Override
@@ -482,30 +564,126 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         });
     }
 
-//    private void initData() {
-//        mMyInfo = JMessageClient.getMyInfo();
-//        final Bundle bundle = getIntent().getExtras();
-//        userInfo = bundle.getParcelable("userInfo");
-//        if (userInfo != null) {
-//            FORM_USER_NAME = userInfo.getDisplayName();
-//        } else {
-//            FORM_USER_NAME = "qwer";
-//        }
-//
-//    }
+    /*
+     * 初始化输入框
+     * */
+    private void initEmojiData() {
+        ArrayList<EmojiBean> emojiArray = new ArrayList<>();
+        Collections.addAll(emojiArray, DefEmoticons.sEmojiArray);
+        xhsEmoticonsKeyBoard.getBtnSend().setBackgroundColor(getResources().getColor(R.color.colorViolet));
+        xhsEmoticonsKeyBoard.addOnFuncKeyBoardListener(new FuncLayout.OnFuncKeyBoardListener() {
+            @Override
+            public void OnFuncPop(int i) {
+                scrollToBottom();
+            }
+
+            @Override
+            public void OnFuncClose() {
+
+            }
+        });
+        SimpleAppsGridView gridView = new SimpleAppsGridView(this);
+        xhsEmoticonsKeyBoard.addFuncView(gridView);
+        // emoticon click
+        final EmoticonClickListener emoticonClickListener = new EmoticonClickListener() {
+            @Override
+            public void onEmoticonClick(Object o, int actionType, boolean isDelBtn) {
+                if (isDelBtn) {
+                    int action = KeyEvent.ACTION_DOWN;
+                    int code = KeyEvent.KEYCODE_DEL;
+                    KeyEvent event = new KeyEvent(action, code);
+                    xhsEmoticonsKeyBoard.getEtChat().onKeyDown(KeyEvent.KEYCODE_DEL, event);
+                } else {
+                    if (o == null) {
+                        return;
+                    }
+                    String content = null;
+                    if (o instanceof EmojiBean) {
+                        content = ((EmojiBean) o).emoji;
+                    }
+                    int index = xhsEmoticonsKeyBoard.getEtChat().getSelectionStart();
+                    Editable editable = xhsEmoticonsKeyBoard.getEtChat().getText();
+                    editable.insert(index, content);
+                }
+            }
+        };
+
+        // emoticon instantiate
+        final EmoticonDisplayListener emoticonDisplayListener = new EmoticonDisplayListener() {
+            @Override
+            public void onBindView(int i, ViewGroup viewGroup, EmoticonsAdapter.ViewHolder viewHolder, Object object, final boolean isDelBtn) {
+                final EmojiBean emojiBean = (EmojiBean) object;
+                if (emojiBean == null && !isDelBtn) {
+                    return;
+                }
+                viewHolder.ly_root.setBackgroundResource(com.keyboard.view.R.drawable.bg_emoticon);
+
+                if (isDelBtn) {
+                    viewHolder.iv_emoticon.setImageResource(R.mipmap.emoji);
+                } else {
+                    viewHolder.iv_emoticon.setImageResource(emojiBean.icon);
+                }
+
+                viewHolder.rootView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emoticonClickListener.onEmoticonClick(emojiBean, 0, isDelBtn);
+                    }
+                });
+            }
+        };
+
+        //  page instantiate
+        PageViewInstantiateListener pageViewInstantiateListener = new PageViewInstantiateListener<EmoticonPageEntity>() {
+            @Override
+            public View instantiateItem(ViewGroup viewGroup, int i, EmoticonPageEntity pageEntity) {
+                if (pageEntity.getRootView() == null) {
+                    EmoticonPageView pageView = new EmoticonPageView(viewGroup.getContext());
+                    pageView.setNumColumns(pageEntity.getRow());
+                    pageEntity.setRootView(pageView);
+                    try {
+                        EmoticonsAdapter adapter = new EmoticonsAdapter(viewGroup.getContext(), pageEntity, null);
+                        // emoticon instantiate
+                        adapter.setOnDisPlayListener(emoticonDisplayListener);
+                        pageView.getEmoticonsGridView().setAdapter(adapter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return pageEntity.getRootView();
+            }
+        };
+
+        // build
+        EmoticonPageSetEntity xhsPageSetEntity
+                = new EmoticonPageSetEntity.Builder()
+                .setLine(3)
+                .setRow(7)
+                .setEmoticonList(emojiArray)
+                .setIPageViewInstantiateItem(pageViewInstantiateListener)
+                .setShowDelBtn(EmoticonPageEntity.DelBtnStatus.LAST)
+                .setIconUri(ImageBase.Scheme.DRAWABLE.toUri("emoji"))
+                .build();
+
+        PageSetAdapter pageSetAdapter = new PageSetAdapter();
+        pageSetAdapter.add(xhsPageSetEntity);
+        xhsEmoticonsKeyBoard.setAdapter(pageSetAdapter);
+        xhsEmoticonsKeyBoard.getEtChat().addEmoticonFilter(new MyEmojiFilter());
+    }
 
     private void initToolbar() {
-        mTbMain.setTitleTextColor(Color.WHITE);
+        mTbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
-        mTbMain.setBackgroundColor(Color.parseColor("#4FD1F6"));
-        mTbMain.setLeftImage(R.mipmap.back);
+        mTbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-//        mTbMain.setTitleText("陌生好友");
+        String title = TextUtils.isEmpty(FORM_USER_NAME) ? FORM_USER_NAME : "陌生好友";
+        mTbMain.setTitleText(title);
         mTbMain.setRightImage(R.mipmap.more);
 
         mTbMain.setOnLeftClickListener(this);
@@ -866,8 +1044,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                                         fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
                                     }
                                     if (fileContent.getLocalPath() != null) {
-                                        ImageContent imageContent1 = (ImageContent) msg.getContent();
-                                        fileMessage.setMediaFilePath(imageContent1.getLocalThumbnailPath());
+//                                        ImageContent imageContent1 = (ImageContent) msg.getContent();
+//                                        fileMessage.setMediaFilePath(imageContent1.getLocalThumbnailPath());
                                         mPathList.add(fileContent.getLocalPath());
                                         mMsgIdList.add(fileMessage.getMsgId() + "");
                                     } else {
@@ -906,10 +1084,12 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         return mData;
     }
 
+
     // 接收聊天室消息
     public void onEventMainThread(MessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
         mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
+//        mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
         mConvData = mConv.getAllMessage();
         final Message evMsg = event.getMessage();
         final MyMessage myMessage;
@@ -952,7 +1132,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         } else {
                             long messageTime = msg.getCreateTime();
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                            textMessage.setTimeString(timeString);
+//                            textMessage.setTimeString(timeString);
                         }
                     }
 //                    mData.add(textMessage);
@@ -984,6 +1164,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             mPathList.add(file.getAbsolutePath());
                             mMsgIdList.add(imgMessage.getMsgId() + "");
                             imgMessage.setMediaFilePath(file.getAbsolutePath());
+                            mAdapter.updateMessage(imgMessage);
                         }
                     });
                 } else {
@@ -1004,7 +1185,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     } else {
                         long messageTime = msg.getCreateTime();
                         String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                        imgMessage.setTimeString(timeString);
+//                        imgMessage.setTimeString(timeString);
                     }
                 }
 //                mData.add(imgMessage);
@@ -1037,6 +1218,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         public void onComplete(int i, String s, File file) {
                             voiceMessage.setMediaFilePath(file.getAbsolutePath());
                             voiceMessage.setDuration(voiceContent.getDuration());
+                            mAdapter.updateMessage(voiceMessage);
                         }
                     });
                 }
@@ -1053,7 +1235,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     } else {
                         long messageTime = msg.getCreateTime();
                         String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                        voiceMessage.setTimeString(timeString);
+//                        voiceMessage.setTimeString(timeString);
                     }
                 }
 //                mData.add(voiceMessage);
@@ -1079,12 +1261,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (videoContent.getVideoLocalPath() != null) {
                     videoMessage.setMediaFilePath(videoContent.getThumbLocalPath());
                     videoMessage.setDuration(videoContent.getDuration());
+
                 } else {
                     videoContent.downloadThumbImage(msg, new DownloadCompletionCallback() {
                         @Override
                         public void onComplete(int i, String s, File file) {
                             videoMessage.setMediaFilePath(file.getAbsolutePath());
-
+                            mAdapter.updateMessage(videoMessage);
                         }
                     });
 
@@ -1109,7 +1292,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     } else {
                         long messageTime = msg.getCreateTime();
                         String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                        videoMessage.setTimeString(timeString);
+//                        videoMessage.setTimeString(timeString);
                     }
                 }
 //                mData.add(videoMessage);
@@ -1152,6 +1335,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                                         fileMessage.setMediaFilePath(file.getAbsolutePath());
                                         mPathList.add(fileContent.getLocalPath());
                                         mMsgIdList.add(fileMessage.getMsgId() + "");
+                                        mAdapter.updateMessage(fileMessage);
                                     }
                                 });
                             }
@@ -1172,7 +1356,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                                     public void onComplete(int i, String s, File file) {
                                         fileMessage.setMediaFilePath(file.getAbsolutePath());
                                         VideoContent videoContent1 = (VideoContent) msg.getContent();
-//                                            fileMessage.setMediaFilePath(videoContent1.getThumbLocalPath());
+                                        fileMessage.setMediaFilePath(videoContent1.getThumbLocalPath());
+                                        mAdapter.updateMessage(fileMessage);
                                     }
                                 });
                             }
@@ -1195,6 +1380,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                                         fileMessage.setMediaFilePath(file.getAbsolutePath());
                                         mPathList.add(fileContent.getLocalPath());
                                         mMsgIdList.add(fileMessage.getMsgId() + "");
+                                        mAdapter.updateMessage(fileMessage);
                                     }
                                 });
                             }
@@ -1232,7 +1418,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     } else {
                         long messageTime = msg.getCreateTime();
                         String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                        fileMessage.setTimeString(timeString);
+//                        fileMessage.setTimeString(timeString);
                     }
                 }
 //                mData.add(fileMessage);
@@ -1276,6 +1462,94 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 //        }
 //        mAdapter.addToEndChronologically(mData);
 //        initMsgAdapter();
+    }
+
+    //聊天室输入框多功能界面
+    public void onEventMainThread(AppsAdapter.ImageEvent event) {
+        Intent intent;
+        switch (event.getFlag()) {
+            case MyApplication.IMAGE_MESSAGE:
+                int from = PickImageActivity.FROM_LOCAL;
+                int requestCode = RequestCode.PICK_IMAGE;
+                if (ContextCompat.checkSelfPermission(SingleChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+                    PickImageActivity.start(SingleChatActivity.this, requestCode, from, tempFile(), true, 1,
+                            true, false, 0, 0);
+                }
+
+                break;
+            case MyApplication.TAKE_PHOTO_MESSAGE:
+                int takePhotoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                if (takePhotoPermission != PackageManager.PERMISSION_GRANTED) {
+                    LogUtils.d("未申请权限,正在申请");
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+                    LogUtils.d("已经申请权限");
+                    intent = new Intent(SingleChatActivity.this, CameraActivity.class);
+                    intent.putExtra("camera", "takePhoto");
+                    startActivityForResult(intent, RequestCode.TAKE_PHOTO);
+                }
+                break;
+            case MyApplication.TACK_VIDEO:
+                int takeVideoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                if (takeVideoPermission != PackageManager.PERMISSION_GRANTED) {
+                    LogUtils.d("未申请权限,正在申请");
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+                    LogUtils.d("已经申请权限");
+                    intent = new Intent(SingleChatActivity.this, CameraActivity.class);
+                    intent.putExtra("camera", "takeVideo");
+                    startActivityForResult(intent, RequestCode.TAKE_VIDEO);
+
+                }
+                break;
+            /*case MyApplication.TAKE_LOCATION:
+//                if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    Toast.makeText(this, "请在应用管理中打开“位置”访问权限！", Toast.LENGTH_LONG).show();
+//                } else {
+                intent = new Intent(mContext, MapPickerActivity.class);
+                intent.putExtra(MyApplication.TARGET_ID, mTargetId);
+                intent.putExtra(MyApplication.TARGET_APP_KEY, mTargetAppKey);
+                intent.putExtra(MyApplication.GROUP_ID, mGroupId);
+                intent.putExtra("sendLocation", true);
+                startActivityForResult(intent, MyApplication.REQUEST_CODE_SEND_LOCATION);
+//                }
+                break;
+            case MyApplication.FILE_MESSAGE:
+//                if (ContextCompat.checkSelfPermission(this,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    Toast.makeText(this, "请在应用管理中打开“读写存储”访问权限！", Toast.LENGTH_LONG).show();
+//
+//                } else {
+                intent = new Intent(mContext, SendFileActivity.class);
+                intent.putExtra(JGApplication.TARGET_ID, mTargetId);
+                intent.putExtra(JGApplication.TARGET_APP_KEY, mTargetAppKey);
+                intent.putExtra(JGApplication.GROUP_ID, mGroupId);
+                startActivityForResult(intent, JGApplication.REQUEST_CODE_SEND_FILE);
+//                }
+                break;
+            case MyApplication.BUSINESS_CARD:
+                intent = new Intent(mContext, FriendListActivity.class);
+                intent.putExtra("isSingle", mIsSingle);
+                intent.putExtra("userId", mTargetId);
+                intent.putExtra("groupId", mGroupId);
+                startActivity(intent);
+                break;*/
+            case MyApplication.TACK_VOICE:
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private String tempFile() {
+        String filename = StringUtil.get32UUID() + ".jpg";
+        return StorageUtil.getWritePath(filename, StorageType.TYPE_TEMP);
     }
 
     private void initMsgAdapter() {
@@ -1488,6 +1762,123 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             }
         }, 200);
     }
+
+    @Override
+    protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RequestCode.TAKE_PHOTO:
+                if (data != null) {
+                    final String photoPath = data.getStringExtra("take_photo");
+                    Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                    final Message msg;
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                    if (mConv != null) {
+                        try {
+                            msg = mConv.createSendImageMessage(new File(photoPath));
+//                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                            message.setMediaFilePath(photoPath);
+                            mPathList.add(photoPath);
+                            mMsgIdList.add(message.getMsgId());
+                            String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+                            message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
+                            JMessageClient.sendMessage(msg);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    SingleChatActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(message, true);
+                        }
+                    });
+
+                    /*ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
+                        @Override
+                        public void gotResult(int responseCode, String responseMessage, ImageContent imageContent) {
+                            if (responseCode == 0) {
+                                Message msg = mConv.createSendMessage(imageContent);
+//                                handleSendMsg(msg.getId());
+                                LogUtils.d("handleSendMsg", photoPath);
+                            }
+                        }
+                    });*/
+                }
+                break;
+            case RequestCode.TAKE_VIDEO:
+                if (data != null) {
+                    String path = data.getStringExtra("video");
+                    long videoDuration = data.getLongExtra("duration", 0);
+                    MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
+                    message.setDuration(videoDuration);
+                    File videoFile = new File(path);
+                    try {
+                        MediaMetadataRetriever media = new MediaMetadataRetriever();
+                        media.setDataSource(path);
+                        Bitmap bitmap = media.getFrameAtTime();
+                        VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
+                        Message msg = mConv.createSendMessage(video);
+//                            Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
+
+                                }
+                            }
+                        });
+//                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMediaFilePath(path);
+                        message.setDuration(videoDuration);
+                        String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
+                        JMessageClient.sendMessage(msg);
+                        mAdapter.addToStart(message, true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case RequestCode.PICK_IMAGE://1
+                if (data == null) {
+                    return;
+                }
+                boolean local = data.getBooleanExtra(Extras.EXTRA_FROM_LOCAL, false);
+                if (local) {
+                    // 本地相册
+                    ToastUtils.showToastLong(SingleChatActivity.this, data.getDataString());
+                    final String photoPath = data.getStringExtra(Extras.EXTRA_FILE_PATH);
+                    Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                    final Message msg;
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                    if (mConv != null) {
+                        try {
+                            msg = mConv.createSendImageMessage(new File(photoPath));
+//                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                            message.setMediaFilePath(photoPath);
+                            mPathList.add(photoPath);
+                            mMsgIdList.add(message.getMsgId());
+                            String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+                            message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
+                            JMessageClient.sendMessage(msg);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    SingleChatActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(message, true);
+                        }
+                    });
+                }
+                break;
+            case PhotoUtils.INTENT_SELECT:
+                mChoosePhoto.photoUtils.onActivityResult(SingleChatActivity.this, requestCode, resultCode, data);
+                break;
+        }
+    }
+
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

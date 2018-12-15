@@ -72,7 +72,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         String expiryTime0 = simpleDateFormat.format(item.getExpiryTime());
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime0 + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
-        holder.setTextView(R.id.even_message_bounty, "赏金：￥ " + item.getBounty());
+        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
         holder.setTextView(R.id.even_message_location, item.getRoomName() + "");
         holder.setTextView(R.id.task_release_time, "发布时间 " + simpleDateFormat.format(item.getCreateTime()));//发布时间
         if (viewType!=0||viewType!=7||viewType!=8){

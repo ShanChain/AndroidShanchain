@@ -110,10 +110,10 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
 
     private void initToolBar() {
 
-        mTbMain.setLeftImage(R.mipmap.back);
+        mTbMain.setLeftImage(R.mipmap.activity_back);
 //        mTbMain.setRightImage(R.mipmap.nav_task_add);
         //设置导航栏标题
-        mTbMain.setTitleTextColor(Color.WHITE);
+        mTbMain.setTitleTextColor(Color.BLACK);
         mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -121,8 +121,8 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-        mTbMain.setTitleText("悬赏任务");
-        mTbMain.setBackgroundColor(Color.parseColor("#4FD1F6"));
+        mTbMain.setTitleText("我的社区帮");
+        mTbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
 
         mTbMain.setOnLeftClickListener(this);//左侧导航栏监听
         mTbMain.setOnRightClickListener(this);//右侧导航栏监听
@@ -134,7 +134,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
     }
 
     private void setFragment() {
-        String[] titles = {"任务列表", "我的任务"};
+        String[] titles = {"帮过我的", "我帮过的"};
         TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles);
         vpTask.setOffscreenPageLimit(2);
         vpTask.setAdapter(adapter);

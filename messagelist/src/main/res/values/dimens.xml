@@ -2,8 +2,8 @@
 <resources>
 
     <!-->conversation<-->
-    <dimen name="aurora_width_conv_avatar">50dp</dimen>
-    <dimen name="aurora_height_conv_avatar">50dp</dimen>
+    <dimen name="aurora_width_conv_avatar">40dp</dimen>
+    <dimen name="aurora_height_conv_avatar">40dp</dimen>
 
     <!-->Message List<-->
     <dimen name="aurora_size_date_bg_radius">5dp</dimen>

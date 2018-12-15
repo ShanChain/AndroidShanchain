@@ -47,7 +47,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
                 android:text="对方正在完成"
-                android:textColor="@color/colorTextDefault"
+                android:textColor="@color/colorTextTask"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -145,7 +145,7 @@
                     android:background="@drawable/shape_item_btn_join"
                     android:text="未完成"
                     android:visibility="visible"
-                    android:textColor="@color/colorHomeBtn"
+                    android:textColor="@color/colorViolet"
                     android:textStyle="bold" />
 
                 <Button
@@ -157,7 +157,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/shape_btn_bg_task"
                     android:text="确认完成"
-                    android:textColor="@color/colorHomeBtn"
+                    android:textColor="@color/colorViolet"
                     android:textStyle="bold"
                     android:visibility="visible" />
             </LinearLayout>

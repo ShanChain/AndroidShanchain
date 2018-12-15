@@ -47,7 +47,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
                 android:text="待赏主确认"
-                android:textColor="@color/colorTextDefault"
+                android:textColor="@color/colorTextTask"
                 android:textStyle="bold" />
 
             <LinearLayout

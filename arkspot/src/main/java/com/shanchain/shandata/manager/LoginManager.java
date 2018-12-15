@@ -21,15 +21,6 @@ import com.shanchain.data.common.utils.ToastUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import me.shaohui.shareutil.LoginUtil;
-import me.shaohui.shareutil.ShareUtil;
-import me.shaohui.shareutil.login.LoginListener;
-import me.shaohui.shareutil.login.LoginPlatform;
-import me.shaohui.shareutil.login.LoginResult;
-import me.shaohui.shareutil.login.result.BaseToken;
-import me.shaohui.shareutil.login.result.BaseUser;
-import me.shaohui.shareutil.share.ShareListener;
-import me.shaohui.shareutil.share.SharePlatform;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
@@ -52,82 +43,82 @@ public class LoginManager {
         return instance;
     }
 
-    final LoginListener listener = new LoginListener() {
-        @Override
-        public void loginSuccess(LoginResult result) {
-            //登录成功， 如果你选择了获取用户信息，可以通过
-            int platform = result.getPlatform();
-
-            BaseToken token = result.getToken();
-            String accessToken = token.getAccessToken();
-            BaseUser userInfo = result.getUserInfo();
-            String nickname = userInfo.getNickname();
-            String headImageUrl = userInfo.getHeadImageUrl();
-            String openId = userInfo.getOpenId();
-            String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
-            String userType = UserType.USER_TYPE_WEIXIN;
-            int sex = userInfo.getSex();
-            switch (platform) {
-                case LoginPlatform.QQ:
-                    userType = UserType.USER_TYPE_QQ;
-                    LogUtils.d("QQ登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n >< " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken
-                    );
-
-                    break;
-                case LoginPlatform.WX:
-                    userType = UserType.USER_TYPE_WEIXIN;
-                    LogUtils.d("微信登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n  " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken);
-
-                    break;
-
-                case LoginPlatform.WEIBO:
-                    userType = UserType.USER_TYPE_WEIBO;
-                    LogUtils.d("微博登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n  " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken);
-                    break;
-                default:
-                    break;
-            }
-
-            String userId = SCCacheUtils.getCache("0", "curUser");
-            String userToken = SCCacheUtils.getCache(userId, CACHE_TOKEN);
-            if (TextUtils.isEmpty(userToken)) {
-                return;
-            }
-            bindOtherAccount(openId, userToken, userType, userId);
-        }
-
-        @Override
-        public void loginFailure(Exception e) {
-            LogUtils.i("还回调了登录失败");
-            e.printStackTrace();
-        }
-
-        @Override
-        public void loginCancel() {
-            LogUtils.d("登录取消");
-        }
-    };
+//    final LoginListener listener = new LoginListener() {
+//        @Override
+//        public void loginSuccess(LoginResult result) {
+//            //登录成功， 如果你选择了获取用户信息，可以通过
+//            int platform = result.getPlatform();
+//
+//            BaseToken token = result.getToken();
+//            String accessToken = token.getAccessToken();
+//            BaseUser userInfo = result.getUserInfo();
+//            String nickname = userInfo.getNickname();
+//            String headImageUrl = userInfo.getHeadImageUrl();
+//            String openId = userInfo.getOpenId();
+//            String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
+//            String userType = UserType.USER_TYPE_WEIXIN;
+//            int sex = userInfo.getSex();
+//            switch (platform) {
+//                case LoginPlatform.QQ:
+//                    userType = UserType.USER_TYPE_QQ;
+//                    LogUtils.d("QQ登录成功 ！！！"
+//                            + "\r\n token = " + token
+//                            + ";\r\n >< " + "昵称=" + nickname
+//                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+//                            + ";\r\n headImageUrl = " + headImageUrl
+//                            + ";\r\n openId = " + openId
+//                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+//                            + ";\r\n accessToken = " + accessToken
+//                    );
+//
+//                    break;
+//                case LoginPlatform.WX:
+//                    userType = UserType.USER_TYPE_WEIXIN;
+//                    LogUtils.d("微信登录成功 ！！！"
+//                            + "\r\n token = " + token
+//                            + ";\r\n  " + "昵称=" + nickname
+//                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+//                            + ";\r\n headImageUrl = " + headImageUrl
+//                            + ";\r\n openId = " + openId
+//                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+//                            + ";\r\n accessToken = " + accessToken);
+//
+//                    break;
+//
+//                case LoginPlatform.WEIBO:
+//                    userType = UserType.USER_TYPE_WEIBO;
+//                    LogUtils.d("微博登录成功 ！！！"
+//                            + "\r\n token = " + token
+//                            + ";\r\n  " + "昵称=" + nickname
+//                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+//                            + ";\r\n headImageUrl = " + headImageUrl
+//                            + ";\r\n openId = " + openId
+//                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+//                            + ";\r\n accessToken = " + accessToken);
+//                    break;
+//                default:
+//                    break;
+//            }
+//
+//            String userId = SCCacheUtils.getCache("0", "curUser");
+//            String userToken = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+//            if (TextUtils.isEmpty(userToken)) {
+//                return;
+//            }
+//            bindOtherAccount(openId, userToken, userType, userId);
+//        }
+//
+//        @Override
+//        public void loginFailure(Exception e) {
+//            LogUtils.i("还回调了登录失败");
+//            e.printStackTrace();
+//        }
+//
+//        @Override
+//        public void loginCancel() {
+//            LogUtils.d("登录取消");
+//        }
+//    };
 
     private void bindOtherAccount(String otherAccount, String token, String userType, String userId) {
         SCHttpUtils.post()
@@ -161,15 +152,15 @@ public class LoginManager {
 
 
     public void bindWithWeibo() {
-        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.WEIBO, listener, true);
+//        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.WEIBO, listener, true);
     }
 
     public void bindWithWX() {
-        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.WX, listener, true);
+//        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.WX, listener, true);
     }
 
     public void bindWithQQ() {
-        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.QQ, listener, true);
+//        LoginUtil.login(AppManager.getInstance().getContext(), LoginPlatform.QQ, listener, true);
 
     }
 
@@ -225,7 +216,7 @@ public class LoginManager {
                             String code = SCJsonUtils.parseCode(response);
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = SCJsonUtils.parseData(response);
-                                share(shareType, data);
+//                                share(shareType, data);
                             }else if (TextUtils.equals(code, NetErrCode.COMMON_UNOPENED_CODE)){
                                 ToastUtils.showToast(mContext, "暂不支持该功能");
                             } else {
@@ -239,59 +230,59 @@ public class LoginManager {
                 });
     }
 
-    private void share(int shareType, String data) {
-        String background = SCJsonUtils.parseString(data, "background");
-        //String contentId = SCJsonUtils.parseString(data, "contentId");
-        String intro = SCJsonUtils.parseString(data, "intro");
-        //String shareId = SCJsonUtils.parseString(data, "shareId");
-        String title = SCJsonUtils.parseString(data, "title");
-        //String type = SCJsonUtils.parseString(data, "type");
-        String url = SCJsonUtils.parseString(data, "url");
-        if (TextUtils.isEmpty(url)){
-            url = "http://www.qianqianshijie.com";
-        }
-        switch (shareType) {
-            case SharePlatform.WX:
-                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WX, title, intro, url, background, new SCShareListener());
-                break;
-            case SharePlatform.WEIBO:
-                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WEIBO, title, intro, url, background, new SCShareListener());
-                break;
-            case SharePlatform.QQ:
-                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.QQ, title, intro, url, background, new SCShareListener());
-                break;
-            case SharePlatform.QZONE:
-                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.QZONE, title, intro, url, background, new SCShareListener());
-                break;
-            case SharePlatform.WX_TIMELINE:
-                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WX_TIMELINE, title, intro, url, background, new SCShareListener());
-                break;
-            default:
-                break;
-
-        }
-    }
-
-    private class SCShareListener extends ShareListener {
-
-        @Override
-        public void shareSuccess() {
-            LogUtils.i("分享成功");
-            ToastUtils.showToast(mContext,"分享成功");
-        }
-
-        @Override
-        public void shareFailure(Exception e) {
-            LogUtils.i("分享失败");
-            ToastUtils.showToast(mContext,"分享失败");
-            e.printStackTrace();
-        }
-
-        @Override
-        public void shareCancel() {
-            LogUtils.i("分享取消");
-            ToastUtils.showToast(mContext,"分享取消");
-        }
-    }
+//    private void share(int shareType, String data) {
+//        String background = SCJsonUtils.parseString(data, "background");
+//        //String contentId = SCJsonUtils.parseString(data, "contentId");
+//        String intro = SCJsonUtils.parseString(data, "intro");
+//        //String shareId = SCJsonUtils.parseString(data, "shareId");
+//        String title = SCJsonUtils.parseString(data, "title");
+//        //String type = SCJsonUtils.parseString(data, "type");
+//        String url = SCJsonUtils.parseString(data, "url");
+//        if (TextUtils.isEmpty(url)){
+//            url = "http://www.qianqianshijie.com";
+//        }
+//        switch (shareType) {
+//            case SharePlatform.WX:
+//                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WX, title, intro, url, background, new SCShareListener());
+//                break;
+//            case SharePlatform.WEIBO:
+//                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WEIBO, title, intro, url, background, new SCShareListener());
+//                break;
+//            case SharePlatform.QQ:
+//                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.QQ, title, intro, url, background, new SCShareListener());
+//                break;
+//            case SharePlatform.QZONE:
+//                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.QZONE, title, intro, url, background, new SCShareListener());
+//                break;
+//            case SharePlatform.WX_TIMELINE:
+//                ShareUtil.shareMedia(AppManager.getInstance().getContext(), SharePlatform.WX_TIMELINE, title, intro, url, background, new SCShareListener());
+//                break;
+//            default:
+//                break;
+//
+//        }
+//    }
+//
+//    private class SCShareListener extends ShareListener {
+//
+//        @Override
+//        public void shareSuccess() {
+//            LogUtils.i("分享成功");
+//            ToastUtils.showToast(mContext,"分享成功");
+//        }
+//
+//        @Override
+//        public void shareFailure(Exception e) {
+//            LogUtils.i("分享失败");
+//            ToastUtils.showToast(mContext,"分享失败");
+//            e.printStackTrace();
+//        }
+//
+//        @Override
+//        public void shareCancel() {
+//            LogUtils.i("分享取消");
+//            ToastUtils.showToast(mContext,"分享取消");
+//        }
+//    }
 
 }

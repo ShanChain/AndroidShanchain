@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="list_view" parent="@android:style/Widget.ListView">
+        <item name="android:scrollbarThumbVertical">@drawable/scrollbar_handle_holo_dark</item>
+        <item name="android:scrollbarThumbHorizontal">@drawable/scrollbar_handle_holo_dark</item>
+    </style>
 
     <style name="FullScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
@@ -24,6 +32,45 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+    <style name="dialog_message_text_style">
+        <item name="android:textSize">@dimen/dialog_text_margin_horizontal</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:paddingLeft">@dimen/dialog_text_margin_horizontal</item>
+        <item name="android:paddingRight">@dimen/dialog_text_margin_horizontal</item>
+        <item name="android:paddingTop">@dimen/dialog_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/dialog_padding_vertical</item>
+    </style>
+
+    <style name="grid_view" parent="@android:style/Widget.GridView">
+    </style>
+
+    <style name="dialog_button_text_style">
+        <item name="android:textSize">@dimen/pickerview_textsize</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:background">@drawable/list_item_selector</item>
+        <item name="android:paddingTop">@dimen/dialog_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/dialog_padding_vertical</item>
+    </style>
+
+    <style name="dialog_title_text_style">
+        <item name="android:textSize">@dimen/aurora_textsize_chronometer</item>
+        <item name="android:textColor">@color/blue_btn_pressed</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">@dimen/dialog_text_margin_horizontal</item>
+        <item name="android:paddingRight">@dimen/dialog_text_margin_horizontal</item>
+        <item name="android:paddingTop">@dimen/dialog_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/dialog_padding_vertical</item>
+    </style>
+
+    <style name="dialog_default_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
 
     <style name="main_menu_animstyle">
         <item name="android:windowEnterAnimation">@anim/select_photo_dialog</item>
@@ -112,6 +159,19 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <declare-styleable name="CameraProgressBar">
+        <attr name="scale" format="float"/>
+        <attr name="isLongScale" format="boolean"/>
+        <attr name="progressWidth" format="dimension"/>
+        <attr name="innerRadio" format="dimension"/>
+        <attr name="innerColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="outerColor" format="color"/>
+        <attr name="progressColor" format="color"/>
+        <attr name="maxProgress" format="integer"/>
+        <attr name="progres" format="integer"/>
+    </declare-styleable>
 
 
 </resources>

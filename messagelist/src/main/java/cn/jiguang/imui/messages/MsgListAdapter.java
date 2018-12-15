@@ -24,6 +24,12 @@ import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.ViewHolder;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.enums.ConversationType;
+import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.api.options.MessageSendingOptions;
+import cn.jpush.im.api.BasicCallback;
 
 public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapter<ViewHolder>
         implements ScrollMoreListener.OnLoadMoreListener {
@@ -486,6 +492,58 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             mSelectionListener = listener;
         }
     }
+//
+//    public void setSendMsgs(int msgIds) {
+//        Message msg = mConv.getMessage(msgIds);
+//        if (msg != null) {
+//            mMsgList.add(msg);
+//            incrementStartPosition();
+//            mMsgQueue.offer(msg);
+//        }
+//
+//        if (mMsgQueue.size() > 0) {
+//            Message message = mMsgQueue.element();
+//            if (mConv.getType() == ConversationType.single) {
+//                UserInfo userInfo = (UserInfo) message.getTargetInfo();
+//                sendNextImgMsg(message);
+////                if (userInfo.isFriend()) {
+////                    sendNextImgMsg(message);
+////                } else {
+////                    CustomContent customContent = new CustomContent();
+////                    customContent.setBooleanValue("notFriend", true);
+////                    Message customMsg = mConv.createSendMessage(customContent);
+////                    addMsgToList(customMsg);
+////                }
+//            } else {
+//                sendNextImgMsg(message);
+//            }
+//
+//            notifyDataSetChanged();
+//        }
+//    }
+//
+//    /**
+//     * 从发送队列中出列，并发送图片
+//     *
+//     * @param msg 图片消息
+//     */
+//    private void sendNextImgMsg(Message msg) {
+//        MessageSendingOptions options = new MessageSendingOptions();
+//        options.setNeedReadReceipt(true);
+//        JMessageClient.sendMessage(msg, options);
+//        msg.setOnSendCompleteCallback(new BasicCallback() {
+//            @Override
+//            public void gotResult(int i, String s) {
+//                //出列
+//                mMsgQueue.poll();
+//                //如果队列不为空，则继续发送下一张
+//                if (!mMsgQueue.isEmpty()) {
+//                    sendNextImgMsg(mMsgQueue.element());
+//                }
+//                notifyDataSetChanged();
+//            }
+//        });
+//    }
 
     /**
      * Disable selection mode, and deselect all items.

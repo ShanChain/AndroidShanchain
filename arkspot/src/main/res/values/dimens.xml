@@ -16,6 +16,9 @@
     <dimen name="dimens_26dp">26dp</dimen>
     <dimen name="dimens_5dp">5dp</dimen>
 
+    <dimen name="dialog_text_margin_horizontal">15dip</dimen>
+    <dimen name="dialog_padding_vertical">20dip</dimen>
+
     <!--slidingMenu-->
     <dimen name="slidingmenu_offset">120dp</dimen>
     <dimen name="list_padding">10dp</dimen>

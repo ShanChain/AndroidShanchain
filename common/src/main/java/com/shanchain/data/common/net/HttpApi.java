@@ -30,6 +30,9 @@ public interface HttpApi {
      */
     String HX_USER_REGIST = BASE_URL_IM + "/hx/user/regist";
 
+    //超级会员
+    String SUPER_USER = BASE_URL_IM + "/web/api/sys/isSuper";
+
     /**
      * 添加好友
      */

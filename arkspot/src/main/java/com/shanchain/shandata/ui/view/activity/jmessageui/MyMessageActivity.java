@@ -87,7 +87,9 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         rvMessageList.setLayoutManager(layoutManager);
-        rvMessageList.addItemDecoration(new RecyclerViewDivider(mActivity));
+        if (chatRoomlist.size()>1){
+            rvMessageList.addItemDecoration(new RecyclerViewDivider(mActivity));
+        }
         messageListAdapter = new MessageListAdapter(R.layout.item_msg_home, chatRoomlist);
         rvMessageList.setAdapter(messageListAdapter);
         messageListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -166,7 +168,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
         }
     }
     private void initToolBar() {
-        toolBar.setTitleTextColor(Color.WHITE);
+        toolBar.setTitleTextColor(Color.BLACK);
         toolBar.isShowChatRoom(false);//不在导航栏显示聊天室信息
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -175,8 +177,8 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         toolBar.getTitleView().setLayoutParams(layoutParams);
         toolBar.setTitleText("消息");
-        toolBar.setBackgroundColor(Color.parseColor("#4FD1F6"));
-        toolBar.setLeftImage(R.mipmap.back);
+        toolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        toolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         toolBar.setOnLeftClickListener(this);
     }
 

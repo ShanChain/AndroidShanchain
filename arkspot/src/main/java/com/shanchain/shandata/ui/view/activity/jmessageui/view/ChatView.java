@@ -29,6 +29,7 @@ import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ptr.PtrDefaultHeader;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jiguang.imui.utils.DisplayUtil;
+import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
 
 
 public class ChatView extends RelativeLayout {
@@ -42,6 +43,7 @@ public class ChatView extends RelativeLayout {
     private ImageButton mSelectAlbumIb;
     private Button btnInputJoin;
     private OnBtnInputClickListener onBtnInputClickListener;
+    private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
 
     public ChatView(Context context) {
         super(context);
@@ -60,6 +62,7 @@ public class ChatView extends RelativeLayout {
 //        mTitle = (TextView) findViewById(R.id.title_tv);
         mMsgList = (MessageList) findViewById(R.id.msg_list);
         mChatInput = (ChatInputView) findViewById(R.id.chat_input);
+        xhsEmoticonsKeyBoard = (XhsEmoticonsKeyBoard) findViewById(R.id.ek_bar);
         mPtrLayout = (PullToRefreshLayout) findViewById(R.id.pull_to_refresh_layout);
         btnInputJoin = findViewById(R.id.bt_chat_input_join);
 
@@ -69,6 +72,8 @@ public class ChatView extends RelativeLayout {
          */
         mChatInput.setMenuContainerHeight(819);
         mRecordVoiceBtn = mChatInput.getRecordVoiceButton();
+//        mRecordVoiceBtn = xhsEmoticonsKeyBoard.getBtnVoice();
+
         mSelectAlbumIb = mChatInput.getSelectAlbumBtn();
         PtrDefaultHeader header = new PtrDefaultHeader(getContext());
         int[] colors = getResources().getIntArray(R.array.google_colors);
@@ -82,8 +87,9 @@ public class ChatView extends RelativeLayout {
 //        mMsgList.setEventTextPadding(5);
 //        mMsgList.setEventBgColor(Color.parseColor("#34A350"));
 //        mMsgList.setDateBgCornerRadius(15);
-        mMsgList.setSendBubbleColor(Color.parseColor("#90E32D"));
+        mMsgList.setSendBubbleColor(Color.parseColor("#C3A0F5"));
         mMsgList.setReceiveBubbleColor(Color.parseColor("#FFFFFF"));
+        mMsgList.setAvatarRadius(90);
 
 
         mMsgList.setHasFixedSize(true);
@@ -161,6 +167,7 @@ public class ChatView extends RelativeLayout {
 
     public void setMenuClickListener(OnMenuClickListener listener) {
         mChatInput.setMenuClickListener(listener);
+//        xhsEmoticonsKeyBoard.getBtnSend().
     }
 
     public void setAdapter(MsgListAdapter adapter) {
@@ -180,7 +187,7 @@ public class ChatView extends RelativeLayout {
     }
 
     public void setRecordVoiceListener(RecordVoiceListener listener) {
-        mChatInput.setRecordVoiceListener(listener);
+        mRecordVoiceBtn.setRecordVoiceListener(listener);
     }
 
     public void setOnCameraCallbackListener(OnCameraCallbackListener listener) {
@@ -203,6 +210,10 @@ public class ChatView extends RelativeLayout {
 
     public ChatInputView getChatInputView() {
         return mChatInput;
+    }
+
+    public XhsEmoticonsKeyBoard getXhsEmoticonsKeyBoard() {
+        return xhsEmoticonsKeyBoard;
     }
 
     public MessageList getMessageListView() {

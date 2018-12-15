@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
 
-
 public class ChatInputStyle extends Style {
 
     private static final int DEFAULT_MAX_LINES = 4;
@@ -75,7 +74,7 @@ public class ChatInputStyle extends Style {
         style.inputCursorDrawable = typedArray.getResourceId(R.styleable.ChatInputView_inputCursorDrawable,
                 R.drawable.aurora_edittext_cursor_bg);
 
-        style.voiceBtnBg = typedArray.getDrawable(R.styleable.ChatInputView_voiceBtnBg);
+       /* style.voiceBtnBg = typedArray.getDrawable(R.styleable.ChatInputView_voiceBtnBg);
         style.voiceBtnIcon = typedArray.getResourceId(R.styleable.ChatInputView_voiceBtnIcon, R.drawable.aurora_menuitem_mic);
         style.photoBtnBg = typedArray.getDrawable(R.styleable.ChatInputView_photoBtnBg);
         style.photoBtnIcon = typedArray.getResourceId(R.styleable.ChatInputView_photoBtnIcon, R.drawable.aurora_menuitem_photo);
@@ -84,6 +83,7 @@ public class ChatInputStyle extends Style {
         style.sendBtnBg = typedArray.getDrawable(R.styleable.ChatInputView_sendBtnBg);
         style.sendBtnIcon = typedArray.getResourceId(R.styleable.ChatInputView_sendBtnIcon, R.drawable.aurora_menuitem_send);
         style.sendBtnPressedIcon = typedArray.getResourceId(R.styleable.ChatInputView_sendBtnPressedIcon, R.drawable.aurora_menuitem_send_pres);
+       */
         style.sendCountBg = typedArray.getDrawable(R.styleable.ChatInputView_sendCountBg);
         style.showSelectAlbumBtn = typedArray.getBoolean(R.styleable.ChatInputView_showSelectAlbum, true);
         style.inputPaddingLeft = typedArray.getDimensionPixelSize(R.styleable.ChatInputView_inputPaddingLeft,

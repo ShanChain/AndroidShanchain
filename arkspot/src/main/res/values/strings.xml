@@ -5,6 +5,30 @@
     <string name="str_tb_title_praised">我赞过的</string>
     <string name="str_tb_title_my_stories">我的故事</string>
     <string name="right_read_btn">阅读</string>
+    <string name="jmui_create_file_failed">创建文件失败</string>
+    <string name="jmui_record_voice_permission_request">若要使用语音功能，请选择允许录音</string>
+    <string name="jmui_move_to_cancel_hint">手指上滑，取消发送</string>
+    <string name="jmui_record_voice_hint">按住 说话</string>
+    <string name="jmui_cancel_record_voice_hint">松开手指，取消发送</string>
+    <string name="jmui_sdcard_not_exist_toast">暂无外部存储</string>
+    <string name="picker_image_folder">相机胶卷</string>
+    <string name="picker_image_send_select">发送（%d）</string>
+    <string name="ok">确定</string>
+    <string name="btn_send">确定</string>
+
+    <string name="gallery_invalid">未找到图库</string>
+    <string name="sdcard_not_enough_head_error">SD卡被拔出或存储空间不足</string>
+    <string name="sdcard_not_enough_error">存储空间不足</string>
+    <string name="picker_image_error">获取图片出错</string>
+    <string name="picker_image_preview">预览</string>
+    <string name="picker_image_album_loading">相册加载中…</string>
+    <string name="picker_image_album_empty">相册中没有图片！</string>
+    <string name="picker_image_folder_info">共%d张</string>
+    <string name="picker_image_exceed_max_image_select">最多选择%d张图片！</string>
+    <string name="unknow_size">未知大小</string>
+    <string name="picker_image_preview_original">发送原图</string>
+    <string name="picker_image_preview_original_select">发送原图（%s）</string>
+
 
     <!-- common -->
     <string name="cancel">取消</string>
@@ -22,7 +46,7 @@
     <string name="str_register_code_obtain">获取验证码</string>
     <string name="str_title_tb_login">登录马甲App</string>
     <string name="str_login_pwd">请输入密码</string>
-    <string name="str_login_account">请请输入手机号</string>
+    <string name="str_login_account">请输入手机号</string>
     <string name="str_login_forget">忘记密码？</string>
     <string name="str_login_btn_login">登录</string>
     <string name="str_login_btn_register">注册</string>
@@ -34,6 +58,13 @@
     <string name="str_friend_home_drama">大戏</string>
     <string name="str_friend_home_conversation">和TA对话</string>
     <string name="str_story_empty_word">暂时还没发布故事，现在可以去发布~</string>
+    <string name="home_rule">1、活动时间：2018年12月30日（00:00:00）至2018年12月31日（23:59:59）\n\n
+2、游戏玩法：\n
+（1）每次点击未加载“元社区”，均可获得【随机红包奖励】，点击奖励高至3元/每次。\n
+（2）闯关成功可获得【好友助力大福包】，福包奖励高至100元。\n
+（3）在限定时间内，分享【好友助力大福包】，领取好友助力奖金总和。\n
+（4）每关加载区块获得的奖励与分享助力福包奖励，会随着关卡难度增加而大幅提升奖励金额。\n
+（5）完成全部关卡，分享新年祝福，获得【新年大红包】，1月1日登录即可领取。\n</string>
 
     <array name="reportList">
         <item>淫秽色情</item>

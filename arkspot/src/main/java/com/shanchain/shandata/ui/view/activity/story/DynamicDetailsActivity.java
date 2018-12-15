@@ -72,8 +72,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import me.shaohui.shareutil.share.ShareListener;
-import me.shaohui.shareutil.share.SharePlatform;
+//import me.shaohui.shareutil.share.ShareListener;
+//import me.shaohui.shareutil.share.SharePlatform;
 
 public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, View.OnClickListener, DynamicCommentAdapter.IonSlidingViewClickListener, BaseQuickAdapter.RequestLoadMoreListener, DynamicDetailView {
 
@@ -377,23 +377,23 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
 
                 switch (view.getId()) {
                     case R.id.iv_share_weichat:
-                        postShareEvent(SharePlatform.WX);
+//                        postShareEvent(SharePlatform.WX);
                         // ShareUtil.shareMedia(mContext, SharePlatform.WX, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧！", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_circle:
-                        postShareEvent(SharePlatform.WX_TIMELINE);
+//                        postShareEvent(SharePlatform.WX_TIMELINE);
                         //ShareUtil.shareMedia(mContext, SharePlatform.WX_TIMELINE, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_qq:
-                        postShareEvent(SharePlatform.QQ);
+//                        postShareEvent(SharePlatform.QQ);
                         //ShareUtil.shareMedia(mContext, SharePlatform.QQ, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_qzone:
-                        postShareEvent(SharePlatform.QZONE);
+//                        postShareEvent(SharePlatform.QZONE);
                         //ShareUtil.shareMedia(mContext, SharePlatform.QZONE, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.iv_share_weibo:
-                        postShareEvent(SharePlatform.WEIBO);
+//                        postShareEvent(SharePlatform.WEIBO);
                         //ShareUtil.shareMedia(mContext, SharePlatform.WEIBO, "千千世界", "在这里，可以体验即兴表演的乐趣，快来加入吧", "http://www.qianqianshijie.com", "http://p0.so.qhimgs1.com/t0143a3d87b8a734f6a.jpg", new SCShareListener());
                         break;
                     case R.id.tv_dialog_share_cancel:
@@ -447,24 +447,24 @@ public class DynamicDetailsActivity extends BaseActivity implements ArthurToolBa
     }
 
 
-    private class SCShareListener extends ShareListener {
-
-        @Override
-        public void shareSuccess() {
-            LogUtils.i("分享成功");
-        }
-
-        @Override
-        public void shareFailure(Exception e) {
-            LogUtils.i("分享失败");
-            e.printStackTrace();
-        }
-
-        @Override
-        public void shareCancel() {
-            LogUtils.i("分享取消");
-        }
-    }
+//    private class SCShareListener extends ShareListener {
+//
+//        @Override
+//        public void shareSuccess() {
+//            LogUtils.i("分享成功");
+//        }
+//
+//        @Override
+//        public void shareFailure(Exception e) {
+//            LogUtils.i("分享失败");
+//            e.printStackTrace();
+//        }
+//
+//        @Override
+//        public void shareCancel() {
+//            LogUtils.i("分享取消");
+//        }
+//    }
 
 
     @Override

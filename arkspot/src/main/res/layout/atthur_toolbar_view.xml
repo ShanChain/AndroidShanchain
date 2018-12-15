@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:paddingLeft="5dp"
         android:layout_marginLeft="@dimen/dp_4"
         />
     <!--左侧用户头像-->
@@ -32,10 +33,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_4"
-        android:text=""
+        android:layout_marginTop="8dp"
+        android:text="1111111"
         android:textColor="#000"
-        android:textSize="@dimen/arthur_toolbar_title_text_size" />
+        android:textSize="14sp" />
 
     <!--收藏图片-->
     <com.shanchain.shandata.widgets.toolBar.DrawableCenterTextView
@@ -62,6 +63,7 @@
             android:layout_height="@dimen/dimens_15dp"
             android:layout_marginRight="@dimen/dimens_5dp"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             android:background="@mipmap/room_num"/>
 
         <!-- 聊天室的人数 -->
@@ -83,6 +85,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dp_4" />
+        android:layout_marginRight="@dimen/dp_10" />
 
 </RelativeLayout>

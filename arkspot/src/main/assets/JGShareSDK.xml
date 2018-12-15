@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DevInfor>
+
+    <!-- 如果不需要支持某平台，可缺省该平台的配置-->
+    <!-- 各个平台的KEY仅供DEMO演示，开发者要集成发布需要改成自己的KEY-->
+
+    <SinaWeibo
+        AppKey="2916880440"
+        AppSecret="8a25275c367126c9c6708f90ab5d5edd"
+        RedirectUrl="https://api.weibo.com/oauth2/default.html"/>
+
+    <QQ
+        AppId="1106258060"
+        AppKey="cc7M3ByR9jPcsIDg"/>
+
+    <Wechat
+        AppId="wx0c49828919e7fd03"
+        AppSecret="3a8e3a6794d962d1dbbbea2041e57308"/>
+
+
+</DevInfor>

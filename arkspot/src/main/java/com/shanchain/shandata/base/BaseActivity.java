@@ -1,6 +1,7 @@
 package com.shanchain.shandata.base;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,7 +25,7 @@ import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.message.PushAgent;
+//import com.umeng.message.PushAgent;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,6 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述：加载中。。。对话框
      */
     private CustomDialog mCustomDialog;
+    private ProgressDialog mDialog;
 
     private PermissionHelper mPermissionHelper;
 
@@ -127,7 +129,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void initPushAgent() {
-        PushAgent.getInstance(this).onAppStart();
+//        PushAgent.getInstance(this).onAppStart();
     }
 
     private void initStatusBar() {
@@ -369,6 +371,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.putExtras(bundle);
         }
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        closeLoadingDialog();
+    }
+    public void closeProgress() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+
     }
 
     protected void showLoadingDialog(boolean cancelable) {

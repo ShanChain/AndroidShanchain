@@ -10,10 +10,29 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_task_comment"
         style="@style/style_toolbar"
-        app:leftImage="@mipmap/back"
-        app:titleColor="@color/colorWhite"
-        app:titleText="任务详情"
+        app:leftImage="@mipmap/activity_back"
+        app:titleColor="@color/colorTextThree"
         app:titleTextSize="16"/>
+
+    <LinearLayout
+        android:id="@+id/linear_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@mipmap/linear_add_task">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="@dimen/dimens_5dp"
+            android:textSize="13sp"
+            android:text="寻求帮助"
+            />
+    </LinearLayout>
 
     <View style="@style/style_text_line_match"/>
 

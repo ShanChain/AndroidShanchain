@@ -69,7 +69,7 @@ public class SetFragmentActivity extends BaseActivity implements ArthurToolBar.O
         mTbMain.setBackgroundColor(getResources().getColor(R.color.colorHomeBtn));
         mTbMain.setTitleTextColor(getResources().getColor(R.color.white));
         mTbMain.setTitleText("好友");
-        mTbMain.setLeftImage(R.mipmap.back);
+        mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         mTbMain.setOnLeftClickListener(this);
 
     }
