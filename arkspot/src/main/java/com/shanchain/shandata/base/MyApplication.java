@@ -31,7 +31,9 @@ import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.shandata.db.ContactDao;
 //import com.shanchain.shandata.manager.CharacterManager;
 import com.shanchain.shandata.manager.LoginManager;
-import com.shanchain.shandata.push.PushManager;
+//import com.shanchain.shandata.push.PushManager;
+import com.shanchain.shandata.receiver.MyJPushMessageReceiver;
+import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 //import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
@@ -326,12 +328,16 @@ public class MyApplication extends BaseApplication {
 //                .setFacebook("1847959632183996", "JShareDemo")
 //                .setTwitter("fCm4SUcgYI1wUACGxB2erX5pL", "NAhzwYCgm15FBILWqXYDKxpryiuDlEQWZ5YERnO1D89VBtZO6q")
 //                .setJchatPro("1847959632183996");
-
-        JMessageClient.init(this,true);
-        JPushInterface.init(this);//初始化极光推送
-        JShareInterface.init(this,platformConfig);//极光分享
         JMessageClient.setDebugMode(true);
+        JPushInterface.setDebugMode(true);
         JShareInterface.setDebugMode(true);
+        JPushInterface.init(this);//初始化极光推送
+        JMessageClient.init(this,true);
+//        JMessageClient.registerEventReceiver(new MyReceiver());
+        JShareInterface.init(this,platformConfig);//极光分享
+        String RegistrationID = JPushInterface.getRegistrationID(this);
+        LogUtils.d("JPushInterface",RegistrationID);
+
     }
 //    private void initContactListener() {
 //        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {

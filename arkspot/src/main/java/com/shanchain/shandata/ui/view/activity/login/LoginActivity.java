@@ -46,6 +46,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.RequestCallback;
 import cn.jpush.im.android.api.model.DeviceInfo;
@@ -94,6 +95,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
+        String RegistrationID = JPushInterface.getRegistrationID(this);
+        LogUtils.d("JPushInterface",RegistrationID);
     }
 
     private void checkCache() {
@@ -195,6 +198,9 @@ public class LoginActivity extends BaseActivity {
     public void registerJmUser(final String jmUser, final String jmPassword) {
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
         //是否第一次打开app
+        JPushInterface.init(getApplicationContext());
+        String RegistrationID = JPushInterface.getRegistrationID(this);
+        LogUtils.d("JPushInterface",RegistrationID);
         if (guided) {
             //登录极光账号
 //            showProgress();
@@ -203,6 +209,7 @@ public class LoginActivity extends BaseActivity {
                 public void gotResult(int i, String s) {
                     int i1 = i;
                     String s1 = s;
+                    LogUtils.d("返回码: "+i+" message: "+s1);
                     if (i==0) {
                         LogUtils.d("极光IM############## 登录成功 ##############极光IM");
                         closeProgress();

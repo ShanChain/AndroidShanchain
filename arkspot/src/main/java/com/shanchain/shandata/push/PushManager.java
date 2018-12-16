@@ -1,3 +1,4 @@
+/*
 package com.shanchain.shandata.push;
 
 import android.content.Context;
@@ -32,9 +33,11 @@ import static com.shanchain.shandata.push.PushConstants.MSG_DYNAMIC_BE_FORWARD;
 import static com.shanchain.shandata.push.PushConstants.MSG_STORY_BE_COMMENT;
 import static com.shanchain.shandata.push.PushConstants.MSG_STORY_BE_PRAISE;
 
+*/
 /**
  * Created by flyye on 2017/11/17.
- */
+ *//*
+
 
 public class PushManager {
 
@@ -252,3 +255,4 @@ public class PushManager {
     }
 
 }
+*/

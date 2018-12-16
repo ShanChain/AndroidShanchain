@@ -174,11 +174,11 @@ dependencies {
 
     /* 极光SDK依赖 */
     //此处以JPush 3.1.6 版本为例。
-    implementation 'cn.jiguang.sdk:jpush:3.1.6'
+    implementation 'cn.jiguang.sdk:jpush:3.1.7'
     // 此处以JMessage 2.7.0 版本。
-    implementation 'cn.jiguang.sdk:jmessage:2.7.0'
+    implementation 'cn.jiguang.sdk:jmessage:2.7.1'
     // 此处以JCore 1.2.5 版本。
-    implementation 'cn.jiguang.sdk:jcore:1.2.5'
+    implementation 'cn.jiguang.sdk:jcore:1.2.6'
 
     // 此处以JShare 1.6.0 版本为例，具体版本请参考压缩包libs的jar包版本。
     implementation 'cn.jiguang.sdk:jshare:1.6.0'
