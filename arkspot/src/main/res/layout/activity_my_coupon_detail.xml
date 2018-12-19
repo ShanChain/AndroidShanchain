@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.coupon.MyCouponDetailActivity">
+
+    <include layout="@layout/layout_coupon_detail_person_info" />
+
+    <LinearLayout
+        android:id="@+id/linear_use_rule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_coupon_detail_person"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_use_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_20dp"
+            android:text="使用规则："
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:text="@string/coupon_details_use_rule" />
+
+        <TextView
+            android:id="@+id/tv_coupon_details_expiration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:gravity="bottom|right"
+            android:text="有效期至：2019-01-01  23:59" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_coupon_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_coupon_detail_person"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:layout_marginRight="@dimen/dimens_20dp"
+        android:text="剩余 8 张" />
+
+    <TextView
+        android:id="@+id/tv_coupon_details_create_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_coupon_num"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dimens_20dp"
+        android:text="2019.5.20 16:28" />
+
+
+    <LinearLayout
+        android:id="@+id/linear_coupon_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/linear_use_rule"
+        android:layout_marginTop="@dimen/dp_40"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待核销:"
+            />
+        <TextView
+            android:id="@+id/tv_coupon_waiting_check_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="2张"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:text="已核销:"
+            />
+        <TextView
+            android:id="@+id/tv_coupon_checked_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="2张"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:text="剩余："
+            />
+        <TextView
+            android:id="@+id/tv_coupon_surplus_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="2张"
+            />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_below="@+id/linear_coupon_check"
+        android:background="@color/colorTextThree"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_coupon_check_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimens_20dp"
+        android:layout_below="@+id/view_line">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

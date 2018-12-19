@@ -28,9 +28,9 @@
     <!--对话框按钮字体颜色-->
     <color name="colorDialogBtn">#0076ff</color>
     <!--首页地图按钮-->
-    <color name="colorHomeBtn">#C3A0F5</color>
+    <color name="colorHomeBtn">#AC81E9</color>
     <!-- 活动版本颜色 -->
-    <color name="colorViolet">#C3A0F5</color>
+    <color name="colorViolet">#AC81E9</color>
     <!--popup背景色-->
     <color name="colorPopBg">#5000</color>
     <!--创建卡劵提示文字-->

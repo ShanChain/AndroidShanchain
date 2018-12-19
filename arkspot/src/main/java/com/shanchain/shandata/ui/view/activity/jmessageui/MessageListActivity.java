@@ -1078,6 +1078,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     case R.id.linear_add_coupon:
                         mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
                         Intent couponIntent = new Intent(MessageListActivity.this,CouponListActivity.class);
+                        couponIntent.putExtra("roomId",roomID);
                         startActivity(couponIntent);
                         break;
 

@@ -10,7 +10,7 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_task_comment"
         style="@style/style_toolbar"
-        app:leftImage="@mipmap/activity_back"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16"/>
 

@@ -7,6 +7,7 @@ import android.view.View;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.utils.DateUtils;
 
@@ -17,11 +18,11 @@ import java.util.List;
 import cn.jiguang.imui.model.ChatEventMessage;
 
 
-public class CouponListAdapter extends CommonAdapter<ChatEventMessage> implements BaseViewHolder.OnItemClickListener, BaseViewHolder.OnLayoutViewClickListener, View.OnClickListener {
+public class CouponListAdapter extends CommonAdapter<CouponInfo> implements BaseViewHolder.OnItemClickListener, BaseViewHolder.OnLayoutViewClickListener, View.OnClickListener {
     private List<ChatEventMessage> list;
     private int[] itemLayoutId;
     private Context context;
-    private ChatEventMessage chatEventMessage;
+    private CouponInfo couponInfo;
     private OnItemClickListener onItemClickListener;
     private OnClickListener onClickListener;
     private BaseViewHolder holder;
@@ -34,24 +35,14 @@ public class CouponListAdapter extends CommonAdapter<ChatEventMessage> implement
     }
 
     @Override
-    public void setData(BaseViewHolder holder, ChatEventMessage item, int viewType,int position) {
-        this.chatEventMessage = item;
+    public void setData(BaseViewHolder holder, CouponInfo item, int viewType, int position) {
+        this.couponInfo = item;
         this.holder = holder;
     }
 
     @Override
     public int getItemViewType(int position) {
-        int status = list.get(position).getStatus();
-        int characterId = list.get(position).getCharacterId();
-        String character = SCCacheUtils.getCacheCharacterId();
-        if (status == 5) {
-            if (character.equals(String.valueOf(characterId))){
-                return 2;
-            }
-            return 1;
-        }else {
-            return 0;
-        }
+        return position % 2 == 0 ? 0 : 1;
     }
 
 
@@ -81,7 +72,7 @@ public class CouponListAdapter extends CommonAdapter<ChatEventMessage> implement
     @Override
     public void OnLayoutViewClick(View view) {
         if (onClickListener != null) {
-            onClickListener.OnClick(chatEventMessage, view, holder);
+            onClickListener.OnClick(couponInfo, view, holder);
         }
     }
 
@@ -90,7 +81,7 @@ public class CouponListAdapter extends CommonAdapter<ChatEventMessage> implement
     }
 
     public interface OnClickListener {
-        void OnClick(ChatEventMessage item, View view, BaseViewHolder holder);
+        void OnClick(CouponInfo item, View view, BaseViewHolder holder);
 
     }
 }

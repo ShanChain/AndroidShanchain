@@ -372,7 +372,9 @@
         <activity android:name=".ui.view.activity.login.BindPhoneActivity" />
         <activity android:name=".ui.view.activity.coupon.CouponListActivity" />
         <activity android:name=".ui.view.activity.coupon.CreateCouponActivity" />
-        <activity android:name=".ui.view.activity.coupon.CouponDetailsActivity"></activity>
+        <activity android:name=".ui.view.activity.coupon.CouponDetailsActivity" />
+        <activity android:name=".ui.view.activity.coupon.MyCouponDetailActivity" />
+        <activity android:name=".ui.view.activity.coupon.MyCouponListActivity"></activity>
     </application>
 
 </manifest>

@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_bg_even_msg">
+        android:layout_marginRight="20dp">
         <!-- 卡片前面 -->
         <LinearLayout
             android:id="@+id/item_task_front"

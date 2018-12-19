@@ -11,8 +11,17 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
@@ -21,7 +30,7 @@ import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
  * Created by zhoujian on 2017/8/22.
  */
 
-public class SCHttpUtils {
+public abstract class SCHttpUtils {
 
 
     public static GetBuilder get() {
@@ -32,29 +41,43 @@ public class SCHttpUtils {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
         return OkHttpUtils.post()
-                .addParams("token",token);
+                .addParams("token", token);
+    }
+
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    public static void postByBody(String url, String json, Callback callback) {
+        try {
+            OkHttpClient client = OkHttpUtils.getInstance().getOkHttpClient();
+            RequestBody body = RequestBody.create(JSON, json);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+            client.newCall(request).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     *  描述：带当前时空id的post请求
-     *
+     * 描述：带当前时空id的post请求
      */
     public static PostFormBuilder postWithSpaceId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
         String spaceId = SCCacheUtils.getCache(userId, "spaceId");
-        return  post()
-                .addParams("spaceId",spaceId);
+        return post()
+                .addParams("spaceId", spaceId);
 
     }
 
-    public static PostFormBuilder postWithUidAndSpaceId(){
+    public static PostFormBuilder postWithUidAndSpaceId() {
         String spaceId = SCCacheUtils.getCacheSpaceId();
-        return postWithUserId().addParams("spaceId",spaceId);
+        return postWithUserId().addParams("spaceId", spaceId);
     }
 
     /**
-     *  描述：带当前角色id的post请求
-     *
+     * 描述：带当前角色id的post请求
      */
     public static PostFormBuilder postWithChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
@@ -64,13 +87,12 @@ public class SCHttpUtils {
     }
 
 
-    public static PostFormBuilder postNoToken(){
+    public static PostFormBuilder postNoToken() {
         return OkHttpUtils.post();
     }
 
     /**
-     *  描述：带当前时空id和当前角色id的post请求
-     *
+     * 描述：带当前时空id和当前角色id的post请求
      */
     public static PostFormBuilder postWithSpaceAndChaId() {
         String userId = SCCacheUtils.getCache("0", "curUser");
@@ -79,85 +101,85 @@ public class SCHttpUtils {
 
         LogUtils.d("缓存中获取的spaceid" + spaceId);
         return post()
-                .addParams("spaceId",spaceId)
-                .addParams("characterId",characterId);
+                .addParams("spaceId", spaceId)
+                .addParams("characterId", characterId);
     }
 
     /**
-     *  描述：带userid的post请求
-     *
+     * 描述：带userid的post请求
      */
-    public static PostFormBuilder postWithUserId(){
+    public static PostFormBuilder postWithUserId() {
 
         String userId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
         return post()
-                .addParams("userId",userId);
+                .addParams("userId", userId);
     }
 
-    public static PostFormBuilder postWithUidAndCharId(){
+    public static PostFormBuilder postWithUidAndCharId() {
         String cacheCharacterId = SCCacheUtils.getCacheCharacterId();
-        return postWithUserId().addParams("characterId",cacheCharacterId);
+        return postWithUserId().addParams("characterId", cacheCharacterId);
     }
 
 
-    public static PostFormBuilder postWithUidSpaceIdAndCharId(){
+    public static PostFormBuilder postWithUidSpaceIdAndCharId() {
         String userId = SCCacheUtils.getCacheUserId();
         String characterId = SCCacheUtils.getCacheCharacterId();
         String spaceId = SCCacheUtils.getCacheSpaceId();
         return post()
-                .addParams("userId",userId)
-                .addParams("spaceId",spaceId)
-                .addParams("characterId",characterId);
+                .addParams("userId", userId)
+                .addParams("spaceId", spaceId)
+                .addParams("characterId", characterId);
     }
+
     /**
-     *  描述：带基础请求参数的get请求
+     * 描述：带基础请求参数的get请求
      */
     public static GetBuilder getWithParams() {
         return OkHttpUtils.get()
                 .addParams("AppID", "CHANNEL")          //渠道信息
-                  .addParams("DeviceID", SystemUtils.getSystemDeviceId(AppManager.getInstance().getContext()))   //设备id
-                .addParams("Os","Android")              //操作系统
+                .addParams("DeviceID", SystemUtils.getSystemDeviceId(AppManager.getInstance().getContext()))   //设备id
+                .addParams("Os", "Android")              //操作系统
                 .addParams("OsVersion", VersionUtils.getVersionName(AppManager.getInstance().getContext()))    //app版本
-                .addParams("ScreenSize","")             //屏幕尺寸
-                .addParams("Timestamp",System.currentTimeMillis()+"")       //时间戳
-                .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
-                .addParams("RequestId",getRequestId())   //
-                .addParams("Signture","");               //签名
+                .addParams("ScreenSize", "")             //屏幕尺寸
+                .addParams("Timestamp", System.currentTimeMillis() + "")       //时间戳
+                .addParams("ApiVersion", VersionUtils.getApiVersion())       //系统api等级
+                .addParams("RequestId", getRequestId())   //
+                .addParams("Signture", "");               //签名
     }
 
     /**
-     *  描述：带基础请求参数的post请求
+     * 描述：带基础请求参数的post请求
      */
-    public static PostFormBuilder postWithParams(){
+    public static PostFormBuilder postWithParams() {
 
         return OkHttpUtils.post()
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
-                .addParams("Os","Android")              //操作系统
-               // .addParams("OsVersion", VersionUtils.getVersionName(MyApplication.getContext()))    //app版本
-                .addParams("ScreenSize","")             //屏幕尺寸
-                .addParams("Timestamp",System.currentTimeMillis()+"")       //时间戳
-                .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
-                .addParams("RequestId",getRequestId())   //
-                .addParams("Signture","");               //签名
+                .addParams("Os", "Android")              //操作系统
+                // .addParams("OsVersion", VersionUtils.getVersionName(MyApplication.getContext()))    //app版本
+                .addParams("ScreenSize", "")             //屏幕尺寸
+                .addParams("Timestamp", System.currentTimeMillis() + "")       //时间戳
+                .addParams("ApiVersion", VersionUtils.getApiVersion())       //系统api等级
+                .addParams("RequestId", getRequestId())   //
+                .addParams("Signture", "");               //签名
     }
 
 
     /**
-     *  描述：用于登录的带基础请求参数的post请求
+     * 描述：用于登录的带基础请求参数的post请求
      */
-    public static PostFormBuilder postWithParamsForLogin(){
+    public static PostFormBuilder postWithParamsForLogin() {
         String deviceToken = CommonCacheHelper.getInstance().getCache(SCCacheUtils.getCacheUserId(), "deviceToken");
         return OkHttpUtils.post()
-                .addParams("deviceToken", deviceToken==null?"":deviceToken)
+                .addParams("deviceToken", deviceToken == null ? "" : deviceToken)
                 .addParams("AppID", "CHANNEL")          //渠道信息
                 // .addParams("DeviceID", SystemUtils.getSystemDeviceId(MyApplication.getContext()))   //设备id
-                .addParams("Os","Android")              //操作系统
+                .addParams("Os", "Android")              //操作系统
                 //.addParams("OsVersion", VersionUtils.getVersionName(MyApplication.getContext()))    //app版本
                 //.addParams("ScreenSize","")             //屏幕尺寸
-                .addParams("ApiVersion",VersionUtils.getApiVersion())       //系统api等级
-                .addParams("RequestId",getRequestId())   //
-                .addParams("Signture","");               //签名
+                .addParams("ApiVersion", VersionUtils.getApiVersion())       //系统api等级
+                .addParams("RequestId", getRequestId())   //
+                .addParams("Signture", "");               //签名
 
     }
 
@@ -172,9 +194,9 @@ public class SCHttpUtils {
 
         byte[] bytes = ByteBuffer.allocate(16).putLong(hBits).putLong(lBits).array();
         String encode = Base64Utils.encode(bytes);
-        if (TextUtils.isEmpty(encode)){
+        if (TextUtils.isEmpty(encode)) {
             return "";
-        }else {
+        } else {
             return encode;
         }
 

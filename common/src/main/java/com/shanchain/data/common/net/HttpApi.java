@@ -166,7 +166,7 @@ public interface HttpApi {
     /**
      * 短信验证码登录
      */
-    String SMS_LOGIN= BASE_URL + "/v1/2.0/user/sms_login";
+    String SMS_LOGIN = BASE_URL + "/v1/2.0/user/sms_login";
 
     /**
      * 登录
@@ -497,8 +497,8 @@ public interface HttpApi {
      */
     String PLAY_GET_ID = BASE_URL + "/v1/play/get/id";
     /*
-    * 修改角色信息
-    * */
+     * 修改角色信息
+     * */
     String MODIFY_CHARACTER = BASE_URL + "/v1/character/modify";
     /**
      * 附近房间信息
@@ -561,9 +561,15 @@ public interface HttpApi {
     /* 用户反馈 */
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
 
-//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    //    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
     String SEAT_WALLET = "http://test.qianqianshijie.com/wallet";//测试
 //    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+
+    /* 卡劵接口 */
+    /* 获取主页卡券列表 */
+    String COUPONS_LIST = BASE_URL + "/wallet/api/coupons/vendor/list";
+    /* 创建卡券 */
+    String COUPONS_CREATE = BASE_URL + "/wallet/api/coupons/vendor/create";
 
 
 }

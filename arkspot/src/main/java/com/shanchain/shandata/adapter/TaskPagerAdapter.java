@@ -10,12 +10,15 @@ import com.shanchain.shandata.ui.view.fragment.FragmentMyTask;
 import com.shanchain.shandata.ui.view.fragment.FragmentTaskList;
 import com.shanchain.shandata.ui.view.fragment.RecommendedFragment;
 
+import java.util.List;
+
 /**
  * Created by zhoujian on 2017/8/23.
  */
 
 public class TaskPagerAdapter extends FragmentPagerAdapter {
     private String[] titles;
+    private List<Fragment> fragments;
 
     public TaskPagerAdapter(FragmentManager fm, String[] titles) {
         super(fm);
@@ -24,15 +27,7 @@ public class TaskPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new FragmentTaskList();
-                break;
-            case 1:
-                fragment = new FragmentMyTask();
-                break;
-        }
+        Fragment fragment = fragments.get(position);
         return fragment;
     }
 

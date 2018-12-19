@@ -10,7 +10,7 @@
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_coupon"
         style="@style/style_toolbar"
-        app:leftImage="@mipmap/activity_back"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16"/>
 
@@ -30,7 +30,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginLeft="@dimen/dimens_5dp"
             android:textSize="13sp"
-            android:text="寻求帮助"
+            android:text="创建马甲券"
             />
     </LinearLayout>
 

@@ -110,7 +110,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
 
     private void initToolBar() {
 
-        mTbMain.setLeftImage(R.mipmap.activity_back);
+        mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
 //        mTbMain.setRightImage(R.mipmap.nav_task_add);
         //设置导航栏标题
         mTbMain.setTitleTextColor(Color.BLACK);
