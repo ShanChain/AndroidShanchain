@@ -2,12 +2,17 @@ package com.shanchain.shandata.ui.view.activity.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
@@ -15,6 +20,7 @@ import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.base.UserType;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.cache.SharedPreferencesUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -22,45 +28,54 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
-import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
-import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
+import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-//import com.tencent.tauth.Tencent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.share.android.api.AuthListener;
+import cn.jiguang.share.android.api.JShareInterface;
+import cn.jiguang.share.android.api.Platform;
+import cn.jiguang.share.android.model.AccessTokenInfo;
+import cn.jiguang.share.android.model.BaseResponseInfo;
+import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.qqmodel.QQ;
+import cn.jiguang.share.wechat.Wechat;
+import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.RequestCallback;
-import cn.jpush.im.android.api.model.DeviceInfo;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
+import okhttp3.Call;
+
+import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
+
+//import com.tencent.tauth.Tencent;
 //import me.shaohui.shareutil.LoginUtil;
 //import me.shaohui.shareutil.login.LoginListener;
 //import me.shaohui.shareutil.login.LoginPlatform;
 //import me.shaohui.shareutil.login.LoginResult;
 //import me.shaohui.shareutil.login.result.BaseToken;
 //import me.shaohui.shareutil.login.result.BaseUser;
-import okhttp3.Call;
-
-import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
 
 
 public class LoginActivity extends BaseActivity {
@@ -83,8 +98,44 @@ public class LoginActivity extends BaseActivity {
     ImageView mIvLoginWb;
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
+    @Bind(R.id.tv_dynamic_login)
+    TextView tvDynamicLogin;
+    @Bind(R.id.linear_normal_login)
+    LinearLayout normalLogin;
+    @Bind(R.id.et_dynamic_login_account)
+    EditText etDynamicLoginAccount;
+    @Bind(R.id.tv_register_code)
+    TextView tvRegisterCode;
+    @Bind(R.id.et_dynamic_login_code)
+    EditText etDynamicLoginCode;
+    @Bind(R.id.tv_normal_login)
+    TextView tvNormalLogin;
+    @Bind(R.id.btn_dynamic_login)
+    Button btnDynamicLogin;
+    @Bind(R.id.linear_dynamic_login)
+    LinearLayout dynamicLogin;
     private ProgressDialog mDialog;
-//    private Tencent mTencent;
+    private List<String> dataList = new ArrayList<String>();
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                String userType = (String) msg.obj;
+                encryptToken16 = SharedPreferencesUtils.getPreferences(LoginActivity.this, userType);
+                thridLogin(encryptOpenId, encryptToken16, imageUrl, name, gender + "", userType);
+            } else {
+                String toastMsg = (String) msg.obj;
+                Toast.makeText(LoginActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+    private AuthListener mAuthListener;
+    private String accessToken, encryptOpenId, encryptToken16, name, imageUrl;
+    private int gender;
+    private long expiration;
+    private String sign, verifyCode, mobilePhone;
+    private String salt;
+    private String timestamp;
 
 
     @Override
@@ -96,7 +147,7 @@ public class LoginActivity extends BaseActivity {
     protected void initViewsAndEvents() {
         mTbLogin.setBtnEnabled(false);
         String RegistrationID = JPushInterface.getRegistrationID(this);
-        LogUtils.d("JPushInterface",RegistrationID);
+        LogUtils.d("JPushInterface", RegistrationID);
     }
 
     private void checkCache() {
@@ -199,9 +250,9 @@ public class LoginActivity extends BaseActivity {
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
         //是否第一次打开app
         JPushInterface.init(getApplicationContext());
-        String RegistrationID = JPushInterface.getRegistrationID(this);
-        LogUtils.d("JPushInterface",RegistrationID);
-        if (guided) {
+        String registrationID = JPushInterface.getRegistrationID(this);
+        LogUtils.d("JPushInterface", registrationID);
+        if (guided && !TextUtils.isEmpty(registrationID)) {
             //登录极光账号
 //            showProgress();
             JMessageClient.login(jmUser, jmPassword, new BasicCallback() {
@@ -209,8 +260,8 @@ public class LoginActivity extends BaseActivity {
                 public void gotResult(int i, String s) {
                     int i1 = i;
                     String s1 = s;
-                    LogUtils.d("返回码: "+i+" message: "+s1);
-                    if (i==0) {
+                    LogUtils.d("返回码: " + i + " message: " + s1);
+                    if (i == 0) {
                         LogUtils.d("极光IM############## 登录成功 ##############极光IM");
                         closeProgress();
                         UserInfo userInfo = JMessageClient.getMyInfo();
@@ -312,7 +363,7 @@ public class LoginActivity extends BaseActivity {
 
                 } else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                   ToastUtils.showToastLong(LoginActivity.this,"登录失败，请检查用户名密码");
+                    ToastUtils.showToastLong(LoginActivity.this, "登录失败，请检查用户名密码");
 
                 }
             }
@@ -337,14 +388,17 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.iv_login_wx:
                 //微信登录
+                thirdPlatform(UserType.USER_TYPE_WEIXIN);
 //                LoginUtil.login(this, LoginPlatform.WX, listener, true);
                 break;
             case R.id.iv_login_wb:
                 //微博登录
+                thirdPlatform(UserType.USER_TYPE_WEIBO);
 //                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
                 break;
             case R.id.iv_login_qq:
                 //qq登录
+                thirdPlatform(UserType.USER_TYPE_QQ);
 //                LoginUtil.login(this, LoginPlatform.QQ, listener, true);
                 break;
             default:
@@ -447,109 +501,241 @@ public class LoginActivity extends BaseActivity {
         readyGo(ResetPwdActivity.class);
     }
 
-/*    final LoginListener listener = new LoginListener() {
-        @Override
-        public void loginSuccess(LoginResult result) {
-            //登录成功， 如果你选择了获取用户信息，可以通过
-            int platform = result.getPlatform();
+    /*    final LoginListener listener = new LoginListener() {
+            @Override
+            public void loginSuccess(LoginResult result) {
+                //登录成功， 如果你选择了获取用户信息，可以通过
+                int platform = result.getPlatform();
 
-            BaseToken token = result.getToken();
-            String accessToken = token.getAccessToken();
-            BaseUser userInfo = result.getUserInfo();
-            String nickname = userInfo.getNickname();
-            String headImageUrl = userInfo.getHeadImageUrl();
-            String openId = userInfo.getOpenId();
-            String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
-            String userType = UserType.USER_TYPE_WEIXIN;
-            int sex = userInfo.getSex();
-            switch (platform) {
-                case LoginPlatform.QQ:
-                    userType = UserType.USER_TYPE_QQ;
-                    LogUtils.d("QQ登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n >< " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken
-                    );
+                BaseToken token = result.getToken();
+                String accessToken = token.getAccessToken();
+                BaseUser userInfo = result.getUserInfo();
+                String nickname = userInfo.getNickname();
+                String headImageUrl = userInfo.getHeadImageUrl();
+                String openId = userInfo.getOpenId();
+                String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
+                String userType = UserType.USER_TYPE_WEIXIN;
+                int sex = userInfo.getSex();
+                switch (platform) {
+                    case LoginPlatform.QQ:
+                        userType = UserType.USER_TYPE_QQ;
+                        LogUtils.d("QQ登录成功 ！！！"
+                                + "\r\n token = " + token
+                                + ";\r\n >< " + "昵称=" + nickname
+                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+                                + ";\r\n headImageUrl = " + headImageUrl
+                                + ";\r\n openId = " + openId
+                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+                                + ";\r\n accessToken = " + accessToken
+                        );
 
-                    break;
-                case LoginPlatform.WX:
-                    userType = UserType.USER_TYPE_WEIXIN;
-                    LogUtils.d("微信登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n  " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken);
+                        break;
+                    case LoginPlatform.WX:
+                        userType = UserType.USER_TYPE_WEIXIN;
+                        LogUtils.d("微信登录成功 ！！！"
+                                + "\r\n token = " + token
+                                + ";\r\n  " + "昵称=" + nickname
+                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+                                + ";\r\n headImageUrl = " + headImageUrl
+                                + ";\r\n openId = " + openId
+                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+                                + ";\r\n accessToken = " + accessToken);
 
-                    break;
+                        break;
 
-                case LoginPlatform.WEIBO:
-                    userType = UserType.USER_TYPE_WEIBO;
-                    LogUtils.d("微博登录成功 ！！！"
-                            + "\r\n token = " + token
-                            + ";\r\n  " + "昵称=" + nickname
-                            + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                            + ";\r\n headImageUrl = " + headImageUrl
-                            + ";\r\n openId = " + openId
-                            + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                            + ";\r\n accessToken = " + accessToken);
-                    break;
-                default:
-                    break;
+                    case LoginPlatform.WEIBO:
+                        userType = UserType.USER_TYPE_WEIBO;
+                        LogUtils.d("微博登录成功 ！！！"
+                                + "\r\n token = " + token
+                                + ";\r\n  " + "昵称=" + nickname
+                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
+                                + ";\r\n headImageUrl = " + headImageUrl
+                                + ";\r\n openId = " + openId
+                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
+                                + ";\r\n accessToken = " + accessToken);
+                        break;
+                    default:
+                        break;
+                }
+
+                String time = String.valueOf(System.currentTimeMillis());
+                //加密后的openid
+                String encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
+                //加密后的accesstoken
+                LogUtils.d("accessToken : " + accessToken);
+                String accesToken = accessToken.substring(0, 16);
+                LogUtils.d("accesToken截取 : " + accesToken);
+                String encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(userType + time + openId)));
+
+                LogUtils.d("加密后openid：" + encryptOpenId);
+                LogUtils.d("加密后accesstoken：" + encryptToken16);
+                LogUtils.d("用户类型：" + userType);
+                LogUtils.i("回调了登录成功");
+                thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
+
             }
 
-            String time = String.valueOf(System.currentTimeMillis());
-            //加密后的openid
-            String encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
-            //加密后的accesstoken
-            LogUtils.d("accessToken : " + accessToken);
-            String accesToken = accessToken.substring(0, 16);
-            LogUtils.d("accesToken截取 : " + accesToken);
-            String encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(userType + time + openId)));
+            @Override
+            public void loginFailure(Exception e) {
+                closeProgress();
+                ToastUtils.showToast(mContext, "网络异常");
+                LogUtils.i("还回调了登录失败");
+                e.printStackTrace();
+            }
 
-            LogUtils.d("加密后openid：" + encryptOpenId);
-            LogUtils.d("加密后accesstoken：" + encryptToken16);
-            LogUtils.d("用户类型：" + userType);
-            LogUtils.i("回调了登录成功");
-            thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
+            @Override
+            public void loginCancel() {
+                LogUtils.d("登录取消");
+            }
+        };*/
+    public void thirdPlatform(final String userType) {
+        List<String> platformList = JShareInterface.getPlatformList();
+        mAuthListener = new AuthListener() {
+            @Override
+            public void onComplete(Platform platform, int action, BaseResponseInfo data) {
+                Logger.dd(TAG, "onComplete:" + platform + ",action:" + action + ",data:" + data);
+                String toastMsg = null;
 
+                switch (action) {
+                    case Platform.ACTION_AUTHORIZING:
+                        if (data instanceof AccessTokenInfo) {        //授权信息
+                            accessToken = ((AccessTokenInfo) data).getToken();//token
+                            expiration = ((AccessTokenInfo) data).getExpiresIn();//token有效时间，时间戳
+                            String refresh_token = ((AccessTokenInfo) data).getRefeshToken();//refresh_token
+                            String openId = ((AccessTokenInfo) data).getOpenid();//openid
+                            //授权原始数据，开发者可自行处理
+                            String originData = data.getOriginData();
+//                            toastMsg = "授权成功:" + data.toString();
+                            toastMsg = "授权成功";
+                            LogUtils.d(TAG, "openid:" + openId + ",token:" + accessToken + ",expiration:" + expiration + ",refresh_token:" + refresh_token);
+                            LogUtils.d(TAG, "originData:" + originData);
+                            //加密后的accesstoken
+                            LogUtils.d("accessToken : " + accessToken);
+                            String accesToken = accessToken.substring(0, 16);
+                            LogUtils.d("accesToken截取 : " + accesToken);
+                            String time = String.valueOf(System.currentTimeMillis());
+                            encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(userType + time + openId)));
+                            SharedPreferencesUtils.setPreferences(LoginActivity.this, userType, encryptToken16);
+                            //加密后的openid
+                            encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
+                            LogUtils.d("加密后openid：" + encryptOpenId);
+                            LogUtils.d("加密后accesstoken：" + encryptToken16);
+                            LogUtils.d("用户类型：" + userType);
+                        }
+                        break;
+                    case Platform.ACTION_REMOVE_AUTHORIZING:
+                        toastMsg = "删除授权成功";
+                        break;
+                    case Platform.ACTION_USER_INFO:
+                        if (data instanceof cn.jiguang.share.android.model.UserInfo) {      //第三方个人信息
+                            String openId = ((cn.jiguang.share.android.model.UserInfo) data).getOpenid();  //openid
+                            name = ((cn.jiguang.share.android.model.UserInfo) data).getName();  //昵称
+                            imageUrl = ((cn.jiguang.share.android.model.UserInfo) data).getImageUrl();  //头像url
+                            String accessToken = ((cn.jiguang.share.android.model.UserInfo) data).getOriginData();  //token
+                            gender = ((cn.jiguang.share.android.model.UserInfo) data).getGender();//性别, 1表示男性；2表示女性
+                            String sex = gender == 1 ? "男" : "女";
+                            //个人信息原始数据，开发者可自行处理
+                            String originData = data.getOriginData();
+//                            toastMsg = "获取个人信息成功:" + data.toString()
+//                            toastMsg = "获取个人信息成功";
+                            Logger.dd(TAG, "openid:" + openId + ",name:" + name + ",gender:" + gender + ",imageUrl:" + imageUrl);
+                            Logger.dd(TAG, "originData:" + originData);
+                            String time = String.valueOf(System.currentTimeMillis());
+                            encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
+                        }
+                        break;
+                }
+                if (handler != null) {
+                    Message msg = handler.obtainMessage(1);
+                    msg.obj = userType;
+                    msg.sendToTarget();
+                }
+            }
+
+            @Override
+            public void onError(Platform platform, int action, int errorCode, Throwable error) {
+                Logger.dd(TAG, "onError:" + platform + ",action:" + action + ",error:" + error);
+                String toastMsg = null;
+                switch (action) {
+                    case Platform.ACTION_AUTHORIZING:
+                        toastMsg = "授权失败";
+                        break;
+                    case Platform.ACTION_REMOVE_AUTHORIZING:
+                        toastMsg = "删除授权失败";
+                        break;
+                    case Platform.ACTION_USER_INFO:
+                        toastMsg = "获取个人信息失败";
+                        break;
+                }
+                if (handler != null) {
+                    Message msg = handler.obtainMessage(2);
+                    msg.obj = toastMsg + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                    msg.sendToTarget();
+                }
+            }
+
+            @Override
+            public void onCancel(Platform platform, int action) {
+                Logger.dd(TAG, "onCancel:" + platform + ",action:" + action);
+                String toastMsg = null;
+                switch (action) {
+                    case Platform.ACTION_AUTHORIZING:
+                        toastMsg = "取消授权";
+                        break;
+                    case Platform.ACTION_REMOVE_AUTHORIZING:
+                        break;
+                    case Platform.ACTION_USER_INFO:
+                        toastMsg = "取消获取个人信息";
+                        break;
+                }
+                if (handler != null) {
+                    Message msg = handler.obtainMessage(3);
+                    msg.obj = toastMsg;
+                    msg.sendToTarget();
+                }
+            }
+        };
+
+        switch (userType) {
+            case UserType.USER_TYPE_WEIXIN:
+                if (!JShareInterface.isAuthorize(Wechat.Name)) {
+                    JShareInterface.authorize(Wechat.Name, mAuthListener);
+                } else {
+                    JShareInterface.getUserInfo(Wechat.Name, mAuthListener);
+                }
+
+                break;
+            case UserType.USER_TYPE_QQ:
+                if (!JShareInterface.isAuthorize(QQ.Name)) {
+                    JShareInterface.authorize(QQ.Name, mAuthListener);
+                } else {
+                    JShareInterface.getUserInfo(QQ.Name, mAuthListener);
+                }
+                break;
+            case UserType.USER_TYPE_WEIBO:
+                if (!JShareInterface.isAuthorize(SinaWeibo.Name)) {
+                    JShareInterface.authorize(SinaWeibo.Name, mAuthListener);
+                } else {
+                    JShareInterface.getUserInfo(SinaWeibo.Name, mAuthListener);
+                }
+                break;
         }
-
-        @Override
-        public void loginFailure(Exception e) {
-            closeProgress();
-            ToastUtils.showToast(mContext, "网络异常");
-            LogUtils.i("还回调了登录失败");
-            e.printStackTrace();
-        }
-
-        @Override
-        public void loginCancel() {
-            LogUtils.d("登录取消");
-        }
-    };*/
+    }
 
     /**
      * 三方登录注册信息到服务器
      */
-    public void thridLogin(String time, String encryptOpenId, String encryptToken16, String headIcon, String nickName, String sex, String userType) {
+    public void thridLogin(final String encryptOpenId, String encryptToken16, String headIcon, String nickName, String sex, String userType) {
         showProgress();
         try {
             SCHttpUtils.postWithParamsForLogin()
                     .url(HttpApi.USER_THIRD_LOGIN)
-                    .addParams("Timestamp", time)
-                    .addParams("encryptOpenId", encryptOpenId)
-                    .addParams("encryptToken16", encryptToken16)
-                    .addParams("headIcon", headIcon)
-                    .addParams("nickName", nickName)
-                    .addParams("sex", sex)
-                    .addParams("userType", userType)
+                    .addParams("encryptOpenId", encryptOpenId + "")
+                    .addParams("encryptToken16", encryptToken16 + "")
+                    .addParams("headIcon", headIcon + "")
+                    .addParams("nickName", nickName + "")
+                    .addParams("sex", sex + "")
+                    .addParams("userType", userType + "")
                     .build()
                     .execute(new SCHttpStringCallBack() {
                                  @Override
@@ -577,6 +763,11 @@ public class LoginActivity extends BaseActivity {
                                              SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
                                              closeProgress();
                                              checkCache();
+                                         } else if (TextUtils.equals(code, NetErrCode.BIND_PONE_ERR_CODE)) {
+                                             closeProgress();
+                                             Intent intent = new Intent(LoginActivity.this, BindPhoneActivity.class);
+                                             intent.putExtra("encryptOpenId", encryptOpenId);
+                                             startActivity(intent);
                                          } else {
                                              closeProgress();
                                              ToastUtils.showToast(mContext, "网络异常");
@@ -597,47 +788,89 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    /*
+     * 绑定获取验证码
+     * */
+    private void obtainCheckCode() {
+        mobilePhone = etDynamicLoginAccount.getText().toString().trim();
+        verifyCode = etDynamicLoginCode.getText().toString().trim();
+        if (TextUtils.isEmpty(mobilePhone)) {
+            ToastUtils.showToast(this, "请填写手机号码");
+            return;
+        } else {
+            if (AccountUtils.isPhone(mobilePhone)) {
+                getCheckCode(mobilePhone, verifyCode);
+            } else {
+                ToastUtils.showToast(this, "请输入正确格式的账号");
+                return;
+            }
+        }
 
-//    private void obtainSpaceInfo(final String characterId, final String characterInfoJson, final String spaceId, final String hxAccount) {
-//        //获取space详情并缓存
-//
-//        SCHttpUtils.post()
-//                .url(HttpApi.SPACE_GET_ID)
-//                .addParams("spaceId", spaceId)
-//                .build()
-//                .execute(new SCHttpStringCallBack() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        closeProgress();
-//                        ToastUtils.showToast(mContext, "网络错误");
-//                        LogUtils.i("获取时空详情失败");
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        try {
-//                            LogUtils.i("space详情 = " + response);
-//                            String code = JSONObject.parseObject(response).getString("code");
-//                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-//                                closeProgress();
-//                                final String data = JSONObject.parseObject(response).getString("data");
-//                                RoleManager.switchRoleCacheComment(characterId, characterInfoJson, spaceId, data);
-//                            } else {
-//                                //code错误
-//                                closeProgress();
-//                                ToastUtils.showToast(mContext, "网络错误");
-//                            }
-//                        } catch (IllegalArgumentException e) {
-//                            closeProgress();
-//                            LogUtils.i("解析数据错误");
-//                            e.printStackTrace();
-//                            ToastUtils.showToast(mContext, "网络异常");
-//                        }
-//                    }
-//                });
-//    }
+        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.start();
+    }
 
+    //从后台获取验证码
+    private void getCheckCode(String phone, final String verifyCode) {
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.SMS_BIND_UNLOGIN_VERIFYCODE)
+                .addParams("mobile", phone)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        ToastUtils.showToast(LoginActivity.this, "获取验证码失败");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            salt = JSONObject.parseObject(data).getString("salt");
+                            timestamp = JSONObject.parseObject(data).getString("timestamp");
+                        }
+                    }
+                });
+
+    }
+
+    private void sureLogin(String mobilePhone, String sign, String verifyCode) {
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.SMS_LOGIN)
+                .addParams("mobile", mobilePhone)
+                .addParams("sign", sign)
+                .addParams("verifyCode", verifyCode)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+//                        LogUtils.d("dynamicLogin", e.toString());
+//                        ToastUtils.showToast(LoginActivity.this, "网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        //登录成功
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            ResponseLoginBean loginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
+                            //登录成功 在此缓存用户数据
+                            String token = loginBean.getToken();
+                            LoginUserInfoBean userInfo = loginBean.getUserInfo();
+                            int userId = userInfo.getUserId();
+                            LogUtils.d("登录成功  uid" + userId);
+
+                            SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                            SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+                            readyGo(HomeActivity.class);
+                            finish();
+                        }
+                    }
+                });
+    }
 
     public void showProgress() {
         mDialog = new ProgressDialog(this);
@@ -655,4 +888,47 @@ public class LoginActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    @OnClick({R.id.tv_dynamic_login, R.id.linear_normal_login, R.id.et_dynamic_login_account, R.id.tv_register_code, R.id.et_dynamic_login_code, R.id.tv_normal_login, R.id.btn_dynamic_login, R.id.linear_dynamic_login})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            //密码账号登录
+            case R.id.tv_normal_login:
+                normalLogin.setVisibility(View.VISIBLE);
+                dynamicLogin.setVisibility(View.GONE);
+                break;
+            //动态密码登录
+            case R.id.tv_dynamic_login:
+                dynamicLogin.setVisibility(View.VISIBLE);
+                normalLogin.setVisibility(View.GONE);
+                break;
+            case R.id.linear_normal_login:
+                break;
+            case R.id.et_dynamic_login_account:
+                break;
+            case R.id.tv_register_code:
+                obtainCheckCode();
+                break;
+            case R.id.et_dynamic_login_code:
+                break;
+            case R.id.btn_dynamic_login:
+                mobilePhone = etDynamicLoginAccount.getText().toString().trim();
+                verifyCode = etDynamicLoginCode.getText().toString().trim();
+                if (TextUtils.isEmpty(verifyCode) || TextUtils.isEmpty(mobilePhone)) {
+                    ToastUtils.showToast(LoginActivity.this, "请输入手机号、验证码");
+                    return;
+                }
+                sign = MD5Utils.getMD5(verifyCode + salt + timestamp);
+                sureLogin(mobilePhone, sign, verifyCode);
+                break;
+            case R.id.linear_dynamic_login:
+                break;
+        }
+    }
 }

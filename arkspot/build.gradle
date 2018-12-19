@@ -17,7 +17,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
-            abiFilters "x86", "armeabi", "armeabi-v7a", "armeabi-v8a","mips", "mips64"//, 'x86_64', 'arm64-v8a'
+            abiFilters "x86", "armeabi", "armeabi-v7a", "armeabi-v8a", "mips", "mips64"
+//, 'x86_64', 'arm64-v8a'
         }
 
 
@@ -160,9 +161,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.gjiazhe:wavesidebar:1.3'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-
+    implementation 'cn.bingoogolapple:bga-refreshlayout:1.1.8'
     //    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
-
     //    implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
 
     /* 友盟SDK依赖 */

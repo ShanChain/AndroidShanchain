@@ -332,7 +332,7 @@ public class ArcMenu extends ViewGroup implements OnClickListener, View.OnTouchL
                 tranAnim = new TranslateAnimation(0, xflag * cl, 0, yflag * ct);
                 childView.setClickable(false);
                 childView.setFocusable(false);
-
+                mCButton.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
 
             }
             tranAnim.setFillAfter(true);

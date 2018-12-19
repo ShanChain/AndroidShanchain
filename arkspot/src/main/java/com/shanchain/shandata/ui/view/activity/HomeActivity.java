@@ -1,19 +1,31 @@
 package com.shanchain.shandata.ui.view.activity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -75,7 +87,8 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
-import com.shanchain.shandata.receiver.MessageReceiver;
+import com.shanchain.shandata.push.ExampleUtil;
+import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.IsFavBean;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
@@ -121,6 +134,7 @@ import cn.jiguang.share.wechat.WechatMoments;
 import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.data.JPushLocalNotification;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.RequestCallback;
@@ -180,8 +194,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         }
     };
     private PlatActionListener mPlatActionListener;
-    List<String> platformList = JShareInterface.getPlatformList();
-    List<String> dataList = new ArrayList<String>();
 
 
     TextView tvLocation;
@@ -202,6 +214,22 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_home;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "chat";
+            String channelName = "聊天消息";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            createNotificationChannel(channelId, channelName, importance);
+
+            channelId = "subscribe";
+            channelName = "订阅消息";
+            importance = NotificationManager.IMPORTANCE_DEFAULT;
+            createNotificationChannel(channelId, channelName, importance);
+        }
     }
 
     @Override
@@ -279,6 +307,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         initDeviceToken();
 
         initView();
+        //注册自定义消息广播
+        registerMessageReceiver();
 
         initBaiduMap();
 
@@ -339,7 +369,12 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             roomMessage.what = 1;
                             roomMessage.obj = langLocation + "°," + latLocation + "°";
 //                            roomMessage.arg1 = Integer.valueOf(clickRoomID);
-                            roomMessage.arg1 = Integer.valueOf(roomID);
+                            try {
+                                roomMessage.arg1 = Integer.valueOf(roomID);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+
                             getRoomIdHandle.sendMessage(roomMessage);
                             /*
                              * 绘制所在位置的方区
@@ -865,14 +900,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         };
     }
 
-    //设置通知栏自定义消息
-   /* private void setCostomMsg(String msg){
-        if (null != msgText) {
-            msgText.setText(msg);
-            msgText.setVisibility(android.view.View.VISIBLE);
-        }
-    }*/
-
 
     /**
      * 设置通知栏样式 - 定义通知栏Layout
@@ -883,6 +910,17 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         builder.developerArg0 = "developerArg2";
         JPushInterface.setPushNotificationBuilder(2, builder);
 //        Toast.makeText(HomeActivity.this, "Custom Builder - 2", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 通知栏适配 - 定义通知栏渠道
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -897,95 +935,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     cropScreenBitmap = ImageUtils.cropScreenBitmap(captureScreen);
                 }
             }).start();
-            //第三平台授权
-            final AuthListener mAuthListener = new AuthListener() {
-                @Override
-                public void onComplete(Platform platform, int action, BaseResponseInfo data) {
-                    Logger.dd(TAG, "onComplete:" + platform + ",action:" + action + ",data:" + data);
-                    String toastMsg = null;
-                    switch (action) {
-                        case Platform.ACTION_AUTHORIZING:
-                            if (data instanceof AccessTokenInfo) {        //授权信息
-                                String token = ((AccessTokenInfo) data).getToken();//token
-                                long expiration = ((AccessTokenInfo) data).getExpiresIn();//token有效时间，时间戳
-                                String refresh_token = ((AccessTokenInfo) data).getRefeshToken();//refresh_token
-                                String openid = ((AccessTokenInfo) data).getOpenid();//openid
-                                //授权原始数据，开发者可自行处理
-                                String originData = data.getOriginData();
-                                toastMsg = "授权成功:" + data.toString();
-                                Logger.dd(TAG, "openid:" + openid + ",token:" + token + ",expiration:" + expiration + ",refresh_token:" + refresh_token);
-                                Logger.dd(TAG, "originData:" + originData);
-                            }
-                            break;
-                        case Platform.ACTION_REMOVE_AUTHORIZING:
-                            toastMsg = "删除授权成功";
-                            break;
-                        case Platform.ACTION_USER_INFO:
-                            if (data instanceof UserInfo) {      //第三方个人信息
-                                String openid = ((UserInfo) data).getOpenid();  //openid
-                                String name = ((UserInfo) data).getName();  //昵称
-                                String imageUrl = ((UserInfo) data).getImageUrl();  //头像url
-                                int gender = ((UserInfo) data).getGender();//性别, 1表示男性；2表示女性
-                                //个人信息原始数据，开发者可自行处理
-                                String originData = data.getOriginData();
-                                toastMsg = "获取个人信息成功:" + data.toString();
-                                Logger.dd(TAG, "openid:" + openid + ",name:" + name + ",gender:" + gender + ",imageUrl:" + imageUrl);
-                                Logger.dd(TAG, "originData:" + originData);
-                            }
-                            break;
-                    }
-                    if (handler != null) {
-                        Message msg = handler.obtainMessage(1);
-                        msg.obj = toastMsg;
-                        msg.sendToTarget();
-                    }
-                }
-
-                @Override
-                public void onError(Platform platform, int action, int errorCode, Throwable error) {
-                    Logger.dd(TAG, "onError:" + platform + ",action:" + action + ",error:" + error);
-                    String toastMsg = null;
-                    switch (action) {
-                        case Platform.ACTION_AUTHORIZING:
-                            toastMsg = "授权失败";
-                            break;
-                        case Platform.ACTION_REMOVE_AUTHORIZING:
-                            toastMsg = "删除授权失败";
-                            break;
-                        case Platform.ACTION_USER_INFO:
-                            toastMsg = "获取个人信息失败";
-                            break;
-                    }
-                    if (handler != null) {
-                        Message msg = handler.obtainMessage(1);
-                        msg.obj = toastMsg + (error != null ? error.getMessage() : "") + "---" + errorCode;
-                        msg.sendToTarget();
-                    }
-                }
-
-                @Override
-                public void onCancel(Platform platform, int action) {
-                    Logger.dd(TAG, "onCancel:" + platform + ",action:" + action);
-                    String toastMsg = null;
-                    switch (action) {
-                        case Platform.ACTION_AUTHORIZING:
-                            toastMsg = "取消授权";
-                            break;
-                        // TODO: 2017/6/23 删除授权不存在取消
-                        case Platform.ACTION_REMOVE_AUTHORIZING:
-                            break;
-                        case Platform.ACTION_USER_INFO:
-                            toastMsg = "取消获取个人信息";
-                            break;
-                    }
-                    if (handler != null) {
-                        Message msg = handler.obtainMessage(1);
-                        msg.obj = toastMsg;
-                        msg.sendToTarget();
-                    }
-                }
-            };
-
             final ShareParams shareParams = new ShareParams();//分享参数
             final CustomDialog shareBottomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
             ImageView shareImage = (ImageView) shareBottomDialog.getView(HomeActivity.this, R.id.share_image);
@@ -1044,9 +993,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
                             break;
                         case R.id.mRlQQ:
-                            if (!JShareInterface.isAuthorize(QQ.Name)) {
-                                JShareInterface.authorize(QQ.Name, mAuthListener);
-                            }
+//                            if (!JShareInterface.isAuthorize(QQ.Name)) {
+//                                JShareInterface.authorize(QQ.Name, mAuthListener);
+//                            }
 //                            shareParams.setShareType(Platform.SHARE_TEXT);
 //                            shareParams.setText("身边的人都在这");
 //                            shareParams.setTitle("马甲App");
@@ -1133,6 +1082,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //                LogUtils.d("leaveChatRoom","离开聊天室");
 //            }
 //        });
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         mapView.onDestroy();
         super.onDestroy();
     }
@@ -1140,12 +1090,15 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     @Override
     public void onPause() {
         mapView.onPause();
+        isForeground = false;
         super.onPause();
     }
+
 
     @Override
     public void onResume() {
         mapView.onResume();
+        isForeground = true;
         super.onResume();
     }
 
@@ -1246,5 +1199,74 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             mDialog.dismiss();
         }
 
+    }
+
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!ExampleUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                    ToastUtils.showToast(HomeActivity.this, showMsg.toString());
+
+                    //极光本地通知
+             /*       JPushLocalNotification ln = new JPushLocalNotification();
+                    ln.setBuilderId(0);
+                    ln.setContent(showMsg.toString());
+                    ln.setTitle("收到一条消息");
+                    ln.setNotificationId(11111111) ;
+
+                    Map<String , Object> map = new HashMap<String, Object>() ;
+                    map.put("name", "jpush") ;
+                    map.put("test", "111") ;
+                    JSONObject json = new JSONObject(map) ;
+                    ln.setExtras(json.toString()) ;
+                    JPushInterface.addLocalNotification(getApplicationContext(), ln);*/
+                    //设置点击通知栏的动作为启动另外一个广播
+                    Intent broadcastIntent = new Intent(context, MyReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.
+                            getBroadcast(context, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    Notification notification = new NotificationCompat.Builder(HomeActivity.this, "subscribe")
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setContentTitle("收到一条订阅消息")
+                            .setContentText(showMsg.toString())
+                            .setWhen(System.currentTimeMillis())
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(R.mipmap.app_logo)
+                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.app_logo))
+                            .setAutoCancel(true)
+                            .build();
+                    manager.notify(1, notification);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        public void onEventMainThread(ChatRoomMessageEvent event) {
+            Log.d("tag", "ChatRoomMessageEvent received .");
+           Conversation chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+            List chatRoomList = chatRoomConversation.getAllMessage();
+            final List<cn.jpush.im.android.api.model.Message> msgs = event.getMessages();
+            final MyMessage myMessage;
+            int size = msgs.size();
+
+        }
     }
 }

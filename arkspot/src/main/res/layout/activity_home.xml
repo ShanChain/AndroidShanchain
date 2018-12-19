@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="22dp"
             android:background="@drawable/shape_bg_dialog_item"
-            android:visibility="gone"
+            android:visibility="visible"
             android:padding="10dp">
 
             <TextView
@@ -106,7 +106,7 @@
             android:layout_margin="10dp"
             android:layout_above="@+id/button_join"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="visible"
             android:background="@drawable/shape_home_btn_bg"
             android:orientation="vertical">
 

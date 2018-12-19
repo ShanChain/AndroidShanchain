@@ -125,5 +125,10 @@ public class RoleManager {
         SCCacheUtils.setCache(userId,Constants.CACHE_HEAD_IMG,headImg);
     }
 
+    public static void switchRoleThirdToken(String userType,String accessToken){
+        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
+        SCCacheUtils.setCache(userId,userType,accessToken);
+    }
+
 
 }

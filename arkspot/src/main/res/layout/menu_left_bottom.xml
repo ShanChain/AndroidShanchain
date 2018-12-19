@@ -29,7 +29,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/linear_add_query"
+        android:id="@+id/linear_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -55,7 +55,7 @@
 
 
     <LinearLayout
-        android:id="@+id/linear_add_task"
+        android:id="@+id/linear_add_query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -79,7 +79,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linear_invitation"
+        android:id="@+id/linear_add_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"

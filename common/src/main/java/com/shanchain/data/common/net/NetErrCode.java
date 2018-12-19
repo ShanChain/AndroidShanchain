@@ -14,6 +14,7 @@ public class NetErrCode {
     public static final String USER_REPEAT_ERR_CODE = "999997";//账号已存在
     public static final String LOGIN_ERR_CODE = "999996";//账号或密码已错误
     public static final String PARAMS_ERR_CODE = "999995";
+    public static final String BIND_PONE_ERR_CODE = "999993";
     public static final String SPACE_CREATE_ERR_CODE = "999992";//创建时空，人物模型，话题名重复
     public static final String COMMON_TOKEN_OVERDUE_CODE = "999991";    //token过期
     public static final String COMMON_SPACE_PERMISSION = "999990";

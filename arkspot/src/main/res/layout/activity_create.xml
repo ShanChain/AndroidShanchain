@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.view.activity.coupon.CreateCouponActivity">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_coupon"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextThree"
+        app:titleTextSize="16">
+
+    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tb_coupon">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tb_coupon">
+            <!-- 头像 -->
+            <LinearLayout
+                android:id="@+id/linear_head"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal">
+
+                <cn.jiguang.imui.view.CircleImageView
+                    android:id="@+id/image_head"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/aurora_headicon_default" />
+
+                <TextView
+                    android:id="@+id/tv_edit_head"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:text="更换"
+                    android:textColor="@color/colorViolet" />
+            </LinearLayout>
+            <!-- 卡劵创建信息 -->
+            <RelativeLayout
+                android:id="@+id/relative_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_head"
+                android:layout_marginLeft="@dimen/dimens_20dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="visible"
+                android:layout_marginRight="@dimen/dimens_20dp">
+
+                <TextView
+                    android:id="@+id/tv_coupon_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/edit_coupon_name"
+                    android:layout_toLeftOf="@+id/edit_coupon_name"
+                    android:text="名称:"
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_name"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="@dimen/dp_40"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_name"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_coupon_name"
+                    android:layout_alignBaseline="@+id/edit_coupon_code"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_toLeftOf="@+id/edit_coupon_code"
+                    android:text="代号:"
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/edit_coupon_name"
+                    android:layout_alignLeft="@+id/edit_coupon_name"
+                    android:layout_marginTop="@dimen/dimens_20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_code"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_code"
+                    android:layout_toRightOf="@+id/tv_coupon_code"
+                    android:text="代号为三个大写字母"
+                    android:textColor="@color/colorTextDefault"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_name"
+                    android:layout_alignBaseline="@+id/edit_coupon_code"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_toRightOf="@+id/edit_coupon_code"
+                    android:text="SEAT"
+                    android:textColor="@color/colorTextDefault"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_coupon_des"
+                    android:layout_alignBaseline="@+id/edit_coupon_price"
+                    android:layout_toLeftOf="@+id/edit_coupon_price"
+                    android:text="单价（￥）："
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_price"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/tv_coupon_des"
+                    android:layout_alignLeft="@+id/edit_coupon_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_price"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+
+                <TextView
+                    android:id="@+id/tv_coupon_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/edit_coupon_num"
+                    android:layout_toLeftOf="@+id/edit_coupon_price"
+                    android:text="数量："
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_num"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/edit_coupon_price"
+                    android:layout_alignLeft="@+id/edit_coupon_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_num"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_expiration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/edit_coupon_expiration"
+                    android:layout_toLeftOf="@+id/edit_coupon_price"
+                    android:text="失效时间："
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_expiration"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/edit_coupon_num"
+                    android:layout_alignLeft="@+id/edit_coupon_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_expiration"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_example"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_expiration"
+                    android:layout_alignRight="@+id/edit_coupon_expiration"
+                    android:layout_marginTop="@dimen/dimens_5dp"
+                    android:drawableRight="@mipmap/question"
+                    android:drawablePadding="@dimen/dimens_5dp"
+                    android:text="示例"
+                    android:textColor="@color/colorViolet" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_describe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/edit_coupon_describe"
+                    android:layout_toLeftOf="@+id/edit_coupon_price"
+                    android:text="说明："
+                    android:textSize="@dimen/sp_16" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_describe"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_expiration"
+                    android:layout_alignLeft="@+id/edit_coupon_name"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/shape_bg_dialog_task_edit"
+                    android:hint="@string/coupon_describe"
+                    android:padding="@dimen/dimens_5dp"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_describe"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="*实名认证" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_coupon_describe"
+                    android:layout_alignRight="@+id/edit_coupon_name"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="已认证"
+                    android:textColor="@color/colorViolet"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <!-- 卡劵费率信息 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relative_top"
+                android:layout_margin="@dimen/dp_40">
+
+                <TextView
+                    android:id="@+id/tv_coupon_mortgage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextThree"
+                    android:layout_alignBaseline="@+id/tv_coupon_currency_num"
+                    android:text="@string/coupon_mortgage" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_mortgage_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:textColor="@color/colorTextThree"
+                    android:layout_alignBaseline="@+id/tv_coupon_currency_num"
+                    android:layout_toRightOf="@+id/tv_coupon_mortgage"
+                    android:drawableEnd="@mipmap/question"
+                    android:drawablePadding="@dimen/dimens_5dp"
+                    android:text="1%" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_coupon_currency_num"
+                    android:textColor="@color/colorTextThree"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_alignBaseline="@+id/tv_coupon_currency_num"
+                    android:text="￥" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_currency_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/colorTextThree"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:text="2.00" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_wallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/tv_coupon_seat_num"
+                    android:layout_alignTop="@+id/tv_coupon_mortgage"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/coupon_wallet"
+                    android:textColor="@color/colorTextThree" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_wallet_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:textColor="@color/colorTextThree"
+                    android:layout_alignBaseline="@+id/tv_coupon_seat_num"
+                    android:layout_toRightOf="@+id/tv_coupon_wallet"
+                    android:drawablePadding="@dimen/dimens_5dp"
+                    android:text="￥100" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_seat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_coupon_seat_num"
+                    android:textColor="@color/colorTextThree"
+                    android:textSize="16sp"
+                    android:layout_alignBaseline="@+id/tv_coupon_seat_num"
+                    android:text="=" />
+
+                <TextView
+                    android:id="@+id/tv_coupon_seat_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_below="@+id/tv_coupon_currency_num"
+                    android:textColor="@color/colorTextThree"
+                    android:textSize="16sp"
+                    android:text="0.2 SEAT" />
+
+                <Button
+                    android:id="@+id/button_create_coupon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_20dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/coupon_create"
+                    android:textColor="@color/white"
+                    android:layout_below="@+id/tv_coupon_wallet"
+                    android:background="@drawable/shape_btn_user_info"/>
+
+            </RelativeLayout>
+            <!-- 底部提示文字 -->
+            <RelativeLayout
+                android:id="@+id/relative_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:background="#f5f5f5"
+                android:layout_alignParentBottom="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/coupon_text_hint"
+                    android:textColor="@color/colorTextCoupon"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

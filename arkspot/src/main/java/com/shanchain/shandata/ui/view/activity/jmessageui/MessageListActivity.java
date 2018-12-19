@@ -109,6 +109,7 @@ import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
@@ -359,8 +360,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (isIn == true || isSuper.equals("true")) {
                         mChatView.isShowBtnInputJoin(false);
                         mChatView.getChatInputView().setShowBottomMenu(true);
-//                        mArcMenu.setVisibility(View.VISIBLE);
-                        mArcMenu.setVisibility(View.GONE);
+                        mArcMenu.setVisibility(View.VISIBLE);
+//                        mArcMenu.setVisibility(View.GONE);
                         xhsEmoticonsKeyBoard.getInputJoin().setVisibility(View.GONE);
                         xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
                         mChatView.setOnBtnInputClickListener(new ChatView.OnBtnInputClickListener() {
@@ -1052,29 +1053,32 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 switch (view.getId()) {
                     //查询任务
                     case R.id.linear_add_query:
-                        Intent intent = new Intent(MessageListActivity.this, TaskListActivity.class);
-                        intent.putExtra("roodId", roomID);
-                        startActivity(intent);
+                        mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+
+                        Intent taskDetailIntent = new Intent(MessageListActivity.this,TaskDetailActivity.class);
+                        taskDetailIntent.putExtra("roomId",roomID);
+                        taskDetailIntent.putExtra("chatEventMessage",chatEventMessage);
+                        startActivity(taskDetailIntent);
 
                         break;
                     //添加任务
-                    case R.id.linear_add_task:
+                    case R.id.linear_play:
+                        mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
                         final android.os.Message handleMessage = new android.os.Message();
-                        handleMessage.what = 1;
+                        handleMessage.what = 2;
                         handleMessage.obj = view;
                         addTaskThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                handler.sendMessage(handleMessage);
+                                dialogHandler.sendMessage(handleMessage);
                             }
                         });
-                        addTaskThread.start();
-//                        Intent taskDetailIntent = new Intent(MessageListActivity.this,TaskDetailActivity.class);
-//                        taskDetailIntent.putExtra("roomId",roomID);
-//                        taskDetailIntent.putExtra("chatEventMessage",chatEventMessage);
-//                        startActivity(taskDetailIntent);
-
-
+//                        addTaskThread.start();
+                        break;
+                    case R.id.linear_add_coupon:
+                        mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+                        Intent couponIntent = new Intent(MessageListActivity.this,CouponListActivity.class);
+                        startActivity(couponIntent);
                         break;
 
                 }
@@ -1632,12 +1636,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         final CustomDialog dialog = new CustomDialog(MessageListActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
         View layout = View.inflate(MessageListActivity.this, R.layout.common_dialog_chat_room_task, null);
         dialog.setView(layout);
-        handler = new Handler() {
+        dialogHandler = new Handler() {
             @Override
             public void handleMessage(final android.os.Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
-                    case 1:
+                    case 2:
                         dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                             @Override
                             public void OnItemClick(final CustomDialog dialog, View view) {
@@ -1883,7 +1887,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 startActivity(intent);
             }
         });
-
 
         //获取聊天室信息
         final Set<Long> roomIds = new HashSet();
@@ -3118,7 +3121,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        addTaskThread.stop();
         mAdapter.getMediaPlayer().stop();
         EventBus.getDefault().unregister(this);
-        JMessageClient.unRegisterEventReceiver(this);
         ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -3126,6 +3128,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 LogUtils.d("leaveChatRoom", "离开聊天室");
             }
         });
+        JMessageClient.unRegisterEventReceiver(this);
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
     }

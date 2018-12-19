@@ -145,7 +145,8 @@ public interface HttpApi {
     /**
      * 第三方登录
      */
-    String USER_THIRD_LOGIN = BASE_URL + "/v1/user/third_login";
+//    String USER_THIRD_LOGIN = BASE_URL + "/v1/user/third_login";
+    String USER_THIRD_LOGIN = BASE_URL + "/v1/2.0/user/third_login";
 
     /**
      * 注册账号
@@ -156,6 +157,16 @@ public interface HttpApi {
      * 未登录状态获取短信验证码
      */
     String SMS_UNLOGIN_VERIFYCODE = BASE_URL + "/v1/sms/unlogin/verifycode";
+
+    /**
+     * 获取验证码,三方账号绑定手机号的时候
+     */
+    String SMS_BIND_UNLOGIN_VERIFYCODE = BASE_URL + "/v1/2.0/sms/login/verifycode";
+
+    /**
+     * 短信验证码登录
+     */
+    String SMS_LOGIN= BASE_URL + "/v1/2.0/user/sms_login";
 
     /**
      * 登录
@@ -551,7 +562,8 @@ public interface HttpApi {
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
 
 //    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://test.qianqianshijie.com/wallet";//测试
+//    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
 
 }

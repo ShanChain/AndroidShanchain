@@ -33,6 +33,8 @@
     <color name="colorViolet">#C3A0F5</color>
     <!--popup背景色-->
     <color name="colorPopBg">#5000</color>
+    <!--创建卡劵提示文字-->
+    <color name="colorTextCoupon">#F5A623</color>
     <!--黑色-->
     <color name="colorBlack">#000</color>
     <color name="colorTime">#888888</color>
