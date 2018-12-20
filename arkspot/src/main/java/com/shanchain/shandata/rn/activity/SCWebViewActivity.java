@@ -25,6 +25,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.shandata.ui.model.CharacterInfo;
@@ -32,6 +36,8 @@ import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
 
 public class SCWebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,6 +48,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private String mUrl;
     private String token, characterId, userId;
     private ProgressBar mPbWeb;
+    private Map<String, String> map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +66,38 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initWeb() {
-        token = SCCacheUtils.getCacheToken();
-        CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.CHARACTER_GET_CURRENT)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络错误");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String character = JSONObject.parseObject(data).getString("characterInfo");
+                            token = SCCacheUtils.getCacheToken();
+                            CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
 //        characterId = SCCacheUtils.getCacheCharacterId();
-        characterId = String.valueOf(characterInfo.getCharacterId());
-        userId = SCCacheUtils.getCacheUserId();
-        mTvWebTbTitle.setText(mTitle);
-        WebSettings settings = mWbSc.getSettings();
-        settings.setJavaScriptEnabled(true);
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put("token", token);
-        map.put("characterId", characterId);
-        map.put("userId", userId);
-        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+                            characterId = String.valueOf(characterInfo.getCharacterId());
+                            userId = SCCacheUtils.getCacheUserId();
+                            mTvWebTbTitle.setText(mTitle);
+                            WebSettings settings = mWbSc.getSettings();
+                            settings.setJavaScriptEnabled(true);
+                            map = new HashMap<String, String>();
+                            map.put("token", token);
+                            map.put("characterId", characterId );
+                            map.put("userId", userId);
+                            mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+                        }
+                    }
+                });
+
         mWbSc.setWebViewClient(new WebViewClient() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -83,10 +109,10 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 LogUtils.d("Url", url);
                 LogUtils.d("UrlPath", urlPath);
                 LogUtils.d("loadUrl", loadUrl);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     if (loadUrl.contains("toPrev=true")) {
                         finish();
-                        LogUtils.d("toPrev",url);
+                        LogUtils.d("toPrev", url);
                         return true;
                     }
                     if (loadUrl.contains("comfirm=true")) {
@@ -101,7 +127,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         intent.putExtra("wallet", "wallet");
                         startActivity(intent);
                         finish();
-                        LogUtils.d("toLogin",url);
+                        LogUtils.d("toLogin", url);
                         return true;
                     }
                 }
@@ -116,10 +142,10 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                     if (url.contains("toPrev=true")) {
                         finish();
-                        LogUtils.d("toPrev",url);
+                        LogUtils.d("toPrev", url);
                         return true;
                     }
                     if (url.contains("comfirm=true")) {
@@ -134,7 +160,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         intent.putExtra("wallet", "wallet");
                         startActivity(intent);
                         finish();
-                        LogUtils.d("toLogin",url);
+                        LogUtils.d("toLogin", url);
                         return true;
                     }
                 }

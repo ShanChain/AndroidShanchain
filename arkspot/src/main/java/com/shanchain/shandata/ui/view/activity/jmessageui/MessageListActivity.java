@@ -273,7 +273,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private PowerManager.WakeLock mWakeLock;
     private ArcMenu mArcMenu;
     private ArcMenu.OnMenuItemClickListener onMenuItemClickListener;
-    private Handler handler, dialogHandler;
+    private Handler handler, messageHandler, dialogHandler;
     private List<Conversation> conversationList;
     private double seatRmbRate;
     private TextView tvSeatRate;
@@ -424,7 +424,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (msg.getFromUser().getAvatarFile() != null) {
                     DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
                     message.setUserInfo(defaultUser);
-                }else {
+                } else {
                     DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
                     message.setUserInfo(defaultUser);
                 }
@@ -919,13 +919,46 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 roomName = coordinates.getRoomName();
                                 isIn = false;
                             }
-                            handler.sendEmptyMessage(1);
+                            android.os.Message message = new android.os.Message();
+                            message.what = 3;
+                            message.obj = coordinates;
+                            messageHandler.sendMessage(message);
                         }
                     }
                 });
 //        if (null == chatRoomConversation) {
 //            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
 //        }
+
+        messageHandler = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 3) {
+                    SCHttpUtils.postWithUserId()
+                            .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
+                            .addParams("roomId", roomID)
+                            .addParams("timeStamp", System.currentTimeMillis() + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    LogUtils.d("网络错误");
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)){
+                                        String data = JSONObject.parseObject(response).getString("data");
+//                                        onEventMainThread();
+                                    }
+//
+                                }
+                            });
+                }
+            }
+        };
     }
 
 
@@ -2796,7 +2829,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 .load(string)
                                 .apply(options)
                                 .into(avatarImageView);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
