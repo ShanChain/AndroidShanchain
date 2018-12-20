@@ -8,6 +8,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CouponInfo;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.utils.DateUtils;
 
@@ -38,6 +39,14 @@ public class CouponListAdapter extends CommonAdapter<CouponInfo> implements Base
     public void setData(BaseViewHolder holder, CouponInfo item, int viewType, int position) {
         this.couponInfo = item;
         this.holder = holder;
+
+        holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
+            @Override
+            public void OnItemClick(View view) {
+                Intent intent = new Intent(context,CouponDetailsActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

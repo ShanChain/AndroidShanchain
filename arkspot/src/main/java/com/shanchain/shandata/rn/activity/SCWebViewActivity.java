@@ -27,6 +27,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -57,12 +59,15 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         Intent intent = getIntent();
         String webParams = intent.getStringExtra("webParams");
         mTitle = JSONObject.parseObject(webParams).getString("title");
-//        mUrl = JSONObject.parseObject(webParams).getString("url");
-        mUrl = "http://m.qianqianshijie.com/orderDetails?id=15450393575245641";
+        mUrl = JSONObject.parseObject(webParams).getString("url");
+//        mUrl = "http://m.qianqianshijie.com/orderDetails?id=15450393575245641";
         initWeb();
     }
 
     private void initWeb() {
+//        SCHttpUtils.postWithUserId()
+//                .url(HttpApi.CHARACTER_GET_CURRENT)
+//                .addParams()
         token = SCCacheUtils.getCacheToken();
         CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
 //        characterId = SCCacheUtils.getCacheCharacterId();
@@ -75,8 +80,8 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         map.put("token", token);
         map.put("characterId", characterId);
         map.put("userId", userId);
-//        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
-        mWbSc.loadUrl(mUrl);
+        mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+//        mWbSc.loadUrl(mUrl);
         mWbSc.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

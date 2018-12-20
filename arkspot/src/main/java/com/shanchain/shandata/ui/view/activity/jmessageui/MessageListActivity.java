@@ -379,6 +379,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
                             }
                         });
+
+                    } else if (msg.what == 2) {
+
                     } else {
                         ToastUtils.showToast(MessageListActivity.this, "您不在该聊天室区域内");
                     }
@@ -425,7 +428,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (msg.getFromUser().getAvatarFile() != null) {
                     DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
                     message.setUserInfo(defaultUser);
-                }else {
+                } else {
                     DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
                     message.setUserInfo(defaultUser);
                 }
@@ -920,13 +923,35 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 roomName = coordinates.getRoomName();
                                 isIn = false;
                             }
-                            handler.sendEmptyMessage(1);
+                            android.os.Message message = new android.os.Message();
+                            handler.sendEmptyMessage(2);
                         }
                     }
                 });
 //        if (null == chatRoomConversation) {
 //            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
 //        }
+
+
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
+                .addParams("roomId", "15237570")
+                .addParams("timeStamp",""+System.currentTimeMillis())
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络错误");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)){
+                            String data = JSONObject.parseObject(response).getString("data");
+                        }
+                    }
+                });
     }
 
 
@@ -1055,9 +1080,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     case R.id.linear_add_query:
                         mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
 
-                        Intent taskDetailIntent = new Intent(MessageListActivity.this,TaskDetailActivity.class);
-                        taskDetailIntent.putExtra("roomId",roomID);
-                        taskDetailIntent.putExtra("chatEventMessage",chatEventMessage);
+                        Intent taskDetailIntent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
+                        taskDetailIntent.putExtra("roomId", roomID);
+                        taskDetailIntent.putExtra("chatEventMessage", chatEventMessage);
                         startActivity(taskDetailIntent);
 
                         break;
@@ -1077,8 +1102,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         break;
                     case R.id.linear_add_coupon:
                         mArcMenu.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
-                        Intent couponIntent = new Intent(MessageListActivity.this,CouponListActivity.class);
-                        couponIntent.putExtra("roomId",roomID);
+                        Intent couponIntent = new Intent(MessageListActivity.this, CouponListActivity.class);
+                        couponIntent.putExtra("roomId", roomID);
                         startActivity(couponIntent);
                         break;
 
@@ -2800,7 +2825,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 .load(string)
                                 .apply(options)
                                 .into(avatarImageView);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

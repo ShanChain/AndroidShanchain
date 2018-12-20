@@ -123,15 +123,6 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new CouponListAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(ChatEventMessage item, View view, BaseViewHolder holder, int position) {
-                Intent intent = new Intent(CouponListActivity.this,MyCouponListActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
         //添加卡劵
         addCoupon.setOnClickListener(new View.OnClickListener() {
             @Override
