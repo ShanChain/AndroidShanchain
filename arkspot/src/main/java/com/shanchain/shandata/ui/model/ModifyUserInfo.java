@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ModifyUserInfo {
+    private Boolean isRestartMessageActivity;
     private String name;
     private String signature;
     private String headImg;
@@ -30,5 +31,13 @@ public class ModifyUserInfo {
 
     public void setHeadImg(String headImg) {
         this.headImg = headImg;
+    }
+
+    public Boolean getRestartActivity() {
+        return isRestartMessageActivity;
+    }
+
+    public void setRestartActivity(Boolean restart) {
+        isRestartMessageActivity = restart;
     }
 }

@@ -22,6 +22,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.ImageUtils;
@@ -46,11 +47,8 @@ public class ModifyUserInfoActivity extends BaseActivity {
     EditText etInputNikeName;
     @Bind(R.id.et_input_sign)
     EditText etInputSign;
-
-
     private ArthurToolBar mTbMain;
     private String nikeName, inputSign;
-
 
     @Override
     protected int getContentViewLayoutID() {
@@ -58,14 +56,18 @@ public class ModifyUserInfoActivity extends BaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(){
+    public void onEvent() {
 
     }
+
     @Override
     protected void initViewsAndEvents() {
-
-        final String headImg = getIntent().getStringExtra("headImg");
-
+        if (getIntent() != null) {
+            nikeName = getIntent().getStringExtra("nikeName");
+            inputSign = getIntent().getStringExtra("userSign");
+            etInputNikeName.setHint("" + nikeName);
+            etInputSign.setHint("" + inputSign);
+        }
         mTbMain = findViewById(R.id.tb_main);
         mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
@@ -84,15 +86,15 @@ public class ModifyUserInfoActivity extends BaseActivity {
             @Override
             public void onRightClick(View v) {
                 String charater = SCCacheUtils.getCacheCharacterInfo();
-                CharacterInfo characterInfo = JSONObject.parseObject(charater,CharacterInfo.class);
+                CharacterInfo characterInfo = JSONObject.parseObject(charater, CharacterInfo.class);
                 String headImg = characterInfo.getHeadImg();
                 String cacheHeadImg = SCCacheUtils.getCacheHeadImg();
                 ModifyUserInfo modifyUserInfo = new ModifyUserInfo();
                 modifyUserInfo.setName(etInputNikeName.getText().toString());
                 modifyUserInfo.setSignature(etInputSign.getText().toString());
+                modifyUserInfo.setRestartActivity(true);
 //                modifyUserInfo.setHeadImg(headImg);
                 String modifyUser = JSONObject.toJSONString(modifyUserInfo);
-                org.greenrobot.eventbus.EventBus.getDefault().postSticky(modifyUserInfo);
                 SCHttpUtils.postWithUserId()
                         .url(HttpApi.MODIFY_CHARACTER)
                         .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
@@ -110,13 +112,17 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                 if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                     LogUtils.d("修改角色信息");
                                     String data = JSONObject.parseObject(response).getString("data");
-                                    String signature = JSONObject.parseObject(data).getString("signature");
-                                    String headImg = JSONObject.parseObject(data).getString("headImg");
-                                    String name = JSONObject.parseObject(data).getString("name");
-                                    String avatar = JSONObject.parseObject(data).getString("avatar");
+                                    String character = JSONObject.parseObject(data).getString("characterInfo");
+                                    String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                                    CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                                    JmAccount jmAccount = JSONObject.parseObject(character, JmAccount.class);
+                                    String headImg = characterInfo.getHeadImg();
+                                    String name = characterInfo.getName();
+                                    String signature = characterInfo.getSignature();
+
                                     UserInfo jmUserInfo = JMessageClient.getMyInfo();
-                                    if (jmUserInfo!=null){
-                                        if (null!=name&&TextUtils.isEmpty(name)){
+                                    if (jmUserInfo != null) {
+                                        if (TextUtils.isEmpty(name)) {
                                             jmUserInfo.setNickname(name);//设置昵称
                                             JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
                                                 @Override
@@ -125,7 +131,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                                 }
                                             });
                                         }
-                                        if (null!=signature&&TextUtils.isEmpty(signature)){
+                                        if (TextUtils.isEmpty(signature)) {
                                             jmUserInfo.setSignature(signature);//设置签名
                                             JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
                                                 @Override
@@ -135,23 +141,17 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                             });
                                         }
                                     }
-
-                                    CharacterInfo characterInfo = new CharacterInfo();
-                                    characterInfo.setHeadImg(headImg);
-                                    characterInfo.setSignature(signature);
-                                    characterInfo.setName(name);
-                                    String character = JSONObject.toJSONString(characterInfo);
                                     RoleManager.switchRoleCacheCharacterInfo(character);
                                     RoleManager.switchRoleCacheHeadImg(headImg);
-//                                    RoleManager.switchRoleCacheHeadImg(avatar);
                                 }
                             }
                         });
-                Intent intent = new Intent(ModifyUserInfoActivity.this,MessageListActivity.class);
-                intent.putExtra("name",modifyUserInfo.getName());
-                intent.putExtra("signature",modifyUserInfo.getSignature());
-                intent.putExtra("HeadImg",modifyUserInfo.getHeadImg());
+//                Intent intent = new Intent(ModifyUserInfoActivity.this,MessageListActivity.class);
+//                intent.putExtra("name",modifyUserInfo.getName());
+//                intent.putExtra("signature",modifyUserInfo.getSignature());
+//                intent.putExtra("HeadImg",modifyUserInfo.getHeadImg());
 //                startActivity(intent);
+                org.greenrobot.eventbus.EventBus.getDefault().post(modifyUserInfo);
                 finish();
 
             }

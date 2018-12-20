@@ -53,6 +53,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -75,6 +76,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -86,6 +88,7 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AppsAdapter;
@@ -104,6 +107,7 @@ import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
@@ -279,6 +283,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private TextView tvSeatRate;
     private ChoosePhoto mChoosePhoto = new ChoosePhoto();
     private boolean mShowSoftInput = false;
+    private boolean isRestartActivity = false;
     private GuideView guideView;
 
     /**
@@ -949,7 +954,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 @Override
                                 public void onResponse(String response, int id) {
                                     String code = JSONObject.parseObject(response).getString("code");
-                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)){
+                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                         String data = JSONObject.parseObject(response).getString("data");
 //                                        onEventMainThread();
                                     }
@@ -1026,11 +1031,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MessageListActivity.this, ModifyUserInfoActivity.class);
-                String charater = SCCacheUtils.getCacheCharacterInfo();
-                CharacterInfo characterInfo = JSONObject.parseObject(charater, CharacterInfo.class);
-                String headImg = characterInfo.getHeadImg();
-                String cacheHeadImg = SCCacheUtils.getCacheHeadImg();
-                intent.putExtra("headImg", headImg);
+                String nikeName = userNikeView.getText().toString();
+                String userSign = tvUserSign.getText().toString();
+                intent.putExtra("nikeName", nikeName);
+                intent.putExtra("userSign", userSign);
                 startActivity(intent);
             }
         });
@@ -1044,15 +1048,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         });
 
         //修改用户资料
-        ivUserModify.setOnClickListener(new View.OnClickListener() {
+        tvUserSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MessageListActivity.this, ModifyUserInfoActivity.class);
-                String charater = SCCacheUtils.getCacheCharacterInfo();
-                CharacterInfo characterInfo = JSONObject.parseObject(charater, CharacterInfo.class);
-                String headImg = characterInfo.getHeadImg();
-                String cacheHeadImg = SCCacheUtils.getCacheHeadImg();
-                intent.putExtra("headImg", SCCacheUtils.getCacheHeadImg());
+                String nikeName = userNikeView.getText().toString();
+                String userSign = tvUserSign.getText().toString();
+                intent.putExtra("nikeName", nikeName);
+                intent.putExtra("userSign", userSign);
                 startActivity(intent);
             }
         });
@@ -1236,8 +1239,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         final CharacterInfo cacheCharacter = JSONObject.parseObject(character, CharacterInfo.class);
         mMyInfo = JMessageClient.getMyInfo();
         if (mMyInfo != null) {
-            userNikeView.setText(mMyInfo.getNickname());
-            SharePreferenceManager.setRegisterUsername(mMyInfo.getNickname());
+//            userNikeView.setText(mMyInfo.getNickname());
+//            SharePreferenceManager.setRegisterUsername(mMyInfo.getNickname());
             userNikeView.setText("" + mMyInfo.getNickname());
             tvUserSign.setText(mMyInfo.getSignature());
             mMyInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
@@ -1252,61 +1255,41 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 }
             });
         } else {
-            ModifyUserInfo modifyUserInfo = new ModifyUserInfo();
-            modifyUserInfo.setHeadImg(SCCacheUtils.getCacheHeadImg());
-            String modifyUser = JSONObject.toJSONString(modifyUserInfo);
-            SCHttpUtils.postWithUserId()
-                    .url(HttpApi.MODIFY_CHARACTER)
-                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
-                    .addParams("dataString", modifyUser)
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
+            CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+            if (characterInfo.getCharacterId() != 0) {
+                String nikeName = characterInfo.getName() + "";
+                String signature = characterInfo.getSignature() + "";
+                final String headImg = characterInfo.getHeadImg();
+                JmAccount jmUserInfo = new JmAccount();
+                if (!TextUtils.isEmpty(nikeName)) {
+                    userNikeView.setText(nikeName);
+                    jmUserInfo.setNickname(nikeName);//设置昵称
+                    JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
                         @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtils.d("修改角色信息失败");
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            String code = JSONObject.parseObject(response).getString("code");
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                LogUtils.d("修改角色信息");
-                                String data = JSONObject.parseObject(response).getString("data");
-                                String signature = JSONObject.parseObject(data).getString("signature");
-                                String headImg = JSONObject.parseObject(data).getString("headImg");
-                                String name = JSONObject.parseObject(data).getString("name");
-                                UserInfo jmUserInfo = JMessageClient.getMyInfo();
-                                userNikeView.setText(name + "");
-                                tvUserSign.setText(signature + "");
-                                if (null != name && jmUserInfo != null) {
-                                    jmUserInfo.setNickname(name);//设置昵称
-                                    JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
-                                        @Override
-                                        public void gotResult(int i, String s) {
-                                            String s1 = s;
-                                        }
-                                    });
-                                }
-                                if (null != signature && jmUserInfo != null) {
-                                    jmUserInfo.setSignature(signature);//设置签名
-                                    JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
-                                        @Override
-                                        public void gotResult(int i, String s) {
-                                            String s1 = s;
-                                        }
-                                    });
-                                }
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Glide.with(MessageListActivity.this).load(cacheCharacter.getHeadImg()).into(userHeadView);
-                                    }
-                                });
-
-                            }
+                        public void gotResult(int i, String s) {
+                            String s1 = s;
                         }
                     });
-
+                }
+                if (!TextUtils.isEmpty(signature)) {
+                    tvUserSign.setText(signature);
+                    jmUserInfo.setSignature(signature);//设置签名
+                    JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            String s1 = s;
+                        }
+                    });
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!TextUtils.isEmpty(headImg)) {
+                            Glide.with(MessageListActivity.this).load(headImg).into(userHeadView);
+                        }
+                    }
+                });
+            }
         }
 
     }
@@ -1334,27 +1317,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     private void selectImage() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            //6.0权限申请
-//            LogUtils.d("版本6.0");
-//            int checkSelfPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-//            if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
-//                LogUtils.d("未申请权限,正在申请");
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-//            } else {
-//                LogUtils.d("已经申请权限");
-////                pickImages();
-//                mChoosePhoto.setPortraitChangeListener(MessageListActivity.this, userHeadView, 1);
-//                mChoosePhoto.setInfo(MessageListActivity.this, false);
-//                mChoosePhoto.showPhotoDialog(MessageListActivity.this);
-//            }
-//        } else {
-//            LogUtils.d("版本低于6.0");
-//            mChoosePhoto.setPortraitChangeListener(MessageListActivity.this, userHeadView, 1);
-//            mChoosePhoto.setInfo(MessageListActivity.this, false);
-//            mChoosePhoto.showPhotoDialog(MessageListActivity.this);
-////            pickImages();
-//        }
         int from = PickImageActivity.FROM_LOCAL;
         int requestCode = PhotoUtils.INTENT_SELECT;
         if (ContextCompat.checkSelfPermission(MessageListActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -1628,10 +1590,16 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void setIvUserModify(ModifyUserInfo modifyUserInfo) {
-        userNikeView.setText(modifyUserInfo.getName());
-        tvUserSign.setText(modifyUserInfo.getSignature());
+        isRestartActivity = modifyUserInfo.getRestartActivity();
+        if (!TextUtils.isEmpty(modifyUserInfo.getName())) {
+            userNikeView.setText(modifyUserInfo.getName());
+        }
+        if (!TextUtils.isEmpty(modifyUserInfo.getSignature())) {
+            tvUserSign.setText(modifyUserInfo.getSignature());
+        }
+
     }
 
     /*
@@ -1925,19 +1893,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         ChatRoomManager.getChatRoomInfos(roomIds, new RequestCallback<List<ChatRoomInfo>>() {
             @Override
             public void gotResult(int i, String s, List<ChatRoomInfo> chatRoomInfos) {
-                Iterator<Long> iterator = roomIds.iterator();
-                while (iterator.hasNext()) {
-                    long getRoomId = iterator.next();
-                    if (roomId.equals(String.valueOf(getRoomId))) {
-                        int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
-                        roomNum.setText("" + totalMember);
-                    }
+                if (i == 0) {
+                    int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
+                    roomNum.setText("" + totalMember);
                 }
-
-//                if (i == 0) {
-//                    int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
-//                    roomNum.setText("" + totalMember);
-//                }
             }
         });
 
@@ -2142,8 +2101,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //            SCHttpUtils.postWithUserId()
 //                    .url(HttpApi.)
             JMessageClient.logout();
-            readyGo(LoginActivity.class);
-            finish();
+            readyGoThenKill(LoginActivity.class);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -3143,6 +3101,44 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 break;
         }
         return false;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String character = SCCacheUtils.getCacheCharacterInfo();
+        final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+        if (!isRestartActivity) {
+            if (!TextUtils.isEmpty(characterInfo.getName())) {
+                userNikeView.setText("" + characterInfo.getName());
+            }
+            if (!TextUtils.isEmpty(characterInfo.getSignature())) {
+                tvUserSign.setText("" + characterInfo.getSignature());
+            }
+        }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                ThreadUtils.runOnMainThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                });
+//
+//            }
+//        }).start();
     }
 
     @Override
