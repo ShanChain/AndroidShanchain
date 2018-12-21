@@ -14,7 +14,8 @@ import {
     Dimensions,
     TextInput,
     Image,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Button
 } from 'react-native';
 
 import {

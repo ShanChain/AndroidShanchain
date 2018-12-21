@@ -11,15 +11,11 @@ import {
     StyleSheet,
     Text,
     View,
-    ImageBackground,
+    Image,
     TouchableWithoutFeedback,
     Dimensions
 } from 'react-native';
-
-import {
-    StackNavigator,
-} from 'react-navigation';
-
+import ImageBuilder from '../utils/ImageBuilder';
 
 const {width, height, scale, fontScale} = Dimensions.get('window');
 const screenScale = width / 375;
@@ -40,10 +36,34 @@ class HomePageScreen extends Component {
     render() {
         return (
             <View>
-                <ImageBackground
-                    source={{uri: 'http://shanchain-web.oss-cn-beijing.aliyuncs.com/app_home/img/learn.png'}}
-                    style={styles.header}>
-                </ImageBackground>
+                <View style={styles.headerContainer}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        this.props.navigation.navigate('DrawerToggle');
+                    }}>
+                        <View style={{
+                            position: 'absolute',
+                            left: 0,
+                            height: 60 * screenScale,
+                            width: 60 * screenScale,
+                            justifyContent: 'center'
+                        }}>
+                            <Image style={styles.headerBack} source={ImageBuilder.getImage('menu_btn')}/>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={()=>{
+                        this.props.navigation.navigate('DrawerToggle');
+                    }}>
+                        <View style={{
+                            position: 'absolute',
+                            right: 0,
+                            height: 60 * screenScale,
+                            width: 60 * screenScale,
+                            justifyContent: 'center'
+                        }}>
+                            <Image style={styles.headerBack} source={ImageBuilder.getImage('message_btn')}/>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
                 <View style={styles.middle}>
                     <Text style={styles.middleText1}>三国历史狂想</Text>
                     <Text style={styles.middleText2}>梦回三国，再战金戈铁马</Text>
@@ -82,9 +102,22 @@ class HomePageScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    header: {
-        width: width,
-        height: 195 * screenScale,
+    headerContainer: {
+        marginTop:30*screenScale,
+        width: 375 * screenScale,
+        height: 40 * screenScale,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    headerText: {
+        fontSize: 18 * fontScale,
+        color: '#666666'
+    },
+    headerBack: {
+        width: 25 * screenScale,
+        height: 25 * screenScale,
+        marginLeft: 15 * screenScale
     },
     middle: {
         width: width,

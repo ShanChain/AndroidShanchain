@@ -29,11 +29,7 @@ const {width, height, scale, fontScale} = Dimensions.get('window');
 const screenScale = width / 375;
 
 class NewWorldScreen extends Component {
-    static navigationOptions = {
-        title: 'Great',
-    };
-
-    constructor(props) {debugger
+    constructor(props) {
         super(props);
         this.props.navigation
     }

@@ -137,41 +137,41 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-        case TYPE_SEND_TXT:
-            return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendTxtHolder, true);
-        case TYPE_RECEIVE_TXT:
-            return getHolder(parent, mHolders.mReceiveTxtLayout, mHolders.mReceiveTxtHolder, false);
-        case TYPE_SEND_LOCATION:
-            return getHolder(parent, mHolders.mSendLocationLayout, mHolders.mSendLocationHolder, true);
-        case TYPE_RECEIVER_LOCATION:
-            return getHolder(parent, mHolders.mReceiveLocationLayout, mHolders.mReceiveLocationHolder, false);
-        case TYPE_SEND_VOICE:
-            return getHolder(parent, mHolders.mSendVoiceLayout, mHolders.mSendVoiceHolder, true);
-        case TYPE_RECEIVER_VOICE:
-            return getHolder(parent, mHolders.mReceiveVoiceLayout, mHolders.mReceiveVoiceHolder, false);
-        case TYPE_SEND_IMAGE:
-            return getHolder(parent, mHolders.mSendPhotoLayout, mHolders.mSendPhotoHolder, true);
-        case TYPE_RECEIVER_IMAGE:
-            return getHolder(parent, mHolders.mReceivePhotoLayout, mHolders.mReceivePhotoHolder, false);
-        case TYPE_SEND_VIDEO:
-            return getHolder(parent, mHolders.mSendVideoLayout, mHolders.mSendVideoHolder, true);
-        case TYPE_RECEIVE_VIDEO:
-            return getHolder(parent, mHolders.mReceiveVideoLayout, mHolders.mReceiveVideoHolder, false);
-        case TYPE_EVENT:
-            return getHolder(parent, mHolders.mEventLayout, mHolders.mEventMsgHolder, true);
-        default:
-            if (mCustomMsgList != null && mCustomMsgList.size() > 0) {
-                return getHolder(parent, mCustomMsgList.get(viewType).getResourceId(),
-                        mCustomMsgList.get(viewType).getClazz(), mCustomMsgList.get(viewType).getIsSender());
-            }
-            return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendLocationHolder, false);
+            case TYPE_SEND_TXT:
+                return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendTxtHolder, true);
+            case TYPE_RECEIVE_TXT:
+                return getHolder(parent, mHolders.mReceiveTxtLayout, mHolders.mReceiveTxtHolder, false);
+            case TYPE_SEND_LOCATION:
+                return getHolder(parent, mHolders.mSendLocationLayout, mHolders.mSendLocationHolder, true);
+            case TYPE_RECEIVER_LOCATION:
+                return getHolder(parent, mHolders.mReceiveLocationLayout, mHolders.mReceiveLocationHolder, false);
+            case TYPE_SEND_VOICE:
+                return getHolder(parent, mHolders.mSendVoiceLayout, mHolders.mSendVoiceHolder, true);
+            case TYPE_RECEIVER_VOICE:
+                return getHolder(parent, mHolders.mReceiveVoiceLayout, mHolders.mReceiveVoiceHolder, false);
+            case TYPE_SEND_IMAGE:
+                return getHolder(parent, mHolders.mSendPhotoLayout, mHolders.mSendPhotoHolder, true);
+            case TYPE_RECEIVER_IMAGE:
+                return getHolder(parent, mHolders.mReceivePhotoLayout, mHolders.mReceivePhotoHolder, false);
+            case TYPE_SEND_VIDEO:
+                return getHolder(parent, mHolders.mSendVideoLayout, mHolders.mSendVideoHolder, true);
+            case TYPE_RECEIVE_VIDEO:
+                return getHolder(parent, mHolders.mReceiveVideoLayout, mHolders.mReceiveVideoHolder, false);
+            case TYPE_EVENT:
+                return getHolder(parent, mHolders.mEventLayout, mHolders.mEventMsgHolder, true);
+            default:
+                if (mCustomMsgList != null && mCustomMsgList.size() > 0) {
+                    return getHolder(parent, mCustomMsgList.get(viewType).getResourceId(),
+                            mCustomMsgList.get(viewType).getClazz(), mCustomMsgList.get(viewType).getIsSender());
+                }
+                return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendLocationHolder, false);
         }
     }
 
     /**
      * Specify custom message config, include view type, layout resource id, is send
      * outgoing(according to layout) and custom view holder's {@link Class} object.
-     * 
+     *
      * @param viewType View type, must not set 0-12, otherwise will throw
      *                 IllegalArgumentException
      * @param bean     {@link CustomMsgConfig}
@@ -233,8 +233,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         return TYPE_SEND_TXT;
     }
 
-    public  <HOLDER extends ViewHolder> ViewHolder getHolder(ViewGroup parent, @LayoutRes int layout,
-            Class<HOLDER> holderClass, boolean isSender) {
+    public <HOLDER extends ViewHolder> ViewHolder getHolder(ViewGroup parent, @LayoutRes int layout,
+                                                            Class<HOLDER> holderClass, boolean isSender) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
             Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class);
@@ -253,9 +253,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Wrapper wrapper = mItems.get(holder.getAdapterPosition());
+        holder.setIsRecyclable(false);
+//        Wrapper wrapper = mItems.get(holder.getAdapterPosition());
+        Wrapper wrapper = mItems.get(position);
         if (wrapper.item instanceof IMessage) {
-            ((BaseMessageViewHolder) holder).mPosition = holder.getAdapterPosition();
+//            ((BaseMessageViewHolder) holder).mPosition = holder.getAdapterPosition();
+            ((BaseMessageViewHolder) holder).mPosition = position;
             ((BaseMessageViewHolder) holder).mContext = this.mContext;
             DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
             ((BaseMessageViewHolder) holder).mDensity = dm.density;
@@ -340,11 +343,13 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      * If messages in list is sorted chronologically, for example,
      * messages[0].timeString < messages[1].timeString. To load last page of
      * messages from history, use this method.
-     * 
+     *
      * @param messages Last page of messages.
      */
     public void addToEndChronologically(List<MESSAGE> messages) {
-        if (messages==null){ return; }
+        if (messages == null) {
+            return;
+        }
         int oldSize = mItems.size();
         for (int i = messages.size() - 1; i >= 0; i--) {
             MESSAGE message = messages.get(i);
@@ -403,7 +408,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     /**
      * Updates message or add message if oldId not exist.
-     * 
+     *
      * @param oldId          message id to be updated
      * @param newMessage     message to be updated
      * @param scrollToBottom scroll to bottom flag
@@ -752,30 +757,30 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
     //领取任务的监听事件
-    public void setBtnEventTaskClickListener(OnBtnEventTaskClickListener <MESSAGE> listener){
+    public void setBtnEventTaskClickListener(OnBtnEventTaskClickListener<MESSAGE> listener) {
         this.onBtnEventTaskClickListener = listener;
     }
 
     //评论监听事件
-    public void setOnTvEventLikeClickListener(OnTvEventLikeClickListener <MESSAGE> listener){
+    public void setOnTvEventLikeClickListener(OnTvEventLikeClickListener<MESSAGE> listener) {
         this.onTvEventLikeClickListener = listener;
     }
 
     //点赞监听事件
-    public void setOnTvEventCommentClickListener(OnTvEventCommentClickListener <MESSAGE> listener){
+    public void setOnTvEventCommentClickListener(OnTvEventCommentClickListener<MESSAGE> listener) {
         this.onTvEventCommentClickListener = listener;
     }
 
 
-    public interface OnBtnEventTaskClickListener <MESSAGE extends IMessage>{
+    public interface OnBtnEventTaskClickListener<MESSAGE extends IMessage> {
         void TaskEventMessageClick(MESSAGE message);
     }
 
-    public interface OnTvEventCommentClickListener <MESSAGE extends IMessage>{
+    public interface OnTvEventCommentClickListener<MESSAGE extends IMessage> {
         void CommentEventMessageClick(MESSAGE message);
     }
 
-    public interface OnTvEventLikeClickListener <MESSAGE extends IMessage>{
+    public interface OnTvEventLikeClickListener<MESSAGE extends IMessage> {
         void LikeEventMessageClick(MESSAGE message);
     }
 
@@ -864,7 +869,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send text message layout.
          */
         public void setSenderTxtMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendTxtHolder = holder;
             this.mSendTxtLayout = layout;
         }
@@ -877,7 +882,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive text message layout.
          */
         public void setReceiverTxtMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                      @LayoutRes int layout) {
             this.mReceiveTxtHolder = holder;
             this.mReceiveTxtLayout = layout;
         }
@@ -908,7 +913,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send voice message layout.
          */
         public void setSenderVoiceMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                      @LayoutRes int layout) {
             this.mSendVoiceHolder = holder;
             this.mSendVoiceLayout = layout;
         }
@@ -930,7 +935,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive voice message layout.
          */
         public void setReceiverVoiceMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                        @LayoutRes int layout) {
             this.mReceiveVoiceHolder = holder;
             this.mReceiveVoiceLayout = layout;
         }
@@ -952,7 +957,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send photo message layout
          */
         public void setSendPhotoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendPhotoHolder = holder;
             this.mSendPhotoLayout = layout;
         }
@@ -974,7 +979,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive photo message layout
          */
         public void setReceivePhotoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mReceivePhotoHolder = holder;
             this.mReceivePhotoLayout = layout;
         }
@@ -996,7 +1001,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout custom send video message layout
          */
         public void setSendVideoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendVideoHolder = holder;
             this.mSendVideoLayout = layout;
         }
@@ -1018,7 +1023,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive video message layout
          */
         public void setReceiveVideoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mReceiveVideoHolder = holder;
             this.mReceiveVideoLayout = layout;
         }
@@ -1034,32 +1039,32 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         @Deprecated
         public void setSendCustomMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                     @LayoutRes int layout) {
             this.mCustomSendMsgHolder = holder;
             this.mCustomSendMsgLayout = layout;
         }
 
         @Deprecated
         public void setReceiveCustomMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                        @LayoutRes int layout) {
             this.mCustomReceiveMsgHolder = holder;
             this.mCustomReceiveMsgLayout = layout;
         }
 
         public void setSendLocationMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mSendLocationHolder = holder;
             this.mSendLocationLayout = layout;
         }
 
         public void setReceiveLocationMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                          @LayoutRes int layout) {
             this.mReceiveLocationHolder = holder;
             this.mReceiveLocationLayout = layout;
         }
 
         public void setEventMessage(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mEventMsgHolder = holder;
             this.mEventLayout = layout;
         }

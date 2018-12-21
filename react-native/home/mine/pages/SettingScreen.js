@@ -52,13 +52,13 @@ class Setting extends Component {
           SCNavigator.pushRNPage('MSGSettingScreen', JSON.stringify({gData: this.state.gData}))
         }
 }>
-        <View style={styles.itemContainer}>
+        /*<View style={styles.itemContainer}>
           <Text style={styles.itemText}>消息设置</Text>
           <View style={{
               flex: 1
             }}></View>
           <Image style={styles.itemImg} source={ImageBuilder.getImage('common_right_arrow')}/>
-        </View>
+        </View>*/
       </TouchableWithoutFeedback>
       <View style={styles.girdLine}></View>
       <TouchableWithoutFeedback onPress={() => SCNavigator.pushRNPage('SecurityScreen', JSON.stringify({gData: this.state.gData}))}>
@@ -82,14 +82,14 @@ class Setting extends Component {
     </TouchableWithoutFeedback>
       <View style={styles.girdLine}></View> */
       }
-      <TouchableWithoutFeedback onPress={this._CacheClearPress}>
+     /* <TouchableWithoutFeedback onPress={this._CacheClearPress}>
         <View style={styles.itemContainer}>
           <Text style={styles.itemText}>缓存清理</Text>
           <View style={{
               flex: 1
             }}></View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>*/
       <View style={styles.girdLine}></View>
       <TouchableWithoutFeedback onPress={() => SCNavigator.pushRNPage('FeedbackScreen', JSON.stringify({gData: this.state.gData}))}>
         <View style={styles.itemContainer}>
@@ -101,13 +101,13 @@ class Setting extends Component {
         </View>
       </TouchableWithoutFeedback>
       <View style={styles.girdLine}></View>
-      <TouchableWithoutFeedback onPress={() => {
+      /*<TouchableWithoutFeedback onPress={() => {
           SCNavigator.logout();
         }}>
         <View style={styles.exitBtn}>
           <Text style={styles.exitText}>退出当前账号</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>*/
 
     </View>);
   }
