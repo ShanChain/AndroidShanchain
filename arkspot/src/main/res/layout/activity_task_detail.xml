@@ -35,6 +35,17 @@
 
     <View style="@style/style_text_line_match" />
 
+    <TextView
+        android:id="@+id/tv_empty_word"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        android:text="该广场暂时无人寻求帮助，\n你需要帮助吗"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_task_list"
         android:layout_width="match_parent"

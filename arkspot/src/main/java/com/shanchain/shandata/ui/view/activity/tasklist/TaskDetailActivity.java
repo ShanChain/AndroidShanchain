@@ -127,6 +127,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private TextView tvSeatRate;
     private EditText limitedTime;
     private Thread addTaskThread;
+    private TextView tvEmptyWord;
     private long timeStamp;
     private SCTimePickerView scTimePickerView;
     private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
@@ -163,6 +164,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     private void initView() {
         liAddTask = findViewById(R.id.linear_add_task);
+        tvEmptyWord = findViewById(R.id.tv_empty_word);
         dialogHandler = new Handler() {
             @Override
             public void handleMessage(android.os.Message msg) {
@@ -344,6 +346,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
                             List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content
                                     , ChatEventMessage.class);
+                            if (chatEventMessageList.size() <= 0) {
+                                tvEmptyWord.setVisibility(View.VISIBLE);
+                            }
                             for (int i = 0; i < chatEventMessageList.size(); i++) {
                                 taskList.add(chatEventMessageList.get(i));
                             }
