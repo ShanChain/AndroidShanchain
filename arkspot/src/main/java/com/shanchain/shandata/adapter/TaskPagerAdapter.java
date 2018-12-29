@@ -25,6 +25,12 @@ public class TaskPagerAdapter extends FragmentPagerAdapter {
         this.titles = titles;
     }
 
+    public TaskPagerAdapter(FragmentManager fm, String[] titles, List<Fragment> fragments) {
+        super(fm);
+        this.titles = titles;
+        this.fragments = fragments;
+    }
+
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = fragments.get(position);

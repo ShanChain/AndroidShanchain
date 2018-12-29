@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dimens_20dp"
-        android:text="确定要离开广场吗？"
+        android:text="@string/str_dialog_title"
         android:textColor="#030303"
         android:textSize="18sp" />
 
@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="取消"
+            android:text="@string/str_cancel"
             android:focusableInTouchMode="false"
             android:textColor="@color/colorDialogBtn"
             android:textSize="17sp" />
@@ -58,7 +58,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="确认"
+            android:text="@string/str_sure"
             android:focusableInTouchMode="false"
             android:textColor="@color/colorDialogBtn"
             android:textSize="17sp" />

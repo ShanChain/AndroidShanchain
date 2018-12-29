@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -15,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -88,6 +90,7 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AppsAdapter;
@@ -98,6 +101,7 @@ import com.shanchain.shandata.base.BaseActivity;
 
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
 import cn.jiguang.imui.chatinput.emoji.EmojiBean;
+import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
@@ -106,6 +110,7 @@ import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
@@ -172,6 +177,15 @@ import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
+import cn.jiguang.share.android.api.JShareInterface;
+import cn.jiguang.share.android.api.PlatActionListener;
+import cn.jiguang.share.android.api.Platform;
+import cn.jiguang.share.android.api.ShareParams;
+import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.qqmodel.QQ;
+import cn.jiguang.share.wechat.Wechat;
+import cn.jiguang.share.wechat.WechatMoments;
+import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
@@ -199,6 +213,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import sj.keyboard.adpater.EmoticonsAdapter;
 import sj.keyboard.adpater.PageSetAdapter;
@@ -230,6 +245,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     public static final int REQUEST_CODE_SELECT = 100;
     public static final int REQUEST_CODE_PREVIEW = 101;
     private UserInfo mMyInfo;
+    private ShareParams shareParams;
+    private com.shanchain.data.common.ui.widgets.CustomDialog shareChatRoomDialog;
 
     private ImagePickerAdapter adapter;
     private ArrayList<ImageItem> selImageList = new ArrayList<>(); //当前选择的所有图片
@@ -309,10 +326,52 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
     private DynamicImagesAdapter mImagesAdapter;
     private Handler baiduHandler;
-    private boolean isIn;
+    private boolean isIn, isHotChatRoom;
     private String isSuper;
     private GuideView guideView3;
     private GuideView guideView2;
+    private File captureScreenFile;
+    private List imgList = new ArrayList();
+    private Handler shareHandler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            closeLoadingDialog();
+            closeProgress();
+            String toastMsg = (String) msg.obj;
+            Toast.makeText(MessageListActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+
+        }
+    };
+    private PlatActionListener mPlatActionListener = new PlatActionListener() {
+        @Override
+        public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
+            if (shareHandler != null) {
+                android.os.Message message = handler.obtainMessage();
+                message.obj = "分享成功";
+                shareHandler.sendMessage(message);
+            }
+        }
+
+        @Override
+        public void onError(Platform platform, int action, int errorCode, Throwable error) {
+            if (shareHandler != null) {
+                android.os.Message message = shareHandler.obtainMessage();
+                message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                Logger.dd(TAG, message.obj + "");
+                shareHandler.sendMessage(message);
+            }
+        }
+
+        @Override
+        public void onCancel(Platform platform, int action) {
+            if (shareHandler != null) {
+                android.os.Message message = shareHandler.obtainMessage();
+                message.obj = "分享取消";
+                shareHandler.sendMessage(message);
+            }
+        }
+    };
+
 
     @Override
     protected int getContentViewLayoutID() {
@@ -328,8 +387,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         JMessageClient.registerEventReceiver(this, 1000);
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
+        LogUtils.d("roomId",roomID);
+//        ToastUtils.showToast(MessageListActivity.this,""+roomID);
         roomName = intent.getStringExtra("roomName");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
+        isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
         mChatView = (ChatView) findViewById(R.id.chat_view);
         xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
         mArcMenu = findViewById(R.id.fbn_menu);
@@ -341,7 +403,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
-        mArcMenu.setVisibility(View.GONE);
+//        mArcMenu.setVisibility(View.GONE);
         mChatView.initModule();
         mChatView.isShowBtnInputJoin(true);//显示加入按钮
         mChatView.getChatInputView().setShowBottomMenu(false);
@@ -363,8 +425,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (isIn == true || isSuper.equals("true")) {
                         mChatView.isShowBtnInputJoin(false);
                         mChatView.getChatInputView().setShowBottomMenu(true);
-//                        mArcMenu.setVisibility(View.VISIBLE);
-                        mArcMenu.setVisibility(View.GONE);
+                        mArcMenu.setVisibility(View.VISIBLE);
+//                        mArcMenu.setVisibility(View.GONE);
                         xhsEmoticonsKeyBoard.getInputJoin().setVisibility(View.GONE);
                         xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
                         mChatView.setOnBtnInputClickListener(new ChatView.OnBtnInputClickListener() {
@@ -1088,23 +1150,54 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 switch (view.getId()) {
                     //查询任务
                     case R.id.linear_add_query:
-                        Intent intent = new Intent(MessageListActivity.this, TaskListActivity.class);
-                        intent.putExtra("roodId", roomID);
+                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+                        Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
+                        intent.putExtra("roomId", roomID);
                         startActivity(intent);
-
                         break;
                     //添加任务
-                    case R.id.linear_add_task:
-                        final android.os.Message handleMessage = new android.os.Message();
-                        handleMessage.what = 1;
-                        handleMessage.obj = view;
-                        addTaskThread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                handler.sendMessage(handleMessage);
-                            }
-                        });
-                        addTaskThread.start();
+                    case R.id.linear_play:
+//                        mArcMenu.getChildAt(0).findViewWithTag("taskPlay").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+                        /*点亮活动信息*/
+                        SCHttpUtils.get()
+                                .url(HttpApi.LIGHT_ACTIVE)
+                                .addParams("token", SCCacheUtils.getCacheToken() + "")
+                                .build()
+                                .execute(new SCHttpStringCallBack() {
+                                    @Override
+                                    public void onError(Call call, Exception e, int id) {
+                                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求失败 #######");
+                                    }
+
+                                    @Override
+                                    public void onResponse(String response, int id) {
+                                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求成功 #######");
+                                        String code = JSONObject.parseObject(response).getString("code");
+                                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                            String data = JSONObject.parseObject(response).getString("data") != null ? JSONObject.parseObject(response).getString("data") : "暂无活动";
+                                            if (data.equals("暂无活动")) return;
+                                            String ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
+                                            String startTme = JSONObject.parseObject(data).getString("startTime");
+                                            String endTime = JSONObject.parseObject(data).getString("endTime");
+                                            if (System.currentTimeMillis() > Long.valueOf(endTime)) {
+                                                ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
+                                            } else {
+                                                finish();
+                                            }
+                                        }
+                                    }
+                                });
+
+// final android.os.Message handleMessage = new android.os.Message();
+//                        handleMessage.what = 1;
+//                        handleMessage.obj = view;
+//                        addTaskThread = new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                handler.sendMessage(handleMessage);
+//                            }
+//                        });
+//                        addTaskThread.start();
 //                        Intent taskDetailIntent = new Intent(MessageListActivity.this,TaskDetailActivity.class);
 //                        taskDetailIntent.putExtra("roomId",roomID);
 //                        taskDetailIntent.putExtra("chatEventMessage",chatEventMessage);
@@ -1755,7 +1848,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
      * */
     private void releaseTask(final CustomDialog dialog, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
         if (TextUtils.isEmpty(describeEditText.getText().toString()) && TextUtils.isEmpty(bountyEditText.getText().toString()) && TextUtils.isEmpty(textViewTime.getText().toString())) {
-            ToastUtils.showToast(MessageListActivity.this, "请输入完整信息");
+            ToastUtils.showToast(MessageListActivity.this, getResources().getString(R.string.toast_no_empty));
         } else {
             final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
             final String bounty = bountyEditText.getText().toString();
@@ -1904,9 +1997,123 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mTbMain.setOnFavoriteClickListener(new ArthurToolBar.OnFavoriteClickListener() {
             @Override
             public void onFavoriteClick(View v) {
-                EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
-                org.greenrobot.eventbus.EventBus.getDefault().postSticky(eventMessage);
-                finish();
+                final HotChatRoom hotChatRoom = getIntent().getParcelableExtra("hotChatRoom");
+                if (isHotChatRoom == false) {
+                    EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
+                    org.greenrobot.eventbus.EventBus.getDefault().postSticky(eventMessage);
+                    finish();
+                } else {
+                    ThreadUtils.runOnSubThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bitmap bitmap = ImageUtils.returnBitMap(hotChatRoom.getThumbnails());
+                            captureScreenFile = ImageUtils.saveUrlImgFile(
+                                    bitmap, "shareHotRoom.png");
+                            SCHttpUtils.postWithUserId()
+                                    .url(HttpApi.SHARE_CHAT_ROOM)
+                                    .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
+                                    .addParams("Img", hotChatRoom.getThumbnails() + "")
+                                    .addParams("id", roomID + "")
+                                    .build()
+                                    .execute(new StringCallback() {
+                                        @Override
+                                        public void onError(Call call, Exception e, int id) {
+                                            closeLoadingDialog();
+                                            LogUtils.d("网络异常");
+                                        }
+
+                                        @Override
+                                        public void onResponse(String response, int id) {
+                                            closeLoadingDialog();
+                                            String code = JSONObject.parseObject(response).getString("code");
+                                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                                String data = JSONObject.parseObject(response).getString("data");
+                                                final String chatRoomShareType = JSONObject.parseObject(data).getString("ShareType");
+                                                String characterId = JSONObject.parseObject(data).getString("characterId");
+                                                final String intro = JSONObject.parseObject(data).getString("intro");
+                                                String background = JSONObject.parseObject(data).getString("background");
+                                                final String url = JSONObject.parseObject(data).getString("url");
+                                                final String title = JSONObject.parseObject(data).getString("title");
+                                                ThreadUtils.runOnMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        //分享参数
+                                                        shareParams = new ShareParams();
+                                                        shareChatRoomDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(MessageListActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+                                                        shareChatRoomDialog.setViewId(R.id.share_image);
+                                                        shareChatRoomDialog.setShareBitmap(ImageUtils.getBitmapByFile(captureScreenFile));
+                                                        shareChatRoomDialog.show();
+                                                        shareChatRoomDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
+                                                            @Override
+                                                            public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
+                                                                switch (view.getId()) {
+                                                                    case R.id.mRlWechat:
+//                                                                    if (chatRoomShareType.equals("SHARE_WEBPAGE")) {
+                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        String absolutePath = captureScreenFile.getAbsolutePath();
+                                                                        shareParams.setImagePath(absolutePath);
+                                                                        shareParams.setText(hotChatRoom.getRoomName());
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到微信平台。
+                                                                        JShareInterface.share(Wechat.Name, shareParams, mPlatActionListener);
+                                                                        closeLoadingDialog();
+//                                                                    }
+                                                                        break;
+                                                                    case R.id.mRlWeixinCircle:
+                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                        shareParams.setText(hotChatRoom.getRoomName());
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到朋友圈平台。
+                                                                        JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
+                                                                        break;
+                                                                    case R.id.mRlQQ:
+                                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                                            ToastUtils.showToastLong(MessageListActivity.this, "暂时不支持安卓8.0系统版本分享");
+                                                                        } else {
+                                                                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                            shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                            shareParams.setTitle(title);
+                                                                            shareParams.setText(hotChatRoom.getRoomName());
+                                                                            shareParams.setUrl(url);
+                                                                            //调用分享接口share ，分享到QQ平台。
+                                                                            JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
+                                                                        }
+                                                                        break;
+                                                                    case R.id.mRlWeibo:
+                                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                                            ToastUtils.showToastLong(MessageListActivity.this, "暂时不支持安卓8.0系统版本分享");
+                                                                        } else {
+                                                                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                            shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                            shareParams.setText(hotChatRoom.getRoomName());
+                                                                            shareParams.setTitle(title);
+                                                                            shareParams.setUrl(url);
+                                                                            //调用分享接口share ，分享到新浪微博平台。
+                                                                            JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
+                                                                        }
+                                                                        break;
+                                                                    case R.id.share_close:
+                                                                        shareChatRoomDialog.dismiss();
+                                                                        break;
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+
+
+                }
+
+//                Rect rect = new Rect()
+//                HomeActivity.baiduMap.snapshotScope();
             }
         });
     }
@@ -1981,7 +2188,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     public void onRightClick(final View v) {
         StandardDialog standardDialog = new StandardDialog(this);
         standardDialog.setStandardMsg("");
-        standardDialog.setTitle("确定要离开广场吗？");
+        standardDialog.setTitle(getResources().getString(R.string.str_dialog_title));
         //第一个回调是确认，第二个是取消
         standardDialog.setCallback(new Callback() {
             @Override
@@ -2069,12 +2276,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
             JSONObject obj = new JSONObject();
             obj.put("url", HttpApi.SEAT_WALLET);
-            obj.put("title", "我的资产");
+            obj.put("title", getResources().getString(R.string.nav_my_wallet));
             String webParams = obj.toJSONString();
             intent.putExtra("webParams", webParams);
             startActivity(intent);
         } else if (id == R.id.nav_my_task) {
-            Intent intent = new Intent(MessageListActivity.this, TaskListActivity.class);
+            Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
             intent.putExtra("roodId", roomID);
             startActivity(intent);
 
@@ -2873,12 +3080,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             @Override
             public void loadVideo(ImageView imageCover, String uri) {
                 long interval = 5000 * 1000;
-                Glide.with(MessageListActivity.this)
-                        .asBitmap()
-                        .load(uri)
-                        // Resize image view by change override size.
-                        .apply(new RequestOptions().frame(interval).override(200, 400))
-                        .into(imageCover);
+                if (MessageListActivity.this.isDestroyed()) {
+                    return;
+                } else {
+                    Glide.with(MessageListActivity.this)
+                            .asBitmap()
+                            .load(uri)
+                            // Resize image view by change override size.
+                            .apply(new RequestOptions().frame(interval).override(200, 400))
+                            .into(imageCover);
+                }
+
             }
         };
 

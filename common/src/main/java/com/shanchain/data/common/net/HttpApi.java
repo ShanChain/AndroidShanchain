@@ -523,6 +523,10 @@ public interface HttpApi {
     //    String GROUP_TASK_LIST = "http://95.169.24.11:8081" + "/v1/task/roomtask/list";
     /* 查询用户的所有任务列表 */
     String USER_TASK_LIST = BASE_URL + "/v1/task/individual/list";
+    /* 我帮过的 */
+    String MY_TASK_RECEIVE_LIST = BASE_URL + "/v1/task/receivetask/list";
+    /* 帮过我的 */
+    String MY_TASK_PUBLISH_LIST = BASE_URL + "/v1/task/publishtask/list";
     //    String USER_TASK_LIST = "http://95.169.24.11:8081" + "/v1/task/individual/list";
     /* 添加任务 */
     String CHAT_TASK_ADD = BASE_URL + "/v1/task/add";
@@ -560,11 +564,26 @@ public interface HttpApi {
     String GET_SEAT_CURRENCY = BASE_URL + "/web/api/wallet/seat/currency";
     /* 用户反馈 */
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
+    /* 好友关注 */
+    String USE_FOCUS = BASE_URL + "/v1/focus/focus";
 
-    //    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-    String SEAT_WALLET = "http://test.qianqianshijie.com/wallet";//测试
-//    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+//        String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
+    /* 跨年活动信息 */
+    String LIGHT_ACTIVE = BASE_URL + "/v1/2.0/light/active";
+    /* 活动闯关 */
+    String LIGHT_RUSH = BASE_URL + "/v1/2.0/light/rush";
+    /* 通用分享 */
+    String SHARE_COMMON = BASE_URL + "/v1/2.0/share/commonShare";
+    /* 分享元社区 */
+    String SHARE_CHAT_ROOM = BASE_URL + "/v1/2.0/share/shareRoom";
+    /* 热门元社区 */
+    String HOT_CHAT_ROOM = BASE_URL + "/web/api/sys/hotChatRoom";
+    /* 福包列表 */
+    String RED_PAPER_LIST = BASE_URL + "/v1/2.0/redPaper/obtainList";
+    /* 领取福包 */
+    String RED_PAPER_RECEIVE = BASE_URL + "/v1/2.0/redPaper/appReceive";
     /* 卡劵接口 */
     /* 获取主页卡券列表 */
     String COUPONS_LIST = BASE_URL + "/wallet/api/coupons/vendor/list";

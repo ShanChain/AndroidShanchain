@@ -377,6 +377,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         closeLoadingDialog();
+        closeProgress();
     }
     public void closeProgress() {
         if (mDialog != null) {

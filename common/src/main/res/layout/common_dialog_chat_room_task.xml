@@ -1,190 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
-    android:background="@drawable/shape_bg_dialog_item"
-    android:orientation="vertical">
+    android:background="@null">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tv_input_dialog_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="@dimen/dimens_10dp"
-            android:text="发布任务"
-            android:textColor="@color/colorTextDefault"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_dialog_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/dp_10"
-            android:focusableInTouchMode="false"
-            android:background="@mipmap/close" />
-
-    </RelativeLayout>
-
-    <View style="@style/style_text_line_match" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimens_20dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/et_input_dialog_describe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimens_15dp"
-            android:background="@drawable/shape_bg_dialog_task_edit"
-            android:focusable="true"
-            android:gravity="top"
-            android:hint="描述你的任务"
-            android:paddingLeft="@dimen/dimens_15dp"
-            android:paddingTop="@dimen/dimens_10dp"
-            android:paddingRight="@dimen/dimens_15dp"
-            android:paddingBottom="@dimen/dimens_10dp"
-            android:textColor="@color/colorTextDefault"
-            android:textColorHint="@color/colorHint"
-            android:textCursorDrawable="@null"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linear_bounty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dimens_20dp"
-        android:paddingTop="@dimen/dimens_20dp"
-        android:paddingRight="@dimen/dimens_20dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="赏金"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/et_input_dialog_bounty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimens_15dp"
-            android:background="@drawable/shape_bg_dialog_task_edit"
-            android:focusable="true"
-            android:gravity="top"
-            android:hint="输入赏金"
-            android:inputType="number|numberDecimal"
-            android:paddingLeft="@dimen/dimens_15dp"
-            android:paddingTop="@dimen/dimens_10dp"
-            android:paddingRight="@dimen/dimens_15dp"
-            android:paddingBottom="@dimen/dimens_10dp"
-            android:textColor="@color/colorTextDefault"
-            android:textColorHint="@color/colorHint"
-            android:textCursorDrawable="@null"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/seatRate"
+    <ImageView
+        android:id="@+id/iv_dialog_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linear_bounty"
         android:layout_alignParentRight="true"
-        android:layout_gravity="right"
-        android:focusable="true"
-        android:layout_marginRight="@dimen/dimens_20dp"
-        android:text="1 SEAT" />
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@mipmap/dialog_close"
+        android:focusableInTouchMode="false" />
 
-    <LinearLayout
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimens_20dp">
+        android:layout_below="@+id/iv_dialog_close"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="时限"
-            android:textSize="18sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/tv_input_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:text="@string/my_task_release_title"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/dialog_select_task_time"
+        </RelativeLayout>
+
+        <View style="@style/style_text_line_match" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/shape_bg_dialog_task_edit"
-            android:focusableInTouchMode="false"
-            android:paddingLeft="@dimen/dimens_15dp"
-            android:paddingTop="@dimen/dimens_10dp"
-            android:paddingRight="@dimen/dimens_15dp"
-            android:paddingBottom="@dimen/dimens_10dp"
-            android:text="选择时间"
-            android:textColor="@color/colorHint"
-            android:textSize="14sp" />
+            android:orientation="vertical"
+            android:padding="@dimen/dimens_20dp">
 
-        <!--<EditText-->
-        <!--android:id="@+id/et_input_dialog_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@null"-->
-        <!--android:gravity="top"-->
-        <!--android:hint="选择时间"-->
-        <!--android:paddingBottom="@dimen/dimens_10dp"-->
-        <!--android:paddingLeft="@dimen/dimens_15dp"-->
-        <!--android:paddingRight="@dimen/dimens_15dp"-->
-        <!--android:paddingTop="@dimen/dimens_10dp"-->
-        <!--android:layout_marginLeft="@dimen/dimens_15dp"-->
-        <!--android:textColor="@color/colorTextDefault"-->
-        <!--android:textColorHint="@color/colorHint"-->
-        <!--android:textCursorDrawable="@null"-->
-        <!--android:textSize="14sp"/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/my_task_release_des"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/et_input_dialog_describe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:background="@drawable/shape_bg_dialog_task_edit"
+                android:focusable="true"
+                android:gravity="top"
+                android:hint="@string/my_task_release_des_hint"
+                android:paddingLeft="@dimen/dimens_15dp"
+                android:paddingTop="@dimen/dimens_10dp"
+                android:paddingRight="@dimen/dimens_15dp"
+                android:paddingBottom="@dimen/dimens_10dp"
+                android:textColor="@color/colorTextDefault"
+                android:textColorHint="@color/colorHint"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linear_bounty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingTop="@dimen/dimens_20dp"
+            android:paddingRight="@dimen/dimens_20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/my_task_release_reward"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/et_input_dialog_bounty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:background="@drawable/shape_bg_dialog_task_edit"
+                android:focusable="true"
+
+                android:gravity="top"
+                android:hint="@string/my_task_release_reward_hint"
+                android:inputType="number|numberDecimal"
+                android:paddingLeft="@dimen/dimens_15dp"
+                android:paddingTop="@dimen/dimens_10dp"
+                android:paddingRight="@dimen/dimens_15dp"
+                android:paddingBottom="@dimen/dimens_10dp"
+                android:textColor="@color/colorTextDefault"
+                android:textColorHint="@color/colorHint"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/seatRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linear_bounty"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/dimens_20dp"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:text="0 SEAT" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/my_task_release_time_limit"
+                android:textSize="18sp" />
+
+
+            <EditText
+                android:id="@+id/dialog_select_task_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
+                android:paddingLeft="@dimen/dimens_15dp"
+                android:paddingTop="@dimen/dimens_10dp"
+                android:paddingRight="@dimen/dimens_15dp"
+                android:paddingBottom="@dimen/dimens_10dp"
+                android:background="@drawable/shape_bg_dialog_task_edit"
+                android:hint="@string/my_task_release_time_limit_hint"
+                android:textAlignment="center"
+                android:textColor="@color/colorHint"
+                android:textSize="14sp" />
+
+            <!--<EditText-->
+            <!--android:id="@+id/et_input_dialog_content"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@null"-->
+            <!--android:gravity="top"-->
+            <!--android:hint="选择时间"-->
+            <!--android:paddingBottom="@dimen/dimens_10dp"-->
+            <!--android:paddingLeft="@dimen/dimens_15dp"-->
+            <!--android:paddingRight="@dimen/dimens_15dp"-->
+            <!--android:paddingTop="@dimen/dimens_10dp"-->
+            <!--android:layout_marginLeft="@dimen/dimens_15dp"-->
+            <!--android:textColor="@color/colorTextDefault"-->
+            <!--android:textColorHint="@color/colorHint"-->
+            <!--android:textCursorDrawable="@null"-->
+            <!--android:textSize="14sp"/>-->
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/dimens_15dp">
+
+
+            <Button
+                android:id="@+id/btn_dialog_input_sure"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:background="@drawable/shape_btn_dialog_sure"
+                android:focusableInTouchMode="false"
+                android:text="@string/my_task_release_btn"
+                android:textColor="#fff"
+                android:textSize="@dimen/sp_14" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="@dimen/dimens_15dp">
-
-
-        <Button
-            android:id="@+id/btn_dialog_input_sure"
-            android:layout_width="180dp"
-            android:layout_height="50dp"
-            android:background="@drawable/shape_btn_dialog_sure"
-            android:focusableInTouchMode="false"
-            android:text="立即发布"
-            android:textColor="#fff"
-            android:textSize="@dimen/sp_14" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

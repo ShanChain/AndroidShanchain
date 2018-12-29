@@ -12,37 +12,42 @@
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
-        app:titleTextSize="16"/>
+        app:titleTextSize="16" />
 
     <LinearLayout
         android:id="@+id/linear_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
-        android:background="@mipmap/linear_add_task">
+        android:background="@mipmap/linear_add_task"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/colorWhite"
-            android:layout_marginTop="7dp"
             android:layout_marginLeft="@dimen/dimens_5dp"
-            android:textSize="13sp"
+            android:layout_marginTop="7dp"
             android:text="寻求帮助"
-            />
+            android:textColor="@color/colorWhite"
+            android:textSize="13sp" />
     </LinearLayout>
 
-    <View style="@style/style_text_line_match"/>
+    <View style="@style/style_text_line_match" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_task_comment"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_task_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent">
 
-    <View style="@style/style_text_line_match"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_task_details"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <View style="@style/style_text_line_match" />
 
     <TextView
         android:id="@+id/tv_task_details_comment"
@@ -53,8 +58,8 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dimens_15dp"
         android:text="在这里说点什么吧"
-        android:visibility="gone"
         android:textColor="@color/colorHint"
-        android:textSize="12sp"/>
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </LinearLayout>

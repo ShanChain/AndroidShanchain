@@ -48,7 +48,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="4dp"
         android:singleLine="false"
-        android:text="@string/home_rule"
+        android:text=""
         android:textColor="@color/colorTextDefault"
         android:textSize="12sp" />
 

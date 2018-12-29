@@ -46,7 +46,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
                 android:padding="@dimen/dimens_5dp"
-                android:text="任务完成"
+                android:text="@string/my_task_finish"
                 android:textColor="@color/colorTextTask"
                 android:textStyle="bold" />
 

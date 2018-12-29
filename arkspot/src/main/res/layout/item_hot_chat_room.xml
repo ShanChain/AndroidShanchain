@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item_msg_home"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimens_15dp"
+    android:background="@drawable/shape_bg_even_msg">
+
+    <RelativeLayout
+        android:id="@+id/relative_hot_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shape_bg_even_msg">
+
+        <cn.jiguang.imui.view.RoundImageView
+            android:id="@+id/item_round_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_hot_room">
+
+        <cn.jiguang.imui.view.RoundImageView
+            android:id="@+id/iv_item_msg_home_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@mipmap/empty_foot_print"/>
+
+        <LinearLayout
+            android:id="@+id/item_chat_room_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="-1dp"
+            android:layout_toRightOf="@id/iv_item_msg_home_avatar"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_item_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="东经103°南纬32°"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_item_member_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="166"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_item_visit_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimens_15dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="上次来访 昨天"
+                android:visibility="gone"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/bt_item_join"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_bg_msg_send_pressed"
+            android:text="进入"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_alignBottom="@+id/iv_item_msg_home_avatar"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

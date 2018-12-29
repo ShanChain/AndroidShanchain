@@ -80,12 +80,15 @@ public class MyApplication extends BaseApplication {
     public static final int TACK_VOICE = 6;
     public static final int BUSINESS_CARD = 7;
     public static final int REQUEST_CODE_SEND_FILE = 26;
+    public static String systemLanguge ;
 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
     private static final String QQ_KEY = "cc7M3ByR9jPcsIDg";
-    private static final String WEIBO_ID = "2916880440";
-    private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
+//    private static final String WEIBO_ID = "2916880440";
+    private static final String WEIBO_ID = "1619531897";
+//    private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
+    private static final String WEIBO_SECRET = "a669a85dffd04fc23f2051c96c73c68f";
     private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
     public static String PICTURE_DIR = "sdcard/JChatDemo/pictures/";
@@ -125,6 +128,7 @@ public class MyApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
         SoLoader.init(this, /* native exopackage */ false);
         SDKInitializer.initialize(this);//初始化百度地图sdk
         initBaiduMap();//初始化百度地图
@@ -139,6 +143,14 @@ public class MyApplication extends BaseApplication {
 //        initInstance();
 //        initUmengSocial();
         initBugly();//bugly崩溃日志上报
+    }
+
+    public String getSystemLanguge() {
+        return systemLanguge;
+    }
+
+    public static void setSystemLanguge(String sysLanguge) {
+        systemLanguge = sysLanguge;
     }
 
     @Override

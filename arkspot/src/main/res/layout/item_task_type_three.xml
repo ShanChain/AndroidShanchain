@@ -46,7 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_item_btn_join"
-                android:text="去确认"
+                android:text="@string/task_list_confirm"
                 android:textColor="@color/colorViolet"
                 android:textStyle="bold" />
 

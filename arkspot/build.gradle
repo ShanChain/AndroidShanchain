@@ -9,7 +9,7 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 6
+        versionCode 7
         versionName "2.1.0"
         flavorDimensions "versionCode"
 
@@ -157,7 +157,7 @@ dependencies {
     implementation 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     implementation 'com.jaeger.ninegridimageview:library:1.1.0'
     implementation 'com.android.support:cardview-v7:27.1.0'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+//    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.gjiazhe:wavesidebar:1.3'
     implementation 'com.squareup.picasso:picasso:2.5.2'

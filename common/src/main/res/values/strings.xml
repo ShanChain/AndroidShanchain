@@ -9,5 +9,40 @@
     <string name="jmui_loading">正在加载</string>
     <string name="server_err">服务器错误</string>
 
+    <!-- dialog -->
+    <string name="toast_no_empty">请输入完整信息</string>
+    <string name="my_task_release_title">寻求帮助</string>
+    <string name="str_sure">确定</string>
+    <string name="str_cancel">取消</string>
+    <string name="str_dialog_title">你确定要离开吗？</string>
+    <string name="my_task_release_des">描述</string>
+    <string name="my_task_release_reward">答谢</string>
+    <string name="my_task_release_time_limit">时限</string>
+    <string name="my_task_release_btn">立即发布</string>
+    <string name="my_task_release_des_hint">请输入内容</string>
+    <string name="my_task_release_reward_hint">￥请输入答谢金</string>
+    <string name="my_task_release_time_limit_hint">年-月-日 时:分</string>
+    <string name="my_task_heped">帮Ta一下</string>
+    <string name="my_task_receive">已被领取</string>
+    <string name="red_paper">恭喜你/n超过80%的玩家/n获得助力红包</string>
+    <!-- 帮过我的-->
+    <string name="task_list_unreceive">未领取</string>
+    <string name="task_list_doing">对方正在帮忙</string>
+    <string name="task_list_confirm">去确认</string>
+    <string name="task_list_finish">帮完了</string>
+    <string name="task_list_unfinish">没帮成</string>
+    <string name="task_list_undone">帮不了</string>
+    <string name="task_list_expired">没人帮</string>
+    <string name="task_list_btn_undone">未完成</string>
+    <string name="task_list_btn_done">确认完成</string>
+    <!-- 我帮过的 -->
+    <string name="my_task_unreceive">未领取</string>
+    <string name="my_task_doing">帮忙ing</string>
+    <string name="my_task_confirm">等对方答谢</string>
+    <string name="my_task_finish">帮完了</string>
+    <string name="my_task_unfinish">没帮成</string>
+    <string name="my_task_btn_undone">帮不了</string>
+    <string name="my_task_btn_done">帮完了</string>
+    <string name="my_task_expired">没人帮</string>
 
 </resources>

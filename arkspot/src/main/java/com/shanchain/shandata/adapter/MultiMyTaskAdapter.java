@@ -72,7 +72,8 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         String expiryTime0 = simpleDateFormat.format(item.getExpiryTime());
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime0 + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
-        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
+//        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
+        holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
         holder.setTextView(R.id.even_message_location, item.getRoomName() + "");
         holder.setTextView(R.id.task_release_time, "发布时间 " + simpleDateFormat.format(item.getCreateTime()));//发布时间
         if (viewType!=0||viewType!=7||viewType!=8){
@@ -136,6 +137,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             }
         });
         setViewOnClick(holder, item, viewType, position);
+
     }
 
     private void setViewOnClick(final BaseViewHolder holder, final ChatEventMessage itemData, int viewType, int position) {
@@ -213,7 +215,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                         closeProgress();
                                         TextView eventTask = holder.getViewId(R.id.btn_event_task);
                                         cancel.setVisibility(View.GONE);
-                                        eventTask.setText("任务取消");
+                                        eventTask.setText(context.getResources().getString(R.string.my_task_btn_undone));
                                         eventTask.setTextColor(context.getResources().getColor(R.color.aurora_bg_edittext_default));
                                         eventTask.setBackground(context.getResources().getDrawable(R.drawable.shape_bg_even_msg));
                                         confirm.setText("已取消");

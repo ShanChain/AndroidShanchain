@@ -46,7 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
-                android:text="对方正在完成"
+                android:text="@string/my_task_doing"
                 android:textColor="@color/colorTextTask"
                 android:textStyle="bold" />
 

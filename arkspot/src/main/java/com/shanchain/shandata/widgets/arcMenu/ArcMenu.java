@@ -170,7 +170,7 @@ public class ArcMenu extends ViewGroup implements OnClickListener, View.OnTouchL
     private void layoutCButton() {
         mCButton = getChildAt(0);
         mCButton.setOnClickListener(this);
-//        mCButton.setOnTouchListener(this);
+        mCButton.setOnTouchListener(this);
 
         int l = 0;
         int t = 0;
@@ -325,7 +325,7 @@ public class ArcMenu extends ViewGroup implements OnClickListener, View.OnTouchL
                 tranAnim = new TranslateAnimation(xflag * cl, 0, yflag * ct, 0);
                 childView.setClickable(true);
                 childView.setFocusable(true);
-                mCButton.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.mipmap.fb_circel_close));
+                mCButton.findViewWithTag("circelText").setBackground(getResources().getDrawable(R.mipmap.fbtn_close));
             } else
             // to close
             {

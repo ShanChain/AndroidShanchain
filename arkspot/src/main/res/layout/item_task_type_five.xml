@@ -46,7 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/shape_btn_even_message_task_received"
-                android:text="待赏主确认"
+                android:text="@string/my_task_confirm"
                 android:textColor="@color/colorTextTask"
                 android:textStyle="bold" />
 
@@ -143,7 +143,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="@dimen/dp_10"
                     android:background="@drawable/shape_item_btn_join"
-                    android:text="取消任务"
+                    android:text="@string/my_task_unfinish"
                     android:visibility="visible"
                     android:textColor="@color/colorHomeBtn"
                     android:textStyle="bold" />
@@ -156,7 +156,7 @@
                     android:layout_marginLeft="@dimen/dp_10"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/shape_btn_bg_task"
-                    android:text="已完成"
+                    android:text="@string/my_task_btn_done"
                     android:textColor="@color/colorHomeBtn"
                     android:textStyle="bold"
                     android:visibility="visible" />

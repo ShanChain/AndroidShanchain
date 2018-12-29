@@ -11,5 +11,5 @@
     <size
         android:width="10dp"
         android:height="10dp"/>
-    <solid android:color="#90e32d"/>
+    <solid android:color="@color/colorViolet"/>
 </shape>

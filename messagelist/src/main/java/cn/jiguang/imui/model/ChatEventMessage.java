@@ -8,7 +8,7 @@ import java.util.HashMap;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.commons.models.IUser;
 
-public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEntity,Serializable {
+public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEntity, Serializable {
 
     public static final int type1 = 0;  //未领取
     public static final int type2 = 1;  //已领取
@@ -46,6 +46,7 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
     private String taskId;
     private int verify;
     private String bounty;
+    private String price;
     private String bountyString;
     private int topping;
     private String name;
@@ -186,6 +187,14 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
     @Override
     public HashMap<String, String> getExtras() {
         return null;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
 

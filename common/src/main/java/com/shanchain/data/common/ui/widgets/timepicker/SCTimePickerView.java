@@ -140,9 +140,9 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
         private int Color_Background_Wheel;//滚轮背景颜色
         private int Color_Background_Title;//标题背景颜色
 
-        private int Size_Submit_Cancel = 17;//确定取消按钮大小
-        private int Size_Title = 18;//标题字体大小
-        private int Size_Content = 18;//内容字体大小
+        private int Size_Submit_Cancel = 15;//确定取消按钮大小
+        private int Size_Title = 15;//标题字体大小
+        private int Size_Content = 15;//内容字体大小
         private Calendar date;//当前选中时间
         private Calendar startDate;//开始时间
         private Calendar endDate;//终止时间
@@ -510,7 +510,7 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
             year = calendar.get(Calendar.YEAR);
             month = calendar.get(Calendar.MONTH);
             day = calendar.get(Calendar.DAY_OF_MONTH);
-            hours = calendar.get(Calendar.HOUR_OF_DAY);
+            hours = calendar.get(Calendar.HOUR);
             minute = calendar.get(Calendar.MINUTE);
             seconds = calendar.get(Calendar.SECOND);
         } else {
@@ -518,6 +518,7 @@ public class SCTimePickerView extends BasePickerView implements View.OnClickList
             month = date.get(Calendar.MONTH);
             day = date.get(Calendar.DAY_OF_MONTH);
             hours = date.get(Calendar.HOUR_OF_DAY);
+//            hours = calendar.get(Calendar.HOUR);
             minute = date.get(Calendar.MINUTE);
             seconds = date.get(Calendar.SECOND);
         }

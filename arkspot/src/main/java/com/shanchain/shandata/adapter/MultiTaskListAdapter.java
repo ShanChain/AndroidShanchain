@@ -2,12 +2,19 @@ package com.shanchain.shandata.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
@@ -20,7 +27,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import cn.jiguang.imui.commons.models.IUser;
 import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.DefaultUser;
+import okhttp3.Call;
 
 
 public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implements BaseViewHolder.OnItemClickListener, BaseViewHolder.OnLayoutViewClickListener, View.OnClickListener {
@@ -54,7 +64,8 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
 
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
-        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
+//        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
+        holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
 
         holder.isRecyclable();
         int characterId = item.getCharacterId();
@@ -82,13 +93,49 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         position = holder.getLayoutPosition();
         int characterId = itemData.getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
-        holder.getViewId(R.id.btn_event_task).setOnClickListener(new View.OnClickListener() {
+        final TextView btnEvenTask = holder.getViewId(R.id.btn_event_task);
+        btnEvenTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ToastUtils.showToast(context,"点击了查看按钮"+itemData.getIntro());
-                Intent intent = new Intent(context,TaskDetailActivity.class);
-                intent.putExtra("chatEventMessage",itemData);
-                context.startActivity(intent);
+                SCHttpUtils.postWithUserId()
+                        .url(HttpApi.TASK_DETAIL_RECEIVE)
+                        .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
+                        .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
+                        .addParams("taskId", itemData.getTaskId() + "")
+                        .build()
+                        .execute(new SCHttpStringCallBack() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                ToastUtils.showToast(context, "任务已被领取");
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
+                                final String message = com.alibaba.fastjson.JSONObject.parseObject(response).getString("message");
+                                if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                    String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
+                                    final String HxUserName = com.alibaba.fastjson.JSONObject.parseObject(data).getString("HxUserName");
+                                    btnEvenTask.setText(context.getResources().getString(R.string.my_task_receive));
+                                    btnEvenTask.setFocusable(false);
+                                    btnEvenTask.setOnClickListener(null);
+                                    btnEvenTask.setTextColor(context.getResources().getColor(R.color.aurora_bg_edittext_default));
+//                                    if (chatEventMessage.getFromUser() != null) {
+//                                        IUser user = chatEventMessage.getFromUser();
+//                                        String displayName = chatEventMessage.getFromUser().getDisplayName();
+//                                        defaultUser = new DefaultUser(user.getId(), displayName, user.getAvatarFilePath());
+//                                        defaultUser.setHxUserId(HxUserName);
+//                                    }
+                                }else {
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ToastUtils.showToastLong(context,message);
+                                        }
+                                    });
+                                }
+                            }
+                        });
             }
         });
 
@@ -98,10 +145,9 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
                 holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
             case 1:
                 holder.setIsRecyclable(false);
-                holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
+//                holder.setLayoutViewOnClick(itemLayoutId, viewType, itemData, this);
                 break;
         }
-
     }
 
     @Override

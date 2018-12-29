@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
-                android:text="发布时间  2018-10-20 10:20" />
+                android:text="@string/my_task_post_time" />
 
             <TextView
                 android:id="@+id/task_receive_time"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
                 android:visibility="gone"
-                android:text="领取时间  2018-10-20 10:20" />
+                android:text="@string/my_task_accepted_time" />
 
             <TextView
                 android:id="@+id/task_finish_time"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10"
                 android:visibility="gone"
-                android:text="完成时间  2018-10-20 10:20" />
+                android:text="@string/my_task_finish_time" />
 
             <Button
                 android:id="@+id/item_task_urge"
@@ -73,6 +73,10 @@
                     android:id="@+id/iv_item_story_avatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_above="@+id/tv_item_story_from"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="-6dp"
                     android:background="@mipmap/task_receive"
                     android:scaleType="centerCrop" />
 

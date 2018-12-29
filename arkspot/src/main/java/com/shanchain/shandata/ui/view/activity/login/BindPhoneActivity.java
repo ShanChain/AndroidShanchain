@@ -28,6 +28,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
@@ -109,10 +110,13 @@ public class BindPhoneActivity extends BaseActivity {
                                 if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                     String data = JSONObject.parseObject(response).getString("data");
                                     LogUtils.d("dynamicLogin", "三方登录成功");
+                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ToastUtils.showToast(BindPhoneActivity.this, "关联手机号成功");
+//                                            ToastUtils.showToast(BindPhoneActivity.this, "关联手机号成功");
                                         }
                                     });
                                 }
@@ -134,7 +138,6 @@ public class BindPhoneActivity extends BaseActivity {
                 return;
             }
         }
-
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(textViewCode, 60 * 1000, 1000);
         countDownTimeUtils.start();
     }

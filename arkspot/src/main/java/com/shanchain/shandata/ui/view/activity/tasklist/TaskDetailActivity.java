@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -43,6 +44,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.DynamicCommentAdapter;
+import com.shanchain.shandata.adapter.MultiTaskListAdapter;
 import com.shanchain.shandata.adapter.StoryItemNineAdapter;
 import com.shanchain.shandata.adapter.TaskCommentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -73,6 +75,7 @@ import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,16 +100,19 @@ import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
 public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener,
-        ArthurToolBar.OnLeftClickListener, TaskView {
+        ArthurToolBar.OnLeftClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.tb_task_comment)
     ArthurToolBar tbTaskComment;
-    @Bind(R.id.rv_task_comment)
-    RecyclerView rvTaskComment;
+    @Bind(R.id.rv_task_details)
+    RecyclerView rvTaskDetails;
     @Bind(R.id.tv_task_details_comment)
     TextView tvTaskDetailsComment;
+    @Bind(R.id.srl_task_list)
+    SwipeRefreshLayout srlTaskList;
+    private MultiTaskListAdapter adapter;
 
-    private List<BdCommentBean> commentList = new ArrayList();
+    private List<ChatEventMessage> taskList = new ArrayList();
     private BaseQuickAdapter taskCommentAdapter;
     private View mHeadView;
     private TaskPresenter taskPresenter;
@@ -117,16 +123,22 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private DefaultUser defaultUser;
     private LinearLayout liAddTask;
     private Handler handler, dialogHandler;
-    private double seatRmbRate;
+    private double seatRmbRate = 10.00;
     private TextView tvSeatRate;
-    private TextView limitedTime;
+    private EditText limitedTime;
     private Thread addTaskThread;
     private long timeStamp;
     private SCTimePickerView scTimePickerView;
     private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
     private ChatEventMessage chatEventMessage1;
-    private String formatDate,roomID;
+    private String formatDate, roomID;
     private Conversation chatRoomConversation;
+    private int page = 0;
+    private int size = 10;
+    private String characterId = SCCacheUtils.getCacheCharacterId();
+    private String userId = SCCacheUtils.getCacheUserId();
+    private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+    ;
 
 
     @Override
@@ -137,32 +149,32 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     protected void initViewsAndEvents() {
         detailsChatEventMessage = (ChatEventMessage) getIntent().getSerializableExtra("chatEventMessage");
-        roomID =  getIntent().getStringExtra("roomId")!=null?getIntent().getStringExtra("roomId"):"0";
+//        ToastUtils.showToast(TaskDetailActivity.this, "" + getIntent().getStringExtra("roomId"));
+        roomID = getIntent().getStringExtra("roomId") != null ? getIntent().getStringExtra("roomId") : SCCacheUtils.getCacheRoomId();
         chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
         if (null == chatRoomConversation) {
             chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
         }
         initToolBar();
         initView();
-        initData(detailsChatEventMessage);
+        initData();
 
     }
 
     private void initView() {
+        liAddTask = findViewById(R.id.linear_add_task);
         dialogHandler = new Handler() {
             @Override
             public void handleMessage(android.os.Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    ToastUtils.showToastLong(TaskDetailActivity.this, "任务发送失败，您的余额不足");
+                    ToastUtils.showToastLong(TaskDetailActivity.this, "求助发布失败，您的余额不足");
                 } else if (msg.what == 2) {
-                    ToastUtils.showToastLong(TaskDetailActivity.this, "任务发送失败，网络连接错误");
+                    ToastUtils.showToastLong(TaskDetailActivity.this, "求助发布失败，网络连接错误");
                 }
-
             }
         };
 
-        liAddTask= findViewById(R.id.linear_add_task);
         liAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,8 +184,6 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initHeadView(final ChatEventMessage chatEventMessage) {
-//        BdCommentBean bdCommentBean = commentList.get(0);
-//        chatEventMessage = bdCommentBean.getChatEventMessage();
         characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
         mHeadView = View.inflate(this, R.layout.item_task_details_head, null);
         ImageView ivAvatar = (ImageView) mHeadView.findViewById(R.id.iv_item_story_avatar);
@@ -183,10 +193,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         TextView bounty = (TextView) mHeadView.findViewById(R.id.even_message_bounty);
         TextView tvContent = (TextView) mHeadView.findViewById(R.id.even_message_content);
 
-//        NineGridImageView nineGridImageView = (NineGridImageView) mHeadView.findViewById(R.id.ngiv_item_story);
         final Button btnEvenTask = mHeadView.findViewById(R.id.btn_event_task);
-        mTvHeadLike = (TextView) mHeadView.findViewById(R.id.even_message_like_num);
-        mTvHeadComment = (TextView) mHeadView.findViewById(R.id.even_message_comment_num);
 
 
         //获取角色信息
@@ -215,32 +222,11 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //        String expiryTime = DateUtils.formatFriendly(new Date(chatEventMessage.getExpiryTime()));
 
         tvTime.setText(createTime + "");
-        tvLastTime.setText("完成时限："+expiryTime + "");
-//        ivAvatar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("userInfo", defaultUser);
-//                bundle.putString("hxUserId", defaultUser.getHxUserId());
-//                readyGo(SingerChatInfoActivity.class, bundle);
-//            }
-//        });
-
-
-//        tvTime.setText(DateUtils.formatFriendly(new Date(mDynamicModel.getCreateTime())));
-//        boolean isFav = isBeFav;
-//        Drawable like_def = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_default);
-//        Drawable like_selected = getResources().getDrawable(R.mipmap.abs_home_btn_thumbsup_selscted);
-
-//        like_def.setBounds(0, 0, like_def.getMinimumWidth(), like_def.getMinimumHeight());
-//        like_selected.setBounds(0, 0, like_selected.getMinimumWidth(), like_selected.getMinimumHeight());
-
-//        mTvHeadLike.setCompoundDrawables(isFav ? like_selected : like_def, null, null, null);
-//        mTvHeadLike.setCompoundDrawablePadding(DensityUtils.dip2px(this, 10));
+        tvLastTime.setText("完成时限：" + expiryTime + "");
 
 
         //领取任务
-        if (chatEventMessage.getStatus() >=10) {
+        if (chatEventMessage.getStatus() >= 10) {
             btnEvenTask.setText("已被领取");
             btnEvenTask.setFocusable(false);
             btnEvenTask.setOnClickListener(null);
@@ -294,7 +280,6 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                         @Override
                         public void OnItemClick(final CustomDialog dialog, View view) {
-
                             switch (view.getId()) {
                                 case R.id.btn_dialog_task_detail_sure:
                                     Bundle bundle = new Bundle();
@@ -315,172 +300,69 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             });
 
         }
-
-       /* String intro = bdCommentBean.getChatEventMessage().getIntro();
-        String content = "";
-        List<String> imgList = new ArrayList<>();
-        List<SpanBean> spanBeanList = null;
-        if (intro.contains("content")) {
-            ReleaseContentInfo contentInfo = new Gson().fromJson(intro, ReleaseContentInfo.class);
-            content = contentInfo.getContent();
-            imgList = contentInfo.getImgs();
-            spanBeanList = contentInfo.getSpanBeanList();
-        } else {
-            content = intro;
-        }
-*/
-        /*SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(content);
-
-        if (spanBeanList != null) {
-            for (int i = 0; i < spanBeanList.size(); i++) {
-                ClickableSpanNoUnderline clickSpan = new ClickableSpanNoUnderline(Color.parseColor("#3bbac8"), new ClickableSpanNoUnderline.OnClickListener() {
-                    @Override
-                    public void onClick(View widget, ClickableSpanNoUnderline span) {
-                        //ToastUtils.showToast(mContext, span.getClickData().getStr());
-                        SpanBean clickData = span.getClickData();
-                        if (clickData.getType() == Constants.SPAN_TYPE_AT) {
-                            Bundle bundle = new Bundle();
-                            RNDetailExt detailExt = new RNDetailExt();
-                            RNGDataBean gDataBean = new RNGDataBean();
-                            String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-                            String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
-                            String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
-                            String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
-                            gDataBean.setCharacterId(characterId);
-                            gDataBean.setSpaceId(spaceId);
-                            gDataBean.setToken(token);
-                            gDataBean.setUserId(uId);
-                            detailExt.setgData(gDataBean);
-                            detailExt.setModelId(clickData.getBeanId() + "");
-                            String json = JSONObject.toJSONString(detailExt);
-                            bundle.putString(NavigatorModule.REACT_PROPS, json);
-                            NavigatorModule.startReactPage(mContext, RNPagesConstant.RoleDetailScreen, bundle);
-                        } else if (clickData.getType() == Constants.SPAN_TYPE_TOPIC) {
-                            Intent intent = new Intent(mContext, TopicDetailsActivity.class);
-                            intent.putExtra("from", 1);
-                            intent.putExtra("topicId", clickData.getBeanId() + "");
-                            startActivity(intent);
-                        }
-                    }
-                });
-                String str = spanBeanList.get(i).getStr();
-                if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_AT) {
-                    String temp = "@" + str;
-                    int indexAt = content.indexOf(temp);
-                    if (indexAt == -1) {
-                        return;
-                    }
-                    spannableStringBuilder.setSpan(clickSpan, indexAt, indexAt + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                } else if (spanBeanList.get(i).getType() == Constants.SPAN_TYPE_TOPIC) {
-                    String temp = "#" + str + "#";
-                    int indexTopic = content.indexOf(temp);
-                    if (indexTopic == -1) {
-                        return;
-                    }
-                    spannableStringBuilder.setSpan(clickSpan, indexTopic, indexTopic + temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                }
-                clickSpan.setClickData(spanBeanList.get(i));
-            }
-
-        }
-        tvContent.setMovementMethod(SCLinkMovementMethod.getInstance());
-        tvContent.setText(spannableStringBuilder);
-*/
-
-//        ivAvatar.setOnClickListener(this);
-//        tvForwarding.setOnClickListener(this);
-//        mTvHeadComment.setOnClickListener(this);
-//        mTvHeadLike.setOnClickListener(this);
-//        ivMore.setVisibility(View.GONE);
-
     }
 
-    private void initRecyclerView(ChatEventMessage chatEventMessage) {
-        initHeadView(chatEventMessage);
+    private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(TaskDetailActivity.this, LinearLayoutManager.VERTICAL, false);
-        rvTaskComment.setLayoutManager(linearLayoutManager);
-        taskCommentAdapter = new TaskCommentAdapter(R.layout.item_task_details_comment, commentList, this);
-        rvTaskComment.addItemDecoration(new RecyclerViewDivider(this));
-        taskCommentAdapter.setEnableLoadMore(true);
-        rvTaskComment.setAdapter(taskCommentAdapter);
-        taskCommentAdapter.setHeaderView(mHeadView);
+        adapter = new MultiTaskListAdapter(TaskDetailActivity.this, taskList, new int[]{
+                R.layout.item_task_list_type1, //所有任务，已被领取
+                R.layout.item_task_list_type2,//所有任务，查看/领取任务
+                R.layout.item_task_type_two,//我的任务，未领取
+//              R.layout.item_task_type_donging,//我的任务，对方正在完成
+//              R.layout.item_task_type_four, //我的任务，去确认
+        });
+        rvTaskDetails.setLayoutManager(linearLayoutManager);
+        adapter.setHasStableIds(true);
+        rvTaskDetails.setAdapter(adapter);
 
     }
 
-    private void initData(ChatEventMessage chatEventMessage) {
-        taskPresenter = new TaskPresenterImpl(this);
-        if (chatEventMessage == null) {
-            return;
-        }
-        String taskId = chatEventMessage.getTaskId() == null ? "不限时" : chatEventMessage.getTaskId() + "";
+    private void initData() {
+        srlTaskList.setOnRefreshListener(this);
+        showLoadingDialog(true);
         SCHttpUtils.postWithUserId()
-                .url(HttpApi.TASK_DETAIL)
-                .addParams("taskId", taskId + "")
+                .url(HttpApi.GROUP_TASK_LIST)
+                .addParams("characterId", characterId + "")
+                .addParams("roomId", roomID + "")
+                .addParams("page", page + "")
+                .addParams("size", size + "")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        LogUtils.d("TaskPresenterImpl", "查询任务失败");
+                        closeLoadingDialog();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
-                        String data = JSONObject.parseObject(response).getString("data");
-                        ChatEventMessage chatEventMessage1 = JSONObject.parseObject(data, ChatEventMessage.class);
-                        initRecyclerView(chatEventMessage1);
-                    }
-                });
-        /*for (int i = 0; i < 10; i++) {
-            BdCommentBean bdCommentBean = new BdCommentBean();
-            CommentBean commentBean = new CommentBean();
-            commentBean.setCommentId(13);
-            commentBean.setStoryId(8);
-            commentBean.setContent("蝴蝶如我，我如蝴蝶");
-            commentBean.setCreateTime(Long.valueOf("1507639682000"));
-            commentBean.setIsAnon(0);
-            commentBean.setMySupport(false);
-            commentBean.setUserId(8);
-
-            ContactBean contactBean = new ContactBean();
-            contactBean.setIntro("长久以来，大陆一直流传着关于灭世魔神王的传说。他象征着绝对的黑暗");
-            contactBean.setName("项羽");
-            contactBean.setType(1);
-            contactBean.setCharacterId(69);
-            contactBean.setUserId(25);
-
-            bdCommentBean.setCharacterId(126);
-            bdCommentBean.setCommentBean(commentBean);
-            bdCommentBean.setContactBean(contactBean);
-            bdCommentBean.setChatEventMessage(chatEventMessage);
-            commentList.add(bdCommentBean);
-
-        }*/
-
-       /* SCHttpUtils.postWithUserId()
-                .url(HttpApi.TASK_COMMENT_QUERY)
-                .addParams("characterId",SCCacheUtils.getCacheCharacterId()+"")
-                .addParams("taskId",chatEventMessage.getTaskId()+"")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-
-                        if (TextUtils.equals(code,NetErrCode.COMMON_SUC_CODE)){
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            LogUtils.d("TaskPresenterImpl", "查询任务成功");
                             String data = JSONObject.parseObject(response).getString("data");
                             String content = JSONObject.parseObject(data).getString("content");
-                            TaskCommentContent commentContent = JSONObject.parseObject(content,TaskCommentContent.class);
 
+                            List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content
+                                    , ChatEventMessage.class);
+                            for (int i = 0; i < chatEventMessageList.size(); i++) {
+                                taskList.add(chatEventMessageList.get(i));
+                            }
+                            //构造Adapter
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(TaskDetailActivity.this, LinearLayoutManager.VERTICAL, false);
+                            adapter = new MultiTaskListAdapter(TaskDetailActivity.this, taskList, new int[]{
+                                    R.layout.item_task_list_type1, //所有任务，已被领取
+                                    R.layout.item_task_list_type2,//所有任务，查看/领取任务
+                                    R.layout.item_task_type_two,//我的任务，未领取
+//                                    R.layout.item_task_type_donging,//我的任务，对方正在完成
+//                                    R.layout.item_task_type_four, //我的任务，去确认
+                            });
+                            rvTaskDetails.setLayoutManager(linearLayoutManager);
+                            adapter.setHasStableIds(true);
+                            rvTaskDetails.setAdapter(adapter);
+                            closeLoadingDialog();
                         }
                     }
-                });*/
-
+                });
     }
 
     private void initToolBar() {
@@ -521,89 +403,92 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                             String data = JSONObject.parseObject(response).getString("data");
                             String rate = JSONObject.parseObject(data).getString("rate");//汇率，获取当前汇率
                             String currency = JSONObject.parseObject(data).getString("currency");
-
                             seatRmbRate = Double.valueOf(rate);
                         }
                     }
                 });
 
-        final int[] idItems = new int[]{R.id.et_input_dialog_describe, R.id.et_input_dialog_bounty, R.id.dialog_select_task_time, R.id.btn_dialog_input_sure, R.id.iv_dialog_close};
+        final int[] idItems = new int[]{R.id.et_input_dialog_describe, R.id.dialog_select_task_time, R.id.et_input_dialog_bounty, R.id.iv_dialog_close, R.id.btn_dialog_input_sure, R.id.iv_dialog_close};
         final CustomDialog dialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
         View layout = View.inflate(TaskDetailActivity.this, R.layout.common_dialog_chat_room_task, null);
         dialog.setView(layout);
+        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(final CustomDialog dialog, View view) {
+                final EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
+                final EditText bountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
+//                bountyEditText.setFocusable(true);
+//                bountyEditText.setFocusableInTouchMode(true);
+                bountyEditText.requestFocus();
+                limitedTime = (EditText) dialog.getByIdView(R.id.dialog_select_task_time);
+                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
+                tvSeatRate.setText("0 SEAT");
+                //输入框监听
+                bountyEditText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (s.toString().length() > 0) {
+                            Double bounty = Double.valueOf(s.toString());
+                            tvSeatRate.setText(("" + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+//                        Double inputNum = Double.valueOf(s.toString());
+                        s.insert(0, "￥");
+
+//                        bountyEditText.setText();
+                    }
+                });
+
+                switch (view.getId()) {
+                    case R.id.et_input_dialog_describe:
+//                        ToastUtils.showToast(TaskDetailActivity.this, getResources().getString(R.string.my_task_release_des_hint));
+                        break;
+                    case R.id.et_input_dialog_bounty:
+//                        ToastUtils.showToast(TaskDetailActivity.this, getResources().getString(R.string.my_task_release_reward_hint));
+                        break;
+                    case R.id.btn_dialog_input_sure:
+                        showLoadingDialog(true);
+                        releaseTask(dialog, describeEditText, bountyEditText, limitedTime);
+                        break;
+                    case R.id.iv_dialog_close:
+                        dialog.dismiss();
+                        break;
+                    //选择时间
+                    case R.id.dialog_select_task_time:
+                        initPickerView();
+                        scTimePickerView.setOnTimeSelectListener(onTimeSelectListener);
+                        scTimePickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
+                            @Override
+                            public void onCancelClick(View v) {
+
+                            }
+                        });
+                        scTimePickerView.show(limitedTime);
+                        break;
+                }
+            }
+        });
+        dialog.show();
         handler = new Handler() {
             @Override
             public void handleMessage(final android.os.Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
-                    case 1:
-                        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                            @Override
-                            public void OnItemClick(final CustomDialog dialog, View view) {
-                                final EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
-                                final EditText bountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
-                                bountyEditText.setFocusable(true);
-                                bountyEditText.setFocusableInTouchMode(true);
-                                bountyEditText.requestFocus();
-                                limitedTime = (TextView) dialog.getByIdView(R.id.dialog_select_task_time);
-                                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
-                                tvSeatRate.setText("1 SEAT");
-                                //输入框监听
-                                bountyEditText.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                        if (s.toString().length() > 0) {
-                                            float bounty = Float.parseFloat(s.toString());
-                                            tvSeatRate.setText(("" + bounty / seatRmbRate) + " SEAT");
-                                            bountyEditText.setText("￥" + s.toString());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-
-                                    }
-                                });
-
-                                switch (view.getId()) {
-                                    case R.id.et_input_dialog_describe:
-                                        ToastUtils.showToast(TaskDetailActivity.this, "输入任务描述");
-                                        break;
-                                    case R.id.et_input_dialog_bounty:
-                                        ToastUtils.showToast(TaskDetailActivity.this, "输入赏金");
-                                        break;
-                                    case R.id.btn_dialog_input_sure:
-                                        showLoadingDialog();
-                                        releaseTask(dialog, describeEditText, bountyEditText, limitedTime);
-                                        break;
-                                    case R.id.iv_dialog_close:
-                                        dialog.dismiss();
-                                        break;
-                                    //选择时间
-                                    case R.id.dialog_select_task_time:
-                                        initPickerView();
-                                        scTimePickerView.setOnTimeSelectListener(onTimeSelectListener);
-                                        scTimePickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
-                                            @Override
-                                            public void onCancelClick(View v) {
-
-                                            }
-                                        });
-                                        scTimePickerView.show(limitedTime);
-                                        break;
-                                }
-                            }
-                        });
-                        dialog.show();
+                    case 0:
                         break;
                 }
             }
         };
+
     }
 
     //初始化时间选择弹窗
@@ -612,10 +497,13 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         Calendar selectedDate = Calendar.getInstance();
         Calendar startDate = Calendar.getInstance();
         int year = startDate.get(Calendar.YEAR);
-        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置起始年份
+        Date date = new Date(System.currentTimeMillis());
+        int hour = date.getHours();
+//        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置起始年份
+        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE), selectedDate.get(Calendar.HOUR), selectedDate.get(Calendar.MINUTE));//设置起始年份
         Calendar endDate = Calendar.getInstance();
-        endDate.set(year + 10, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置结束年份
-        builder.setType(new boolean[]{true, true, true, true, false, false})//设置显示年、月、日、时、分、秒
+        endDate.set(year + 10, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE), selectedDate.get(Calendar.HOUR), selectedDate.get(Calendar.MINUTE));//设置结束年份
+        builder.setType(new boolean[]{true, true, true, true, true, false})//设置显示年、月、日、时、分、秒
                 .setDecorView((ViewGroup) findViewById(android.R.id.content).getRootView())
 //                .setDecorView((ViewGroup) dialog.getWindow().getDecorView().getRootView())
                 .isCenterLabel(true)
@@ -624,7 +512,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 .setCancelColor(TaskDetailActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
                 .setSubmitText("完成")
                 .setRangDate(startDate, endDate)
-                .setSubCalSize(14)
+                .setSubCalSize(15)
+                .setTitleSize(15)
+                .setContentSize(15)
                 .setTitleBgColor(TaskDetailActivity.this.getResources().getColor(com.shanchain.common.R.color.colorWhite))
                 .setSubmitColor(TaskDetailActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
                 .isDialog(true)
@@ -643,6 +533,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 TextView clickView = (TextView) v;
                 clickView.setText(formatDate);
                 scTimePickerView.show(limitedTime);
+//                if (timeStamp < System.currentTimeMillis()+60*60*1000){
+//                    ToastUtils.showToastLong(TaskDetailActivity.this,"必须选择大于当前时间1小时");
+//                }
             }
         };
     }
@@ -652,8 +545,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
      *
      * */
     private void releaseTask(final CustomDialog dialog, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
-        if (TextUtils.isEmpty(describeEditText.getText().toString()) && TextUtils.isEmpty(bountyEditText.getText().toString()) && TextUtils.isEmpty(textViewTime.getText().toString())) {
+        if (TextUtils.isEmpty(describeEditText.getText().toString()) || TextUtils.isEmpty(bountyEditText.getText().toString()) || TextUtils.isEmpty(textViewTime.getText().toString())) {
             ToastUtils.showToast(TaskDetailActivity.this, "请输入完整信息");
+            closeLoadingDialog();
         } else {
             final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
             final String bounty = bountyEditText.getText().toString();
@@ -664,12 +558,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //            final String createTime = simpleDateFormat.format(LimitedTtime);
             //向服务器请求添加任务
-//          taskPresenter.releaseTask(characterId, String.valueOf(roomID), bounty, dataString, timeStamp);
-
+            if (timeStamp < System.currentTimeMillis() + 60 * 60 * 1000) {
+                ToastUtils.showToastLong(TaskDetailActivity.this, "必须选择大于当前时间1小时");
+                closeLoadingDialog();
+                return;
+            }
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHAT_TASK_ADD)
                     .addParams("characterId", characterId + "")
-                    .addParams("price", bounty)
+                    .addParams("bounty", bounty)
                     .addParams("roomId", roomID + "")
                     .addParams("dataString", dataString + "") //任务内容
                     .addParams("time", timeStamp + "")
@@ -693,38 +590,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                             final String message = JSONObject.parseObject(response).getString("message");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
-                                String publishTime = JSONObject.parseObject(data).getString("PublishTime");
                                 String task = JSONObject.parseObject(data).getString("Task");
                                 chatEventMessage1 = JSONObject.parseObject(task, ChatEventMessage.class);
-                                Map customMap = new HashMap();
-                                customMap.put("taskId", chatEventMessage1.getTaskId() + "");
-                                customMap.put("bounty", chatEventMessage1.getBounty() + "");
-                                customMap.put("dataString", chatEventMessage1.getIntro());
-                                customMap.put("time", timeStamp + "");
-
-                                Message sendCustomMessage = chatRoomConversation.createSendCustomMessage(customMap);
-                                sendCustomMessage.setOnSendCompleteCallback(new BasicCallback() {
-                                    @Override
-                                    public void gotResult(int i, String s) {
-                                        String s1 = s;
-                                        MyMessage myMessage = new MyMessage();
-                                        if (0 == i) {
-                                            Toast.makeText(TaskDetailActivity.this, "发送任务消息成功", Toast.LENGTH_SHORT);
-                                            LogUtils.d("发送任务消息", "code: " + i + " 回调信息：" + s);
-                                            chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                                            myMessage.setChatEventMessage(chatEventMessage1);
-//                                            mAdapter.addToStart(myMessage, true);
-                                        } else {
-                                            chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                            myMessage.setChatEventMessage(chatEventMessage1);
-//                                            mAdapter.addToStart(myMessage, true);
-                                        }
-                                    }
-                                });
-                                JMessageClient.sendMessage(sendCustomMessage);
-
-//                                chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-//                                mAdapter.addToStart(chatEventMessage1, true);
+//                                handler.sendEmptyMessage(0);
                                 dialog.dismiss();
                             } else if (code.equals("10001")) {
                                 dialogHandler.sendEmptyMessage(1);
@@ -757,7 +625,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     @OnClick(R.id.tv_task_details_comment)
     public void onClick() {
-//        showPop();
+
     }
 
     @Override
@@ -767,59 +635,19 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRightClick(View v) {
-
-    }
-
-    private void showPop() {
-        FragmentManager manager = getSupportFragmentManager();
-        CommentDialog dialog = new CommentDialog();
-        dialog.show(manager, "tag");
-        dialog.setOnSendClickListener(new CommentDialog.OnSendClickListener() {
-            @Override
-            public void onSendClick(View v, String msg) {
-                String taskId = String.valueOf(detailsChatEventMessage.getTaskId());
-                String characterId = SCCacheUtils.getCacheCharacterId();
-
-                taskPresenter.addTaskComment(characterId, taskId, msg);
-                taskCommentAdapter.notifyDataSetChanged();
-            }
-        });
-        KeyboardUtils.showSoftInput(this);
+        Intent intent = new Intent(TaskDetailActivity.this, TaskListActivity.class);
+        startActivity(intent);
     }
 
     @Override
-    public void initTask(List<ChatEventMessage> list, boolean isSuccess) {
-
-    }
-
-    @Override
-    public void initUserTaskList(List<ChatEventMessage> list, boolean isSuccess) {
-
-    }
-
-    @Override
-    public void addSuccess(boolean success) {
-
-    }
-
-    @Override
-    public void releaseTaskView(boolean isSuccess) {
-
-    }
-
-
-    @Override
-    public void supportSuccess(boolean isSuccess, int position) {
-
-    }
-
-    @Override
-    public void supportCancelSuccess(boolean isSuccess, int position) {
-
-    }
-
-    @Override
-    public void deleteTaskView(boolean isSuccess, int position) {
-
+    public void onRefresh() {
+        if (taskList.size() < 0) {
+            return;
+        }
+        initData();
+        adapter.upData(taskList);
+        adapter.notifyDataSetChanged();
+        rvTaskDetails.setAdapter(adapter);
+        srlTaskList.setRefreshing(false);
     }
 }

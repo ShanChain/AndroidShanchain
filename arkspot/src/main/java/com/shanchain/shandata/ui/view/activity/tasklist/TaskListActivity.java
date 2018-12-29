@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -37,13 +38,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.view.fragment.FragmentMyTask;
+import com.shanchain.shandata.ui.view.fragment.FragmentTaskList;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -85,6 +90,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
     private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
     private long timeStamp;
     private String formatDate;
+    private List<Fragment> fragmentList = new ArrayList();
 
     @Override
     protected int getContentViewLayoutID() {
@@ -121,7 +127,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-        mTbMain.setTitleText("我的社区帮");
+        mTbMain.setTitleText(getResources().getString(R.string.tool_bar_my_task));
         mTbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
 
         mTbMain.setOnLeftClickListener(this);//左侧导航栏监听
@@ -134,80 +140,15 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
     }
 
     private void setFragment() {
-        String[] titles = {"帮过我的", "我帮过的"};
-        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles);
+        String[] titles = {getResources().getString(R.string.my_task_my_post), getResources().getString(R.string.my_task_my_helped)};
+        fragmentList.add(new FragmentTaskList());
+        fragmentList.add(new FragmentMyTask());
+        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles,fragmentList);
         vpTask.setOffscreenPageLimit(2);
         vpTask.setAdapter(adapter);
         tabTask.setupWithViewPager(vpTask);
         vpTask.setCurrentItem(0);
         vpTask.setOnPageChangeListener(this);
-
-        String type[] = new String[]{"全部任务", "未领取任务","已结束"};
-        onItemSelectedListener = new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    //全部任务
-                    case 0:
-                        SCHttpUtils.postWithUserId()
-                                .url(HttpApi.GROUP_TASK_LIST)
-                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                .addParams("roomId", roomID)
-                                .build()
-                                .execute(new SCHttpStringCallBack() {
-                                    @Override
-                                    public void onError(Call call, Exception e, int id) {
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response, int id) {
-                                        String code = JSONObject.parseObject(response).getString("code");
-                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                            String data = JSONObject.parseObject(response).getString("data");
-
-                                        }
-                                    }
-                                });
-//                        EventBus.getDefault().post();
-
-                        break;
-                    //未领取任务
-                    case 1:
-                        SCHttpUtils.postWithUserId()
-                                .url(HttpApi.TASK_DETAIL_UNACCALIMED_LIST)
-                                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                .addParams("roomId", roomID)
-                                .build()
-                                .execute(new SCHttpStringCallBack() {
-                                    @Override
-                                    public void onError(Call call, Exception e, int id) {
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response, int id) {
-                                        String code = JSONObject.parseObject(response).getString("code");
-                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                            String data = JSONObject.parseObject(response).getString("data");
-
-                                        }
-                                    }
-                                });
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, type);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);                       //设置下拉框样式
-        spinnerTaskList.setAdapter(arrayAdapter);
-        spinnerTaskList.setOnItemSelectedListener(onItemSelectedListener);
 
     }
 
@@ -230,10 +171,10 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
 
                 switch (view.getId()) {
                     case R.id.et_input_dialog_describe:
-                        ToastUtils.showToast(TaskListActivity.this, "输入任务描述");
+                        ToastUtils.showToast(TaskListActivity.this, getResources().getString(R.string.my_task_release_des_hint));
                         break;
                     case R.id.et_input_dialog_bounty:
-                        ToastUtils.showToast(TaskListActivity.this, "输入赏金");
+                        ToastUtils.showToast(TaskListActivity.this, getResources().getString(R.string.my_task_release_reward_hint));
                         break;
                     case R.id.btn_dialog_input_sure:
 

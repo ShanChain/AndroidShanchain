@@ -45,10 +45,32 @@
     <string name="unknow_size">未知大小</string>
     <string name="picker_image_preview_original">发送原图</string>
     <string name="picker_image_preview_original_select">发送原图（%s）</string>
-
+    <!-- ToolBar title -->
+    <string name="tool_bar_my_message">消息</string>
+    <string name="tool_bar_my_task">我的社区帮</string>
 
     <!-- common -->
+    <string name="toast_no_empty">请输入完整信息</string>
     <string name="cancel">取消</string>
+    <string name="longitude_latitude">东经 00.00° 南纬 00.00°</string>
+
+    <!-- MyTask 我的社区帮（任务） -->
+    <string name="my_task_my_post">帮过我的</string>
+    <string name="my_task_my_helped">我帮过的</string>
+    <string name="my_task_post_time">发布时间:2018-10-20 10:20</string>
+    <string name="my_task_accepted_time">领取时间：2018-10-20 10:20</string>
+    <string name="my_task_finish_time">完成时间：2018-10-20 10:20</string>
+    <string name="my_task_comfirm_time">确认时间：</string>
+    <string name="my_task_cancle_time">取消时间：</string>
+
+    <!-- NavigationView 侧滑栏 -->
+    <string name="nav_my_wallet">我的钱包</string>
+    <string name="nav_my_message">我的消息</string>
+    <string name="nav_feedback">意见反馈</string>
+    <string name="nav_logout">退出登录</string>
+    <string name="nav_my_task">我的社区帮</string>
+    <string name="nav_my_favorited">我的收藏</string>
+    <string name="nav_real_identity">实名认证</string>
 
 
     <!-- Square -->
@@ -71,6 +93,7 @@
     <string name="str_login_btn_login">登录</string>
     <string name="str_login_btn_register">注册</string>
     <string name="str_txt_login_third">第三方登录</string>
+    <string name="str_dialog_logging">登录中...</string>
     <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.@#$%^*()!,。?</string>
     <string name="str_reset_pwd">请输入新密码</string>
     <string name="str_sure">确定</string>

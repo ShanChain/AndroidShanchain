@@ -178,7 +178,16 @@
                 android:name="page_flag"
                 android:value="page_main" />
         </activity>
-        <activity android:name=".rn.activity.SCWebViewActivity" />
+        <activity android:name=".rn.activity.SCWebViewActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="schemedemo"
+                    android:host="ihongqiqu.com"
+                    android:pathPrefix="/test/"/>
+            </intent-filter>
+        </activity>
         <!-- 添加 FaceBook 的 ReactNative 调试的 activity -->
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
         <activity android:name=".ui.view.activity.story.StoryTitleActivity" />
@@ -294,7 +303,6 @@
             android:theme="@style/FullScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -345,16 +353,14 @@
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme" />
         <activity android:name=".ui.view.activity.tasklist.TaskListActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
-        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity" />
+        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity" >
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
         <activity android:name=".ui.view.activity.ModifyUserInfoActivity" />
         <activity android:name=".ui.view.activity.jmessageui.MemberActivity" />
         <activity android:name=".ui.view.activity.jmessageui.SingerChatInfoActivity" />

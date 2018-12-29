@@ -63,15 +63,14 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     RecyclerView rvTaskList;
     @Bind(R.id.srl_task_list)
     SwipeRefreshLayout srlTaskList;
-    private MultiTaskListAdapter adapter;
+    private MultiMyTaskAdapter adapter;
     private ProgressDialog mDialog;
     private TaskPresenter taskPresenter;
     private String roomId = SCCacheUtils.getCacheRoomId();
-    ;
     String characterId = SCCacheUtils.getCacheCharacterId();
     String userId = SCCacheUtils.getCacheUserId();
     private int page = 0;
-    private int size = 10;
+    private int size = 20;
     private boolean isLoadMore = false;
     private List<ChatEventMessage> taskList = new ArrayList();
 
@@ -117,11 +116,29 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
             }
 //            taskList.add(chatEventMessage);
         }
+        //5未领取 10已领取/正在完成， //15领取方已确认完成
+        //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        adapter = new MultiMyTaskAdapter(getContext(), taskList, new int[]{
+                R.layout.item_task_type_two,//0我发布的，5:未领取
+                R.layout.item_task_type_one,//1、我发布的，10.对方正在完成
+                R.layout.item_task_type_three, //2、我发布的，15:去确认
+
+                R.layout.item_task_type_four,//3、我领取的，10:正在完成
+                R.layout.item_task_type_five,//4、我领取的，15:待赏主确认
+                R.layout.item_task_type_donging,//5、我领取的,20发布方确认任务完成
+                R.layout.item_task_type_donging2,//6、我领取的,21发布方确认任务未完成
+                R.layout.item_task_type_over_time,//7、22:过期的
+                R.layout.item_task_type_recevice,//8、25：任务已被取消
+//                R.layout.item_task_type_donging_fnish, //对方收到赏金
+//                R.layout.item_task_type_donging_unfnish, //退回赏金
+        });
 
         SCHttpUtils.postWithUserId()
-                .url(HttpApi.GROUP_TASK_LIST)
-                .addParams("characterId", characterId + " ")
-                .addParams("roomId", roomId + " ")
+                .url(HttpApi.MY_TASK_PUBLISH_LIST)
+                .addParams("characterId", characterId + "")
+                .addParams("page",page+"")
+                .addParams("pageSize",size+"")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -133,30 +150,45 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
+                        closeLoadingDialog();
+                        closeProgress();
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.d("TaskPresenterImpl", "查询任务成功");
+                            LogUtils.d("TaskPresenterImpl", "添加任务成功");
                             String data = JSONObject.parseObject(response).getString("data");
-                            String content = JSONObject.parseObject(data).getString("content");
+                            TaskMode taskMode = JSONObject.parseObject(data, TaskMode.class);
 
-                            List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content
-                                    , ChatEventMessage.class);
+                            String content = JSONObject.parseObject(data).getString("content");
+                            List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content, ChatEventMessage.class);
+
                             for (int i = 0; i < chatEventMessageList.size(); i++) {
-                                taskList.add(chatEventMessageList.get(i));
+                                    taskList.add(chatEventMessageList.get(i));
                             }
-                            //构造Adapter
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                            adapter = new MultiTaskListAdapter(getContext(), taskList, new int[]{
-                                    R.layout.item_task_list_type1, //所有任务，已被领取
-                                    R.layout.item_task_list_type2,//所有任务，查看/领取任务
-                                    R.layout.item_task_type_two,//我的任务，未领取
-//                                    R.layout.item_task_type_donging,//我的任务，对方正在完成
-//                                    R.layout.item_task_type_four, //我的任务，去确认
-                            });
-                            rvTaskList.setLayoutManager(linearLayoutManager);
-                            adapter.setHasStableIds(true);
-                            rvTaskList.setAdapter(adapter);
-                            closeLoadingDialog();
                         }
+
+                        rvTaskList.setLayoutManager(linearLayoutManager);
+//                        adapter.setHasStableIds(true);
+                        rvTaskList.setAdapter(adapter);
+                        adapter.setOnClickListener(new MultiMyTaskAdapter.OnClickListener() {
+
+                            @Override
+                            public void OnClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
+                                final LinearLayout front = view.findViewById(R.id.item_task_front);
+                                final LinearLayout back = view.findViewById(R.id.item_task_back);
+//                                ToastUtils.showToast(getContext(), taskList.get(position).getTaskId() + "内容："+taskList.get(position).getIntro());
+                                FrameLayout frame = view.findViewById(R.id.frame);
+                                int direction = 1;
+                                if (back.isShown()) {
+                                    direction = -1;
+                                }
+                                ViewAnimUtils.flip(frame, 500, direction);
+                                frame.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        switchViewVisibility(back, front);
+                                    }
+                                }, 500);
+                            }
+                        });
                     }
                 });
     }
@@ -168,7 +200,13 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     public void onRefresh() {
 //        taskPresenter.initTask(characterId, roomId, page, size);
 //        taskList.clear();
+        if (taskList.size() < 0) {
+            return;
+        }
         initData();
+        adapter.upData(taskList);
+        adapter.notifyDataSetChanged();
+        rvTaskList.setAdapter(adapter);
         srlTaskList.setRefreshing(false);
     }
 

@@ -125,6 +125,7 @@ public class TaskMode {
         private int taskId;
         private int verify;
         private double bounty;
+        private double price;
         private int topping;
         private String intro;
         private String roomId;
@@ -181,6 +182,15 @@ public class TaskMode {
 
         public void setIntro(String intro) {
             this.intro = intro;
+        }
+
+
+        public double getPrice() {
+            return price;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
         }
 
         public String getRoomId() {

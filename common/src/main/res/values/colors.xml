@@ -7,6 +7,7 @@
     <color name="colorWhite">#fff</color>
     <!--主题色-->
     <color name="colorTheme">#f00</color>
+    <color name="red_btn_normal">#EB424D</color>
     <!--透明色-->
     <color name="colorTransparent">#0000</color>
     <!--底部导航按钮被选中的颜色-->

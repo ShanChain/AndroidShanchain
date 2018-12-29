@@ -42,11 +42,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
@@ -68,6 +73,7 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -119,6 +125,7 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
+import okhttp3.Call;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import sj.keyboard.adpater.EmoticonsAdapter;
@@ -212,7 +219,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         }
 
         initToolbar();
-//        initData();
+        initData();
 //        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
@@ -562,6 +569,28 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void initData() {
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.USE_FOCUS)
+                .addParams("funsJmUserName",FORM_USER_ID)
+                .addParams("characterId",SCCacheUtils.getCacheCharacterId()+"")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)){
+                            String data = JSONObject.parseObject(response).getString("data");
+                        }
+                    }
+                });
     }
 
     /*

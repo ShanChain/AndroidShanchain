@@ -141,8 +141,10 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
 //                R.layout.item_task_type_donging_unfnish, //退回赏金
         });
         SCHttpUtils.postWithUserId()
-                .url(HttpApi.USER_TASK_LIST)
+                .url(HttpApi.MY_TASK_RECEIVE_LIST)
                 .addParams("characterId", characterId + "")
+                .addParams("page", page + "")
+                .addParams("pageSize", size + "")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -195,15 +197,13 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                                 }, 500);
                             }
                         });
-
-
                     }
                 });
 
         adapter.setOnItemClickListener(new MultiMyTaskAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(ChatEventMessage item, View view, com.shanchain.shandata.adapter.BaseViewHolder holder, int position) {
-                switch (view.getId()){
+                switch (view.getId()) {
                     case R.id.btn_event_task:
                         final LinearLayout front = holder.getConvertView().findViewById(R.id.item_task_front);
                         final LinearLayout back = holder.getConvertView().findViewById(R.id.item_task_back);
@@ -256,8 +256,14 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     public void onRefresh() {
 //        isLoadMore = false;
 //        taskPresenter.initUserTaskList(characterId, page, size);
+        if (taskList.size() < 0) {
+            return;
+        }
         showProgress();
         initData();
+        adapter.upData(taskList);
+        adapter.notifyDataSetChanged();
+        rvTaskList.setAdapter(adapter);
         srlTaskList.setRefreshing(false);
 
     }

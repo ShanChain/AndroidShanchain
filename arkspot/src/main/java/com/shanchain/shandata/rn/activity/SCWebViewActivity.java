@@ -1,16 +1,32 @@
 package com.shanchain.shandata.rn.activity;
 
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.URLUtil;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -20,22 +36,34 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.utils.ImageUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 
@@ -50,6 +78,14 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private ProgressBar mPbWeb;
     private Map<String, String> map;
 
+    private WebView webview;
+    private ValueCallback<Uri> mUploadMessage;
+    private ValueCallback<Uri[]> mUploadCallbackAboveL;
+    private final int RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP = 1;
+    private final int RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP = 2;
+    private String url = "";//这里添加含有图片上传功能的H5页面访问地址即可。
+    String compressPath = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +98,12 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         String webParams = intent.getStringExtra("webParams");
         mTitle = JSONObject.parseObject(webParams).getString("title");
         mUrl = JSONObject.parseObject(webParams).getString("url");
+//        mUrl = "http://m.qianqianshijie.com/orderDetails?id=15450393575245641";
+//        mUrl = "http://m.qianqianshijie.com/cancelOrder?userId=2&subuserId=2&token=2_5f7304524415487790daa6477c4595d51545901167334&id=15458262198931519";
         initWeb();
+
     }
+
 
     private void initWeb() {
         SCHttpUtils.postWithUserId()
@@ -91,12 +131,76 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                             settings.setJavaScriptEnabled(true);
                             map = new HashMap<String, String>();
                             map.put("token", token);
-                            map.put("characterId", characterId );
+                            map.put("characterId", characterId);
                             map.put("userId", userId);
+//                            mWbSc.loadUrl(mUrl);
                             mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
                         }
                     }
                 });
+
+        mWbSc.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                WebView.HitTestResult result = mWbSc.getHitTestResult();
+                if (null == result)
+                    return false;
+                int type = result.getType();
+                switch (type) {
+                    case WebView.HitTestResult.EDIT_TEXT_TYPE: // 选中的文字类型
+                        break;
+                    case WebView.HitTestResult.PHONE_TYPE: // 处理拨号
+                        break;
+                    case WebView.HitTestResult.EMAIL_TYPE: // 处理Email
+                        break;
+                    case WebView.HitTestResult.GEO_TYPE: // 　地图类型
+                        break;
+                    case WebView.HitTestResult.SRC_ANCHOR_TYPE: // 超链接
+                        break;
+                    case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE: // 带有链接的图片类型
+                    case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
+                        final String url = result.getExtra();
+                        StandardDialog standardDialog = new StandardDialog(SCWebViewActivity.this);
+                        standardDialog.setStandardTitle("是否保存图片");
+                        standardDialog.setSureText("保存");
+                        standardDialog.setCancelText("取消");
+                        standardDialog.setCallback(new Callback() {
+                            @Override
+                            public void invoke() {
+//                                Bitmap bitmap = ImageUtils.returnBitMap(url);
+
+                                ThreadUtils.runOnSubThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        File saveFile = null;
+                                        try {
+                                            saveFile = Glide.with(SCWebViewActivity.this).asFile().load(url).submit().get();
+                                            displayToGallery(SCWebViewActivity.this, saveFile);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        } catch (ExecutionException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                });
+                                ToastUtils.showToastLong(SCWebViewActivity.this, "保存成功");
+                            }
+                        }, new Callback() {
+                            @Override
+                            public void invoke() {
+
+                            }
+                        });
+                        standardDialog.show();
+                        return true;
+                    case WebView.HitTestResult.UNKNOWN_TYPE: //未知
+                        break;
+                }
+                return false;
+            }
+        });
+
 
         mWbSc.setWebViewClient(new WebViewClient() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -174,17 +278,120 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        mWbSc.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    mPbWeb.setVisibility(View.GONE);
-                } else {
-                    mPbWeb.setVisibility(View.VISIBLE);
-                    mPbWeb.setProgress(newProgress);
+        mWbSc.setWebChromeClient(new MyWebChromeClient());
+    }
+
+    public static void displayToGallery(Context context, File photoFile) {
+        if (photoFile == null || !photoFile.exists()) {
+            return;
+        }
+        String photoPath = photoFile.getAbsolutePath();
+        String photoName = photoFile.getName();
+        // 把文件插入到系统图库
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            MediaStore.Images.Media.insertImage(contentResolver, photoPath, photoName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + photoPath)));
+    }
+
+    /**
+     * 根据Uri获取图片文件的绝对路径
+     */
+    public String getRealFilePath(final Uri uri) {
+        if (null == uri) {
+            return null;
+        }
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = getContentResolver().query(uri,
+                    new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
                 }
+                cursor.close();
             }
-        });
+        }
+        return data;
+    }
+
+    /**
+     * 选择照片后结束
+     *
+     * @param data
+     */
+    private Uri afterChosePic(Intent data) {
+        if (data == null) {
+            return null;
+        }
+        String path = getRealFilePath(data.getData());
+        if (path == null) {//取消选择图片的时候，返回回来的Intent不为空，但getData为空，这里加个判空
+            return null;
+        }
+        String[] names = path.split("\\.");
+        String endName = null;
+        if (names != null) {
+            endName = names[names.length - 1];
+        }
+        if (endName != null) {
+            compressPath = compressPath.split("\\.")[0] + "." + endName;
+        }
+        File newFile;
+        try {
+            newFile = new File(path);
+        } catch (Exception e) {
+            newFile = null;
+        }
+        return Uri.fromFile(newFile);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ToastUtils.showToastLong(getBaseContext(), "文件路径 path:" + data.getData().getPath());
+        LogUtils.d("" + data.getData().getPath());
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mUploadMessage == null && mUploadCallbackAboveL == null) {
+            return;
+        }
+        Uri uri = null;
+        switch (requestCode) {
+            case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
+                uri = afterChosePic(data);
+                if (mUploadMessage != null) {
+                    mUploadMessage.onReceiveValue(uri);
+                    mUploadMessage = null;
+                }
+                break;
+            case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
+                try {
+                    uri = afterChosePic(data);
+                    if (uri == null) {
+                        mUploadCallbackAboveL.onReceiveValue(new Uri[]{});
+                        mUploadCallbackAboveL = null;
+                        break;
+                    }
+                    if (mUploadCallbackAboveL != null && uri != null) {
+                        mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
+                        mUploadCallbackAboveL = null;
+                    }
+                } catch (Exception e) {
+                    mUploadCallbackAboveL = null;
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     public boolean parseScheme(String url) {
@@ -204,6 +411,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         mPbWeb = (ProgressBar) findViewById(R.id.pb_web);
         mWbSc = (WebView) findViewById(R.id.wb_sc);
         mIvWebBack.setOnClickListener(this);
+
     }
 
 
@@ -232,7 +440,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         return false;
     }
 
-
     @Override
     public void finish() {
         super.finish();
@@ -248,4 +455,65 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
     }
 
+    /**
+     * 打开图库,同时处理图片（项目业务需要统一命名）
+     */
+    private void selectImage(int resultCode) {
+        compressPath = Environment.getExternalStorageDirectory().getPath() + "/QWB/temp";
+        File file = new File(compressPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        compressPath = compressPath + File.separator + "compress.png";
+        File image = new File(compressPath);
+        if (image.exists()) {
+            image.delete();
+        }
+        Intent intent = new Intent(
+                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, resultCode);
+
+    }
+
+    class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                mPbWeb.setVisibility(View.GONE);
+            } else {
+                mPbWeb.setVisibility(View.VISIBLE);
+                mPbWeb.setProgress(newProgress);
+            }
+        }
+
+        //openFileChooser（隐藏方法）仅适用android5.0以下的环境，android5.0及以上使用onShowFileChooser
+        // For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg,
+                                    String acceptType) {
+            if (mUploadMessage != null)
+                return;
+            mUploadMessage = uploadMsg;
+            selectImage(RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP);
+        }
+
+        // For Android < 3.0
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooser(uploadMsg, "");
+        }
+
+        // For Android > 4.1.1
+        public void openFileChooser(ValueCallback<Uri> uploadMsg,
+                                    String acceptType, String capture) {
+            openFileChooser(uploadMsg, acceptType);
+        }
+
+        // For Android 5.0+
+        public boolean onShowFileChooser(WebView webView,
+                                         ValueCallback<Uri[]> filePathCallback,
+                                         FileChooserParams fileChooserParams) {
+            mUploadCallbackAboveL = filePathCallback;
+            selectImage(RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP);
+            return true;
+        }
+    }
 }

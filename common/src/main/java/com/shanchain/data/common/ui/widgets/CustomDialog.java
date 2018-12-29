@@ -3,6 +3,7 @@ package com.shanchain.data.common.ui.widgets;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.view.Display;
@@ -13,6 +14,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.shanchain.common.R;
 
@@ -26,7 +31,13 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
-    private View shareView;
+    private ImageView shareView;
+    private int drawableId, viewId;
+    private String messageContent;
+    private String percentage;
+    private Bitmap shareBitmap;
+    private boolean isShow = false;
+    private RelativeLayout relativeLayout,relativeAllText;
 
     public CustomDialog(Context context, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
@@ -88,7 +99,6 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         if (isAnimator) {
             window.setWindowAnimations(R.style.bottom_menu_animation); // 添加动画效果
         }
-
         setContentView(layoutResID);
         WindowManager windowManager = ((Activity) context).getWindowManager();
         Display display = windowManager.getDefaultDisplay();
@@ -105,14 +115,71 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
                 findViewById(id).setOnClickListener(this);
             }
         }
+        if (messageContent != null) {
+            TextView textView = (TextView) findViewById(R.id.even_message_content);
+            textView.setText(messageContent);
+        }
+        if (drawableId != 0) {
+            relativeLayout = findViewById(R.id.share_window);
+            relativeLayout.setBackground(getContext().getResources().getDrawable(drawableId));
+            relativeAllText = findViewById(R.id.allText);
+            relativeAllText.setVisibility(View.VISIBLE);
+        }
+        if (percentage != null) {
+            TextView tvPercentage = findViewById(R.id.percentage);
+            tvPercentage.setText(percentage);
+        }
+        if (shareBitmap != null) {
+            shareView = findViewById(R.id.share_image);
+            shareView.setImageBitmap(shareBitmap);
+            relativeLayout = findViewById(R.id.share_window);
+            relativeLayout.setBackground(null);
+            relativeAllText = findViewById(R.id.allText);
+            relativeAllText.setVisibility(View.GONE);
+            if (isShow==true){
+                relativeAllText = findViewById(R.id.allText);
+                relativeAllText.setVisibility(View.VISIBLE);
+            }
 
 
+        }
     }
+
+
+    public void setDrawableId(int drawableId) {
+        this.drawableId = drawableId;
+        if (shareView != null) {
+            shareView.setBackground(null);
+            shareView.setVisibility(View.GONE);
+        }
+    }
+
+    public void setMessageContent(String messageContent) {
+        this.messageContent = messageContent;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
+    }
+
+    public void setShareBitmap(Bitmap shareBitmap) {
+        this.shareBitmap = shareBitmap;
+    }
+
+    public void setShareBitmap(Bitmap shareBitmap,Boolean isShow) {
+        this.shareBitmap = shareBitmap;
+        this.isShow = isShow;
+    }
+
 
     public View getView(Context context, @IdRes int idRes) {
         View layoutView = LayoutInflater.from(context).inflate(layoutResID, null);
         shareView = layoutView.findViewById(idRes);
         return shareView;
+    }
+
+    public void setViewId(int viewId) {
+        this.viewId = viewId;
     }
 
     private void setDialogTitle() {
@@ -136,11 +203,16 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+
     }
 
     @Override
     public void onClick(View view) {
-        dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
-        listener.OnItemClick(this, view);
+        if (listener != null) {
+            listener.OnItemClick(this, view);
+        } else {
+            dismiss();//只要按任何一个控件的id,弹窗都会消失，不管是确定还是取消。
+        }
+
     }
 }

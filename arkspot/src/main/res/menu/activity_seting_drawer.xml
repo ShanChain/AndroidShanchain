@@ -7,34 +7,34 @@
         <item
             android:checked="true"
             android:id="@+id/nav_my_wallet"
-            android:title="我的钱包"
+            android:title="@string/nav_my_wallet"
             />
         <item
-            android:visible="false"
+            android:visible="true"
             android:id="@+id/nav_my_task"
-            android:title="我的任务" />
+            android:title="@string/nav_my_task" />
 
         <item
             android:id="@+id/nav_my_message"
-            android:title="我的消息" />
+            android:title="@string/nav_my_message" />
 
         <item
             android:visible="false"
             android:id="@+id/nav_my_favorited"
-            android:title="我的收藏" />
+            android:title="@string/nav_my_favorited" />
 
         <item
             android:visible="false"
             android:id="@+id/real_identity"
-            android:title="实名认证" />
+            android:title="@string/nav_real_identity" />
 
         <item
             android:id="@+id/nav_manage"
-            android:title="意见反馈" />
+            android:title="@string/nav_feedback" />
 
         <item
             android:id="@+id/nav_logout"
-            android:title="退出登录" />
+            android:title="@string/nav_logout" />
     </group>
 
 </menu>

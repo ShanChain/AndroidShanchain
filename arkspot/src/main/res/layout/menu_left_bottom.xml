@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:tag="queryTask"
+        android:tag="taskPlay"
         android:orientation="vertical">
 
         <!--<ImageView-->
@@ -78,7 +78,7 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/linear_add_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,12 +86,12 @@
         android:tag="queryTask"
         android:orientation="vertical">
 
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/shape_fb_bg_role"-->
-            <!--android:src="@mipmap/query_task"-->
-            <!--android:tag="Place" />-->
+        &lt;!&ndash;<ImageView&ndash;&gt;
+            &lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;
+            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+            &lt;!&ndash;android:background="@drawable/shape_fb_bg_role"&ndash;&gt;
+            &lt;!&ndash;android:src="@mipmap/query_task"&ndash;&gt;
+            &lt;!&ndash;android:tag="Place" />&ndash;&gt;
 
         <TextView
             android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
             android:gravity="center"
             android:background="@drawable/shape_fb_bg_role"
             android:textColor="@color/white" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <!--<ImageView-->
     <!--android:layout_width="wrap_content"-->

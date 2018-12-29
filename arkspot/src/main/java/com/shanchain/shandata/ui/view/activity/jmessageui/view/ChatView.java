@@ -89,6 +89,7 @@ public class ChatView extends RelativeLayout {
 //        mMsgList.setDateBgCornerRadius(15);
         mMsgList.setSendBubbleColor(Color.parseColor("#C3A0F5"));
         mMsgList.setReceiveBubbleColor(Color.parseColor("#FFFFFF"));
+        mMsgList.setSendBubbleDrawable(R.drawable.shape_bg_msg_send_pressed);
         mMsgList.setAvatarRadius(90);
 
 

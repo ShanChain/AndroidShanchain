@@ -176,7 +176,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         toolBar.getTitleView().setLayoutParams(layoutParams);
-        toolBar.setTitleText("消息");
+        toolBar.setTitleText(getResources().getString(R.string.nav_my_message));
         toolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         toolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         toolBar.setOnLeftClickListener(this);

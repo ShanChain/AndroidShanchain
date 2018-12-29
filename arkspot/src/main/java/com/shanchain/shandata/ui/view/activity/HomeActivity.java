@@ -15,29 +15,31 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.vod.common.utils.L;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -45,7 +47,6 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.GroundOverlayOptions;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -56,15 +57,15 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Polygon;
-import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.map.PolylineOptions;
-import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.CoordinateConverter;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Callback;
@@ -77,10 +78,14 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.ui.widgets.RedPaperDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
+import com.shanchain.data.common.utils.CountDownTimeUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
@@ -90,43 +95,44 @@ import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.push.ExampleUtil;
 import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
-import com.shanchain.shandata.ui.model.IsFavBean;
-import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.RNGDataBean;
-import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.model.RedPaper;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.CoordinateTransformUtil;
 import com.shanchain.shandata.utils.ImageUtils;
 import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.utils.RequestCode;
+import com.shanchain.shandata.widgets.pickerimage.utils.ImageUtil;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import cn.jiguang.imui.commons.models.IMessage;
-import cn.jiguang.imui.commons.models.IUser;
-import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
-import cn.jiguang.share.android.api.AuthListener;
 import cn.jiguang.share.android.api.JShareInterface;
 import cn.jiguang.share.android.api.PlatActionListener;
 import cn.jiguang.share.android.api.Platform;
 import cn.jiguang.share.android.api.ShareParams;
-import cn.jiguang.share.android.model.AccessTokenInfo;
-import cn.jiguang.share.android.model.BaseResponseInfo;
-import cn.jiguang.share.android.model.UserInfo;
 import cn.jiguang.share.android.utils.Logger;
 import cn.jiguang.share.qqmodel.QQ;
 import cn.jiguang.share.wechat.Wechat;
@@ -134,26 +140,23 @@ import cn.jiguang.share.wechat.WechatMoments;
 import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.data.JPushLocalNotification;
-import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.RequestCallback;
-import cn.jpush.im.android.api.content.CustomContent;
-import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
-import cn.jpush.im.api.BasicCallback;
-//import me.shaohui.shareutil.ShareUtil;
-//import me.shaohui.shareutil.share.ShareListener;
-//import me.shaohui.shareutil.share.SharePlatform;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
+//import me.shaohui.shareutil.ShareUtil;
+//import me.shaohui.shareutil.share.ShareListener;
+//import me.shaohui.shareutil.share.SharePlatform;
+
 public class HomeActivity extends BaseActivity implements PermissionInterface {
-    private BaiduMap baiduMap;
+
+    public static BaiduMap baiduMap;
     private long downloadId;
     private LocationClient locationClient;
     private BDLocationListener bdLocationListener;
@@ -162,46 +165,117 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private LatLng markerPoint;
     private double[] WGS84point;
     private Runnable runnable;
-    private Handler handler, getRoomIdHandle;
+    private Handler handler, getRoomIdHandle, activityHandler, redPaperHandle, shareChatRoomHandle;
     private BDLocation myLocation;
     private double[] gcj02point;
     private UiSettings uiSettings;
     private MyOrientationListener myOrientationListener;
-    private Coordinates coordinates;
+    public static Coordinates coordinates;
     private List pointList = new ArrayList();
     private List<Coordinates> coordinatesList;
     private List roomList = new ArrayList();
     private boolean isFirstLoc = true; // 是否首次定位
+    private boolean isHide = true; //是否隐藏
     private String roomID = "", clickRoomID = "";
     private String roomName;
-    private int joinRoomId;
+    private int joinRoomId, page = 0, pageSize = 10;
     private ProgressDialog mDialog;
+    private CustomDialog ruleDialog;
     private LatLng myFocusPoint;
-    private boolean isIn;
-
+    private boolean isIn, isFirstShow = false;
+    private StandardDialog standardDialog;
     public static boolean isForeground = false;
+    public static boolean isShowRush = false;
     private MessageReceiver mMessageReceiver;
     public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_TITLE = "title";
     public static final String KEY_MESSAGE = "message";
     public static final String KEY_EXTRAS = "extras";
+    public String percentage;
     private Handler shareHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            closeLoadingDialog();
+            closeProgress();
             String toastMsg = (String) msg.obj;
             Toast.makeText(HomeActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
-            closeLoadingDialog();
+
         }
     };
-    private PlatActionListener mPlatActionListener;
+    private PlatActionListener mPlatActionListener = new PlatActionListener() {
+        @Override
+        public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
+            if (shareHandler != null) {
+                Message message = handler.obtainMessage();
+                message.obj = "分享成功";
+                shareHandler.sendMessage(message);
+            }
+        }
 
+        @Override
+        public void onError(Platform platform, int action, int errorCode, Throwable error) {
+            if (shareHandler != null) {
+                Message message = shareHandler.obtainMessage();
+                message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                Logger.dd(TAG, message.obj + "");
+                shareHandler.sendMessage(message);
+            }
+        }
 
-    TextView tvLocation;
+        @Override
+        public void onCancel(Platform platform, int action) {
+            if (shareHandler != null) {
+                Message message = shareHandler.obtainMessage();
+                message.obj = "分享取消";
+                shareHandler.sendMessage(message);
+            }
+        }
+    };
+    private PlatActionListener shareListener = new PlatActionListener() {
+        @Override
+        public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
+            closeLoadingDialog();
+            closeProgress();
+            if (shareHandler != null) {
+                Message message = shareHandler.obtainMessage();
+                message.obj = "分享成功";
+                shareHandler.sendMessage(message);
+            }
+        }
+
+        @Override
+        public void onError(Platform platform, int action, int errorCode, Throwable error) {
+            closeLoadingDialog();
+            closeProgress();
+            if (shareHandler != null) {
+                Message message = shareHandler.obtainMessage();
+                message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
+                Logger.dd(TAG, message.obj + "");
+                shareHandler.sendMessage(message);
+            }
+        }
+
+        @Override
+        public void onCancel(Platform platform, int action) {
+            closeLoadingDialog();
+            closeProgress();
+            if (shareHandler != null) {
+                Message message = shareHandler.obtainMessage();
+                message.obj = "分享取消";
+                shareHandler.sendMessage(message);
+            }
+        }
+    };
+    ;
+    TextView tvLocation, tvCountDown, tvSecond;
     ImageView imgInfo;
     ImageView imgHistory;
     MapView mapView;
+    RelativeLayout relativeCountDown, relativeRush;
     LinearLayout btJoin;
-    LinearLayout linearRule;
+    LinearLayout linearRule, linearHot, linearReset;
+    ImageView hideImageView;
+
     public static LatLng latLng;
     private CoordinateConverter coordinateConverter;
     private LatLng gpsLatLng;
@@ -210,6 +284,21 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     BaiduMap.OnMapClickListener MapListener;
     private File imgeFile;
     private Bitmap cropScreenBitmap;
+    private List<RedPaper> redPaperList;
+    private String ruleDescribe;
+    private String startTme;
+    private String endTime;
+    private TextView totalMoney;
+    private TextView addMoney;
+    private TextView checkPoint;
+    private TextView checkPointNum;
+    private TextView tvTimeDown;
+    private ShareParams shareParams, redPaperParams;
+    private Handler levelHandle;
+    private CustomDialog shareBottomDialog, shareChatRoomDialog;
+    private RedPaperDialog redPaperDialog;
+    private File captureScreenFile;
+    private String clearance;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -235,11 +324,23 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     @Override
     protected void initViewsAndEvents() {
         tvLocation = findViewById(R.id.text_view_location);
+        tvCountDown = findViewById(R.id.tv_count_down);//倒计时
+        tvSecond = findViewById(R.id.second_day);//显示天/秒
+        totalMoney = findViewById(R.id.tv_total_money);//获取的全部金额
+        addMoney = findViewById(R.id.tv_add_money);//每次点击的奖励
+        checkPoint = findViewById(R.id.tv_check_point);//关卡
+        checkPointNum = findViewById(R.id.tv_check_point_num);//点亮区块书数量
+        tvTimeDown = findViewById(R.id.tv_time_down);//点亮区块书数量
+        relativeCountDown = findViewById(R.id.relative_count_down);//显示活动倒计时
+        relativeRush = findViewById(R.id.relative_rush);//显示活动信息
         mapView = findViewById(R.id.map_view_home);
         btJoin = findViewById(R.id.button_join);
         imgHistory = findViewById(R.id.image_view_history);
         imgInfo = findViewById(R.id.image_view_info);
+        linearReset = findViewById(R.id.linear_reset_location);
+        linearHot = findViewById(R.id.linear_hot);
         linearRule = findViewById(R.id.linear_rule); //活动规则
+        hideImageView = findViewById(R.id.img_view_hide);//收起隐藏按钮
         String uId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
@@ -254,7 +355,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         SCCacheUtils.setCache(uId, Constants.CACHE_GDATA, jsonGData);
         String cacheGData = SCCacheUtils.getCache(uId, Constants.CACHE_GDATA);
         LogUtils.i("缓存的gdata = " + cacheGData);
-
 
         getRoomIdHandle = new Handler() {
             @Override
@@ -297,7 +397,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 }
             }
         }
-
         ;
 
         //        UMConfigure.setLogEnabled(true); //显示友盟log日记
@@ -313,6 +412,316 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         initBaiduMap();
 
     }
+
+    //Activity跨年活动
+    private void transYear(final LatLng point) {
+        /*
+         * 通用分享
+         * */
+        //分享回调
+        levelHandle = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    final String shareType = (String) msg.obj;
+                    SCHttpUtils.postWithUserId()
+                            .url(HttpApi.SHARE_COMMON)
+                            .addParams("type", shareType + "")
+                            .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    LogUtils.d("网络异常");
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                        String data = JSONObject.parseObject(response).getString("data");
+                                        percentage = JSONObject.parseObject(data).getString("percentage");
+                                        final String shareType = JSONObject.parseObject(data).getString("shareType");
+                                        final String background = JSONObject.parseObject(data).getString("background");
+                                        final String url = JSONObject.parseObject(data).getString("url");
+                                        final String title = JSONObject.parseObject(data).getString("title");
+                                        final String intro = JSONObject.parseObject(data).getString("intro");
+                                        redPaperParams = new ShareParams();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                shareBottomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                                                    @Override
+                                                    public void OnItemClick(CustomDialog dialog, View view) {
+                                                        switch (view.getId()) {
+                                                            case R.id.mRlWechat:
+                                                                if (shareType.equals("SHARE_IMAGE")) {
+                                                                    showLoadingDialog();
+                                                                    redPaperParams.setShareType(Platform.SHARE_IMAGE);
+                                                                    ThreadUtils.runOnSubThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Bitmap bitmap = ImageUtils.returnBitMap(url);
+                                                                            String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                                    bitmap, "share.png").getAbsolutePath();
+                                                                            redPaperParams.setImagePath(absolutePath);
+                                                                            //调用分享接口share ，分享到微信平台。
+                                                                            JShareInterface.share(Wechat.Name, redPaperParams, shareListener);
+//                                                                            closeProgress();
+                                                                            closeLoadingDialog();
+                                                                        }
+                                                                    });
+//                                                                    String absolutePath = ImageUtils.saveUrlImgFile(
+//                                                                            ImageUtils.drawableToBitmap(
+//                                                                                    getResources().getDrawable(R.mipmap.piker)), "share.png").getAbsolutePath();
+//                                                                    redPaperParams.setImagePath(absolutePath);
+//                                                                    shareParams.setTitle(intro);
+                                                                } else {
+                                                                    shareBottomDialog.setShareBitmap(null);
+                                                                    shareBottomDialog.setPercentage(percentage + "");
+                                                                    redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    redPaperParams.setTitle(title);
+                                                                    redPaperParams.setText(intro);
+                                                                    redPaperParams.setImageUrl(background);
+                                                                    redPaperParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到微信平台。
+                                                                    JShareInterface.share(Wechat.Name, redPaperParams, shareListener);
+//                                                                    closeProgress();
+                                                                    closeLoadingDialog();
+                                                                }
+                                                                break;
+                                                            case R.id.mRlWeixinCircle:
+                                                                if (shareType.equals("SHARE_IMAGE")) {
+                                                                    showLoadingDialog();
+                                                                    redPaperParams.setShareType(Platform.SHARE_IMAGE);
+                                                                    ThreadUtils.runOnSubThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Bitmap bitmap = ImageUtils.returnBitMap(url);
+                                                                            String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                                    bitmap, "share.png").getAbsolutePath();
+                                                                            redPaperParams.setImagePath(absolutePath);
+                                                                            //调用分享接口share ，分享到QQ平台。
+                                                                            JShareInterface.share(Wechat.Name, redPaperParams, shareListener);
+//                                                                            closeProgress();
+                                                                            closeLoadingDialog();
+                                                                        }
+                                                                    });
+                                                                    /*String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                            ImageUtils.drawableToBitmap(
+                                                                                    getResources().getDrawable(R.mipmap.piker)), "share.png").getAbsolutePath();
+                                                                    redPaperParams.setImagePath(absolutePath);*/
+//                                                                    redPaperParams.setTitle(intro);
+                                                                } else {
+                                                                    shareBottomDialog.setShareBitmap(null);
+                                                                    shareBottomDialog.setPercentage(percentage + "");
+                                                                    redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    redPaperParams.setTitle(title);
+                                                                    redPaperParams.setText(intro);
+                                                                    redPaperParams.setImageUrl(background);
+                                                                    redPaperParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到朋友圈平台。
+                                                                    JShareInterface.share(WechatMoments.Name, redPaperParams, shareListener);
+//                                                                    closeProgress();
+                                                                    closeLoadingDialog();
+                                                                }
+                                                                break;
+                                                            case R.id.mRlQQ:
+                                                                if (shareType.equals("SHARE_IMAGE")) {
+                                                                    showLoadingDialog();
+                                                                    redPaperParams.setShareType(Platform.SHARE_IMAGE);
+                                                                    ThreadUtils.runOnSubThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Bitmap bitmap = ImageUtils.returnBitMap(url);
+                                                                            String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                                    bitmap, "share.png").getAbsolutePath();
+                                                                            redPaperParams.setImagePath(absolutePath);
+                                                                            //调用分享接口share ，分享到QQ平台。
+                                                                            JShareInterface.share(QQ.Name, redPaperParams, shareListener);
+//                                                                            closeProgress();
+                                                                            closeLoadingDialog();
+                                                                        }
+                                                                    });
+                                                                    /*Bitmap imgBitmap = ImageUtils.returnBitMap(url);
+                                                                    String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                            imgBitmap, "share.png").getAbsolutePath();
+                                                                    redPaperParams.setImagePath(absolutePath);*/
+//                                                                    redPaperParams.setTitle(intro);
+                                                                } else {
+                                                                    shareBottomDialog.setShareBitmap(null);
+                                                                    shareBottomDialog.setPercentage(percentage + "");
+                                                                    redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    redPaperParams.setTitle(title);
+                                                                    redPaperParams.setText(intro);
+                                                                    redPaperParams.setImageUrl(background);
+                                                                    redPaperParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到QQ平台。
+                                                                    JShareInterface.share(QQ.Name, redPaperParams, shareListener);
+//                                                                    closeProgress();
+                                                                    closeLoadingDialog();
+                                                                }
+                                                                break;
+                                                            case R.id.mRlWeibo:
+                                                                if (shareType.equals("SHARE_IMAGE")) {
+                                                                    showLoadingDialog();
+                                                                    redPaperParams.setShareType(Platform.SHARE_IMAGE);
+                                                                    ThreadUtils.runOnSubThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            Bitmap bitmap = ImageUtils.returnBitMap(url);
+                                                                            String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                                    bitmap, "share.png").getAbsolutePath();
+                                                                            redPaperParams.setImagePath(absolutePath);
+                                                                            //调用分享接口share ，分享到QQ平台。
+                                                                            JShareInterface.share(SinaWeibo.Name, redPaperParams, shareListener);
+//                                                                            closeProgress();
+                                                                            closeLoadingDialog();
+                                                                        }
+                                                                    });
+                                                                   /* String absolutePath = ImageUtils.saveUrlImgFile(
+                                                                            ImageUtils.drawableToBitmap(
+                                                                                    getResources().getDrawable(R.mipmap.piker)), "share.png").getAbsolutePath();
+                                                                    redPaperParams.setImagePath(absolutePath);*/
+//                                                                    redPaperParams.setTitle(intro);
+                                                                } else {
+                                                                    shareBottomDialog.setShareBitmap(null);
+                                                                    shareBottomDialog.setPercentage(percentage + "");
+                                                                    redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    redPaperParams.setTitle(title);
+                                                                    redPaperParams.setText(intro);
+                                                                    redPaperParams.setImageUrl(background);
+                                                                    redPaperParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到QQ平台。
+                                                                    JShareInterface.share(SinaWeibo.Name, redPaperParams, shareListener);
+//                                                                    closeProgress();
+                                                                    closeLoadingDialog();
+                                                                }
+                                                                break;
+                                                            case R.id.share_close:
+                                                                if (System.currentTimeMillis() <= Long.valueOf(endTime)) {
+                                                                    lightCube(point);
+                                                                }
+                                                                shareBottomDialog.dismiss();
+                                                                break;
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                    }
+                                }
+                            });
+                    if (System.currentTimeMillis() <= Long.valueOf(endTime)) {
+                        lightCube(point);
+                    }
+                }
+            }
+        };
+    }
+
+    private void lightCube(LatLng point) {
+        SCHttpUtils.get()
+                .url(HttpApi.LIGHT_RUSH)
+                .addParams("token", SCCacheUtils.getCacheToken())
+                .addParams("currentUserId", SCCacheUtils.getCacheUserId())
+                .addParams("currentCharaterId", SCCacheUtils.getCacheCharacterId())
+                .addParams("latitude", point.latitude + "")
+                .addParams("longitude", point.longitude + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String rushActivityVo = JSONObject.parseObject(data).getString("rushActivityVo");
+                            clearance = JSONObject.parseObject(rushActivityVo).getString("clearance");//是否通关
+                            String level = JSONObject.parseObject(rushActivityVo).getString("level");
+                            String activityEndTime = JSONObject.parseObject(rushActivityVo).getString("endTime");
+                            String presentTime = JSONObject.parseObject(rushActivityVo).getString("presentTime");
+                            String surplusCount = JSONObject.parseObject(rushActivityVo).getString("surplusCount");
+                            String totalAmount = JSONObject.parseObject(rushActivityVo).getString("totalAmount");
+                            String reward = JSONObject.parseObject(rushActivityVo).getString("reward");
+
+                            addMoney.setText(TextUtils.isEmpty(reward) ? "+ 0.0" : "+ " + reward);
+                            totalMoney.setText("￥ " + totalAmount + "");
+                            checkPointNum.setText(surplusCount + "");
+                            checkPoint.setText("第 " + level + " 关");
+                            final DecimalFormat df = new DecimalFormat("00");
+                            if (endTime == null) {
+                                return;
+                            }
+                            standardDialog = new StandardDialog(HomeActivity.this);
+                            standardDialog.setStandardTitle("点亮活动已结束");
+                            standardDialog.setStandardMsg("快去【我的钱包】中看看你赢得了多少奖励");
+                            CountDownTimer countDownTimer = new CountDownTimer(Long.valueOf(endTime) - System.currentTimeMillis(), 1000) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    long millisSecond = millisUntilFinished / 1000;
+                                    long day = millisSecond / (60 * 60 * 24);//转换为天为单位
+                                    long hour = (millisSecond / (60 * 60) - day * 24);
+                                    long min = ((millisSecond / 60) - day * 24 * 60 - hour * 60);
+                                    long s = (millisSecond - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+                                    tvTimeDown.setText(df.format(hour) + ":" + df.format(min) + ":" + df.format(s));
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    tvTimeDown.setText("00:00:00");
+                                    relativeCountDown.setVisibility(View.GONE);
+                                    relativeRush.setVisibility(View.GONE);
+//                                    ToastUtils.showToastLong(HomeActivity.this,"点亮活动已结束，");
+
+//                                    if (isFirstShow == true) {
+                                    standardDialog.show();
+//                                    }
+                                }
+                            };
+                            if (System.currentTimeMillis() <= Long.valueOf(endTime)) {
+                                countDownTimer.start();
+                                if (clearance.equals("false")) {
+                                    if (surplusCount.equals("0")) {
+                                        countDownTimer.cancel();
+                                        String shareType = "SHARE_WEBPAGE";
+                                        shareBottomDialog = new CustomDialog(HomeActivity.this,
+                                                true, true, 1.0,
+                                                R.layout.layout_bottom_share, new int[]{R.id.share_image,
+                                                R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+                                        shareBottomDialog.setShareBitmap(ImageUtils.drawableToBitmap(getResources().getDrawable(R.mipmap.red_package)), true);
+//                                shareBottomDialog.setShow(false);
+                                        if (level.equals("4")) {
+//                                        shareBottomDialog.setDrawableId(R.mipmap.pig);
+                                            shareBottomDialog.setShareBitmap(ImageUtils.drawableToBitmap(getResources().getDrawable(R.mipmap.pig)), false);
+                                            shareType = "SHARE_IMAGE";
+                                        }
+                                        shareBottomDialog.show();
+                                        Message message = new Message();
+                                        message.what = 1;
+                                        message.obj = shareType;
+                                        levelHandle.sendMessage(message);
+                                    }
+                                    if (clearance.equals("true")) {
+                                        relativeCountDown.setVisibility(View.GONE);
+                                        relativeRush.setVisibility(View.GONE);
+                                    }
+                                } else {
+                                    countDownTimer.cancel();
+                                    countDownTimer.onFinish();
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
 
     //点击请求方区
     public void initCubeMap(LatLng point) {
@@ -346,22 +755,25 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             final double lang = Double.valueOf(strings[1]);
                             final String latLocation, langLocation;
                             DecimalFormat df = new DecimalFormat("#.00");
+                            DecimalFormat enDf = new DecimalFormat("#.00");
+//                            String sta = getResources().getConfiguration().locale.getLanguage();
+                            String sta = MyApplication.systemLanguge;
                             if (lat < 0) {
-                                latLocation = "南纬" + df.format(lat);
+                                latLocation = sta.equals("zh") ? "南纬" + df.format(lat) : enDf.format(lat) + "'S";
 
                             } else {
-                                latLocation = "北纬" + df.format(lat);
+                                latLocation = sta.equals("zh") ? "北纬" + df.format(lat) : enDf.format(lat) + "'N";
                             }
                             if (lang > 0) {
-                                langLocation = "东经" + df.format(lang);
+                                langLocation = sta.equals("zh") ? "东经" + df.format(lang) : enDf.format(lang) + "'E";
 
                             } else {
-                                langLocation = "西经" + df.format(lang);
+                                langLocation = sta.equals("zh") ? "西经" + df.format(lang) : enDf.format(lang) + "'W";
                             }
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvLocation.setText(langLocation + "°," + latLocation + "°");
+                                    tvLocation.setText(langLocation + " °," + latLocation + " °");
                                 }
                             });
 
@@ -404,6 +816,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //                            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(desLatLng); //转换后的坐标
                             MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint); //未转换的坐标
                             baiduMap.setMapStatus(mapStatusUpdate);
+                            baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
 
                             //构建Marker图标
                             BitmapDescriptor bitmap = BitmapDescriptorFactory
@@ -430,6 +843,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     //请求接口数据
     private void initData(LatLng gpsLatLng) {
 //        LatLng myLatLang = new LatLng(20.045082, 110.32447);
+        shareRedPaperDialog();
         //获取周边
         showProgress();
         SCHttpUtils.get()
@@ -618,6 +1032,46 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         closeProgress();
                     }
                 });
+
+        /*点亮活动信息*/
+        SCHttpUtils.get()
+                .url(HttpApi.LIGHT_ACTIVE)
+                .addParams("token", SCCacheUtils.getCacheToken() + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求失败 #######");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求成功 #######");
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data") != null ? JSONObject.parseObject(response).getString("data") : "暂无活动";
+                            if (data.equals("暂无活动")) return;
+                            ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
+                            startTme = JSONObject.parseObject(data).getString("startTime");
+                            endTime = JSONObject.parseObject(data).getString("endTime");
+                            activityHandler.sendEmptyMessage(1);
+                            if (System.currentTimeMillis() <= Long.valueOf(startTme)) {
+                                relativeCountDown.setVisibility(View.VISIBLE);
+                                relativeRush.setVisibility(View.GONE);
+                                isShowRush = false;
+                            }
+                            if (System.currentTimeMillis() <= Long.valueOf(endTime) && System.currentTimeMillis() >= Long.valueOf(startTme)) {
+                                relativeCountDown.setVisibility(View.GONE);
+                                relativeRush.setVisibility(View.VISIBLE);
+                            }
+                            if (System.currentTimeMillis() > Long.valueOf(endTime)) {
+                                relativeCountDown.setVisibility(View.GONE);
+                                relativeRush.setVisibility(View.GONE);
+                                linearRule.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                });
     }
 
     private void initDeviceToken() {
@@ -766,13 +1220,75 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     }
 
     private void initView() {
+        //跨年倒计时
+        activityHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    Calendar startCalendar = Calendar.getInstance();
+                    Calendar endCalendar = Calendar.getInstance();
+                    final int mHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+                    final int minutes = startCalendar.get(Calendar.MINUTE);
+                    final int second = startCalendar.get(Calendar.SECOND);
+
+                    endCalendar.setTime(new Date(Long.valueOf(endTime)));//活动结束时间
+                    startCalendar.setTime(new Date(Long.valueOf(startTme)));//活动开始时间
+                    final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+                    final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+                    final long allCountDown = Long.valueOf(startTme) - System.currentTimeMillis();//(endDay - startDay) * 24 * 60 * 60 * 1000
+//                    if (allCountDown> 0){
+//
+//                    }
+                    CountDownTimer countDownTimer = new CountDownTimer(allCountDown, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            DecimalFormat df = new DecimalFormat("00");
+                            long millisSecond = millisUntilFinished / 1000;
+                            long day = millisSecond / (60 * 60 * 24);
+                            long hour = (millisSecond / (60 * 60) - day * 24);
+                            long min = ((millisSecond / 60) - day * 24 * 60 - hour * 60);
+                            long s = (millisSecond - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+                            if (allCountDown < 2 * 24 * 60 * 60 * 1000) {
+                                long mHour = (millisSecond / (60 * 60));
+                                long mMin = ((millisSecond / 60) - day * 24 * 60 - hour * 60);
+                                long mS = (millisSecond - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+//                                tvCountDown.setText(df.format(hour - mHour) + ":" + df.format(min - minutes) + ":" + df.format(s) + "");
+                                tvCountDown.setText(df.format(mHour) + ":" + df.format(mMin) + ":" + df.format(mS) + "");
+                                tvSecond.setText("秒");
+                            } else {
+                                tvCountDown.setText(day + "");
+                            }
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            tvCountDown.setText("活动结束");
+                            relativeRush.setVisibility(View.GONE);
+                            relativeCountDown.setVisibility(View.GONE);
+                        }
+                    };
+
+//                    if (System.currentTimeMillis() <= Long.valueOf(startTme)) {
+                    if (allCountDown > 0) {
+                        countDownTimer.start();
+                    } else {
+                        countDownTimer.cancel();
+
+                    }
+
+                }
+            }
+        };
+
         //初始化并发起权限申请
         mPermissionHelper = new PermissionHelper(this, this);
         mPermissionHelper.requestPermissions();
         linearRule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomDialog ruleDialog = new CustomDialog(HomeActivity.this, false, 1.0, R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
+                ruleDialog = new CustomDialog(HomeActivity.this, false, 1.0, R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
+                ruleDialog.setMessageContent(ruleDescribe);
                 ruleDialog.show();
                 ruleDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                     @Override
@@ -784,6 +1300,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         }
                     }
                 });
+
             }
         });
         //通知栏
@@ -889,6 +1406,15 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
              */
             public void onMapClick(LatLng point) {
                 initCubeMap(point);
+                transYear(point);
+//                isShowRush = true;
+//                if (isShowRush) {
+//                    relativeCountDown.setVisibility(View.GONE);
+//                    relativeRush.setVisibility(View.VISIBLE);
+//                } else {
+//                    relativeRush.setVisibility(View.GONE);
+//                }
+//                shareRedPaperDialog();
                 locationClient.requestLocation();
             }
 
@@ -923,111 +1449,254 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         notificationManager.createNotificationChannel(channel);
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void sharedChatRoom(EventMessage eventMessage) {
         if (eventMessage.getCode() == RequestCode.SCREENSHOT) {
-//            ToastUtils.showToast(HomeActivity.this, "分享元社区");
             LogUtils.d("sharedChatRoom:", "分享元社区");
-            new Thread(new Runnable() {
+            final List imgList = new ArrayList<String>();
+            shareChatRoomHandle = new Handler() {
                 @Override
-                public void run() {
-                    Bitmap captureScreen = ImageUtils.captureScreen(HomeActivity.this);
-                    cropScreenBitmap = ImageUtils.cropScreenBitmap(captureScreen);
-                }
-            }).start();
-            final ShareParams shareParams = new ShareParams();//分享参数
-            final CustomDialog shareBottomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
-            ImageView shareImage = (ImageView) shareBottomDialog.getView(HomeActivity.this, R.id.share_image);
-            shareImage.setImageBitmap(cropScreenBitmap);
-            try {
-                imgeFile = ImageUtils.saveFile(cropScreenBitmap, "cropScreen.png");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            shareBottomDialog.show();
-            mPlatActionListener = new PlatActionListener() {
-                @Override
-                public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
-                    if (handler != null) {
-                        Message message = handler.obtainMessage();
-                        message.obj = "分享成功";
-                        handler.sendMessage(message);
-                    }
-                }
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    if (msg.what == 1) {
+                        imgList.add(captureScreenFile.getAbsolutePath());
+                        showLoadingDialog(true);
+                        SCUploadImgHelper helper = new SCUploadImgHelper();
+                        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+                            @Override
+                            public void onUploadSuc(List<String> urls) {
+                                closeLoadingDialog();
+                                SCHttpUtils.postWithUserId()
+                                        .url(HttpApi.SHARE_CHAT_ROOM)
+                                        .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
+                                        .addParams("Img", urls.get(0) + "")
+                                        .addParams("id", roomID + "")
+                                        .build()
+                                        .execute(new StringCallback() {
+                                            @Override
+                                            public void onError(Call call, Exception e, int id) {
+                                                LogUtils.d("网络异常");
+                                            }
 
-                @Override
-                public void onError(Platform platform, int action, int errorCode, Throwable error) {
-                    if (handler != null) {
-                        Message message = handler.obtainMessage();
-                        message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
-                        Logger.dd(TAG, message.obj + "");
-                        handler.sendMessage(message);
-                    }
-                }
+                                            @Override
+                                            public void onResponse(String response, int id) {
+                                                String code = JSONObject.parseObject(response).getString("code");
+                                                if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                                    String data = JSONObject.parseObject(response).getString("data");
+                                                    final String chatRoomShareType = JSONObject.parseObject(data).getString("ShareType");
+                                                    String characterId = JSONObject.parseObject(data).getString("characterId");
+                                                    final String intro = JSONObject.parseObject(data).getString("intro");
+                                                    String background = JSONObject.parseObject(data).getString("background");
+                                                    final String url = JSONObject.parseObject(data).getString("url");
+                                                    final String title = JSONObject.parseObject(data).getString("title");
+                                                    //分享参数
+                                                    shareParams = new ShareParams();
+                                                    shareChatRoomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+                                                    shareChatRoomDialog.setViewId(R.id.share_image);
+                                                    shareChatRoomDialog.setShareBitmap(ImageUtils.getBitmapByFile(captureScreenFile));
+                                                    shareChatRoomDialog.show();
+                                                    shareChatRoomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                                                        @Override
+                                                        public void OnItemClick(CustomDialog dialog, View view) {
+                                                            switch (view.getId()) {
+                                                                case R.id.mRlWechat:
+//                                                                    if (chatRoomShareType.equals("SHARE_WEBPAGE")) {
+                                                                    shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    String absolutePath = captureScreenFile.getAbsolutePath();
+                                                                    shareParams.setImagePath(absolutePath);
+                                                                    shareParams.setText(intro);
+                                                                    shareParams.setTitle(title);
+                                                                    shareParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到微信平台。
+                                                                    JShareInterface.share(Wechat.Name, shareParams, shareListener);
+                                                                    closeLoadingDialog();
+//                                                                    }
+                                                                    break;
+                                                                case R.id.mRlWeixinCircle:
+                                                                    shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                    shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                    shareParams.setText(intro);
+                                                                    shareParams.setTitle(title);
+                                                                    shareParams.setUrl(url);
+                                                                    //调用分享接口share ，分享到朋友圈平台。
+                                                                    JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
+                                                                    break;
+                                                                case R.id.mRlQQ:
+                                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, "暂时不支持安卓8.0系统版本分享");
+                                                                    } else {
+                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setText(intro);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到QQ平台。
+                                                                        JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
+                                                                    }
+                                                                    break;
+                                                                case R.id.mRlWeibo:
+                                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, "暂时不支持安卓8.0系统以上分享");
+                                                                    } else {
+                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                        shareParams.setText(intro);
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到新浪微博平台。
+                                                                        JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
+                                                                    }
+                                                                    break;
+                                                                case R.id.share_close:
+                                                                    shareChatRoomDialog.dismiss();
+                                                                    break;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                            }
 
-                @Override
-                public void onCancel(Platform platform, int action) {
-                    if (handler != null) {
-                        Message message = handler.obtainMessage();
-                        message.obj = "分享取消";
-                        handler.sendMessage(message);
+                            @Override
+                            public void error() {
+                                closeLoadingDialog();
+                            }
+                        });
+                        helper.upLoadImg(HomeActivity.this, imgList);
                     }
                 }
             };
-            shareBottomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+
+//            for (int i = 0; i < coordinates.size(); i++) {
+//                int left = coordinatesList
+//                new Rect()
+//            }
+//            baiduMap.snapshotScope();
+            baiduMap.snapshot(new BaiduMap.SnapshotReadyCallback() {
                 @Override
-                public void OnItemClick(CustomDialog dialog, View view) {
-                    switch (view.getId()) {
-                        case R.id.mRlWechat:
-                            shareParams.setShareType(Platform.SHARE_TEXT);
-                            shareParams.setText("分享的文本！！");
-                            shareParams.setTitle("分享的标题！！");
-                            //调用分享接口share ，分享到QQ平台。
-                            JShareInterface.share(Wechat.Name, shareParams, mPlatActionListener);
-                            break;
-                        case R.id.mRlWeixinCircle:
-                            shareParams.setShareType(Platform.SHARE_TEXT);
-                            shareParams.setText("分享的文本！！");
-                            shareParams.setTitle("分享的标题！！");
-                            //调用分享接口share ，分享到QQ平台。
-                            JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
-                            break;
-                        case R.id.mRlQQ:
-//                            if (!JShareInterface.isAuthorize(QQ.Name)) {
-//                                JShareInterface.authorize(QQ.Name, mAuthListener);
-//                            }
-//                            shareParams.setShareType(Platform.SHARE_TEXT);
-//                            shareParams.setText("身边的人都在这");
-//                            shareParams.setTitle("马甲App");
-                            Bitmap drawableBitmap = ImageUtils.drawableToBitmap(getResources().getDrawable(R.mipmap.app_logo));
-                            try {
-//                                imgeFile = ImageUtils.readBitmap()
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
-                            shareParams.setTitle("马甲APP");
-                            shareParams.setText("身边的人都在这");
-                            shareParams.setUrl(SCCacheUtils.getCacheHeadImg());
-                            //调用分享接口share ，分享到QQ平台。
-                            JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
-                            break;
-                        case R.id.mRlWeibo:
-                            shareParams.setShareType(Platform.SHARE_TEXT);
-                            shareParams.setShareType(Platform.SHARE_IMAGE);
-                            shareParams.setText("身边的人都在这");
-                            //调用分享接口share ，分享到QQ平台。
-                            JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
-                            break;
-                        case R.id.share_close:
-                            shareBottomDialog.dismiss();
-                            break;
+                public void onSnapshotReady(Bitmap bitmap) {
+                    String filePath = ImageUtils.getSDPath() + "/shanchain/";
+                    captureScreenFile = new File(filePath + ImageUtils.getTempFileName() + ".png");
+                    FileOutputStream out;
+                    try {
+                        out = new FileOutputStream(captureScreenFile);
+                        if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                            out.flush();
+                            out.close();
+                        }
+                        shareChatRoomHandle.sendEmptyMessage(1);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             });
         }
     }
 
+    public void shareRedPaperDialog() {
+        redPaperList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            RedPaper redPaper = new RedPaper();
+//            redPaperList.add(redPaper);
+        }
+        redPaperHandle = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    redPaperDialog.setCallback(new com.shanchain.data.common.base.Callback() {
+                        @Override
+                        public void invoke() {
+                            SCHttpUtils.get()
+                                    .url(HttpApi.RED_PAPER_RECEIVE)
+                                    .addParams("token", SCCacheUtils.getCacheToken())
+                                    .addParams("characterId", SCCacheUtils.getCacheCharacterId())
+                                    .addParams("userId", SCCacheUtils.getCacheUserId())
+                                    .build()
+                                    .execute(new StringCallback() {
+                                        @Override
+                                        public void onError(Call call, Exception e, int id) {
+                                            LogUtils.d("网络异常");
+                                        }
+
+                                        @Override
+                                        public void onResponse(String response, int id) {
+                                            String code = JSONObject.parseObject(response).getString("code");
+                                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                                String data = JSONObject.parseObject(response).getString("data");
+                                                ThreadUtils.runOnMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        ToastUtils.showToastLong(HomeActivity.this, "领取成功，可在钱包中查看");
+                                                    }
+                                                });
+
+                                            }
+                                        }
+                                    });
+                        }
+                    }, new com.shanchain.data.common.base.Callback() {
+                        @Override
+                        public void invoke() {
+
+
+                        }
+                    });
+                }
+            }
+        };
+        SCHttpUtils.get()
+                .url(HttpApi.RED_PAPER_LIST)
+                .addParams("token", SCCacheUtils.getCacheToken())
+                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                .addParams("userId", "" + SCCacheUtils.getCacheUserId())
+                .addParams("page", "" + page)
+                .addParams("pageSize", "" + pageSize)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String content = JSONObject.parseObject(data).getString("content");
+                            String totalElements = JSONObject.parseObject(data).getString("totalElements");
+                            redPaperList = JSONObject.parseArray(content, RedPaper.class);
+                            redPaperDialog = new RedPaperDialog(HomeActivity.this);
+                            redPaperDialog.setDialogAdapter(new BaseQuickAdapter<RedPaper, BaseViewHolder>(R.layout.layout_coupon_detail_person_info, redPaperList) {
+                                @Override
+                                protected void convert(BaseViewHolder helper, RedPaper item) {
+                                    CircleImageView avatar = helper.getView(R.id.iv_item_story_avatar);
+                                    RequestOptions options = new RequestOptions();
+                                    options.placeholder(R.mipmap.aurora_headicon_default);
+                                    Glide.with(HomeActivity.this).load(item.getImgUrl()).apply(options).into(avatar);
+                                    TextView name = helper.getView(R.id.tv_item_story_name);
+                                    TextView from = helper.getView(R.id.tv_item_story_from);
+                                    TextView amount = helper.getView(R.id.even_message_bounty);
+                                    name.setText(item.getName());
+                                    from.setText("来自" + item.getShareUserName() + "的分享");
+                                    amount.setText("" + item.getAmount());
+
+                                }
+                            });
+                            if (!totalElements.equals("0")) {
+                                redPaperDialog.show();
+                                redPaperHandle.sendEmptyMessage(1);
+                            }
+                        }
+                    }
+                });
+
+    }
 
     @Override
     public int getPermissionsRequestCode() {
@@ -1051,7 +1720,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     public void requestPermissionsSuccess() {
         initBaiduMap();
         locationClient.restart();
-
     }
 
     @Override
@@ -1102,11 +1770,32 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         super.onResume();
     }
 
-    @OnClick({R.id.image_view_history})
+    @OnClick({R.id.image_view_history, R.id.img_view_hide})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_history:
                 readyGo(FootPrintActivity.class);
+                break;
+            case R.id.img_view_hide:
+
+//                shareRedPaperDialog();
+                if (isHide) {
+                    hideImageView.setBackground(getResources().getDrawable(R.mipmap.home_show));
+                    btJoin.setVisibility(View.GONE);
+                    linearReset.setVisibility(View.GONE);
+                    linearHot.setVisibility(View.GONE);
+                    tvLocation.setVisibility(View.GONE);
+                    isHide = false;
+                } else {
+                    hideImageView.setBackground(getResources().getDrawable(R.mipmap.home_hide));
+                    btJoin.setVisibility(View.VISIBLE);
+                    linearReset.setVisibility(View.VISIBLE);
+                    linearHot.setVisibility(View.VISIBLE);
+                    tvLocation.setVisibility(View.VISIBLE);
+                    isHide = true;
+                }
+                Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);//加载动画资源文件
+                hideImageView.setAnimation(shake);
                 break;
         }
 
@@ -1171,6 +1860,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 baiduMap.setMapStatus(mapStatusUpdate);
 
                 initData(latLng);
+                transYear(latLng);
                 baiduMap.setOnMapClickListener(MapListener);
 
 //                LogUtils.d("百度地图定位回调 " + bdLocation.getLocType() + "百度地图坐标 " + bdLocation.getCoorType() + "类型 " + bdLocation.getLongitude() + " " + bdLocation.getLatitude());
@@ -1190,7 +1880,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         mDialog = new ProgressDialog(this);
         mDialog.setMax(100);
         mDialog.setMessage("数据请求中..");
-        mDialog.setCancelable(false);
+        mDialog.setCancelable(true);
         mDialog.show();
     }
 
@@ -1261,7 +1951,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
         public void onEventMainThread(ChatRoomMessageEvent event) {
             Log.d("tag", "ChatRoomMessageEvent received .");
-           Conversation chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+            Conversation chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
             List chatRoomList = chatRoomConversation.getAllMessage();
             final List<cn.jpush.im.android.api.model.Message> msgs = event.getMessages();
             final MyMessage myMessage;
