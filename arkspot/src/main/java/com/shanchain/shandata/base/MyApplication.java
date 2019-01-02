@@ -43,6 +43,7 @@ import com.shanchain.shandata.utils.Utils;
 //import com.umeng.message.UmengMessageHandler;
 //import com.umeng.message.UmengNotificationClickHandler;
 //import com.umeng.message.entity.UMessage;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -172,7 +173,7 @@ public class MyApplication extends BaseApplication {
 
     /** bugly崩溃日志上报*/
     private void initBugly() {
-//        CrashReport.initCrashReport(getApplicationContext(),"adaaf0fcb3",true);
+        CrashReport.initCrashReport(getApplicationContext(),"adaaf0fcb3",true);
     }
 
 //    private void initUmengSocial() {

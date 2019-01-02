@@ -93,6 +93,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.push.ExampleUtil;
+import com.shanchain.shandata.receiver.DownloadCompleteReceiver;
 import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.RNGDataBean;
@@ -319,6 +320,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
+        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
+
     }
 
     @Override
@@ -666,8 +669,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                 @Override
                                 public void onTick(long millisUntilFinished) {
                                     long millisSecond = millisUntilFinished / 1000;
-                                    long day = millisSecond / (60 * 60 * 24);//转换为天为单位
-                                    long hour = (millisSecond / (60 * 60) - day * 24);
+                                    long day = millisSecond / (60 * 60 * 24);//以天为单位，显示倒计时
+//                                    long hour = (millisSecond / (60 * 60) - day * 24);（当以天为计时单位时，小时数以24小时显示，减去day*24小时）
+                                    long hour = (millisSecond / (60 * 60));//以小时的单位显示倒计时
                                     long min = ((millisSecond / 60) - day * 24 * 60 - hour * 60);
                                     long s = (millisSecond - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
                                     tvTimeDown.setText(df.format(hour) + ":" + df.format(min) + ":" + df.format(s));
@@ -1127,7 +1131,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     //版本更新提示弹窗
     private void showUpdateDialog(final String url, final boolean force, String version) {
         String msg = "";
-        if (force) {
+//        if (force) {
+        if (true) {
             msg = "新版本有较大改进，马上更新吧";
         } else {
             msg = "确定要更新吗？";
@@ -1172,7 +1177,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             DownloadManager.Request down = new DownloadManager.Request(Uri.parse(url));
             down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
             down.setVisibleInDownloadsUi(true);
-            down.setTitle("马甲");
+            down.setTitle("马甲App");
             down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
 //            //down.setDestinationInExternalFilesDir(this, null, "arkspot-release.apk");
 //            String filePath = getCacheDir().getAbsoluteFile() + "arkspot-release.apk";
@@ -1642,7 +1647,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     }, new com.shanchain.data.common.base.Callback() {
                         @Override
                         public void invoke() {
-
 
                         }
                     });

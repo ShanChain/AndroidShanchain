@@ -566,9 +566,9 @@ public interface HttpApi {
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
-
-//        String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+    /* 钱包地址 */
+        String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+//    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
     /* 跨年活动信息 */
     String LIGHT_ACTIVE = BASE_URL + "/v1/2.0/light/active";

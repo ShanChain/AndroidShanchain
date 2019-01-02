@@ -99,6 +99,20 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
+
+        <!-- 注册下载完成安装apk广播接收器 -->
+        <receiver
+            android:name=".receiver.DownloadCompleteReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
         <!-- 极光推送 用户自定义的广播接收器 -->
         <receiver
             android:name=".receiver.MyReceiver"
@@ -173,7 +187,8 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".ui.view.activity.MainActivity">
+        <activity android:name=".ui.view.activity.MainActivity"
+            android:launchMode="singleTask">
             <meta-data
                 android:name="page_flag"
                 android:value="page_main" />

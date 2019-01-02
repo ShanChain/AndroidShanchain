@@ -376,7 +376,6 @@ public class ArcMenu extends ViewGroup implements OnClickListener, View.OnTouchL
                 public void onClick(View v) {
                     if (mMenuItemClickListener != null)
                         mMenuItemClickListener.onClick(childView, pos);
-
                     menuItemAnim(pos - 1);
                     changeStatus();
 

@@ -876,7 +876,7 @@ public class LoginActivity extends BaseActivity {
         mDialog = new ProgressDialog(this);
         mDialog.setMax(100);
         mDialog.setMessage(getResources().getString(R.string.str_dialog_logging));
-        mDialog.setCancelable(false);
+        mDialog.setCancelable(true);
         mDialog.show();
     }
 

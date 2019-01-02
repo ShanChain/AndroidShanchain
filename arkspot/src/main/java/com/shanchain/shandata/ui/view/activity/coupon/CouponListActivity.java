@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -60,7 +61,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
-        roomid = getIntent() != null ? getIntent().getStringExtra("roomId") : "0";
+        roomid = getIntent() != null ? getIntent().getStringExtra("roomId") : ""+SCCacheUtils.getCacheRoomId();
         initToolBar();
         initView();
 //        initData();

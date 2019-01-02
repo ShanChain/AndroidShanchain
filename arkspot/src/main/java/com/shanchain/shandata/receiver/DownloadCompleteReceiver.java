@@ -1,6 +1,7 @@
 package com.shanchain.shandata.receiver;
 
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -92,7 +93,8 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
             intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
+//        PendingIntent updatePendingIntent = PendingIntent.getActivity(
+//                context, 0, intent, 0);
         context.startActivity(intent);
     }
-
 }
