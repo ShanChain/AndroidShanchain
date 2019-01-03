@@ -59,7 +59,7 @@ project.ext.react = [
 ]
 
 //apply from: "../react-native/node_modules/react-native/react.gradle"
-apply from: "../RN_improv/node_modules/react-native/react.gradle"
+//apply from: "../RN_improv/node_modules/react-native/react.gradle"
 
 
 
