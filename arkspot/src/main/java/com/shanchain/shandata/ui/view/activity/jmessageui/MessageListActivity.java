@@ -387,7 +387,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         JMessageClient.registerEventReceiver(this, 1000);
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
-        LogUtils.d("roomId",roomID);
+        LogUtils.d("roomId", roomID);
 //        ToastUtils.showToast(MessageListActivity.this,""+roomID);
         roomName = intent.getStringExtra("roomName");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
@@ -1349,10 +1349,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             });
         } else {
             CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
-            if (characterInfo.getCharacterId() != 0) {
-                String nikeName = characterInfo.getName() + "";
-                String signature = characterInfo.getSignature() + "";
-                final String headImg = characterInfo.getHeadImg();
+            if (characterInfo != null && characterInfo.getCharacterId() != 0) {
+                String nikeName = characterInfo.getName() != null ? characterInfo.getName() : "";
+                String signature = characterInfo.getSignature() != null ? characterInfo.getSignature() : "";
+                final String headImg = characterInfo.getHeadImg() != null ? characterInfo.getHeadImg() : "";
                 JmAccount jmUserInfo = new JmAccount();
                 if (!TextUtils.isEmpty(nikeName)) {
                     userNikeView.setText(nikeName);
@@ -1378,7 +1378,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     @Override
                     public void run() {
                         if (!TextUtils.isEmpty(headImg)) {
-                            Glide.with(MessageListActivity.this).load(headImg).into(userHeadView);
+                            RequestOptions options = new RequestOptions();
+                            options.placeholder(R.mipmap.aurora_headicon_default);
+                            Glide.with(MessageListActivity.this).load(headImg).apply(options).into(userHeadView);
                         }
                     }
                 });
@@ -3296,7 +3298,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (chatInputView.getMenuState() == View.VISIBLE) {
                     chatInputView.dismissMenuLayout();
                 }
-
                 try {
                     View v = getCurrentFocus();
                     if (mImm != null && v != null) {

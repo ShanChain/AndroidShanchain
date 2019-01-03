@@ -1111,8 +1111,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         PackageManager packageManager = getApplicationContext().getPackageManager();
                         String packagerName = getApplicationContext().getPackageName();
                         try {
+                            //获取当前版本号
                             String versionCode = packageManager.getPackageInfo(packagerName, 0).versionName;
-                            ToastUtils.showToast(HomeActivity.this, versionCode);
+//                            ToastUtils.showToast(HomeActivity.this, versionCode);
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
                         }
