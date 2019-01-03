@@ -9,6 +9,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.shanchain.shandata.permission.JPUSH_MESSAGE" />
+    <!-- 读取存储卡权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -45,8 +46,14 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- SD卡获取日志打印信息 -->
-    <uses-permission android:name="android.permission.READ_LOGS" />
-
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
+    <!-- 安装apk的权限 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission
+        android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
     <!-- 通知栏 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
@@ -109,6 +116,7 @@
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -187,20 +195,24 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".ui.view.activity.MainActivity"
+        <activity
+            android:name=".ui.view.activity.MainActivity"
             android:launchMode="singleTask">
             <meta-data
                 android:name="page_flag"
                 android:value="page_main" />
         </activity>
-        <activity android:name=".rn.activity.SCWebViewActivity" >
+        <activity android:name=".rn.activity.SCWebViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="schemedemo"
+
+                <data
                     android:host="ihongqiqu.com"
-                    android:pathPrefix="/test/"/>
+                    android:pathPrefix="/test/"
+                    android:scheme="schemedemo" />
             </intent-filter>
         </activity>
         <!-- 添加 FaceBook 的 ReactNative 调试的 activity -->
@@ -367,10 +379,9 @@
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.tasklist.TaskListActivity">
-        </activity>
+        <activity android:name=".ui.view.activity.tasklist.TaskListActivity"></activity>
         <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
-        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity" >
+        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

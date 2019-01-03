@@ -34,7 +34,7 @@ import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import okhttp3.Call;
 
-public class BindPhoneActivity extends BaseActivity {
+public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
     private ArthurToolBar toolBar;
     private EditText editTextAccount;
     private EditText editTextCode;
@@ -170,4 +170,8 @@ public class BindPhoneActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void onLeftClick(View v) {
+        finish();
+    }
 }

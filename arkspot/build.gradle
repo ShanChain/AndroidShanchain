@@ -10,7 +10,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 7
-        versionName "2.1.0"
+        versionName "2.1.1"
         flavorDimensions "versionCode"
 
 
@@ -179,7 +179,6 @@ dependencies {
     implementation 'cn.jiguang.sdk:jmessage:2.7.1'
     // 此处以JCore 1.2.5 版本。
     implementation 'cn.jiguang.sdk:jcore:1.2.6'
-
     // 此处以JShare 1.6.0 版本为例，具体版本请参考压缩包libs的jar包版本。
     implementation 'cn.jiguang.sdk:jshare:1.6.0'
     implementation 'cn.jiguang.sdk:jshare-qqmodel:1.6.0'

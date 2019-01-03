@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +21,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.IdRes;
@@ -77,6 +79,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.net.UpdateAppHttpUtil;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.RedPaperDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
@@ -107,6 +110,9 @@ import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.widgets.pickerimage.utils.ImageUtil;
+import com.vector.update_app.UpdateAppBean;
+import com.vector.update_app.UpdateAppManager;
+import com.vector.update_app.service.DownloadService;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -320,7 +326,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
-        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
+//        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
 
     }
 
@@ -1102,6 +1108,15 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        PackageManager packageManager = getApplicationContext().getPackageManager();
+                        String packagerName = getApplicationContext().getPackageName();
+                        try {
+                            String versionCode = packageManager.getPackageInfo(packagerName, 0).versionName;
+                            ToastUtils.showToast(HomeActivity.this, versionCode);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
                         try {
                             LogUtils.i("获取到版本信息 = " + response);
                             String code = SCJsonUtils.parseCode(response);
@@ -1131,8 +1146,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     //版本更新提示弹窗
     private void showUpdateDialog(final String url, final boolean force, String version) {
         String msg = "";
-//        if (force) {
-        if (true) {
+        if (force) {
             msg = "新版本有较大改进，马上更新吧";
         } else {
             msg = "确定要更新吗？";
@@ -1166,9 +1180,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     //下载APK版本
     private void downLoadApk(String url) {
         DownloadManager manager;
-
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Query query = new DownloadManager.Query();
+        /*DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(downloadId);
         query.setFilterByStatus(DownloadManager.STATUS_RUNNING);//正在下载
         Cursor c = manager.query(query);
@@ -1185,7 +1198,69 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //            Uri.withAppendedPath(Uri.fromFile(getCacheDir()),"arkspot-release.apk");
             down.setDestinationUri(Uri.withAppendedPath(Uri.fromFile(getExternalCacheDir()), "arkspot-release.apk"));
             downloadId = manager.enqueue(down);
+        }*/
+
+        UpdateAppBean updateAppBean = new UpdateAppBean();
+        //设置 apk 的下载地址
+        updateAppBean.setApkFileUrl(url);
+        String path = "";
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || !Environment.isExternalStorageRemovable()) {
+            try {
+                path = getExternalCacheDir().getAbsolutePath();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (TextUtils.isEmpty(path)) {
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            }
+        } else {
+            path = getCacheDir().getAbsolutePath();
         }
+
+        //设置apk 的保存路径
+        updateAppBean.setTargetPath(path);
+        //实现网络接口，只实现下载就可以
+        updateAppBean.setHttpManager(new UpdateAppHttpUtil());
+
+        UpdateAppManager.download(this, updateAppBean, new DownloadService.DownloadCallback() {
+            @Override
+            public void onStart() {
+//                HProgressDialogUtils.showHorizontalProgressDialog(JavaActivity.this, "下载进度", false);
+                Log.d(TAG, "onStart() called");
+            }
+
+            @Override
+            public void onProgress(float progress, long totalSize) {
+//                HProgressDialogUtils.setProgress(Math.round(progress * 100));
+                Log.d(TAG, "onProgress() called with: progress = [" + progress + "], totalSize = [" + totalSize + "]");
+
+            }
+
+            @Override
+            public void setMax(long totalSize) {
+                Log.d(TAG, "setMax() called with: totalSize = [" + totalSize + "]");
+            }
+
+            @Override
+            public boolean onFinish(File file) {
+//                HProgressDialogUtils.cancel();
+                Log.d(TAG, "onFinish() called with: file = [" + file.getAbsolutePath() + "]");
+                return true;
+            }
+
+            @Override
+            public void onError(String msg) {
+//                HProgressDialogUtils.cancel();
+                Log.e(TAG, "onError() called with: msg = [" + msg + "]");
+            }
+
+            @Override
+            public boolean onInstallAppAndAppOnForeground(File file) {
+                Log.d(TAG, "onInstallAppAndAppOnForeground() called with: file = [" + file + "]");
+                return false;
+            }
+        });
+
     }
 
     private void setDeviceToken() {

@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
 
+import com.shanchain.data.common.utils.ToastUtils;
+
 import java.io.File;
 
 /**
@@ -75,6 +77,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
                     int fileName1Idx = myDownload.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
                     fileName = myDownload.getString(fileName1Idx);
                 }
+                ToastUtils.showToast(context,"下载完成");
                 installAPK(fileName, context);
             }
         }
