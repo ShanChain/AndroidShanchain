@@ -14,7 +14,6 @@ import com.shanchain.data.common.base.CommonConstants;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.cache.BaseSqlDao;
-import com.shanchain.data.common.rn.AppReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,8 +47,7 @@ public class BaseApplication extends Application implements ReactApplication {
         @Override
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-                    new AppReactPackage()
+                    new MainReactPackage()
 //                    new SettingReactPackage()
             );
         }
