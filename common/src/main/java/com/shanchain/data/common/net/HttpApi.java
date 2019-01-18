@@ -513,7 +513,7 @@ public interface HttpApi {
     /* 获取聊天室历史消息*/
     String CHAT_ROOM_HISTORY_MESSAGE = BASE_URL + "/jm/room/message";
     /* 获取聊天室成员*/
-    String CHAT_ROOM_MEMBER = BASE_URL + "/jm/room/members";
+    String CHAT_ROOM_MEMBER = BASE_URL + "/jm/room/RoomMembers";
     /* 更新极光用户信息 */
     String CHAT_USER_UPDATE = BASE_URL + "/jm/user/update";
     //    String CHAT_ROOM_HISTORY_MESSAGE = "http://95.169.24.11:8082" + "/jm/room/message";
@@ -567,9 +567,13 @@ public interface HttpApi {
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
     /* 钱包地址 */
-        String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-//    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    //    String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
+    //查询钱包信息
+    String WALLET_INFO = BASE_URL + "/web/api/wallet/info";
+    /* 实名认证 */
+    String VERIFIED = BASE_URL + "/v1/2.0/Verified";
     /* 跨年活动信息 */
     String LIGHT_ACTIVE = BASE_URL + "/v1/2.0/light/active";
     /* 活动闯关 */
@@ -589,6 +593,22 @@ public interface HttpApi {
     String COUPONS_LIST = BASE_URL + "/wallet/api/coupons/vendor/list";
     /* 创建卡券 */
     String COUPONS_CREATE = BASE_URL + "/wallet/api/coupons/vendor/create";
+    /* 获取用户已发布的卡券列表 */
+    String COUPONS_CREATE_LIST = BASE_URL + "/wallet/api/coupons/vendor/createList";
+    /* 获取用户已领取的子卡券列表 和 获取子卡劵*/
+    String COUPONS_RECEIVER_LIST = BASE_URL + "/wallet/api/coupons/client/getList";
+    /* 创建方获取主卡劵详情 */
+    String MY_CREATE_COUPONS_INFO = BASE_URL + "/wallet/api/coupons/vendor/Get";
+    /* 子卡劵详情 */
+    String SUB_COUPONS_INFO = BASE_URL + "/wallet/api/coupons/client/Get";
+    /* 判断符号是否被占用 */
+    String COUPON_CODE_CHECK = BASE_URL + "/wallet/api/coupons/vendor/check";
+    /* 领取卡劵 */
+    String COUPON_GET_COUPONS = BASE_URL + "/wallet/api/coupons/client/getCoupons";
+    /* 创建卡劵详情 领取人员列表 */
+    String COUPON_CLIENT_LIST = BASE_URL + "/wallet/api/coupons/vendor/clientList";
+    /* 核销子卡劵 */
+    String COUPON_CLIENT_USE = BASE_URL + "/wallet/api/coupons/client/useCoupons";
 
 
 }

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.coupon.CouponDetailsActivity">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_coupon_detail"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextThree"
+        app:titleTextSize="16">
+
+    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+
+    <LinearLayout
+        android:id="@+id/linear_coupon_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb_coupon_detail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:layout_marginRight="@dimen/dimens_20dp"
+        android:background="@null"
+        android:orientation="vertical">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_22dp"
+            android:layout_marginTop="@dimen/dimens_22dp"
+            android:layout_marginRight="@dimen/dp_10"
+            tools:showIn="@layout/item_coupon_one">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_item_story_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/aurora_headicon_default"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/even_message_bounty"
+                android:layout_toLeftOf="@+id/even_message_bounty"
+                android:text="￥"
+                android:textColor="@color/colorViolet"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/even_message_bounty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_10dp"
+                android:padding="2dp"
+                android:text="2"
+                android:textColor="@color/colorViolet"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/tv_item_story_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iv_item_story_avatar"
+                android:layout_marginLeft="@dimen/dimens_20dp"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@id/iv_item_story_avatar"
+                android:lines="1"
+                android:text=""
+                android:textColor="@color/ic_back_press"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_item_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_item_story_name"
+                android:layout_marginLeft="@dimen/dimens_20dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/iv_item_story_avatar"
+                android:lines="1"
+                android:text=""
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_12" />
+
+        </RelativeLayout>
+        <!-- 显示马甲劵详情 -->
+        <RelativeLayout
+            android:id="@+id/linear_show_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <TextView
+                android:id="@+id/tv_use_rule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_20dp"
+                android:text="使用规则："
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_coupon_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tv_use_rule"
+                android:layout_alignParentRight="true"
+                android:text="共 0 张"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_create_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_coupon_num"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dimens_5dp"
+                android:text="2019.5.20 "
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_rule_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_use_rule"
+                android:layout_marginLeft="@dimen/dimens_20dp"
+                android:ellipsize="end"
+                android:maxLines="5"
+                android:textSize="@dimen/sp_12"
+                android:text="" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_coupon_details_expiration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:gravity="bottom|left"
+            android:text="有效期至：2019-01-01  23:59"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_coupon_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_coupon_detail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_40"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待核销:"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_coupon_waiting_check_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="0"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="张"
+            android:textSize="@dimen/sp_12" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:text="已核销:"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_coupon_checked_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="0"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="张"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:textSize="@dimen/sp_12"
+            android:text="剩余：" />
+
+        <TextView
+            android:id="@+id/tv_coupon_surplus_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_12"
+            android:text="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_12"
+            android:text="张" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linear_coupon_check"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/colorTextThree" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_coupon_check_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view_line"
+        android:padding="@dimen/dimens_20dp">
+
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

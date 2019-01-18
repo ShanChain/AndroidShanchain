@@ -90,7 +90,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 break;
             case R.id.tv_register_terms:
                 //查看条款
-                Intent intent = new Intent(mContext, SCWebViewActivity.class);
+                Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
                 JSONObject obj = new JSONObject();
                 obj.put("url", "http://h5.qianqianshijie.com/agreement");
                 obj.put("title", "用户服务协议（草案）");

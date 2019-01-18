@@ -121,6 +121,20 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     private RelativeLayout relativeChatRoom;
 
+    /**
+     * 描述：底部文字布局
+     */
+    private RelativeLayout relativeCouponTitle;
+    /**
+     * 描述：底部文字-大厅
+     */
+    private TextView textViewHall;
+
+    /**
+     * 描述：底部文字-大厅
+     */
+    private TextView textViewPickUp;
+
     // 回调接口 ---------------------------------------------------
 
     /**
@@ -138,8 +152,8 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      */
     private OnRelativeChatRoomClickListener mRelativeChatRoomClickListener;
     /*
-    * 用户头像点击事件
-    * */
+     * 用户头像点击事件
+     * */
     private OnUserHeadClickListener onUserHeadClickListener;
 
     /**
@@ -258,6 +272,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         if (16 != rightTextSize) setRightTextSize(rightTextSize);
         if (0xff000000 != rightTextColor) setRightTextColor(rightTextColor);
         if (0xff000000 != rightImage) setRightImage(rightImage);
+        //底部文字属性
 
         //al 公共属性 是否禁用：默认为fse不禁用
         boolean disable = typedArray.getBoolean(R.styleable.ArthurToolbar_btnDisable, false);
@@ -291,6 +306,10 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         relativeChatRoom = mTitleLayoutView.findViewById(R.id.relative_chatRoom);
         mFavorite = mTitleLayoutView.findViewById(R.id.mFavorite); //收藏按钮
         chatRoomNum = mTitleLayoutView.findViewById(R.id.mRoomNum);//聊天室人数
+        //底部文字
+        relativeCouponTitle = mTitleLayoutView.findViewById(R.id.relative_coupon_title);
+        textViewHall = mTitleLayoutView.findViewById(R.id.tv_coupon_hall);
+        textViewPickUp = mTitleLayoutView.findViewById(R.id.tv_coupon_pick_up);
 
         mLeftText.setOnClickListener(this);
         mRightText.setOnClickListener(this);
@@ -365,7 +384,7 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
                         mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
                     }
                     break;
-                    //头像点击事件
+                //头像点击事件
                 case R.id.toolbar_user_head_img:
                     if (onUserHeadClickListener != null) {
                         onUserHeadClickListener.onUserHeadClick(v);
@@ -460,6 +479,28 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         chatRoomNum.setText(s);
     }
 
+    /*
+    * 底部布局（大厅/捡漏）
+    * */
+    public RelativeLayout getRelativeCouponTitle() {
+        return relativeCouponTitle;
+    }
+
+    public TextView getTextViewHall() {
+        return textViewHall;
+    }
+
+    public void setTextViewHall(String text) {
+        this.textViewHall.setText(text);
+    }
+
+    public TextView getTextViewPickUp() {
+        return textViewPickUp;
+    }
+
+    public void setTextViewPickUp(String text) {
+        this.textViewPickUp.setText(text);
+    }
 
     /**
      * 时间：15:20
@@ -526,13 +567,13 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         mLeftText.setCompoundDrawables(drawable, null, null, null);
     }
 
-  /*
-  * 设置用户头像
-  * */
-    public void setUserHeadImg(Context context,String url) { // 图标
-        if (null != userHeadImg){
-        userHeadImg.setVisibility(VISIBLE);
-        Glide.with(context).load(url).into(userHeadImg);
+    /*
+     * 设置用户头像
+     * */
+    public void setUserHeadImg(Context context, String url) { // 图标
+        if (null != userHeadImg) {
+            userHeadImg.setVisibility(VISIBLE);
+            Glide.with(context).load(url).into(userHeadImg);
         }
     }
 
@@ -540,9 +581,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 获取头像菜单
      * */
     public View getUserHeadImg() { // 图标
-        if (null != userHeadImg){
+        if (null != userHeadImg) {
             return userHeadImg;
-        }else {
+        } else {
             return null;
         }
     }

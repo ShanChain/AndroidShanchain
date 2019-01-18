@@ -9,6 +9,12 @@
             android:id="@+id/nav_my_wallet"
             android:title="@string/nav_my_wallet"
             />
+
+        <item
+            android:visible="true"
+            android:id="@+id/nav_my_coupon"
+            android:title="@string/nav_my_coupon" />
+
         <item
             android:visible="true"
             android:id="@+id/nav_my_task"
@@ -24,7 +30,7 @@
             android:title="@string/nav_my_favorited" />
 
         <item
-            android:visible="false"
+            android:visible="true"
             android:id="@+id/real_identity"
             android:title="@string/nav_real_identity" />
 

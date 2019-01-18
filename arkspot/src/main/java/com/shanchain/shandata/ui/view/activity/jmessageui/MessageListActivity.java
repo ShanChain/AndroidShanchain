@@ -65,6 +65,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
+import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
@@ -117,6 +118,8 @@ import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
@@ -301,6 +304,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private boolean mShowSoftInput = false;
     private boolean isRestartActivity = false;
     private GuideView guideView;
+    private int memberCount;
+
 
     /**
      * Store all image messages' path, pass it to {@link BrowserImageActivity},
@@ -332,6 +337,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private GuideView guideView2;
     private File captureScreenFile;
     private List imgList = new ArrayList();
+    private LatLng myLatLng;
     private Handler shareHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -792,7 +798,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
 
-
         mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
             @Override
             public void onTakePictureCompleted(String photoPath) {
@@ -927,8 +932,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     //初始化聊天数据
     private void initData(final String roomID) {
-        taskPresenter = new TaskPresenterImpl(this);
-        LatLng myLatLng = HomeActivity.latLng;
+//        taskPresenter = new TaskPresenterImpl(this);
+        myLatLng = HomeActivity.latLng;
         //获取是否是超级用户
         SCHttpUtils.get()
                 .url(HttpApi.SUPER_USER + "?token=" + SCCacheUtils.getCacheToken())
@@ -956,45 +961,21 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 });
 
         //获取聊天室信息
-        SCHttpUtils.get()
-                .url(HttpApi.CHAT_ROOM_INFO)
-                .addParams("longitude", myLatLng.longitude + "")
-                .addParams("latitude", myLatLng.latitude + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
-                        closeLoadingDialog();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        closeLoadingDialog();
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
-                            String data = JSONObject.parseObject(response).getString("data");
-                            coordinates = JSONObject.parseObject(data, Coordinates.class);
-                            //房间roomId
-                            if (roomID.equals(coordinates.getRoomId())) {
-                                isIn = true;
-                                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-                            } else {
-                                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(coordinates.getRoomId()));
-                                roomName = coordinates.getRoomName();
-                                isIn = false;
-                            }
-                            android.os.Message message = new android.os.Message();
-                            message.what = 3;
-                            message.obj = coordinates;
-                            messageHandler.sendMessage(message);
-                        }
-                    }
-                });
-//        if (null == chatRoomConversation) {
-//            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-//        }
+        if (myLatLng == null) {
+            locationClient = new LocationClient(getApplicationContext());//创建LocationClient对象
+            LocationClientOption option = new LocationClientOption();
+            option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，设置定位模式,LocationMode.Hight_Accuracy：高精度；
+            option.setCoorType("bd09ll");
+            option.setScanSpan(60 * 1000);//可选，设置发起定位请求的间隔，int类型，单位ms,需设置1000ms以上才有效
+            option.setOpenGps(true);//使用高精度和仅用设备两种定位模式的，参数必须设置为true
+            option.setWifiCacheTimeOut(5 * 60 * 1000);//如果设置了该接口，首次启动定位时，会先判断当前Wi-Fi是否超出有效期，若超出有效期，会先重新扫描Wi-Fi，然后定位
+            locationClient.setLocOption(option);
+            bdLocationListener = new MyLocationListener();
+            locationClient.registerLocationListener(bdLocationListener);//注册监听函数
+            locationClient.start();
+        } else {
+            getChatRoomInfo(roomID, myLatLng);
+        }
 
         messageHandler = new Handler() {
             @Override
@@ -1026,7 +1007,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         };
     }
-
 
     private void initView() {
 
@@ -1148,12 +1128,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             public void onClick(View view, int pos) {
                 mChatView.getChatInputView().setFocusable(false);
                 switch (view.getId()) {
+                    //马甲劵
+                    case R.id.linear_add_coupon:
+                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+                        Intent couponIntent = new Intent(MessageListActivity.this, CouponListActivity.class);
+                        couponIntent.putExtra("roomId", roomID);
+                        startActivity(couponIntent);
+                        break;
                     //查询任务
                     case R.id.linear_add_query:
                         mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
-                        Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
-                        intent.putExtra("roomId", roomID);
-                        startActivity(intent);
+                        Intent taskIntent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
+                        taskIntent.putExtra("roomId", roomID);
+                        startActivity(taskIntent);
                         break;
                     //添加任务
                     case R.id.linear_play:
@@ -1214,6 +1201,45 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         initTaskDialog();
 
 
+    }
+
+    private void getChatRoomInfo(final String roomID, LatLng latLng) {
+        SCHttpUtils.get()
+                .url(HttpApi.CHAT_ROOM_INFO)
+                .addParams("longitude", latLng.longitude + "")
+                .addParams("latitude", latLng.latitude + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
+                        closeLoadingDialog();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        closeLoadingDialog();
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
+                            String data = JSONObject.parseObject(response).getString("data");
+                            coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            //房间roomId
+                            if (roomID.equals(coordinates.getRoomId())) {
+                                isIn = true;
+                                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+                            } else {
+                                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(coordinates.getRoomId()));
+                                roomName = coordinates.getRoomName();
+                                isIn = false;
+                            }
+                            android.os.Message message = new android.os.Message();
+                            message.what = 3;
+                            message.obj = coordinates;
+                            messageHandler.sendMessage(message);
+                        }
+                    }
+                });
     }
 
     /*
@@ -1970,17 +1996,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mTbMain.isShowChatRoom(true);//显示聊天室成员信息
         roomNum = mTbMain.findViewById(R.id.mRoomNum);
         relativeChatRoom = mTbMain.findViewById(R.id.relative_chatRoom);
-        relativeChatRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                ToastUtils.showToast(MessageListActivity.this, "群成员列表");
-                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
-                intent.putExtra("roomId", roomId);
-                startActivity(intent);
-            }
-        });
-
-
         //获取聊天室信息
         final Set<Long> roomIds = new HashSet();
         final long chatRoomId = Long.valueOf(roomId);
@@ -1990,8 +2005,21 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             public void gotResult(int i, String s, List<ChatRoomInfo> chatRoomInfos) {
                 if (i == 0) {
                     int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
+                    memberCount = totalMember;
                     roomNum.setText("" + totalMember);
                 }
+            }
+        });
+
+        relativeChatRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ToastUtils.showToast(MessageListActivity.this, "群成员列表");
+
+                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
+                intent.putExtra("roomId", roomId);
+                intent.putExtra("count", memberCount);
+                startActivity(intent);
             }
         });
 
@@ -2282,9 +2310,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             String webParams = obj.toJSONString();
             intent.putExtra("webParams", webParams);
             startActivity(intent);
+        } else if (id == R.id.nav_my_coupon) {
+            Intent intent = new Intent(MessageListActivity.this, MyCouponListActivity.class);
+            intent.putExtra("roomId", roomID);
+            startActivity(intent);
         } else if (id == R.id.nav_my_task) {
             Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
-            intent.putExtra("roodId", roomID);
+            intent.putExtra("roomId", roomID);
             startActivity(intent);
 
         } else if (id == R.id.nav_my_message) {
@@ -2294,6 +2326,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             readyGo(FootPrintActivity.class);
 
         } else if (id == R.id.real_identity) {
+            readyGo(VerifiedActivity.class);
 
         } else if (id == R.id.nav_manage) {
             readyGo(feedbackActivity.class);
@@ -3354,6 +3387,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        }).start();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -3386,5 +3420,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             mDialog.dismiss();
         }
 
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            myLatLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+            getChatRoomInfo(roomID, myLatLng);
+        }
     }
 }

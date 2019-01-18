@@ -44,6 +44,7 @@ import com.shanchain.shandata.utils.Utils;
 //import com.umeng.message.UmengNotificationClickHandler;
 //import com.umeng.message.entity.UMessage;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -136,6 +137,8 @@ public class MyApplication extends BaseApplication {
         Utils.init(this);
         initOkhttpUtils();
         initJMessage();
+        //初始化二维码
+        ZXingLibrary.initDisplayOpinion(this);
 //        initUPush();
 //        initHuanXin();
         initDB();

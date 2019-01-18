@@ -33,11 +33,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/dimens_15dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="@dimen/dimens_15dp"
+                    android:layout_marginTop="@dimen/dimens_5dp"
                     android:text="查看"
                     android:textColor="@color/colorViolet"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
 
                 <TextView
@@ -46,10 +47,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginTop="@dimen/dimens_15dp"
-                    android:layout_marginLeft="@dimen/dimens_15dp"
+                    android:layout_marginLeft="@dimen/dimens_20dp"
                     android:text="QQLSEAT"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
@@ -68,6 +69,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="2"
                     android:gravity="left"
+                    android:textSize="10sp"
                     android:text="有效期：2018.10.20"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
@@ -80,7 +82,8 @@
                     android:layout_marginRight="@dimen/dp_10"
                     android:layout_weight="6"
                     android:gravity="right"
-                    android:text="剩余4张"
+                    android:text="剩余0张"
+                    android:textSize="10sp"
                     android:textColor="@color/white" />
             </LinearLayout>
 

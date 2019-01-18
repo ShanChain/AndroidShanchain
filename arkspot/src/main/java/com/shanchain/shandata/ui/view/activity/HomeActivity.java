@@ -165,8 +165,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
     public static BaiduMap baiduMap;
     private long downloadId;
-    private LocationClient locationClient;
-    private BDLocationListener bdLocationListener;
+    public LocationClient locationClient;
+    public static BDLocationListener bdLocationListener;
     private PermissionHelper mPermissionHelper;
     private MapStatusUpdate mapstatusupdate;
     private LatLng markerPoint;
@@ -1887,8 +1887,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         closeProgress();
     }
 
-    public class MyLocationListener implements BDLocationListener {
 
+    public class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(final BDLocation bdLocation) {
             latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());

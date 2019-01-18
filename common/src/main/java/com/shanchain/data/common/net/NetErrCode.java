@@ -8,6 +8,7 @@ public class NetErrCode {
 
     //服务端错误码6位
     public static final String COMMON_SUC_CODE = "000000";
+    public static final String SUC_CODE = "200";
     public static final String COMMON_ERR_CODE = "999999";
     public static final String COMMON_UNOPENED_CODE = "999987";//待开发/未开放的功能
     public static final String SMSVC_ERR_CODE = "999998";

@@ -60,6 +60,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
         editTextCode = findViewById(R.id.et_register_code);
         textViewCode = findViewById(R.id.tv_register_code);
         sure = findViewById(R.id.btn_sure);
+        toolBar.setOnLeftClickListener(this);
 //        sign = MD5Utils.getMD5("647414" +"817372"+ "1545047532084");
 
         initData();

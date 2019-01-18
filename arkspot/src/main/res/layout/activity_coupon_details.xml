@@ -27,10 +27,11 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/dimens_20dp"
-            android:background="@drawable/shape_bg_even_msg"
+            android:background="@drawable/shape_bg_coupon_details"
             android:orientation="vertical">
 
             <cn.jiguang.imui.view.CircleImageView
+                android:id="@+id/iv_coupon_details_avatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -43,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dimens_5dp"
-                android:text="用户名"/>
-
+                android:text="用户名" />
+            <!-- 显示核销二维码 -->
             <LinearLayout
                 android:id="@+id/linear_show_QRcode"
                 android:layout_width="match_parent"
@@ -53,12 +54,14 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/iv_show_QRcode"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@mipmap/red_packege" />
 
             </LinearLayout>
 
+            <!-- 显示马甲劵详情 -->
             <LinearLayout
                 android:id="@+id/linear_show_details"
                 android:layout_width="match_parent"
@@ -85,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_10"
-                        android:text="6"
+                        android:text="0"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -96,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:text="肯德基"
+                    android:text=""
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -106,16 +109,36 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:text="KFCSEAT"
+                    android:text=""
                     android:textStyle="bold" />
 
-                <Button
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_40"
-                    android:background="@drawable/shape_btn_dialog_sure"
-                    android:text="@string/coupon_details_use"
-                    android:textColor="@color/white" />
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_40"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btn_coupon_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_40"
+                        android:layout_marginRight="@dimen/dp_40"
+                        android:textSize="@dimen/sp_14"
+                        android:background="@drawable/shape_btn_dialog_sure"
+                        android:text="@string/coupon_details_use"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tv_use_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:visibility="gone"
+                        android:text="剩余0张" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_use_rule"
@@ -123,25 +146,29 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_20dp"
                     android:text="使用规则："
+                    android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_use_rule_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimens_20dp"
-                    android:text="@string/coupon_details_use_rule" />
-
-                <TextView
-                    android:id="@+id/tv_coupon_details_expiration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:layout_margin="@dimen/dp_10"
-                    android:gravity="bottom|right"
-                    android:text="有效期至：2019-01-01  23:59" />
+                    android:textSize="@dimen/sp_12"
+                    android:text="" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_coupon_details_expiration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="@dimen/dp_10"
+                android:textSize="@dimen/sp_12"
+
+                android:gravity="bottom|right"
+                android:text="有效期至：2019-01-01  23:59" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

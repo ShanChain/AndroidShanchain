@@ -3,17 +3,40 @@ package com.shanchain.shandata.ui.model;
 import java.util.Date;
 
 public class CouponInfo {
-    private Date deadline;
+    private String createTime;
+    private String deadline;
     private String name;
     private String price;
     private String remainAmount;
     private String userStatus;
+    private String couponsId;
+    private int getStatus;
 
-    public Date getDeadline() {
+    public static final int COUPONS_CREATE = 20; //创建
+    public static final int COUPONS_RECEIVER = 21;//已领取
+    public static final int COUPONS_UN_RECEIVER = 22;//未领取
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public int getGetStatus() {
+        return getStatus;
+    }
+
+    public void setGetStatus(int getStatus) {
+        this.getStatus = getStatus;
+    }
+
+    public String getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 
@@ -47,5 +70,13 @@ public class CouponInfo {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public String getCouponsId() {
+        return couponsId;
+    }
+
+    public void setCouponsId(String couponsId) {
+        this.couponsId = couponsId;
     }
 }

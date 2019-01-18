@@ -15,7 +15,7 @@
     <color name="colorInactive">#808080</color>
     <!--默认字体颜色-->
     <color name="colorTextDefault">#666</color>
-
+    <color name="scan_bg">#7f000000</color>
     <color name="colorTextTask">#FFBBBBBB</color>
     <!--灰色字体-->
     <color name="colorHint">#b3b3b3</color>

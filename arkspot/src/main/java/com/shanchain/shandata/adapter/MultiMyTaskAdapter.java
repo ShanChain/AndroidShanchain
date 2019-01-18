@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.ViewAnimUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,7 +56,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
 
 
     @Override
-    public void setData(BaseViewHolder holder, final ChatEventMessage item, int viewType, final int itemPosition) {
+    public void setData(final BaseViewHolder holder, final ChatEventMessage item, int viewType, final int itemPosition) {
 //        this.position = holder.getLayoutPosition();
 //        this.position = itemPosition;
         int characterId = item.getCharacterId();
@@ -76,6 +78,29 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
         holder.setTextView(R.id.even_message_location, item.getRoomName() + "");
         holder.setTextView(R.id.task_release_time, "发布时间 " + simpleDateFormat.format(item.getCreateTime()));//发布时间
+//        if (taskStatus.isShown()){
+            taskStatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final LinearLayout front = holder.getViewId(R.id.item_task_front);
+                    final LinearLayout back = holder.getViewId(R.id.item_task_back);
+//                                ToastUtils.showToast(getContext(), taskList.get(position).getTaskId() + "内容："+taskList.get(position).getIntro());
+                    FrameLayout frame = holder.getViewId(R.id.frame);
+                    int direction = 1;
+                    if (back.isShown()) {
+                        direction = -1;
+                    }
+                    ViewAnimUtils.flip(frame, 500, direction);
+                    frame.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            switchViewVisibility(back, front);
+                        }
+                    }, 500);
+                }
+            });
+//        }
+
         if (viewType!=0||viewType!=7||viewType!=8){
             if (holder.getViewId(R.id.tv_item_story_time)!=null){
                 holder.setTextView(R.id.tv_item_story_time,  DateUtils.formatFriendly(new Date(item.getCreateTime())) + "");
@@ -295,6 +320,16 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                 break;
         }
 
+    }
+
+    private void switchViewVisibility(LinearLayout back, LinearLayout front) {
+        if (back.isShown()) {
+            back.setVisibility(View.GONE);
+            front.setVisibility(View.VISIBLE);
+        } else {
+            back.setVisibility(View.VISIBLE);
+            front.setVisibility(View.GONE);
+        }
     }
 
     @Override
