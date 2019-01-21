@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -43,6 +44,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
+import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
@@ -325,22 +327,28 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 try {
                     if (!TextUtils.isEmpty(s.toString())) {
                         if (s.toString().getBytes().length > 0) {
+                            if (s.toString().substring(0, 1).equals("0")) {
+                                editCouponPrice.setText("");
+                                ToastUtils.showToast(CreateCouponActivity.this, "单价不能为0");
+                                return;
+                            }
                             tvPriceDes.setVisibility(View.GONE);
                             price = s.toString();
                             if (TextUtils.isEmpty(amount)) {
                                 Integer unitPrice = Integer.valueOf(s.toString());
                                 tvCouponCurrencyNum.setText("" + unitPrice);
-                                tvCouponSeatNum.setText("" + unitPrice + " SEAT");
+                                tvCouponSeatNum.setText("" + unitPrice + "");
                             } else {
                                 int unitPrice = Integer.valueOf(s.toString());
                                 int totalCount = TextUtils.isEmpty(amount) ? 0 : Integer.valueOf(amount);
                                 tvCouponCurrencyNum.setText("" + unitPrice * totalCount);
                                 if (TextUtils.isEmpty(rate)) return;
                                 Double totalNum = Double.valueOf(unitPrice * totalCount);
-                                tvCouponSeatNum.setText(totalNum / Double.valueOf(rate) + " SEAT");
+                                tvCouponSeatNum.setText(totalNum / Double.valueOf(rate) + "");
                             }
                         } else {
                             tvCouponCurrencyNum.setText("" + 0);
@@ -368,24 +376,30 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
             public void afterTextChanged(Editable s) {
                 try {
                     if (s.toString().getBytes().length > 0) {
+                        if (s.toString().substring(0, 1).equals("0")) {
+                            editCouponNum.setText("");
+                            ToastUtils.showToast(CreateCouponActivity.this, "数量不能为0");
+                            return;
+                        }
                         amount = s.toString();
                         if (!TextUtils.isEmpty(price)) {
                             Integer unitPrice = Integer.valueOf(price);
                             Integer totalCount = Integer.valueOf(s.toString());
                             tvCouponCurrencyNum.setText("" + unitPrice * totalCount);
+
                             if (TextUtils.isEmpty(rate)) return;
                             Double totalNum = Double.valueOf(unitPrice * totalCount);
-                            tvCouponSeatNum.setText("" + totalNum / Double.valueOf(rate) + " SEAT");
+                            tvCouponSeatNum.setText("" + totalNum / Double.valueOf(rate) + "");
                         } else {
                             int totalCount = Integer.valueOf(s.toString());
                             tvCouponCurrencyNum.setText("" + totalCount);
-                            tvCouponSeatNum.setText("" + totalCount + " SEAT");
+                            tvCouponSeatNum.setText("" + totalCount + "");
                         }
                     } else {
                         tvCouponCurrencyNum.setText("" + 0);
                     }
                 } catch (NumberFormatException e) {
-
+//                    ToastUtils.showToast(CreateCouponActivity.this, "请输入合法数字");
                 }
 
 
@@ -435,6 +449,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
+        getUseName();
         SCHttpUtils.getAndToken()
                 .url(HttpApi.WALLET_INFO)
                 .addParams("characterId", subuserId)
@@ -468,7 +483,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void createCoupon() {
-        if (TextUtils.isEmpty(amount) || Integer.valueOf(amount) < 1 || TextUtils.isEmpty(deadline) || TextUtils.isEmpty(name) || TextUtils.isEmpty(tokenSymbol) || TextUtils.isEmpty(price) || Integer.valueOf(price) < 1) {
+        if (TextUtils.isEmpty(amount) || Integer.valueOf(amount) < 1 || TextUtils.isEmpty(deadline) || TextUtils.isEmpty(name) || TextUtils.isEmpty(tokenSymbol) || tokenSymbol.length() < 3 || TextUtils.isEmpty(price) || Integer.valueOf(price) < 1) {
             ToastUtils.showToast(CreateCouponActivity.this, "请输入完整信息");
             return;
         }
@@ -550,7 +565,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         Date date = new Date(System.currentTimeMillis());
         int hour = date.getHours();
 //        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置起始年份
-        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE), selectedDate.get(Calendar.HOUR), selectedDate.get(Calendar.MINUTE));//设置起始年份
+        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE) + 1, selectedDate.get(Calendar.HOUR), selectedDate.get(Calendar.MINUTE));//设置起始年份
         Calendar endDate = Calendar.getInstance();
         endDate.set(year + 50, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE), selectedDate.get(Calendar.HOUR), selectedDate.get(Calendar.MINUTE));//设置结束年份
         builder.setType(new boolean[]{true, true, true, false, false, false})//设置显示年、月、日、时、分、秒
@@ -637,6 +652,41 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 helper.upLoadImg(mContext, list);
                 break;
         }
+    }
+
+    private void getUseName() {
+        SCHttpUtils.post()
+                .url(HttpApi.CHARACTER_GET_CURRENT)
+                .addParams("userId",""+SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d(TAG, "网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            if (data == null) {
+                                return;
+                            }
+                            String character = JSONObject.parseObject(data).getString("characterInfo");
+                            final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                            final String headImg = characterInfo.getHeadImg();
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RequestOptions options = new RequestOptions();
+                                    options.placeholder(R.mipmap.aurora_headicon_default);
+                                    Glide.with(CreateCouponActivity.this).load(headImg).apply(options).into(imageHead);
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     @Override

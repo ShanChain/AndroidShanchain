@@ -352,6 +352,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="5dp"
                     android:text="0.00"
+                    android:maxEms="10"
+                    android:lines="1"
+                    android:ellipsize="end"
                     android:textColor="@color/colorTextThree"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -403,11 +406,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_coupon_currency_num"
-                    android:layout_alignParentRight="true"
+                    android:layout_toLeftOf="@+id/tv_seat"
                     android:layout_marginLeft="5dp"
-                    android:text="0.0 SEAT"
+                    android:text="0.0"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLength="8"
+                    android:maxEms="8"
                     android:textColor="@color/colorTextThree"
                     android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_seat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_coupon_currency_num"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="5dp"
+                    android:text="SEAT"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLength="8"
+                    android:maxEms="8"
+                    android:textColor="@color/colorTextThree"
+                    android:textSize="16sp" />
+
 
                 <Button
                     android:id="@+id/button_create_coupon"

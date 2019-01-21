@@ -72,6 +72,7 @@ public class MyCreateCouponFragment extends BaseFragment implements BGARefreshLa
     public void initData() {
         srlCouponList.setDelegate(this);
         srlCouponList.beginLoadingMore();
+//        srlCouponList.beginRefreshing();
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(getContext(), true);//微博效果
         srlCouponList.setRefreshViewHolder(refreshViewHolder);

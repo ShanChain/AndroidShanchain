@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -26,6 +27,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
+import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -180,6 +182,9 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                             recyclerView.setLayoutManager(layoutManager);
                             recyclerView.setAdapter(couponListAdapter);
 
+                        } else if ("999970".equals(code)) {
+                            Intent intent = new Intent(CouponListActivity.this, VerifiedActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -259,6 +264,10 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                                     couponListAdapter.notifyDataSetChanged();
                                 }
                                 refreshLayout.endLoadingMore();
+                            } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
+                                Intent intent = new Intent(CouponListActivity.this, VerifiedActivity.class);
+                                startActivity(intent);
+
                             }
                         }
                     });

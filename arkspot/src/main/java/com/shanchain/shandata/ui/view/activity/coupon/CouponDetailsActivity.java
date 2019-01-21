@@ -195,7 +195,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                 }
                                 //立即使用
                                 if (couponSubInfo.getTokenStatus() == CouponSubInfo.RECEIVER &&
-                                        couponSubInfo.getVendorUser() != Integer.valueOf(SCCacheUtils.getCacheUserId())) {
+                                        couponSubInfo.getVendorUser() != Integer.valueOf(SCCacheUtils.getCacheUserId()) && checkCoupon == false) {
                                     btnCouponDetails.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -355,6 +355,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                         @Override
                                         public void run() {
                                             Toast.makeText(CouponDetailsActivity.this, "核销成功", Toast.LENGTH_LONG).show();
+                                            btnCouponDetails.setOnClickListener(null);
                                         }
                                     });
                                 } else {
@@ -402,10 +403,14 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                             }
                             String character = JSONObject.parseObject(data).getString("characterInfo");
                             final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                            final String headImg = characterInfo.getHeadImg();
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     tvCouponName.setText(characterInfo.getName());
+                                    RequestOptions options = new RequestOptions();
+                                    options.placeholder(R.mipmap.aurora_headicon_default);
+                                    Glide.with(CouponDetailsActivity.this).load(headImg).apply(options).into(ivCouponDetailsAvatar);
                                 }
                             });
                         }

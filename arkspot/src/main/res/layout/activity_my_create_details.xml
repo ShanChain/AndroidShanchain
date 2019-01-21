@@ -138,8 +138,8 @@
                 android:layout_marginLeft="@dimen/dimens_20dp"
                 android:ellipsize="end"
                 android:maxLines="5"
-                android:textSize="@dimen/sp_12"
-                android:text="" />
+                android:text=""
+                android:textSize="@dimen/sp_12" />
 
 
         </RelativeLayout>
@@ -149,8 +149,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|left"
-            android:layout_marginTop="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dimens_20dp"
+            android:layout_marginTop="@dimen/dp_10"
             android:gravity="bottom|left"
             android:text="有效期至：2019-01-01  23:59"
             android:textSize="10sp" />
@@ -213,23 +213,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_20dp"
-            android:textSize="@dimen/sp_12"
-            android:text="剩余：" />
+            android:text="剩余："
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_coupon_surplus_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:textSize="@dimen/sp_12"
-            android:text="0" />
+            android:text="0"
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:textSize="@dimen/sp_12"
-            android:text="张" />
+            android:text="张"
+            android:textSize="@dimen/sp_12" />
 
     </LinearLayout>
 
@@ -241,12 +241,18 @@
         android:layout_marginTop="@dimen/dp_10"
         android:background="@color/colorTextThree" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_coupon_check_list"
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/srl_coupon_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/view_line"
-        android:padding="@dimen/dimens_20dp">
+        android:layout_below="@+id/view_line">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_coupon_check_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimens_20dp">
+
+        </android.support.v7.widget.RecyclerView>
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 </RelativeLayout>

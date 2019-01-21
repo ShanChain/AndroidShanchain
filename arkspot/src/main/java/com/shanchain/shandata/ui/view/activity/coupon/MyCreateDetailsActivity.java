@@ -1,8 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.coupon;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -24,7 +22,6 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CouponListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -36,10 +33,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 
-public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
+public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
 
 
     @Bind(R.id.tb_coupon_detail)
@@ -78,6 +78,8 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     View viewLine;
     @Bind(R.id.recycler_view_coupon_check_list)
     RecyclerView recyclerViewCouponCheckList;
+    @Bind(R.id.srl_coupon_list)
+    BGARefreshLayout srlCouponList;
 
     private int pageNo = 0, pageSize = 10;
 
@@ -88,8 +90,12 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     private int size = 10;
     private List<CouponSubInfo> couponList = new ArrayList();
     private List<CouponSubInfo> clientList = new ArrayList();
-    private CouponListAdapter adapter;
+    private BaseQuickAdapter adapter;
     private String couponsId, subCoupId;
+    private Integer currentPage;
+    private String last;
+    private String symbol;
+    private List<CouponSubInfo> loadMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +115,15 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
         tbCouponDetail.setTitleText("马甲劵详情");
         tbCouponDetail.setOnLeftClickListener(this);
 //        tbCouponDetail.setOnRightClickListener(this);
+        srlCouponList.setDelegate(this);
+        srlCouponList.beginLoadingMore();
+        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
+        BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(MyCreateDetailsActivity.this, true);//微博效果
+        srlCouponList.setRefreshViewHolder(refreshViewHolder);
+        // 设置正在加载更多时不显示加载更多控件
+        srlCouponList.setIsShowLoadingMoreView(true);
+        // 设置正在加载更多时的文本
+        refreshViewHolder.setLoadingMoreText("加载更多");
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyCreateDetailsActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerViewCouponCheckList.setLayoutManager(linearLayoutManager);
         initData();
@@ -163,7 +178,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     }
 
     private void getClientList(final CouponSubInfo couponSubInfo) {
-        String symbol = couponSubInfo.getTokenSymbol().substring(0, 3);
+        symbol = couponSubInfo.getTokenSymbol().substring(0, 3);
         SCHttpUtils.get()
                 .url(HttpApi.COUPON_CLIENT_LIST)
                 .addParams("pageNo", "" + pageNo)
@@ -183,19 +198,16 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                             String data = JSONObject.parseObject(response).getString("data");
                             String list = JSONObject.parseObject(data).getString("list");
                             clientList = JSONObject.parseArray(list, CouponSubInfo.class);
-//                            for (int i = 0; i < 10; i++) {
-//                                CouponSubInfo couponSubInfo1 = new CouponSubInfo();
-//                                couponSubInfo1.setUseTime("" + i);
-//                                couponSubInfo1.setUserId(i);
-//                                couponSubInfo1.setTokenStatus(i % 2);
-//                                clientList.add(couponSubInfo1);
-//                            }
-                            recyclerViewCouponCheckList.setAdapter(new BaseQuickAdapter<CouponSubInfo, BaseViewHolder>(R.layout.item_common_simple, clientList) {
+                            last = JSONObject.parseObject(data).getString("last");
+                            String next = JSONObject.parseObject(data).getString("next");
+                            String pageNum = JSONObject.parseObject(data).getString("pageNo");
+                            currentPage = Integer.valueOf(pageNum);
+                            page = Integer.valueOf(next);
+                            adapter = new BaseQuickAdapter<CouponSubInfo, BaseViewHolder>(R.layout.item_common_simple, clientList) {
                                 @Override
                                 protected void convert(BaseViewHolder helper, CouponSubInfo item) {
                                     helper.setText(R.id.tv_item_story_name, item.getUserId() + "");
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
                                     switch (item.getTokenStatus()) {
                                         case CouponSubInfo.RECEIVER:
                                             helper.setText(R.id.tv_item_coupon_status, "已领取");
@@ -217,16 +229,64 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                             break;
                                     }
                                 }
-                            });
+                            };
+                            recyclerViewCouponCheckList.setAdapter(adapter);
                         }
                     }
                 });
     }
-
 
     @Override
     public void onLeftClick(View v) {
         finish();
     }
 
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        refreshLayout.endRefreshing();
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        if (page != currentPage && symbol != null) {
+            SCHttpUtils.get()
+                    .url(HttpApi.COUPON_CLIENT_LIST)
+                    .addParams("pageNo", "" + pageNo)
+                    .addParams("pageSize", "" + pageSize)
+                    .addParams("tokenSymbol", "" + symbol)
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.d(TAG, "网络异常");
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (NetErrCode.SUC_CODE.equals(code)) {
+                                String data = JSONObject.parseObject(response).getString("data");
+                                String list = JSONObject.parseObject(data).getString("list");
+                                clientList = JSONObject.parseArray(list, CouponSubInfo.class);
+                                last = JSONObject.parseObject(data).getString("last");
+                                String next = JSONObject.parseObject(data).getString("next");
+                                String pageNum = JSONObject.parseObject(data).getString("pageNo");
+                                currentPage = Integer.valueOf(pageNum);
+                                page = Integer.valueOf(next);
+                                if (currentPage <= Integer.valueOf(last)) {
+                                    last = JSONObject.parseObject(data).getString("last");
+                                    page = Integer.valueOf(next);
+                                    loadMore = JSONObject.parseArray(list, CouponSubInfo.class);
+                                    adapter.addData(loadMore);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+        }
+        if (page == currentPage) {
+            return true;
+        }
+        return false;
+    }
 }

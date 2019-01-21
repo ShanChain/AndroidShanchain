@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -16,6 +19,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -43,15 +47,21 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ActivityStackManager.getInstance().finishActivity(CouponListActivity.class);
+    }
+
+    @Override
     protected void initViewsAndEvents() {
         tbMain.setTitleText(getResources().getString(R.string.nav_real_identity));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);
-        name = editCouponName.getText().toString();
-        code = editCouponCode.getText().toString();
         btnVerified.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                name = editCouponName.getText().toString();
+                code = editCouponCode.getText().toString();
                 if (TextUtils.isEmpty(name) || TextUtils.isEmpty(code)) {
                     ToastUtils.showToast(VerifiedActivity.this, "请输入完整信息");
                     return;
@@ -60,13 +70,13 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                         .url(HttpApi.VERIFIED)
                         .addParams("cardno", "" + code)
                         .addParams("name", "" + name)
-                        .addParams("token",SCCacheUtils.getCacheToken())
-                        .addParams("userId",SCCacheUtils.getCacheUserId())
+                        .addParams("token", SCCacheUtils.getCacheToken())
+                        .addParams("userId", SCCacheUtils.getCacheUserId())
                         .build()
                         .execute(new StringCallback() {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                LogUtils.d(TAG,"网络异常");
+                                LogUtils.d(TAG, "网络异常");
                             }
 
                             @Override
@@ -75,14 +85,24 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                                 StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
                                 standardDialog.setSureText("确定");
                                 standardDialog.setCancelText("取消");
-                                if (NetErrCode.COMMON_SUC_CODE.equals(code)){
+                                if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
                                     String data = JSONObject.parseObject(response).getString("data");
                                     String desc = JSONObject.parseObject(data).getString("desc");
                                     standardDialog.setStandardTitle("实名认证成功");
                                     standardDialog.setStandardMsg("实名认证成功！");
                                     standardDialog.show();
-
-                                }else {
+                                    standardDialog.setCallback(new Callback() {
+                                        @Override
+                                        public void invoke() {
+                                            finish();
+                                        }
+                                    }, new Callback() {
+                                        @Override
+                                        public void invoke() {
+                                            finish();
+                                        }
+                                    });
+                                } else {
                                     standardDialog.setStandardTitle("实名认证失败");
                                     standardDialog.setStandardMsg("实名认证失败请检查姓名、身份证号");
                                     standardDialog.show();

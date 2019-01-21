@@ -1,5 +1,6 @@
 package com.shanchain.shandata.rn.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -108,7 +109,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         WebSettings settings = mWbSc.getSettings();
         settings.setJavaScriptEnabled(true);
         mTvWebTbTitle.setText(mTitle);
-        mWbSc.loadUrl(mUrl);//加载url
+//        mWbSc.loadUrl(mUrl);//加载url
         if (mTitle.equals("我的钱包")) {
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHARACTER_GET_CURRENT)
@@ -143,6 +144,8 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                             }
                         }
                     });
+        }else {
+            mWbSc.loadUrl(mUrl);//加载url
         }
 
         mWbSc.setOnLongClickListener(new View.OnLongClickListener() {
@@ -362,44 +365,45 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         return Uri.fromFile(newFile);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (null != data) {
-            LogUtils.d("" + data.getData().getPath());
+//        if (null != data) {
+//            LogUtils.d("" + data.getData().getPath());
             super.onActivityResult(requestCode, resultCode, data);
-            Uri uri = null;
             switch (requestCode) {
                 case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
                     if (mUploadMessage == null) {
                         return;
                     }
-                    uri = afterChosePic(data);
+                    Uri result = data == null || resultCode != Activity.RESULT_OK ? null
+                            : data.getData();
                     if (mUploadMessage != null) {
-                        mUploadMessage.onReceiveValue(uri);
+                        mUploadMessage.onReceiveValue(result);
                         mUploadMessage = null;
                     }
                     break;
                 case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
-                    if (mUploadMessage == null) {
+                    if (mUploadCallbackAboveL == null) {
                         return;
                     }
-                    try {
-                        uri = afterChosePic(data);
-                        if (uri == null) {
-                            mUploadCallbackAboveL.onReceiveValue(new Uri[]{});
+//                    try {
+//                        uri = afterChosePic(data);
+//                        if (uri == null) {
+                            mUploadCallbackAboveL.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
                             mUploadCallbackAboveL = null;
-                            break;
-                        }
-                        if (mUploadCallbackAboveL != null && uri != null) {
-                            mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
-                            mUploadCallbackAboveL = null;
-                        }
-                    } catch (Exception e) {
-                        mUploadCallbackAboveL = null;
-                        e.printStackTrace();
-                    }
+//                            break;
+//                        }
+//                        if (mUploadCallbackAboveL != null && uri != null) {
+//                            mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
+//                            mUploadCallbackAboveL = null;
+//                        }
+//                    } catch (Exception e) {
+//                        mUploadCallbackAboveL = null;
+//                        e.printStackTrace();
+//                    }
                     break;
-            }
+//            }
         }
     }
 

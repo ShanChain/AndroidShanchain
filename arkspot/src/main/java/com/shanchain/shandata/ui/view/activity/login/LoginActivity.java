@@ -224,7 +224,6 @@ public class LoginActivity extends BaseActivity {
                                         String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
                                         RoleManager.switchJmRoleCache(String.valueOf(characterId), jmUser, jmPassword);
 
-
                                     }
 
                                 }

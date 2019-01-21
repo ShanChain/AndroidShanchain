@@ -111,6 +111,7 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
                             adapter = new BaseQuickAdapter<Members, BaseViewHolder>(R.layout.item_members_chat_room, chatRoomlist) {
                                 @Override
                                 protected void convert(final BaseViewHolder helper, final Members item) {
+                                    helper.setIsRecyclable(false);
                                     JMessageClient.getUserInfo(item.getUsername(), new GetUserInfoCallback() {
                                         @Override
                                         public void gotResult(int i, String s, final UserInfo userInfo) {
