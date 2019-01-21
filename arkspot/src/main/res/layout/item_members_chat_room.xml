@@ -22,7 +22,9 @@
         android:layout_marginTop="@dimen/dimens_10dp"
         android:layout_toRightOf="@id/iv_item_contact_child_avatar"
         android:lines="1"
-        android:text="宫亦凡"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:text=""
         android:textColor="@color/colorTextDefault"
         android:textSize="14sp"/>
 

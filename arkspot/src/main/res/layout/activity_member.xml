@@ -14,12 +14,18 @@
         app:titleColor="@color/colorTextDefault"
         app:titleTextSize="16" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_message_list"
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/srl_message_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:background="@color/colorWhite"
-        android:padding="@dimen/dp_10"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_message_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@color/colorWhite"
+            android:padding="@dimen/dp_10" />
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
 </LinearLayout>

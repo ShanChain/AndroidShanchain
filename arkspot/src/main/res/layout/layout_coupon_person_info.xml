@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginBottom="@dimen/dimens_20dp"
-    android:layout_marginTop="@dimen/dimens_22dp"
-    android:layout_marginLeft="@dimen/dimens_22dp"
-    android:layout_marginRight="@dimen/dp_10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/dimens_22dp"
+    android:layout_marginTop="@dimen/dimens_22dp"
+    android:layout_marginRight="@dimen/dp_10"
     tools:showIn="@layout/item_coupon_one">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_item_story_avatar"
-        android:scaleType="centerCrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/aurora_headicon_default"/>
+        android:background="@drawable/aurora_headicon_default"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/even_message_bounty"
         android:layout_toLeftOf="@+id/even_message_bounty"
-        android:layout_alignBaseline="@+id/even_message_bounty"
         android:text="￥"
-        android:textSize="14sp"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="12sp" />
+
     <TextView
         android:id="@+id/even_message_bounty"
         android:layout_width="wrap_content"
@@ -34,34 +33,20 @@
         android:layout_marginRight="@dimen/dimens_10dp"
         android:padding="2dp"
         android:text="2"
-        android:textSize="30sp"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <TextView
-        android:lines="1"
         android:id="@+id/tv_item_story_name"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/colorTextDefault"
-        android:textStyle="bold"
-        android:text="必胜客餐厅"
-        android:layout_toRightOf="@id/iv_item_story_avatar"
-        android:layout_marginLeft="@dimen/dimens_20dp"
-        android:textSize="@dimen/sp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/tv_item_story_from"
+        android:layout_marginLeft="@dimen/dimens_20dp"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@id/iv_item_story_avatar"
         android:lines="1"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/tv_item_story_time"
-        android:layout_marginLeft="15dp"
-        android:textColor="@color/colorTextDefault"
-        android:text="11111111"
-        android:textSize="@dimen/sp_12"
-        android:layout_alignLeft="@+id/tv_item_story_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
+        android:text="必胜客餐厅"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold" />
 </RelativeLayout>

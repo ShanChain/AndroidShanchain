@@ -155,8 +155,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     PullToRefreshLayout pullToRefreshLayout;
     //    private final static String FORM_USER_ID = "qwer";
     private String FORM_USER_ID;
-    private String FORM_USER_NAME;
-
+    private String FORM_USER_NAME = "";
+    private String title;
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
 
@@ -202,8 +202,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         }
 
         if (userInfo != null) {
-
-            FORM_USER_NAME = userInfo.getDisplayName();
+//            FORM_USER_NAME = userInfo.getDisplayName();
             mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
             if (mConv == null) {
                 mConv = Conversation.createSingleConversation(FORM_USER_ID);
@@ -211,7 +210,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             JMessageClient.getUserInfo(FORM_USER_ID, new GetUserInfoCallback() {
                 @Override
                 public void gotResult(int i, String s, UserInfo userInfo) {
-
+                    FORM_USER_NAME = userInfo.getNickname() != null ? userInfo.getNickname() : userInfo.getUserName();
+                    initToolbar();
                 }
             });
         } else {
@@ -574,8 +574,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private void initData() {
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.USE_FOCUS)
-                .addParams("funsJmUserName",FORM_USER_ID)
-                .addParams("characterId",SCCacheUtils.getCacheCharacterId()+"")
+                .addParams("funsJmUserName", FORM_USER_ID)
+                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -586,7 +586,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
-                        if (code.equals(NetErrCode.COMMON_SUC_CODE)){
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                             String data = JSONObject.parseObject(response).getString("data");
                         }
                     }
@@ -711,8 +711,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-        String title = TextUtils.isEmpty(FORM_USER_NAME) ? FORM_USER_NAME : "陌生好友";
-        mTbMain.setTitleText(title);
+        mTbMain.setTitleText(FORM_USER_NAME);
         mTbMain.setRightImage(R.mipmap.more);
 
         mTbMain.setOnLeftClickListener(this);

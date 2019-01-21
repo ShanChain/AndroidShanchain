@@ -5,6 +5,7 @@
     <string name="str_tb_title_praised">我赞过的</string>
     <string name="str_tb_title_my_stories">我的故事</string>
     <string name="right_read_btn">阅读</string>
+    <string name="str_register_agree_terms_service">《MarJar APP Terms of service》</string>
 
     <!-- ToolBar title -->
     <string name="tool_bar_my_message">Message</string>

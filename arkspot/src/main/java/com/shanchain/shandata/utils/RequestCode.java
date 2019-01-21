@@ -8,7 +8,7 @@ public class RequestCode {
 	public final static int PICKER_IMAGE_PREVIEW = 5;
 	public final static int PREVIEW_IMAGE_FROM_CAMERA = 6;
 	public final static int GET_LOCAL_IMAGE = 7;// 相册
-    public static final int SCREENSHOT = 00; //screenshot 截屏
+    public static final int SCREENSHOT = 77; //screenshot 截屏
     public static final int TAKE_PHOTO = 99;
     public static final int TAKE_VIDEO = 88;
 }

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.view.activity.jmessageui.VerifiedActivity">
+
+    <RelativeLayout
+        android:id="@+id/relative_verified_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
+
+            <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+                android:id="@+id/tb_main"
+                style="@style/style_toolbar"
+                app:titleColor="@color/colorTextDefault"
+                app:titleTextSize="16">
+
+            </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimens_10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/verified_name"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/sp_14" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:background="@null"
+                    android:hint="@string/verified_name_hint"
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/sp_14" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimens_10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/verified_code"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/sp_14" />
+
+                <EditText
+                    android:id="@+id/edit_coupon_code"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:background="@null"
+                    android:hint="@string/verified_code_hint"
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/sp_14" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/verified_sure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="150dp"
+            android:background="@drawable/shape_btn_dialog_sure"
+            android:text="@string/verified_button_sure"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
+   <!-- <RelativeLayout
+        android:id="@+id/relative_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background=""/>
+    </RelativeLayout>-->
+</RelativeLayout>

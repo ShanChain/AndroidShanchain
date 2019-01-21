@@ -148,8 +148,23 @@
         <attr name="rightImage" format="reference" />
         <attr name="rightEnabled" format="boolean" />
         <attr name="rightVisibility" format="boolean" />
+        <!-- 底部文字-大厅 -->
+        <attr name="bottomTitleOne" format="string"></attr>
+        <attr name="titleOneColor" format="color"></attr>
+        <attr name="titleOneSize" format="integer"></attr>
+        <attr name="titleOneImage" format="reference" />
+        <attr name="titleOneEnabled" format="boolean" />
+        <attr name="titleOneVisibility" format="boolean"></attr>
+        <!-- 底部文字-捡漏 -->
+        <attr name="bottomTitleTwo" format="string"></attr>
+        <attr name="titleTwoColor" format="color"></attr>
+        <attr name="titleTwoSize" format="integer"></attr>
+        <attr name="titleTwoImage" format="reference" />
+        <attr name="titleTwoEnabled" format="boolean" />
+        <attr name="titleTwoVisibility" format="boolean"></attr>
         <!-- 公共属性 -->
         <attr name="btnDisable" format="boolean" />
+        <attr name="navHeight" format="integer"/>
     </declare-styleable>
 
     <style name="style_radiobutton_report">

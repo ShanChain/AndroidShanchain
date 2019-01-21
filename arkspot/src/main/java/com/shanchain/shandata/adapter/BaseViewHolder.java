@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.shandata.R;
 import com.squareup.picasso.Picasso;
 
 import cn.jiguang.imui.model.ChatEventMessage;
@@ -38,7 +40,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         return (T) itemView.findViewById(viewId);
     }
 
-    public  View getConvertView() {
+    public View getConvertView() {
         return itemView;
     }
 
@@ -74,7 +76,9 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 //    }
     public void setImageURL(@IdRes int viewId, String url) {
         imageView = getViewId(viewId);
-        Glide.with(context).load(url).into(imageView);
+        RequestOptions options = new RequestOptions();
+        options.placeholder(R.mipmap.aurora_headicon_default);
+        Glide.with(context).load(url).apply(options).into(imageView);
     }
 
 //    public void setPicassoImage(@IdRes int viewId, String url) {

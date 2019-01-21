@@ -49,6 +49,8 @@ dependencies {
     api 'com.android.support.constraint:constraint-layout:1.0.2'
     api 'cn.jzvd:jiaozivideoplayer:6.2.3'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+    //生成/扫描 二维码
+    api 'cn.yipianfengye.android:zxing-library:2.2'
     // 版本更新依赖
     api 'com.qianwen:update-app:3.5.2'
     api 'com.lzy.net:okgo:3.0.4'

@@ -1,5 +1,6 @@
 package com.shanchain.shandata.rn.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -54,6 +55,7 @@ import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.IsFavBean;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.utils.ImageUtils;
@@ -78,7 +80,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private ProgressBar mPbWeb;
     private Map<String, String> map;
 
-    private WebView webview;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadCallbackAboveL;
     private final int RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP = 1;
@@ -98,46 +99,54 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         String webParams = intent.getStringExtra("webParams");
         mTitle = JSONObject.parseObject(webParams).getString("title");
         mUrl = JSONObject.parseObject(webParams).getString("url");
-//        mUrl = "http://m.qianqianshijie.com/orderDetails?id=15450393575245641";
-//        mUrl = "http://m.qianqianshijie.com/cancelOrder?userId=2&subuserId=2&token=2_5f7304524415487790daa6477c4595d51545901167334&id=15458262198931519";
         initWeb();
 
     }
 
 
     private void initWeb() {
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.CHARACTER_GET_CURRENT)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("网络错误");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String character = JSONObject.parseObject(data).getString("characterInfo");
-                            token = SCCacheUtils.getCacheToken();
-                            CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-//        characterId = SCCacheUtils.getCacheCharacterId();
-                            characterId = String.valueOf(characterInfo.getCharacterId());
-                            userId = SCCacheUtils.getCacheUserId();
-                            mTvWebTbTitle.setText(mTitle);
-                            WebSettings settings = mWbSc.getSettings();
-                            settings.setJavaScriptEnabled(true);
-                            map = new HashMap<String, String>();
-                            map.put("token", token);
-                            map.put("characterId", characterId);
-                            map.put("userId", userId);
-//                            mWbSc.loadUrl(mUrl);
-                            mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+        mWbSc = findViewById(R.id.wb_sc);
+        WebSettings settings = mWbSc.getSettings();
+        settings.setJavaScriptEnabled(true);
+        mTvWebTbTitle.setText(mTitle);
+//        mWbSc.loadUrl(mUrl);//加载url
+        if (mTitle.equals("我的钱包")) {
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.CHARACTER_GET_CURRENT)
+                    .build()
+                    .execute(new SCHttpStringCallBack() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.d("网络错误");
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = JSONObject.parseObject(response).getString("code");
+                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                String data = JSONObject.parseObject(response).getString("data");
+                                if (TextUtils.isEmpty(data)) {
+                                    return;
+                                }
+                                String character = JSONObject.parseObject(data).getString("characterInfo");
+                                token = SCCacheUtils.getCacheToken();
+                                CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                                characterId = String.valueOf(characterInfo.getCharacterId());
+                                userId = SCCacheUtils.getCacheUserId();
+                                map = new HashMap<String, String>();
+                                map.put("token", token);
+                                map.put("characterId", characterId);
+                                map.put("userId", userId);
+//                            mWbSc.loadUrl(mUrl);
+                                mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+                            } else {
+                                mWbSc.loadUrl(mUrl);
+                            }
+                        }
+                    });
+        }else {
+            mWbSc.loadUrl(mUrl);//加载url
+        }
 
         mWbSc.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -235,7 +244,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         return true;
                     }
                 }
-
                 return false;
             }
 
@@ -357,40 +365,45 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         return Uri.fromFile(newFile);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ToastUtils.showToastLong(getBaseContext(), "文件路径 path:" + data.getData().getPath());
-        LogUtils.d("" + data.getData().getPath());
-        super.onActivityResult(requestCode, resultCode, data);
-        if (mUploadMessage == null && mUploadCallbackAboveL == null) {
-            return;
-        }
-        Uri uri = null;
-        switch (requestCode) {
-            case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
-                uri = afterChosePic(data);
-                if (mUploadMessage != null) {
-                    mUploadMessage.onReceiveValue(uri);
-                    mUploadMessage = null;
-                }
-                break;
-            case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
-                try {
-                    uri = afterChosePic(data);
-                    if (uri == null) {
-                        mUploadCallbackAboveL.onReceiveValue(new Uri[]{});
-                        mUploadCallbackAboveL = null;
-                        break;
+//        if (null != data) {
+//            LogUtils.d("" + data.getData().getPath());
+            super.onActivityResult(requestCode, resultCode, data);
+            switch (requestCode) {
+                case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
+                    if (mUploadMessage == null) {
+                        return;
                     }
-                    if (mUploadCallbackAboveL != null && uri != null) {
-                        mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
-                        mUploadCallbackAboveL = null;
+                    Uri result = data == null || resultCode != Activity.RESULT_OK ? null
+                            : data.getData();
+                    if (mUploadMessage != null) {
+                        mUploadMessage.onReceiveValue(result);
+                        mUploadMessage = null;
                     }
-                } catch (Exception e) {
-                    mUploadCallbackAboveL = null;
-                    e.printStackTrace();
-                }
-                break;
+                    break;
+                case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
+                    if (mUploadCallbackAboveL == null) {
+                        return;
+                    }
+//                    try {
+//                        uri = afterChosePic(data);
+//                        if (uri == null) {
+                            mUploadCallbackAboveL.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
+                            mUploadCallbackAboveL = null;
+//                            break;
+//                        }
+//                        if (mUploadCallbackAboveL != null && uri != null) {
+//                            mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
+//                            mUploadCallbackAboveL = null;
+//                        }
+//                    } catch (Exception e) {
+//                        mUploadCallbackAboveL = null;
+//                        e.printStackTrace();
+//                    }
+                    break;
+//            }
         }
     }
 

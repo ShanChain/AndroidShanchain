@@ -32,9 +32,20 @@ import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 
 public abstract class SCHttpUtils {
 
+    public static GetBuilder getAndToken() {
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        return OkHttpUtils.get().addParams("token", token);
+    }
+
+    public static GetBuilder getNoToken() {
+        return OkHttpUtils.get();
+    }
 
     public static GetBuilder get() {
-        return OkHttpUtils.get();
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        return OkHttpUtils.get().addParams("token", token);
     }
 
     public static PostFormBuilder post() {
@@ -50,6 +61,19 @@ public abstract class SCHttpUtils {
         try {
             OkHttpClient client = OkHttpUtils.getInstance().getOkHttpClient();
             RequestBody body = RequestBody.create(JSON, json);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+            client.newCall(request).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void postByBody(String url, RequestBody body, Callback callback) {
+        try {
+            OkHttpClient client = OkHttpUtils.getInstance().getOkHttpClient();
             Request request = new Request.Builder()
                     .url(url)
                     .post(body)

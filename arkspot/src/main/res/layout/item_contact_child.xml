@@ -22,7 +22,7 @@
         android:layout_marginTop="@dimen/dimens_10dp"
         android:layout_toRightOf="@id/iv_item_contact_child_avatar"
         android:lines="1"
-        android:text="宫亦凡"
+        android:text=""
         android:textColor="@color/colorTextDefault"
         android:textSize="14sp"/>
 
@@ -31,14 +31,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="@dimen/dimens_10dp"
-        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:layout_marginLeft="-65dp"
         android:layout_marginRight="65dp"
+        android:layout_marginBottom="0dp"
         android:layout_toRightOf="@id/iv_item_contact_child_avatar"
         android:ellipsize="end"
         android:lines="1"
+        android:paddingBottom="@dimen/dimens_10dp"
         android:text="你们会知道的，我才是对地球最忠诚的人。"
-        android:textColor="@color/colorHint"/>
+        android:textColor="@color/colorHint" />
 
     <TextView
         android:drawablePadding="5dp"

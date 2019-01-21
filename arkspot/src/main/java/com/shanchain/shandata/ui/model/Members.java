@@ -1,67 +1,59 @@
 package com.shanchain.shandata.ui.model;
 
 public class Members {
+
+
     /**
-     * id : 47
-     * roomId : 15237570
-     * hxUserName : 11111
-     * characterId : 11111
-     * userId : 11111
-     * spaceId : 20.04318544,110.32316269
+     * username : 154578986558100163e0aa658102470
+     * flag : 0
+     * room_ctime : 2019-01-15 16:44:47
+     * mtime : 2019-01-15 16:44:34
+     * ctime : 2018-12-26 10:04:25
      */
 
-    private int id;
-    private String roomId;
-    private String hxUserName;
-    private int characterId;
-    private int userId;
-    private String spaceId;
+    private String username;
+    private int flag;
+    private String room_ctime;
+    private String mtime;
+    private String ctime;
 
-    public int getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public int getFlag() {
+        return flag;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 
-    public String getHxUserName() {
-        return hxUserName;
+    public String getRoom_ctime() {
+        return room_ctime;
     }
 
-    public void setHxUserName(String hxUserName) {
-        this.hxUserName = hxUserName;
+    public void setRoom_ctime(String room_ctime) {
+        this.room_ctime = room_ctime;
     }
 
-    public int getCharacterId() {
-        return characterId;
+    public String getMtime() {
+        return mtime;
     }
 
-    public void setCharacterId(int characterId) {
-        this.characterId = characterId;
+    public void setMtime(String mtime) {
+        this.mtime = mtime;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getCtime() {
+        return ctime;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getSpaceId() {
-        return spaceId;
-    }
-
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
+    public void setCtime(String ctime) {
+        this.ctime = ctime;
     }
 }

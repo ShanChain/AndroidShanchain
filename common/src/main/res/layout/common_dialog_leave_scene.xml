@@ -44,8 +44,8 @@
             android:gravity="center"
             android:text="@string/str_cancel"
             android:focusableInTouchMode="false"
-            android:textColor="@color/colorDialogBtn"
-            android:textSize="17sp" />
+            android:textColor="@color/colorViolet"
+            android:textSize="14sp" />
 
         <View
             android:layout_width="1dp"
@@ -60,8 +60,8 @@
             android:gravity="center"
             android:text="@string/str_sure"
             android:focusableInTouchMode="false"
-            android:textColor="@color/colorDialogBtn"
-            android:textSize="17sp" />
+            android:textColor="@color/colorViolet"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

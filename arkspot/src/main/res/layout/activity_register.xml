@@ -139,7 +139,7 @@
         android:layout_marginTop="@dimen/dimens_20dp"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/colorActive"
-        android:text="《千千世界服务条款》"
+        android:text="@string/str_register_agree_terms_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

@@ -330,6 +330,7 @@
             android:theme="@style/FullScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -379,13 +380,16 @@
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.tasklist.TaskListActivity"></activity>
+        <activity android:name=".ui.view.activity.tasklist.TaskListActivity" />
         <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
         <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".ui.view.activity.ModifyUserInfoActivity" />
         <activity android:name=".ui.view.activity.jmessageui.MemberActivity" />
@@ -406,7 +410,10 @@
         <activity android:name=".ui.view.activity.coupon.CreateCouponActivity" />
         <activity android:name=".ui.view.activity.coupon.CouponDetailsActivity" />
         <activity android:name=".ui.view.activity.coupon.MyCouponDetailActivity" />
-        <activity android:name=".ui.view.activity.coupon.MyCouponListActivity"></activity>
+        <activity android:name=".ui.view.activity.coupon.MyCouponListActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.VerifiedActivity" />
+        <activity android:name=".ui.view.activity.coupon.ScanQRCodeActivity"></activity>
+        <activity android:name=".ui.view.activity.coupon.MyCreateDetailsActivity"></activity>
     </application>
 
 </manifest>

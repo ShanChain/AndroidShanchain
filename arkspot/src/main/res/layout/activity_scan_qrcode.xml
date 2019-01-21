@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_second"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--<Button-->
+    <!--android:id="@+id/second_button1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="取消"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_marginLeft="20dp"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--android:layout_gravity="bottom|center_horizontal"-->
+    <!--/>-->
+
+    <FrameLayout
+        android:id="@+id/fl_my_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <TextView
+        android:id="@+id/scan_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginBottom="150dp"
+        android:text="@string/scan_qrcode_hint"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        android:layout_gravity="bottom|center_horizontal"
+        />
+
+    <TextView
+        android:id="@+id/tv_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/shouquan_qrcode_s_flashgun"
+        android:clickable="true"/>
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_main"
+        style="@style/style_toolbar"
+        android:layout_gravity="top"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="扫一扫"
+        android:visibility="gone"
+        app:titleTextSize="16" />
+</FrameLayout>

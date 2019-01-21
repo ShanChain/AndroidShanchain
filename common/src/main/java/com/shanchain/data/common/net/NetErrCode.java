@@ -8,10 +8,12 @@ public class NetErrCode {
 
     //服务端错误码6位
     public static final String COMMON_SUC_CODE = "000000";
+    public static final String SUC_CODE = "200";
     public static final String COMMON_ERR_CODE = "999999";
     public static final String COMMON_UNOPENED_CODE = "999987";//待开发/未开放的功能
     public static final String SMSVC_ERR_CODE = "999998";
     public static final String USER_REPEAT_ERR_CODE = "999997";//账号已存在
+    public static final String UN_VERIFIED_CODE = "999970";//未实名认证
     public static final String LOGIN_ERR_CODE = "999996";//账号或密码已错误
     public static final String PARAMS_ERR_CODE = "999995";
     public static final String BIND_PONE_ERR_CODE = "999993";
