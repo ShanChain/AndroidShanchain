@@ -49,7 +49,7 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onResume() {
         super.onResume();
-        ActivityStackManager.getInstance().finishActivity(CouponListActivity.class);
+//        ActivityStackManager.getInstance().finishActivity(CouponListActivity.class);
     }
 
     @Override
