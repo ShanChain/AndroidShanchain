@@ -3360,7 +3360,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         super.onResume();
         String character = SCCacheUtils.getCacheCharacterInfo();
         final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-        if (!isRestartActivity) {
+        if (characterInfo != null && !isRestartActivity) {
             if (!TextUtils.isEmpty(characterInfo.getName())) {
                 userNikeView.setText("" + characterInfo.getName());
             }

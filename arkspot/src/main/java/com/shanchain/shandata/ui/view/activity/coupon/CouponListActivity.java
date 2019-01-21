@@ -185,6 +185,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                         } else if ("999970".equals(code)) {
                             Intent intent = new Intent(CouponListActivity.this, VerifiedActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     }
                 });
