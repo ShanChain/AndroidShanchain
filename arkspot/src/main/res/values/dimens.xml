@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
+    <dimen name="design_navigation_separator_vertical_padding">1dp</dimen>
     <dimen name="sizeToolbarActive">17sp</dimen>
     <dimen name="sizeToolbarInactive">15sp</dimen>
     <dimen name="arthur_navigation_height">56dp</dimen>

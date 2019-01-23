@@ -87,6 +87,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.rn.SettingActivity;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.LogUtils;
@@ -122,6 +123,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
@@ -984,7 +986,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (msg.what == 3) {
                     SCHttpUtils.postWithUserId()
                             .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
-                            .addParams("roomId", roomID)
+                            .addParams("roomId", roomID + "")
                             .addParams("timeStamp", System.currentTimeMillis() + "")
                             .build()
                             .execute(new SCHttpStringCallBack() {
@@ -1144,8 +1146,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         break;
                     //添加任务
                     case R.id.linear_play:
-//                        mArcMenu.getChildAt(0).findViewWithTag("taskPlay").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
                         /*点亮活动信息*/
+                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
                         SCHttpUtils.get()
                                 .url(HttpApi.LIGHT_ACTIVE)
                                 .addParams("token", SCCacheUtils.getCacheToken() + "")
@@ -1162,7 +1164,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                         String code = JSONObject.parseObject(response).getString("code");
                                         if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                             String data = JSONObject.parseObject(response).getString("data") != null ? JSONObject.parseObject(response).getString("data") : "暂无活动";
-                                            if (data.equals("暂无活动")) return;
+                                            if (data.equals("暂无活动")) {
+                                                ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
+                                                return;
+                                            }
                                             String ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
                                             String startTme = JSONObject.parseObject(data).getString("startTime");
                                             String endTime = JSONObject.parseObject(data).getString("endTime");
@@ -2212,7 +2217,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     }
 
-
     //标题栏右侧按钮实现
     @Override
     public void onRightClick(final View v) {
@@ -2318,18 +2322,16 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
             intent.putExtra("roomId", roomID);
             startActivity(intent);
-
         } else if (id == R.id.nav_my_message) {
             readyGo(MyMessageActivity.class);
-
         } else if (id == R.id.nav_my_favorited) {
             readyGo(FootPrintActivity.class);
-
         } else if (id == R.id.real_identity) {
             readyGo(VerifiedActivity.class);
-
-        } else if (id == R.id.nav_manage) {
-            readyGo(feedbackActivity.class);
+        } else if (id == R.id.nav_setting){
+            readyGo(SettingsActivity.class);
+        }else if (id == R.id.nav_manage) {
+            readyGo(FeedbackActivity.class);
 //            Intent intent = new Intent(MessageListActivity.this, SCReactActivity.class);
 //            intent.putExtra("gData", SCCacheUtils.getCacheGData()+ "");
 //            startActivity(intent);
@@ -3352,7 +3354,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     protected void onRestart() {
         super.onRestart();
-
     }
 
     @Override
@@ -3386,7 +3387,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //            }
 //        }).start();
     }
-
 
     @Override
     protected void onDestroy() {

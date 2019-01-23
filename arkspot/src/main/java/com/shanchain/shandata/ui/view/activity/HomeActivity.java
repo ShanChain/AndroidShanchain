@@ -185,7 +185,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private boolean isHide = true; //是否隐藏
     private String roomID = "", clickRoomID = "";
     private String roomName;
-    private int joinRoomId, page = 0, pageSize = 10;
+    private int joinRoomId=0, page = 0, pageSize = 10;
     private ProgressDialog mDialog;
     private CustomDialog ruleDialog;
     private LatLng myFocusPoint;

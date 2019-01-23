@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.view.activity.jmessageui.feedbackActivity">
+    tools:context=".ui.view.activity.jmessageui.FeedbackActivity">
 
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_main"
@@ -20,7 +20,23 @@
         android:layout_marginBottom="@dimen/dp_40"
         android:layout_margin="@dimen/dp_10"
         android:padding="@dimen/dimens_5dp"
-        android:hint="请输入您想反馈的问题"
-        android:background="#e4e0e0"/>
+        android:background="@drawable/shape_bg_even_msg"
+        android:hint="把你的遇到的问题、想法、意见告诉我们吧~" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="一起把MarJar做得更好！"
+        android:textColor="@color/colorHomeBtn"/>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_btn_even_message_task"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:layout_margin="@dimen/dimens_20dp"/>
 
 </LinearLayout>

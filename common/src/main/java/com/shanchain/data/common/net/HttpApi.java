@@ -567,8 +567,8 @@ public interface HttpApi {
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
     /* 钱包地址 */
-//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-        String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+//        String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
 
     //查询钱包信息
     String WALLET_INFO = BASE_URL + "/web/api/wallet/info";

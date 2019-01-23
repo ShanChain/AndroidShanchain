@@ -19,6 +19,7 @@
     <color name="colorTextTask">#FFBBBBBB</color>
     <!--灰色字体-->
     <color name="colorHint">#b3b3b3</color>
+    <color name="colorBgDefault">#F5F5F5</color>
     <!--按钮背景-->
     <color name="colorBtnBg">#d8d8d8</color>
     <color name="color_divider_line_gray">#e2e2e2</color>

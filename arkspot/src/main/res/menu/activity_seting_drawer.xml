@@ -3,44 +3,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
     <!--android:icon="@mipmap/my_wallet"-->
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_wallet">
         <item
-            android:checked="true"
             android:id="@+id/nav_my_wallet"
-            android:title="@string/nav_my_wallet"
-            />
+            android:title="@string/nav_my_wallet" />
+    </group>
 
+    <group android:id="@+id/group_coupon">
         <item
-            android:visible="true"
             android:id="@+id/nav_my_coupon"
-            android:title="@string/nav_my_coupon" />
+            android:title="@string/nav_my_coupon"
+            android:visible="true" />
+    </group>
 
+    <group android:id="@+id/group_Task">
         <item
-            android:visible="true"
             android:id="@+id/nav_my_task"
-            android:title="@string/nav_my_task" />
+            android:title="@string/nav_my_task"
+            android:visible="true" />
+    </group>
 
+    <group android:id="@+id/group_message">
         <item
             android:id="@+id/nav_my_message"
             android:title="@string/nav_my_message" />
+    </group>
 
+    <group android:id="@+id/group_favorited">
+        <item
+            android:id="@+id/nav_my_favorited"
+            android:title="@string/nav_my_favorited"
+            android:visible="false" />
+    </group>
+
+    <group android:id="@+id/group_identity">
+        <item
+            android:id="@+id/real_identity"
+            android:title="@string/nav_real_identity"
+            android:visible="true" />
+    </group>
+
+    <group android:id="@+id/group_setting">
+        <item
+            android:id="@+id/nav_setting"
+            android:title="@string/nav_setting" />
+    </group>
+
+    <group android:id="@+id/group">
         <item
             android:visible="false"
-            android:id="@+id/nav_my_favorited"
-            android:title="@string/nav_my_favorited" />
-
-        <item
-            android:visible="true"
-            android:id="@+id/real_identity"
-            android:title="@string/nav_real_identity" />
-
-        <item
             android:id="@+id/nav_manage"
             android:title="@string/nav_feedback" />
 
         <item
+            android:visible="false"
             android:id="@+id/nav_logout"
             android:title="@string/nav_logout" />
     </group>
+    <group android:id="@+id/bottom">
 
+    </group>
 </menu>

@@ -76,6 +76,7 @@
     <string name="nav_my_wallet">我的钱包</string>
     <string name="nav_my_message">我的消息</string>
     <string name="nav_feedback">意见反馈</string>
+    <string name="nav_setting">设置</string>
     <string name="nav_logout">退出登录</string>
     <string name="nav_my_task">我的社区帮</string>
     <string name="nav_my_coupon">我的马甲劵</string>

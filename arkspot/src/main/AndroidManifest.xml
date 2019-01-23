@@ -400,7 +400,7 @@
         <activity android:name=".widgets.pickerimage.PickImageActivity" />
         <activity android:name=".widgets.pickerimage.PickerAlbumActivity" />
         <activity android:name=".widgets.pickerimage.PickerAlbumPreviewActivity" />
-        <activity android:name=".ui.view.activity.jmessageui.feedbackActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.FeedbackActivity" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -412,8 +412,12 @@
         <activity android:name=".ui.view.activity.coupon.MyCouponDetailActivity" />
         <activity android:name=".ui.view.activity.coupon.MyCouponListActivity" />
         <activity android:name=".ui.view.activity.jmessageui.VerifiedActivity" />
-        <activity android:name=".ui.view.activity.coupon.ScanQRCodeActivity"></activity>
-        <activity android:name=".ui.view.activity.coupon.MyCreateDetailsActivity"></activity>
+        <activity android:name=".ui.view.activity.coupon.ScanQRCodeActivity" />
+        <activity android:name=".ui.view.activity.coupon.MyCreateDetailsActivity" />
+        <activity android:name=".ui.view.activity.settings.SettingsActivity" />
+        <activity android:name=".ui.view.activity.settings.AccountSecurityActivity" />
+        <activity android:name=".ui.view.activity.settings.SetPasswordActivity" />
+        <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity"></activity>
     </application>
 
 </manifest>

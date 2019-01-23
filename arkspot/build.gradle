@@ -76,10 +76,10 @@ android {
 
     productFlavors {
         arkspot {}
-        /*baidu {}//投放百度市场
-        tencent {}//投放应用宝市场
-        "360"{}//投放360市场
-        "91zhushou" {}//投放91助手
+//        tencent {}//投放应用宝市场
+//        baidu {}//投放百度市场
+//        "360" {}//投放360市场
+        /*"91zhushou" {}//投放91助手
         ANZHI {}//投放安智市场
         oppo {}//投放OPPO手机应用商店
         vivo {}//投放VIVO手机应用商店

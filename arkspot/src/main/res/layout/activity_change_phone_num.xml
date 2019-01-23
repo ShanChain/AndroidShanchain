@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.settings.SetPasswordActivity">
+
+    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+        android:id="@+id/tb_setting"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextThree"
+        app:titleTextSize="16">
+
+    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+
+    <TextView
+        android:id="@+id/tv_set_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb_setting"
+        android:layout_alignLeft="@+id/change_password"
+        android:layout_marginTop="30dp"
+        android:text="更换绑定手机"
+        android:textSize="@dimen/dimens_20dp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_set_password"
+        android:layout_alignLeft="@+id/edit_set_phone">
+
+        <TextView
+            android:id="@+id/tv_change_phone_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="输入当前绑定手机"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_change_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_change_phone_hint"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="+xx xxxxxxxxxx"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_change_phone"
+            android:layout_toRightOf="@+id/tv_change_phone"
+            android:text=" 收到的验证码"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/edit_set_phone"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/change_password"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:layout_marginRight="38dp">
+
+        <TextView
+            android:id="@+id/tv_register_code"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_bg_edit_get_code"
+            android:gravity="center"
+            android:padding="@dimen/dimens_5dp"
+            android:text="@string/str_register_code_obtain"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/tv_register_code"
+            android:background="@drawable/shape_bg_edit_report"
+            android:gravity="center_vertical"
+            android:hint="@string/str_register_code_input"
+            android:inputType="number"
+            android:lines="1"
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorLoginHint"
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/sp_14" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_set_password_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_set_phone"
+        android:layout_alignLeft="@+id/edit_set_phone"
+        android:layout_margin="@dimen/dp_10"
+        android:text="密码8~20位，至少包含字母/数字/符号2种组合"
+        android:textColor="@color/colorHint" />
+    <!-- 第二步输入更换绑定的手机 -->
+    <RelativeLayout
+        android:id="@+id/next_step"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/tv_set_password"
+        android:layout_marginLeft="38dp"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dimens_15dp"
+        android:layout_marginRight="38dp">
+
+        <TextView
+            android:id="@+id/tv_select_num"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/shape_bg_edit_get_code"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:text="+86"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:id="@+id/edit_phone_num"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_select_num"
+            android:background="@drawable/shape_bg_edit_report"
+            android:gravity="center_vertical"
+            android:hint="@string/str_hint_register_phone"
+            android:inputType="number"
+            android:lines="1"
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorLoginHint"
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/sp_14" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_set_password_sure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/shape_coupon_btn_bg_gray"
+        android:text="下一步"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
