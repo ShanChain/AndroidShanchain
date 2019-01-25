@@ -29,7 +29,7 @@
     <string name="coupon_create">确认创建</string>
     <string name="coupon_text_hint">请认真核对填写信息，一旦确认创建，则无法撤回</string>
     <string name="coupon_details_use">立即使用</string>
-    <string name="scan_qrcode_hint">对准二维码，扫一扫</string>
+    <string name="scan_qrcode_hint">对准二维码，扫一扫核销</string>
     <string name="coupon_details_use_rule">\n 1、全场满十元可用 \n
         2、需要到店后对老板娘说声：你好漂亮！\n
         3、地址：复兴城二楼 \n</string>

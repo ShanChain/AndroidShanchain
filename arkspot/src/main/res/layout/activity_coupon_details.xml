@@ -26,7 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/dimens_20dp"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:layout_marginRight="@dimen/dimens_20dp"
             android:background="@drawable/shape_bg_coupon_details"
             android:orientation="vertical">
 
@@ -60,7 +62,6 @@
                     android:src="@mipmap/red_packege" />
 
             </LinearLayout>
-
             <!-- 显示马甲劵详情 -->
             <LinearLayout
                 android:id="@+id/linear_show_details"
@@ -125,10 +126,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_40"
                         android:layout_marginRight="@dimen/dp_40"
-                        android:textSize="@dimen/sp_14"
                         android:background="@drawable/shape_btn_dialog_sure"
                         android:text="@string/coupon_details_use"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14" />
 
                     <TextView
                         android:id="@+id/tv_use_num"
@@ -136,8 +137,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:visibility="gone"
-                        android:text="剩余0张" />
+                        android:text="剩余0张"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <TextView
@@ -154,21 +155,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimens_20dp"
-                    android:textSize="@dimen/sp_12"
-                    android:text="" />
+                    android:ellipsize="end"
+                    android:text=""
+                    android:textSize="@dimen/sp_12" />
 
+                <TextView
+                    android:id="@+id/tv_coupon_details_expiration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_margin="@dimen/dp_10"
+                    android:text="有效期至：2019-01-01  23:59"
+                    android:textSize="@dimen/sp_12" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_coupon_details_expiration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="@dimen/dp_10"
-                android:textSize="@dimen/sp_12"
-
-                android:gravity="bottom|right"
-                android:text="有效期至：2019-01-01  23:59" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

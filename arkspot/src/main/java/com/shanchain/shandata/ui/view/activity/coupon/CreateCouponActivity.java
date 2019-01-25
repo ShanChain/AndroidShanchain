@@ -146,7 +146,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
 
     private String amount, deadline, detail, name, photoUrl, price, roomId, subuserId, tokenSymbol, userId;
-    private String rate;//汇率
+    private String rate = "10.0";//汇率
     private long timeStamp;
 
 
@@ -340,15 +340,19 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             price = s.toString();
                             if (TextUtils.isEmpty(amount)) {
                                 Integer unitPrice = Integer.valueOf(s.toString());
-                                tvCouponCurrencyNum.setText("" + unitPrice);
-                                tvCouponSeatNum.setText("" + unitPrice + "");
+                                tvCouponCurrencyNum.setText("" + unitPrice * 0.01);
+                                tvCouponSeatNum.setText("" + unitPrice / Double.valueOf(rate) * 0.01 + "");
                             } else {
                                 int unitPrice = Integer.valueOf(s.toString());
                                 int totalCount = TextUtils.isEmpty(amount) ? 0 : Integer.valueOf(amount);
-                                tvCouponCurrencyNum.setText("" + unitPrice * totalCount);
-                                if (TextUtils.isEmpty(rate)) return;
-                                Double totalNum = Double.valueOf(unitPrice * totalCount);
-                                tvCouponSeatNum.setText(totalNum / Double.valueOf(rate) + "");
+                                tvCouponCurrencyNum.setText("" + unitPrice * totalCount * 0.01);
+                                if (TextUtils.isEmpty(rate)) {
+                                    Double totalNum = Double.valueOf(unitPrice * totalCount * 0.01);
+                                    tvCouponSeatNum.setText(totalNum / 10.0 + "");
+                                } else {
+                                    Double totalNum = Double.valueOf(unitPrice * totalCount * 0.01);
+                                    tvCouponSeatNum.setText(totalNum / Double.valueOf(rate) + "");
+                                }
                             }
                         } else {
                             tvCouponCurrencyNum.setText("" + 0);
@@ -385,18 +389,22 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                         if (!TextUtils.isEmpty(price)) {
                             Integer unitPrice = Integer.valueOf(price);
                             Integer totalCount = Integer.valueOf(s.toString());
-                            tvCouponCurrencyNum.setText("" + unitPrice * totalCount);
+                            tvCouponCurrencyNum.setText("" + unitPrice * totalCount * 0.01);
 
-                            if (TextUtils.isEmpty(rate)) return;
-                            Double totalNum = Double.valueOf(unitPrice * totalCount);
-                            tvCouponSeatNum.setText("" + totalNum / Double.valueOf(rate) + "");
+                            if (TextUtils.isEmpty(rate)) {
+                                Double totalNum = Double.valueOf(unitPrice * totalCount * 0.01);
+                                tvCouponSeatNum.setText("" + totalNum / 10.0 + "");
+                            } else {
+                                Double totalNum = Double.valueOf(unitPrice * totalCount * 0.01);
+                                tvCouponSeatNum.setText("" + totalNum / Double.valueOf(rate) + "");
+                            }
                         } else {
                             int totalCount = Integer.valueOf(s.toString());
-                            tvCouponCurrencyNum.setText("" + totalCount);
-                            tvCouponSeatNum.setText("" + totalCount + "");
+                            tvCouponCurrencyNum.setText("" + totalCount * 0.01);
+                            tvCouponSeatNum.setText("" + totalCount / Double.valueOf(rate) * 0.01 + "");
                         }
                     } else {
-                        tvCouponCurrencyNum.setText("" + 0);
+                        tvCouponCurrencyNum.setText("" + 0.0);
                     }
                 } catch (NumberFormatException e) {
 //                    ToastUtils.showToast(CreateCouponActivity.this, "请输入合法数字");
@@ -657,7 +665,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     private void getUseName() {
         SCHttpUtils.post()
                 .url(HttpApi.CHARACTER_GET_CURRENT)
-                .addParams("userId",""+SCCacheUtils.getCacheUserId())
+                .addParams("userId", "" + SCCacheUtils.getCacheUserId())
                 .build()
                 .execute(new StringCallback() {
                     @Override

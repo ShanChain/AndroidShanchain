@@ -141,7 +141,8 @@ public class MyReciverCouponFragment extends BaseFragment implements BGARefreshL
      * */
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-//        refreshLayout.beginRefreshing();
+        refreshLayout.beginRefreshing();
+        page = 0;
         getMyReciverCouponList();
         refreshLayout.endRefreshing();
     }
@@ -187,10 +188,7 @@ public class MyReciverCouponFragment extends BaseFragment implements BGARefreshL
                         }
                     });
         }
-        if (page == currentPage) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override

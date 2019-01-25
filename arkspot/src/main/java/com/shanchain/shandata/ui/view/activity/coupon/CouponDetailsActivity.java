@@ -347,7 +347,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                     String data = JSONObject.parseObject(response).getString("data");
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                                     String useTime = sdf.format(new Date(Long.valueOf(data)));
-                                    btnCouponDetails.setText("已使用 " + useTime);
+                                    btnCouponDetails.setText("已核销 " + useTime);
                                     btnCouponDetails.setBackground(getResources().getDrawable(R.drawable.shape_coupon_btn_bg_gray));
                                     EventMessage eventMessage = new EventMessage(0);
                                     EventBus.getDefault().post(eventMessage);
@@ -424,6 +424,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
         if (linearShowQRcode.isShown()) {
             linearShowDetails.setVisibility(View.VISIBLE);
             linearShowQRcode.setVisibility(View.GONE);
+            initData();
 //            Animation animation = AnimationUtils.loadAnimation(CouponDetailsActivity.this, R.anim.coupon_details_exit);
 //            linearShowQRcode.startAnimation(animation);
         } else {
@@ -437,6 +438,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
             if (linearShowQRcode.isShown()) {
                 linearShowDetails.setVisibility(View.VISIBLE);
                 linearShowQRcode.setVisibility(View.GONE);
+                initData();
 //                Animation animation = AnimationUtils.loadAnimation(CouponDetailsActivity.this, R.anim.coupon_details_exit);
 //                linearShowQRcode.startAnimation(animation);
             } else {

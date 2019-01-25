@@ -137,6 +137,7 @@ public class MyCreateCouponFragment extends BaseFragment implements BGARefreshLa
     /* 下拉刷新 */
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        page = 0;
         getMycreateCouponList();
         refreshLayout.endRefreshing();
     }

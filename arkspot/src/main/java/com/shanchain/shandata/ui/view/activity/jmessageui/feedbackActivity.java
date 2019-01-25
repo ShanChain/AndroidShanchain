@@ -18,7 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 
-public class feedbackActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener,ArthurToolBar.OnLeftClickListener {
+public class FeedbackActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener,ArthurToolBar.OnLeftClickListener {
 
     @Bind(R.id.tb_main)
     ArthurToolBar tbMain;
@@ -62,12 +62,12 @@ public class feedbackActivity extends AppCompatActivity implements ArthurToolBar
                         }
                         @Override
                         public void onResponse(String response, int id) {
-                            ToastUtils.showToast(feedbackActivity.this,"反馈成功");
+                            ToastUtils.showToast(FeedbackActivity.this,"反馈成功");
                             finish();
                         }
                     });
         } else {
-            ToastUtils.showToast(feedbackActivity.this, "请输入反馈内容");
+            ToastUtils.showToast(FeedbackActivity.this, "请输入反馈内容");
         }
     }
 

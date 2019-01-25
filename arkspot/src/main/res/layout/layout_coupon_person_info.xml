@@ -45,6 +45,8 @@
         android:layout_marginTop="2dp"
         android:layout_toRightOf="@id/iv_item_story_avatar"
         android:lines="1"
+        android:maxLength="15"
+        android:ellipsize="end"
         android:text="必胜客餐厅"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"

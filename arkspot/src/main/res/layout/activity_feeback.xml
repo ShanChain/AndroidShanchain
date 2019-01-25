@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.view.activity.jmessageui.feedbackActivity">
+    tools:context=".ui.view.activity.jmessageui.FeedbackActivity">
 
     <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
         android:id="@+id/tb_main"
