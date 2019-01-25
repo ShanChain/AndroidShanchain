@@ -22,7 +22,7 @@
         android:layout_below="@+id/tb_setting">
 
         <RelativeLayout
-            android:id="@+id/relative_maja_id"
+            android:id="@+id/relative_user_id"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_marginTop="@dimen/dimens_20dp"
@@ -39,7 +39,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <TextView
-                android:id="@+id/iv_feedback_arrow"
+                android:id="@+id/tv_user_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -52,14 +52,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relative_login_password"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/relative_maja_id"
+            android:layout_below="@+id/relative_user_id"
             android:background="@color/white">
 
             <TextView
@@ -79,6 +79,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_login_password_arrow"
+                android:visibility="gone"
                 android:text="设置密码"
                 android:textColor="@color/colorHint" />
 
@@ -95,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
 
         </RelativeLayout>
 
@@ -140,7 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
     </RelativeLayout>
@@ -250,7 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
         <RelativeLayout
@@ -293,7 +294,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
         <RelativeLayout
@@ -336,7 +337,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorBgDefault"></View>
+                android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
     </RelativeLayout>

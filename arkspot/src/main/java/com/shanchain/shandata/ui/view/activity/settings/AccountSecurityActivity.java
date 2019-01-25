@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.view.activity.login.BindPhoneActivity;
@@ -18,11 +19,11 @@ import butterknife.OnClick;
 public class AccountSecurityActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
 
-    @Bind(R.id.tv_maja_id)
+    @Bind(R.id.tv_user_id)
     TextView tvMajaId;
     @Bind(R.id.iv_feedback_arrow)
     TextView ivFeedbackArrow;
-    @Bind(R.id.relative_maja_id)
+    @Bind(R.id.relative_user_id)
     RelativeLayout relativeMajaId;
     @Bind(R.id.tv_login_password)
     TextView tvLoginPassword;
@@ -87,6 +88,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     @Override
     protected void initViewsAndEvents() {
         initToolbar();
+        tvMajaId.setText(SCCacheUtils.getCacheUserId()+"");
+        tvSetPassword.setVisibility(View.GONE);
 
     }
 

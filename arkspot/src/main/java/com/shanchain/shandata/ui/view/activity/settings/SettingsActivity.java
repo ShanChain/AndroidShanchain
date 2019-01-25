@@ -1,7 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.settings;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -101,6 +100,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                 readyGo(FeedbackActivity.class);
                 break;
             case R.id.relative_app_about:
+                readyGo(AboutAppActivity.class);
                 break;
             case R.id.relative_app_update:
                 break;

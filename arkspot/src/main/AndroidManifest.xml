@@ -417,7 +417,8 @@
         <activity android:name=".ui.view.activity.settings.SettingsActivity" />
         <activity android:name=".ui.view.activity.settings.AccountSecurityActivity" />
         <activity android:name=".ui.view.activity.settings.SetPasswordActivity" />
-        <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity"></activity>
+        <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity" />
+        <activity android:name=".ui.view.activity.settings.AboutAppActivity"></activity>
     </application>
 
 </manifest>
