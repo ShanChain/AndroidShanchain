@@ -208,7 +208,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/relative_qq"
-            android:background="@color/colorBgDefault"></View>
+            android:background="@color/colorBgGray"></View>
 
         <RelativeLayout
             android:id="@+id/relative_qq"

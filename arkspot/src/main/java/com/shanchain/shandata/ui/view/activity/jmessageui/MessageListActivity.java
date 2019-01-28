@@ -113,6 +113,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.DateUtils;
@@ -2290,7 +2291,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_my_wallet) {
             Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
             JSONObject obj = new JSONObject();
@@ -2317,23 +2317,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         } else if (id == R.id.real_identity) {
             readyGo(VerifiedActivity.class);
 
-        } else if (id == R.id.nav_manage) {
-            readyGo(FeedbackActivity.class);
-//            Intent intent = new Intent(MessageListActivity.this, SCReactActivity.class);
-//            intent.putExtra("gData", SCCacheUtils.getCacheGData()+ "");
-//            startActivity(intent);
-//            Bundle bundle = new Bundle();
-//            String gDataString = SCCacheUtils.getCacheGData();
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("gData", JSONObject.parse(gDataString));
-//            bundle.putString(NavigatorModule.REACT_PROPS, jsonObject.toString());
-//            NavigatorModule.startReactPage(mContext, RNPagesConstant.SettingScreen, bundle);
-        } else if (id == R.id.nav_logout) {
-//            SCHttpUtils.postWithUserId()
-//                    .url(HttpApi.)
-            JMessageClient.logout();
-            readyGoThenKill(LoginActivity.class);
+        } else if (id == R.id.nav_setting) {
+            readyGo(SettingsActivity.class);
         }
+//        else if (id == R.id.nav_logout) {
+//            JMessageClient.logout();
+//            readyGoThenKill(LoginActivity.class);
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

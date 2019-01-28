@@ -90,6 +90,11 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
         initToolbar();
         tvMajaId.setText(SCCacheUtils.getCacheUserId()+"");
         tvSetPassword.setVisibility(View.GONE);
+        initData();
+
+    }
+
+    private void initData() {
 
     }
 

@@ -574,6 +574,8 @@ public interface HttpApi {
     String WALLET_INFO = BASE_URL + "/web/api/wallet/info";
     /* 实名认证 */
     String VERIFIED = BASE_URL + "/v1/2.0/Verified";
+
+    String USER_BOUND = BASE_URL + "/v1/user/bound";
     /* 跨年活动信息 */
     String LIGHT_ACTIVE = BASE_URL + "/v1/2.0/light/active";
     /* 活动闯关 */
