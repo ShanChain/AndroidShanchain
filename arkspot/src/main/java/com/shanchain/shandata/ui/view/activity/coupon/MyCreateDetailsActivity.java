@@ -147,6 +147,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                             if (NetErrCode.SUC_CODE.equals(code)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 CouponSubInfo couponSubInfo = JSONObject.parseObject(data, CouponSubInfo.class);
+
                                 RequestOptions options = new RequestOptions();
                                 try {
                                     options.placeholder(R.mipmap.aurora_headicon_default);
@@ -154,7 +155,10 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                tvItemStoryName.setText(couponSubInfo.getName() + "");
+                                if (couponSubInfo != null) {
+                                    String name = couponSubInfo.getName() != null ? couponSubInfo.getName() : "";
+                                    tvItemStoryName.setText(name + "");
+                                }
                                 tvItemCode.setText(couponSubInfo.getTokenSymbol() + "");
                                 evenMessageBounty.setText(couponSubInfo.getPrice() + "");
                                 tvCouponNum.setText("共 " + couponSubInfo.getAmount() + " 张");
@@ -219,7 +223,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                             helper.setText(R.id.tv_item_coupon_status, "" + item.getTokenStatus());
                                             break;
                                         case CouponSubInfo.RECEIVER_USE:
-                                            helper.setText(R.id.tv_item_coupon_status, "已使用");
+                                            helper.setText(R.id.tv_item_coupon_status, "已核销");
                                             if (item.getUseTime() == null) return;
                                             String useTime = sdf.format(new Date(Long.valueOf(item.getUseTime())));
                                             helper.setText(R.id.tv_item_receive_time, "" + useTime);

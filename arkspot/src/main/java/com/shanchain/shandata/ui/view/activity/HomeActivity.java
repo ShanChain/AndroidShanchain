@@ -110,6 +110,7 @@ import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.widgets.pickerimage.utils.ImageUtil;
+import com.tinkerpatch.sdk.TinkerPatch;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.service.DownloadService;
@@ -315,12 +316,13 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //每次进入主界面自动查询是否有补丁文件更新
+        TinkerPatch.with().fetchPatchUpdate(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
             String channelName = "聊天消息";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             createNotificationChannel(channelId, channelName, importance);
-
             channelId = "subscribe";
             channelName = "订阅消息";
             importance = NotificationManager.IMPORTANCE_DEFAULT;

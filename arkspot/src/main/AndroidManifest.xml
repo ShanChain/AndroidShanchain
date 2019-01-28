@@ -71,16 +71,16 @@
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
 
-        <!-- &lt;!&ndash; 友盟消息推送 &ndash;&gt; -->
-        <!-- <meta-data -->
-        <!-- android:name="UMENG_APPKEY" -->
-        <!-- android:value="59828961cae7e754170008ab" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="UMENG_MESSAGE_SECRET" -->
-        <!-- android:value="dfb65b759f7998b0b69b644d17303224" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="UMENG_CHANNEL" -->
-        <!-- android:value="${UMENG_CHANNEL_VALUE}" /> -->
+        <!-- &lt;!&ndash; 友盟统计/消息推送 &ndash;&gt; -->
+         <meta-data
+         android:name="UMENG_APPKEY"
+         android:value="59828961cae7e754170008ab" />
+         <meta-data
+         android:name="UMENG_MESSAGE_SECRET"
+         android:value="dfb65b759f7998b0b69b644d17303224" />
+         <meta-data
+         android:name="UMENG_CHANNEL"
+         android:value="${UMENG_CHANNEL_VALUE}" />
 
 
         <!-- 百度地图 -->

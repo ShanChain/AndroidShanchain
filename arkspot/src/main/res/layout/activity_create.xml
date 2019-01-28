@@ -252,7 +252,7 @@
                     android:layout_alignBaseline="@+id/edit_coupon_describe"
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_toLeftOf="@+id/edit_coupon_price"
-                    android:text="说明:"
+                    android:text="使用说明:"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
