@@ -47,6 +47,17 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dimens_5dp"
                 android:text="用户名" />
+
+            <TextView
+                android:id="@+id/tv_coupon_token_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dimens_5dp"
+                android:text=""
+                android:visibility="gone"
+                android:textSize="@dimen/sp_16"/>
+
             <!-- 显示核销二维码 -->
             <LinearLayout
                 android:id="@+id/linear_show_QRcode"

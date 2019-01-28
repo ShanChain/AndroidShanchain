@@ -1130,7 +1130,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         break;
                     //添加任务
                     case R.id.linear_play:
-//                        mArcMenu.getChildAt(0).findViewWithTag("taskPlay").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
+                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
                         /*点亮活动信息*/
                         SCHttpUtils.get()
                                 .url(HttpApi.LIGHT_ACTIVE)
@@ -1148,14 +1148,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                         String code = JSONObject.parseObject(response).getString("code");
                                         if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                             String data = JSONObject.parseObject(response).getString("data") != null ? JSONObject.parseObject(response).getString("data") : "暂无活动";
-                                            if (data.equals("暂无活动")) return;
-                                            String ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
-                                            String startTme = JSONObject.parseObject(data).getString("startTime");
-                                            String endTime = JSONObject.parseObject(data).getString("endTime");
-                                            if (System.currentTimeMillis() > Long.valueOf(endTime)) {
+                                            if (data.equals("暂无活动")) {
                                                 ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
                                             } else {
-                                                finish();
+                                                String ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
+                                                String startTme = JSONObject.parseObject(data).getString("startTime");
+                                                String endTime = JSONObject.parseObject(data).getString("endTime");
+                                                if (System.currentTimeMillis() > Long.valueOf(endTime)) {
+                                                    ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
+                                                } else {
+                                                    finish();
+                                                }
                                             }
                                         }
                                     }

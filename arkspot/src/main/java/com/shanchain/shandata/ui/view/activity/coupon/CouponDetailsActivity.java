@@ -3,7 +3,6 @@ package com.shanchain.shandata.ui.view.activity.coupon;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
-import com.shanchain.data.common.utils.CountDownTimeUtils;
 import com.shanchain.data.common.utils.EncodingHandler;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
@@ -85,6 +83,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
     CircleImageView ivCouponDetailsAvatar;
     @Bind(R.id.tv_use_rule_details)
     TextView tvUseRuleDetails;
+    @Bind(R.id.tv_coupon_token_name)
+    TextView tvCouponTokenName;
 
     private List<CouponSubInfo> couponList = new ArrayList();
     private ProgressDialog mDialog;
@@ -214,6 +214,9 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                             }
                                             linearShowDetails.setVisibility(View.GONE);
                                             linearShowQRcode.setVisibility(View.VISIBLE);
+                                            tvCouponName.setVisibility(View.INVISIBLE);
+                                            tvCouponTokenName.setVisibility(View.VISIBLE);
+                                            tvCouponTokenName.setText(couponSubInfo.getTokenName() + "");
                                             Animation animation = AnimationUtils.loadAnimation(CouponDetailsActivity.this, R.anim.coupon_details_in);
                                             linearShowQRcode.startAnimation(animation);
 
@@ -298,13 +301,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                         closeLoadingDialog();
                         String code = JSONObject.parseObject(response).getString("code");
                         final String msg = JSONObject.parseObject(response).getString("msg");
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                ToastUtils.showToast(CouponDetailsActivity.this, "" + msg);
-                                ToastUtils.showToast(CouponDetailsActivity.this, "领取成功");
-                            }
-                        });
+
                         if (NetErrCode.SUC_CODE.equals(code)) {
                             String data = JSONObject.parseObject(response).getString("data");
                             couponsId = JSONObject.parseObject(data).getString("couponsId");
@@ -312,6 +309,19 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                             initData();
                             EventMessage eventMessage = new EventMessage(0);
                             EventBus.getDefault().post(eventMessage);
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(CouponDetailsActivity.this, "领取成功");
+                                }
+                            });
+                        } else {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(CouponDetailsActivity.this, "" + msg);
+                                }
+                            });
                         }
                     }
                 });
@@ -335,8 +345,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
 
                             @Override
                             public void onResponse(String response, int id) {
-                                String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
-                                final String msg = com.alibaba.fastjson.JSONObject.parseObject(response).getString("msg");
+                                String code = JSONObject.parseObject(response).getString("code");
+                                final String msg = JSONObject.parseObject(response).getString("msg");
 //                                ThreadUtils.runOnMainThread(new Runnable() {
 //                                    @Override
 //                                    public void run() {
@@ -424,6 +434,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
         if (linearShowQRcode.isShown()) {
             linearShowDetails.setVisibility(View.VISIBLE);
             linearShowQRcode.setVisibility(View.GONE);
+            tvCouponName.setVisibility(View.VISIBLE);
+            tvCouponTokenName.setVisibility(View.GONE);
             initData();
 //            Animation animation = AnimationUtils.loadAnimation(CouponDetailsActivity.this, R.anim.coupon_details_exit);
 //            linearShowQRcode.startAnimation(animation);
@@ -438,6 +450,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
             if (linearShowQRcode.isShown()) {
                 linearShowDetails.setVisibility(View.VISIBLE);
                 linearShowQRcode.setVisibility(View.GONE);
+                tvCouponName.setVisibility(View.VISIBLE);
+                tvCouponTokenName.setVisibility(View.GONE);
                 initData();
 //                Animation animation = AnimationUtils.loadAnimation(CouponDetailsActivity.this, R.anim.coupon_details_exit);
 //                linearShowQRcode.startAnimation(animation);
