@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.base.UserType;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_GDATA;
@@ -101,8 +100,8 @@ public class SCCacheUtils {
         return getCache(userId,Constants.CACHE_HEAD_IMG);
     }
 
-    public static String getCacheThirdToken(String userType){
+    public static String getCacheAuthCode(){
         String userId = getCacheUserId();
-        return getCache(userId,userType);
+        return getCache(userId,Constants.CACHE_AUTH_CODE);
     }
 }

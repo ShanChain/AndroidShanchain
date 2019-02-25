@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.JMessageClient;

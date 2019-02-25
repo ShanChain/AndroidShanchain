@@ -1,4 +1,4 @@
-package com.shanchain.shandata.widgets.toolBar;
+package com.shanchain.data.common.ui.toolBar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,13 +15,11 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-import com.shanchain.shandata.R;
+import com.shanchain.common.R;
 import com.shanchain.data.common.utils.SystemUtils;
 
 import cn.jiguang.imui.view.CircleImageView;
@@ -332,68 +330,68 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
             // 获取View ID
             int id = v.getId();
             // 根据ID处理不同的回调事件
-            switch (v.getId()) {
-                // 左侧按钮事件
-                case R.id.mLeftText:
-                    // 执行点击事件回调
-                    if (mLeftListener != null) {
-                        mLeftListener.onLeftClick(v);
+            int i = v.getId();// 左侧按钮事件
+            if (i == R.id.mLeftText) {// 执行点击事件回调
+                if (mLeftListener != null) {
+                    mLeftListener.onLeftClick(v);
+                }
+                // 执行动画
+                if (isOpenAnim) {
+                    if (!TextUtils.isEmpty(mLeftText.getText().toString().trim())) {
+                        ArthurNavigationHelper.updateTextSize(mLeftText, inactiveTextSize, activeTextSize);
+                        ArthurNavigationHelper.updateTextSize(mLeftText, activeTextSize, inactiveTextSize);
+                    } else {
+                        ArthurNavigationHelper.updateAlpha(mLeftText, 1, 0.60f);
+                        ArthurNavigationHelper.updateAlpha(mLeftText, 0.60f, 1);
                     }
-                    // 执行动画
-                    if (isOpenAnim) {
-                        if (!TextUtils.isEmpty(mLeftText.getText().toString().trim())) {
-                            ArthurNavigationHelper.updateTextSize(mLeftText, inactiveTextSize, activeTextSize);
-                            ArthurNavigationHelper.updateTextSize(mLeftText, activeTextSize, inactiveTextSize);
-                        } else {
-                            ArthurNavigationHelper.updateAlpha(mLeftText, 1, 0.60f);
-                            ArthurNavigationHelper.updateAlpha(mLeftText, 0.60f, 1);
-                        }
-                    }
-                    break;
+                }
+
                 // 右侧按钮事件
-                case R.id.mRightText:
-                    // 执行点击事件回调
-                    if (mRightListener != null) {
-                        mRightListener.onRightClick(v);
+            } else if (i == R.id.mRightText) {// 执行点击事件回调
+                if (mRightListener != null) {
+                    mRightListener.onRightClick(v);
+                }
+                // 执行动画
+                if (isOpenAnim) {
+                    if (!TextUtils.isEmpty(mRightText.getText().toString().trim())) {
+                        ArthurNavigationHelper.updateTextSize(mRightText, inactiveTextSize, activeTextSize);
+                        ArthurNavigationHelper.updateTextSize(mRightText, activeTextSize, inactiveTextSize);
+                    } else {
+                        ArthurNavigationHelper.updateAlpha(mRightText, 1, 0.60f);
+                        ArthurNavigationHelper.updateAlpha(mRightText, 0.60f, 1);
                     }
-                    // 执行动画
-                    if (isOpenAnim) {
-                        if (!TextUtils.isEmpty(mRightText.getText().toString().trim())) {
-                            ArthurNavigationHelper.updateTextSize(mRightText, inactiveTextSize, activeTextSize);
-                            ArthurNavigationHelper.updateTextSize(mRightText, activeTextSize, inactiveTextSize);
-                        } else {
-                            ArthurNavigationHelper.updateAlpha(mRightText, 1, 0.60f);
-                            ArthurNavigationHelper.updateAlpha(mRightText, 0.60f, 1);
-                        }
-                    }
-                    break;
+                }
+
                 //标题点击事件
-                case R.id.mTitleText:
-                    if (mTitleListener != null) {
-                        mTitleListener.onTitleClick(v);
-                    }
-                    break;
+            } else if (i == R.id.mTitleText) {
+                if (mTitleListener != null) {
+                    mTitleListener.onTitleClick(v);
+                }
+
                 //收藏点击事件
-                case R.id.mFavorite:
-                    if (mFavoriteListener != null) {
-                        mFavoriteListener.onFavoriteClick(v);
-                    }
-                    //聊天室点击事件
-                case R.id.relative_chatRoom:
-                    if (mRelativeChatRoomClickListener != null) {
-                        mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
-                    }
-                    break;
+            } else if (i == R.id.mFavorite) {
+                if (mFavoriteListener != null) {
+                    mFavoriteListener.onFavoriteClick(v);
+                }
+                //聊天室点击事件
+
+                if (mRelativeChatRoomClickListener != null) {
+                    mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
+                }
+
                 //头像点击事件
-                case R.id.toolbar_user_head_img:
-                    if (onUserHeadClickListener != null) {
-                        onUserHeadClickListener.onUserHeadClick(v);
-                    }
-                    break;
+            } else if (i == R.id.relative_chatRoom) {
+                if (mRelativeChatRoomClickListener != null) {
+                    mRelativeChatRoomClickListener.onRelativeChatRoomClick(v);
+                }
 
-                default:
+                //头像点击事件
+            } else if (i == R.id.toolbar_user_head_img) {
+                if (onUserHeadClickListener != null) {
+                    onUserHeadClickListener.onUserHeadClick(v);
+                }
 
-                    break;
+            } else {
             }
 
         } catch (Exception e) {

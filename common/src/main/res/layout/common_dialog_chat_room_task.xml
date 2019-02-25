@@ -103,7 +103,6 @@
                 android:layout_marginLeft="@dimen/dimens_15dp"
                 android:background="@drawable/shape_bg_dialog_task_edit"
                 android:focusable="true"
-
                 android:gravity="top"
                 android:hint="@string/my_task_release_reward_hint"
                 android:inputType="number|numberDecimal"

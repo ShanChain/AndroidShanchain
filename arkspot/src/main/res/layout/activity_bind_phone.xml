@@ -6,7 +6,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_bind_pone"
         style="@style/style_toolbar"
         android:visibility="visible"
@@ -17,6 +17,8 @@
     <View style="@style/style_text_line_match" />
 
     <LinearLayout style="@style/style_obtain_focus" />
+
+
 
     <EditText
         android:id="@+id/et_login_account"

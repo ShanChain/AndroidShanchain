@@ -36,8 +36,8 @@ public class EmoticonsIndicatorView extends LinearLayout {
                 R.styleable.ChatInputViewEmoticonsIndicatorView, 0, 0);
 
         try {
-            mDrawableSelect = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_bmpSelect);
-            mDrawableNomal = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_bmpNomal);
+            mDrawableSelect = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_chat_input_bmpSelect);
+            mDrawableNomal = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_chat_input_bmpNomal);
         } finally {
             a.recycle();
         }

@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.activity.coupon.CouponDetailsActivity">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_coupon_detail"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16">
 
-    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
 
     <LinearLayout
         android:id="@+id/linear_coupon_detail"

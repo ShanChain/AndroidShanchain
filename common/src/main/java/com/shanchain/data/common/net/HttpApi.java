@@ -414,6 +414,7 @@ public interface HttpApi {
      * 获取最新apk信息
      */
     String OSS_APK_GET_LASTEST = BASE_URL + "/oss/apk/get/latest";
+
 //    String OSS_APK_GET_LASTEST = "http://95.169.24.11:8083" + "/oss/apk/get/latest";
 
     /**
@@ -566,16 +567,41 @@ public interface HttpApi {
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
+    //官网app下载
+    String APP_HOME = "https://marjar.app";
+    //用户协议
+    String USER_RULE = "http://h5.qianqianshijie.com/agreement";
+    //隐私政策
+    String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
     String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-//        String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
-
+    //        String SEAT_WALLET ="http://h5.qianqianshijie.com/wallet";
+    /* 获取钱包用户名密码 */
+    String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
+    /* 验证钱包密码 */
+    String WALLET_CHECK_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/checkInfo";
+    /* 设置免密登录 */
+    String WALLET_FREE_PASSWORD = BASE_URL + "/web/api/sys/needBindPwd";
+    /* 绑定手机设备号*/
+    String WALLET_BIND_PHONE_IMEI = BASE_URL + "/wallet/api/wallet/2.0/bind?token=";
     //查询钱包信息
     String WALLET_INFO = BASE_URL + "/web/api/wallet/info";
     /* 实名认证 */
     String VERIFIED = BASE_URL + "/v1/2.0/Verified";
+    /* 是否实名 */
+    String IS_REAL_NAME = BASE_URL + "/v1/2.0/Verified/isRealName";
+    /* 修改绑定手机号 */
+    String CHANGE_PHONE = BASE_URL + "/v1/2.0/user/change_phone";
 
+    String RESET_PASSWORD = BASE_URL + "/v1/2.0/user/reset_password";
+    /* 获取短信验证码 */
+    String SETTING_GET_VERIFY_CODE = BASE_URL + "/v1/2.0/sms/setting/verifycode";
+    /* 实名认证详情 */
+    String VERIFIED_DETAILS = BASE_URL + "/v1/2.0/Verified/detail";
+    /* 查询绑定第三方账号的信息*/
     String USER_BOUND = BASE_URL + "/v1/user/bound";
+    /* 绑定/解绑第三方账号*/
+    String BAND_THIRD_PLATFORM = BASE_URL + "/v1/2.0/user/bind_other_account";
     /* 跨年活动信息 */
     String LIGHT_ACTIVE = BASE_URL + "/v1/2.0/light/active";
     /* 活动闯关 */
@@ -609,6 +635,8 @@ public interface HttpApi {
     String COUPON_GET_COUPONS = BASE_URL + "/wallet/api/coupons/client/getCoupons";
     /* 创建卡劵详情 领取人员列表 */
     String COUPON_CLIENT_LIST = BASE_URL + "/wallet/api/coupons/vendor/clientList";
+    /* 获取子卡劵的核销凭证 */
+    String COUPON_CHECK_TOKEN = BASE_URL + "/wallet/api/coupons/token";
     /* 核销子卡劵 */
     String COUPON_CLIENT_USE = BASE_URL + "/wallet/api/coupons/client/useCoupons";
 

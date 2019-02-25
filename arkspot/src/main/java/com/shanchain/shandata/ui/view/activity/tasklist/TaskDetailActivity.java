@@ -2,17 +2,12 @@ package com.shanchain.shandata.ui.view.activity.tasklist;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -23,55 +18,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.Gson;
-import com.jaeger.ninegridimageview.NineGridImageView;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.base.RNPagesConstant;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.rn.modules.NavigatorModule;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
-import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.DynamicCommentAdapter;
 import com.shanchain.shandata.adapter.MultiTaskListAdapter;
-import com.shanchain.shandata.adapter.StoryItemNineAdapter;
-import com.shanchain.shandata.adapter.TaskCommentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
-import com.shanchain.shandata.ui.model.BdCommentBean;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.CommentBean;
-import com.shanchain.shandata.ui.model.ContactBean;
-import com.shanchain.shandata.ui.model.RNDetailExt;
-import com.shanchain.shandata.ui.model.RNGDataBean;
-import com.shanchain.shandata.ui.model.ReleaseContentInfo;
-import com.shanchain.shandata.ui.model.SpanBean;
-import com.shanchain.shandata.ui.model.TaskCommentContent;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
-import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingerChatInfoActivity;
-import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
-import com.shanchain.shandata.ui.view.activity.story.TopicDetailsActivity;
-import com.shanchain.shandata.ui.view.fragment.view.TaskView;
-import com.shanchain.shandata.utils.ClickableSpanNoUnderline;
-import com.shanchain.shandata.utils.DateUtils;
-import com.shanchain.shandata.utils.KeyboardUtils;
-import com.shanchain.shandata.utils.SCLinkMovementMethod;
-import com.shanchain.shandata.widgets.dialog.CommentDialog;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
-import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,9 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -92,11 +57,7 @@ import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
-import cn.jpush.im.android.api.model.Message;
-import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
 public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener,
@@ -139,6 +100,8 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private String characterId = SCCacheUtils.getCacheCharacterId();
     private String userId = SCCacheUtils.getCacheUserId();
     private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+    private com.shanchain.data.common.ui.widgets.CustomDialog showPasswordDialog;
+    private CustomDialog taskDialog;
     ;
 
 
@@ -156,6 +119,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         if (null == chatRoomConversation) {
             chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
         }
+        //上传密码图片弹窗
+        showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(TaskDetailActivity.this, true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
         initToolBar();
         initView();
         initData();
@@ -414,10 +381,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 });
 
         final int[] idItems = new int[]{R.id.et_input_dialog_describe, R.id.dialog_select_task_time, R.id.et_input_dialog_bounty, R.id.iv_dialog_close, R.id.btn_dialog_input_sure, R.id.iv_dialog_close};
-        final CustomDialog dialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
+        taskDialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
         View layout = View.inflate(TaskDetailActivity.this, R.layout.common_dialog_chat_room_task, null);
-        dialog.setView(layout);
-        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+        taskDialog.setView(layout);
+        taskDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(final CustomDialog dialog, View view) {
                 final EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
@@ -482,13 +449,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 }
             }
         });
-        dialog.show();
+        taskDialog.show();
         handler = new Handler() {
             @Override
             public void handleMessage(final android.os.Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 0:
+                        ToastUtils.showToast(mContext, "发布成功");
+                        taskDialog.dismiss();
                         break;
                 }
             }
@@ -570,13 +539,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             }
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHAT_TASK_ADD)
+                    .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
+                    .addParams("deviceToken", registrationId + "")
                     .addParams("characterId", characterId + "")
                     .addParams("bounty", bounty)
                     .addParams("roomId", roomID + "")
                     .addParams("dataString", dataString + "") //任务内容
                     .addParams("time", timeStamp + "")
                     .build()
-                    .execute(new SCHttpStringCallBack() {
+                    .execute(new SCHttpStringCallBack(mContext, showPasswordDialog) {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             LogUtils.d("TaskPresenterImpl", "添加任务失败");
@@ -589,7 +560,6 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
                         @Override
                         public void onResponse(String response, int id) {
-                            dialog.dismiss();
                             closeLoadingDialog();
                             String code = JSONObject.parseObject(response).getString("code");
                             final String message = JSONObject.parseObject(response).getString("message");
@@ -597,30 +567,13 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                 String data = JSONObject.parseObject(response).getString("data");
                                 String task = JSONObject.parseObject(data).getString("Task");
                                 chatEventMessage1 = JSONObject.parseObject(task, ChatEventMessage.class);
-//                                handler.sendEmptyMessage(0);
-                                dialog.dismiss();
-                            } else if (code.equals("10001")) {
+                                handler.sendEmptyMessage(0);
+                            } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {   //余额不足
+                                closeLoadingDialog();
                                 dialogHandler.sendEmptyMessage(1);
-                                dialog.dismiss();
-                                //余额不足
-                                dialogHandler.sendEmptyMessage(1);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(TaskDetailActivity.this, "您的钱包余额不足", Toast.LENGTH_SHORT);
-
-                                    }
-                                });
                             } else {
-                                dialogHandler.sendEmptyMessage(2);
-                                dialog.dismiss();
-                                dialogHandler.sendEmptyMessage(2);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(TaskDetailActivity.this, "错误消息" + message, Toast.LENGTH_SHORT);
-                                    }
-                                });
+                                closeLoadingDialog();
+//                                dialogHandler.sendEmptyMessage(2);
                             }
                         }
                     });

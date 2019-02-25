@@ -21,21 +21,22 @@
     <FrameLayout
         android:id="@+id/fl_my_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/scan_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="150dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:text="@string/scan_qrcode_hint"
         android:textColor="@color/colorWhite"
-        android:textSize="14sp"
-        android:layout_gravity="bottom|center_horizontal"
-        />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_light"
@@ -45,15 +46,15 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="100dp"
         android:background="@drawable/shouquan_qrcode_s_flashgun"
-        android:clickable="true"/>
+        android:clickable="true" />
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_main"
         style="@style/style_toolbar"
         android:layout_gravity="top"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextDefault"
         app:titleText="扫一扫"
-        android:visibility="gone"
         app:titleTextSize="16" />
+
 </FrameLayout>

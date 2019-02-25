@@ -1,63 +1,37 @@
 package com.shanchain.shandata.ui.view.activity.coupon;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.BaseViewHolder;
 import com.shanchain.shandata.adapter.CouponListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
-import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
-import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.OkHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import cn.bingoogolapple.refreshlayout.BGAMeiTuanRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGAMoocStyleRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGAStickinessRefreshViewHolder;
-import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jmessage.support.qiniu.android.utils.Json;
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class CouponListActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
     private ArthurToolBar toolBar;
@@ -124,13 +98,12 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                 startActivity(detailIntent);
             }
         });
-
     }
 
     //初始化标题栏
     private void initToolBar() {
         toolBar = findViewById(R.id.tb_coupon);
-        toolBar.setTitleText("马甲卷");
+        toolBar.setTitleText(getResources().getString(R.string.nav_coupon));
         toolBar.setRightText("我的");
         toolBar.setOnLeftClickListener(this);
         toolBar.setOnRightClickListener(this);
@@ -182,7 +155,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                             recyclerView.setLayoutManager(layoutManager);
                             recyclerView.setAdapter(couponListAdapter);
 
-                        } else if ("999970".equals(code)) {
+                        } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
                             Intent intent = new Intent(CouponListActivity.this, VerifiedActivity.class);
                             startActivity(intent);
                             finish();

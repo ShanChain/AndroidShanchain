@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_my_comments"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"

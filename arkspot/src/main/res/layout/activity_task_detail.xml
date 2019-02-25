@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.view.activity.tasklist.TaskDetailActivity">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_task_comment"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"

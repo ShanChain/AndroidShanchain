@@ -11,17 +11,14 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
@@ -56,13 +53,16 @@ public abstract class SCHttpUtils {
     }
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType FORM_DATA = MediaType.parse("multipart/form-data");
 
     public static void postByBody(String url, String json, Callback callback) {
         try {
+            String userId = SCCacheUtils.getCache("0", "curUser");
+            String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
             OkHttpClient client = OkHttpUtils.getInstance().getOkHttpClient();
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
-                    .url(url)
+                    .url(url + "?token=" + token)
                     .post(body)
                     .build();
             client.newCall(request).enqueue(callback);
@@ -73,6 +73,8 @@ public abstract class SCHttpUtils {
 
     public static void postByBody(String url, RequestBody body, Callback callback) {
         try {
+            String userId = SCCacheUtils.getCache("0", "curUser");
+            String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
             OkHttpClient client = OkHttpUtils.getInstance().getOkHttpClient();
             Request request = new Request.Builder()
                     .url(url)

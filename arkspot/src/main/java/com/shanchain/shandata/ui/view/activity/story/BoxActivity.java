@@ -7,7 +7,7 @@ import android.widget.EditText;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import butterknife.Bind;
 

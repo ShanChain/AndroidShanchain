@@ -18,8 +18,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ashokvarma.bottomnavigation.BadgeItem;
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.google.gson.Gson;
 import com.shanchain.data.common.base.ActivityStackManager;
@@ -56,8 +54,7 @@ import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.shanchain.shandata.ui.view.fragment.NewsFragment;
 import com.shanchain.shandata.ui.view.fragment.StoryFragment;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.umeng.commonsdk.UMConfigure;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -534,8 +531,8 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
     }
 
     private void squareRightClick() {
-        final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_square_msg_bottom, new int[]{
-                R.id.tv_dialog_msg_background_img, R.id.tv_dialog_msg_cancel});
+        final CustomDialog customDialog = new CustomDialog(this, true, 1, R.layout.dialog_bottom_take_photos, new int[]{
+                R.id.tv_dialog_photos, R.id.tv_dialog_take_picture});
         customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
@@ -548,7 +545,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.HeadlinesScreen, new Bundle());
                         customDialog.dismiss();
                         break;
-                    case R.id.tv_dialog_msg_background_img:
+                    case R.id.tv_dialog_photos:
                         NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceBGImgScreen, bundle);
                         customDialog.dismiss();
                         break;
@@ -556,7 +553,7 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
                         NavigatorModule.startReactPage(view.getContext(), RNPagesConstant.SpaceIntroScreen, bundle);
                         customDialog.dismiss();
                         break;
-                    case R.id.tv_dialog_msg_cancel:
+                    case R.id.tv_dialog_take_picture:
                         customDialog.dismiss();
                         break;
                     default:

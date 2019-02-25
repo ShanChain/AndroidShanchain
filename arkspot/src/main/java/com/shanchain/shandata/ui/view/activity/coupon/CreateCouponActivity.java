@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,10 +15,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ReplacementTransformationMethod;
-import android.text.method.TransformationMethod;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,11 +26,13 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
@@ -45,14 +44,13 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,8 +65,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.jiguang.imui.view.CircleImageView;
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
@@ -256,63 +252,63 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                                                }
         );
         //监听代号是否被占用
-        editCouponCode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String couponCode = s.toString();
-                if (couponCode.length() > 0) {
-                    tvCouponDes.setText("代号为三个大写字母");
-                    tvCouponDes.setTextColor(getResources().getColor(R.color.colorHint));
-                }
-                if (couponCode.length() == 3) {
-                    SCHttpUtils.get()
-                            .url(HttpApi.COUPON_CODE_CHECK)
-                            .addParams("tokenSymbol", "" + couponCode)
-                            .build()
-                            .execute(new StringCallback() {
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    LogUtils.d(TAG, "网络异常");
-                                }
-
-                                @Override
-                                public void onResponse(String response, int id) {
-                                    String code = JSONObject.parseObject(response).getString("code");
-                                    final String msg = JSONObject.parseObject(response).getString("msg");
-                                    if (NetErrCode.SUC_CODE.equals(code)) {
-                                        String data = JSONObject.parseObject(response).getString("data");
-                                        ThreadUtils.runOnMainThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-//                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
-                                            }
-                                        });
-                                    } else {
-                                        ThreadUtils.runOnMainThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-//                                                editCouponCode.setText("");
-                                                tvCouponDes.setText("已被占用");
-                                                tvCouponDes.setTextColor(getResources().getColor(R.color.red_btn_normal));
-//                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
-                                            }
-                                        });
-                                    }
-
-                                }
-                            });
-                }
-            }
-        });
+//        editCouponCode.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                String couponCode = s.toString();
+//                if (couponCode.length() > 0) {
+//                    tvCouponDes.setText("代号为三个大写字母");
+//                    tvCouponDes.setTextColor(getResources().getColor(R.color.colorHint));
+//                }
+//                if (couponCode.length() == 3) {
+//                    SCHttpUtils.get()
+//                            .url(HttpApi.COUPON_CODE_CHECK)
+//                            .addParams("tokenSymbol", "" + couponCode)
+//                            .build()
+//                            .execute(new StringCallback() {
+//                                @Override
+//                                public void onError(Call call, Exception e, int id) {
+//                                    LogUtils.d(TAG, "网络异常");
+//                                }
+//
+//                                @Override
+//                                public void onResponse(String response, int id) {
+//                                    String code = JSONObject.parseObject(response).getString("code");
+//                                    final String msg = JSONObject.parseObject(response).getString("msg");
+//                                    if (NetErrCode.SUC_CODE.equals(code)) {
+//                                        String data = JSONObject.parseObject(response).getString("data");
+//                                        ThreadUtils.runOnMainThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+////                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
+//                                            }
+//                                        });
+//                                    } else {
+//                                        ThreadUtils.runOnMainThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+////                                                editCouponCode.setText("");
+//                                                tvCouponDes.setText("已被占用");
+//                                                tvCouponDes.setTextColor(getResources().getColor(R.color.red_btn_normal));
+////                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
+//                                            }
+//                                        });
+//                                    }
+//
+//                                }
+//                            });
+//                }
+//            }
+//        });
         //监听填写单价的输入框
         editCouponPrice.addTextChangedListener(new TextWatcher() {
             @Override
@@ -445,7 +441,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
             @Override
             public void onClick(View v) {
                 name = editCouponName.getText().toString();//名称
-                tokenSymbol = editCouponCode.getText().toString();//卡劵
+//                tokenSymbol = editCouponCode.getText().toString();//卡劵代码
                 price = editCouponPrice.getText().toString();//单价
                 amount = editCouponNum.getText().toString();//数量
                 detail = editCouponDescribe.getText().toString();//说明
@@ -491,12 +487,15 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void createCoupon() {
-        if (TextUtils.isEmpty(amount) || Integer.valueOf(amount) < 1 || TextUtils.isEmpty(deadline) || TextUtils.isEmpty(name) || TextUtils.isEmpty(tokenSymbol) || tokenSymbol.length() < 3 || TextUtils.isEmpty(price) || Integer.valueOf(price) < 1) {
+        if (TextUtils.isEmpty(amount) || Integer.valueOf(amount) < 1 || TextUtils.isEmpty(deadline) || TextUtils.isEmpty(name) || TextUtils.isEmpty(price) || Integer.valueOf(price) < 1) {
             ToastUtils.showToast(CreateCouponActivity.this, "请输入完整信息");
             return;
         }
         detail = TextUtils.isEmpty(detail) ? "empty" : detail;
         Map requestBody = new HashMap();
+        requestBody.put("authCode", SCCacheUtils.getCacheAuthCode() + "");
+        requestBody.put("deviceToken", registrationId + "");
+//        requestBody.put("token", SCCacheUtils.getCacheToken() + "");
         requestBody.put("amount", amount + "");
         requestBody.put("deadline", deadline + "");
         requestBody.put("detail", detail + "");
@@ -505,17 +504,15 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         requestBody.put("price", price + "");
         requestBody.put("roomId", roomId + "");
         requestBody.put("subuserId", subuserId + "");
-        requestBody.put("tokenSymbol", tokenSymbol + "");
+        requestBody.put("tokenSymbol", "empty");
         requestBody.put("userId", userId + "");
-        SCHttpUtils.postByBody(HttpApi.COUPONS_CREATE, JSONObject.toJSONString(requestBody), new Callback() {
+        CustomDialog showPasswordDialog = new CustomDialog(CreateCouponActivity.this, true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+        SCHttpUtils.postByBody(HttpApi.COUPONS_CREATE, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(CreateCouponActivity.this, showPasswordDialog) {
             @Override
-            public void onFailure(Call call, IOException e) {
-                LogUtils.d(TAG, "网络异常");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String result = response.body().string();
+            public void responseDoParse(String string) {
+                final String result = string;
                 String code = JSONObject.parseObject(result).getString("code");
                 final String msg = JSONObject.parseObject(result).getString("msg");
                 if (code.equals(NetErrCode.SUC_CODE)) {
@@ -529,13 +526,17 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             finish();
                         }
                     });
-                } else if ("10001".equals(code)) {
+                } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
                             ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
                         }
                     });
+                } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
+                    Intent intent = new Intent(CreateCouponActivity.this, VerifiedActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
@@ -545,7 +546,68 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                     });
                 }
             }
+
         });
+
+     /*   SCHttpUtils.postWithUserId()
+                .url(HttpApi.COUPONS_CREATE)
+                .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
+                .addParams("deviceToken", registrationId + "")
+                .addParams("amount", amount + "")
+                .addParams("deadline", deadline + "")
+                .addParams("detail", detail + "")
+                .addParams("name", name + "")
+                .addParams("photoUrl", photoUrl + "")
+                .addParams("price", price + "")
+                .addParams("roomId", roomId + "")
+                .addParams("subuserId", subuserId + "")
+                .addParams("tokenSymbol", "empty")
+                .addParams("userId", userId + "")
+                .build()
+                .execute(new SCHttpStringCallBack(mContext, null) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(final String response, int id) {
+                        final String code = SCJsonUtils.parseCode(response);
+                        final String msg = SCJsonUtils.parseMsg(response);
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(CreateCouponActivity.this, "" + msg);
+                                    String data = SCJsonUtils.parseData(response);
+                                    EventMessage eventMessage = new EventMessage(0);
+                                    EventBus.getDefault().post(eventMessage);
+                                    finish();
+                                }
+                            });
+                        } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
+                                }
+                            });
+                        } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
+                            Intent intent = new Intent(CreateCouponActivity.this, VerifiedActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        } else {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, code + ":" + msg);
+                                }
+                            });
+                        }
+
+                    }
+                });*/
     }
 
     //选择头像
@@ -618,6 +680,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PhotoUtils.INTENT_SELECT:
                 if (data == null) {
@@ -667,7 +730,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 .url(HttpApi.CHARACTER_GET_CURRENT)
                 .addParams("userId", "" + SCCacheUtils.getCacheUserId())
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack(mContext, commonDialog) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d(TAG, "网络异常");

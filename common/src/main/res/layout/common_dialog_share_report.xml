@@ -6,55 +6,45 @@
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_dialog_msg_headlines"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:id="@+id/tv_dialog_share"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"
         android:background="@drawable/shape_bg_dialog_top"
         android:gravity="center"
-        android:text="@string/headlines"
-        android:visibility="gone"
+        android:text="分享"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"/>
+
+    <View
+        style="@style/style_text_line_match"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"/>
+
+    <TextView
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:id="@+id/tv_report_dialog_report"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/shape_bg_dialog_bottom"
+        android:gravity="center"
+        android:text="举报"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
 
     <TextView
-        android:id="@+id/tv_dialog_msg_background_img"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
         android:layout_marginLeft="@dimen/dimens_10dp"
         android:layout_marginRight="@dimen/dimens_10dp"
-        android:background="@drawable/shape_bg_dialog_item"
-        android:gravity="center"
-        android:text="拍照"
-        android:textColor="@color/colorDialogBtn"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:id="@+id/tv_dialog_msg_intro"
+        android:id="@+id/tv_report_dialog_cancel"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/shape_bg_dialog_item"
         android:gravity="center"
-        android:text="@string/space_introduction"
-        android:visibility="gone"
+        android:text="取消"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>
-
-    <TextView
-        android:id="@+id/tv_dialog_msg_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="@dimen/dimens_10dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"
-        android:layout_marginTop="@dimen/dimens_10dp"
-        android:background="@drawable/shape_bg_dialog_item"
-        android:gravity="center"
-        android:text="@string/cancel"
-        android:textColor="@color/colorDialogBtn"
-        android:textSize="20sp"/>
-
 </LinearLayout>

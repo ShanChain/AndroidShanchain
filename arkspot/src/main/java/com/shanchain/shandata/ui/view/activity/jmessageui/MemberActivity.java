@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -25,7 +23,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.Members;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;

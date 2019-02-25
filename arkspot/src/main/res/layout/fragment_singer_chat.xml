@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".ui.view.fragment.SingerChatFragment">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_main"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"

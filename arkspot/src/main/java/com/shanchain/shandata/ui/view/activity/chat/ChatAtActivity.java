@@ -21,7 +21,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.GroupBriefBean;
 import com.shanchain.shandata.widgets.listener.SCTextWatcher;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;

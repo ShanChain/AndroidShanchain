@@ -14,7 +14,7 @@ import com.shanchain.shandata.ui.model.GroupMemberBean;
 import com.shanchain.shandata.ui.model.SceneMemberInfo;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 

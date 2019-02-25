@@ -2,6 +2,7 @@ package com.shanchain.shandata.ui.view.activity.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
@@ -44,7 +47,6 @@ import com.shanchain.shandata.ui.model.ResponseLoginBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,7 @@ import cn.jiguang.share.android.api.Platform;
 import cn.jiguang.share.android.model.AccessTokenInfo;
 import cn.jiguang.share.android.model.BaseResponseInfo;
 import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.facebook.Facebook;
 import cn.jiguang.share.qqmodel.QQ;
 import cn.jiguang.share.wechat.Wechat;
 import cn.jiguang.share.weibo.SinaWeibo;
@@ -114,6 +117,17 @@ public class LoginActivity extends BaseActivity {
     Button btnDynamicLogin;
     @Bind(R.id.linear_dynamic_login)
     LinearLayout dynamicLogin;
+    @Bind(R.id.iv_login_fb)
+    ImageView ivLoginFb;
+    @Bind(R.id.rl_login_wx)
+    RelativeLayout rlLoginWx;
+    @Bind(R.id.rl_login_wb)
+    RelativeLayout rlLoginWb;
+    @Bind(R.id.rl_login_fb)
+    RelativeLayout rlLoginFb;
+    @Bind(R.id.rl_login_qq)
+    RelativeLayout rlLoginQq;
+
     private ProgressDialog mDialog;
     private List<String> dataList = new ArrayList<String>();
     private Handler handler = new Handler() {
@@ -152,8 +166,6 @@ public class LoginActivity extends BaseActivity {
 
     private void checkCache() {
         String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-
-
         if (!TextUtils.isEmpty(userId)) {
             LogUtils.e("当前用户id" + userId);
             String characterId = getCache(userId, Constants.CACHE_CHARACTER_ID);
@@ -207,6 +219,11 @@ public class LoginActivity extends BaseActivity {
                                     ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码2");
                                     return;
                                 } else {
+                                    String isBindPwd = SCJsonUtils.parseString(character, "isBindPwd");
+                                    String allowNotify = SCJsonUtils.parseString(character, "allowNotify");
+//                                    if (allowNotify.equals("false")) {
+//                                        JPushInterface.stopPush(getApplicationContext());
+//                                    }
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null) {
                                         closeProgress();
@@ -217,15 +234,12 @@ public class LoginActivity extends BaseActivity {
                                         //注册/登录 极光IM账号
                                         registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword());
 //                                        loginJm(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
-
                                         int spaceId = characterInfo.getSpaceId();
                                         int characterId = characterInfo.getCharacterId();
                                         String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
                                         String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
                                         RoleManager.switchJmRoleCache(String.valueOf(characterId), jmUser, jmPassword);
-
                                     }
-
                                 }
 
                             } else {
@@ -370,7 +384,7 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_wx, R.id.iv_login_wb, R.id.iv_login_qq})
+    @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_fb, R.id.rl_login_wx, R.id.rl_login_wb, R.id.rl_login_fb, R.id.rl_login_qq})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_login_forget:
@@ -385,17 +399,36 @@ public class LoginActivity extends BaseActivity {
                 //注册
                 readyGo(RegisterActivity.class);
                 break;
-            case R.id.iv_login_wx:
+            case R.id.rl_login_wx:
                 //微信登录
                 thirdPlatform(UserType.USER_TYPE_WEIXIN);
 //                LoginUtil.login(this, LoginPlatform.WX, listener, true);
                 break;
-            case R.id.iv_login_wb:
+            case R.id.rl_login_wb:
                 //微博登录
                 thirdPlatform(UserType.USER_TYPE_WEIBO);
 //                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
                 break;
-            case R.id.iv_login_qq:
+            case R.id.rl_login_fb:
+                //facebook登录
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                    ToastUtils.showToastLong(LoginActivity.this, getResources().getString(R.string.third_platform));
+                    return;
+                } else {
+                    thirdPlatform(UserType.USER_TYPE_FB);
+                }
+                break;
+            case R.id.iv_login_fb:
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                    ToastUtils.showToastLong(LoginActivity.this, getResources().getString(R.string.third_platform));
+                    return;
+                } else {
+                    thirdPlatform(UserType.USER_TYPE_FB);
+                }
+//                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
+                break;
+
+            case R.id.rl_login_qq:
                 //qq登录
                 thirdPlatform(UserType.USER_TYPE_QQ);
 //                LoginUtil.login(this, LoginPlatform.QQ, listener, true);
@@ -406,7 +439,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login() {
-
         String account = mEtLoginAccount.getText().toString().trim();
         String pwd = mEtLoginPwd.getText().toString().trim();
 
@@ -414,12 +446,10 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showToast(this, "账号或密码为空！");
             return;
         }
-
         if (!AccountUtils.isPhone(account)) {
             ToastUtils.showToast(this, "账号格式不正确！");
             return;
         }
-
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
         String encryptAccount = Base64.encode(AESUtils.encrypt(account, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
@@ -430,6 +460,8 @@ public class LoginActivity extends BaseActivity {
         showProgress();
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_LOGIN)
+                .addParams("deviceToken", JPushInterface.getRegistrationID(this))
+                .addParams("os", "android")
                 .addParams("Timestamp", time)
                 .addParams("encryptAccount", encryptAccount)
                 .addParams("encryptPassword", passwordAccount)
@@ -471,7 +503,7 @@ public class LoginActivity extends BaseActivity {
                                         Intent intent = new Intent(mContext, SCWebViewActivity.class);
                                         JSONObject obj = new JSONObject();
                                         obj.put("url", HttpApi.SEAT_WALLET);
-                                        obj.put("title", "我的资产");
+                                        obj.put("title", getResources().getString(R.string.nav_my_wallet));
                                         String webParams = obj.toJSONString();
                                         intent.putExtra("webParams", webParams);
                                         startActivity(intent);
@@ -718,6 +750,13 @@ public class LoginActivity extends BaseActivity {
                     JShareInterface.getUserInfo(SinaWeibo.Name, mAuthListener);
                 }
                 break;
+            case UserType.USER_TYPE_FB:
+                if (!JShareInterface.isAuthorize(Facebook.Name)) {
+                    JShareInterface.authorize(Facebook.Name, mAuthListener);
+                } else {
+                    JShareInterface.getUserInfo(Facebook.Name, mAuthListener);
+                }
+                break;
         }
     }
 
@@ -729,6 +768,8 @@ public class LoginActivity extends BaseActivity {
         try {
             SCHttpUtils.postWithParamsForLogin()
                     .url(HttpApi.USER_THIRD_LOGIN)
+                    .addParams("deviceToken", JPushInterface.getRegistrationID(this))
+                    .addParams("os", "android")
                     .addParams("encryptOpenId", encryptOpenId + "")
                     .addParams("encryptToken16", encryptToken16 + "")
                     .addParams("headIcon", headIcon + "")
@@ -890,7 +931,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
 
@@ -930,4 +970,5 @@ public class LoginActivity extends BaseActivity {
                 break;
         }
     }
+
 }

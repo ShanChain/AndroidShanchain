@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+            <com.shanchain.data.common.ui.toolBar.ArthurToolBar
                 android:id="@+id/tb_main"
                 style="@style/style_toolbar"
                 app:titleColor="@color/colorTextDefault"

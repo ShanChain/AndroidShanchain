@@ -143,6 +143,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -159,7 +160,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="17dp"
                         android:gravity="center"
-                        android:text="微信"
+                        android:text="@string/str_share_dialog_wechat"
                         android:textColor="@color/colorTextDefault"
                         android:textSize="13sp" />
                 </RelativeLayout>
@@ -169,6 +170,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -187,7 +189,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="17dp"
                         android:gravity="center"
-                        android:text="朋友圈"
+                        android:text="@string/str_share_dialog_circle"
                         android:textColor="@color/colorTextDefault"
                         android:textSize="13sp" />
                 </RelativeLayout>
@@ -198,6 +200,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -224,6 +227,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -232,7 +236,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@mipmap/share_weibo" />
+                        android:src="@mipmap/abs_login_btn_facebook_default" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -240,7 +244,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="17dp"
                         android:gravity="center"
-                        android:text="微博"
+                        android:text="Facebook"
                         android:textColor="@color/colorTextDefault"
                         android:textSize="13sp" />
                 </RelativeLayout>

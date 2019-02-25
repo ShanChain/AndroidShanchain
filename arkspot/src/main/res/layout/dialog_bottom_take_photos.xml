@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorTransparent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_dialog_msg_headlines"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_top"
+        android:gravity="center"
+        android:text="@string/headlines"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_dialog_photos"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="相册"
+        android:focusableInTouchMode="false"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_dialog_msg_intro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="@string/space_introduction"
+        android:textColor="@color/colorDialogBtn"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_dialog_take_picture"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:text="拍照"
+        android:textColor="@color/colorTextDefault"
+        android:textSize="20sp" />
+
+</LinearLayout>

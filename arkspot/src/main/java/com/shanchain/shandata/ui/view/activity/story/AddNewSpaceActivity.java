@@ -37,7 +37,7 @@ import com.shanchain.shandata.ui.model.StoryTagInfo;
 import com.shanchain.shandata.ui.model.TagContentBean;
 import com.shanchain.shandata.ui.model.TagInfo;
 import com.shanchain.shandata.utils.EditTextUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;

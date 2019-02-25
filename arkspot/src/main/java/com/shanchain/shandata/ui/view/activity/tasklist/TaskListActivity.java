@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -20,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +37,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.view.fragment.FragmentMyTask;
 import com.shanchain.shandata.ui.view.fragment.FragmentTaskList;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,14 +49,11 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
-import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
@@ -143,7 +136,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         String[] titles = {getResources().getString(R.string.my_task_my_post), getResources().getString(R.string.my_task_my_helped)};
         fragmentList.add(new FragmentTaskList());
         fragmentList.add(new FragmentMyTask());
-        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles,fragmentList);
+        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
         vpTask.setOffscreenPageLimit(2);
         vpTask.setAdapter(adapter);
         tabTask.setupWithViewPager(vpTask);
@@ -190,6 +183,9 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
                             //向服务器请求添加任务
                             SCHttpUtils.postWithUserId()
                                     .url(HttpApi.CHAT_TASK_ADD)
+                                    .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
+                                    .addParams("deviceToken", registrationId + "")
+                                    .addParams("token", SCCacheUtils.getCacheToken() + "")
                                     .addParams("characterId", characterId + "")
                                     .addParams("bounty", bounty + "")
                                     .addParams("roomId", roomID + "")
@@ -330,7 +326,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
 
         switch (position) {
             case 0:
-                String type[] = new String[]{"全部任务", "未领取任务","已结束"};
+                String type[] = new String[]{"全部任务", "未领取任务", "已结束"};
                 onItemSelectedListener = new Spinner.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -396,7 +392,7 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
                 spinnerTaskList.setOnItemSelectedListener(onItemSelectedListener);
                 break;
             case 1:
-                String type1[] = new String[]{"全部任务","我发布的", "我领取的", "已结束"};
+                String type1[] = new String[]{"全部任务", "我发布的", "我领取的", "已结束"};
                 onItemSelectedListener = new Spinner.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

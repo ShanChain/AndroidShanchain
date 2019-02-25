@@ -1,7 +1,5 @@
 package com.shanchain.shandata.ui.model;
 
-import com.shanchain.data.common.net.SCHttpUtils;
-
 public class CouponSubInfo extends CouponInfo {
 
     /**
@@ -24,6 +22,7 @@ public class CouponSubInfo extends CouponInfo {
      * detail : 每次只能消费一张
      * getHash : 953061500d95e88d3c3a8707762b812a779f147114d07b7c3bbf792a1cd384d4
      * useHash : 7c69182c517b112a36c62d7d42d201deba880c1f382f97266ea9d4a0f9c9e454
+     * couponsToken	 :     //核销凭证
      */
 
     private boolean isNewRecord;
@@ -47,6 +46,7 @@ public class CouponSubInfo extends CouponInfo {
     private String useHash;
     private String unusedNum;
     private String usedNum;
+    private String couponsToken;
 
     public static final int CREATE_WAIT = 0;// 创建方待核销
     public static final int CREATE_INVALID = 1;// 创建方已失效
@@ -117,6 +117,14 @@ public class CouponSubInfo extends CouponInfo {
 
     public void setTokenName(String tokenName) {
         this.tokenName = tokenName;
+    }
+
+    public String getCouponsToken() {
+        return couponsToken;
+    }
+
+    public void setCouponsToken(String couponsToken) {
+        this.couponsToken = couponsToken;
     }
 
     public int getAmount() {

@@ -7,11 +7,20 @@
     android:orientation="vertical"
     tools:context=".ui.view.activity.jmessageui.VerifiedActivity">
 
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        android:id="@+id/tb_main"
+        style="@style/style_toolbar"
+        app:titleColor="@color/colorTextDefault"
+        app:titleTextSize="16">
+
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
+
     <RelativeLayout
         android:id="@+id/relative_verified_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tb_main"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,14 +28,6 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:orientation="vertical">
-
-            <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
-                android:id="@+id/tb_main"
-                style="@style/style_toolbar"
-                app:titleColor="@color/colorTextDefault"
-                app:titleTextSize="16">
-
-            </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -98,13 +99,148 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
     </RelativeLayout>
-   <!-- <RelativeLayout
+
+    <RelativeLayout
         android:id="@+id/relative_hint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tb_main"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/verified_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background=""/>
-    </RelativeLayout>-->
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:text="您已通过实名认证!"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/relative_real_name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/verified_title"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_real_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="真实姓名："
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_real_name_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@+id/tv_real_name"
+                android:text="*琳"
+                android:textColor="@color/colorHint" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_certificates_type"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_real_name"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_certificates_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="证件类型："
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_certificates_type_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@+id/tv_certificates_type"
+                android:text="身份证"
+                android:textColor="@color/colorTextDefault" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_identity_code"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_certificates_type"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_identity_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="证件号码："
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_tv_identity_code_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@+id/tv_identity_code"
+                android:text="4***********1"
+                android:textColor="@color/colorTextDefault" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relative_identity_code"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="证件信息设置后不能修改"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimens_20dp"
+            android:layout_marginRight="@dimen/dimens_20dp"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:text="      为了马甲用户的账号安全，以及避免盗号者盗取用户的账号后恶意更改其他账号证件信息，马甲账号在绑定证件后不支持解绑和更换证件。感谢您对马甲App的理解和支持。"
+            android:textColor="@color/colorHint"
+            android:textSize="@dimen/sp_12" />
+    </RelativeLayout>
+
 </RelativeLayout>

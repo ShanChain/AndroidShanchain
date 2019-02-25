@@ -92,13 +92,6 @@ import com.shanchain.shandata.adapter.DynamicImagesAdapter;
 import com.shanchain.shandata.adapter.ImagePickerAdapter;
 import com.shanchain.shandata.adapter.SimpleAppsGridView;
 import com.shanchain.shandata.base.BaseActivity;
-
-import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
-import cn.jiguang.imui.chatinput.emoji.EmojiBean;
-import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jiguang.imui.model.DefaultUser;
-import cn.jiguang.imui.model.MyMessage;
-
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
@@ -112,18 +105,18 @@ import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
-import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.GlideImageLoader;
-import com.shanchain.shandata.utils.ImageUtils;
+import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.utils.SelectDialog;
 import com.shanchain.shandata.widgets.GuideView;
+import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.photochoose.ChoosePhoto;
@@ -135,7 +128,8 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
 import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -156,6 +150,8 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
+import cn.jiguang.imui.chatinput.emoji.EmojiBean;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
@@ -168,6 +164,9 @@ import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
+import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.DefaultUser;
+import cn.jiguang.imui.model.MyMessage;
 import cn.jiguang.share.android.api.JShareInterface;
 import cn.jiguang.share.android.api.PlatActionListener;
 import cn.jiguang.share.android.api.Platform;
@@ -201,10 +200,6 @@ import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
-import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
-import com.zhy.http.okhttp.callback.StringCallback;
-
 import sj.keyboard.adpater.EmoticonsAdapter;
 import sj.keyboard.adpater.PageSetAdapter;
 import sj.keyboard.data.EmoticonPageEntity;
@@ -266,7 +261,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private String roomID;
     private String newRoomId, roomName, mImgPath;
     private ArrayList<String> photos = new ArrayList<>();
-
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
     private List<MyMessage> mData;
@@ -1226,7 +1220,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             android.os.Message message = new android.os.Message();
                             message.what = 3;
                             message.obj = coordinates;
-                            messageHandler.sendMessage(message);
+//                            messageHandler.sendMessage(message);
                         }
                     }
                 });
@@ -1881,6 +1875,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHAT_TASK_ADD)
+                    .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
+                    .addParams("deviceToken", registrationId + "")
                     .addParams("characterId", characterId + "")
                     .addParams("price", bounty)
                     .addParams("roomId", roomID + "")
@@ -2020,7 +2016,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 final HotChatRoom hotChatRoom = getIntent().getParcelableExtra("hotChatRoom");
                 if (isHotChatRoom == false) {
                     EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
-                    org.greenrobot.eventbus.EventBus.getDefault().postSticky(eventMessage);
+                    org.greenrobot.eventbus.EventBus.getDefault().post(eventMessage);
                     finish();
                 } else {
                     ThreadUtils.runOnSubThread(new Runnable() {
@@ -2315,7 +2311,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             readyGo(FootPrintActivity.class);
 
         } else if (id == R.id.real_identity) {
-            readyGo(VerifiedActivity.class);
+//            readyGo(VerifiedActivity.class);
 
         } else if (id == R.id.nav_setting) {
             readyGo(SettingsActivity.class);

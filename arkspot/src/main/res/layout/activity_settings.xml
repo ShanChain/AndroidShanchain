@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.activity.settings.SettingsActivity">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_setting"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16">
 
-    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
 
     <RelativeLayout
         android:id="@+id/relative_account"
@@ -31,7 +31,7 @@
             android:id="@+id/tv_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="账号"
+            android:text="@string/settings_account"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_12" />
 
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_account"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="账号与安全"
+            android:text="@string/settings_account_security"
             android:textColor="@color/colorTextDefault"
             android:textSize="@dimen/sp_14" />
 
@@ -69,7 +69,7 @@
             android:id="@+id/tv_common"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="通用"
+            android:text="@string/settings_common"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_12" />
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_common"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="消息推送"
+            android:text="@string/settings_notification"
             android:textColor="@color/colorTextDefault"
             android:textSize="@dimen/sp_14" />
 
@@ -87,8 +87,30 @@
             android:id="@+id/switch_message_push"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector"
             android:layout_marginRight="@dimen/dp_10"
             android:layout_alignBottom="@+id/tv_message_push"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/tv_free_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_message_push"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/settings_free_password"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="@dimen/sp_14" />
+
+        <Switch
+            android:id="@+id/switch_free_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_alignBottom="@+id/tv_free_password"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 
@@ -111,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="意见反馈"
+                android:text="@string/nav_feedback"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -142,9 +164,8 @@
                 android:id="@+id/tv_about"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="关于马甲App"
+                android:text="@string/settings_about"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -177,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="检查更新"
+                android:text="@string/settings_update"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -188,7 +209,7 @@
                 android:layout_toLeftOf="@+id/iv_update_arrow"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
-                android:text="v2.2.0"/>
+                android:text=""/>
 
             <ImageView
                 android:id="@+id/iv_update_arrow"
@@ -222,7 +243,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:text="退出"
+            android:text="@string/settings_logout"
             android:layout_centerHorizontal="true"
             android:textColor="#FF3B3B"
             android:textSize="@dimen/sp_14" />

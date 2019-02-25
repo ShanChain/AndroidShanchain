@@ -1,40 +1,24 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.vod.common.utils.ToastUtil;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
-import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.ModifyUserInfo;
-import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
-import com.shanchain.shandata.utils.ImageUtils;
-import com.shanchain.shandata.widgets.photochoose.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Set;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;

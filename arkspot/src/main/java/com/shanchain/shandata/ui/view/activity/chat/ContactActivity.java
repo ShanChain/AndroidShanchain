@@ -15,7 +15,7 @@ import com.shanchain.shandata.ui.model.ResponseHxUerBean;
 import com.shanchain.shandata.ui.presenter.ContactPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ContactPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.chat.view.ContactView;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 

@@ -35,7 +35,6 @@ dependencies {
     //    // 此处以JCore 1.2.3 版本。
     implementation 'cn.jiguang.sdk:jcore:1.2.3'
     implementation 'junit:junit:4.12'
-    implementation project(':common')
 }
 
 apply from: 'android-release-aar.gradle'

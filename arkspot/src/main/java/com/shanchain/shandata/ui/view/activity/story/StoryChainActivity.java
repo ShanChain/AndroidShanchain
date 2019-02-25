@@ -14,7 +14,7 @@ import com.shanchain.shandata.ui.presenter.StoryChainPresenter;
 import com.shanchain.shandata.ui.presenter.impl.StoryChainPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryChainView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.Collections;

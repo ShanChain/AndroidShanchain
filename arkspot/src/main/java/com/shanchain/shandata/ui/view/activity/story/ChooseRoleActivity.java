@@ -31,8 +31,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.SpaceCharacterBean;
 import com.shanchain.shandata.ui.model.SpaceCharacterModelInfo;
 import com.shanchain.shandata.ui.model.SpaceInfo;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

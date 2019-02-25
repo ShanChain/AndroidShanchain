@@ -55,8 +55,9 @@
         <attr name="roundWidth" format="dimension" />
         <attr name="max" format="integer" />
     </declare-styleable>
+
     <declare-styleable name="ChatInputViewEmoticonsIndicatorView">
-        <attr name="bmpNomal" format="reference" />
-        <attr name="bmpSelect" format="reference" />
+        <attr name="chat_input_bmpNomal" format="reference" />
+        <attr name="chat_input_bmpSelect" format="reference" />
     </declare-styleable>
 </resources>

@@ -7,14 +7,14 @@
     android:background="@color/white"
     tools:context=".ui.view.activity.coupon.CreateCouponActivity">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_coupon"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16">
 
-    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -105,6 +105,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_toLeftOf="@+id/edit_coupon_code"
                     android:text="代号:"
+                    android:visibility="gone"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
@@ -115,6 +116,7 @@
                     android:layout_alignLeft="@+id/edit_coupon_name"
                     android:layout_marginTop="@dimen/dimens_20dp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:background="@drawable/shape_bg_dialog_task_edit"
                     android:capitalize="characters"
                     android:hint="@string/coupon_code"
@@ -132,6 +134,7 @@
                     android:layout_alignLeft="@+id/edit_coupon_code"
                     android:layout_toRightOf="@+id/tv_coupon_code"
                     android:text="代号为三个大写字母"
+                    android:visibility="gone"
                     android:textColor="@color/colorHint"
                     android:textSize="13sp" />
 
@@ -143,6 +146,7 @@
                     android:layout_marginLeft="@dimen/dp_10"
                     android:layout_toRightOf="@+id/edit_coupon_code"
                     android:text="SEAT"
+                    android:visibility="gone"
                     android:textColor="@color/colorTextDefault"
                     android:textSize="@dimen/sp_14" />
 
@@ -164,7 +168,7 @@
                     android:layout_below="@+id/tv_coupon_des"
                     android:layout_alignLeft="@+id/edit_coupon_name"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/shape_bg_dialog_task_edit"
                     android:hint="@string/coupon_price"
                     android:inputType="numberDecimal"

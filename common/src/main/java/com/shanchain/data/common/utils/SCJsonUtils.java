@@ -3,7 +3,6 @@ package com.shanchain.data.common.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.net.NetErrCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,15 +28,14 @@ public class SCJsonUtils {
     }
 
     public static String parseMsg(String response) {
-        String resultMsg;
         if (JSONObject.parseObject(response).getString("message") != null) {
-            resultMsg = JSONObject.parseObject(response).getString("message");
-            return resultMsg;
+            String message = JSONObject.parseObject(response).getString("message");
+            return message;
         } else if (JSONObject.parseObject(response).getString("msg") != null) {
-            resultMsg = JSONObject.parseObject(response).getString("msg");
-            return resultMsg;
+            String msg = JSONObject.parseObject(response).getString("msg");
+            return msg;
         } else {
-            resultMsg = "无返回消息";
+            String resultMsg = parseCode(response);
             return resultMsg;
         }
 
@@ -49,6 +47,7 @@ public class SCJsonUtils {
 
     public static String parseString(String jsonStr, String key) {
         return JSONObject.parseObject(jsonStr).getString(key);
+
     }
 
     public static int parseInt(String jsonStr, String key) {

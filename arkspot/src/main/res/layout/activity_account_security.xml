@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.activity.settings.AccountSecurityActivity">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_setting"
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16">
 
-    </com.shanchain.shandata.widgets.toolBar.ArthurToolBar>
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
 
     <RelativeLayout
         android:id="@+id/relative_top"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="马甲ID"
+                android:text="@string/marjar_id"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="登录密码"
+                android:text="@string/logon_in_password"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -79,9 +79,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_login_password_arrow"
-                android:visibility="gone"
                 android:text="设置密码"
-                android:textColor="@color/colorHint" />
+                android:textColor="@color/colorHint"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_login_password_arrow"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="手机号绑定"
+                android:text="@string/bind_phone"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -125,7 +125,8 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_bind_phone_arrow"
                 android:text="100510"
-                android:textColor="@color/colorHint" />
+                android:textColor="@color/colorHint"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_bind_phone_arrow"
@@ -166,7 +167,7 @@
                 android:id="@+id/tv_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="第三方账号绑定"
+                android:text="@string/bind_others"
                 android:textColor="@color/colorHint"
                 android:textSize="@dimen/sp_12" />
 
@@ -176,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_account"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="微信"
+                android:text="@string/account_wechat"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -184,20 +185,20 @@
                 android:id="@+id/tv_wechat_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_account_wechat"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_wechat_arrow"
-                android:layout_alignTop="@+id/tv_account_wechat"
-                android:text="未绑定"
-                android:textSize="@dimen/sp_14"
-                android:textColor="@color/colorHint" />
+                android:text="@string/unbound"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/sp_14" />
 
 
             <ImageView
                 android:id="@+id/iv_wechat_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/tv_wechat_info"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="4dp"
                 android:layout_marginRight="@dimen/dimens_20dp"
                 android:background="@mipmap/abs_meet_btn_enter_default" />
@@ -234,7 +235,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_qq_arrow"
-                android:text="未绑定"
+                android:text="@string/unbound"
                 android:textColor="@color/colorHint" />
 
 
@@ -267,9 +268,18 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="Facebook"
+                android:text="@string/account_facebook"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tv_facebook_info"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dp_10"/>
 
             <TextView
                 android:id="@+id/tv_facebook_info"
@@ -278,7 +288,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_facebook_arrow"
-                android:text="未绑定"
+                android:text="@string/unbound"
                 android:textColor="@color/colorHint" />
 
             <ImageView
@@ -310,7 +320,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="实名认证"
+                android:text="@string/account_real_identity"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -321,7 +331,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/iv_update_arrow"
-                android:text="未认证"
+                android:text="@string/uncertified"
                 android:textColor="@color/colorHint" />
 
             <ImageView

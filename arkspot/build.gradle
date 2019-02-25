@@ -26,6 +26,7 @@ android {
                 JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "0a20b6277a625655791e3cd9", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                //API_KEY: "UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE",
         ]
     }
 
@@ -50,12 +51,18 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release //设置签名
             buildConfigField "boolean", "RN_DEBUG", "true"
             buildConfigField "boolean", "LOG_DEBUG", "true"
+            zipAlignEnabled true //Zipalign优化
             debuggable true
-            shrinkResources false
-            minifyEnabled false
+            shrinkResources false //资源缩减
+            minifyEnabled false //关闭混淆
+            //buildConfigField "String", "HTTP_API", "http://test.xxxx.com/"
+            manifestPlaceholders = [
+                    app_name     : "@string/app_name_debug",
+                    baidu_api_key: "He8wMBsN4ZHiwENjiZ6q2OTT5D6c1IhD"
+            ]
         }
         release {
             buildConfigField "boolean", "RN_DEBUG", "false"
@@ -75,6 +82,11 @@ android {
 
     productFlavors {
         arkspot {}
+        qianqian {
+            applicationIdSuffix ".qianqian"
+//            resValue 'string', 'app_name', 'MarJar测试版'
+//            resValue 'string', 'baidu_api_key', 'He8wMBsN4ZHiwENjiZ6q2OTT5D6c1IhD'
+        }
 //        tencent {}//投放应用宝市场
 //        baidu {}//投放百度市场
 //        "360" {}//投放360市场
@@ -91,8 +103,6 @@ android {
             applicationId "com.shanchain.shandata"
         }//投放阿里平台
         googlePlay {}//投放google商店*/
-
-
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
@@ -100,13 +110,20 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+        all*.exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.google.zxing'
     }
 
     repositories {
         flatDir { dirs 'libs' }
     }
 
+//    dexOptions {
+//        dexInProcess true
+//        preDexLibraries true
+//        javaMaxHeapSize "4g"//越大越好
+//        incremental true
+//    }
 }
 
 dependencies {
@@ -117,46 +134,25 @@ dependencies {
     })
     implementation project(':common')
     implementation project(':chatinput')
-    implementation project(':messagelist')
-
-    //注解框架
-
-    //事件总线框架
-
-    //底部导航栏
-
-    //九宫格图片
-
-    //带下拉刷新和上拉加载的recycleview
-
-    //cardview
-
-    //recyclerview适配器
-
-    //圆形imageview
-
-    //slidebar
-
-    //第三方登录分享
-
     /*compile(name: 'AlivcPlayer', ext: 'aar')
-                                                                            compile(name: 'AliyunVodPlayer', ext: 'aar')
-                                                                            compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
+         compile(name: 'AliyunVodPlayer', ext: 'aar')
+         compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
     implementation 'com.lzy.widget:imagepicker:0.6.1'
 
-    //com.lzy.widget:imagepicker:0.6.1
-
     //    implementation 'me.shaohui.shareutil:shareutil:1.3.8'//三方分享登录组件
+
+    //facebook登录授权
+    implementation 'com.facebook.android:facebook-login:4.33.0'
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:27.1.0'
-    implementation 'com.jakewharton:butterknife:7.0.1'
-    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     implementation 'com.jaeger.ninegridimageview:library:1.1.0'
     implementation 'com.android.support:cardview-v7:27.1.0'
-
+    //butterknife 插件
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
+    implementation 'com.jakewharton:butterknife:7.0.1'
     //    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.gjiazhe:wavesidebar:1.3'
@@ -167,13 +163,15 @@ dependencies {
 
     //    implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
 
+    //生成/扫描 二维码
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
+
     /* 友盟SDK依赖 */
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.sdk:analytics:latest.integration'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation 'cjt.library.wheel:camera:1.1.9'
     implementation 'pub.devrel:easypermissions:0.4.0'
-
     // 若使用annotation需要单独引用,对于tinker的其他库都无需再引用
     annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:1.9.11") {
         changing = true
@@ -198,14 +196,14 @@ dependencies {
     implementation 'cn.jiguang.sdk:jshare:1.6.0'
     implementation 'cn.jiguang.sdk:jshare-qqmodel:1.6.0'
 
-    // 此处以jshare-qqmodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
+    // 此处以jshare-sinamodel1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
     implementation 'cn.jiguang.sdk:jshare-sinamodel:1.6.0'
 
     //    implementation 'cn.jiguang.sdk:jshare-wechatmodel:1.6.1'
 
-    // 此处以jshare-sinamodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
+    // 此处以jshare-facebookmodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
 
-    //    implementation 'cn.jiguang.sdk:jshare-facebookmodel:1.6.0'  // 此处以jshare-facebookmodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
+    //    implementation 'cn.jiguang.sdk:jshare-facebookmodel:1.6.0'
 
     //    implementation 'cn.jiguang.sdk:jshare-twittermodel:1.6.0'  // 此处以jshare-twittermodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
 
@@ -237,4 +235,6 @@ dependencies {
 
     //buildTinker.gradle是专门为Tinker配置和生成拆分包而写的
     apply from: 'tinkerpatch.gradle'
+
+    //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
 }

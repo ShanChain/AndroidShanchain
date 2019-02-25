@@ -32,7 +32,7 @@ import com.shanchain.shandata.ui.presenter.impl.StoryTitlePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.StoryTitleView;
 import com.shanchain.shandata.utils.EditTextUtils;
 import com.shanchain.shandata.widgets.listener.SCTextWatcher;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;

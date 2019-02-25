@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
     <!--android:icon="@mipmap/my_wallet"-->
-    <group
-        android:id="@+id/group_wallet">
+    <group android:id="@+id/group_wallet">
         <item
             android:id="@+id/nav_my_wallet"
             android:title="@string/nav_my_wallet" />
@@ -13,7 +12,7 @@
     <group android:id="@+id/group_coupon">
         <item
             android:id="@+id/nav_my_coupon"
-            android:title="@string/nav_my_coupon"
+            android:title="@string/nav_my_coupons"
             android:visible="true" />
     </group>
 
@@ -41,7 +40,7 @@
         <item
             android:id="@+id/real_identity"
             android:title="@string/nav_real_identity"
-            android:visible="true" />
+            android:visible="false" />
     </group>
 
     <group android:id="@+id/group_setting">
@@ -52,14 +51,14 @@
 
     <group android:id="@+id/group">
         <item
-            android:visible="false"
             android:id="@+id/nav_manage"
-            android:title="@string/nav_feedback" />
+            android:title="@string/nav_feedback"
+            android:visible="false" />
 
         <item
-            android:visible="false"
             android:id="@+id/nav_logout"
-            android:title="@string/nav_logout" />
+            android:title="@string/nav_logout"
+            android:visible="false" />
     </group>
     <group android:id="@+id/bottom">
 

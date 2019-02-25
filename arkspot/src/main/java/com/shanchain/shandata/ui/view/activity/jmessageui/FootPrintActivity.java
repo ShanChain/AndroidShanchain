@@ -1,10 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -26,11 +22,8 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.HotChatRoom;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
-
-import org.json.JSONObject;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.List;
 

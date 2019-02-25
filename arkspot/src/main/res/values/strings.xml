@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">马甲App</string>
+    <string name="app_name_debug">马甲App内测版</string>
     <string name="str_praised_empty_word">暂时还没赞过别人，可以现在去赞～</string>
     <string name="str_empty_my_comments">暂时还没评论过别人，可以现在去评论～</string>
     <string name="str_tb_title_praised">我赞过的</string>
@@ -15,6 +16,29 @@
     <string name="picker_image_send_select">发送（%d）</string>
     <string name="ok">确定</string>
     <string name="btn_send">确定</string>
+
+    <!-- Settings -->
+    <string name="marjar_id">马甲ID</string>
+    <string name="logon_in_password">登陆密码</string>
+    <string name="bind_phone">手机号绑定</string>
+    <string name="bind_others">第三方账号绑定</string>
+    <string name="account_wechat">微信</string>
+    <string name="account_qq">QQ</string>
+    <string name="account_facebook">Facebook</string>
+    <string name="account_real_identity">实名认证</string>
+    <string name="dialog_tip_unbind">是否解除绑定该账号</string>
+    <string name="dialog_tip_bind">是否绑定该账号</string>
+    <string name="settings_account">账号</string>
+    <string name="settings_account_security">账号和安全</string>
+    <string name="settings_common">通用</string>
+    <string name="settings_notification">消息推送</string>
+    <string name="settings_free_password">免密登录</string>
+    <string name="settings_about">关于马甲App</string>
+    <string name="settings_update">检查更新</string>
+    <string name="settings_logout">退出</string>
+
+    <!-- ToolbarTitle-->
+    <string name="nav_coupon">马甲劵</string>
 
     <!-- coupon -->
     <string name="nav_coupon_details">马甲劵详情</string>
@@ -60,7 +84,15 @@
     <!-- common -->
     <string name="toast_no_empty">请输入完整信息</string>
     <string name="cancel">取消</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="unbind">解绑</string>
+    <string name="bound">已绑定</string>
+    <string name="unbound">未绑定</string>
+    <string name="certified">已认证</string>
+    <string name="uncertified">未认证</string>
+    <string name="home_btn">进入广场</string>
     <string name="recharge">充值</string>
+    <string name="internet_error">网络异常</string>
     <string name="longitude_latitude">东经 00.00° 南纬 00.00°</string>
 
     <!-- MyTask 我的社区帮（任务） -->
@@ -79,10 +111,18 @@
     <string name="nav_setting">设置</string>
     <string name="nav_logout">退出登录</string>
     <string name="nav_my_task">我的社区帮</string>
-    <string name="nav_my_coupon">我的马甲劵</string>
+    <string name="nav_my_coupons">我的马甲劵</string>
     <string name="nav_my_favorited">我的收藏</string>
     <string name="nav_real_identity">实名认证</string>
 
+
+    <!-- facebook -->
+    <string name="facebook_app_id">351737942088473</string>
+    <!-- 测试账号 -->
+    <!--<string name="facebook_app_id">2269030916710583</string>-->
+    <string name="fb_login_protocol_scheme">fb351737942088473</string>
+    <!-- 百度地图AK_KEY -->
+    <string name="baidu_api_key">UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE</string>
 
     <!-- Square -->
     <string name="headlines">报社头条</string>
@@ -129,6 +169,8 @@
         <item>违法信息</item>
         <item>其他</item>
     </array>
+    <!-- 错误提示 -->
+    <string name="third_platform">该功能暂不支持安卓8.0系统版本,请升级到更高版本</string>
 
     <!--马甲2.0-->
     <string name="text_join">进入广场与同在该区块的朋友们聊天吧！</string>

@@ -18,7 +18,7 @@ import com.shanchain.shandata.ui.presenter.ReleaseVideoPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ReleaseVideoPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.story.stroyView.ReleaseVideoView;
 import com.shanchain.shandata.utils.KeyboardUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.io.File;
 

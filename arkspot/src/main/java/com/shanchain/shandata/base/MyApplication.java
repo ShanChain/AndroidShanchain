@@ -1,50 +1,26 @@
 package com.shanchain.shandata.base;
 
 import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.soloader.SoLoader;
 import com.shanchain.data.common.BaseApplication;
-import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.db.ContactDao;
-//import com.shanchain.shandata.manager.CharacterManager;
-import com.shanchain.shandata.manager.LoginManager;
-//import com.shanchain.shandata.push.PushManager;
-import com.shanchain.shandata.receiver.MyJPushMessageReceiver;
-import com.shanchain.shandata.receiver.MyReceiver;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
-//import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
 import com.shanchain.shandata.utils.Utils;
-//import com.tencent.bugly.crashreport.CrashReport;
-//import com.umeng.message.IUmengRegisterCallback;
-//import com.umeng.message.PushAgent;
-//import com.umeng.message.UmengMessageHandler;
-//import com.umeng.message.UmengNotificationClickHandler;
-//import com.umeng.message.entity.UMessage;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.entry.ApplicationLike;
 import com.tencent.tinker.lib.listener.DefaultPatchListener;
@@ -64,8 +40,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,16 +48,22 @@ import java.util.concurrent.TimeUnit;
 
 import cn.jiguang.share.android.api.JShareInterface;
 import cn.jiguang.share.android.api.PlatformConfig;
-//import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
-//import me.shaohui.shareutil.ShareConfig;
-//import me.shaohui.shareutil.ShareManager;
 import okhttp3.OkHttpClient;
 
-import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
-import static com.shanchain.data.common.base.Constants.CACHE_USER_MSG_IS_RECEIVE;
-import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
+//import com.shanchain.shandata.manager.CharacterManager;
+//import com.shanchain.shandata.push.PushManager;
+//import com.shanchain.shandata.ui.view.activity.chat.ChatRoomActivity;
+//import com.tencent.bugly.crashreport.CrashReport;
+//import com.umeng.message.IUmengRegisterCallback;
+//import com.umeng.message.PushAgent;
+//import com.umeng.message.UmengMessageHandler;
+//import com.umeng.message.UmengNotificationClickHandler;
+//import com.umeng.message.entity.UMessage;
+//import cn.jpush.android.api.JPushInterface;
+//import me.shaohui.shareutil.ShareConfig;
+//import me.shaohui.shareutil.ShareManager;
 
 
 public class MyApplication extends BaseApplication {
@@ -111,8 +91,32 @@ public class MyApplication extends BaseApplication {
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
     public static String PICTURE_DIR = "sdcard/JChatDemo/pictures/";
     public static String FILE_DIR = "sdcard/JChatDemo/recvFiles/";
-
     private ApplicationLike tinkerApplicationLike;
+
+    /**
+     * 描述：本地手机设备号
+     */
+    protected static String deviceId;
+
+    /**
+     * 描述：与极光推送对应的设备号
+     */
+    protected static String registrationId;
+
+    /**
+     * 描述：是否开通免密
+     */
+    protected static boolean isBindPwd = false;
+
+    /**
+     * 描述：是否开通推送
+     */
+    protected static boolean allowNotify = false;
+
+    /**
+     * 描述：是否开通推送
+     */
+    protected static boolean isRealName = false;
 
 
     @Override
@@ -121,6 +125,9 @@ public class MyApplication extends BaseApplication {
         mContext = getApplicationContext();
         setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
         SoLoader.init(this, /* native exopackage */ false);
+        //facebook初始化
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         SDKInitializer.initialize(this);//初始化百度地图sdk
         initBaiduMap();//初始化百度地图
         Utils.init(this);
@@ -130,7 +137,6 @@ public class MyApplication extends BaseApplication {
         ZXingLibrary.initDisplayOpinion(this);
         initDB();
         initSCCache();
-        initShareAndLogin();
         //初始化Tinker热修复
 //        initTinkerPatch();
         useSample();
@@ -232,7 +238,7 @@ public class MyApplication extends BaseApplication {
                     //屏蔽部分渠道的补丁功能
                     .addIgnoreAppChannel("googleplay")
                     //设置tinkerpatch平台的条件下发参数
-                    .setPatchCondition("userId", ""+SCCacheUtils.getCacheUserId())
+                    .setPatchCondition("userId", "" + SCCacheUtils.getCacheUserId())
                     //设置补丁合成成功后,锁屏重启程序
                     //默认是等应用自然重启
                     .setPatchRestartOnSrceenOff(true)
@@ -346,20 +352,6 @@ public class MyApplication extends BaseApplication {
         ContactDao.initContactDao(this);
     }
 
-    /**
-     * 初始化第三方登录和分享
-     */
-    public void initShareAndLogin() {
-//        ShareConfig config = ShareConfig.instance()
-//                .qqId(QQ_ID)
-//                .wxId(WX_ID)
-//                .weiboId(WEIBO_ID)
-//                // 下面两个，如果不需要登录功能，可不填写
-//                .weiboRedirectUrl(REDIRECT_URL)
-//                .wxSecret(WX_SECRET);
-//        ShareManager.init(config);
-    }
-
     /*
      * 初始化极光IM
      * */
@@ -367,8 +359,8 @@ public class MyApplication extends BaseApplication {
         PlatformConfig platformConfig = new PlatformConfig()
                 .setWechat(WX_ID, WX_SECRET)
                 .setQQ(QQ_ID, QQ_KEY)
-                .setSinaWeibo(WEIBO_ID, WEIBO_SECRET, REDIRECT_URL);
-//                .setFacebook("1847959632183996", "JShareDemo")
+                .setSinaWeibo(WEIBO_ID, WEIBO_SECRET, REDIRECT_URL)
+                .setFacebook("351737942088473", "MarJar");
 //                .setTwitter("fCm4SUcgYI1wUACGxB2erX5pL", "NAhzwYCgm15FBILWqXYDKxpryiuDlEQWZ5YERnO1D89VBtZO6q")
 //                .setJchatPro("1847959632183996");
         JMessageClient.setDebugMode(true);
@@ -473,7 +465,46 @@ public class MyApplication extends BaseApplication {
         }
     }
 
-//    private void sendNotification(EMMessage message) {
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public static void setDeviceId(String devId) {
+        deviceId = devId;
+    }
+
+    public static String getRegistrationId() {
+        return registrationId;
+    }
+
+    public static void setRegistrationId(String regId) {
+        registrationId = regId;
+    }
+
+    public static boolean isBindPwd() {
+        return isBindPwd;
+    }
+
+    public static void setBindPwd(boolean binPwd) {
+        isBindPwd = binPwd;
+    }
+
+    public static boolean isAllowNotify() {
+        return allowNotify;
+    }
+
+    public static void setAllowNotify(boolean allNotify) {
+        allowNotify = allNotify;
+    }
+
+    public static boolean isRealName() {
+        return isRealName;
+    }
+
+    public static void setRealName(boolean realName) {
+        isRealName = realName;
+    }
+    //    private void sendNotification(EMMessage message) {
 //        EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
 //        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 //        //延时意图

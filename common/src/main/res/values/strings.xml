@@ -5,14 +5,17 @@
     <string name="request_no_method_error">请求方法异常</string>
     <string name="request_no_network_connect">网络异常，请检查网络</string>
     <string name="request_wrong_method">访问方法错误</string>
-
+    <string name="nav_my_wallet">我的钱包</string>
     <string name="jmui_loading">正在加载</string>
     <string name="server_err">服务器错误</string>
-
     <!-- dialog -->
     <string name="toast_no_empty">请输入完整信息</string>
     <string name="my_task_release_title">寻求帮助</string>
     <string name="str_sure">确定</string>
+    <string name="share">分享到</string>
+    <string name="str_share_dialog_wechat">微信</string>
+    <string name="str_share_dialog_circle">朋友圈</string>
+    <string name="account_facebook">Facebook</string>
     <string name="str_cancel">取消</string>
     <string name="str_dialog_title">你确定要离开吗？</string>
     <string name="my_task_release_des">描述</string>

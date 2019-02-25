@@ -9,21 +9,14 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.shanchain.shandata.permission.JPUSH_MESSAGE" />
-    <!-- 读取存储卡权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- 读取手机状态 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <!-- 这个权限用于进行网络定位 -->
@@ -72,21 +65,20 @@
         tools:ignore="HardcodedDebugMode">
 
         <!-- &lt;!&ndash; 友盟统计/消息推送 &ndash;&gt; -->
-         <meta-data
-         android:name="UMENG_APPKEY"
-         android:value="59828961cae7e754170008ab" />
-         <meta-data
-         android:name="UMENG_MESSAGE_SECRET"
-         android:value="dfb65b759f7998b0b69b644d17303224" />
-         <meta-data
-         android:name="UMENG_CHANNEL"
-         android:value="${UMENG_CHANNEL_VALUE}" />
-
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59828961cae7e754170008ab" />
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="dfb65b759f7998b0b69b644d17303224" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
 
         <!-- 百度地图 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="UOpGblY5ZfEI5fszsaiLQhgKEogWIQeE" />
+            android:value="@string/baidu_api_key" />
         <!-- 百度定位服务 -->
         <service
             android:name="com.baidu.location.f"
@@ -106,6 +98,49 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
+        <!-- Facebook授权信息 -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <!-- <provider
+             android:name="cn.jiguang.share.facebook.FacebookContentProvider"
+             android:authorities="com.facebook.app.FacebookContentProvider351737942088473"
+             android:exported="true" />-->
+        <!-- Facebook上传图片接收器 -->
+        <!--
+        <receiver android:name="cn.jiguang.share.demo.FaceBookUploadReceiver">
+            <intent-filter>
+                <action android:name="com.facebook.platform.AppCallResultBroadcast" />
+            </intent-filter>
+        </receiver>
+        -->
+
 
         <!-- 注册下载完成安装apk广播接收器 -->
         <receiver
@@ -208,11 +243,16 @@
 
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-
+                <!--<data android:scheme="xl" android:host="goods" android:path="/goodsDetail" android:port="8888"/>-->
                 <data
-                    android:host="ihongqiqu.com"
-                    android:pathPrefix="/test/"
-                    android:scheme="schemedemo" />
+                    android:host="qianqianshijie"
+                    android:path="/webview"
+                    android:port="80"
+                    android:scheme="activity" />
+                <!--<data-->
+                <!--android:host="ihongqiqu.com"-->
+                <!--android:pathPrefix="/test/"-->
+                <!--android:scheme="schemedemo" />-->
             </intent-filter>
         </activity>
         <!-- 添加 FaceBook 的 ReactNative 调试的 activity -->
@@ -351,7 +391,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.shanchain.shandata.fileProvider"
+            android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:replace="android:authorities">
@@ -415,10 +455,13 @@
         <activity android:name=".ui.view.activity.coupon.ScanQRCodeActivity" />
         <activity android:name=".ui.view.activity.coupon.MyCreateDetailsActivity" />
         <activity android:name=".ui.view.activity.settings.SettingsActivity" />
-        <activity android:name=".ui.view.activity.settings.AccountSecurityActivity" />
+        <activity
+            android:name=".ui.view.activity.settings.AccountSecurityActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize"></activity>
         <activity android:name=".ui.view.activity.settings.SetPasswordActivity" />
         <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity" />
-        <activity android:name=".ui.view.activity.settings.AboutAppActivity"></activity>
+        <activity android:name=".ui.view.activity.settings.AboutAppActivity" />
+        <activity android:name="com.shanchain.data.common.ui.SetWalletPasswordActivity" />
     </application>
 
 </manifest>
