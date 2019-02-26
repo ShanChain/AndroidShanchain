@@ -44,10 +44,8 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -251,65 +249,6 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                                                    }
                                                }
         );
-        //监听代号是否被占用
-//        editCouponCode.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                String couponCode = s.toString();
-//                if (couponCode.length() > 0) {
-//                    tvCouponDes.setText("代号为三个大写字母");
-//                    tvCouponDes.setTextColor(getResources().getColor(R.color.colorHint));
-//                }
-//                if (couponCode.length() == 3) {
-//                    SCHttpUtils.get()
-//                            .url(HttpApi.COUPON_CODE_CHECK)
-//                            .addParams("tokenSymbol", "" + couponCode)
-//                            .build()
-//                            .execute(new StringCallback() {
-//                                @Override
-//                                public void onError(Call call, Exception e, int id) {
-//                                    LogUtils.d(TAG, "网络异常");
-//                                }
-//
-//                                @Override
-//                                public void onResponse(String response, int id) {
-//                                    String code = JSONObject.parseObject(response).getString("code");
-//                                    final String msg = JSONObject.parseObject(response).getString("msg");
-//                                    if (NetErrCode.SUC_CODE.equals(code)) {
-//                                        String data = JSONObject.parseObject(response).getString("data");
-//                                        ThreadUtils.runOnMainThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-////                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
-//                                            }
-//                                        });
-//                                    } else {
-//                                        ThreadUtils.runOnMainThread(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-////                                                editCouponCode.setText("");
-//                                                tvCouponDes.setText("已被占用");
-//                                                tvCouponDes.setTextColor(getResources().getColor(R.color.red_btn_normal));
-////                                                ToastUtils.showToastLong(CreateCouponActivity.this, msg);
-//                                            }
-//                                        });
-//                                    }
-//
-//                                }
-//                            });
-//                }
-//            }
-//        });
-        //监听填写单价的输入框
         editCouponPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -454,12 +393,15 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
 
     private void initData() {
         getUseName();
+        CustomDialog showPasswordDialog = new CustomDialog(CreateCouponActivity.this, true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
         SCHttpUtils.getAndToken()
                 .url(HttpApi.WALLET_INFO)
                 .addParams("characterId", subuserId)
                 .addParams("userId", userId)
                 .build()
-                .execute(new StringCallback() {
+                .execute(new SCHttpStringCallBack(CreateCouponActivity.this, showPasswordDialog) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d(TAG, "网络异常");
@@ -533,10 +475,6 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
                         }
                     });
-                } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
-                    Intent intent = new Intent(CreateCouponActivity.this, VerifiedActivity.class);
-                    startActivity(intent);
-                    finish();
                 } else {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
