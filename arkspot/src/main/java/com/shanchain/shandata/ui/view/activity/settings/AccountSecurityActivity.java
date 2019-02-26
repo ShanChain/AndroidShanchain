@@ -314,23 +314,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                     });
                     standardDialog.show();
                 } else {
-                    standardDialog.setStandardMsg(getResources().getString(R.string.dialog_tip_bind));
-                    standardDialog.setSureText("Cancel");
-                    standardDialog.setCancelText("OK");
-                    standardDialog.setCallback(new Callback() {
-                        @Override
-                        public void invoke() {
-
-                        }
-                    }, new Callback() {
-                        @Override
-                        public void invoke() {
-                            thirdPlatform(UserType.USER_TYPE_FB);
-                        }
-                    });
-
+                    thirdPlatform(UserType.USER_TYPE_FB);
                 }
-                standardDialog.show();
                 break;
             case R.id.relative_identity://实名认证
                 Bundle bundle1 = new Bundle();
@@ -379,8 +364,7 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                                 msg.obj = userType;
                                 handler.sendMessage(msg);
                             }
-//                            bindThirdPlatform(thirdOpenId,userType);
-                        }
+                            }
                         break;
                     case Platform.ACTION_REMOVE_AUTHORIZING:
                         toastMsg = "删除授权成功";
@@ -488,14 +472,13 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                     JShareInterface.removeAuthorize(QQ.Name, mAuthListener);
                 }
                 break;
-            case UserType.USER_TYPE_FACEBOOK:
+            case UserType.USER_TYPE_FB:
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
                     ToastUtils.showToastLong(mContext, getResources().getString(R.string.third_platform));
                     return;
                 }
                 if (!JShareInterface.isAuthorize(Facebook.Name)) {
                     JShareInterface.authorize(Facebook.Name, mAuthListener);
-//                    JShareInterface.getUserInfo(Facebook.Name, mAuthListener);
                 } else {
                     JShareInterface.removeAuthorize(Facebook.Name, mAuthListener);
                 }

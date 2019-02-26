@@ -90,14 +90,38 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                 }
                 break;
             case NetErrCode.UN_VERIFIED_CODE:
-                Class clazz = null;
-                try {
-                    clazz = Class.forName("com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity");
-                    Intent intent = new Intent(mContext, clazz);
-                    mContext.startActivity(intent);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+//                Class clazz = null;
+//                try {
+//                    clazz = Class.forName("com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity");
+//                    Intent intent = new Intent(mContext, clazz);
+//                    mContext.startActivity(intent);
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mStandardDialog = new StandardDialog(mContext);
+                        mStandardDialog.setStandardTitle("  ");
+                        mStandardDialog.setStandardMsg("您尚未开通马甲钱包，开通后方可使用该功能");
+                        mStandardDialog.setCancelText("返回");
+                        mStandardDialog.setSureText("去开通");
+                        mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                Intent ScWebView = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
+                                mContext.startActivity(ScWebView);
+                                Activity activity = (Activity) mContext;
+                            }
+                        }, new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                mStandardDialog.dismiss();
+                            }
+                        });
+                        mStandardDialog.show();
+                    }
+                });
                 break;
             case NetErrCode.ACCOUNT_HAS_BINDED:
                 if (mContext != null && !TextUtils.isEmpty(msg)) {

@@ -63,7 +63,6 @@
         <item name="android:radius">5dp</item>
     </style>
 
-
     <!-- dialog样式 -->
     <style name="dialog_custom" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>    <!--是否浮在界面上-->
@@ -90,7 +89,6 @@
         <item name="@android:windowEnterAnimation">@anim/bottom_menu_enter</item>
         <item name="@android:windowExitAnimation">@anim/bottom_menu_exit</item>
     </style>
-
     <!--全屏分割线样式-->
     <style name="style_text_line_match">
         <item name="android:background">@color/colorBtnBg</item>

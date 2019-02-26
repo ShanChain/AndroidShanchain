@@ -348,7 +348,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtils.showToast(CouponDetailsActivity.this, "" + msg);
+//                                    ToastUtils.showToast(CouponDetailsActivity.this, "" + msg);
                                 }
                             });
                         }

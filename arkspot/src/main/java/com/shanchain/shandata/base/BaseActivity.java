@@ -455,7 +455,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         if (SCCacheUtils.getCacheAuthCode() != null) {
                             SCHttpUtils.get()
                                     .url(HttpApi.WALLET_FREE_PASSWORD)
-                                    .addParams("bind", "" + bind)
+                                    .addParams("bind", "" + String.valueOf(bind))
                                     .build()
                                     .execute(new SCHttpStringCallBack() {
                                         @Override
@@ -465,8 +465,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onResponse(String response, int id) {
-                                            mStandardDialog.dismiss();
                                             MyApplication.setBindPwd(bind);
+                                            ThreadUtils.runOnMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+//                                                    mStandardDialog.dismiss();
+                                                }
+                                            });
                                         }
                                     });
                         }
@@ -547,7 +552,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return registrationId;
     }
 
-    private void setRegistrationId(String registrationId) {
+    protected void setRegistrationId(String registrationId) {
         this.registrationId = registrationId;
     }
 
@@ -555,7 +560,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return isBindPwd;
     }
 
-    private void setBindPwd(boolean bindPwd) {
+    protected void setBindPwd(boolean bindPwd) {
         isBindPwd = bindPwd;
     }
 
@@ -563,11 +568,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         return allowNotify;
     }
 
-    private void setAllowNotify(boolean allowNotify) {
+    protected void setAllowNotify(boolean allowNotify) {
         this.allowNotify = allowNotify;
     }
 
-    private void setRealName(boolean realName) {
+    protected void setRealName(boolean realName) {
         isRealName = realName;
     }
 
@@ -578,7 +583,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 描述：打开相册
      */
-    private void selectImage(Context context) {
+    protected void selectImage(Context context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA}, 100);

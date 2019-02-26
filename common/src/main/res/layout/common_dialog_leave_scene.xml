@@ -28,7 +28,7 @@
         android:paddingRight="@dimen/dimens_15dp"
         android:text=""
         android:textColor="#030303"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_14" />
 
     <View style="@style/style_text_line_match" />
 

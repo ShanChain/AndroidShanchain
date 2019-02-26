@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.EventBusObject;
@@ -23,11 +24,14 @@ import com.shanchain.data.common.net.UpdateAppHttpUtil;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
+import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FeedbackActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.vector.update_app.UpdateAppBean;
@@ -104,8 +108,6 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     protected void initViewsAndEvents() {
         initToolbar();
-        initCurrentUserStatus();
-        isRealName();
         PackageManager packageManager = getApplicationContext().getPackageManager();
         String packagerName = getApplicationContext().getPackageName();
         customDialog = new CustomDialog(mContext, true, 1.0,
@@ -117,38 +119,8 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        if (MyApplication.isBindPwd()) {
-            switchFreePassword.setChecked(true);
-        } else {
-            switchFreePassword.setChecked(false);
-        }
-        if (MyApplication.isAllowNotify()) {
-            switchMessagePush.setChecked(true);
-        } else {
-            switchMessagePush.setChecked(false);
-        }
-        switchMessagePush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    JPushInterface.resumePush(getApplicationContext());
-                } else {
-                    JPushInterface.stopPush(getApplicationContext());
-                }
-            }
-        });
-        switchFreePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
-                    EventBus.getDefault().post(busObject);
-                } else {
-                    EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
-                    EventBus.getDefault().post(busObject);
-                }
-            }
-        });
+        initCurrentUserStatus();
+        isRealName();
     }
 
     private void initToolbar() {
@@ -161,6 +133,130 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void isRealName() {
+        SCHttpUtils.getAndToken()
+                .url(HttpApi.IS_REAL_NAME)
+                .build()
+                .execute(new SCHttpStringCallBack(mContext, new StandardDialog(mContext)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtils.showToast(mContext, "网络异常");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        final String code = SCJsonUtils.parseCode(response);
+                        final String msg = SCJsonUtils.parseMsg(response);
+                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            isRealName = SCJsonUtils.parseBoolean(response, "data");
+                            MyApplication.setRealName(isRealName);
+                        } else {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, code + ":" + msg);
+                                }
+                            });
+                        }
+
+
+                    }
+                });
+
+    }
+
+    @Override
+    protected void initCurrentUserStatus() {
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.CHARACTER_GET_CURRENT)
+                .build()
+                .execute(new SCHttpStringCallBack(mContext, new StandardDialog(mContext)) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络错误");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            if (TextUtils.isEmpty(data)) {
+                                return;
+                            }
+                            String character = JSONObject.parseObject(data).getString("characterInfo");
+                            CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                            if (!TextUtils.isEmpty(character)) {
+                                isBindPwd = SCJsonUtils.parseBoolean(character, "isBindPwd");
+                                allowNotify = SCJsonUtils.parseBoolean(character, "allowNotify");
+                                MyApplication.setAllowNotify(allowNotify);
+                                MyApplication.setBindPwd(isBindPwd);
+                                setBindPwd(isBindPwd);
+                                if (isBindPwd) {
+                                    switchFreePassword.setChecked(true);
+                                } else {
+                                    switchFreePassword.setChecked(false);
+                                }
+                                if (allowNotify) {
+                                    switchMessagePush.setChecked(true);
+                                } else {
+                                    switchMessagePush.setChecked(false);
+                                }
+                                switchMessagePush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        if (isChecked) {
+                                            JPushInterface.resumePush(getApplicationContext());
+                                        } else {
+                                            JPushInterface.stopPush(getApplicationContext());
+                                        }
+                                    }
+                                });
+                                switchFreePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        if (isChecked) {
+                                            EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
+                                            EventBus.getDefault().post(busObject);
+                                        } else {
+                                            EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
+                                            EventBus.getDefault().post(busObject);
+                                        }
+//                                        SCHttpUtils.get()
+//                                                .url(HttpApi.WALLET_FREE_PASSWORD)
+//                                                .addParams("bind", "" + String.valueOf(bind))
+//                                                .build()
+//                                                .execute(new SCHttpStringCallBack() {
+//                                                    @Override
+//                                                    public void onError(Call call, Exception e, int id) {
+//
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onResponse(String response, int id) {
+//                                                        MyApplication.setBindPwd(bind);
+//                                                        ThreadUtils.runOnMainThread(new Runnable() {
+//                                                            @Override
+//                                                            public void run() {
+//                                                                mStandardDialog.dismiss();
+//                                                            }
+//                                                        });
+//                                                    }
+//                                                });
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     @OnClick({R.id.relative_account, R.id.relative_message_push, R.id.relative_feedback, R.id.relative_app_about, R.id.relative_app_update, R.id.relative_logout})

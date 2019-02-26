@@ -8,6 +8,7 @@ import android.net.Uri;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.ui.SetWalletPasswordActivity;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -28,6 +29,7 @@ import okhttp3.Response;
 public abstract class SCHttpPostBodyCallBack implements Callback {
     Context mContext;
     CustomDialog mCustomDialog;
+    StandardDialog mStandardDialog;
 
     public SCHttpPostBodyCallBack() {
 
@@ -52,23 +54,49 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         String result = response.body().string();
-        String code = SCJsonUtils.parseCode(result);
-        String msg = SCJsonUtils.parseMsg(result);
+        final String code = SCJsonUtils.parseCode(result);
+//        String code = NetErrCode.WALLET_NOT_CREATE;
+        final String msg = SCJsonUtils.parseMsg(result);
+        if (mContext != null) {
+
+        }
         if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
             responseDoParse(result);
         } else if (NetErrCode.WALLET_NOT_CREATE.equals(code)) {
             if (mContext != null) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
-                mContext.startActivity(intent);
-                Activity activity = (Activity) mContext;
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mStandardDialog = new StandardDialog(mContext);
+                        mStandardDialog.setStandardTitle("  ");
+                        mStandardDialog.setStandardMsg("您尚未开通马甲钱包，开通后方可使用该功能");
+                        mStandardDialog.setCancelText("返回");
+                        mStandardDialog.setSureText("去开通");
+                        mStandardDialog.setCancelable(true);
+                        mStandardDialog.setCanceledOnTouchOutside(true);
+                        mStandardDialog.setOnItemClickListener(null);
+                        mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
+                                mContext.startActivity(intent);
+                                Activity activity = (Activity) mContext;
+                                mStandardDialog.dismiss();
+                            }
+                        }, new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                mStandardDialog.dismiss();
+                            }
+                        });
+
+                        mStandardDialog.show();
+                    }
+                });
             }
         } else if (NetErrCode.WALLET_PASSWORD_INVALID.equals(code)) {
             if (mContext != null) {
                 //上传密码图片弹窗
-//                final CustomDialog showPasswordDialog = new CustomDialog(ActivityStackManager.getInstance().getTopActivity(), true, 1.0,
-//                        R.layout.dialog_bottom_wallet_password,
-//                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-//                showPasswordDialog.setCancelable(true);
                 EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
                 EventBus.getDefault().post(busObject);
             }
@@ -87,14 +115,38 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
             });
         } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
             if (mContext != null) {
-
-                Class clazz = null;
-                try {
-                    clazz = Class.forName("com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity");
-                    Intent intent = new Intent(mContext, clazz);
-                    mContext.startActivity(intent);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mStandardDialog = new StandardDialog(mContext);
+                        mStandardDialog.setStandardTitle("  ");
+                        mStandardDialog.setStandardMsg("您尚未开通马甲钱包，开通后方可使用该功能");
+                        mStandardDialog.setCancelText("返回");
+                        mStandardDialog.setSureText("去开通");
+                        mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                Intent ScWebView = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
+                                mContext.startActivity(ScWebView);
+                                Activity activity = (Activity) mContext;
+                            }
+                        }, new com.shanchain.data.common.base.Callback() {
+                            @Override
+                            public void invoke() {
+                                mStandardDialog.dismiss();
+                            }
+                        });
+                        mStandardDialog.show();
+                    }
+                });
+            } else {
+                if (mContext != null) {
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(mContext, code + ":" + msg);
+                        }
+                    });
                 }
             }
         }
