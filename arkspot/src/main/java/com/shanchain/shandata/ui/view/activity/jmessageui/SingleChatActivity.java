@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
@@ -57,6 +59,7 @@ import com.shanchain.shandata.adapter.SimpleAppsGridView;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
+import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.RequestCode;
@@ -69,7 +72,6 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
 import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
@@ -87,6 +89,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
 import cn.jiguang.imui.chatinput.emoji.EmojiBean;
@@ -147,6 +150,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private final static String JM_USER = SCCacheUtils.getCacheHxUserName();
 
     PullToRefreshLayout pullToRefreshLayout;
+    @Bind(R.id.btn_report)
+    Button btnReport;
     //    private final static String FORM_USER_ID = "qwer";
     private String FORM_USER_ID;
     private String FORM_USER_NAME = "";
@@ -177,6 +182,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     private List<MyMessage> mData = new ArrayList<>();
     private List<Message> mConvData = new ArrayList<>();
     private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
+    private boolean isShow = true;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -782,7 +788,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
     @Override
     public void onRightClick(View v) {
-
+        if (isShow == true) {
+            btnReport.setVisibility(View.VISIBLE);
+            isShow = false;
+        } else {
+            btnReport.setVisibility(View.GONE);
+            isShow = true;
+        }
     }
 
     @Override
@@ -790,6 +802,14 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.btn_report)
+    public void onViewClicked() {
+        Intent intent = new Intent(SingleChatActivity.this, ReportActivity.class);
+        intent.putExtra("targetId", "" + FORM_USER_ID);
+        startActivity(intent);
+        btnReport.setVisibility(View.GONE);
     }
 
     private class HeadsetDetectReceiver extends BroadcastReceiver {

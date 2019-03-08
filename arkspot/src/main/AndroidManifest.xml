@@ -244,16 +244,16 @@
 
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <!--<data android:scheme="xl" android:host="goods" android:path="/goodsDetail" android:port="8888"/>-->
+                <!-- <data android:scheme="xl" android:host="goods" android:path="/goodsDetail" android:port="8888"/> -->
                 <data
                     android:host="qianqianshijie"
                     android:path="/webview"
                     android:port="80"
                     android:scheme="activity" />
-                <!--<data-->
-                <!--android:host="ihongqiqu.com"-->
-                <!--android:pathPrefix="/test/"-->
-                <!--android:scheme="schemedemo" />-->
+                <!-- <data -->
+                <!-- android:host="ihongqiqu.com" -->
+                <!-- android:pathPrefix="/test/" -->
+                <!-- android:scheme="schemedemo" /> -->
             </intent-filter>
         </activity>
         <!-- 添加 FaceBook 的 ReactNative 调试的 activity -->
@@ -458,7 +458,7 @@
         <activity android:name=".ui.view.activity.settings.SettingsActivity" />
         <activity
             android:name=".ui.view.activity.settings.AccountSecurityActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize"></activity>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize" />
         <activity android:name=".ui.view.activity.settings.SetPasswordActivity" />
         <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity" />
         <activity android:name=".ui.view.activity.settings.AboutAppActivity" />

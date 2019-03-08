@@ -266,11 +266,6 @@ public interface HttpApi {
     String TOPIC_QUERY_SPACEID = BASE_URL + "/v1/topic/query/spaceId";
 
     /**
-     * 举报故事
-     */
-    String STORY_REPORT = BASE_URL + "/v1/story/report/create";
-
-    /**
      * 获取当前角色
      */
     String CHARACTER_GET_CURRENT = BASE_URL + "/v1/character/get/current";
@@ -565,6 +560,8 @@ public interface HttpApi {
     String GET_SEAT_CURRENCY = BASE_URL + "/web/api/wallet/seat/currency";
     /* 用户反馈 */
     String USE_FEEDBACK = BASE_URL + "/v1/feedback/user";
+    /* 举报用户 */
+    String USE_REPORT_CREATE = BASE_URL + "/v1/user/report/create";
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
     //官网app下载
@@ -575,7 +572,7 @@ public interface HttpApi {
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
 //    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+        String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */

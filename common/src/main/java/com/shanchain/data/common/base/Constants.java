@@ -125,6 +125,7 @@ public interface Constants {
     /**************举报类型**************/
     String REPORT_TYPE_TOPIC = "TOPIC";
     String REPORT_TYPE_STORY = "STORY";
+    String REPORT_TYPE_USER = "USER";
 
     /**************span类型**************/
     int SPAN_TYPE_AT = 1;

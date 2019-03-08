@@ -196,8 +196,10 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                             String character = JSONObject.parseObject(data).getString("characterInfo");
                             CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                             if (!TextUtils.isEmpty(character)) {
-                                isBindPwd = SCJsonUtils.parseBoolean(character, "isBindPwd");
-                                allowNotify = SCJsonUtils.parseBoolean(character, "allowNotify");
+//                                isBindPwd = SCJsonUtils.parseBoolean(character, "isBindPwd");
+                                isBindPwd = characterInfo.isBindPwd();
+//                                allowNotify = SCJsonUtils.parseBoolean(character, "allowNotify");
+                                allowNotify = characterInfo.isAllowNotify();
                                 MyApplication.setAllowNotify(allowNotify);
                                 MyApplication.setBindPwd(isBindPwd);
                                 setBindPwd(isBindPwd);

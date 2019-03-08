@@ -7,10 +7,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
@@ -47,6 +49,7 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     private int mPosition;
     private String[] mReportList;
     private boolean mIsGroupReport;
+    private String targetId = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -56,12 +59,10 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
     @Override
     protected void initViewsAndEvents() {
         Intent intent = getIntent();
-        mIsGroupReport = intent.getBooleanExtra("groupReport", false);
-        if (mIsGroupReport) {
-
-        } else {
-            mStoryId = intent.getStringExtra("storyId");
-            mCharacterId = intent.getStringExtra("characterId");
+//        mIsGroupReport = intent.getBooleanExtra("groupReport", false);
+        if (intent != null) {
+            targetId = intent.getStringExtra("targetId");
+//            mCharacterId = intent.getStringExtra("characterId");
         }
         mReportList = getResources().getStringArray(R.array.reportList);
         initToolBar();
@@ -131,10 +132,11 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
             showLoadingDialog();
             final String reason = "举报类型:" + mReportList[mPosition] + ";举报内容:" + content;
             SCHttpUtils.postWithChaId()
-                    .url(HttpApi.STORY_REPORT)
-                    .addParams("targetId", mStoryId.substring(1))
+                    .url(HttpApi.USE_REPORT_CREATE)
+                    .addParams("token", "" + SCCacheUtils.getCacheToken())//举报人characterId
                     .addParams("reason", reason)
-                    .addParams("reportType", Constants.REPORT_TYPE_STORY)
+                    .addParams("reportType", Constants.REPORT_TYPE_USER)
+                    .addParams("targetId", "" + targetId)
                     .build()
                     .execute(new SCHttpStringCallBack() {
                         @Override
@@ -149,7 +151,12 @@ public class ReportActivity extends BaseActivity implements ArthurToolBar.OnLeft
                         public void onResponse(String response, int id) {
                             LogUtils.i("举报成功" + response);
                             closeLoadingDialog();
-                            ToastUtils.showToast(mContext, "感谢你的举报，我们会尽快处理~");
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, "感谢你的举报，我们会尽快处理~");
+                                }
+                            });
                             finish();
                         }
                     });
