@@ -1158,23 +1158,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                         }
                                     }
                                 });
-
-// final android.os.Message handleMessage = new android.os.Message();
-//                        handleMessage.what = 1;
-//                        handleMessage.obj = view;
-//                        addTaskThread = new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                handler.sendMessage(handleMessage);
-//                            }
-//                        });
-//                        addTaskThread.start();
-//                        Intent taskDetailIntent = new Intent(MessageListActivity.this,TaskDetailActivity.class);
-//                        taskDetailIntent.putExtra("roomId",roomID);
-//                        taskDetailIntent.putExtra("chatEventMessage",chatEventMessage);
-//                        startActivity(taskDetailIntent);
-
-
                         break;
 
                 }
@@ -2891,6 +2874,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
         mData = messageList;
 
+    }
+    //用户下线事件
+    public void onEventMainThread(LoginStateChangeEvent event){
+        StandardDialog dialog = new StandardDialog(MessageListActivity.this);
+        dialog.setStandardMsg("该账号已在其他设备上登录");
     }
 
     //聊天室输入框多功能界面

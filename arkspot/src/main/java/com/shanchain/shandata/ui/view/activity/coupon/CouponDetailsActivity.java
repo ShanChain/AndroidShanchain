@@ -3,6 +3,8 @@ package com.shanchain.shandata.ui.view.activity.coupon;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -98,9 +100,9 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
     private boolean checkCoupon = false;
     private int page = 0;
     private int size = 10;
+    private String couponsToken;
     private CustomDialog showPasswordDialog;
-    private CustomDialog mCustomDialog;
-    private CouponSubInfo couponSubInfo;
+    private CouponSubInfo couponSubInfo = new CouponSubInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
     protected void initViewsAndEvents() {
         subCoupId = getIntent().getStringExtra("subCoupId");
         couponsId = getIntent().getStringExtra("couponsId");
+        couponsToken = getIntent().getStringExtra("couponsToken");
         checkCoupon = getIntent().getBooleanExtra("checkCoupon", false);
         tbCouponDetail.setTitleText(getResources().getString(R.string.nav_coupon_details));
         tbCouponDetail.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
@@ -124,12 +127,10 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
         showPasswordDialog = new CustomDialog(CouponDetailsActivity.this, true, 1.0,
                 R.layout.dialog_bottom_wallet_password,
                 new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-        mCustomDialog = new CustomDialog(CouponDetailsActivity.this, R.layout.common_dialog_costom, new int[]{R.id.even_message_content});
         initData();
-        if (checkCoupon == true) {
-            CheckCoupon(subCoupId, couponSubInfo.getCouponsToken());
+        if (checkCoupon == true && subCoupId != null) {
+            CheckCoupon(subCoupId);
         }
-
 //
     }
 
@@ -190,7 +191,7 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                         break;
                                     case CouponSubInfo.RECEIVER: //已领取
                                         if (checkCoupon == true) {
-                                            CheckCoupon(couponSubInfo.getSubCoupId() + "", couponSubInfo.getCouponsToken());
+                                            CheckCoupon(subCoupId);
                                         } else {
                                             btnCouponDetails.setText("立即使用");
                                         }
@@ -227,8 +228,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                                     String msg = SCJsonUtils.parseMsg(response);
                                                     if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
                                                         String data = SCJsonUtils.parseData(response);
-                                                        String couponsToken = SCJsonUtils.parseString(data, "couponsToken");
-                                                        couponSubInfo.setCouponsToken(couponsToken);
+                                                        String coupToken = SCJsonUtils.parseString(data, "couponsToken");
+                                                        couponSubInfo.setCouponsToken(coupToken);
                                                         try {
 //                                                            Bitmap bitmap = EncodingHandler.create2Code("" + couponSubInfo.getSubCoupId(), 800);
                                                             Bitmap bitmap = EncodingHandler.create2Code("" + data, 800);
@@ -356,34 +357,43 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                 });
     }
 
-    private void CheckCoupon(final String subCoupId, final String couponsToken) {
+    private void CheckCoupon(final String subCoupId) {
         btnCouponDetails.setText("核销马甲劵 ");
+        //获取子卡劵凭证
+        final Handler checkToken = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                }
+            }
+        };
+
+        //点击核销马甲劵
         btnCouponDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(couponsToken)) {
+                    ToastUtils.showToast(CouponDetailsActivity.this, "核销失败，couponsToken为空");
+                    return;
+                }
+                showLoadingDialog();
                 SCHttpUtils.getAndToken()
                         .url(HttpApi.COUPON_CLIENT_USE)
                         .addParams("couponsToken", couponsToken)
-//                        .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
-//                        .addParams("deviceToken", registrationId + "")
-//                        .addParams("subCoupId", result)
                         .build()
                         .execute(new SCHttpStringCallBack(CouponDetailsActivity.this, showPasswordDialog) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
+                                closeLoadingDialog();
                                 LogUtils.d(TAG, "网络异常");
                             }
 
                             @Override
                             public void onResponse(String response, int id) {
+                                closeLoadingDialog();
                                 String code = JSONObject.parseObject(response).getString("code");
                                 final String msg = JSONObject.parseObject(response).getString("msg");
-//                                ThreadUtils.runOnMainThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        Toast.makeText(CouponDetailsActivity.this, msg, Toast.LENGTH_LONG).show();
-//                                    }
-//                                });
                                 if (NetErrCode.SUC_CODE.equals(code)) {
                                     String data = JSONObject.parseObject(response).getString("data");
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -399,23 +409,6 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                             btnCouponDetails.setOnClickListener(null);
                                         }
                                     });
-                                } else {
-                                    mCustomDialog.setDialogTitle("");
-                                    mCustomDialog.setMessageContentSize(14);
-                                    mCustomDialog.setMessageContent("很抱歉你无法核销他人创建的马甲劵,尝试创建自己的马甲劵吧");
-                                    mCustomDialog.show();
-//                                    CountDownTimer countDownTimer = new CountDownTimer(2000, 1000) {
-//                                        @Override
-//                                        public void onTick(long millisUntilFinished) {
-//
-//                                        }
-//
-//                                        @Override
-//                                        public void onFinish() {
-//                                            customDialog.dismiss();
-//                                        }
-//                                    };
-//                                    countDownTimer.start();
                                 }
                             }
                         });

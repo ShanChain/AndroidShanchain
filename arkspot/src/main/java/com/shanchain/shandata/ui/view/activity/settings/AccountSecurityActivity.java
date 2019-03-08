@@ -22,6 +22,7 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
@@ -364,7 +365,7 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                                 msg.obj = userType;
                                 handler.sendMessage(msg);
                             }
-                            }
+                        }
                         break;
                     case Platform.ACTION_REMOVE_AUTHORIZING:
                         toastMsg = "删除授权成功";
@@ -487,7 +488,7 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     }
 
     /* 绑定解绑第三方账号 */
-    private void bindThirdPlatform(String otherAccount, String userType) {
+    private void bindThirdPlatform(final String otherAccount, String userType) {
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.BAND_THIRD_PLATFORM)
                 .addParams("otherAccount", otherAccount)
@@ -506,6 +507,16 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                         String code = SCJsonUtils.parseCode(response);
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             initData();
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (TextUtils.isEmpty(otherAccount)) {
+                                        ToastUtils.showToast(AccountSecurityActivity.this, "解绑成功!");
+                                    } else {
+                                        ToastUtils.showToast(AccountSecurityActivity.this, "绑定成功!");
+                                    }
+                                }
+                            });
                         } else {
                             ToastUtils.showToast(mContext, "绑定失败" + code);
                         }

@@ -23,7 +23,7 @@
     <string name="my_task_release_time_limit">时限</string>
     <string name="my_task_release_btn">立即发布</string>
     <string name="my_task_release_des_hint">请输入内容</string>
-    <string name="my_task_release_reward_hint">￥请输入答谢金</string>
+    <string name="my_task_release_reward_hint">请输入答谢金</string>
     <string name="my_task_release_time_limit_hint">年-月-日 时:分</string>
     <string name="my_task_heped">帮Ta一下</string>
     <string name="my_task_receive">已被领取</string>

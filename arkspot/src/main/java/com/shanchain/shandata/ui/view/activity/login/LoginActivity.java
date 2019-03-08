@@ -430,8 +430,12 @@ public class LoginActivity extends BaseActivity {
 
             case R.id.rl_login_qq:
                 //qq登录
-                thirdPlatform(UserType.USER_TYPE_QQ);
-//                LoginUtil.login(this, LoginPlatform.QQ, listener, true);
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                    ToastUtils.showToastLong(LoginActivity.this, getResources().getString(R.string.third_platform));
+                    return;
+                } else {
+                    thirdPlatform(UserType.USER_TYPE_QQ);
+                }
                 break;
             default:
                 break;
@@ -781,9 +785,14 @@ public class LoginActivity extends BaseActivity {
                                  @Override
                                  public void onError(Call call, Exception e, int id) {
                                      closeProgress();
-                                     LogUtils.e("三方登录创建账号失败");
-                                     ToastUtils.showToast(mContext, "网络异常");
-                                     e.printStackTrace();
+                                     LogUtils.d("三方登录创建账号失败");
+                                     ThreadUtils.runOnMainThread(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             ToastUtils.showToast(mContext, "网络异常");
+                                         }
+                                     });
+
                                  }
 
                                  @Override
@@ -882,7 +891,7 @@ public class LoginActivity extends BaseActivity {
                 .addParams("sign", sign)
                 .addParams("verifyCode", verifyCode)
                 .build()
-                .execute(new SCHttpStringCallBack() {
+                .execute(new SCHttpStringCallBack(LoginActivity.this) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
 //                        LogUtils.d("dynamicLogin", e.toString());

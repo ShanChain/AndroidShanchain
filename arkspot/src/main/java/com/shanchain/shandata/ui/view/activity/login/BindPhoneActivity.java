@@ -91,7 +91,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                         .addParams("sign", sign)
                         .addParams("verifyCode", verifyCode)
                         .build()
-                        .execute(new SCHttpStringCallBack() {
+                        .execute(new SCHttpStringCallBack(BindPhoneActivity.this) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
                                 LogUtils.d("dynamicLogin", "三方登录失败" + e.toString());

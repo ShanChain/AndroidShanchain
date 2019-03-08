@@ -249,7 +249,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             if (shareHandler != null) {
                 Message message = shareHandler.obtainMessage();
                 message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
-                Logger.dd(TAG, message.obj + "");
+                Logger.d("shareError", message.obj + "");
                 shareHandler.sendMessage(message);
             }
         }
@@ -819,6 +819,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint); //未转换的坐标
                             baiduMap.setMapStatus(mapStatusUpdate);
                             baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
+//                            baiduMap.setBaiduHeatMapEnabled(true);
+
 
                             //构建Marker图标
                             BitmapDescriptor bitmap = BitmapDescriptorFactory
@@ -1573,7 +1575,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                     final String title = JSONObject.parseObject(data).getString("title");
                                                     //分享参数
                                                     shareParams = new ShareParams();
-                                                    shareChatRoomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+                                                    shareChatRoomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlFacebook, R.id.share_facebook, R.id.share_close});
                                                     shareChatRoomDialog.setViewId(R.id.share_image);
                                                     shareChatRoomDialog.setShareBitmap(ImageUtils.getBitmapByFile(captureScreenFile));
                                                     shareChatRoomDialog.show();
@@ -1616,11 +1618,24 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                         JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
                                                                     }
                                                                     break;
-                                                                case R.id.mRlWeibo:
+                                                                case R.id.mRlFacebook:
                                                                     if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
                                                                         ToastUtils.showToastLong(HomeActivity.this, getResources().getString(R.string.third_platform));
                                                                     } else {
-                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        shareParams.setShareType(Platform.SHARE_IMAGE);
+                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                        shareParams.setText(intro);
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到Facebook平台。
+                                                                        JShareInterface.share(Facebook.Name, shareParams, mPlatActionListener);
+                                                                    }
+                                                                    break;
+                                                                case R.id.share_facebook:
+                                                                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, getResources().getString(R.string.third_platform));
+                                                                    } else {
+                                                                        shareParams.setShareType(Platform.SHARE_IMAGE);
                                                                         shareParams.setImagePath(captureScreenFile.getAbsolutePath());
                                                                         shareParams.setText(intro);
                                                                         shareParams.setTitle(title);

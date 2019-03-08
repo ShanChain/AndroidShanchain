@@ -355,22 +355,18 @@ public abstract class BaseActivity extends AppCompatActivity {
      * */
     @Subscribe
     public void onEventMainThread(Object event) {
-//        try {
-        final EventBusObject busObject = (EventBusObject) event;
-        showPasswordDialog = (CustomDialog) busObject.getData();
-//        mActivity = (Activity) busObject.getData();
-//        String s = mActivity.getLocalClassName();
-//        LogUtils.d("activity", s + "");
-//        Activity TopActivity = ActivityStackManager.getInstance().getTopActivity();
-//        LogUtils.d("TopActivity", TopActivity.getLocalClassName());
-//        showPasswordDialog = new CustomDialog(ActivityStackManager.getInstance().getTopActivity(), true, 1.0,
-//                R.layout.dialog_bottom_wallet_password,
-//                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+        EventBusObject busObject = null;
+        try {
+            busObject = (EventBusObject) event;
+            showPasswordDialog = (CustomDialog) busObject.getData();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
         if (NetErrCode.WALLET_PHOTO == busObject.getCode()) {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override
                 public void run() {
-//                        //创建上传密码图片弹窗
+//                        创建上传密码图片弹窗
                     if (showPasswordDialog == null) {
                         ToastUtils.showToast(mContext, "" + NetErrCode.WALLET_PHOTO);
                         return;
@@ -389,10 +385,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
             });
         }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     private void checkPassword(final File file) {
@@ -756,7 +748,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data == null || data.getData() == null) {
-            showPasswordDialog.setPasswordBitmap(null);
+            if (showPasswordDialog != null) {
+                showPasswordDialog.setPasswordBitmap(null);
+            }
             return;
         }
         if (requestCode == NetErrCode.WALLET_PHOTO) {

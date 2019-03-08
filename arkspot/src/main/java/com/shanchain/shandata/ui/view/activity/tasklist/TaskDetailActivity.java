@@ -211,10 +211,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                             .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
                             .addParams("taskId", chatEventMessage.getTaskId() + "")
                             .build()
-                            .execute(new SCHttpStringCallBack() {
+                            .execute(new SCHttpStringCallBack(TaskDetailActivity.this, showPasswordDialog) {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
-                                    ToastUtils.showToast(TaskDetailActivity.this, "任务已被领取");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ToastUtils.showToast(TaskDetailActivity.this, "网络异常");
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -394,7 +399,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 bountyEditText.requestFocus();
                 limitedTime = (EditText) dialog.getByIdView(R.id.dialog_select_task_time);
                 tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
-                tvSeatRate.setText("0 SEAT");
+                tvSeatRate.setText("= 0 SEAT");
                 //输入框监听
                 bountyEditText.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -406,17 +411,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (s.toString().length() > 0) {
                             Double bounty = Double.valueOf(s.toString());
-                            tvSeatRate.setText(("" + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
-
+                            tvSeatRate.setText(("= " + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
                         }
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
-//                        Double inputNum = Double.valueOf(s.toString());
-                        s.insert(0, "￥");
-
-//                        bountyEditText.setText();
+                        if (s.toString().length() > 0) {
+                            s.insert(0, "￥");
+                        }
                     }
                 });
 

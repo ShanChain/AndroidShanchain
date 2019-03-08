@@ -12,6 +12,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CouponListAdapter;
@@ -19,7 +20,6 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -126,7 +126,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                     }
 
                     @Override
-                    public void onResponse(String response, int id) {
+                    public void onResponse(String response, final int id) {
                         closeLoadingDialog();
                         String code = JSONObject.parseObject(response).getString("code");
                         final String msg = JSONObject.parseObject(response).getString("msg");
@@ -251,6 +251,4 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
         }
         return false;
     }
-
-
 }

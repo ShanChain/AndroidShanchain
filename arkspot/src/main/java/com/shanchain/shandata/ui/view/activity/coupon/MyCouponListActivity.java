@@ -3,11 +3,11 @@ package com.shanchain.shandata.ui.view.activity.coupon;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,8 +15,10 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -24,7 +26,6 @@ import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.view.fragment.MyCreateCouponFragment;
 import com.shanchain.shandata.ui.view.fragment.MyReciverCouponFragment;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -130,9 +131,12 @@ public class MyCouponListActivity extends BaseActivity implements ArthurToolBar.
                 }
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     final String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    LogUtils.d("QRcode", "" + result);
+                    final String subCoupId = SCJsonUtils.parseString(result, "subCoupId");
+                    final String couponsToken = SCJsonUtils.parseString(result, "couponsToken");
                     SCHttpUtils.get()
                             .url(HttpApi.SUB_COUPONS_INFO)
-                            .addParams("subCoupId", "" + result)
+                            .addParams("subCoupId", "" + subCoupId)
                             .build()
                             .execute(new StringCallback() {
                                 @Override
@@ -148,7 +152,8 @@ public class MyCouponListActivity extends BaseActivity implements ArthurToolBar.
                                         String vendorUse = com.alibaba.fastjson.JSONObject.parseObject(data).getString("vendorUser");
                                         if (SCCacheUtils.getCacheUserId().equals(vendorUse)) {
                                             Intent intent = new Intent(MyCouponListActivity.this, CouponDetailsActivity.class);
-                                            intent.putExtra("subCoupId", result);
+                                            intent.putExtra("subCoupId", subCoupId);
+                                            intent.putExtra("couponsToken", couponsToken);
                                             intent.putExtra("checkCoupon", true);
                                             startActivity(intent);
                                         } else {

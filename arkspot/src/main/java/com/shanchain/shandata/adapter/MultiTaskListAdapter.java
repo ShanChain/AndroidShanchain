@@ -1,35 +1,26 @@
 package com.shanchain.shandata.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.utils.DateUtils;
-
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import cn.jiguang.imui.commons.models.IUser;
 import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jiguang.imui.model.DefaultUser;
 import okhttp3.Call;
 
 
@@ -52,7 +43,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
     }
 
     @Override
-    public void setData(BaseViewHolder holder, ChatEventMessage item, int viewType,int position) {
+    public void setData(BaseViewHolder holder, ChatEventMessage item, int viewType, int position) {
         this.chatEventMessage = item;
         this.holder = holder;
         if (holder.itemView.getTag() != null) {
@@ -70,22 +61,22 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         holder.isRecyclable();
         int characterId = item.getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
-        if (viewType==0){
-            holder.setTextView(R.id.tv_item_story_time,createTime+"");
-            CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
-            holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg()!=null?item.getHeadImg():characterInfo.getHeadImg());
-            holder.setTextView(R.id.tv_item_story_name,item.getName()==null?"无昵称":item.getName());
+        if (viewType == 0) {
+            holder.setTextView(R.id.tv_item_story_time, createTime + "");
+            CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+            holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg() != null ? item.getHeadImg() : characterInfo.getHeadImg());
+            holder.setTextView(R.id.tv_item_story_name, item.getName() == null ? "无昵称" : item.getName());
 
-        }else if(viewType==1){
-            holder.setTextView(R.id.tv_item_story_time,createTime+"");
+        } else if (viewType == 1) {
+            holder.setTextView(R.id.tv_item_story_time, createTime + "");
 
-            holder.setTextView(R.id.tv_item_story_name,item.getName()+"");
-            CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(),CharacterInfo.class);
-            holder.setImageURL(R.id.iv_item_story_avatar,item.getHeadImg()!=null?item.getHeadImg():characterInfo.getHeadImg());
-        }else if(viewType==2){
-            holder.setTextView(R.id.even_message_location,""+item.getRoomName());
+            holder.setTextView(R.id.tv_item_story_name, item.getName() + "");
+            CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+            holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg() != null ? item.getHeadImg() : characterInfo.getHeadImg());
+        } else if (viewType == 2) {
+            holder.setTextView(R.id.even_message_location, "" + item.getRoomName());
         }
-        setViewOnClick(holder,item,viewType);
+        setViewOnClick(holder, item, viewType);
         holder.itemView.setTag(position);
     }
 
@@ -97,13 +88,16 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         btnEvenTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CustomDialog showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(context, true, 1.0,
+                        R.layout.dialog_bottom_wallet_password,
+                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
                 SCHttpUtils.postWithUserId()
                         .url(HttpApi.TASK_DETAIL_RECEIVE)
                         .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
                         .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
                         .addParams("taskId", itemData.getTaskId() + "")
                         .build()
-                        .execute(new SCHttpStringCallBack() {
+                        .execute(new SCHttpStringCallBack(context, showPasswordDialog) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
                                 ToastUtils.showToast(context, "任务已被领取");
@@ -126,13 +120,6 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
 //                                        defaultUser = new DefaultUser(user.getId(), displayName, user.getAvatarFilePath());
 //                                        defaultUser.setHxUserId(HxUserName);
 //                                    }
-                                }else {
-                                    ThreadUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ToastUtils.showToastLong(context,message);
-                                        }
-                                    });
                                 }
                             }
                         });
@@ -156,11 +143,11 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         int characterId = list.get(position).getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
         if (status == 5) {
-            if (character.equals(String.valueOf(characterId))){
+            if (character.equals(String.valueOf(characterId))) {
                 return 2;
             }
             return 1;
-        }else {
+        } else {
             return 0;
         }
     }
@@ -224,20 +211,20 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
     @Override
     public void OnLayoutViewClick(View view) {
         if (onClickListener != null) {
-            onClickListener.OnClick(chatEventMessage, view, holder,position);
+            onClickListener.OnClick(chatEventMessage, view, holder, position);
         }
     }
 
 
     public interface OnItemClickListener {
-        void OnItemClick(ChatEventMessage item, View view, BaseViewHolder holder,int position);
+        void OnItemClick(ChatEventMessage item, View view, BaseViewHolder holder, int position);
 
     }
 
 
     public interface OnClickListener {
 
-        void OnClick(ChatEventMessage item, View view, BaseViewHolder holder,int position);
+        void OnClick(ChatEventMessage item, View view, BaseViewHolder holder, int position);
 
     }
 }

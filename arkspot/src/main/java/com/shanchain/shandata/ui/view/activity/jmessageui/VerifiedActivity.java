@@ -69,11 +69,12 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
+        idcard = getIntent().getBooleanExtra("idcard", false);
         tbMain.setTitleText(getResources().getString(R.string.nav_real_identity));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);
         isRealName();
-        if (MyApplication.isRealName()) {
+        if (MyApplication.isRealName() || idcard) {
             initData();
             relativeVerifiedInfo.setVisibility(View.GONE);
             relativeHint.setVisibility(View.VISIBLE);

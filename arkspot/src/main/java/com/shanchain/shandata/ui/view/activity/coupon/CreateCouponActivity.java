@@ -618,48 +618,47 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PhotoUtils.INTENT_SELECT:
-                if (data == null) {
-                    return;
-                }
-                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String photoPath = cursor.getString(columnIndex);  //获取照片路径
-                cursor.close();
-                final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                showLoadingDialog(true);
-                SCUploadImgHelper helper = new SCUploadImgHelper();
-                helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
-                    @Override
-                    public void onUploadSuc(final List<String> urls) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && data.getData() != null) {
+            switch (requestCode) {
+                case PhotoUtils.INTENT_SELECT:
+                    Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String photoPath = cursor.getString(columnIndex);  //获取照片路径
+                    cursor.close();
+                    final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                    showLoadingDialog(true);
+                    SCUploadImgHelper helper = new SCUploadImgHelper();
+                    helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+                        @Override
+                        public void onUploadSuc(final List<String> urls) {
 
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                photoUrl = urls.get(0);
-                                RequestOptions options = new RequestOptions();
-                                options.placeholder(R.mipmap.aurora_headicon_default);
-                                Glide.with(CreateCouponActivity.this).load(photoUrl).apply(options).into(imageHead);
-                                closeLoadingDialog();
-                            }
-                        });
-                    }
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    photoUrl = urls.get(0);
+                                    RequestOptions options = new RequestOptions();
+                                    options.placeholder(R.mipmap.aurora_headicon_default);
+                                    Glide.with(CreateCouponActivity.this).load(photoUrl).apply(options).into(imageHead);
+                                    closeLoadingDialog();
+                                }
+                            });
+                        }
 
-                    @Override
-                    public void error() {
-                        LogUtils.i(TAG, "oss上传失败");
-                    }
-                });
-                List list = new ArrayList();
-                list.add(photoPath);
-                helper.upLoadImg(mContext, list);
-                break;
+                        @Override
+                        public void error() {
+                            LogUtils.i(TAG, "oss上传失败");
+                        }
+                    });
+                    List list = new ArrayList();
+                    list.add(photoPath);
+                    helper.upLoadImg(mContext, list);
+                    break;
+            }
         }
     }
 

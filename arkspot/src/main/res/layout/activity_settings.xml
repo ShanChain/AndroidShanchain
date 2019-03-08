@@ -19,12 +19,12 @@
         android:id="@+id/relative_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_20dp"
         android:layout_below="@+id/tb_setting"
-        android:background="@color/white"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:background="@drawable/selector_click_bg_msg"
         android:paddingLeft="@dimen/dimens_20dp"
-        android:paddingRight="@dimen/dimens_20dp"
         android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dimens_20dp"
         android:paddingBottom="@dimen/dp_10">
 
         <TextView
@@ -87,11 +87,11 @@
             android:id="@+id/switch_message_push"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:thumb="@drawable/switch_custom_thumb_selector"
-            android:track="@drawable/switch_custom_track_selector"
-            android:layout_marginRight="@dimen/dp_10"
             android:layout_alignBottom="@+id/tv_message_push"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector" />
 
         <TextView
             android:id="@+id/tv_free_password"
@@ -107,11 +107,11 @@
             android:id="@+id/switch_free_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:thumb="@drawable/switch_custom_thumb_selector"
-            android:track="@drawable/switch_custom_track_selector"
-            android:layout_marginRight="@dimen/dp_10"
             android:layout_alignBottom="@+id/tv_free_password"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -125,7 +125,8 @@
         <RelativeLayout
             android:id="@+id/relative_feedback"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40">
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/selector_click_bg_msg">
 
             <TextView
                 android:id="@+id/tv_feedback"
@@ -141,24 +142,25 @@
                 android:id="@+id/iv_feedback_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dimens_20dp"
                 android:background="@mipmap/abs_meet_btn_enter_default" />
 
             <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:background="@color/colorHint"></View>-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/colorHint"></View>-->
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relative_app_about"
             android:layout_width="match_parent"
-            android:layout_marginTop="1dp"
+            android:layout_height="@dimen/dp_40"
             android:layout_below="@+id/relative_feedback"
-            android:layout_height="@dimen/dp_40">
+            android:layout_marginTop="1dp"
+            android:background="@drawable/selector_click_bg_msg">
 
             <TextView
                 android:id="@+id/tv_about"
@@ -173,24 +175,25 @@
                 android:id="@+id/iv_about_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dimens_20dp"
                 android:background="@mipmap/abs_meet_btn_enter_default" />
 
             <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:background="@color/colorHint"></View>-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/colorHint"></View>-->
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relative_app_update"
             android:layout_width="match_parent"
-            android:layout_below="@+id/relative_app_about"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginTop="1dp">
+            android:layout_below="@+id/relative_app_about"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/selector_click_bg_msg">
 
             <TextView
                 android:id="@+id/tv_update"
@@ -206,25 +209,25 @@
                 android:id="@+id/tv_app_version_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/iv_update_arrow"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
-                android:text=""/>
+                android:layout_toLeftOf="@+id/iv_update_arrow"
+                android:text="" />
 
             <ImageView
                 android:id="@+id/iv_update_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dimens_20dp"
                 android:background="@mipmap/abs_meet_btn_enter_default" />
 
             <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:background="@color/colorHint"></View>-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/colorHint"></View>-->
         </RelativeLayout>
 
     </RelativeLayout>
@@ -233,18 +236,18 @@
         android:id="@+id/relative_logout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:layout_marginBottom="@dimen/dimens_20dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:layout_marginBottom="@dimen/dimens_20dp"
+        android:background="@drawable/selector_click_bg_msg">
 
         <TextView
             android:id="@+id/tv_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:text="@string/settings_logout"
-            android:layout_centerHorizontal="true"
             android:textColor="#FF3B3B"
             android:textSize="@dimen/sp_14" />
     </RelativeLayout>

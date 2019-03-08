@@ -46,6 +46,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
 import okhttp3.Call;
 
 public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
@@ -293,20 +294,24 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                     //获取当前版本号
                                     PackageManager packageManager = getApplicationContext().getPackageManager();
                                     String packagerName = getApplicationContext().getPackageName();
-                                    String versionCode = null;
                                     try {
-                                        versionCode = packageManager.getPackageInfo(packagerName, 0).versionName;
+                                        final String versionCode = packageManager.getPackageInfo(packagerName, 0).versionName;
                                         //服务端版本号
-                                        String serviceVersion = SCJsonUtils.parseString(data, "version");
-                                        String intro = SCJsonUtils.parseString(data, "intro"); //更新内容
-                                        String url = SCJsonUtils.parseString(data, "url"); //下载连接
-                                        String title = SCJsonUtils.parseString(data, "title"); //下载标题
-                                        tvAppVersionCode.setText("V" + serviceVersion);
-                                        if (versionCode.equals(serviceVersion)) {
-                                            ToastUtils.showToast(SettingsActivity.this, "当前已是最新版本");
-                                        } else {
-                                            showUpdateDialog(url, title, intro);
-                                        }
+                                        final String serviceVersion = SCJsonUtils.parseString(data, "version");
+                                        final String intro = SCJsonUtils.parseString(data, "intro"); //更新内容
+                                        final String url = SCJsonUtils.parseString(data, "url"); //下载连接
+                                        final String title = SCJsonUtils.parseString(data, "title"); //下载标题
+                                        ThreadUtils.runOnMainThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                tvAppVersionCode.setText("V" + serviceVersion);
+                                                if (versionCode.equals(serviceVersion)) {
+                                                    ToastUtils.showToast(SettingsActivity.this, "当前已是最新版本");
+                                                } else {
+                                                    showUpdateDialog(url, serviceVersion, intro);
+                                                }
+                                            }
+                                        });
                                     } catch (PackageManager.NameNotFoundException e) {
                                         e.printStackTrace();
                                     }
@@ -318,6 +323,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
 
                 break;
             case R.id.relative_logout:
+                JMessageClient.logout();
                 readyGo(LoginActivity.class);
                 ActivityStackManager.getInstance().finishAllActivity();
                 break;
@@ -327,7 +333,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
     //版本更新提示弹窗
     private void showUpdateDialog(final String url, String title, String intro) {
         final StandardDialog dialog = new StandardDialog(this);
-        dialog.setStandardTitle("" + title);
+        dialog.setStandardTitle("版本更新V" + title);
         dialog.setStandardMsg(intro + "");
         dialog.setSureText("立即更新");
         dialog.setCancelText("取消");

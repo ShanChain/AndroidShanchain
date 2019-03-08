@@ -13,6 +13,8 @@ public class NetErrCode {
     public static final String WALLET_NOT_CREATE = "10003"; //没有创建钱包
     public static final String WALLET_PASSWORD_INVALID = "10004"; //钱包密码已失效
     public static final String WALLET_NOT_CREATE_PASSWORD = "10024"; //没有设置钱包密码
+    public static final String COUPON_INVALID_QRCODE = "10050"; //非发券人，不能核销
+    public static final String TRANSACTION_FAILURE = "10009"; //非发券人，不能核销
     public static final String COMMON_ERR_CODE = "999999";
     public static final String COMMON_UNOPENED_CODE = "999987";//待开发/未开放的功能
     public static final String SMSVC_ERR_CODE = "999998";

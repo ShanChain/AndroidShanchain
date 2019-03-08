@@ -238,7 +238,8 @@
             android:layout_marginLeft="@dimen/dimens_20dp"
             android:layout_marginRight="@dimen/dimens_20dp"
             android:layout_marginBottom="@dimen/dp_10"
-            android:text="      为了马甲用户的账号安全，以及避免盗号者盗取用户的账号后恶意更改其他账号证件信息，马甲账号在绑定证件后不支持解绑和更换证件。感谢您对马甲App的理解和支持。"
+            android:textAlignment="center"
+            android:text="为了马甲用户的账号安全，以及避免盗号者盗取用户的账号后恶意更改其他账号证件信息，马甲账号在绑定证件后不支持解绑和更换证件。感谢您对马甲App的理解和支持。"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>

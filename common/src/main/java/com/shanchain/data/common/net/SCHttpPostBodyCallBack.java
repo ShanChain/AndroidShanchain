@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.shanchain.data.common.base.EventBusObject;
-import com.shanchain.data.common.ui.SetWalletPasswordActivity;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -55,7 +54,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
     public void onResponse(Call call, Response response) throws IOException {
         String result = response.body().string();
         final String code = SCJsonUtils.parseCode(result);
-//        String code = NetErrCode.WALLET_NOT_CREATE;
+//        final String code = NetErrCode.WALLET_NOT_CREATE_PASSWORD;
         final String msg = SCJsonUtils.parseMsg(result);
         if (mContext != null) {
 
@@ -102,17 +101,19 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
             }
         } else if (NetErrCode.WALLET_NOT_CREATE_PASSWORD.equals(code)) {
             if (mContext != null) {
-                Intent intent = new Intent(mContext, SetWalletPasswordActivity.class);
-                mContext.startActivity(intent);
+                Intent ScWebView = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
+                mContext.startActivity(ScWebView);
                 Activity activity = (Activity) mContext;
             }
         } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
-            ThreadUtils.runOnMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtils.showToast(mContext, "您的余额不足");
-                }
-            });
+            if (mContext != null) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(mContext, "您的余额不足");
+                    }
+                });
+            }
         } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {

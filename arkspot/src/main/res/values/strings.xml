@@ -32,7 +32,7 @@
     <string name="settings_account_security">账号和安全</string>
     <string name="settings_common">通用</string>
     <string name="settings_notification">消息推送</string>
-    <string name="settings_free_password">免密登录</string>
+    <string name="settings_free_password">开启免密</string>
     <string name="settings_about">关于马甲App</string>
     <string name="settings_update">检查更新</string>
     <string name="settings_logout">退出</string>

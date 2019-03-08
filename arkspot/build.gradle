@@ -10,8 +10,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 8
-        versionName "2.1.3"
+        versionCode 9
+        versionName "2.1.4"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

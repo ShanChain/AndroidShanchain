@@ -128,10 +128,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <!-- <provider
-             android:name="cn.jiguang.share.facebook.FacebookContentProvider"
-             android:authorities="com.facebook.app.FacebookContentProvider351737942088473"
-             android:exported="true" />-->
+
+        <provider
+            android:name="cn.jiguang.share.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider351737942088473"
+            android:exported="true" />
         <!-- Facebook上传图片接收器 -->
         <!--
         <receiver android:name="cn.jiguang.share.demo.FaceBookUploadReceiver">
