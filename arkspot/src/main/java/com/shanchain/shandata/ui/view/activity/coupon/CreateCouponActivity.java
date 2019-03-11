@@ -26,7 +26,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
@@ -48,6 +51,7 @@ import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -451,9 +455,11 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         CustomDialog showPasswordDialog = new CustomDialog(CreateCouponActivity.this, true, 1.0,
                 R.layout.dialog_bottom_wallet_password,
                 new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+//        showLoadingDialog();
         SCHttpUtils.postByBody(HttpApi.COUPONS_CREATE, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(CreateCouponActivity.this, showPasswordDialog) {
             @Override
             public void responseDoParse(String string) {
+                closeLoadingDialog();
                 final String result = string;
                 String code = JSONObject.parseObject(result).getString("code");
                 final String msg = JSONObject.parseObject(result).getString("msg");
@@ -475,6 +481,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
                         }
                     });
+                    closeLoadingDialog();
                 } else {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
@@ -482,70 +489,12 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             ToastUtils.showToast(CreateCouponActivity.this, "创建失败");
                         }
                     });
+                    closeLoadingDialog();
                 }
             }
 
         });
 
-     /*   SCHttpUtils.postWithUserId()
-                .url(HttpApi.COUPONS_CREATE)
-                .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
-                .addParams("deviceToken", registrationId + "")
-                .addParams("amount", amount + "")
-                .addParams("deadline", deadline + "")
-                .addParams("detail", detail + "")
-                .addParams("name", name + "")
-                .addParams("photoUrl", photoUrl + "")
-                .addParams("price", price + "")
-                .addParams("roomId", roomId + "")
-                .addParams("subuserId", subuserId + "")
-                .addParams("tokenSymbol", "empty")
-                .addParams("userId", userId + "")
-                .build()
-                .execute(new SCHttpStringCallBack(mContext, null) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(final String response, int id) {
-                        final String code = SCJsonUtils.parseCode(response);
-                        final String msg = SCJsonUtils.parseMsg(response);
-                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                            ThreadUtils.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showToast(CreateCouponActivity.this, "" + msg);
-                                    String data = SCJsonUtils.parseData(response);
-                                    EventMessage eventMessage = new EventMessage(0);
-                                    EventBus.getDefault().post(eventMessage);
-                                    finish();
-                                }
-                            });
-                        } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
-                            ThreadUtils.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
-                                }
-                            });
-                        } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
-                            Intent intent = new Intent(CreateCouponActivity.this, VerifiedActivity.class);
-                            startActivity(intent);
-                            finish();
-
-                        } else {
-                            ThreadUtils.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showToast(mContext, code + ":" + msg);
-                                }
-                            });
-                        }
-
-                    }
-                });*/
     }
 
     //选择头像
@@ -616,9 +565,25 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         });
     }
 
+    @Subscribe
+    public void onEventMainThread(Object event) {
+        super.onEventMainThread(event);
+        try {
+            EventBusObject busObject = (EventBusObject) event;
+            if (EventConstant.EVENT_RELEASE == busObject.getCode()) {
+                if (ActivityStackManager.getInstance().getTopActivity() == CreateCouponActivity.this) {
+                    createCoupon();
+                }
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getData() != null) {
             switch (requestCode) {
                 case PhotoUtils.INTENT_SELECT:

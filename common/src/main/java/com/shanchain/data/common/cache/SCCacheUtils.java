@@ -104,4 +104,8 @@ public class SCCacheUtils {
         String userId = getCacheUserId();
         return getCache(userId,Constants.CACHE_AUTH_CODE);
     }
+    public static String getTemporaryCode(){
+        String userId = getCacheUserId();
+        return getCache(userId,Constants.TEMPORARY_CODE);
+    }
 }

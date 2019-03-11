@@ -237,10 +237,12 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     if (loadUrl.contains("toPwd=true")) {
                         Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
                         startActivity(intent);
+                        finish();
+                        return true;
                     }
                     if (loadUrl.contains("toPrev=true")) {
-                        finish();
                         LogUtils.d("toPrev", url);
+                        finish();
                         return true;
                     }
                     if (loadUrl.contains("comfirm=true")) {

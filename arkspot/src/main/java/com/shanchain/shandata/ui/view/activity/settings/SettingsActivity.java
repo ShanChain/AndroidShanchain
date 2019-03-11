@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.EventBusObject;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -41,6 +43,8 @@ import com.vector.update_app.service.DownloadService;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -216,45 +220,78 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                 switchMessagePush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        String modifyUser = "";
                                         if (isChecked) {
                                             JPushInterface.resumePush(getApplicationContext());
+                                            modifyUser = "{'allow':true,}";
                                         } else {
                                             JPushInterface.stopPush(getApplicationContext());
+                                            modifyUser = "{'allow':false,}";
                                         }
+                                        SCHttpUtils.postWithUserId()
+                                                .url(HttpApi.MODIFY_CHARACTER)
+                                                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                                                .addParams("dataString", modifyUser)
+                                                .build()
+                                                .execute(new SCHttpStringCallBack() {
+                                                    @Override
+                                                    public void onError(Call call, Exception e, int id) {
+                                                        LogUtils.d("修改角色信息失败");
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(String response, int id) {
+                                                        String code = JSONObject.parseObject(response).getString("code");
+                                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                                            LogUtils.d("修改角色信息");
+                                                        }
+                                                    }
+                                                });
                                     }
                                 });
                                 switchFreePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        CharacterInfo character = new CharacterInfo();
+                                        String modifyUser = "";
+//                                        {"bind":true,"os":"ios","token":"100486_28751ed140d843baa0b13a9a98d3ba141552136007585","deviceToken":"191e35f7e01b606d80e"}
+                                        Map stringMap = new HashMap();
+                                        stringMap.put("os", "android");
+                                        stringMap.put("token", "" + SCCacheUtils.getCacheToken());
+                                        stringMap.put("deviceToken", "" + JPushInterface.getRegistrationID(mContext));
                                         if (isChecked) {
+                                            stringMap.put("bind", true);
                                             EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
                                             EventBus.getDefault().post(busObject);
                                         } else {
-                                            EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
-                                            EventBus.getDefault().post(busObject);
+                                            stringMap.put("bind", false);
                                         }
-//                                        SCHttpUtils.get()
-//                                                .url(HttpApi.WALLET_FREE_PASSWORD)
-//                                                .addParams("bind", "" + String.valueOf(bind))
-//                                                .build()
-//                                                .execute(new SCHttpStringCallBack() {
-//                                                    @Override
-//                                                    public void onError(Call call, Exception e, int id) {
-//
-//                                                    }
-//
-//                                                    @Override
-//                                                    public void onResponse(String response, int id) {
-//                                                        MyApplication.setBindPwd(bind);
-//                                                        ThreadUtils.runOnMainThread(new Runnable() {
-//                                                            @Override
-//                                                            public void run() {
-//                                                                mStandardDialog.dismiss();
-//                                                            }
-//                                                        });
-//                                                    }
-//                                                });
+                                        String userId = SCCacheUtils.getCacheUserId();
+                                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
+                                        modifyUser = JSONObject.toJSONString(stringMap);
+                                        SCHttpUtils.postWithUserId()
+                                                .url(HttpApi.MODIFY_CHARACTER)
+                                                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                                                .addParams("dataString", modifyUser)
+                                                .build()
+                                                .execute(new SCHttpStringCallBack() {
+                                                    @Override
+                                                    public void onError(Call call, Exception e, int id) {
+                                                        LogUtils.d("修改角色信息失败");
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(String response, int id) {
+                                                        String code = JSONObject.parseObject(response).getString("code");
+                                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                                            LogUtils.d("修改角色信息");
+                                                            SCCacheUtils.setCache(SCCacheUtils.getCacheUserId(),Constants.CACHE_AUTH_CODE,"");
+                                                        }
+                                                    }
+                                                });
+//                                    }
                                     }
+
                                 });
                             }
                         }

@@ -80,8 +80,10 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
+import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
@@ -107,10 +109,10 @@ import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.GlideImageLoader;
-import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.RequestCode;
@@ -128,7 +130,6 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
 import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -2283,7 +2284,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             intent.putExtra("roomId", roomID);
             startActivity(intent);
         } else if (id == R.id.nav_my_task) {
-            Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
+            Intent intent = new Intent(MessageListActivity.this, TaskListActivity.class);
             intent.putExtra("roomId", roomID);
             startActivity(intent);
 
@@ -2875,8 +2876,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mData = messageList;
 
     }
+
     //用户下线事件
-    public void onEventMainThread(LoginStateChangeEvent event){
+    public void onEventMainThread(LoginStateChangeEvent event) {
         StandardDialog dialog = new StandardDialog(MessageListActivity.this);
         dialog.setStandardMsg("该账号已在其他设备上登录");
     }

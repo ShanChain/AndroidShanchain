@@ -5,6 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,11 +20,11 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.text.SimpleDateFormat;
@@ -79,6 +81,10 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     RecyclerView recyclerViewCouponCheckList;
     @Bind(R.id.srl_coupon_list)
     BGARefreshLayout srlCouponList;
+    @Bind(R.id.iv_invalid)
+    ImageView ivInvalid;
+    @Bind(R.id.frame_coupon_check)
+    FrameLayout frameCouponCheck;
 
     private int pageNo = 0, pageSize = 10;
 
@@ -157,6 +163,9 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                 if (couponSubInfo != null) {
                                     String name = couponSubInfo.getName() != null ? couponSubInfo.getName() : "";
                                     tvItemStoryName.setText(name + "");
+                                }
+                                if (couponSubInfo.getTokenStatus() == CouponSubInfo.CREATE_INVALID) {
+                                    ivInvalid.setVisibility(View.VISIBLE);
                                 }
                                 tvItemCode.setText(couponSubInfo.getTokenSymbol() + "");
                                 evenMessageBounty.setText(couponSubInfo.getPrice() + "");

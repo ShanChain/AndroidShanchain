@@ -571,14 +571,16 @@ public interface HttpApi {
     //隐私政策
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
-//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-        String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+//    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
     String WALLET_CHECK_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/checkInfo";
     /* 设置免密登录 */
     String WALLET_FREE_PASSWORD = BASE_URL + "/web/api/sys/needBindPwd";
+    /* 用户已保存密码 */
+    String WALLET_SAVE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/savePwd?token=";
     /* 绑定手机设备号*/
     String WALLET_BIND_PHONE_IMEI = BASE_URL + "/wallet/api/wallet/2.0/bind?token=";
     //查询钱包信息

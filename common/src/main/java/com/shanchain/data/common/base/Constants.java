@@ -76,6 +76,7 @@ public interface Constants {
     String CACHE_CHARACTER_INFO = "characterInfo";
     String CACHE_HEAD_IMG = "headImg";
     String CACHE_AUTH_CODE = "authCode";
+    String TEMPORARY_CODE = "temporaryCode";
     String CACHE_GDATA = "gData";
     String CACHE_SPACE_COLLECTION = "spaceCollection";
     String CACHE_HX_USER_NAME = "hxUserName";

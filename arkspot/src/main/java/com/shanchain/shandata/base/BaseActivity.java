@@ -34,6 +34,7 @@ import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -56,6 +57,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
@@ -135,6 +138,10 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述：上传密码对话框
      */
     protected CustomDialog commonDialog = null;
+    /**
+     * 描述：身份验证码
+     */
+    protected String authCode;
 
     private CustomDialog mCustomDialog;
     private ProgressDialog mDialog;
@@ -387,7 +394,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPassword(final File file) {
+    protected void checkPassword(final File file) {
         //创建requestBody
         MediaType MEDIA_TYPE = MediaType.parse("image/*");
         RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
@@ -419,8 +426,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             ToastUtils.showToast(mContext, "" + msg);
-                            mNewCustomDialog.dismiss();
                             passwordFree(file);
+                            mNewCustomDialog.dismiss();
                         }
                     });
                 } else {
@@ -444,28 +451,33 @@ public abstract class BaseActivity extends AppCompatActivity {
                 final boolean bind = (boolean) msg.obj;
                 switch (msg.what) {
                     case 1:
-                        if (SCCacheUtils.getCacheAuthCode() != null) {
-                            SCHttpUtils.get()
-                                    .url(HttpApi.WALLET_FREE_PASSWORD)
-                                    .addParams("bind", "" + String.valueOf(bind))
+                        if (!TextUtils.isEmpty(SCCacheUtils.getCacheAuthCode())) {
+                            Map stringMap = new HashMap();
+                            stringMap.put("os", "android");
+                            stringMap.put("token", "" + SCCacheUtils.getCacheToken());
+                            stringMap.put("deviceToken", "" + JPushInterface.getRegistrationID(mContext));
+                            stringMap.put("bind", bind);
+                            String modifyUser = JSONObject.toJSONString(stringMap);
+                            SCHttpUtils.postWithUserId()
+                                    .url(HttpApi.MODIFY_CHARACTER)
+                                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                                    .addParams("dataString", modifyUser)
                                     .build()
                                     .execute(new SCHttpStringCallBack() {
                                         @Override
                                         public void onError(Call call, Exception e, int id) {
-
+                                            LogUtils.d("修改角色信息失败");
                                         }
 
                                         @Override
                                         public void onResponse(String response, int id) {
-                                            MyApplication.setBindPwd(bind);
-                                            ThreadUtils.runOnMainThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-//                                                    mStandardDialog.dismiss();
-                                                }
-                                            });
+                                            String code = JSONObject.parseObject(response).getString("code");
+                                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                                LogUtils.d("修改角色信息");
+                                            }
                                         }
                                     });
+
                         }
                         break;
                 }
@@ -477,63 +489,78 @@ public abstract class BaseActivity extends AppCompatActivity {
         mStandardDialog.setStandardMsg("您也可以选择开启免密功能，在下次使用马甲券时便无需再次上传安全码，让使用更加方便快捷，是否开通免密功能？");
         mStandardDialog.setCancelText("暂不需要");
         mStandardDialog.setSureText("立即开通");
+        //开通免密
         mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
             @Override
             public void invoke() {
-                //创建requestBody
-                MediaType MEDIA_TYPE = MediaType.parse("image/*");
-                RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
-                MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
-                        .addFormDataPart("file", file.getName(), fileBody)
-                        .addFormDataPart("deviceToken", "" + registrationId)
-                        .setType(MultipartBody.FORM);
-                RequestBody multiBody = multiBuilder.build();
-                SCHttpUtils.postByBody(HttpApi.WALLET_BIND_PHONE_IMEI + SCCacheUtils.getCacheToken(), multiBody, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtils.showToast(mContext, "网络异常");
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String result = response.body().string();
-                        final String code = SCJsonUtils.parseCode(result);
-                        final String msg = SCJsonUtils.parseMsg(result);
-                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                            String data = SCJsonUtils.parseData(result);
-                            String userId = SCCacheUtils.getCacheUserId();
-                            SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, data);
-                            Message message = new Message();
-                            message.what = 1;
-                            message.obj = true;
-                            freePasswordHandler.sendMessage(message);
-                        } else {
-                            ThreadUtils.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showToast(mContext, code + ":" + msg);
-                                }
-                            });
-                        }
-                    }
-                });
+                String userId = SCCacheUtils.getCacheUserId();
+                String passwordCode = getAuthCode(file);
+                SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, passwordCode);
+                Message message = new Message();
+                message.what = 1;
+                message.obj = true;
+                ActivityStackManager.getInstance().getTopActivity();
+                freePasswordHandler.sendMessage(message);
             }
-        }, new com.shanchain.data.common.base.Callback() {
+        }, new com.shanchain.data.common.base.Callback() {//不开启免密
             @Override
             public void invoke() {
                 Message message = new Message();
                 message.what = 1;
                 message.obj = false;
                 freePasswordHandler.sendMessage(message);
+                authCode = getAuthCode(file);
+                String userId = SCCacheUtils.getCacheUserId();
+                SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
+                SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, authCode);
+//                EventBus eventBus = new EventBus();
+//                EventBusObject<String> eventBusObject = new EventBusObject<String>(EventConstant.EVENT_RELEASE, authCode);
+//                eventBus.post(eventBusObject);
             }
         });
         mStandardDialog.show();
+    }
+
+    protected String getAuthCode(File file) {
+        //创建requestBody,获取密码凭证
+        MediaType MEDIA_TYPE = MediaType.parse("image/*");
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                .addFormDataPart("file", file.getName(), fileBody)
+                .addFormDataPart("deviceToken", "" + registrationId)
+                .setType(MultipartBody.FORM);
+        RequestBody multiBody = multiBuilder.build();
+        SCHttpUtils.postByBody(HttpApi.WALLET_BIND_PHONE_IMEI + SCCacheUtils.getCacheToken(), multiBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(mContext, "网络异常");
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                final String code = SCJsonUtils.parseCode(result);
+                final String msg = SCJsonUtils.parseMsg(result);
+                if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                    String data = SCJsonUtils.parseData(result);
+                    authCode = data;
+                } else {
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(mContext, code + ":" + msg);
+                        }
+                    });
+                }
+            }
+        });
+        return authCode;
     }
 
     /* ===================================================================
@@ -747,44 +774,52 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data == null || data.getData() == null) {
-            if (showPasswordDialog != null) {
-                showPasswordDialog.setPasswordBitmap(null);
-            }
-            return;
-        }
-        if (requestCode == NetErrCode.WALLET_PHOTO) {
+        if (data != null || data.getData() != null) {
+            if (requestCode == NetErrCode.WALLET_PHOTO) {
 
-            Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            //获取照片路径
-            String photoPath = cursor.getString(columnIndex);
+                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                //获取照片路径
+                String photoPath = cursor.getString(columnIndex);
 //            ToastUtils.showToastLong(mBusContext, "选择的图片途径：" + photoPath);
-            cursor.close();
-            final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-            mPasswordFile = new File(photoPath);
-            mNewCustomDialog = new CustomDialog(mActivity, true, 1.0, com.shanchain.common.R.layout.dialog_bottom_wallet_password, new int[]{com.shanchain.common.R.id.iv_dialog_add_picture, com.shanchain.common.R.id.tv_dialog_sure});
-            mNewCustomDialog.setPasswordBitmap(bitmap);
-            mNewCustomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                @Override
-                public void OnItemClick(CustomDialog dialog, View view) {
-                    if (view.getId() == com.shanchain.common.R.id.iv_dialog_add_picture) {
-                        selectImage(ActivityStackManager.getInstance().getTopActivity());
-                    } else if (view.getId() == com.shanchain.common.R.id.tv_dialog_sure) {
-                        if (mPasswordFile != null) {
-                            checkPassword(mPasswordFile);
+                cursor.close();
+                final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                mPasswordFile = new File(photoPath);
+                if (showPasswordDialog != null) {
+                    showPasswordDialog.dismiss();
+                }
+                mNewCustomDialog = new CustomDialog(mActivity, true, 1.0, com.shanchain.common.R.layout.dialog_bottom_wallet_password, new int[]{com.shanchain.common.R.id.iv_dialog_add_picture, com.shanchain.common.R.id.tv_dialog_sure});
+                mNewCustomDialog.setPasswordBitmap(bitmap);
+                mNewCustomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(CustomDialog dialog, View view) {
+                        if (view.getId() == com.shanchain.common.R.id.iv_dialog_add_picture) {
+                            selectImage(mActivity);
+                        } else if (view.getId() == com.shanchain.common.R.id.tv_dialog_sure) {
+                            if (mPasswordFile != null) {
+                                String userId = SCCacheUtils.getCacheUserId();
+                                String passwordCode = getAuthCode(mPasswordFile);
+                                SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, passwordCode);
+                                checkPassword(mPasswordFile);
+                                EventBus eventBus = new EventBus();
+                                eventBus.post(new EventBusObject<String>(EventConstant.EVENT_RELEASE));
+                                if (showPasswordDialog != null) {
+                                    showPasswordDialog.dismiss();
+                                }
+                            }
                         }
                     }
-                }
-            });
-            mNewCustomDialog.show();
-            showPasswordDialog.dismiss();
+                });
+                mNewCustomDialog.show();
+
+            }
         }
     }
+
 
     @Override
     public void onBackPressed() {

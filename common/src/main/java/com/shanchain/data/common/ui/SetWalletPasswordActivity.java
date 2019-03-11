@@ -25,6 +25,8 @@ import com.shanchain.common.R;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
@@ -32,6 +34,7 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.BitmapUtils;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 
@@ -240,11 +243,11 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                 public void invoke() {
                 }
             });
-
+            //保存密码
         } else if (i == R.id.btn_save_wallet_password) {
             if (ContextCompat.checkSelfPermission(SetWalletPasswordActivity.this, Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-                ToastUtils.showToast(SetWalletPasswordActivity.this, "检测到手机系统已关闭读取相册权限，请前往【设置】-【权限管理】中开启");
+                ToastUtils.showToastLong(SetWalletPasswordActivity.this, "检测到手机系统已关闭读取相册权限，请前往【设置】-【权限管理】中开启");
             }
             if (mResultBytes != null) {
                 final Bitmap bitmap = BitmapFactory.decodeByteArray(mResultBytes, 0, mResultBytes.length);
@@ -265,14 +268,38 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                         fos.write(mResultBytes);
                         fos.flush();
                         fos.close();
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtils.showToast(SetWalletPasswordActivity.this, "保存成功");
-                            }
-                        });
-                        btnNextStep.setClickable(true);
-                        btnNextStep.setBackground(getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
+                        SCHttpUtils.getNoToken()
+                                .url(HttpApi.WALLET_SAVE_PASSWORD + SCCacheUtils.getCacheToken())
+                                .build()
+                                .execute(new SCHttpStringCallBack() {
+                                    @Override
+                                    public void onError(Call call, Exception e, int id) {
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(String response, int id) {
+                                        String code = SCJsonUtils.parseCode(response);
+                                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                                            ThreadUtils.runOnMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, "保存成功");
+                                                }
+                                            });
+                                            btnNextStep.setClickable(true);
+                                            btnNextStep.setBackground(getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
+                                        }else {
+                                            ThreadUtils.runOnMainThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, "保存失败");
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                });
                     } else {
                         ToastUtils.showToast(SetWalletPasswordActivity.this, "保存失败");
                     }

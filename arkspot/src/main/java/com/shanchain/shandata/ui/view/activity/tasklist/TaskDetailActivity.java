@@ -1,9 +1,12 @@
 package com.shanchain.shandata.ui.view.activity.tasklist;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +24,10 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -30,10 +36,13 @@ import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.GlideUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MultiTaskListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
@@ -42,6 +51,8 @@ import com.shanchain.shandata.widgets.dialog.CustomDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +70,11 @@ import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener,
         ArthurToolBar.OnLeftClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -102,7 +118,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
     private com.shanchain.data.common.ui.widgets.CustomDialog showPasswordDialog;
     private CustomDialog taskDialog;
-    ;
+    private EditText mBountyEditText;
+    private EditText mDescribeEditText;
+    private String authCode;
+    private File mPasswordFile;
 
 
     @Override
@@ -392,16 +411,16 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         taskDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(final CustomDialog dialog, View view) {
-                final EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
-                final EditText bountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
+                mDescribeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
+                mBountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
 //                bountyEditText.setFocusable(true);
 //                bountyEditText.setFocusableInTouchMode(true);
-                bountyEditText.requestFocus();
+                mBountyEditText.requestFocus();
                 limitedTime = (EditText) dialog.getByIdView(R.id.dialog_select_task_time);
                 tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
                 tvSeatRate.setText("= 0 SEAT");
                 //输入框监听
-                bountyEditText.addTextChangedListener(new TextWatcher() {
+                mBountyEditText.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -432,7 +451,12 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                         break;
                     case R.id.btn_dialog_input_sure:
                         showLoadingDialog(true);
-                        releaseTask(dialog, describeEditText, bountyEditText, limitedTime);
+//                        if (MyApplication.isBindPwd()){
+//                            authCode = SCCacheUtils.getCacheAuthCode();
+//                        }else {
+//                            authCode = SCCacheUtils.getTemporaryCode();
+//                        }
+                        releaseTask(SCCacheUtils.getCacheAuthCode(), mDescribeEditText, mBountyEditText, limitedTime);
                         break;
                     case R.id.iv_dialog_close:
                         dialog.dismiss();
@@ -521,7 +545,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
      * 发布任务
      *
      * */
-    private void releaseTask(final CustomDialog dialog, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
+    private void releaseTask(String authCode, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
         if (TextUtils.isEmpty(describeEditText.getText().toString()) || TextUtils.isEmpty(bountyEditText.getText().toString()) || TextUtils.isEmpty(textViewTime.getText().toString())) {
             ToastUtils.showToast(TaskDetailActivity.this, "请输入完整信息");
             closeLoadingDialog();
@@ -542,7 +566,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             }
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHAT_TASK_ADD)
-                    .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
+                    .addParams("authCode", "" + authCode)
                     .addParams("deviceToken", registrationId + "")
                     .addParams("characterId", characterId + "")
                     .addParams("bounty", bounty)
@@ -592,6 +616,89 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null || data.getData() != null) {
+            Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            //获取照片路径
+            String photoPath = cursor.getString(columnIndex);
+            cursor.close();
+            mPasswordFile = new File(photoPath);
+        }
+    }
+
+//    @Override
+//    public void onEventMainThread(Object event) {
+//        super.onEventMainThread(event);
+//    }
+
+    @Override
+    public void onEventMainThread(Object event) {
+//        super.onEventMainThread(event);
+        try {
+            EventBusObject<String> busObject = (EventBusObject<String>) event;
+            if (EventConstant.EVENT_RELEASE == busObject.getCode()) {
+                mActivity = ActivityStackManager.getInstance().getTopActivity();
+                LogUtils.d("TopActivity", mActivity.getLocalClassName());
+                LogUtils.d("thisActivity", TaskDetailActivity.class.getName());
+//                if (mActivity.getLocalClassName() == TaskDetailActivity.class.getName()) {
+//                    releaseTask(busObject.getData(), mDescribeEditText, mBountyEditText, limitedTime);
+//                }
+                if (MyApplication.isBindPwd() == true) {
+                    releaseTask(SCCacheUtils.getCacheAuthCode(), mDescribeEditText, mBountyEditText, limitedTime);
+                } else {
+                    //创建requestBody,获取密码凭证
+                    MediaType MEDIA_TYPE = MediaType.parse("image/*");
+                    RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, mPasswordFile);
+                    MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                            .addFormDataPart("file", mPasswordFile.getName(), fileBody)
+                            .addFormDataPart("deviceToken", "" + registrationId)
+                            .setType(MultipartBody.FORM);
+                    RequestBody multiBody = multiBuilder.build();
+                    SCHttpUtils.postByBody(HttpApi.WALLET_BIND_PHONE_IMEI + SCCacheUtils.getCacheToken(), multiBody, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, "网络异常");
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String result = response.body().string();
+                            final String code = SCJsonUtils.parseCode(result);
+                            final String msg = SCJsonUtils.parseMsg(result);
+                            if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                                String data = SCJsonUtils.parseData(result);
+//                            authCode = data;
+                                releaseTask(data, mDescribeEditText, mBountyEditText, limitedTime);
+                            } else {
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showToast(mContext, code + ":" + msg);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
