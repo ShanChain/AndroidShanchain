@@ -170,7 +170,7 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                 if (mContext != null) {
                     //上传密码图片弹窗
                     EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
-                    EventBus.getDefault().post(busObject);
+                    EventBus.getDefault().postSticky(busObject);
                 }
                 break;
             case NetErrCode.WALLET_NOT_CREATE:

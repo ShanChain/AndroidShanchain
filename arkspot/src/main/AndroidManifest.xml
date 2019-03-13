@@ -219,10 +219,12 @@
         </activity>
         <activity
             android:name=".ui.view.activity.HomeActivity"
-            android:configChanges="locale" />
+            android:configChanges="locale"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.view.activity.jmessageui.MessageListActivity"
-            android:configChanges="locale">
+            android:configChanges="locale"
+            android:launchMode="singleTask">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -416,7 +418,9 @@
             android:name=".ui.view.activity.jmessageui.SetFragmentActivity"
             android:label="@string/title_activity_seting"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.jmessageui.FootPrintActivity" />
+        <activity
+            android:name=".ui.view.activity.jmessageui.FootPrintActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
@@ -424,7 +428,9 @@
         <activity
             android:name=".ui.view.activity.tasklist.TaskListActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.view.activity.jmessageui.MyMessageActivity" />
+        <activity
+            android:name=".ui.view.activity.jmessageui.MyMessageActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity">
 
             <!--

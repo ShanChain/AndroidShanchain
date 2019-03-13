@@ -16,7 +16,7 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -79,7 +79,8 @@ public class SplashActivity extends AppCompatActivity {
                 checkServer();
             } else {
                 loginJm(hxUserName, hxPwd,cacheCharacter);
-                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+//                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                Intent intent = new Intent(SplashActivity.this, FootPrintActivity.class);
                 startActivity(intent);
                 finish();
 
@@ -123,7 +124,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     }
 
-                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, FootPrintActivity.class);
                     startActivity(intent);
                     finish();
 

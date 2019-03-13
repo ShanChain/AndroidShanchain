@@ -880,49 +880,54 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    for (int i = 0; i < coordinatesList.size(); i++) {
-                                        LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
-                                        LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
-                                        //构建Marker图标
-                                        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                                .fromResource(R.mipmap.home_location);
-                                        //构建MarkerOption，用于在地图上添加Marker
-                                        OverlayOptions option = new MarkerOptions()
-                                                .position(srcLatLang)
-                                                .icon(bitmap);
-                                        //在地图上添加Marker，并显示
+                                    if (coordinatesList != null) {
+                                        for (int i = 0; i < coordinatesList.size(); i++) {
+                                            if (coordinatesList.get(i) != null
+                                                    && coordinatesList.get(i).getFocusLatitude() != null
+                                                    && coordinatesList.get(i).getFocusLongitude() != null) {
+                                                LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
+                                                LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
+                                                //构建Marker图标
+                                                BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                                        .fromResource(R.mipmap.home_location);
+                                                //构建MarkerOption，用于在地图上添加Marker
+                                                OverlayOptions option = new MarkerOptions()
+                                                        .position(srcLatLang)
+                                                        .icon(bitmap);
+                                                //在地图上添加Marker，并显示
 //                                baiduMap.addOverlay(option);
-                                        for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
-                                            double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
-                                            double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
-                                            LatLng point = new LatLng(pointLatitude, pointLongitude);
+                                                for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
+                                                    double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
+                                                    double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
+                                                    LatLng point = new LatLng(pointLatitude, pointLongitude);
 
-                                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                            coordinateConverter.coord(point);
-                                            LatLng desLatLng = coordinateConverter.convert();
+                                                    // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                                    coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                                    coordinateConverter.coord(point);
+                                                    LatLng desLatLng = coordinateConverter.convert();
 
 //                                    roomList.add(desLatLng);
-                                            roomList.add(point);//未转换的坐标
+                                                    roomList.add(point);//未转换的坐标
 
-
-                                        }
-                                        //
-                                        double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
-                                        double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
-                                        LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
-                                        // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                        coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                        coordinateConverter.coord(indexPoint);
-                                        LatLng firstLatLng = coordinateConverter.convert();
+                                                }
+                                            }
+                                            //
+                                            double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
+                                            double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
+                                            LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
+                                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                            coordinateConverter.coord(indexPoint);
+                                            LatLng firstLatLng = coordinateConverter.convert();
 //                                roomList.add(firstLatLng);
-                                        //绘制虚线（需要多添加一个起点坐标，形成矩形）
-                                        roomList.add(indexPoint);
-                                        OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
-                                                .color(0xAA121518).points(roomList);
-                                        Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
-                                        roomPolyline.setDottedLine(true);
-                                        roomList.clear();
+                                            //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                                            roomList.add(indexPoint);
+                                            OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
+                                                    .color(0xAA121518).points(roomList);
+                                            Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
+                                            roomPolyline.setDottedLine(true);
+                                            roomList.clear();
+                                        }
                                     }
                                 }
                             }).start();

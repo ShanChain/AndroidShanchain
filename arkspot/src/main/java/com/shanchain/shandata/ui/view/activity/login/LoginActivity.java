@@ -44,7 +44,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
 
@@ -300,7 +300,8 @@ public class LoginActivity extends BaseActivity {
 
                         }
 
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+//                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
                         startActivity(intent);
                         finish();
 
@@ -370,7 +371,7 @@ public class LoginActivity extends BaseActivity {
                         });
                     }
 
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
                     startActivity(intent);
                     finish();
 
@@ -914,7 +915,7 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
-                            readyGo(HomeActivity.class);
+                            readyGo(FootPrintActivity.class);
                             finish();
                         }
                     }

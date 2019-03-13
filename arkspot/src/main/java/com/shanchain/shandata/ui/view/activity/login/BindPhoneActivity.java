@@ -12,15 +12,15 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
@@ -104,7 +104,8 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                                 if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                     String data = JSONObject.parseObject(response).getString("data");
                                     LogUtils.d("dynamicLogin", "三方登录成功");
-                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
+//                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
+                                    Intent intent = new Intent(BindPhoneActivity.this,FootPrintActivity.class);
                                     startActivity(intent);
                                     finish();
                                     runOnUiThread(new Runnable() {

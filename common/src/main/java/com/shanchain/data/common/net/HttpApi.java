@@ -571,8 +571,8 @@ public interface HttpApi {
     //隐私政策
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
-    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-//    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */

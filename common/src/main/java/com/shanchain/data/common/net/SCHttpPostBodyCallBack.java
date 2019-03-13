@@ -97,7 +97,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
             if (mContext != null) {
                 //上传密码图片弹窗
                 EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
-                EventBus.getDefault().post(busObject);
+                EventBus.getDefault().postSticky(busObject);
             }
         } else if (NetErrCode.WALLET_NOT_CREATE_PASSWORD.equals(code)) {
             if (mContext != null) {

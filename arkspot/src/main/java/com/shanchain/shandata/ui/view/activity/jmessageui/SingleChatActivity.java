@@ -1130,8 +1130,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     // 接收聊天室消息
     public void onEventMainThread(MessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
-        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
-//        mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
+//        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
+        mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
         mConvData = mConv.getAllMessage();
         final Message evMsg = event.getMessage();
         final MyMessage myMessage;
@@ -1507,46 +1507,47 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
     }
 
     //聊天室输入框多功能界面
-    public void onEventMainThread(AppsAdapter.ImageEvent event) {
+    public void onEvent(AppsAdapter.ImageEvent event) {
         Intent intent;
-        switch (event.getFlag()) {
-            case MyApplication.IMAGE_MESSAGE:
-                int from = PickImageActivity.FROM_LOCAL;
-                int requestCode = RequestCode.PICK_IMAGE;
-                if (ContextCompat.checkSelfPermission(SingleChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-                } else {
-                    PickImageActivity.start(SingleChatActivity.this, requestCode, from, tempFile(), true, 1,
-                            true, false, 0, 0);
-                }
+        if (event.getContext() == SingleChatActivity.this) {
+            switch (event.getFlag()) {
+                case MyApplication.IMAGE_MESSAGE:
+                    int from = PickImageActivity.FROM_LOCAL;
+                    int requestCode = RequestCode.PICK_IMAGE;
+                    if (ContextCompat.checkSelfPermission(SingleChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                    } else {
+                        PickImageActivity.start(SingleChatActivity.this, requestCode, from, tempFile(), true, 1,
+                                true, false, 0, 0);
+                    }
 
-                break;
-            case MyApplication.TAKE_PHOTO_MESSAGE:
-                int takePhotoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-                if (takePhotoPermission != PackageManager.PERMISSION_GRANTED) {
-                    LogUtils.d("未申请权限,正在申请");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-                } else {
-                    LogUtils.d("已经申请权限");
-                    intent = new Intent(SingleChatActivity.this, CameraActivity.class);
-                    intent.putExtra("camera", "takePhoto");
-                    startActivityForResult(intent, RequestCode.TAKE_PHOTO);
-                }
-                break;
-            case MyApplication.TACK_VIDEO:
-                int takeVideoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-                if (takeVideoPermission != PackageManager.PERMISSION_GRANTED) {
-                    LogUtils.d("未申请权限,正在申请");
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-                } else {
-                    LogUtils.d("已经申请权限");
-                    intent = new Intent(SingleChatActivity.this, CameraActivity.class);
-                    intent.putExtra("camera", "takeVideo");
-                    startActivityForResult(intent, RequestCode.TAKE_VIDEO);
+                    break;
+                case MyApplication.TAKE_PHOTO_MESSAGE:
+                    int takePhotoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                    if (takePhotoPermission != PackageManager.PERMISSION_GRANTED) {
+                        LogUtils.d("未申请权限,正在申请");
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                    } else {
+                        LogUtils.d("已经申请权限");
+                        intent = new Intent(SingleChatActivity.this, CameraActivity.class);
+                        intent.putExtra("camera", "takePhoto");
+                        startActivityForResult(intent, RequestCode.TAKE_PHOTO);
+                    }
+                    break;
+                case MyApplication.TACK_VIDEO:
+                    int takeVideoPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                    if (takeVideoPermission != PackageManager.PERMISSION_GRANTED) {
+                        LogUtils.d("未申请权限,正在申请");
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+                    } else {
+                        LogUtils.d("已经申请权限");
+                        intent = new Intent(SingleChatActivity.this, CameraActivity.class);
+                        intent.putExtra("camera", "takeVideo");
+                        startActivityForResult(intent, RequestCode.TAKE_VIDEO);
 
-                }
-                break;
+                    }
+                    break;
             /*case MyApplication.TAKE_LOCATION:
 //                if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
 //                        != PackageManager.PERMISSION_GRANTED) {
@@ -1581,12 +1582,12 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 intent.putExtra("groupId", mGroupId);
                 startActivity(intent);
                 break;*/
-            case MyApplication.TACK_VOICE:
-                break;
-            default:
-                break;
+                case MyApplication.TACK_VOICE:
+                    break;
+                default:
+                    break;
+            }
         }
-
     }
 
     private String tempFile() {
@@ -1610,7 +1611,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
                     avatarImageView.setImageResource(resId);
                 } else {
-                    Glide.with(SingleChatActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(string)
                             .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default))
                             .into(avatarImageView);
@@ -1694,7 +1695,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             @Override
             public void loadVideo(ImageView imageCover, String uri) {
                 long interval = 5000 * 1000;
-                Glide.with(SingleChatActivity.this)
+                Glide.with(getApplicationContext())
                         .asBitmap()
                         .load(uri)
                         // Resize image view by change override size.

@@ -22,6 +22,7 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.HotChatRoom;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
@@ -30,7 +31,7 @@ import java.util.List;
 import cn.jiguang.imui.view.RoundImageView;
 import okhttp3.Call;
 
-public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
+public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener {
 
     private ArthurToolBar arthurToolBar;
     private LinearLayout linearFootPrint;
@@ -82,7 +83,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 //                            String background = com.alibaba.fastjson.JSONObject.parseObject(data).getString("background");
 //                            String thumbnails = com.alibaba.fastjson.JSONObject.parseObject(data).getString("thumbnails");
                             hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
-                            BaseQuickAdapter adapter = new BaseQuickAdapter<HotChatRoom,BaseViewHolder>(R.layout.item_hot_chat_room, hotChatRoomList) {
+                            BaseQuickAdapter adapter = new BaseQuickAdapter<HotChatRoom, BaseViewHolder>(R.layout.item_hot_chat_room, hotChatRoomList) {
                                 @Override
                                 protected void convert(BaseViewHolder helper, final HotChatRoom item) {
                                     RoundImageView roundImageView = helper.getView(R.id.item_round_view);
@@ -103,7 +104,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                             Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
                                             intent.putExtra("roomId", item.getRoomId());
                                             intent.putExtra("roomName", item.getRoomName());
-                                            intent.putExtra("hotChatRoom",item);
+                                            intent.putExtra("hotChatRoom", item);
                                             intent.putExtra("isHotChatRoom", true);
 //                                intent.putExtra("isInCharRoom", isIn);
                                             startActivity(intent);
@@ -111,7 +112,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                     });
                                 }
                             };
-                            LinearLayoutManager layoutManager = new LinearLayoutManager(FootPrintActivity.this,LinearLayoutManager.VERTICAL,false);
+                            LinearLayoutManager layoutManager = new LinearLayoutManager(FootPrintActivity.this, LinearLayoutManager.VERTICAL, false);
                             reviewFoodPrint.setLayoutManager(layoutManager);
                             reviewFoodPrint.setAdapter(adapter);
                             adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -120,7 +121,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                     Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
                                     intent.putExtra("roomId", hotChatRoomList.get(position).getRoomId());
                                     intent.putExtra("roomName", hotChatRoomList.get(position).getRoomName());
-                                    intent.putExtra("hotChatRoom",hotChatRoomList.get(position));
+                                    intent.putExtra("hotChatRoom", hotChatRoomList.get(position));
                                     intent.putExtra("isHotChatRoom", true);
 //                                intent.putExtra("isInCharRoom", isIn);
                                     startActivity(intent);
@@ -139,18 +140,26 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         arthurToolBar.getTitleView().setLayoutParams(layoutParams);
         arthurToolBar.setTitleText("热门元社区");
         arthurToolBar.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         arthurToolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        arthurToolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+//        arthurToolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        arthurToolBar.setRightImage(R.mipmap.home_nav_map);
         arthurToolBar.setOnLeftClickListener(this);
+        arthurToolBar.setOnRightClickListener(this);
     }
 
     @Override
     public void onLeftClick(View v) {
         finish();
 
+    }
+
+    @Override
+    public void onRightClick(View v) {
+        readyGo(HomeActivity.class);
     }
 }

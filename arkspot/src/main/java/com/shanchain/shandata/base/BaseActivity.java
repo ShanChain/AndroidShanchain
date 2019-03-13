@@ -378,6 +378,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         ToastUtils.showToast(mContext, "" + NetErrCode.WALLET_PHOTO);
                         return;
                     }
+                    showPasswordDialog.setPasswordBitmap(null);
                     showPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                         @Override
                         public void OnItemClick(CustomDialog dialog, View view) {
@@ -388,7 +389,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    showPasswordDialog.show();
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showPasswordDialog.show();
+                        }
+                    });
                 }
             });
         }
@@ -496,6 +502,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 String userId = SCCacheUtils.getCacheUserId();
                 String passwordCode = getAuthCode(file);
                 SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, passwordCode);
+                SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, passwordCode);
                 Message message = new Message();
                 message.what = 1;
                 message.obj = true;
@@ -774,7 +781,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null || data.getData() != null) {
+        if (data != null && data.getData() != null) {
             if (requestCode == NetErrCode.WALLET_PHOTO) {
 
                 Uri selectedImage = data.getData(); //获取系统返回的照片的Uri

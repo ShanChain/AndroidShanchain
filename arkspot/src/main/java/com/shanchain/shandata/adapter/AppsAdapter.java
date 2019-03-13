@@ -1,6 +1,5 @@
 package com.shanchain.shandata.adapter;
 
-import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,28 +60,28 @@ public class AppsAdapter extends BaseAdapter {
 
         final AppBean appBean = mDdata.get(position);
         if (appBean != null) {
-            viewHolder.iv_icon.setBackgroundResource(appBean.getIcon()!=0?appBean.getIcon():0);
-            viewHolder.tv_name.setText(appBean.getFuncName()!=null?appBean.getFuncName():"");
+            viewHolder.iv_icon.setBackgroundResource(appBean.getIcon() != 0 ? appBean.getIcon() : 0);
+            viewHolder.tv_name.setText(appBean.getFuncName() != null ? appBean.getFuncName() : "");
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (appBean.getFuncName()==null){
+                    if (appBean.getFuncName() == null) {
                         return;
                     }
                     if (appBean.getFuncName().equals("图片")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.IMAGE_MESSAGE));
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.IMAGE_MESSAGE));
                     } else if (appBean.getFuncName().equals("拍摄")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.TAKE_PHOTO_MESSAGE));
-                    }else if (appBean.getFuncName().equals("位置")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.TAKE_LOCATION));
-                    }else if (appBean.getFuncName().equals("文件")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.FILE_MESSAGE));
-                    }else if (appBean.getFuncName().equals("视频")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.TACK_VIDEO));
-                    }else if (appBean.getFuncName().equals("语音")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.TACK_VOICE));
-                    }else if (appBean.getFuncName().equals("名片")) {
-                        EventBus.getDefault().post(new ImageEvent(MyApplication.BUSINESS_CARD));
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.TAKE_PHOTO_MESSAGE));
+                    } else if (appBean.getFuncName().equals("位置")) {
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.TAKE_LOCATION));
+                    } else if (appBean.getFuncName().equals("文件")) {
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.FILE_MESSAGE));
+                    } else if (appBean.getFuncName().equals("视频")) {
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.TACK_VIDEO));
+                    } else if (appBean.getFuncName().equals("语音")) {
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.TACK_VOICE));
+                    } else if (appBean.getFuncName().equals("名片")) {
+                        EventBus.getDefault().post(new ImageEvent(mContext, MyApplication.BUSINESS_CARD));
                     }
                 }
             });
@@ -96,13 +95,25 @@ public class AppsAdapter extends BaseAdapter {
     }
 
     public class ImageEvent {
+        private Context mContext;
         private int mFlag;
+
         public ImageEvent(int flag) {
+            mFlag = flag;
+        }
+
+        public ImageEvent(Context context, int flag) {
+            this.mContext = context;
             mFlag = flag;
         }
 
         public int getFlag() {
             return mFlag;
         }
+
+        public Context getContext() {
+            return mContext;
+        }
+
     }
 }

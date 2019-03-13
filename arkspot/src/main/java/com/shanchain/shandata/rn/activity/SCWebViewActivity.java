@@ -276,6 +276,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
                         startActivity(intent);
                         finish();
+                        return true;
                     }
                     if (url.contains("toPrev=true")) {
                         finish();

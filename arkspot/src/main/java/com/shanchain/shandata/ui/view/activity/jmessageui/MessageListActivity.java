@@ -2193,7 +2193,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         standardDialog.setCallback(new Callback() {
             @Override
             public void invoke() {
-                finish();
+                readyGo(FootPrintActivity.class);
             }
         }, new Callback() {
             @Override
@@ -2886,6 +2886,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     //聊天室输入框多功能界面
     public void onEventMainThread(AppsAdapter.ImageEvent event) {
         Intent intent;
+        if (event.getContext() != MessageListActivity.this) {
+            return;
+        }
         switch (event.getFlag()) {
             case MyApplication.IMAGE_MESSAGE:
                 int from = PickImageActivity.FROM_LOCAL;

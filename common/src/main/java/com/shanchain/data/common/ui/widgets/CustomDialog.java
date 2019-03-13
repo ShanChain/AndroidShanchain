@@ -37,7 +37,7 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private String sureText;
     private int messageContentSize;
     private String percentage;
-    private Bitmap shareBitmap, passwordBitmap;
+    private Bitmap shareBitmap, passwordBitmap = null;
     private boolean isShow = false;
     private RelativeLayout relativeLayout, relativeAllText;
 
