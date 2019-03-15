@@ -241,6 +241,12 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
         ButterKnife.bind(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
     @OnClick({R.id.relative_login_password, R.id.relative_bind_phone, R.id.relative_account, R.id.relative_qq, R.id.relative_facebook, R.id.relative_identity})
     public void onViewClicked(View view) {
         StandardDialog standardDialog = new StandardDialog(mContext);

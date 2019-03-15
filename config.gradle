@@ -3,7 +3,7 @@ project.ext {
     IS_DEV_ENV = true
     arkspot_name = '马甲App'
     CFG_RN_DEBUG = IS_DEV_ENV ? 'true' : 'false'
-    CFG_ENV_PRD = project.hasProperty('isEnvPrd') ? project.isEnvPrd : (IS_DEV_ENV ? 'false' :'true' )
+    CFG_ENV_PRD = project.hasProperty('isEnvPrd') ? project.isEnvPrd : (IS_DEV_ENV ? 'false' : 'true')
 //    CFG_HOST_TEST = 'http://47.91.178.114:8080'
 //    CFG_HOST_TEST = 'http://47.100.20.170'
 //    CFG_HOST_RELEASE = 'https://api.shanchain.com'

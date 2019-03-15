@@ -4,7 +4,6 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -249,7 +248,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private List roomList = new ArrayList();
     private boolean isFirstLoc = true; // 是否首次定位
     private int joinRoomId;
-    private ProgressDialog mDialog;
+    private com.shanchain.data.common.ui.widgets.CustomDialog mDialog;
 
     private ArthurToolBar mTbMain;
     private ActionBarDrawerToggle toggle;
@@ -371,15 +370,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        //极光消息监听注册
-        JMessageClient.registerEventReceiver(this, 1000);
-        Intent intent = getIntent();
-        roomID = intent.getStringExtra("roomId");
-        LogUtils.d("roomId", roomID);
-//        ToastUtils.showToast(MessageListActivity.this,""+roomID);
-        roomName = intent.getStringExtra("roomName");
-//        isIn = intent.getBooleanExtra("isInCharRoom", true);
-        isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
         mChatView = (ChatView) findViewById(R.id.chat_view);
         xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
         mArcMenu = findViewById(R.id.fbn_menu);
@@ -469,10 +459,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (mcgContent.equals("")) {
                     return;
                 }
-                Message msg;
+                Message msg = null;
                 TextContent content = new TextContent(mcgContent);
-                msg = chatRoomConversation.createSendMessage(content);
-                JMessageClient.sendMessage(msg);
+                if (chatRoomConversation != null) {
+                    msg = chatRoomConversation.createSendMessage(content);
+                    JMessageClient.sendMessage(msg);
+                }
+
                 //构造消息
                 MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
                 if (msg.getFromUser().getAvatarFile() != null) {
@@ -839,6 +832,18 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         });
     }
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        roomID = intent.getStringExtra("roomId");
+        LogUtils.d("roomId", roomID);
+//        ToastUtils.showToast(MessageListActivity.this,""+roomID);
+        roomName = intent.getStringExtra("roomName");
+//        isIn = intent.getBooleanExtra("isInCharRoom", true);
+        isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
+        JMessageClient.registerEventReceiver(MessageListActivity.this);
+        super.onCreate(savedInstanceState);
+    }
 
     //显示遮罩层
     private void setGuideView() {
@@ -866,8 +871,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     private void enterChatRoom() {
+//        showProgress();
         if (roomID != null) {
-            showProgress();
             ChatRoomManager.enterChatRoom(Long.valueOf(roomID), new RequestCallback<Conversation>() {
                 @Override
                 public void gotResult(int i, String s, Conversation conversation) {
@@ -893,15 +898,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     public void gotResult(int i, String s) {
                                         if (i == 0) {
                                             enterChatRoom();
+                                            closeProgress();
                                         } else {
                                             ToastUtils.showToast(MessageListActivity.this, "账号登录失败");
+                                            closeProgress();
                                         }
                                     }
                                 });
                             }
                         });
                     } else if (i == 852001) {
-
+                        closeProgress();
                     }
                 }
             });
@@ -917,6 +924,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        taskPresenter = new TaskPresenterImpl(this);
         myLatLng = HomeActivity.latLng;
         //获取是否是超级用户
+        showLoadingDialog();
         SCHttpUtils.get()
                 .url(HttpApi.SUPER_USER + "?token=" + SCCacheUtils.getCacheToken())
                 .build()
@@ -929,16 +937,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
                     @Override
                     public void onResponse(String response, int id) {
-                        closeProgress();
                         LogUtils.d("####### USER_COORDINATE 请求成功 #######");
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             isSuper = data;
+                            //极光消息监听注册
+                            JMessageClient.registerEventReceiver(MessageListActivity.this, 1000);
                             handler.sendEmptyMessage(1);
-
                         }
+                        closeLoadingDialog();
                     }
                 });
 
@@ -2416,7 +2425,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             public void run() {
                 for (int i = 0; i < msgs.size(); i++) {
                     final Message msg = msgs.get(i);
-                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
+//                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
                 }
             }
         }).start();
@@ -2788,8 +2797,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     break;
                 default:
 //                    initMsgAdapter();
+                    closeProgress();
                     break;
             }
+            closeProgress();
         }
 //        }
         mData = messageList;
@@ -3375,8 +3386,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     public void showProgress() {
-        mDialog = new ProgressDialog(this);
-        mDialog.setMax(100);
+        mDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
+//        mDialog.setMax(100);
         mDialog.setMessage("正在获取该元社区信息," +
                 "\n请稍等..");
         mDialog.setCancelable(false);

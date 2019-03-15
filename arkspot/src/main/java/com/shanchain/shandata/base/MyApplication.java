@@ -20,6 +20,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.db.ContactDao;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.Utils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.entry.ApplicationLike;
@@ -282,59 +283,6 @@ public class MyApplication extends BaseApplication {
         TinkerPatch.init(builder.build());
     }
 
-//    private void initUmengSocial() {
-//        //友盟的全局异常捕捉
-//          /*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//            @Override
-//            public void uncaughtException(Thread t, Throwable e) {
-//              try {
-//                    String product = Build.PRODUCT;
-//                    String device = Build.DEVICE;
-//                    String board = Build.BOARD;
-//                    String bootloader = Build.BOOTLOADER;
-//                    String brand = Build.BRAND;
-//                    String display = Build.DISPLAY;
-//                    String fingerprint = Build.FINGERPRINT;
-//                    String hardware = Build.HARDWARE;
-//                    String host = Build.HOST;
-//                    String id = Build.ID;
-//                    String manufacturer = Build.MANUFACTURER;
-//                    String model = Build.MODEL;
-//                    String serial = Build.SERIAL;
-//                    StringBuilder sb = new StringBuilder();
-//                    sb.append("produt = " + product);
-//                    sb.append("device = " + device);
-//                    sb.append("board = " + board);
-//                    sb.append("bootloader = " + bootloader);
-//                    sb.append("brand = " + brand);
-//                    sb.append("display = " + display);
-//                    sb.append("fingerprint = " + fingerprint);
-//                    sb.append("hardware = " + hardware);
-//                    sb.append("host = " + host);
-//                    sb.append("id = " + id);
-//                    sb.append("manufacturer = " + manufacturer);
-//                    sb.append("model = " + model);
-//                    sb.append("serial = " + serial);
-//
-//                    Writer writer = new StringWriter();
-//                    PrintWriter printWriter = new PrintWriter(writer);
-//                    e.printStackTrace(printWriter);
-//                    printWriter.flush();
-//                    writer.flush();
-//                    String s1 = writer.toString();
-//                    writer.close();
-//                    printWriter.close();
-//                    sb.append(s1);
-//                    String errorLog = sb.toString();
-//                    LogUtils.i(errorLog);
-//                } catch (IOException e1) {
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });*/
-//    }
-
-
     private void initSCCache() {
         SCCacheUtils.initCache(this);
     }
@@ -368,11 +316,10 @@ public class MyApplication extends BaseApplication {
         JShareInterface.setDebugMode(true);
         JPushInterface.init(this);//初始化极光推送
         JMessageClient.init(this, true);
-//        JMessageClient.registerEventReceiver(new MyReceiver());
+        JMessageClient.registerEventReceiver(new MessageListActivity());
         JShareInterface.init(this, platformConfig);//极光分享
         String RegistrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", RegistrationID);
-
     }
 
     /**

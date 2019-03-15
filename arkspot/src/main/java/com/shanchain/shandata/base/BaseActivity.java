@@ -361,7 +361,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 描述：接收EventBus通知
      * */
     @Subscribe
-    public void onEventMainThread(Object event) {
+    public void onEventMainThread(EventBusObject event) {
         EventBusObject busObject = null;
         try {
             busObject = (EventBusObject) event;
