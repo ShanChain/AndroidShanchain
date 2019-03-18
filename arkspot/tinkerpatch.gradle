@@ -1,13 +1,13 @@
 apply plugin: 'tinkerpatch-support'
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 /**
  * TODO: 请按自己的需求修改为适应自己工程的参数
  */
 def bakPath = file("${buildDir}/bakApk/")
 def currentDate = getCurrentDateString()
-def baseInfo = "arkspot-2.1.2-0124-18-53-03"
+def baseInfo = "arkspot-2.3.7-0315-14-21-31"
 def variantName = "arkspot-release"
 
 /**
@@ -34,9 +34,9 @@ tinkerpatchSupport {
     appKey = "20235dfb4775b6d9"
 
     /** 注意: 若发布新的全量包, appVersion一定要更新 **/
-    appVersion = "2.1.2"
+    appVersion = "2.3.7"
 
-    def pathPrefix = "${bakPath}/${baseInfo}/${variantName}/"
+    def pathPrefix = "${bakPath}/${baseInfo}/${variantName}"
     def name = "${project.name}-${variantName}"
 
     baseApkFile = "${pathPrefix}/${name}.apk"
@@ -111,10 +111,6 @@ tinkerPatch {
         keepDexApply = false
     }
 }
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
 /**
  * 如果只想在Release中打开tinker，可以把tinkerEnable赋值为这个函数的return
  * @return 是否为release

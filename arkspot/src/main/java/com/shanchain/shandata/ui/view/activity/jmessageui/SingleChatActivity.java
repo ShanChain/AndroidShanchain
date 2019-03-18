@@ -1126,7 +1126,6 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         return mData;
     }
 
-
     // 接收聊天室消息
     public void onEventMainThread(MessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");

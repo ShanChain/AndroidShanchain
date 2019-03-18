@@ -94,43 +94,43 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         }
         if (mIsSender) {
             switch (message.getMessageStatus()) {
-            case SEND_GOING:
-                mSendingPb.setVisibility(View.VISIBLE);
-                mResendIb.setVisibility(View.GONE);
-                break;
-            case SEND_FAILED:
-                mSendingPb.setVisibility(View.GONE);
-                mResendIb.setVisibility(View.VISIBLE);
-                mResendIb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mMsgStatusViewClickListener != null) {
-                            mMsgStatusViewClickListener.onStatusViewClick(message);
+                case SEND_GOING:
+                    mSendingPb.setVisibility(View.VISIBLE);
+                    mResendIb.setVisibility(View.GONE);
+                    break;
+                case SEND_FAILED:
+                    mSendingPb.setVisibility(View.GONE);
+                    mResendIb.setVisibility(View.VISIBLE);
+                    mResendIb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mMsgStatusViewClickListener != null) {
+                                mMsgStatusViewClickListener.onStatusViewClick(message);
+                            }
                         }
-                    }
-                });
-                break;
-            case SEND_SUCCEED:
-                mSendingPb.setVisibility(View.GONE);
-                mResendIb.setVisibility(View.GONE);
-                break;
+                    });
+                    break;
+                case SEND_SUCCEED:
+                    mSendingPb.setVisibility(View.GONE);
+                    mResendIb.setVisibility(View.GONE);
+                    break;
             }
         } else {
             switch (message.getMessageStatus()) {
-            case RECEIVE_FAILED:
-                mResendIb.setVisibility(View.VISIBLE);
-                mResendIb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mMsgStatusViewClickListener != null) {
-                            mMsgStatusViewClickListener.onStatusViewClick(message);
+                case RECEIVE_FAILED:
+                    mResendIb.setVisibility(View.VISIBLE);
+                    mResendIb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mMsgStatusViewClickListener != null) {
+                                mMsgStatusViewClickListener.onStatusViewClick(message);
+                            }
                         }
-                    }
-                });
-                break;
-            case RECEIVE_SUCCEED:
-                mResendIb.setVisibility(View.GONE);
-                break;
+                    });
+                    break;
+                case RECEIVE_SUCCEED:
+                    mResendIb.setVisibility(View.GONE);
+                    break;
             }
         }
 
@@ -205,7 +205,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     }
 
     public void playVoice(int position, MESSAGE message) {
-        mController.setLastPlayPosition(position, mIsSender);
+        mController.setLastPlayPosition(getLayoutPosition(), mIsSender);
         try {
             mMediaPlayer.reset();
             mFIS = new FileInputStream(message.getMediaFilePath());

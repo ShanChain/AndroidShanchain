@@ -169,7 +169,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private double[] gcj02point;
     private UiSettings uiSettings;
     private MyOrientationListener myOrientationListener;
-    public static Coordinates coordinates;
+    private Coordinates coordinates;
     private List pointList = new ArrayList();
     private List<Coordinates> coordinatesList;
     private List roomList = new ArrayList();
@@ -749,6 +749,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            if (coordinates == null) {
+                                return;
+                            }
 //                            clickRoomID = coordinates.getRoomId();
                             roomID = coordinates.getRoomId();
                             String latLang = coordinates.getRoomName();
@@ -872,6 +875,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             String data = JSONObject.parseObject(response).getString("data");
                             String room = JSONObject.parseObject(data).getString("room");
                             coordinatesList = JSONObject.parseArray(room, Coordinates.class);
+                            if (coordinatesList == null) {
+                                return;
+                            }
 
                             /*
                              * 绘制附近的方区
@@ -959,6 +965,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            if (coordinates == null) {
+                                return;
+                            }
                             //房间roomId
                             roomID = coordinates.getRoomId();
                             RoleManager.switchRoleCacheRoomId(roomID);

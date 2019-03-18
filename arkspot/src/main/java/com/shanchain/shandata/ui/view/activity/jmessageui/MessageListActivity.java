@@ -464,33 +464,35 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (chatRoomConversation != null) {
                     msg = chatRoomConversation.createSendMessage(content);
                     JMessageClient.sendMessage(msg);
-                }
-
-                //构造消息
-                MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
-                if (msg.getFromUser().getAvatarFile() != null) {
-                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
-                    message.setUserInfo(defaultUser);
-                } else {
-                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
-                    message.setUserInfo(defaultUser);
-                }
-                message.setText(mcgContent);
-                long messageTime = msg.getCreateTime();
-                long preTime = new Date().getTime();
-                long diff = preTime - messageTime;
-                if (diff > 3 * 60 * 1000) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                    //构造消息
+                    MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
+                    if (msg != null && msg.getFromUser() != null) {
+                        if (msg.getFromUser().getAvatarFile() != null) {
+                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
+                            message.setUserInfo(defaultUser);
+                        } else {
+                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
+                            message.setUserInfo(defaultUser);
+                        }
+                        message.setText(mcgContent);
+                        long messageTime = msg.getCreateTime();
+                        long preTime = new Date().getTime();
+                        long diff = preTime - messageTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                    message.setTimeString(timeString);
-                }
+                        }
 //                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
 //                                messageList.add(message);
-                mAdapter.addToStart(message, true);
-                xhsEmoticonsKeyBoard.getEtChat().setText("");
+                        mAdapter.addToStart(message, true);
+                        xhsEmoticonsKeyBoard.getEtChat().setText("");
+                    }
+                }
             }
+
         });
 
         //点击隐藏聊天输入框表情栏
@@ -989,7 +991,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     String code = JSONObject.parseObject(response).getString("code");
                                     if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                         String data = JSONObject.parseObject(response).getString("data");
-//                                        onEventMainThread();
+
                                     }
 //
                                 }
@@ -3181,24 +3183,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
 
-
-        //显示接收的文字消息
-/*        MyMessage message = new MyMessage("Hello World", IMessage.MessageType.RECEIVE_TEXT.ordinal());
-        message.setUserInfo(new DefaultUser(0, "Deadpool", "R.drawable.deadpool"));
-        mAdapter.addToStart(message, true);*/
-        //显示接收的语音消息
-/*        MyMessage voiceMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
-        voiceMessage.setUserInfo(new DefaultUser(0, "Deadpool", "R.drawable.deadpool"));
-        voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        voiceMessage.setDuration(4);
-        mAdapter.addToStart(voiceMessage, true);*/
-        //显示发送的语音消息
-/*        MyMessage sendVoiceMsg = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
-        sendVoiceMsg.setUserInfo(new DefaultUser(1, "Ironman", "R.drawable.ironman"));
-        sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        sendVoiceMsg.setDuration(4);
-        mAdapter.addToStart(sendVoiceMsg, true);*/
-
         //查看任务点击事件
 //        mAdapter.addToStart(evenMyMessage, true);
         mAdapter.setBtnEventTaskClickListener(new MsgListAdapter.OnBtnEventTaskClickListener<MyMessage>() {
@@ -3221,17 +3205,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     intent.putExtra("roomId", roomID);
                     startActivity(intent);
                 }
-//
-
             }
         });
-
-        //显示接受的语音消息
-/*        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
-        receiveVideo.setMediaFilePath(Environment.getExternalStorageDirectory().getPath() + "/Pictures/Hangouts/video-20170407_135638.3gp");
-        receiveVideo.setDuration(4);
-        receiveVideo.setUserInfo(new DefaultUser(0, "Deadpool", "R.drawable.deadpool"));
-        mAdapter.addToStart(receiveVideo, true);*/
 
         List<Conversation> roomConversationList = JMessageClient.getChatRoomConversationList();
         if (roomConversationList != null && roomConversationList.size() > 0) {
@@ -3347,23 +3322,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 tvUserSign.setText("" + characterInfo.getSignature());
             }
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                ThreadUtils.runOnMainThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                });
-//
-//            }
-//        }).start();
     }
 
 

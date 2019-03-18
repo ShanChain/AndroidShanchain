@@ -208,7 +208,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             GlideUtils.load(mContext, characterInfo.getHeadImg(), ivAvatar, 0);//加载头像
             tvName.setText(characterInfo.getName() == null ? "无昵称" : characterInfo.getName());
         }
-        bounty.setText("赏金：￥ " + chatEventMessage.getBounty());
+        bounty.setText("赏金：SEAT " + chatEventMessage.getBounty());
         tvContent.setText(chatEventMessage.getIntro() + "");
         mTvHeadLike.setText(chatEventMessage.getSupportCount() + "");
         mTvHeadComment.setText(chatEventMessage.getCommentCount() + "");
@@ -235,7 +235,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     //领取任务请求
                     SCHttpUtils.postWithUserId()
                             .url(HttpApi.TASK_DETAIL_RECEIVE)
-                            .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
+                            .addParams("roomId", roomID + "")
                             .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
                             .addParams("taskId", chatEventMessage.getTaskId() + "")
                             .build()
@@ -446,7 +446,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (s.toString().length() > 0) {
-                            s.insert(0, "￥");
+                            s.insert(0, "SEAT");
                         }
                     }
                 });

@@ -62,6 +62,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -399,6 +400,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
         }
     }
+
+    //用户下线事件
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        StandardDialog dialog = new StandardDialog(getApplicationContext());
+        dialog.setStandardMsg("该账号已在其他设备上登录");
+    }
+
 
     protected void checkPassword(final File file) {
         //创建requestBody

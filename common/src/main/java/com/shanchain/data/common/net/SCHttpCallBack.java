@@ -40,5 +40,5 @@ public abstract class SCHttpCallBack<T> extends Callback<T>{
     }
 
 
-    
+
 }

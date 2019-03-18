@@ -1,5 +1,6 @@
 package com.shanchain.shandata.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -34,6 +35,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
     private int position;
     private ChatEventMessage itemData;
     private BaseViewHolder holder;
+    private String roomID;
 
     public MultiTaskListAdapter(Context context, List list, int[] itemLayoutId) {
         super(context, list, itemLayoutId);
@@ -91,9 +93,11 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
                 CustomDialog showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(context, true, 1.0,
                         R.layout.dialog_bottom_wallet_password,
                         new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                Activity activity = (Activity) context;
+                roomID = activity.getIntent().getStringExtra("roomId") != null ? activity.getIntent().getStringExtra("roomId") : SCCacheUtils.getCacheRoomId();
                 SCHttpUtils.postWithUserId()
                         .url(HttpApi.TASK_DETAIL_RECEIVE)
-                        .addParams("roomId", SCCacheUtils.getCacheRoomId() + "")
+                        .addParams("roomId", roomID + "")
                         .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
                         .addParams("taskId", itemData.getTaskId() + "")
                         .build()

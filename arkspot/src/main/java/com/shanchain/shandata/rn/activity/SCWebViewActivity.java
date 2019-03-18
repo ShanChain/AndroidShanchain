@@ -100,6 +100,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 //        mWbSc.loadUrl(mUrl);//加载url
         if (mTitle.equals(getResources().getString(com.shanchain.common.R.string.nav_my_wallet) + "")) {
             SCHttpUtils.postWithUserId()
+                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
                     .url(HttpApi.CHARACTER_GET_CURRENT)
                     .build()
                     .execute(new SCHttpStringCallBack() {
@@ -122,9 +123,9 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                                 characterId = String.valueOf(characterInfo.getCharacterId());
                                 userId = SCCacheUtils.getCacheUserId();
                                 map = new HashMap<String, String>();
-                                map.put("token", token);
-                                map.put("characterId", characterId);
-                                map.put("userId", userId);
+                                map.put("token", token + "");
+                                map.put("characterId", characterId + "");
+                                map.put("userId", userId + "");
                                 mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
 //                                mWbSc.loadUrl( "userId");
                             } else {
