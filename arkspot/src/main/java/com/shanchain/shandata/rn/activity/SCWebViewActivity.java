@@ -1,16 +1,12 @@
 package com.shanchain.shandata.rn.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,13 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -37,7 +28,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
@@ -55,14 +45,11 @@ import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.shandata.ui.model.IsFavBean;
-import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.data.common.ui.SetWalletPasswordActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
-import com.shanchain.shandata.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -92,17 +79,18 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scweb_view);
         ActivityStackManager.getInstance().addActivity(this);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         initStatusBar();
         initView();
         Intent intent = getIntent();
         String webParams = intent.getStringExtra("webParams");
-        mTitle = JSONObject.parseObject(webParams).getString("title");
-        mUrl = JSONObject.parseObject(webParams).getString("url");
+        mTitle = webParams == null ? getResources().getString(R.string.nav_my_wallet) : JSONObject.parseObject(webParams).getString("title");
+        mUrl = webParams != null ? JSONObject.parseObject(webParams).getString("url") : HttpApi.SEAT_WALLET;
+//        mUrl = "http://m.qianqianshijie.com/wallet/Chargebond";
         initWeb();
-
     }
-
 
     private void initWeb() {
         mWbSc = findViewById(R.id.wb_sc);
@@ -110,8 +98,9 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         settings.setJavaScriptEnabled(true);
         mTvWebTbTitle.setText(mTitle);
 //        mWbSc.loadUrl(mUrl);//加载url
-        if (mTitle.equals("我的钱包")) {
+        if (mTitle.equals(getResources().getString(com.shanchain.common.R.string.nav_my_wallet) + "")) {
             SCHttpUtils.postWithUserId()
+                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
                     .url(HttpApi.CHARACTER_GET_CURRENT)
                     .build()
                     .execute(new SCHttpStringCallBack() {
@@ -134,17 +123,17 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                                 characterId = String.valueOf(characterInfo.getCharacterId());
                                 userId = SCCacheUtils.getCacheUserId();
                                 map = new HashMap<String, String>();
-                                map.put("token", token);
-                                map.put("characterId", characterId);
-                                map.put("userId", userId);
-//                            mWbSc.loadUrl(mUrl);
+                                map.put("token", token + "");
+                                map.put("characterId", characterId + "");
+                                map.put("userId", userId + "");
                                 mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+//                                mWbSc.loadUrl( "userId");
                             } else {
                                 mWbSc.loadUrl(mUrl);
                             }
                         }
                     });
-        }else {
+        } else {
             mWbSc.loadUrl(mUrl);//加载url
         }
 
@@ -169,6 +158,31 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE: // 带有链接的图片类型
                     case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
                         final String url = result.getExtra();
+//                        ToastUtils.showToastLong(SCWebViewActivity.this, "" + url);
+//                        if (url.indexOf("data:image/*;base64,") != -1) {
+//                            byte[] bitmapArray = Base64.decode(url.split(",")[1], Base64.DEFAULT);
+//                            ToastUtils.showToastLong(SCWebViewActivity.this, "Base64字符串：");
+//                            //使用io流保存图片
+//                            FileOutputStream fos = null;
+//                            File passwordImage = null;
+//                            String filename = ImageUtils.getTempFileName();
+//                            try {
+//                                if (filename != null) {
+//                                    String appPath = getApplicationContext().getFilesDir().getAbsolutePath();//app文件路径
+//                                    String filePath = ImageUtils.getSDPath() + "/shanchain/" + filename;
+//                                    passwordImage = new File(filePath);
+//                                    fos = new FileOutputStream(passwordImage);
+//                                    fos.write(bitmapArray);
+//                                    fos.flush();
+//                                    fos.close();
+//                                }
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            } finally {
+//                                displayToGallery(SCWebViewActivity.this, passwordImage);
+//
+//                            }
+//                        }
                         StandardDialog standardDialog = new StandardDialog(SCWebViewActivity.this);
                         standardDialog.setStandardTitle("是否保存图片");
                         standardDialog.setSureText("保存");
@@ -176,8 +190,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         standardDialog.setCallback(new Callback() {
                             @Override
                             public void invoke() {
-//                                Bitmap bitmap = ImageUtils.returnBitMap(url);
-
                                 ThreadUtils.runOnSubThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -223,9 +235,15 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 LogUtils.d("UrlPath", urlPath);
                 LogUtils.d("loadUrl", loadUrl);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    if (loadUrl.contains("toPrev=true")) {
+                    if (loadUrl.contains("toPwd=true")) {
+                        Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
+                        startActivity(intent);
                         finish();
+                        return true;
+                    }
+                    if (loadUrl.contains("toPrev=true")) {
                         LogUtils.d("toPrev", url);
+                        finish();
                         return true;
                     }
                     if (loadUrl.contains("comfirm=true")) {
@@ -239,8 +257,8 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                         Intent intent = new Intent(SCWebViewActivity.this, LoginActivity.class);
                         intent.putExtra("wallet", "wallet");
                         startActivity(intent);
-                        finish();
                         LogUtils.d("toLogin", url);
+                        ActivityStackManager.getInstance().finishAllActivity();
                         return true;
                     }
                 }
@@ -255,6 +273,12 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    if (url.contains("toPwd=true")) {
+                        Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
+                        startActivity(intent);
+                        finish();
+                        return true;
+                    }
                     if (url.contains("toPrev=true")) {
                         finish();
                         LogUtils.d("toPrev", url);
@@ -370,28 +394,28 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (null != data) {
 //            LogUtils.d("" + data.getData().getPath());
-            super.onActivityResult(requestCode, resultCode, data);
-            switch (requestCode) {
-                case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
-                    if (mUploadMessage == null) {
-                        return;
-                    }
-                    Uri result = data == null || resultCode != Activity.RESULT_OK ? null
-                            : data.getData();
-                    if (mUploadMessage != null) {
-                        mUploadMessage.onReceiveValue(result);
-                        mUploadMessage = null;
-                    }
-                    break;
-                case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
-                    if (mUploadCallbackAboveL == null) {
-                        return;
-                    }
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
+                if (mUploadMessage == null) {
+                    return;
+                }
+                Uri result = data == null || resultCode != Activity.RESULT_OK ? null
+                        : data.getData();
+                if (mUploadMessage != null) {
+                    mUploadMessage.onReceiveValue(result);
+                    mUploadMessage = null;
+                }
+                break;
+            case RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP:
+                if (mUploadCallbackAboveL == null) {
+                    return;
+                }
 //                    try {
 //                        uri = afterChosePic(data);
 //                        if (uri == null) {
-                            mUploadCallbackAboveL.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
-                            mUploadCallbackAboveL = null;
+                mUploadCallbackAboveL.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                mUploadCallbackAboveL = null;
 //                            break;
 //                        }
 //                        if (mUploadCallbackAboveL != null && uri != null) {
@@ -402,7 +426,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 //                        mUploadCallbackAboveL = null;
 //                        e.printStackTrace();
 //                    }
-                    break;
+                break;
 //            }
         }
     }

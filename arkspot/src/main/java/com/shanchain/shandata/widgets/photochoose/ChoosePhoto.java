@@ -23,7 +23,7 @@ import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
-import com.shanchain.shandata.utils.ImageUtils;
+import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.shandata.utils.SharePreferenceManager;
 
 import java.io.File;

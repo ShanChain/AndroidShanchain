@@ -143,6 +143,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -151,6 +152,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_centerHorizontal="true"
+                        android:focusableInTouchMode="false"
                         android:src="@mipmap/share_wechat" />
 
                     <TextView
@@ -159,7 +161,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="17dp"
                         android:gravity="center"
-                        android:text="微信"
+                        android:text="@string/str_share_dialog_wechat"
                         android:textColor="@color/colorTextDefault"
                         android:textSize="13sp" />
                 </RelativeLayout>
@@ -169,6 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -178,6 +181,7 @@
                         android:layout_height="35dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
+                        android:focusableInTouchMode="false"
                         android:layout_marginTop="0dp"
                         android:src="@mipmap/share_moment" />
 
@@ -187,7 +191,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="17dp"
                         android:gravity="center"
-                        android:text="朋友圈"
+                        android:text="@string/str_share_dialog_circle"
                         android:textColor="@color/colorTextDefault"
                         android:textSize="13sp" />
                 </RelativeLayout>
@@ -198,6 +202,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
                     android:focusableInTouchMode="false">
 
@@ -206,6 +211,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_centerHorizontal="true"
+                        android:focusableInTouchMode="false"
                         android:src="@mipmap/share_qq" />
 
                     <TextView
@@ -220,11 +226,41 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/mRlFacebook"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false">
+
+                    <ImageView
+                        android:id="@+id/share_facebook"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:focusableInTouchMode="false"
+                        android:src="@mipmap/abs_login_btn_facebook_default" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="17dp"
+                        android:gravity="center"
+                        android:text="Facebook"
+                        android:textColor="@color/colorTextDefault"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/mRlWeibo"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
+                    android:visibility="gone"
                     android:focusableInTouchMode="false">
 
                     <ImageView

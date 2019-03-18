@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.settings.AccountSecurityActivity">
+
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        android:id="@+id/tb_setting"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextThree"
+        app:titleTextSize="16">
+
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
+
+    <RelativeLayout
+        android:id="@+id/relative_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb_setting">
+
+        <RelativeLayout
+            android:id="@+id/relative_user_id"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_maja_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/marjar_id"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:text="100510"
+                android:textColor="@color/colorHint" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_login_password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_user_id"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_login_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/logon_in_password"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_set_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_login_password_arrow"
+                android:text="设置密码"
+                android:textColor="@color/colorHint"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_login_password_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_bind_phone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_login_password"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_bind_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/bind_phone"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_phone_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_bind_phone_arrow"
+                android:text="100510"
+                android:textColor="@color/colorHint"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_bind_phone_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_top">
+
+        <RelativeLayout
+            android:id="@+id/relative_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_20dp"
+            android:background="@drawable/selector_click_bg_msg"
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tv_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bind_others"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_account_wechat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_account"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/account_wechat"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_wechat_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_account_wechat"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_wechat_arrow"
+                android:text="@string/unbound"
+                android:textColor="@color/colorHint"
+                android:textSize="@dimen/sp_14" />
+
+
+            <ImageView
+                android:id="@+id/iv_wechat_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tv_wechat_info"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/relative_qq"
+            android:background="@color/colorBgGray"></View>
+
+        <RelativeLayout
+            android:id="@+id/relative_qq"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_account"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="QQ"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_qq_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_qq_arrow"
+                android:text="@string/unbound"
+                android:textColor="@color/colorHint" />
+
+
+            <ImageView
+                android:id="@+id/iv_qq_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_qq"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/account_facebook"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/tv_facebook_info"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_facebook_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_facebook_arrow"
+                android:text="@string/unbound"
+                android:textColor="@color/colorHint" />
+
+            <ImageView
+                android:id="@+id/iv_facebook_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_identity"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_facebook"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_identity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/account_real_identity"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_identity_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_update_arrow"
+                android:text="@string/uncertified"
+                android:textColor="@color/colorHint" />
+
+            <ImageView
+                android:id="@+id/iv_update_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

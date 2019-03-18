@@ -56,7 +56,8 @@
                 android:layout_marginLeft="@dimen/dimens_15dp"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:text="@string/my_task_release_des"
-                android:textSize="18sp" />
+                android:textColor="@color/colorTextDefault"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/et_input_dialog_describe"
@@ -94,27 +95,41 @@
                 android:layout_marginLeft="@dimen/dimens_15dp"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:text="@string/my_task_release_reward"
-                android:textSize="18sp" />
+                android:textColor="@color/colorTextDefault"
+                android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/et_input_dialog_bounty"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimens_15dp"
+                android:focusableInTouchMode="false"
                 android:background="@drawable/shape_bg_dialog_task_edit"
-                android:focusable="true"
+                android:orientation="horizontal">
 
-                android:gravity="top"
-                android:hint="@string/my_task_release_reward_hint"
-                android:inputType="number|numberDecimal"
-                android:paddingLeft="@dimen/dimens_15dp"
-                android:paddingTop="@dimen/dimens_10dp"
-                android:paddingRight="@dimen/dimens_15dp"
-                android:paddingBottom="@dimen/dimens_10dp"
-                android:textColor="@color/colorTextDefault"
-                android:textColorHint="@color/colorHint"
-                android:textCursorDrawable="@null"
-                android:textSize="14sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dimens_15dp"
+                    android:text="￥" />
+
+                <EditText
+                    android:id="@+id/et_input_dialog_bounty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:gravity="top"
+                    android:hint="@string/my_task_release_reward_hint"
+                    android:inputType="number|numberDecimal"
+                    android:paddingTop="@dimen/dimens_10dp"
+                    android:paddingRight="@dimen/dimens_15dp"
+                    android:paddingBottom="@dimen/dimens_10dp"
+                    android:textColor="@color/colorTextDefault"
+                    android:textColorHint="@color/colorHint"
+                    android:textCursorDrawable="@null"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -127,12 +142,13 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/dimens_20dp"
             android:focusable="true"
-            android:focusableInTouchMode="false"
-            android:text="0 SEAT" />
+            android:text="= 0 SEAT" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_20dp">
 
@@ -140,9 +156,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimens_15dp"
-                android:layout_marginBottom="@dimen/dp_10"
                 android:text="@string/my_task_release_time_limit"
-                android:textSize="18sp" />
+                android:textColor="@color/colorTextDefault"
+                android:textSize="14sp" />
 
 
             <EditText
@@ -151,14 +167,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
+                android:background="@drawable/shape_bg_dialog_task_edit"
                 android:focusable="true"
                 android:focusableInTouchMode="false"
+                android:hint="@string/my_task_release_time_limit_hint"
                 android:paddingLeft="@dimen/dimens_15dp"
                 android:paddingTop="@dimen/dimens_10dp"
                 android:paddingRight="@dimen/dimens_15dp"
                 android:paddingBottom="@dimen/dimens_10dp"
-                android:background="@drawable/shape_bg_dialog_task_edit"
-                android:hint="@string/my_task_release_time_limit_hint"
                 android:textAlignment="center"
                 android:textColor="@color/colorHint"
                 android:textSize="14sp" />

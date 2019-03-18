@@ -36,13 +36,12 @@ import com.shanchain.shandata.ui.model.MsgInfo;
 //import com.shanchain.shandata.ui.presenter.ChatPresenter;
 //import com.shanchain.shandata.ui.presenter.impl.ChatPresenterImpl;
 //import com.shanchain.shandata.ui.view.activity.chat.view.ChatView;
-import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.mine.FriendHomeActivity;
 import com.shanchain.shandata.utils.KeyboardUtils;
 import com.shanchain.shandata.widgets.rEdit.InsertModel;
 import com.shanchain.shandata.widgets.rEdit.RichEditor;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

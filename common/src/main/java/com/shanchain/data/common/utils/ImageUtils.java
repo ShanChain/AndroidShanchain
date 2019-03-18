@@ -1,9 +1,10 @@
-package com.shanchain.shandata.utils;
+package com.shanchain.data.common.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -740,23 +741,33 @@ public class ImageUtils {
         }
     }*/
 
-/*    public static String GetImageStr(String imgFilePath) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
-        byte[] data = null;
+    /*    public static String GetImageStr(String imgFilePath) {// 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+            byte[] data = null;
 
-        // 读取图片字节数组
+            // 读取图片字节数组
+            try {
+                InputStream in = new FileInputStream(imgFilePath);
+                data = new byte[in.available()];
+                in.read(data);
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // 对字节数组Base64编码
+            BASE64Encoder encoder = new BASE64Encoder();
+            return encoder.encode(data);// 返回Base64编码过的字节数组字符串
+        }*/
+    public static Bitmap Base64ToBitmap(String string) {
+        Bitmap bitmap = null;
         try {
-            InputStream in = new FileInputStream(imgFilePath);
-            data = new byte[in.available()];
-            in.read(data);
-            in.close();
-        } catch (IOException e) {
+            byte[] bitmapArray = Base64.decode(string.split(",")[1], Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);// 返回Base64编码过的字节数组字符串
-    }*/
+        return bitmap;
+    }
 
     @SuppressLint("NewApi")
     public static String imgToBase64(String imgPath, String imgFormat) {
@@ -951,14 +962,15 @@ public class ImageUtils {
     /**
      * 将Bitmap转换成文件
      * 保存文件
+     *
      * @param bm
      * @param fileName
      * @throws IOException
      */
     public static File saveUrlImgFile(Bitmap bm, String fileName) {
-        String path = getSDPath() +"/shanchain/";
+        String path = getSDPath() + "/shanchain/";
         File dirFile = new File(path);
-        if(!dirFile.exists()){
+        if (!dirFile.exists()) {
             dirFile.mkdir();
         }
 
@@ -981,18 +993,36 @@ public class ImageUtils {
 
         activity.getWindow().getDecorView().setDrawingCacheEnabled(true);
 
-        Bitmap bmp=activity.getWindow().getDecorView().getDrawingCache();
+        Bitmap bmp = activity.getWindow().getDecorView().getDrawingCache();
 
         return bmp;
 
     }
+
+    //图片显示到相册
+    public static void displayToGallery(Context context, File photoFile) {
+        if (photoFile == null || !photoFile.exists()) {
+            return;
+        }
+        String photoPath = photoFile.getAbsolutePath();
+        String photoName = photoFile.getName();
+        // 把文件插入到系统图库
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            MediaStore.Images.Media.insertImage(contentResolver, photoPath, photoName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + photoPath)));
+    }
+
     //获取sd卡路径
-    public static String getSDPath(){
+    public static String getSDPath() {
         File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState()
                 .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
-        if(sdCardExist)
-        {
+        if (sdCardExist) {
             sdDir = Environment.getExternalStorageDirectory();//获取跟目录
         }
         return sdDir.toString();

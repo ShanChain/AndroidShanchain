@@ -1,4 +1,4 @@
-package com.shanchain.data.common.utils;
+package com.shanchain.shandata.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

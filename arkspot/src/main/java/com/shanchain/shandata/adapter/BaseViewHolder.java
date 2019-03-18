@@ -2,9 +2,7 @@ package com.shanchain.shandata.adapter;
 
 import android.content.Context;
 import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
-import com.squareup.picasso.Picasso;
 
 import cn.jiguang.imui.model.ChatEventMessage;
 
@@ -113,7 +110,21 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         if (layoutViewListener != null) {
             for (int i = 0; i < layoutId.length; i++) {
                 if (viewType == i) {
+                    itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            layoutViewListener.OnLayoutViewClick(view);
+                        }
+                    });
+                }
+            }
+        }
+    }
 
+    public void setLayoutViewOnClick(int[] layoutId, int viewType, Object object, final OnLayoutViewClickListener layoutViewListener) {
+        if (layoutViewListener != null) {
+            for (int i = 0; i < layoutId.length; i++) {
+                if (viewType == i) {
                     itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

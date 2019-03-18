@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.shanchain.data.common.ui.WalletEnterActivity">
+
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        android:id="@+id/tb_about"
+        style="@style/common_style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleTextSize="16">
+
+    </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
+
+    <RelativeLayout
+        android:id="@+id/relative_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/iv_app_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/marjar_wallet" />
+
+
+        <TextView
+            android:id="@+id/tv_marjar_web_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_app_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="欢迎来到马甲钱包"
+            android:textColor="@color/colorViolet"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_wallet_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_marjar_web_home"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_40"
+            android:background="@drawable/common_shape_bg_btn_login"
+            android:text="进入钱包"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

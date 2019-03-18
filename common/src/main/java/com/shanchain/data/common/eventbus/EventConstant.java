@@ -22,9 +22,8 @@ public class EventConstant {
     // receiver 模块化处理，仅注册模块名，后续可以做成注册模式
 
     public static final String EVENT_MODULE_ARKSPOT = "EVENT_MODULE_ARKSPOT";
-
-
-
+    //发布任务 和 马甲劵
+    public static final int EVENT_RELEASE = 996;
 
 
 }

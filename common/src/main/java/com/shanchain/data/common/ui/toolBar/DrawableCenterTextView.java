@@ -1,4 +1,4 @@
-package com.shanchain.shandata.widgets.toolBar;
+package com.shanchain.data.common.ui.toolBar;
 
 import android.content.Context;
 import android.graphics.Canvas;

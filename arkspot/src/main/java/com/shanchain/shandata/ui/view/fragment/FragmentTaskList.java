@@ -1,7 +1,6 @@
 package com.shanchain.shandata.ui.view.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,40 +9,29 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.BaseViewHolder;
 import com.shanchain.shandata.adapter.MultiMyTaskAdapter;
-import com.shanchain.shandata.adapter.MultiTaskListAdapter;
-import com.shanchain.shandata.adapter.TaskListAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.TaskMode;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
-import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.ViewAnimUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +39,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.model.ChatEventMessage;
-import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.eventbus.EventBus;
 import okhttp3.Call;
 
@@ -77,7 +64,6 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

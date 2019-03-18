@@ -5,4 +5,5 @@
     <external-path name="file_apk" path="." />
     <external-files-path name="file_apk" path="." />
     <external-cache-path name="file_apk" path="." />
+    <external-path name="external_files" path="."/>
 </paths>

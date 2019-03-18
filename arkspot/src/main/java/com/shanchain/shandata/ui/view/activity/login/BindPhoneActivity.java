@@ -1,8 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -10,28 +8,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import com.shanchain.data.common.base.Constants;
-import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.model.LoginUserInfoBean;
-import com.shanchain.shandata.ui.model.ResponseLoginBean;
-import com.shanchain.shandata.ui.model.ResponseSmsBean;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
 
 public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
@@ -93,12 +84,14 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                 sign = MD5Utils.getMD5(verifyCode + salt + timestamp);
                 SCHttpUtils.postNoToken()
                         .url(HttpApi.SMS_LOGIN)
+                        .addParams("deviceToken",JPushInterface.getRegistrationID(mContext))
+                        .addParams("os","android")
                         .addParams("encryptOpenId", encryptOpenId)
                         .addParams("mobile", mobilePhone)
                         .addParams("sign", sign)
                         .addParams("verifyCode", verifyCode)
                         .build()
-                        .execute(new SCHttpStringCallBack() {
+                        .execute(new SCHttpStringCallBack(BindPhoneActivity.this) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
                                 LogUtils.d("dynamicLogin", "三方登录失败" + e.toString());
@@ -111,7 +104,8 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                                 if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                     String data = JSONObject.parseObject(response).getString("data");
                                     LogUtils.d("dynamicLogin", "三方登录成功");
-                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
+//                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
+                                    Intent intent = new Intent(BindPhoneActivity.this,FootPrintActivity.class);
                                     startActivity(intent);
                                     finish();
                                     runOnUiThread(new Runnable() {

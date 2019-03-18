@@ -13,23 +13,26 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.shandata.ui.view.activity.story.ReportActivity;
 
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 
-public class SingerChatInfoActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener,ArthurToolBar.OnLeftClickListener{
+public class SingerChatInfoActivity extends AppCompatActivity implements ArthurToolBar.OnRightClickListener, ArthurToolBar.OnLeftClickListener {
 
     private Button btnSingerChat;
     private ImageView ivHeadImg;
     private TextView tvUserNikeName;
     private TextView tvUserSign;
+    private Button btnReport;
     private DefaultUser userInfo;
     private View.OnClickListener onClickListener;
     private ArthurToolBar mTbMain;
-    private String FORM_USER_NAME ;
+    private String FORM_USER_NAME;
+    private boolean isShow = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
         ivHeadImg = findViewById(R.id.iv_head_img);
         tvUserNikeName = findViewById(R.id.tv_user_nike_name);
         tvUserSign = findViewById(R.id.tv_user_sign);
+        btnReport = findViewById(R.id.btn_report);
         mTbMain = findViewById(R.id.tb_main);
         final Bundle bundle = getIntent().getExtras();
         if (bundle.getParcelable("userInfo") != null) {
@@ -53,7 +57,7 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
             }
             if (userInfo.getSignature() != null) {
                 tvUserSign.setText("" + userInfo.getSignature());
-            }else {
+            } else {
                 tvUserSign.setText("该用户很懒，没有设置签名");
             }
         } else if (userInfo == null) {
@@ -61,7 +65,7 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
             userInfo.setHxUserId("qwer");
         }
 
-        JMessageClient.getUserInfo(userInfo.getHxUserId()+"",new GetUserInfoCallback() {
+        JMessageClient.getUserInfo(userInfo.getHxUserId() + "", new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, final UserInfo userInfo) {
                 final UserInfo userInfo1 = userInfo;
@@ -98,7 +102,17 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
             }
         };
         btnSingerChat.setOnClickListener(onClickListener);
+        btnReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SingerChatInfoActivity.this, ReportActivity.class);
+                intent.putExtra("", "" + userInfo.getHxUserId());
+                startActivity(intent);
+                btnReport.setVisibility(View.INVISIBLE);
+            }
+        });
     }
+
     private void initToolbar() {
         mTbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         mTbMain.isShowChatRoom(false);//不在导航栏显示聊天室信息
@@ -111,7 +125,7 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
         FORM_USER_NAME = userInfo.getDisplayName();
-        String title = TextUtils.isEmpty(FORM_USER_NAME)?FORM_USER_NAME:"好友";
+        String title = TextUtils.isEmpty(FORM_USER_NAME) ? FORM_USER_NAME : "好友";
         mTbMain.setTitleText(title);
         mTbMain.setRightImage(R.mipmap.more);
 
@@ -126,6 +140,12 @@ public class SingerChatInfoActivity extends AppCompatActivity implements ArthurT
 
     @Override
     public void onRightClick(View v) {
-        finish();
+        if (isShow == true) {
+            btnReport.setVisibility(View.VISIBLE);
+            isShow = false;
+        } else {
+            btnReport.setVisibility(View.INVISIBLE);
+            isShow = true;
+        }
     }
 }

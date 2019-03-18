@@ -19,11 +19,21 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+            <com.shanchain.data.common.ui.toolBar.ArthurToolBar
                 android:id="@+id/tb_main"
                 style="@style/style_toolbar"
                 app:titleColor="@color/colorTextDefault"
                 app:titleTextSize="16" />
+
+            <Button
+                android:id="@+id/btn_report"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_40"
+                android:text="举报"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dimens_15dp"
+                android:background="@drawable/shape_bg_msg_send_nomal"/>
 
             <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
                 android:id="@+id/pull_to_refresh_layout"

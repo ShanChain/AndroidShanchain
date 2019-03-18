@@ -5,6 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,12 +20,11 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.adapter.CouponListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.text.SimpleDateFormat;
@@ -80,6 +81,10 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     RecyclerView recyclerViewCouponCheckList;
     @Bind(R.id.srl_coupon_list)
     BGARefreshLayout srlCouponList;
+    @Bind(R.id.iv_invalid)
+    ImageView ivInvalid;
+    @Bind(R.id.frame_coupon_check)
+    FrameLayout frameCouponCheck;
 
     private int pageNo = 0, pageSize = 10;
 
@@ -147,6 +152,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                             if (NetErrCode.SUC_CODE.equals(code)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 CouponSubInfo couponSubInfo = JSONObject.parseObject(data, CouponSubInfo.class);
+
                                 RequestOptions options = new RequestOptions();
                                 try {
                                     options.placeholder(R.mipmap.aurora_headicon_default);
@@ -154,7 +160,13 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                tvItemStoryName.setText(couponSubInfo.getName() + "");
+                                if (couponSubInfo != null) {
+                                    String name = couponSubInfo.getName() != null ? couponSubInfo.getName() : "";
+                                    tvItemStoryName.setText(name + "");
+                                }
+                                if (couponSubInfo.getTokenStatus() == CouponSubInfo.CREATE_INVALID) {
+                                    ivInvalid.setVisibility(View.VISIBLE);
+                                }
                                 tvItemCode.setText(couponSubInfo.getTokenSymbol() + "");
                                 evenMessageBounty.setText(couponSubInfo.getPrice() + "");
                                 tvCouponNum.setText("共 " + couponSubInfo.getAmount() + " 张");
@@ -219,7 +231,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                             helper.setText(R.id.tv_item_coupon_status, "" + item.getTokenStatus());
                                             break;
                                         case CouponSubInfo.RECEIVER_USE:
-                                            helper.setText(R.id.tv_item_coupon_status, "已使用");
+                                            helper.setText(R.id.tv_item_coupon_status, "已核销");
                                             if (item.getUseTime() == null) return;
                                             String useTime = sdf.format(new Date(Long.valueOf(item.getUseTime())));
                                             helper.setText(R.id.tv_item_receive_time, "" + useTime);

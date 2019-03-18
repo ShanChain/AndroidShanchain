@@ -42,7 +42,7 @@ import com.shanchain.shandata.ui.model.StoryModelBean;
 import com.shanchain.shandata.ui.model.TopicInfo;
 import com.shanchain.shandata.widgets.rEdit.InsertModel;
 import com.shanchain.shandata.widgets.rEdit.RichEditor;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import java.util.ArrayList;
 import java.util.List;

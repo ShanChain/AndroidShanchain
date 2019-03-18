@@ -17,7 +17,6 @@ import java.io.File;
 import java.util.List;
 
 
-
 /**
  * [从本地选择图片以及拍照工具类，完美适配2.0-5.0版本]
  **/
@@ -37,6 +36,8 @@ public class PhotoUtils {
      * 选择照片成功后返回
      **/
     public static final int INTENT_SELECT = 4;
+    //上传钱包密码时选择图片返回
+    public static final int WALLET_PHOTO = 5;
 
     public static final String CROP_FILE_NAME = "crop_file.jpg";
 

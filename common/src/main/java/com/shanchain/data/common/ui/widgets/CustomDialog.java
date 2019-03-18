@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,13 +30,14 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private double ratio = 0.8;     //屏幕宽度占比
     private int layoutResID;      // 布局文件id
     private int[] listenedItems;  // 要监听的控件id
-    private ImageView shareView;
+    private ImageView shareView, passwordView;
     private int drawableId, viewId;
     private String messageContent;
     private String title;
+    private String sureText;
     private int messageContentSize;
     private String percentage;
-    private Bitmap shareBitmap;
+    private Bitmap shareBitmap, passwordBitmap = null;
     private boolean isShow = false;
     private RelativeLayout relativeLayout, relativeAllText;
 
@@ -67,6 +67,15 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.listenedItems = listenedItems;
     }
 
+    @Override
+    public void setCancelable(boolean flag) {
+        super.setCancelable(flag);
+    }
+
+    @Override
+    public void setCanceledOnTouchOutside(boolean cancel) {
+        super.setCanceledOnTouchOutside(cancel);
+    }
 
     public CustomDialog(Context context, double ratio, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
@@ -121,14 +130,18 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
             TextView textView = (TextView) findViewById(R.id.even_message_content);
             textView.setText(messageContent);
         }
-        if (messageContentSize != 0){
+        if (messageContentSize != 0) {
             TextView textView = (TextView) findViewById(R.id.even_message_content);
             textView.setTextSize(messageContentSize);
         }
-            if (title != null) {
-                TextView textView = findViewById(R.id.tv_input_dialog_title);
-                textView.setText(title);
-            }
+        if (title != null) {
+            TextView textView = findViewById(R.id.tv_input_dialog_title);
+            textView.setText(title);
+        }
+        if (sureText != null) {
+            TextView sureTextView = findViewById(R.id.btn_dialog_task_detail_sure);
+            sureTextView.setText(sureText);
+        }
         if (drawableId != 0) {
             relativeLayout = findViewById(R.id.share_window);
             relativeLayout.setBackground(getContext().getResources().getDrawable(drawableId));
@@ -150,8 +163,13 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
                 relativeAllText = findViewById(R.id.allText);
                 relativeAllText.setVisibility(View.VISIBLE);
             }
-
-
+        }
+        if (passwordBitmap != null) {
+            passwordView = findViewById(R.id.iv_dialog_add_picture);
+            TextView dialogSure = findViewById(R.id.tv_dialog_sure);
+            passwordView.setImageBitmap(passwordBitmap);
+            passwordView.setClickable(true);
+            dialogSure.setBackground(this.getContext().getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
         }
     }
 
@@ -172,6 +190,10 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.title = title;
     }
 
+    public void setSureText(String sureText) {
+        this.sureText = sureText;
+    }
+
     public void setMessageContentSize(int size) {
         this.messageContentSize = size;
     }
@@ -189,8 +211,13 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
         this.isShow = isShow;
     }
 
+    public void setPasswordBitmap(Bitmap passwordBitmap) {
+        this.passwordBitmap = passwordBitmap;
+    }
+
 
     public View getView(Context context, @IdRes int idRes) {
+//        context = getContext();
         View layoutView = LayoutInflater.from(context).inflate(layoutResID, null);
         shareView = layoutView.findViewById(idRes);
         return shareView;

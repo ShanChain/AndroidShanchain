@@ -44,7 +44,7 @@ import com.shanchain.shandata.widgets.rEdit.InsertModel;
 import com.shanchain.shandata.widgets.rEdit.RichEditor;
 import com.shanchain.shandata.widgets.richEditor.RichTextEditor;
 import com.shanchain.shandata.widgets.switchview.SwitchView;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
 import org.greenrobot.eventbus.EventBus;
 

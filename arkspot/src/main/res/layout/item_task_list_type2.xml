@@ -139,7 +139,7 @@
             android:layout_marginTop="-15dp"
             android:layout_marginRight="3dp"
             android:layout_below="@+id/linear_font"
-            android:background="@drawable/shape_bg_msg_send_pressed"
+            android:background="@drawable/selector_click_btn_bg"
             android:text="@string/my_task_heped"
             android:textColor="@color/colorWhite"
             android:textStyle="bold" />

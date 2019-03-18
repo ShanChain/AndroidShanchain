@@ -25,20 +25,20 @@ public abstract class SCHttpCallBack<T> extends Callback<T>{
         String code = jsonObject.optString("code");
         String msg = jsonObject.optString("message");
         Log.d("httpResult_SC",result);
-        if (code.equals(SCHttpApi.COMMON_SUC_CODE)) {
+        if (SCHttpApi.COMMON_SUC_CODE.equals(code)) {
             return new Gson().fromJson(data, clazz);
-        } else if (code.equals(SCHttpApi.COMMON_ERR_CODE)) {
+        } else if (SCHttpApi.COMMON_ERR_CODE.equals(code)) {
             Log.e("httpResult_SC","通用异常");
-        } else if (code.equals(SCHttpApi.SMSVC_ERR_CODE)) {
+        } else if (SCHttpApi.SMSVC_ERR_CODE.equals(code)) {
             Log.e("httpResult_SC","服务器异常");
-        } else if (code.equals(SCHttpApi.LOGIN_ERR_CODE)) {
+        } else if (SCHttpApi.LOGIN_ERR_CODE.equals(code)) {
             Log.e("httpResult_SC","账号或密码错误");
-        } else if (code.equals(SCHttpApi.USER_REPEAT_ERR_CODE)) {
+        } else if (SCHttpApi.USER_REPEAT_ERR_CODE.equals(code)) {
             Log.e("httpResult_SC","账号已存在");
         }
         return null;
     }
 
 
-    
+
 }

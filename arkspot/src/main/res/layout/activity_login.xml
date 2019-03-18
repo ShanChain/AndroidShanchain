@@ -6,7 +6,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <com.shanchain.shandata.widgets.toolBar.ArthurToolBar
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_login"
         style="@style/style_toolbar"
         android:visibility="gone"
@@ -121,8 +121,8 @@
         android:id="@+id/linear_dynamic_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/et_dynamic_login_account"
@@ -235,27 +235,73 @@
         android:gravity="center"
         android:visibility="visible">
 
-        <ImageView
-            android:id="@+id/iv_login_wx"
+        <RelativeLayout
+            android:id="@+id/rl_login_wx"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/abs_login_btn_wechat_default" />
+            android:background="@drawable/selector_click_bg_msg">
 
-        <ImageView
-            android:id="@+id/iv_login_wb"
+            <ImageView
+                android:id="@+id/iv_login_wx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/abs_login_btn_wechat_default" />
+        </RelativeLayout>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/abs_login_btn_weibo_default" />
+            android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/iv_login_qq"
+        <RelativeLayout
+            android:id="@+id/rl_login_wb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/abs_login_btn_qq_default" />
+            android:background="@drawable/selector_click_bg_msg"
+            android:visibility="gone">
 
+            <ImageView
+                android:id="@+id/iv_login_wb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/abs_login_btn_weibo_default" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_login_fb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <ImageView
+                android:id="@+id/iv_login_fb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/abs_login_btn_facebook_default" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_login_qq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <ImageView
+                android:id="@+id/iv_login_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/abs_login_btn_qq_default" />
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

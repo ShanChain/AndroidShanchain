@@ -4,24 +4,19 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.shandata.R;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
-import com.uuzuche.lib_zxing.view.ViewfinderView;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class ScanQRCodeActivity extends AppCompatActivity {
 
     private boolean isLighting = false;
     private TextView tvLight;
+    private ArthurToolBar mToolBar;
     /**
      * 二维码解析回调函数
      */
@@ -54,7 +49,13 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
         tvLight = findViewById(R.id.tv_light);
-
+        mToolBar = findViewById(R.id.tb_main);
+        mToolBar.setOnLeftClickListener(new ArthurToolBar.OnLeftClickListener() {
+            @Override
+            public void onLeftClick(View v) {
+                finish();
+            }
+        });
         //执行扫面Fragment的初始化操作
         CaptureFragment scannerFragment = new CaptureFragment();
         // 为二维码扫描界面设置定制化界面

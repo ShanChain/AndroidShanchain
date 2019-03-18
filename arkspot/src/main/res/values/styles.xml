@@ -127,46 +127,6 @@
         <item name="android:layout_height">5dp</item>
     </style>
 
-    <!-- 自定义标题栏-自定义属性 -->
-    <declare-styleable name="ArthurToolbar">
-        <!-- 标题 -->
-        <attr name="titleText" format="string" />
-        <attr name="titleColor" format="color" />
-        <attr name="titleTextSize" format="integer" />
-        <attr name="titleImage" format="reference" />
-        <!-- 左侧按钮 -->
-        <attr name="leftText" format="string" />
-        <attr name="leftTextColor" format="color" />
-        <attr name="leftTextSize" format="integer" />
-        <attr name="leftImage" format="reference" />
-        <attr name="leftEnabled" format="boolean" />
-        <attr name="leftVisibility" format="boolean" />
-        <!-- 右侧按钮 -->
-        <attr name="rightText" format="string" />
-        <attr name="rightTextColor" format="color" />
-        <attr name="rightTextSize" format="integer" />
-        <attr name="rightImage" format="reference" />
-        <attr name="rightEnabled" format="boolean" />
-        <attr name="rightVisibility" format="boolean" />
-        <!-- 底部文字-大厅 -->
-        <attr name="bottomTitleOne" format="string"></attr>
-        <attr name="titleOneColor" format="color"></attr>
-        <attr name="titleOneSize" format="integer"></attr>
-        <attr name="titleOneImage" format="reference" />
-        <attr name="titleOneEnabled" format="boolean" />
-        <attr name="titleOneVisibility" format="boolean"></attr>
-        <!-- 底部文字-捡漏 -->
-        <attr name="bottomTitleTwo" format="string"></attr>
-        <attr name="titleTwoColor" format="color"></attr>
-        <attr name="titleTwoSize" format="integer"></attr>
-        <attr name="titleTwoImage" format="reference" />
-        <attr name="titleTwoEnabled" format="boolean" />
-        <attr name="titleTwoVisibility" format="boolean"></attr>
-        <!-- 公共属性 -->
-        <attr name="btnDisable" format="boolean" />
-        <attr name="navHeight" format="integer"/>
-    </declare-styleable>
-
     <style name="style_radiobutton_report">
         <item name="android:button">@drawable/selector_rediobutton</item>
     </style>

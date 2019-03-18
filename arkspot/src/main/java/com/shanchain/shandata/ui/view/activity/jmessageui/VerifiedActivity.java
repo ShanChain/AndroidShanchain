@@ -1,26 +1,30 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
-import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
-import com.shanchain.shandata.widgets.toolBar.ArthurToolBar;
+import com.shanchain.shandata.base.MyApplication;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
@@ -38,8 +42,19 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
     EditText editCouponCode;
     @Bind(R.id.verified_sure)
     Button btnVerified;
+    @Bind(R.id.tv_real_name_info)
+    TextView tvRealNameInfo;
+    @Bind(R.id.tv_certificates_type_info)
+    TextView tvCertificatesTypeInfo;
+    @Bind(R.id.tv_tv_identity_code_info)
+    TextView tvTvIdentityCodeInfo;
+    @Bind(R.id.relative_verified_info)
+    RelativeLayout relativeVerifiedInfo;
+    @Bind(R.id.relative_hint)
+    RelativeLayout relativeHint;
 
     private String name, code;
+    private boolean idcard;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -54,9 +69,19 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     @Override
     protected void initViewsAndEvents() {
+        idcard = getIntent().getBooleanExtra("idcard", false);
         tbMain.setTitleText(getResources().getString(R.string.nav_real_identity));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);
+        isRealName();
+        if (MyApplication.isRealName() || idcard) {
+            initData();
+            relativeVerifiedInfo.setVisibility(View.GONE);
+            relativeHint.setVisibility(View.VISIBLE);
+        } else {
+            relativeVerifiedInfo.setVisibility(View.VISIBLE);
+            relativeHint.setVisibility(View.GONE);
+        }
         btnVerified.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +138,42 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
         });
 
 
+    }
+
+    private void initData() {
+        CustomDialog showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(VerifiedActivity.this, true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+        SCHttpUtils.get()
+                .url(HttpApi.VERIFIED_DETAILS)
+                .build()
+                .execute(new SCHttpStringCallBack(mContext, showPasswordDialog) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d(TAG, "网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            String data = SCJsonUtils.parseData(response);
+                            final String cardType = SCJsonUtils.parseString(data, "cardType");
+                            final String idCard = SCJsonUtils.parseString(data, "idCard");
+                            final String realName = SCJsonUtils.parseString(data, "realName");
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvRealNameInfo.setText(realName + "");
+                                    tvCertificatesTypeInfo.setText(cardType + "");
+                                    tvTvIdentityCodeInfo.setText(idCard + "");
+                                }
+                            });
+
+                        }
+
+                    }
+                });
     }
 
     @Override

@@ -13,21 +13,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -83,7 +81,7 @@ import com.shanchain.data.common.net.UpdateAppHttpUtil;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.RedPaperDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
-import com.shanchain.data.common.utils.CountDownTimeUtils;
+import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -96,7 +94,6 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.push.ExampleUtil;
-import com.shanchain.shandata.receiver.DownloadCompleteReceiver;
 import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.RNGDataBean;
@@ -104,12 +101,11 @@ import com.shanchain.shandata.ui.model.RedPaper;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.CoordinateTransformUtil;
-import com.shanchain.shandata.utils.ImageUtils;
 import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.utils.RequestCode;
-import com.shanchain.shandata.widgets.pickerimage.utils.ImageUtil;
+import com.tinkerpatch.sdk.TinkerPatch;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.service.DownloadService;
@@ -122,18 +118,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.OnClick;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jiguang.share.android.api.JShareInterface;
@@ -141,6 +132,7 @@ import cn.jiguang.share.android.api.PlatActionListener;
 import cn.jiguang.share.android.api.Platform;
 import cn.jiguang.share.android.api.ShareParams;
 import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.facebook.Facebook;
 import cn.jiguang.share.qqmodel.QQ;
 import cn.jiguang.share.wechat.Wechat;
 import cn.jiguang.share.wechat.WechatMoments;
@@ -177,7 +169,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private double[] gcj02point;
     private UiSettings uiSettings;
     private MyOrientationListener myOrientationListener;
-    public static Coordinates coordinates;
+    private Coordinates coordinates;
     private List pointList = new ArrayList();
     private List<Coordinates> coordinatesList;
     private List roomList = new ArrayList();
@@ -185,7 +177,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private boolean isHide = true; //是否隐藏
     private String roomID = "", clickRoomID = "";
     private String roomName;
-    private int joinRoomId, page = 0, pageSize = 10;
+    private int joinRoomId = 0, page = 0, pageSize = 10;
     private ProgressDialog mDialog;
     private CustomDialog ruleDialog;
     private LatLng myFocusPoint;
@@ -257,7 +249,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             if (shareHandler != null) {
                 Message message = shareHandler.obtainMessage();
                 message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
-                Logger.dd(TAG, message.obj + "");
+                Logger.d("shareError", message.obj + "");
                 shareHandler.sendMessage(message);
             }
         }
@@ -315,19 +307,19 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //每次进入主界面自动查询是否有补丁文件更新
+        TinkerPatch.with().fetchPatchUpdate(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
             String channelName = "聊天消息";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             createNotificationChannel(channelId, channelName, importance);
-
             channelId = "subscribe";
             channelName = "订阅消息";
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
 //        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
-
     }
 
     @Override
@@ -466,7 +458,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                         switch (view.getId()) {
                                                             case R.id.mRlWechat:
                                                                 if (shareType.equals("SHARE_IMAGE")) {
-                                                                    showLoadingDialog();
+                                                                    showLoadingDialog(false);
                                                                     redPaperParams.setShareType(Platform.SHARE_IMAGE);
                                                                     ThreadUtils.runOnSubThread(new Runnable() {
                                                                         @Override
@@ -502,7 +494,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                 break;
                                                             case R.id.mRlWeixinCircle:
                                                                 if (shareType.equals("SHARE_IMAGE")) {
-                                                                    showLoadingDialog();
+                                                                    showLoadingDialog(false);
                                                                     redPaperParams.setShareType(Platform.SHARE_IMAGE);
                                                                     ThreadUtils.runOnSubThread(new Runnable() {
                                                                         @Override
@@ -538,7 +530,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                 break;
                                                             case R.id.mRlQQ:
                                                                 if (shareType.equals("SHARE_IMAGE")) {
-                                                                    showLoadingDialog();
+                                                                    showLoadingDialog(false);
                                                                     redPaperParams.setShareType(Platform.SHARE_IMAGE);
                                                                     ThreadUtils.runOnSubThread(new Runnable() {
                                                                         @Override
@@ -574,7 +566,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                 break;
                                                             case R.id.mRlWeibo:
                                                                 if (shareType.equals("SHARE_IMAGE")) {
-                                                                    showLoadingDialog();
+                                                                    showLoadingDialog(false);
                                                                     redPaperParams.setShareType(Platform.SHARE_IMAGE);
                                                                     ThreadUtils.runOnSubThread(new Runnable() {
                                                                         @Override
@@ -757,6 +749,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            if (coordinates == null) {
+                                return;
+                            }
 //                            clickRoomID = coordinates.getRoomId();
                             roomID = coordinates.getRoomId();
                             String latLang = coordinates.getRoomName();
@@ -827,6 +822,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint); //未转换的坐标
                             baiduMap.setMapStatus(mapStatusUpdate);
                             baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
+//                            baiduMap.setBaiduHeatMapEnabled(true);
+
 
                             //构建Marker图标
                             BitmapDescriptor bitmap = BitmapDescriptorFactory
@@ -878,6 +875,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             String data = JSONObject.parseObject(response).getString("data");
                             String room = JSONObject.parseObject(data).getString("room");
                             coordinatesList = JSONObject.parseArray(room, Coordinates.class);
+                            if (coordinatesList == null) {
+                                return;
+                            }
 
                             /*
                              * 绘制附近的方区
@@ -886,49 +886,54 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    for (int i = 0; i < coordinatesList.size(); i++) {
-                                        LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
-                                        LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
-                                        //构建Marker图标
-                                        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                                .fromResource(R.mipmap.home_location);
-                                        //构建MarkerOption，用于在地图上添加Marker
-                                        OverlayOptions option = new MarkerOptions()
-                                                .position(srcLatLang)
-                                                .icon(bitmap);
-                                        //在地图上添加Marker，并显示
+                                    if (coordinatesList != null) {
+                                        for (int i = 0; i < coordinatesList.size(); i++) {
+                                            if (coordinatesList.get(i) != null
+                                                    && coordinatesList.get(i).getFocusLatitude() != null
+                                                    && coordinatesList.get(i).getFocusLongitude() != null) {
+                                                LatLng srcLatLang = new LatLng(Double.valueOf(coordinatesList.get(i).getFocusLatitude()), Double.valueOf(coordinatesList.get(i).getFocusLongitude()));
+                                                LatLng focusPoint = coordinateConverter.from(CoordinateConverter.CoordType.GPS).coord(srcLatLang).convert();
+                                                //构建Marker图标
+                                                BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                                        .fromResource(R.mipmap.home_location);
+                                                //构建MarkerOption，用于在地图上添加Marker
+                                                OverlayOptions option = new MarkerOptions()
+                                                        .position(srcLatLang)
+                                                        .icon(bitmap);
+                                                //在地图上添加Marker，并显示
 //                                baiduMap.addOverlay(option);
-                                        for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
-                                            double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
-                                            double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
-                                            LatLng point = new LatLng(pointLatitude, pointLongitude);
+                                                for (int j = 0; j < coordinatesList.get(i).getCoordinates().size(); j++) {
+                                                    double pointLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLatitude());
+                                                    double pointLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(j).getLongitude());
+                                                    LatLng point = new LatLng(pointLatitude, pointLongitude);
 
-                                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                            coordinateConverter.coord(point);
-                                            LatLng desLatLng = coordinateConverter.convert();
+                                                    // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                                    coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                                    coordinateConverter.coord(point);
+                                                    LatLng desLatLng = coordinateConverter.convert();
 
 //                                    roomList.add(desLatLng);
-                                            roomList.add(point);//未转换的坐标
+                                                    roomList.add(point);//未转换的坐标
 
-
-                                        }
-                                        //
-                                        double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
-                                        double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
-                                        LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
-                                        // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                                        coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                                        coordinateConverter.coord(indexPoint);
-                                        LatLng firstLatLng = coordinateConverter.convert();
+                                                }
+                                            }
+                                            //
+                                            double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
+                                            double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
+                                            LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
+                                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                            coordinateConverter.coord(indexPoint);
+                                            LatLng firstLatLng = coordinateConverter.convert();
 //                                roomList.add(firstLatLng);
-                                        //绘制虚线（需要多添加一个起点坐标，形成矩形）
-                                        roomList.add(indexPoint);
-                                        OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
-                                                .color(0xAA121518).points(roomList);
-                                        Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
-                                        roomPolyline.setDottedLine(true);
-                                        roomList.clear();
+                                            //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                                            roomList.add(indexPoint);
+                                            OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
+                                                    .color(0xAA121518).points(roomList);
+                                            Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
+                                            roomPolyline.setDottedLine(true);
+                                            roomList.clear();
+                                        }
                                     }
                                 }
                             }).start();
@@ -960,6 +965,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             LogUtils.d("####### " + "获取聊天室信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            if (coordinates == null) {
+                                return;
+                            }
                             //房间roomId
                             roomID = coordinates.getRoomId();
                             RoleManager.switchRoleCacheRoomId(roomID);
@@ -1098,6 +1106,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         final String localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.postNoToken()
                 .url(HttpApi.OSS_APK_GET_LASTEST)
+                .addParams("type", "android")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -1181,7 +1190,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     //下载APK版本
     private void downLoadApk(String url) {
         DownloadManager manager;
-        manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+//        manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         /*DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(downloadId);
         query.setFilterByStatus(DownloadManager.STATUS_RUNNING);//正在下载
@@ -1531,7 +1540,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void sharedChatRoom(EventMessage eventMessage) {
         if (eventMessage.getCode() == RequestCode.SCREENSHOT) {
             LogUtils.d("sharedChatRoom:", "分享元社区");
@@ -1558,6 +1567,13 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                             @Override
                                             public void onError(Call call, Exception e, int id) {
                                                 LogUtils.d("网络异常");
+                                                ThreadUtils.runOnMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        ToastUtils.showToast(mContext, getResources().getString(R.string.internet_error));
+                                                    }
+                                                });
+
                                             }
 
                                             @Override
@@ -1573,7 +1589,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                     final String title = JSONObject.parseObject(data).getString("title");
                                                     //分享参数
                                                     shareParams = new ShareParams();
-                                                    shareChatRoomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+                                                    shareChatRoomDialog = new CustomDialog(HomeActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlFacebook, R.id.share_facebook, R.id.share_close});
                                                     shareChatRoomDialog.setViewId(R.id.share_image);
                                                     shareChatRoomDialog.setShareBitmap(ImageUtils.getBitmapByFile(captureScreenFile));
                                                     shareChatRoomDialog.show();
@@ -1604,8 +1620,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                     JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
                                                                     break;
                                                                 case R.id.mRlQQ:
-                                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                                        ToastUtils.showToastLong(HomeActivity.this, "暂时不支持安卓8.0系统版本分享");
+                                                                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, getResources().getString(R.string.third_platform));
                                                                     } else {
                                                                         shareParams.setShareType(Platform.SHARE_WEBPAGE);
                                                                         shareParams.setImagePath(captureScreenFile.getAbsolutePath());
@@ -1616,17 +1632,30 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                                         JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
                                                                     }
                                                                     break;
-                                                                case R.id.mRlWeibo:
-                                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                                        ToastUtils.showToastLong(HomeActivity.this, "暂时不支持安卓8.0系统以上分享");
+                                                                case R.id.mRlFacebook:
+                                                                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, getResources().getString(R.string.third_platform));
                                                                     } else {
-                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
+                                                                        shareParams.setShareType(Platform.SHARE_IMAGE);
                                                                         shareParams.setImagePath(captureScreenFile.getAbsolutePath());
                                                                         shareParams.setText(intro);
                                                                         shareParams.setTitle(title);
                                                                         shareParams.setUrl(url);
-                                                                        //调用分享接口share ，分享到新浪微博平台。
-                                                                        JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
+                                                                        //调用分享接口share ，分享到Facebook平台。
+                                                                        JShareInterface.share(Facebook.Name, shareParams, mPlatActionListener);
+                                                                    }
+                                                                    break;
+                                                                case R.id.share_facebook:
+                                                                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+                                                                        ToastUtils.showToastLong(HomeActivity.this, getResources().getString(R.string.third_platform));
+                                                                    } else {
+                                                                        shareParams.setShareType(Platform.SHARE_IMAGE);
+                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
+                                                                        shareParams.setText(intro);
+                                                                        shareParams.setTitle(title);
+                                                                        shareParams.setUrl(url);
+                                                                        //调用分享接口share ，分享到Facebook平台。
+                                                                        JShareInterface.share(Facebook.Name, shareParams, mPlatActionListener);
                                                                     }
                                                                     break;
                                                                 case R.id.share_close:
@@ -1642,6 +1671,12 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
                             @Override
                             public void error() {
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showToast(mContext, getResources().getString(R.string.internet_error));
+                                    }
+                                });
                                 closeLoadingDialog();
                             }
                         });
@@ -1655,18 +1690,28 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //                new Rect()
 //            }
 //            baiduMap.snapshotScope();
+            if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+            }
             baiduMap.snapshot(new BaiduMap.SnapshotReadyCallback() {
                 @Override
                 public void onSnapshotReady(Bitmap bitmap) {
-                    String filePath = ImageUtils.getSDPath() + "/shanchain/";
-                    captureScreenFile = new File(filePath + ImageUtils.getTempFileName() + ".png");
                     FileOutputStream out;
                     try {
+                        String filePath = ImageUtils.getSDPath() + File.separator + "shanchain";
+                        //创建文件夹
+                        File fPath = new File(filePath);
+                        if (!fPath.exists()) {
+                            fPath.mkdir();
+                        }
+                        captureScreenFile = new File(filePath + File.separator + ImageUtils.getTempFileName() + ".png");
                         out = new FileOutputStream(captureScreenFile);
                         if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
                             out.flush();
                             out.close();
                         }
+                        ImageUtils.displayToGallery(HomeActivity.this, captureScreenFile);
                         shareChatRoomHandle.sendEmptyMessage(1);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();

@@ -17,6 +17,8 @@ public class CharacterInfo {
      * modelNo : 3
      * signature :
      * status : 1
+     * allowNotify 是否允许推送
+     * isBindPwd 是否绑定消费密码
      * createTime : 1509006070069
      */
 
@@ -26,12 +28,30 @@ public class CharacterInfo {
     private String intro;
     private String disc;
     private String headImg;
+    private boolean allowNotify;
+    private boolean isBindPwd;
     private int spaceId;
     private int modelId;
     private int modelNo;
     private String signature;
     private int status;
     private long createTime;
+
+    public boolean isAllowNotify() {
+        return allowNotify;
+    }
+
+    public void setAllowNotify(boolean allowNotify) {
+        this.allowNotify = allowNotify;
+    }
+
+    public boolean isBindPwd() {
+        return isBindPwd;
+    }
+
+    public void setBindPwd(boolean bindPwd) {
+        isBindPwd = bindPwd;
+    }
 
     public int getCharacterId() {
         return characterId;

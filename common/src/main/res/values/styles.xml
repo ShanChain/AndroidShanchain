@@ -1,12 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="RNTheme" parent="@style/AppTheme">
+    <style name="RNTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColor">@android:color/black</item>
 
     </style>
+    <style name="common_style_toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_height">44dp</item>
+    </style>
+    <!-- 自定义标题栏-自定义属性 -->
+    <declare-styleable name="ArthurToolbar">
+        <!-- 标题 -->
+        <attr name="titleText" format="string" />
+        <attr name="titleColor" format="color" />
+        <attr name="titleTextSize" format="integer" />
+        <attr name="titleImage" format="reference" />
+        <!-- 左侧按钮 -->
+        <attr name="leftText" format="string" />
+        <attr name="leftTextColor" format="color" />
+        <attr name="leftTextSize" format="integer" />
+        <attr name="leftImage" format="reference" />
+        <attr name="leftEnabled" format="boolean" />
+        <attr name="leftVisibility" format="boolean" />
+        <!-- 右侧按钮 -->
+        <attr name="rightText" format="string" />
+        <attr name="rightTextColor" format="color" />
+        <attr name="rightTextSize" format="integer" />
+        <attr name="rightImage" format="reference" />
+        <attr name="rightEnabled" format="boolean" />
+        <attr name="rightVisibility" format="boolean" />
+        <!-- 底部文字-大厅 -->
+        <attr name="bottomTitleOne" format="string"></attr>
+        <attr name="titleOneColor" format="color"></attr>
+        <attr name="titleOneSize" format="integer"></attr>
+        <attr name="titleOneImage" format="reference" />
+        <attr name="titleOneEnabled" format="boolean" />
+        <attr name="titleOneVisibility" format="boolean"></attr>
+        <!-- 底部文字-捡漏 -->
+        <attr name="bottomTitleTwo" format="string"></attr>
+        <attr name="titleTwoColor" format="color"></attr>
+        <attr name="titleTwoSize" format="integer"></attr>
+        <attr name="titleTwoImage" format="reference" />
+        <attr name="titleTwoEnabled" format="boolean" />
+        <attr name="titleTwoVisibility" format="boolean"></attr>
+        <!-- 公共属性 -->
+        <attr name="btnDisable" format="boolean" />
+        <attr name="navHeight" format="integer"/>
+    </declare-styleable>
 
     <style name="jmui_default_dialog_style">
         <item name="android:windowIsFloating">true</item>
@@ -19,7 +63,6 @@
         <item name="android:radius">5dp</item>
     </style>
 
-
     <!-- dialog样式 -->
     <style name="dialog_custom" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>    <!--是否浮在界面上-->
@@ -27,16 +70,18 @@
         <item name="android:windowNoTitle">false</item>       <!--是否有标题-->
         <item name="android:windowBackground">@android:color/transparent</item> <!--窗口背景色透明-->
         <item name="android:backgroundDimEnabled">true</item> <!--背景是否模糊显示-->
-        <item name="android:windowSoftInputMode">stateVisible</item><!--显示软键盘-->
+        <!--<item name="android:windowSoftInputMode">stateVisible</item>&lt;!&ndash;显示软键盘&ndash;&gt;-->
+        <item name="android:windowSoftInputMode">adjustResize</item><!--显示软键盘-->
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:focusable">true</item>
 
-
-        <style name="loading_dialog" parent="android:style/Theme.Dialog">
+        <!--<style name="loading_dialog" parent="android:style/Theme.Dialog">
             <item name="android:windowFrame">@null</item>
             <item name="android:windowNoTitle">true</item>
             <item name="android:windowBackground">@android:color/transparent</item>
             <item name="android:windowIsFloating">true</item>
             <item name="android:windowContentOverlay">@null</item>
-        </style>
+        </style>-->
 
     </style>
     <!-- dialog底部弹出菜单动画 -->
@@ -44,7 +89,6 @@
         <item name="@android:windowEnterAnimation">@anim/bottom_menu_enter</item>
         <item name="@android:windowExitAnimation">@anim/bottom_menu_exit</item>
     </style>
-
     <!--全屏分割线样式-->
     <style name="style_text_line_match">
         <item name="android:background">@color/colorBtnBg</item>

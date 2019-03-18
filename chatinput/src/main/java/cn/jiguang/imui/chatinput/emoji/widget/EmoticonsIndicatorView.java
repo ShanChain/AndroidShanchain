@@ -33,11 +33,11 @@ public class EmoticonsIndicatorView extends LinearLayout {
         this.setOrientation(HORIZONTAL);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.EmoticonsIndicatorView, 0, 0);
+                R.styleable.ChatInputViewEmoticonsIndicatorView, 0, 0);
 
         try {
-            mDrawableSelect = a.getDrawable(R.styleable.EmoticonsIndicatorView_bmpSelect);
-            mDrawableNomal = a.getDrawable(R.styleable.EmoticonsIndicatorView_bmpNomal);
+            mDrawableSelect = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_chat_input_bmpSelect);
+            mDrawableNomal = a.getDrawable(R.styleable.ChatInputViewEmoticonsIndicatorView_chat_input_bmpNomal);
         } finally {
             a.recycle();
         }

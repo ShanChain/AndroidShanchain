@@ -7,6 +7,7 @@ package com.shanchain.data.common.base;
 public interface UserType {
     String USER_TYPE_WEIXIN = "USER_TYPE_WEIXIN";
     String USER_TYPE_WEIBO = "USER_TYPE_WEIBO";
+    String USER_TYPE_FACEBOOK = "USER_TYPE_FACEBOOK";
     String USER_TYPE_QQ = "USER_TYPE_QQ";
     String USER_TYPE_FB = "USER_TYPE_FB";
     String USER_TYPE_MOBILE = "USER_TYPE_MOBILE";
