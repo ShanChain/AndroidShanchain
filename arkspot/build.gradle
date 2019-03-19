@@ -133,10 +133,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':common')
-    implementation project(':chatinput')
+
     /*compile(name: 'AlivcPlayer', ext: 'aar')
-         compile(name: 'AliyunVodPlayer', ext: 'aar')
-         compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
+                     compile(name: 'AliyunVodPlayer', ext: 'aar')
+                     compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
     implementation 'com.lzy.widget:imagepicker:0.6.1'
 
     //    implementation 'me.shaohui.shareutil:shareutil:1.3.8'//三方分享登录组件
@@ -150,9 +150,11 @@ dependencies {
     implementation 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     implementation 'com.jaeger.ninegridimageview:library:1.1.0'
     implementation 'com.android.support:cardview-v7:27.1.0'
+
     //butterknife 插件
     annotationProcessor 'com.jakewharton:butterknife:7.0.1'
     implementation 'com.jakewharton:butterknife:7.0.1'
+
     //    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.gjiazhe:wavesidebar:1.3'
@@ -172,6 +174,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation 'cjt.library.wheel:camera:1.1.9'
     implementation 'pub.devrel:easypermissions:0.4.0'
+
     // 若使用annotation需要单独引用,对于tinker的其他库都无需再引用
     annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:1.9.11") {
         changing = true
@@ -237,4 +240,5 @@ dependencies {
     apply from: 'tinkerpatch.gradle'
 
     //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
+    implementation project(':chatinput')
 }

@@ -2416,8 +2416,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     // 接收聊天室消息
     public void onEventMainThread(ChatRoomMessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
-        chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-        List chatRoomList = chatRoomConversation.getAllMessage();
+//        chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+//        List chatRoomList = chatRoomConversation.getAllMessage();
         final List<Message> msgs = event.getMessages();
         final MyMessage myMessage;
 //        showProgress();
