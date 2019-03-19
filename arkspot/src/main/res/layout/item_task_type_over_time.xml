@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/even_message_bounty"
                     android:layout_alignBaseline="@+id/even_message_bounty"
-                    android:text="￥"
+                    android:text="SEAT"
                     android:textSize="10sp"
                     android:textColor="#000000" />
                 <TextView

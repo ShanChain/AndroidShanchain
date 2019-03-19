@@ -7,7 +7,7 @@
         android:topLeftRadius="4dp"
         android:topRightRadius="4dp"/>
     <size
-        android:width="50dp"
-        android:height="32dp"/>
+        android:width="230dp"
+        android:height="30dp"/>
     <solid android:color="@color/colorBtnBg"/>
 </shape>

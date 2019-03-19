@@ -61,6 +61,8 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
+        mBtnRegisterAgree.setClickable(false);
+        mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
     }
 
     private void initToolBar() {
@@ -223,6 +225,8 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                     public void onResponse(ResponseSmsBean response, int id) {
                         if (response != null) {
                             verifyCode = response.getSmsVerifyCode();
+                            mBtnRegisterAgree.setClickable(true);
+                            mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
                             mMobile = response.getMobile();
                             LogUtils.d("从后台获取的验证码:" + verifyCode + "\n 手机账号 :" + mMobile);
                         } else {

@@ -81,7 +81,7 @@ android {
     }
 
     productFlavors {
-        arkspot {}
+//        arkspot {}
 //        qianqian {
 //            applicationIdSuffix ".qianqian"
 ////            resValue 'string', 'app_name', 'MarJar测试版'

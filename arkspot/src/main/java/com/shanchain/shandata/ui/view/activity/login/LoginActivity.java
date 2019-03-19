@@ -39,6 +39,7 @@ import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
@@ -150,6 +151,7 @@ public class LoginActivity extends BaseActivity {
     private String sign, verifyCode, mobilePhone;
     private String salt;
     private String timestamp;
+    private String channel;
 
 
     @Override
@@ -162,6 +164,10 @@ public class LoginActivity extends BaseActivity {
         mTbLogin.setBtnEnabled(false);
         String RegistrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", RegistrationID);
+        channel = MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL");
+        LogUtils.d("appChannel", channel);
+        btnDynamicLogin.setClickable(false);
+        btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
     }
 
     private void checkCache() {
@@ -467,6 +473,7 @@ public class LoginActivity extends BaseActivity {
                 .url(HttpApi.USER_LOGIN)
                 .addParams("deviceToken", JPushInterface.getRegistrationID(this))
                 .addParams("os", "android")
+                .addParams("channel", "" + channel)
                 .addParams("Timestamp", time)
                 .addParams("encryptAccount", encryptAccount)
                 .addParams("encryptPassword", passwordAccount)
@@ -775,6 +782,7 @@ public class LoginActivity extends BaseActivity {
                     .url(HttpApi.USER_THIRD_LOGIN)
                     .addParams("deviceToken", JPushInterface.getRegistrationID(this))
                     .addParams("os", "android")
+                    .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                     .addParams("encryptOpenId", encryptOpenId + "")
                     .addParams("encryptToken16", encryptToken16 + "")
                     .addParams("headIcon", headIcon + "")
@@ -879,6 +887,8 @@ public class LoginActivity extends BaseActivity {
                             String data = JSONObject.parseObject(response).getString("data");
                             salt = JSONObject.parseObject(data).getString("salt");
                             timestamp = JSONObject.parseObject(data).getString("timestamp");
+                            btnDynamicLogin.setClickable(true);
+                            btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
                         }
                     }
                 });
@@ -888,6 +898,7 @@ public class LoginActivity extends BaseActivity {
     private void sureLogin(String mobilePhone, String sign, String verifyCode) {
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_LOGIN)
+                .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                 .addParams("mobile", mobilePhone)
                 .addParams("sign", sign)
                 .addParams("verifyCode", verifyCode)

@@ -19,6 +19,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 
@@ -86,6 +87,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                         .url(HttpApi.SMS_LOGIN)
                         .addParams("deviceToken",JPushInterface.getRegistrationID(mContext))
                         .addParams("os","android")
+                        .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                         .addParams("encryptOpenId", encryptOpenId)
                         .addParams("mobile", mobilePhone)
                         .addParams("sign", sign)
