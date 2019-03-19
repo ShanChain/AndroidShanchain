@@ -189,7 +189,6 @@ import cn.jpush.im.android.api.content.VideoContent;
 import cn.jpush.im.android.api.content.VoiceContent;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
-import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.ChatRoomInfo;
 import cn.jpush.im.android.api.model.Conversation;
@@ -2385,34 +2384,34 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
-    public void onEvent(LoginStateChangeEvent event) {
-        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
-        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
-        switch (reason) {
-            case user_password_change:
-                //用户密码在服务器端被修改
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(MessageListActivity.this, "用户密码已被修改");
-                    }
-                });
-                break;
-            case user_logout:
-                //用户换设备登录
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(MessageListActivity.this, "账号在别处登录");
-                    }
-                });
-//                JMessageClient.logout();
-                break;
-            case user_deleted:
-                //用户被删除
-                break;
-        }
-    }
+//    public void onEvent(LoginStateChangeEvent event) {
+//        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+//        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+//        switch (reason) {
+//            case user_password_change:
+//                //用户密码在服务器端被修改
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ToastUtils.showToast(MessageListActivity.this, "用户密码已被修改");
+//                    }
+//                });
+//                break;
+//            case user_logout:
+//                //用户换设备登录
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ToastUtils.showToast(MessageListActivity.this, "账号在别处登录");
+//                    }
+//                });
+////                JMessageClient.logout();
+//                break;
+//            case user_deleted:
+//                //用户被删除
+//                break;
+//        }
+//    }
 
     // 接收聊天室消息
     public void onEventMainThread(ChatRoomMessageEvent event) {
@@ -2890,11 +2889,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     }
 
-    //用户下线事件
-    public void onEventMainThread(LoginStateChangeEvent event) {
-        StandardDialog dialog = new StandardDialog(MessageListActivity.this);
-        dialog.setStandardMsg("该账号已在其他设备上登录");
-    }
+//    //用户下线事件
+//    public void onEventMainThread(LoginStateChangeEvent event) {
+//        StandardDialog dialog = new StandardDialog(MessageListActivity.this);
+//        dialog.setStandardMsg("该账号已在其他设备上登录");
+//    }
 
     //聊天室输入框多功能界面
     public void onEventMainThread(AppsAdapter.ImageEvent event) {

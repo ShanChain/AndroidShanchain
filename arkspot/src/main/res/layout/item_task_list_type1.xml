@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignBaseline="@+id/even_message_bounty"
                         android:layout_toLeftOf="@+id/even_message_bounty"
-                        android:text="￥"
+                        android:text="SEAT"
                         android:textColor="#000000"
                         android:textSize="10sp" />
 

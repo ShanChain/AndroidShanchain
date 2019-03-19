@@ -205,7 +205,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     }
 
     public void playVoice(int position, MESSAGE message) {
-        mController.setLastPlayPosition(getLayoutPosition(), mIsSender);
+        mController.setLastPlayPosition(position, mIsSender);
         try {
             mMediaPlayer.reset();
             mFIS = new FileInputStream(message.getMediaFilePath());

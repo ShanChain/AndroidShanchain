@@ -13,7 +13,6 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
-import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.ViewAnimUtils;
@@ -74,36 +73,36 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         String expiryTime0 = simpleDateFormat.format(item.getExpiryTime());
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime0 + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
-//        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
-        holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
+        holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
+//        holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
         holder.setTextView(R.id.even_message_location, item.getRoomName() + "");
         holder.setTextView(R.id.task_release_time, "发布时间 " + simpleDateFormat.format(item.getCreateTime()));//发布时间
 //        if (taskStatus.isShown()){
-            taskStatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final LinearLayout front = holder.getViewId(R.id.item_task_front);
-                    final LinearLayout back = holder.getViewId(R.id.item_task_back);
+        taskStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final LinearLayout front = holder.getViewId(R.id.item_task_front);
+                final LinearLayout back = holder.getViewId(R.id.item_task_back);
 //                                ToastUtils.showToast(getContext(), taskList.get(position).getTaskId() + "内容："+taskList.get(position).getIntro());
-                    FrameLayout frame = holder.getViewId(R.id.frame);
-                    int direction = 1;
-                    if (back.isShown()) {
-                        direction = -1;
-                    }
-                    ViewAnimUtils.flip(frame, 500, direction);
-                    frame.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            switchViewVisibility(back, front);
-                        }
-                    }, 500);
+                FrameLayout frame = holder.getViewId(R.id.frame);
+                int direction = 1;
+                if (back.isShown()) {
+                    direction = -1;
                 }
-            });
+                ViewAnimUtils.flip(frame, 500, direction);
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        switchViewVisibility(back, front);
+                    }
+                }, 500);
+            }
+        });
 //        }
 
-        if (viewType!=0||viewType!=7||viewType!=8){
-            if (holder.getViewId(R.id.tv_item_story_time)!=null){
-                holder.setTextView(R.id.tv_item_story_time,  DateUtils.formatFriendly(new Date(item.getCreateTime())) + "");
+        if (viewType != 0 || viewType != 7 || viewType != 8) {
+            if (holder.getViewId(R.id.tv_item_story_time) != null) {
+                holder.setTextView(R.id.tv_item_story_time, DateUtils.formatFriendly(new Date(item.getCreateTime())) + "");
             }
         }
         //0我发布的，5:未领取 //1、我发布的，10.对方正在完成//2、我发布的，15:去确认
@@ -425,7 +424,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
 
     @Override
     public void OnItemClick(View view) {
-      switch (view.getId()) {
+        switch (view.getId()) {
             case R.id.btn_event_task:
                 if (onItemClickListener != null) {
                     onItemClickListener.OnItemClick(chatEventMessage, view, holder, position);
