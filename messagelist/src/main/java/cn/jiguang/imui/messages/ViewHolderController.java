@@ -61,6 +61,25 @@ public class ViewHolderController {
 
     }
 
+    public void notifyAnimStop(int position) {
+        ImageView imageView = mData.get(position);
+        try {
+            if (imageView != null) {
+                AnimationDrawable anim = (AnimationDrawable) imageView.getDrawable();
+                anim.stop();
+                if (mIsSender) {
+                    imageView.setImageResource(mSendDrawable);
+                } else {
+                    imageView.setImageResource(mReceiveDrawable);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void remove(int position) {
         if (null != mData && mData.size() > 0) {
             mData.remove(position);

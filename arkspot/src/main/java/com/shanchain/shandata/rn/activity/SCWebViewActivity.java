@@ -39,13 +39,14 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.SetWalletPasswordActivity;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.model.CharacterInfo;
-import com.shanchain.data.common.ui.SetWalletPasswordActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 
 import java.io.File;
@@ -126,7 +127,8 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                                 map.put("token", token + "");
                                 map.put("characterId", characterId + "");
                                 map.put("userId", userId + "");
-                                mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
+                                map.put("channel", "" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL"));
+                                mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId") + "&channel=" + map.get("channel"));
 //                                mWbSc.loadUrl( "userId");
                             } else {
                                 mWbSc.loadUrl(mUrl);

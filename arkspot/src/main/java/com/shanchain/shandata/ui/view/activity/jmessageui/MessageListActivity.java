@@ -837,7 +837,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
-        LogUtils.d("roomId", roomID);
+        LogUtils.d("roomId", roomID + "");
 //        ToastUtils.showToast(MessageListActivity.this,""+roomID);
         roomName = intent.getStringExtra("roomName");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
@@ -3142,10 +3142,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
-                } else {
-//                    Toast.makeText(getApplicationContext(),
-//                            getApplicationContext().getString(R.string.message_click_hint),
-//                            Toast.LENGTH_SHORT).show();
+                } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
+                    if (mAdapter.getMediaPlayer().isPlaying()) {
+                        mAdapter.getMediaPlayer().reset();
+                    }
                 }
             }
         });
@@ -3323,6 +3324,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.getMediaPlayer().stop();
+        mSensorManager.unregisterListener(this);
+    }
 
     @Override
     protected void onDestroy() {

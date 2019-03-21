@@ -223,7 +223,9 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     mVoiceAnimation.stop();
-                    mp.reset();
+                    if (getAdapterPosition() == mData.size() - 1) {
+                        mp.reset();
+                    }
                     mSetData = false;
                     if (mIsSender) {
                         mVoiceIv.setImageResource(mSendDrawable);
