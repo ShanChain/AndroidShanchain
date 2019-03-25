@@ -8,6 +8,8 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
@@ -18,8 +20,13 @@ import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.db.ContactDao;
+import com.shanchain.shandata.ui.model.FriendEntry;
+import com.shanchain.shandata.ui.model.FriendRecommendEntry;
+import com.shanchain.shandata.ui.model.UserEntry;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.Utils;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -50,7 +57,11 @@ import java.util.concurrent.TimeUnit;
 import cn.jiguang.share.android.api.JShareInterface;
 import cn.jiguang.share.android.api.PlatformConfig;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.RequestCallback;
+import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.OkHttpClient;
 
 //import com.shanchain.shandata.manager.CharacterManager;
@@ -78,7 +89,13 @@ public class MyApplication extends BaseApplication {
     public static final int TACK_VIDEO = 5;
     public static final int TACK_VOICE = 6;
     public static final int BUSINESS_CARD = 7;
+
     public static final int REQUEST_CODE_SEND_FILE = 26;
+    public static final int START_YEAR = 1900;
+    public static final int END_YEAR = 2050;
+    public static final int RESULT_CODE_SELECT_FRIEND = 23;
+    public static final long INIT_CHAT_ROOM_ID = 15198852; //测试聊天室的id
+
     public static String systemLanguge;
     private static final String TAG = "MyApplication";
     private static final String QQ_ID = "1106258060";
@@ -92,6 +109,15 @@ public class MyApplication extends BaseApplication {
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
     public static String PICTURE_DIR = "sdcard/JChatDemo/pictures/";
     public static String FILE_DIR = "sdcard/JChatDemo/recvFiles/";
+    public static final String CONV_TITLE = "conv_title";
+    public static final int RESULT_CODE_FRIEND_INFO = 17;
+    public static final int RESULT_CODE_EDIT_NOTENAME = 29;
+    public static final String NOTENAME = "notename";
+    public static final String TARGET_ID = "targetId";
+    public static final String ATUSER = "atuser";
+    public static final String TARGET_APP_KEY = "targetAppKey";
+    public static int maxImgCount;               //允许选择图片最大数
+    public static final String GROUP_NAME = "groupName";
     private ApplicationLike tinkerApplicationLike;
 
     /**
@@ -123,6 +149,13 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        //加载ActiveAndroid配置文件
+        Configuration.Builder builder = new Configuration.Builder(this);
+        //手动的添加模型类
+        builder.addModelClasses(UserEntry.class);
+        builder.addModelClasses(FriendEntry.class);
+        builder.addModelClasses(FriendRecommendEntry.class);
+        ActiveAndroid.initialize(builder.create());
         mContext = getApplicationContext();
         setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
         SoLoader.init(this, /* native exopackage */ false);
@@ -150,6 +183,10 @@ public class MyApplication extends BaseApplication {
 
     public static void setSystemLanguge(String sysLanguge) {
         systemLanguge = sysLanguge;
+    }
+
+    public static UserEntry getUserEntry() {
+        return UserEntry.getUser(JMessageClient.getMyInfo().getUserName(), JMessageClient.getMyInfo().getAppKey());
     }
 
     @Override
@@ -320,7 +357,51 @@ public class MyApplication extends BaseApplication {
         JShareInterface.init(this, platformConfig);//极光分享
         String RegistrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", RegistrationID);
+        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
+        if (guided==false) {
+            enterChatRoom(INIT_CHAT_ROOM_ID);
+        }
     }
+
+    //加入聊天室
+    private void enterChatRoom(final long roomID) {
+        ChatRoomManager.enterChatRoom(Long.valueOf(roomID), new RequestCallback<Conversation>() {
+            @Override
+            public void gotResult(int i, String s, Conversation conversation) {
+                LogUtils.d("enterChatRoom", "roomID:" + roomID);
+                if (i == 0) {
+                    LogUtils.d("enterChatRoom", "加入聊天室成功 code:" + i);
+                } else if (i == 851003) {//成员已在聊天室
+                    LogUtils.d("enterChatRoom", "成员已在聊天室 code:" + i);
+                    ChatRoomManager.leaveChatRoom(roomID, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i == 0) {
+                            }
+                            enterChatRoom(roomID);
+                        }
+                    });
+                } else if (i == 871300) {//未登录
+                    LogUtils.d("enterChatRoom", "成员未登录 code:" + i);
+                    JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxUserName(), new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            int ii = i;
+                            JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        enterChatRoom(roomID);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 
     /**
      * 描述：初始化网络请求框架OkhttpUtils

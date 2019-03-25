@@ -48,8 +48,8 @@ public class ChoosePhoto {
     private Activity mContext;
     private boolean isFromPersonal;
 
-    public void setInfo(MessageListActivity messageListActivity, boolean isFromPersonal) {
-        this.mContext = messageListActivity;
+    public void setInfo(Activity activity, boolean isFromPersonal) {
+        this.mContext = activity;
         this.isFromPersonal = isFromPersonal;
     }
 
@@ -80,20 +80,20 @@ public class ChoosePhoto {
         mDialog.show();
     }
 
-/*    public void setPhotosListener(final Context context) {
-        PhotoUtils.OnPhotoResultListener photoResultListener = new PhotoUtils.OnPhotoResultListener(){
-            @Override
-            public void onPhotoResult(Uri uri) {
+    /*    public void setPhotosListener(final Context context) {
+            PhotoUtils.OnPhotoResultListener photoResultListener = new PhotoUtils.OnPhotoResultListener(){
+                @Override
+                public void onPhotoResult(Uri uri) {
 
-            }
+                }
 
-            @Override
-            public void onPhotoCancel() {
+                @Override
+                public void onPhotoCancel() {
 
-            }
-        };
-        photoUtils = new PhotoUtils(photoResultListener);
-    }*/
+                }
+            };
+            photoUtils = new PhotoUtils(photoResultListener);
+        }*/
     public void setPortraitChangeListener(final Context context, final ImageView iv_photo, final int count) {
         photoUtils = new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
             @Override
@@ -115,7 +115,7 @@ public class ChoosePhoto {
                             RoleManager.switchRoleCacheHeadImg(urls.get(0));
                             //更改头像
                             String characterInfo = SCCacheUtils.getCacheCharacterInfo();
-                            CharacterInfo character = JSONObject.parseObject(characterInfo,CharacterInfo.class);
+                            CharacterInfo character = JSONObject.parseObject(characterInfo, CharacterInfo.class);
                             ModifyUserInfo modifyUserInfo = new ModifyUserInfo();
                             modifyUserInfo.setName(character.getName());
                             modifyUserInfo.setSignature(character.getSignature());
@@ -181,7 +181,7 @@ public class ChoosePhoto {
                                 e.printStackTrace();
                             }
                             //调用极光更新头像
-                           UserInfo userInfo = JMessageClient.getMyInfo();
+                            UserInfo userInfo = JMessageClient.getMyInfo();
                             JMessageClient.updateUserAvatar(headFiel, new BasicCallback() {
                                 @Override
                                 public void gotResult(int i, String s) {

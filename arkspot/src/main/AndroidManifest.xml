@@ -471,6 +471,8 @@
         <activity android:name=".ui.view.activity.settings.ChangePhoneNumActivity" />
         <activity android:name=".ui.view.activity.settings.AboutAppActivity" />
         <activity android:name="com.shanchain.data.common.ui.SetWalletPasswordActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.FriendInfoActivity" />
+        <activity android:name=".ui.view.activity.jmessageui.PersonalActivity" />
     </application>
 
 </manifest>

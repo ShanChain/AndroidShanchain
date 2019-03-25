@@ -318,6 +318,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private File captureScreenFile;
     private List imgList = new ArrayList();
     private LatLng myLatLng;
+    private Bundle mBundle;
     private Handler shareHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -372,25 +373,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mChatView = (ChatView) findViewById(R.id.chat_view);
         xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
         mArcMenu = findViewById(R.id.fbn_menu);
-        enterChatRoom();
-        initData(roomID);
-        initToolBar(roomID);
-        initView();
-        initEmojiData();
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
 //        mArcMenu.setVisibility(View.GONE);
-        mChatView.initModule();
-        mChatView.isShowBtnInputJoin(true);//显示加入按钮
-        mChatView.getChatInputView().setShowBottomMenu(false);
+        initToolBar(roomID);
+        initChatView();
+        initView();
+        initEmojiData();
         initMsgAdapter();
-        mReceiver = new HeadsetDetectReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
-        registerReceiver(mReceiver, intentFilter);
-        mChatView.setOnTouchListener(this);
+        initData(roomID);
+        //必须执行在initView()方法之后；
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
+//        initEmojiData();
 
         //是否是超级用户
         handler = new Handler() {
@@ -440,401 +435,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
             }
         };
-
-        /*
-         * 向聊天室发送消息
-         *
-         * */
-        chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-        if (null == chatRoomConversation) {
-            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-        }
-        //发送文字
-        xhsEmoticonsKeyBoard.getBtnSend().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String mcgContent = xhsEmoticonsKeyBoard.getEtChat().getText().toString();
-                scrollToBottom();
-                if (mcgContent.equals("")) {
-                    return;
-                }
-                Message msg = null;
-                TextContent content = new TextContent(mcgContent);
-                if (chatRoomConversation != null) {
-                    msg = chatRoomConversation.createSendMessage(content);
-                    JMessageClient.sendMessage(msg);
-                    //构造消息
-                    MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
-                    if (msg != null && msg.getFromUser() != null) {
-                        if (msg.getFromUser().getAvatarFile() != null) {
-                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
-                            message.setUserInfo(defaultUser);
-                        } else {
-                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
-                            message.setUserInfo(defaultUser);
-                        }
-                        message.setText(mcgContent);
-                        long messageTime = msg.getCreateTime();
-                        long preTime = new Date().getTime();
-                        long diff = preTime - messageTime;
-                        if (diff > 3 * 60 * 1000) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
-//                    message.setTimeString(timeString);
-                        }
-//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-
-//                                messageList.add(message);
-                        mAdapter.addToStart(message, true);
-                        xhsEmoticonsKeyBoard.getEtChat().setText("");
-                    }
-                }
-            }
-
-        });
-
-        //点击隐藏聊天输入框表情栏
-
-        mChatView.setMenuClickListener(new OnMenuClickListener() {
-            @Override
-            public boolean onSendTextMessage(final CharSequence input) {
-
-                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-                if (null == chatRoomConversation) {
-                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-                }
-                final String inputString;
-                inputString = input.toString();
-                if (inputString.length() > 0 && chatRoomConversation != null) {
-                    final Message msg = chatRoomConversation.createSendTextMessage(inputString + "");//实际聊天室可以支持所有类型的消息发送，demo为了简便，仅仅实现了文本类型的消息发送
-                    msg.setOnSendCompleteCallback(new BasicCallback() {
-                        @Override
-                        public void gotResult(int responseCode, String responseMessage) {
-
-                            MyMessage message = new MyMessage(inputString, IMessage.MessageType.SEND_TEXT.ordinal());
-                            if (0 == responseCode) {
-                                String s = responseMessage;
-                                Toast.makeText(MessageListActivity.this, "发送消息成功", Toast.LENGTH_SHORT);
-                                LogUtils.d("发送聊天室消息", "code: " + responseCode + " 回调信息：" + responseMessage);
-                                String s1 = msg.getFromUser().getAvatar();
-                                if (msg.getFromUser().getAvatarFile() != null) {
-                                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
-                                    message.setUserInfo(defaultUser);
-                                }
-                                message.setText(inputString);
-                                long messageTime = msg.getCreateTime();
-                                long preTime = new Date().getTime();
-                                long diff = preTime - messageTime;
-                                if (diff > 3 * 60 * 1000) {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                    String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                                    message.setTimeString(timeString);
-                                }
-//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-
-//                                messageList.add(message);
-                                mAdapter.addToStart(message, true);
-                            } else if (847001 == responseCode) {
-                                message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                                message.setText(inputString);
-                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                mAdapter.addToStart(message, true);
-                            } else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MessageListActivity.this, "发送消息失败", Toast.LENGTH_SHORT);
-                                    }
-                                });
-                                message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                                message.setText(inputString);
-                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                mAdapter.addToStart(message, true);
-                            }
-                        }
-                    });
-
-                    JMessageClient.sendMessage(msg);
-                } else {
-                    ToastUtils.showToast(MessageListActivity.this, "请输入内容");
-                }
-
-                return true;
-            }
-
-
-            @Override
-            public void onSendFiles(List<FileItem> list) {
-                if (list == null || list.isEmpty()) {
-                    return;
-                }
-                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-                if (null == chatRoomConversation) {
-                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-                }
-                MyMessage message;
-                for (FileItem item : list) {
-//                    Message msg = chatRoomConversation.createSendFileMessage(item,)
-                    if (item.getType() == FileItem.Type.Image) {
-                        message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                        mPathList.add(item.getFilePath());
-                        mMsgIdList.add(message.getMsgId());
-                    } else if (item.getType() == FileItem.Type.Video) {
-                        message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
-                        message.setDuration(((VideoItem) item).getDuration());
-                        File videoFile = new File(item.getFilePath());
-                        try {
-                            MediaMetadataRetriever media = new MediaMetadataRetriever();
-                            media.setDataSource(item.getFilePath());
-                            Bitmap bitmap = media.getFrameAtTime();
-                            long duration = ((VideoItem) item).getDuration();
-                            VideoContent video = new VideoContent(bitmap, "mp4", videoFile, item.getFileName(), (int) duration);
-                            Message msg = chatRoomConversation.createSendMessage(video);
-//                            Message msg = chatRoomConversation.createSendFileMessage(videoFile, item.getFileName());
-                            msg.setOnSendCompleteCallback(new BasicCallback() {
-                                @Override
-                                public void gotResult(int i, String s) {
-                                    if (i == 0) {
-
-                                    }
-                                }
-                            });
-                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                            message.setMediaFilePath(item.getFilePath());
-                            message.setDuration(((VideoItem) item).getDuration());
-                            message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                            JMessageClient.sendMessage(msg);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
-                    }
-
-
-                    final MyMessage fMsg = message;
-                    MessageListActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(fMsg, true);
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public boolean switchToMicrophoneMode() {
-                scrollToBottom();
-                String[] perms = new String[]{
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                };
-
-                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
-                    EasyPermissions.requestPermissions(MessageListActivity.this,
-                            getResources().getString(R.string.rationale_record_voice),
-                            RC_RECORD_VOICE, perms);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean switchToGalleryMode() {
-                scrollToBottom();
-                String[] perms = new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                };
-
-                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
-                    EasyPermissions.requestPermissions(MessageListActivity.this,
-                            getResources().getString(R.string.rationale_photo),
-                            RC_PHOTO, perms);
-                }
-                // If you call updateData, select photo view will try to update data(Last update over 30 seconds.)
-                mChatView.getChatInputView().getSelectPhotoView().updateData();
-                return true;
-            }
-
-            @Override
-            public boolean switchToCameraMode() {
-                scrollToBottom();
-                String[] perms = new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.RECORD_AUDIO
-                };
-
-                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
-                    EasyPermissions.requestPermissions(MessageListActivity.this,
-                            getResources().getString(R.string.rationale_camera),
-                            RC_CAMERA, perms);
-                    return false;
-                } else {
-                    File rootDir = getFilesDir();
-                    String fileDir = rootDir.getAbsolutePath() + "/photo";
-                    mChatView.setCameraCaptureFile(fileDir, new SimpleDateFormat("yyyy-MM-dd-hhmmss",
-                            Locale.getDefault()).format(new Date()));
-                }
-                return true;
-            }
-
-            @Override
-            public boolean switchToEmojiMode() {
-                scrollToBottom();
-                return true;
-            }
-        });
-
-
-        //发送语音
-        xhsEmoticonsKeyBoard.getBtnVoice().initConv(chatRoomConversation, mAdapter, mChatView);
-
-        mChatView.setRecordVoiceListener(new RecordVoiceListener() {
-            @Override
-            public void onStartRecord() {
-                String[] perms = new String[]{
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                };
-
-                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
-                    EasyPermissions.requestPermissions(MessageListActivity.this,
-                            getResources().getString(R.string.rationale_record_voice),
-                            RC_RECORD_VOICE, perms);
-                }
-                // set voice file path, after recording, audio file will save here
-                String path = Environment.getExternalStorageDirectory().getPath() + "/voice";
-                File destDir = new File(path);
-                if (!destDir.exists()) {
-                    destDir.mkdirs();
-                }
-                mChatView.setRecordVoiceFile(destDir.getPath(), DateFormat.format("yyyy-MM-dd-hhmmss",
-                        Calendar.getInstance(Locale.CHINA)) + "");
-            }
-
-            @Override
-            public void onFinishRecord(final File voiceFile, final int duration) {
-                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-                if (null == chatRoomConversation) {
-                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-                }
-                final Message msg;
-                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                try {
-                    msg = chatRoomConversation.createSendVoiceMessage(voiceFile, duration);
-                    msg.setOnSendCompleteCallback(new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            int i1 = i;
-                            String s1 = s;
-                            if (i == 0) {
-                            }
-                        }
-                    });
-                    message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                    message.setMediaFilePath(voiceFile.getPath());
-                    message.setDuration(duration);
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    mAdapter.addToStart(message, true);
-                    JMessageClient.sendMessage(msg);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-
-            @Override
-            public void onCancelRecord() {
-
-            }
-
-            /**
-             * In preview record voice layout, fires when click cancel button
-             * Add since chatinput v0.7.3
-             */
-            @Override
-            public void onPreviewCancel() {
-
-            }
-
-            /**
-             * In preview record voice layout, fires when click send button
-             * Add since chatinput v0.7.3
-             */
-            @Override
-            public void onPreviewSend() {
-            }
-        });
-
-        mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
-            @Override
-            public void onTakePictureCompleted(String photoPath) {
-                final Message msg;
-                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                if (chatRoomConversation != null) {
-                    try {
-                        msg = chatRoomConversation.createSendImageMessage(new File(photoPath));
-                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                        message.setMediaFilePath(photoPath);
-                        mPathList.add(photoPath);
-                        mMsgIdList.add(message.getMsgId());
-                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                        JMessageClient.sendMessage(msg);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                MessageListActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.addToStart(message, true);
-                    }
-                });
-            }
-
-            @Override
-            public void onStartVideoRecord() {
-
-            }
-
-            @Override
-            public void onFinishVideoRecord(String videoPath) {
-
-            }
-
-            @Override
-            public void onCancelVideoRecord() {
-
-            }
-        });
-
-        mChatView.getChatInputView().getInputView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                scrollToBottom();
-                return false;
-            }
-        });
-
-        mChatView.getSelectAlbumBtn().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MessageListActivity.this, "OnClick select album button",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
         LogUtils.d("roomId", roomID + "");
@@ -843,6 +447,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
         isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
         JMessageClient.registerEventReceiver(MessageListActivity.this);
+        enterChatRoom();
         super.onCreate(savedInstanceState);
     }
 
@@ -872,24 +477,28 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     private void enterChatRoom() {
-//        showProgress();
         if (roomID != null) {
             ChatRoomManager.enterChatRoom(Long.valueOf(roomID), new RequestCallback<Conversation>() {
                 @Override
                 public void gotResult(int i, String s, Conversation conversation) {
+                    LogUtils.d("enterChatRoom", "roomID:" + roomID);
                     if (i == 0) {
-                        closeProgress();
+                        LogUtils.d("enterChatRoom", "加入聊天室成功 code:" + i);
+                        chatRoomConversation = conversation;
+                        closeLoadingDialog();
                     } else if (i == 851003) {//成员已在聊天室
+                        LogUtils.d("enterChatRoom", "成员已在聊天室 code:" + i);
                         ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
                                 if (i == 0) {
-                                    closeProgress();
+                                    closeLoadingDialog();
                                 }
                                 enterChatRoom();
                             }
                         });
                     } else if (i == 871300) {//未登录
+                        LogUtils.d("enterChatRoom", "成员未登录 code:" + i);
                         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxUserName(), new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
@@ -899,25 +508,24 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     public void gotResult(int i, String s) {
                                         if (i == 0) {
                                             enterChatRoom();
-                                            closeProgress();
+                                            closeLoadingDialog();
                                         } else {
                                             ToastUtils.showToast(MessageListActivity.this, "账号登录失败");
-                                            closeProgress();
+                                            closeLoadingDialog();
                                         }
                                     }
                                 });
                             }
                         });
                     } else if (i == 852001) {
-                        closeProgress();
+                        closeLoadingDialog();
                     }
                 }
             });
         } else {
             ToastUtils.showToast(MessageListActivity.this, "加入聊天室失败");
-            closeProgress();
+            closeLoadingDialog();
         }
-        closeProgress();
     }
 
     //初始化聊天数据
@@ -968,40 +576,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         } else {
             getChatRoomInfo(roomID, myLatLng);
         }
-
-        messageHandler = new Handler() {
-            @Override
-            public void handleMessage(android.os.Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 3) {
-                    SCHttpUtils.postWithUserId()
-                            .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
-                            .addParams("roomId", roomID)
-                            .addParams("timeStamp", System.currentTimeMillis() + "")
-                            .build()
-                            .execute(new SCHttpStringCallBack() {
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    LogUtils.d("网络错误");
-                                }
-
-                                @Override
-                                public void onResponse(String response, int id) {
-                                    String code = JSONObject.parseObject(response).getString("code");
-                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                                        String data = JSONObject.parseObject(response).getString("data");
-
-                                    }
-//
-                                }
-                            });
-                }
-            }
-        };
     }
 
     private void initView() {
-
         /*
          * 初始化侧滑栏
          * */
@@ -1110,8 +687,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                ToastUtils.showToastLong(MessageListActivity.this,"弹窗");
 //            }
 //        });
-
-
         /*
          * 初始化悬浮按钮
          * */
@@ -1175,7 +750,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
             }
         };
-
         initTaskDialog();
 
 
@@ -1214,7 +788,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             android.os.Message message = new android.os.Message();
                             message.what = 3;
                             message.obj = coordinates;
-//                            messageHandler.sendMessage(message);
                         }
                     }
                 });
@@ -1986,7 +1559,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (i == 0) {
                     int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
                     memberCount = totalMember;
-                    roomNum.setText("" + totalMember);
+                    if (roomName.equals("加密聊天社区")) {
+                        roomNum.setText("16968");
+                    } else {
+                        roomNum.setText("" + memberCount);
+                    }
                 }
             }
         });
@@ -2227,13 +1804,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     public void onBackPressed() {
         closeLoadingDialog();
-        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                int i1 = i;
-                String s1 = s;
-            }
-        });
+//        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
+//            @Override
+//            public void gotResult(int i, String s) {
+//                int i1 = i;
+//                String s1 = s;
+//                LogUtils.d("leaveChatRoom", "离开聊天室 code" + i);
+//            }
+//        });
         if (mShowSoftInput) {
             if (mImm != null) {
                 mImm.hideSoftInputFromWindow(xhsEmoticonsKeyBoard.getEtChat().getWindowToken(), 0);
@@ -2426,7 +2004,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             public void run() {
                 for (int i = 0; i < msgs.size(); i++) {
                     final Message msg = msgs.get(i);
-//                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
+                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
                 }
             }
         }).start();
@@ -2986,6 +2564,406 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         return StorageUtil.getWritePath(filename, StorageType.TYPE_TEMP);
     }
 
+    private void initChatView() {
+        mChatView.initModule();
+        mChatView.isShowBtnInputJoin(true);//显示加入按钮
+        mChatView.getChatInputView().setShowBottomMenu(false);
+        mReceiver = new HeadsetDetectReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(mReceiver, intentFilter);
+        mChatView.setOnTouchListener(this);
+        /*
+         * 向聊天室发送消息
+         *
+         * */
+        chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+        if (null == chatRoomConversation) {
+//            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
+            ChatRoomManager.enterChatRoom(Long.valueOf(roomID), new RequestCallback<Conversation>() {
+                @Override
+                public void gotResult(int i, String s, Conversation conversation) {
+                    if (i == 0) {
+                        chatRoomConversation = conversation;
+                    }
+                }
+            });
+        }
+        //发送文字
+        xhsEmoticonsKeyBoard.getBtnSend().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mcgContent = xhsEmoticonsKeyBoard.getEtChat().getText().toString();
+                scrollToBottom();
+                if (mcgContent.equals("")) {
+                    return;
+                }
+                Message msg = null;
+                TextContent content = new TextContent(mcgContent);
+                if (chatRoomConversation != null) {
+                    msg = chatRoomConversation.createSendMessage(content);
+                    JMessageClient.sendMessage(msg);
+                    //构造消息
+                    MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
+                    if (msg != null && msg.getFromUser() != null) {
+                        if (msg.getFromUser().getAvatarFile() != null) {
+                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
+                            message.setUserInfo(defaultUser);
+                        } else {
+                            DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), SCCacheUtils.getCacheHeadImg());
+                            message.setUserInfo(defaultUser);
+                        }
+                        message.setText(mcgContent);
+                        long messageTime = msg.getCreateTime();
+                        long preTime = new Date().getTime();
+                        long diff = preTime - messageTime;
+                        if (diff > 3 * 60 * 1000) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+//                    message.setTimeString(timeString);
+                        }
+//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+//                                messageList.add(message);
+                        mAdapter.addToStart(message, true);
+                        xhsEmoticonsKeyBoard.getEtChat().setText("");
+                    }
+                }
+            }
+        });
+        //点击隐藏聊天输入框表情栏
+        mChatView.setMenuClickListener(new OnMenuClickListener() {
+            @Override
+            public boolean onSendTextMessage(final CharSequence input) {
+
+                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+                if (null == chatRoomConversation) {
+                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
+                }
+                final String inputString;
+                inputString = input.toString();
+                if (inputString.length() > 0 && chatRoomConversation != null) {
+                    final Message msg = chatRoomConversation.createSendTextMessage(inputString + "");//实际聊天室可以支持所有类型的消息发送，demo为了简便，仅仅实现了文本类型的消息发送
+                    msg.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int responseCode, String responseMessage) {
+
+                            MyMessage message = new MyMessage(inputString, IMessage.MessageType.SEND_TEXT.ordinal());
+                            if (0 == responseCode) {
+                                String s = responseMessage;
+                                Toast.makeText(MessageListActivity.this, "发送消息成功", Toast.LENGTH_SHORT);
+                                LogUtils.d("发送聊天室消息", "code: " + responseCode + " 回调信息：" + responseMessage);
+                                String s1 = msg.getFromUser().getAvatar();
+                                if (msg.getFromUser().getAvatarFile() != null) {
+                                    DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
+                                    message.setUserInfo(defaultUser);
+                                }
+                                message.setText(inputString);
+                                long messageTime = msg.getCreateTime();
+                                long preTime = new Date().getTime();
+                                long diff = preTime - messageTime;
+                                if (diff > 3 * 60 * 1000) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                    String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                    message.setTimeString(timeString);
+                                }
+//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+//                                messageList.add(message);
+                                mAdapter.addToStart(message, true);
+                            } else if (847001 == responseCode) {
+                                message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                message.setText(inputString);
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                mAdapter.addToStart(message, true);
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(MessageListActivity.this, "发送消息失败", Toast.LENGTH_SHORT);
+                                    }
+                                });
+                                message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                message.setText(inputString);
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                mAdapter.addToStart(message, true);
+                            }
+                        }
+                    });
+
+                    JMessageClient.sendMessage(msg);
+                } else {
+                    ToastUtils.showToast(MessageListActivity.this, "请输入内容");
+                }
+
+                return true;
+            }
+
+
+            @Override
+            public void onSendFiles(List<FileItem> list) {
+                if (list == null || list.isEmpty() || chatRoomConversation == null) {
+                    return;
+                }
+                MyMessage message;
+                for (FileItem item : list) {
+//                    Message msg = chatRoomConversation.createSendFileMessage(item,)
+                    if (item.getType() == FileItem.Type.Image) {
+                        message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                        mPathList.add(item.getFilePath());
+                        mMsgIdList.add(message.getMsgId());
+                    } else if (item.getType() == FileItem.Type.Video) {
+                        message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
+                        message.setDuration(((VideoItem) item).getDuration());
+                        File videoFile = new File(item.getFilePath());
+                        try {
+                            MediaMetadataRetriever media = new MediaMetadataRetriever();
+                            media.setDataSource(item.getFilePath());
+                            Bitmap bitmap = media.getFrameAtTime();
+                            long duration = ((VideoItem) item).getDuration();
+                            VideoContent video = new VideoContent(bitmap, "mp4", videoFile, item.getFileName(), (int) duration);
+                            Message msg = chatRoomConversation.createSendMessage(video);
+//                            Message msg = chatRoomConversation.createSendFileMessage(videoFile, item.getFileName());
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+
+                                    }
+                                }
+                            });
+                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                            message.setMediaFilePath(item.getFilePath());
+                            message.setDuration(((VideoItem) item).getDuration());
+                            message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                            JMessageClient.sendMessage(msg);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
+                    }
+
+
+                    final MyMessage fMsg = message;
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(fMsg, true);
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public boolean switchToMicrophoneMode() {
+                scrollToBottom();
+                String[] perms = new String[]{
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                };
+
+                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
+                    EasyPermissions.requestPermissions(MessageListActivity.this,
+                            getResources().getString(R.string.rationale_record_voice),
+                            RC_RECORD_VOICE, perms);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean switchToGalleryMode() {
+                scrollToBottom();
+                String[] perms = new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                };
+
+                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
+                    EasyPermissions.requestPermissions(MessageListActivity.this,
+                            getResources().getString(R.string.rationale_photo),
+                            RC_PHOTO, perms);
+                }
+                // If you call updateData, select photo view will try to update data(Last update over 30 seconds.)
+                mChatView.getChatInputView().getSelectPhotoView().updateData();
+                return true;
+            }
+
+            @Override
+            public boolean switchToCameraMode() {
+                scrollToBottom();
+                String[] perms = new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.RECORD_AUDIO
+                };
+
+                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
+                    EasyPermissions.requestPermissions(MessageListActivity.this,
+                            getResources().getString(R.string.rationale_camera),
+                            RC_CAMERA, perms);
+                    return false;
+                } else {
+                    File rootDir = getFilesDir();
+                    String fileDir = rootDir.getAbsolutePath() + "/photo";
+                    mChatView.setCameraCaptureFile(fileDir, new SimpleDateFormat("yyyy-MM-dd-hhmmss",
+                            Locale.getDefault()).format(new Date()));
+                }
+                return true;
+            }
+
+            @Override
+            public boolean switchToEmojiMode() {
+                scrollToBottom();
+                return true;
+            }
+        });
+        //发送语音
+        xhsEmoticonsKeyBoard.getBtnVoice().initConv(chatRoomConversation, mAdapter, mChatView);
+
+        mChatView.setRecordVoiceListener(new RecordVoiceListener() {
+            @Override
+            public void onStartRecord() {
+                String[] perms = new String[]{
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                };
+
+                if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
+                    EasyPermissions.requestPermissions(MessageListActivity.this,
+                            getResources().getString(R.string.rationale_record_voice),
+                            RC_RECORD_VOICE, perms);
+                }
+                // set voice file path, after recording, audio file will save here
+                String path = Environment.getExternalStorageDirectory().getPath() + "/voice";
+                File destDir = new File(path);
+                if (!destDir.exists()) {
+                    destDir.mkdirs();
+                }
+                mChatView.setRecordVoiceFile(destDir.getPath(), DateFormat.format("yyyy-MM-dd-hhmmss",
+                        Calendar.getInstance(Locale.CHINA)) + "");
+            }
+
+            @Override
+            public void onFinishRecord(final File voiceFile, final int duration) {
+                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
+                if (null == chatRoomConversation) {
+                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
+                }
+                final Message msg;
+                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
+                try {
+                    msg = chatRoomConversation.createSendVoiceMessage(voiceFile, duration);
+                    msg.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            int i1 = i;
+                            String s1 = s;
+                            if (i == 0) {
+                            }
+                        }
+                    });
+                    message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                    message.setMediaFilePath(voiceFile.getPath());
+                    message.setDuration(duration);
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    mAdapter.addToStart(message, true);
+                    JMessageClient.sendMessage(msg);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelRecord() {
+
+            }
+
+            /**
+             * In preview record voice layout, fires when click cancel button
+             * Add since chatinput v0.7.3
+             */
+            @Override
+            public void onPreviewCancel() {
+
+            }
+
+            /**
+             * In preview record voice layout, fires when click send button
+             * Add since chatinput v0.7.3
+             */
+            @Override
+            public void onPreviewSend() {
+            }
+        });
+
+        mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
+            @Override
+            public void onTakePictureCompleted(String photoPath) {
+                final Message msg;
+                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                if (chatRoomConversation != null) {
+                    try {
+                        msg = chatRoomConversation.createSendImageMessage(new File(photoPath));
+                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMediaFilePath(photoPath);
+                        mPathList.add(photoPath);
+                        mMsgIdList.add(message.getMsgId());
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        JMessageClient.sendMessage(msg);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                MessageListActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.addToStart(message, true);
+                    }
+                });
+            }
+
+            @Override
+            public void onStartVideoRecord() {
+
+            }
+
+            @Override
+            public void onFinishVideoRecord(String videoPath) {
+
+            }
+
+            @Override
+            public void onCancelVideoRecord() {
+
+            }
+        });
+
+        mChatView.getChatInputView().getInputView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                scrollToBottom();
+                return false;
+            }
+        });
+
+        mChatView.getSelectAlbumBtn().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MessageListActivity.this, "OnClick select album button",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void initMsgAdapter() {
         final float density = getResources().getDisplayMetrics().density;
         final float MIN_WIDTH = 60 * density;
@@ -3137,11 +3115,15 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     }
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
-                    Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
-                    intent.putExtra("messageId", message.getMsgId());
-                    intent.putStringArrayListExtra("pathList", mPathList);
-                    intent.putStringArrayListExtra("idList", mMsgIdList);
-                    startActivity(intent);
+                    if (mMsgIdList.indexOf(message.getMsgId()) != -1) {
+                        Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
+                        intent.putExtra("messageId", message.getMsgId());
+                        intent.putStringArrayListExtra("pathList", mPathList);
+                        intent.putStringArrayListExtra("idList", mMsgIdList);
+                        startActivity(intent);
+                    } else {
+                        ToastUtils.showToast(mContext, "图片正在加载中，请滑动页面刷新");
+                    }
                 } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
                     if (mAdapter.getMediaPlayer().isPlaying()) {
@@ -3167,10 +3149,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("userInfo", userInfo);
+                bundle.putString("targetId", message.getFromUser().getId() + "");
                 if (JMessageClient.getMyInfo().getUserID() == message.getFromUser().getId()) {
                     return;
+//                    readyGo(PersonalActivity.class);
                 } else {
-                    readyGo(SingerChatInfoActivity.class, bundle);
+//                    readyGo(SingerChatInfoActivity.class, bundle);
+                    readyGo(FriendInfoActivity.class, bundle);
                 }
 
             }
@@ -3338,13 +3323,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mAdapter.getMediaPlayer().stop();
         EventBus.getDefault().unregister(this);
         JMessageClient.unRegisterEventReceiver(this);
-        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                String s1 = s;
-                LogUtils.d("leaveChatRoom", "离开聊天室");
-            }
-        });
+//        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
+//            @Override
+//            public void gotResult(int i, String s) {
+//                String s1 = s;
+//                LogUtils.d("leaveChatRoom", "离开聊天室");
+//            }
+//        });
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
     }

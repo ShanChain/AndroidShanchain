@@ -20,6 +20,8 @@ import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.Date;
+
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
@@ -78,7 +80,7 @@ public class SplashActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd)) {
                 checkServer();
             } else {
-                loginJm(hxUserName, hxPwd,cacheCharacter);
+                loginJm(hxUserName, hxPwd, cacheCharacter);
 //                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 Intent intent = new Intent(SplashActivity.this, FootPrintActivity.class);
                 startActivity(intent);
@@ -93,9 +95,10 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void loginJm(String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
+    private void loginJm(final String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
         final long startTime = System.currentTimeMillis();
-        LogUtils.i("登录极光IM = 开始时间 = " + startTime);
+        Date date = new Date(startTime);
+        LogUtils.i("登录极光IM = 开始时间 = " + date.toString());
         JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -103,7 +106,12 @@ public class SplashActivity extends AppCompatActivity {
                 if (s.equals("Success")) {
                     LogUtils.d("极光IM############## 登录成功 ##############极光IM");
                     UserInfo userInfo = JMessageClient.getMyInfo();
-                    if (userInfo!=null){
+                    if (userInfo != null) {
+                        LogUtils.d("极光账号: " + hxUserName);
+                        LogUtils.d("极光DisplayName: " + userInfo.getDisplayName());
+                        LogUtils.d("极光Nickname: " + userInfo.getNickname());
+                        LogUtils.d("极光UserID: " + userInfo.getUserID());
+                        LogUtils.d("极光Signature: " + userInfo.getSignature());
                         userInfo.setNickname(characterInfo.getName());
                         userInfo.setSignature(characterInfo.getSignature());
                         JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {

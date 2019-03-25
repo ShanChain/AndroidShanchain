@@ -64,6 +64,9 @@
     <string name="verified_name_hint">请输入真实姓名</string>
     <string name="verified_code_hint">请输入真实身份证号</string>
     <string name="verified_button_sure">认证</string>
+    <string name="man">男</string>
+    <string name="woman">女</string>
+    <string name="unknown">未知</string>
 
     <string name="gallery_invalid">未找到图库</string>
     <string name="sdcard_not_enough_head_error">SD卡被拔出或存储空间不足</string>

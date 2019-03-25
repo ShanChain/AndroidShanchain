@@ -284,6 +284,11 @@ public class LoginActivity extends BaseActivity {
                         LogUtils.d("极光IM############## 登录成功 ##############极光IM");
                         closeProgress();
                         UserInfo userInfo = JMessageClient.getMyInfo();
+                        LogUtils.d("极光账号: " + jmUser);
+                        LogUtils.d("极光DisplayName: " + userInfo.getDisplayName());
+                        LogUtils.d("极光Nickname: " + userInfo.getNickname());
+                        LogUtils.d("极光UserID: " + userInfo.getUserID());
+                        LogUtils.d("极光Signature: " + userInfo.getSignature());
                         CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
                         if (userInfo != null && characterInfo != null) {
                             userInfo.setNickname(characterInfo.getName());
@@ -328,7 +333,7 @@ public class LoginActivity extends BaseActivity {
                     JMessageClient.register(jmUser, jmPassword, new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
-                            if (i == 0 && s.equals("Success")) {
+                            if (i == 0 || s.equals("Success")) {
                                 LogUtils.d("极光IM############## 注册成功 ##############极光IM");
                                 RoleManager.switchRoleCacheHx(jmUser, jmPassword);
                             } else {

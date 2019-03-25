@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.view.activity.jmessageui.impl.PhotoView;
 import com.shanchain.shandata.widgets.photochoose.ImgBrowserViewPager;
@@ -53,29 +54,33 @@ public class BrowserImageActivity extends Activity {
         PhotoView photoView = new PhotoView(true, this);
         String msgId = getIntent().getStringExtra("messageId");
         int position = mMsgIdList.indexOf(msgId);
-        String path = mPathList.get(position);
-        if (path != null) {
-            Bitmap bitmap = mCache.get(path);
-            if (bitmap != null) {
-                photoView.setImageBitmap(bitmap);
-            } else {
-                File file = new File(path);
-                if (file.exists()) {
-                    bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
-                    if (bitmap != null) {
-                        photoView.setImageBitmap(bitmap);
-                        mCache.put(path, bitmap);
+        if (position != -1) {
+            String path = mPathList.get(position);
+            if (path != null) {
+                Bitmap bitmap = mCache.get(path);
+                if (bitmap != null) {
+                    photoView.setImageBitmap(bitmap);
+                } else {
+                    File file = new File(path);
+                    if (file.exists()) {
+                        bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
+                        if (bitmap != null) {
+                            photoView.setImageBitmap(bitmap);
+                            mCache.put(path, bitmap);
+                        } else {
+                            photoView.setImageResource(R.drawable.aurora_picture_not_found);
+                        }
                     } else {
                         photoView.setImageResource(R.drawable.aurora_picture_not_found);
                     }
-                } else {
-                    photoView.setImageResource(R.drawable.aurora_picture_not_found);
                 }
+            } else {
+                photoView.setImageResource(R.drawable.aurora_picture_not_found);
             }
+            mViewPager.setCurrentItem(position);
         } else {
             photoView.setImageResource(R.drawable.aurora_picture_not_found);
         }
-        mViewPager.setCurrentItem(position);
     }
 
     PagerAdapter pagerAdapter = new PagerAdapter() {

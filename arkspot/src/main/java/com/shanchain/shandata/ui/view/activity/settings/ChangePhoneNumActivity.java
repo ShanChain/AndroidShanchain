@@ -125,9 +125,12 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
 
                     @Override
                     public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
                         String data = SCJsonUtils.parseData(response);
-                        phone = SCJsonUtils.parseString(data, "mobile");
-                        tvChangePhone.setText(phone);
+                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            phone = SCJsonUtils.parseString(data, "mobile");
+                            tvChangePhone.setText(phone);
+                        }
                     }
                 });
     }
