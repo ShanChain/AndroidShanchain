@@ -30,9 +30,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.EventBusObject;
+import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.net.HttpApi;
@@ -48,6 +54,8 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.umeng.analytics.MobclickAgent;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -62,6 +70,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -151,6 +160,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CustomDialog mNewCustomDialog;
     private StandardDialog mStandardDialog;
     private CustomDialog showPasswordDialog;
+    private Coordinates coordinates;
+    private LatLng myLatLng;
+    //百度地图
+    private LocationClient locationClient;
+    private BDLocationListener bdLocationListener;
 
     /**
      * 描述: onCreate 初始化
@@ -188,17 +202,43 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-        // 获取Intent数据
-        initIntent();
-        // 初始化属性
-        initAttribute();
-        // 初始化布局
-        initLayout();
-        // 初始化View和事件
-        initViewsAndEvents();
-        initStatusBar();
-        initPushAgent();
+        try {
+            // 获取Intent数据
+            initIntent();
+            // 初始化属性
+            initAttribute();
+            //初始化百度地图
+//            initMap();
+            // 初始化布局
+            initLayout();
+            // 初始化View和事件
+            initViewsAndEvents();
+            initStatusBar();
+            initPushAgent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    protected void initMap() {
+        if (myLatLng == null) {
+            locationClient = new LocationClient(getApplicationContext());//创建LocationClient对象
+            LocationClientOption option = new LocationClientOption();
+            option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，设置定位模式,LocationMode.Hight_Accuracy：高精度；
+            option.setCoorType("bd09ll");
+            option.setScanSpan(3 * 60 * 1000);//可选，设置发起定位请求的间隔，int类型，单位ms,需设置1000ms以上才有效
+            option.setOpenGps(true);//使用高精度和仅用设备两种定位模式的，参数必须设置为true
+            option.setWifiCacheTimeOut(5 * 60 * 1000);//如果设置了该接口，首次启动定位时，会先判断当前Wi-Fi是否超出有效期，若超出有效期，会先重新扫描Wi-Fi，然后定位
+            locationClient.setLocOption(option);
+            bdLocationListener = new MyLocationListener();
+            locationClient.registerLocationListener(bdLocationListener);//注册监听函数
+            locationClient.start();
+        } else {
+            getChatRoomInfo(myLatLng);
+        }
+    }
+
+    ;
 
     protected void isRealName() {
         SCHttpUtils.getAndToken()
@@ -874,5 +914,42 @@ public abstract class BaseActivity extends AppCompatActivity {
         config.setToDefaults();
         res.updateConfiguration(config, res.getDisplayMetrics());
         return res;
+    }
+
+    protected void getChatRoomInfo(LatLng latLng) {
+        SCHttpUtils.get()
+                .url(HttpApi.CHAT_ROOM_INFO)
+                .addParams("longitude", latLng.longitude + "")
+                .addParams("latitude", latLng.latitude + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
+                        closeLoadingDialog();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        closeLoadingDialog();
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
+                            String data = JSONObject.parseObject(response).getString("data");
+                            coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            //房间roomId
+                            RoleManager.switchRoleCacheRoomId("" + coordinates.getRoomId());
+                        }
+                    }
+                });
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            myLatLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+            getChatRoomInfo(myLatLng);
+        }
     }
 }

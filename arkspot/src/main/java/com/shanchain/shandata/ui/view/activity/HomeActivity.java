@@ -911,7 +911,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                     coordinateConverter.from(CoordinateConverter.CoordType.GPS);
                                                     coordinateConverter.coord(point);
                                                     LatLng desLatLng = coordinateConverter.convert();
-
 //                                    roomList.add(desLatLng);
                                                     roomList.add(point);//未转换的坐标
 
@@ -1411,7 +1410,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         //BD09：百度墨卡托坐标；
         //海外地区定位，无需设置坐标类型，统一返回WGS84类型坐标
         option.setCoorType("bd09ll");
-        option.setScanSpan(60 * 1000);//可选，设置发起定位请求的间隔，int类型，单位ms,需设置1000ms以上才有效
+        option.setScanSpan(3 * 60 * 1000);//可选，设置发起定位请求的间隔，int类型，单位ms,需设置1000ms以上才有效
         option.setOpenGps(true);//使用高精度和仅用设备两种定位模式的，参数必须设置为true
         option.setLocationNotify(true);//可选，设置是否当GPS有效时按照1S/1次频率输出GPS结果，默认false
         //可选，定位SDK内部是一个service，并放到了独立进程。设置是否在stop的时候杀死这个进程，默认（建议）不杀死，即setIgnoreKillProcess(true)
@@ -2037,7 +2036,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     if (!ExampleUtil.isEmpty(extras)) {
                         showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
                     }
-                    ToastUtils.showToast(HomeActivity.this, showMsg.toString());
+//                    ToastUtils.showToast(HomeActivity.this, showMsg.toString());
 
                     //极光本地通知
              /*       JPushLocalNotification ln = new JPushLocalNotification();

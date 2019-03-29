@@ -7,7 +7,7 @@ import java.util.regex.Pattern
  */
 def bakPath = file("${buildDir}/bakApk/")
 def currentDate = getCurrentDateString()
-def baseInfo = "arkspot-2.3.7-0315-14-21-31"
+def baseInfo = "arkspot-2.3.7-0328-00-21-43"
 def variantName = "arkspot-release"
 
 /**

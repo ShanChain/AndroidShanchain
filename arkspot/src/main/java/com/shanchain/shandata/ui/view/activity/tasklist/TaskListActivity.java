@@ -74,9 +74,8 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
     protected void initViewsAndEvents() {
 
         Intent intent = getIntent();
-//        roomID = intent.getStringExtra("roomId");
-//        roomID = "12826211";
-        roomID = SCCacheUtils.getCacheRoomId();
+        roomID = intent.getStringExtra("roomId")!=null?
+                intent.getStringExtra("roomId"):SCCacheUtils.getCacheRoomId();
 
         String uId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);

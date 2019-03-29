@@ -86,7 +86,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     @Bind(R.id.frame_coupon_check)
     FrameLayout frameCouponCheck;
 
-    private int pageNo = 0, pageSize = 10;
+    private int pageNo = 1, pageSize = 10;
 
 
     String characterId = SCCacheUtils.getCacheCharacterId();
@@ -261,6 +261,9 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (page != currentPage && symbol != null) {
+            if (last != null && pageNo < Integer.valueOf(last)) {
+                pageNo++;
+            }
             SCHttpUtils.get()
                     .url(HttpApi.COUPON_CLIENT_LIST)
                     .addParams("pageNo", "" + pageNo)
@@ -296,7 +299,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                         }
                     });
         }
-        if (page == currentPage) {
+        if (page == currentPage || pageNo < Integer.valueOf(last)) {
             return true;
         }
         return false;

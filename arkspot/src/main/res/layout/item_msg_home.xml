@@ -10,7 +10,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dimens_15dp" />
+        android:layout_marginLeft="@dimen/dimens_15dp"
+        android:background="@mipmap/abs_home_btn_news_default" />
 
     <TextView
         android:id="@+id/tv_item_msg_home_unread"
@@ -20,7 +21,7 @@
         android:layout_marginTop="@dimen/dimens_10dp"
         android:background="@drawable/shape_msg_count_red"
         android:gravity="center"
-        android:text="99+"
+        android:text="1"
         android:textColor="@color/colorWhite"
         android:textSize="8sp" />
 
@@ -34,7 +35,7 @@
         android:layout_toRightOf="@id/iv_item_msg_home_avatar"
         android:ellipsize="end"
         android:lines="1"
-        android:text="「自然选择号NO.3」 云天明打败了"
+        android:text="系统消息"
         android:textColor="@color/colorTextDefault"
         android:textSize="14sp" />
 
@@ -62,13 +63,13 @@
         android:layout_toRightOf="@id/iv_item_msg_home_avatar"
         android:ellipsize="end"
         android:lines="1"
-        android:text="关一凡：章北海！你在干什么啊？为什么会这样…"
+        android:text="推送消息"
         android:textColor="@color/colorHint"
         android:textSize="@dimen/sp_12" />
 
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="2dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/colorDivider"/>-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="2dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:background="@color/colorDivider"/>-->
 </RelativeLayout>

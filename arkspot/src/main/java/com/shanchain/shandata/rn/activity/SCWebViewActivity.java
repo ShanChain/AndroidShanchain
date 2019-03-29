@@ -468,7 +468,12 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            String loadUrl = mWbSc.getUrl();
+            LogUtils.d("webView", loadUrl);
             if (mWbSc.canGoBack()) {
+                if (loadUrl.contains("walletCenter")) {
+                    finish();
+                }
                 mWbSc.goBack();
                 return true;
             } else {

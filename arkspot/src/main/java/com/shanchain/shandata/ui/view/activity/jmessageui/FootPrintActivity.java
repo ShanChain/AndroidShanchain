@@ -1,15 +1,21 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -106,6 +112,12 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private boolean isIn;
     private ArcMenu.OnMenuItemClickListener onMenuItemClickListener;
 
+    public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+    private MyMessageReceiver mMyMessageReceiver;
+
     @Override
     protected int getContentViewLayoutID() {
 //        return R.layout.activity_food_print;
@@ -113,10 +125,20 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = new Intent();
+        intent.setAction(".receiver.MyLocationReceiver");
+//        sendBroadcast(intent);
+    }
+
+    @Override
     protected void initViewsAndEvents() {
         initToolBar();
         initView();
         initData();
+        //注册自定义消息广播
+//        registerMessageReceiver();
 
 
     }
@@ -491,6 +513,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             mCoordinates = JSONObject.parseObject(data, Coordinates.class);
                             //房间roomId
                             mRoomID = mCoordinates.getRoomId();
+                            RoleManager.switchRoleCacheRoomId(mRoomID);
                             if (roomID.equals(mCoordinates.getRoomId())) {
                                 isIn = true;
                             } else {
@@ -629,11 +652,11 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             startActivity(intent);
         } else if (id == R.id.nav_my_coupon) {
             Intent intent = new Intent(FootPrintActivity.this, MyCouponListActivity.class);
-//            intent.putExtra("roomId", roomID);
+            intent.putExtra("roomId", mRoomID);
             startActivity(intent);
         } else if (id == R.id.nav_my_task) {
             Intent intent = new Intent(FootPrintActivity.this, TaskListActivity.class);
-//            intent.putExtra("roomId", roomID);
+            intent.putExtra("roomId", mRoomID);
             startActivity(intent);
 
         } else if (id == R.id.nav_my_message) {
@@ -656,5 +679,24 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void registerMessageReceiver() {
+        mMyMessageReceiver = new FootPrintActivity.MyMessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMyMessageReceiver, filter);
+    }
+
+    public class MyMessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent customIntent = new Intent(context, MyMessageActivity.class);
+            customIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(customIntent);
+        }
+
     }
 }

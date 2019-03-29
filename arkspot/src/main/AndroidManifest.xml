@@ -172,6 +172,21 @@
             </intent-filter>
         </receiver>
 
+        <!-- 推送自定义消息-->
+        <receiver android:name=".receiver.CustomMessageReceiver">
+            <intent-filter>
+                <action android:name="com.shanchain.shandata.MY_MESSAGE_RECEIVED_ACTION"></action>
+                <category android:name="com.shanchain.shandata" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.MyLocationReceiver">
+            <intent-filter>
+                <action android:name=".receiver.MyLocationReceiver"></action>
+                <category android:name="com.shanchain.shandata"></category>
+            </intent-filter>
+        </receiver>
+
         <!-- 极光推送  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调 -->
         <receiver android:name=".receiver.MyJPushMessageReceiver">
             <intent-filter>
@@ -424,14 +439,18 @@
         <activity
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.view.activity.tasklist.TaskListActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.view.activity.jmessageui.MyMessageActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.view.activity.tasklist.TaskDetailActivity">
+        <activity
+            android:name=".ui.view.activity.tasklist.TaskDetailActivity"
+            android:launchMode="singleTask">
 
             <!--
             <intent-filter>
@@ -455,11 +474,21 @@
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.view.activity.login.BindPhoneActivity" />
-        <activity android:name=".ui.view.activity.coupon.CouponListActivity" />
-        <activity android:name=".ui.view.activity.coupon.CreateCouponActivity" />
-        <activity android:name=".ui.view.activity.coupon.CouponDetailsActivity" />
-        <activity android:name=".ui.view.activity.coupon.MyCouponDetailActivity" />
-        <activity android:name=".ui.view.activity.coupon.MyCouponListActivity" />
+        <activity
+            android:name=".ui.view.activity.coupon.CouponListActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.view.activity.coupon.CreateCouponActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.view.activity.coupon.CouponDetailsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.view.activity.coupon.MyCouponDetailActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.view.activity.coupon.MyCouponListActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".ui.view.activity.jmessageui.VerifiedActivity" />
         <activity android:name=".ui.view.activity.coupon.ScanQRCodeActivity" />
         <activity android:name=".ui.view.activity.coupon.MyCreateDetailsActivity" />

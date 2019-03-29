@@ -2,6 +2,7 @@ package com.shanchain.shandata.base;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
@@ -203,6 +204,9 @@ public class MyApplication extends BaseApplication {
         option.setIsNeedLocationDescribe(true);
         locationClient.setLocOption(option);//设置定位参数
         locationClient.start();
+        Intent intent = new Intent();
+        intent.setAction(".receiver.MyLocationReceiver");
+        sendBroadcast(intent);
     }
 
     /**
@@ -358,7 +362,7 @@ public class MyApplication extends BaseApplication {
         String RegistrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", RegistrationID);
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
-        if (guided==false) {
+        if (guided == false) {
             enterChatRoom(INIT_CHAT_ROOM_ID);
         }
     }

@@ -91,8 +91,6 @@ public class ChatView extends RelativeLayout {
         mMsgList.setReceiveBubbleColor(Color.parseColor("#FFFFFF"));
         mMsgList.setSendBubbleDrawable(R.drawable.shape_bg_msg_send_pressed);
         mMsgList.setAvatarRadius(90);
-
-
         mMsgList.setHasFixedSize(true);
         mPtrLayout.setLoadingMinTime(1000);
         mPtrLayout.setDurationToCloseHeader(1500);
@@ -103,8 +101,6 @@ public class ChatView extends RelativeLayout {
         // set show display name or not
 //        mMsgList.setShowReceiverDisplayName(true);
 //        mMsgList.setShowSenderDisplayName(false);
-
-
         // add Custom Menu View
         MenuManager menuManager = mChatInput.getMenuManager();
         menuManager.addCustomMenu("MY_CUSTOM",R.layout.menu_text_item,R.layout.menu_text_feature);

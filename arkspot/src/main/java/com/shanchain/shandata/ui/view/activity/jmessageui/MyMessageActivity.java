@@ -1,9 +1,22 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -11,12 +24,20 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MessageListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.push.ExampleUtil;
+import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.widgets.other.RecyclerViewDivider;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,8 +45,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import cn.jiguang.imui.model.DefaultUser;
+import cn.jiguang.imui.model.MyMessage;
+import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.enums.ConversationType;
+import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -41,6 +66,14 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     List<Conversation> conversationList;
     private Conversation conversation;
     private MessageListAdapter messageListAdapter;
+    public static boolean isForeground = false;
+    private MyMessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MY_MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+    private JSONObject mMessageJson;
+    private String mJguserName;
 
 
     @Override
@@ -50,11 +83,25 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     protected void initViewsAndEvents() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getString(JPushInterface.EXTRA_EXTRA) != null) {
+            try {
+                Bundle bundle = getIntent().getExtras();
+                mMessageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+                LogUtils.d("MyMessageReceiver", "bundle.getString(KEY_MESSAGE):" + mMessageJson.toString());
+                mJguserName = SCJsonUtils.parseString(mMessageJson.toString(), "jguserName");
+                String extra = SCJsonUtils.parseString(mMessageJson.toString(), "extra");
+                String sysPage = SCJsonUtils.parseString(mMessageJson.toString(), "sysPage");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         initToolBar();
         initData();
         initView();
         initRecyclerView();
-
+        //注册自定义消息广播
+//        registerMessageReceiver();
     }
 
     private void initView() {
@@ -74,10 +121,12 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         rvMessageList.setLayoutManager(layoutManager);
-        if (chatRoomlist.size()>1){
+        if (chatRoomlist.size() > 1) {
             rvMessageList.addItemDecoration(new RecyclerViewDivider(mActivity));
         }
         messageListAdapter = new MessageListAdapter(R.layout.item_msg_home, chatRoomlist);
+        View headView = LayoutInflater.from(MyMessageActivity.this).inflate(R.layout.item_msg_home, null, false);
+//        messageListAdapter.addHeaderView(headView);
         rvMessageList.setAdapter(messageListAdapter);
         messageListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -90,6 +139,10 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
                 defaultUser.setHxUserId(messageHomeInfo.getHxUser());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("userInfo", defaultUser);
+                if (messageHomeInfo.getHxUser().equals("123456") || messageHomeInfo.getHxUser().equals(mJguserName)) {
+                    messageHomeInfo.setTop(true);
+//                    readyGo(SingerChatInfoActivity.class, bundle);
+                }
                 readyGo(SingleChatActivity.class, bundle);
             }
         });
@@ -119,14 +172,17 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     private void initData() {
         String hxusername = SCCacheUtils.getCacheHxUserName();
         conversationList = JMessageClient.getConversationList();
+        if (conversationList == null) {
+            return;
+        }
         for (int i = 0; i < conversationList.size(); i++) {
             conversation = conversationList.get(i);
             if (conversation.getType() == ConversationType.single) {
                 final MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
                 messageHomeInfo.setJMConversation(conversation);
-               UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
+                UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
                 String targetId = conversation.getTargetId();
-                String avatar = conversation.getAvatarFile() != null ? conversation.getAvatarFile().getAbsolutePath() :"";
+                String avatar = conversation.getAvatarFile() != null ? conversation.getAvatarFile().getAbsolutePath() : "";
                 DefaultUser defaultUser = new DefaultUser(0, userInfo.getNickname(), avatar);
                 defaultUser.setHxUserId(targetId);
                 messageHomeInfo.setName(userInfo.getNickname());
@@ -137,7 +193,9 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
                 messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
                 messageHomeInfo.isTop();
                 messageHomeInfo.setImg(conversation.getAvatarFile() == null ? "" : conversation.getAvatarFile().getAbsolutePath());
+//                if (!conversation.getTargetId().equals(mJguserName)) {
                 chatRoomlist.add(messageHomeInfo);
+//                }
 
                 /*String avatar = userInfo.getAvatarFile()!=null?userInfo.getAvatarFile().getAbsolutePath():userInfo.getAvatar();
                 DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(),avatar);
@@ -154,6 +212,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
             }
         }
     }
+
     private void initToolBar() {
         toolBar.setTitleTextColor(Color.BLACK);
         toolBar.isShowChatRoom(false);//不在导航栏显示聊天室信息
@@ -172,5 +231,50 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    @Override
+    public void onPause() {
+        isForeground = false;
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        isForeground = true;
+        if (messageListAdapter != null) {
+            chatRoomlist.clear();
+            initData();
+            messageListAdapter.notifyDataSetChanged();
+        }
+        super.onResume();
+    }
+
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MyMessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+
+    public class MyMessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!ExampleUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                    ToastUtils.showToast(MyMessageActivity.this, showMsg.toString());
+                    LogUtils.d("MyMessageReceiver", "MyMessageReceiver:" + showMsg.toString());
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 }

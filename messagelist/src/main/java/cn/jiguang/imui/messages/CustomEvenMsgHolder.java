@@ -48,16 +48,17 @@ public class CustomEvenMsgHolder
     @Override
     public void onBind(MyMessage myMessage) {
         if (myMessage != null) {
-            chatEventMessage =(ChatEventMessage) myMessage.getChatEventMessage();
-            evenMessageTitle.setText("赏金：￥ "+ chatEventMessage.getBounty() );
+            chatEventMessage = (ChatEventMessage) myMessage.getChatEventMessage();
+//            evenMessageTitle.setText("赏金：￥ "+ chatEventMessage.getBounty() );
+            evenMessageTitle.setText("标题： " + chatEventMessage.getBounty());
             evenMessageContent.setText(chatEventMessage.getIntro() + "");
             long expiryTime = chatEventMessage.getExpiryTime();
-            if (isValidLong(expiryTime)){
+            if (isValidLong(expiryTime)) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 lastTime = sdf.format(new Date(expiryTime));
-                evenMessageLastTime.setText("完成时限：" + lastTime);
-            }else {
-                evenMessageLastTime.setText("完成时限：" + chatEventMessage.getExpiryTime());
+                evenMessageLastTime.setText("" + lastTime);
+            } else {
+                evenMessageLastTime.setText("" + chatEventMessage.getExpiryTime());
             }
 
 //        evenMessageComment.setText(eventMessage.getCommentCount()+"");
@@ -69,11 +70,11 @@ public class CustomEvenMsgHolder
         }
     }
 
-    private boolean isValidLong(long timeTamp){
-        try{
+    private boolean isValidLong(long timeTamp) {
+        try {
             String s = String.valueOf(timeTamp);
             return true;
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }

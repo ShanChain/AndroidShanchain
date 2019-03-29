@@ -42,6 +42,8 @@ public class BitmapLoader {
                 opts.inSampleSize = computeSampleSize(opts, minSideLength,
                         width * height);
                 opts.inJustDecodeBounds = false;
+                opts.inInputShareable = true;
+                opts.inPurgeable = true;
             }
             return BitmapFactory.decodeFile(path, opts);
         } else return null;

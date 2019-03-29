@@ -110,6 +110,7 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
                                 @Override
                                 protected void convert(final BaseViewHolder helper, final Members item) {
                                     helper.setIsRecyclable(false);
+//                                    BaseViewHolder viewHolder;
                                     JMessageClient.getUserInfo(item.getUsername(), new GetUserInfoCallback() {
                                         @Override
                                         public void gotResult(int i, String s, final UserInfo userInfo) {
@@ -135,7 +136,7 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
                                                 @Override
                                                 public void onClick(View v) {
                                                     String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
-                                                    DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(),avatar);
+                                                    DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
                                                     defaultUser.setSignature(userInfo.getSignature());
                                                     defaultUser.setHxUserId(userInfo.getUserName());
                                                     Bundle bundle = new Bundle();
@@ -148,7 +149,6 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
 
                                     helper.setText(R.id.tv_item_contact_child_focus, "对话");
                                 }
-
                             };
                             rvMessageList.setAdapter(adapter);
                         }

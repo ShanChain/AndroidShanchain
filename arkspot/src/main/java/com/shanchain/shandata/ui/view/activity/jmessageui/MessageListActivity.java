@@ -5,6 +5,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -99,6 +101,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.model.JmAccount;
+import com.shanchain.shandata.ui.model.MessageModel;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
@@ -120,6 +123,8 @@ import com.shanchain.shandata.widgets.GuideView;
 import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
+import com.shanchain.shandata.widgets.other.TipItem;
+import com.shanchain.shandata.widgets.other.TipView;
 import com.shanchain.shandata.widgets.photochoose.ChoosePhoto;
 import com.shanchain.shandata.widgets.photochoose.DialogCreator;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
@@ -180,13 +185,17 @@ import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.callback.RequestCallback;
 import cn.jpush.im.android.api.content.CustomContent;
 import cn.jpush.im.android.api.content.FileContent;
 import cn.jpush.im.android.api.content.ImageContent;
+import cn.jpush.im.android.api.content.MediaContent;
+import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.content.VideoContent;
 import cn.jpush.im.android.api.content.VoiceContent;
+import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.OfflineMessageEvent;
@@ -358,6 +367,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         }
     };
+    private List<Message> mMsgs;
 
 
     @Override
@@ -383,6 +393,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         initEmojiData();
         initMsgAdapter();
         initData(roomID);
+//        getChatRoomMessage(roomID); //获取聊天室历史消息
         //必须执行在initView()方法之后；
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
 //        initEmojiData();
@@ -1963,53 +1974,179 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
 //    public void onEvent(LoginStateChangeEvent event) {
-//        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
-//        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
-//        switch (reason) {
-//            case user_password_change:
-//                //用户密码在服务器端被修改
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtils.showToast(MessageListActivity.this, "用户密码已被修改");
-//                    }
-//                });
-//                break;
-//            case user_logout:
-//                //用户换设备登录
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtils.showToast(MessageListActivity.this, "账号在别处登录");
-//                    }
-//                });
-////                JMessageClient.logout();
-//                break;
-//            case user_deleted:
-//                //用户被删除
-//                break;
-//        }
-//    }
+////        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+////        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+////        switch (reason) {
+////            case user_password_change:
+////                //用户密码在服务器端被修改
+////                runOnUiThread(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        ToastUtils.showToast(MessageListActivity.this, "用户密码已被修改");
+////                    }
+////                });
+////                break;
+////            case user_logout:
+////                //用户换设备登录
+////                runOnUiThread(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        ToastUtils.showToast(MessageListActivity.this, "账号在别处登录");
+////                    }
+////                });
+//////                JMessageClient.logout();
+////                break;
+////            case user_deleted:
+////                //用户被删除
+////                break;
+////        }
+////    }
+
+    //从服务器接口获取消息
+    private void getChatRoomMessage(String roomID) {
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
+                .addParams("roomId", roomID + "")
+                .addParams("timeStamp", System.currentTimeMillis() + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络错误");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            String total = JSONObject.parseObject(data).getString("total");
+                            String count = JSONObject.parseObject(data).getString("count");
+                            String cursor = JSONObject.parseObject(data).getString("cursor");
+                            LogUtils.d(TAG, "获取聊天室历史消息 total: " + total + " count: " + count + " cursor: " + cursor);
+                            String messages = JSONObject.parseObject(data).getString("messages");
+                            List<MessageModel> messageModels = JSONObject.parseArray(messages, MessageModel.class);
+                            for (int i = 0; i < messageModels.size(); i++) {
+                                final MessageModel messageModel = messageModels.get(i);
+//                                String mediaID = messageModel.getMsgBody().getMediaId();
+                                LogUtils.d("getMsgType", messageModel.getMsgType() + "");
+                                final MyMessage myMessage = new MyMessage(messageModel.getMsgBody().getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                String fromId = messageModel.getFromId(); //
+                                String userName = JMessageClient.getMyInfo().getUserName();//用户名
+                                final int msgId = messageModel.getMsgId();
+                                if (i > 0) {
+                                    long messageTime = messageModel.getCreateTime();
+                                    long preTime = messageModels.get(i - 1).getCreateTime();
+                                    long diff = messageTime - preTime;
+                                    //显示消息时间间隔3分钟，3分钟内不显示发送消息的时间
+                                    if (diff > 3 * 60 * 1000) {
+                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                        String timeString = sdf.format(new Date(messageTime));
+                                        myMessage.setTimeString(timeString);
+                                    }
+                                }
+                                if (fromId.equals(userName)) {
+                                    myMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                                    JMessageClient.getUserInfo(userName, new GetUserInfoCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s, UserInfo userInfo) {
+                                            //获取头像
+                                            String avatar = userInfo.getAvatarFile().getAbsolutePath() != null ?
+                                                    userInfo.getAvatarFile().getAbsolutePath() : "";
+                                            String displayName = userInfo.getDisplayName() != null ?
+                                                    userInfo.getDisplayName() : userInfo.getUserName();
+                                            DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), displayName, avatar);
+                                            defaultUser.setSignature(userInfo.getSignature().length() > 0 ? userInfo.getSignature() : "该用户很懒，没有设置签名");
+                                            defaultUser.setHxUserId(userInfo.getUserName() + "");
+                                            myMessage.setUserInfo(defaultUser);
+                                            mAdapter.updateMessage(myMessage);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                } else {
+                                    JMessageClient.getUserInfo(fromId, new GetUserInfoCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s, UserInfo userInfo) {
+                                            //获取头像
+                                            String avatar = userInfo.getAvatarFile().getAbsolutePath() != null ?
+                                                    userInfo.getAvatarFile().getAbsolutePath() : "";
+                                            String displayName = userInfo.getDisplayName() != null ?
+                                                    userInfo.getDisplayName() : userInfo.getUserName();
+                                            DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), displayName, avatar);
+                                            defaultUser.setSignature(userInfo.getSignature().length() > 0 ? userInfo.getSignature() : "该用户很懒，没有设置签名");
+                                            defaultUser.setHxUserId(userInfo.getUserName() + "");
+                                            myMessage.setUserInfo(defaultUser);
+                                            mAdapter.updateMessage(myMessage);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                                switch (messageModel.getMsgType()) {
+                                    case "text":
+                                        myMessage.setText(messageModel.getMsgBody().getText());
+                                        messageList.add(myMessage);
+                                        mAdapter.addToStart(myMessage, true);
+                                        break;
+                                    case "image":
+                                        String mediaID = messageModel.getMsgBody().getMediaId();
+                                        LogUtils.d("ImageMediaID", mediaID + "");
+//                                        mPathList.add(file.getAbsolutePath());
+//                                        mMsgIdList.add(messageModel.getMsgId() + "");
+//                                        myMessage.setMediaFilePath(mediaID);
+//                                        mAdapter.updateMessage(myMessage);
+//                                        mAdapter.notifyDataSetChanged();
+//                                        if (imageContent.getLocalPath() == null) {
+//                                            imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
+//                                                @Override
+//                                                public void onComplete(int i, String s, File file) {
+//                                                    mPathList.add(file.getAbsolutePath());
+//                                                    mMsgIdList.add(imgMessage.getMsgId() + "");
+//                                                    imgMessage.setMediaFilePath(file.getAbsolutePath());
+//                                                    mAdapter.updateMessage(imgMessage);
+//                                                }
+//                                            });
+//                                        } else {
+//                                            mPathList.add(imageContent.getLocalPath());
+//                                            mMsgIdList.add(imgMessage.getMsgId() + "");
+//                                            imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
+//                                        }
+                                        break;
+                                    case "voice":
+                                        break;
+                                    case "video":
+                                        break;
+                                    case "custom":
+                                        break;
+                                    case "file":
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
 
     // 接收聊天室消息
     public void onEventMainThread(ChatRoomMessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
         chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
         List chatRoomList = chatRoomConversation.getAllMessage();
-        final List<Message> msgs = event.getMessages();
+        mMsgs = event.getMessages();
         final MyMessage myMessage;
-//        showProgress();
+        if (mMsgs == null) {
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < msgs.size(); i++) {
-                    final Message msg = msgs.get(i);
+                for (int i = 0; i < mMsgs.size(); i++) {
+                    final Message msg = mMsgs.get(i);
                     LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
                 }
             }
         }).start();
-        for (int i = 0; i < msgs.size(); i++) {
-            final Message msg = msgs.get(i);
+        for (int i = 0; i < mMsgs.size(); i++) {
+            final Message msg = mMsgs.get(i);
             //这个页面仅仅展示聊天室会话的消息
 //            if (i > 47) {
 
@@ -2036,7 +2173,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         textMessage.setText(textContent.getText());
                         if (i > 0) {
                             long messageTime = msg.getCreateTime();
-                            long preTime = msgs.get(i - 1).getCreateTime();
+                            long preTime = mMsgs.get(i - 1).getCreateTime();
                             long diff = messageTime - preTime;
                             if (diff > 3 * 60 * 1000) {
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2088,7 +2225,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     }
                     if (i > 0) {
                         long messageTime = msg.getCreateTime();
-                        long preTime = msgs.get(i - 1).getCreateTime();
+                        long preTime = mMsgs.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2137,7 +2274,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
                     if (i > 0) {
                         long messageTime = msg.getCreateTime();
-                        long preTime = msgs.get(i - 1).getCreateTime();
+                        long preTime = mMsgs.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2194,7 +2331,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     }
                     if (i > 0) {
                         long messageTime = msg.getCreateTime();
-                        long preTime = msgs.get(i - 1).getCreateTime();
+                        long preTime = mMsgs.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2326,7 +2463,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     fileMessage.setUserInfo(defaultUser);
                     if (i > 0) {
                         long messageTime = msg.getCreateTime();
-                        long preTime = msgs.get(i - 1).getCreateTime();
+                        long preTime = mMsgs.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2579,17 +2716,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
          * */
         chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
         if (null == chatRoomConversation) {
-//            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-            ChatRoomManager.enterChatRoom(Long.valueOf(roomID), new RequestCallback<Conversation>() {
-                @Override
-                public void gotResult(int i, String s, Conversation conversation) {
-                    if (i == 0) {
-                        chatRoomConversation = conversation;
-                    }
-                }
-            });
+            chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
         }
         //发送文字
+
         xhsEmoticonsKeyBoard.getBtnSend().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2629,6 +2759,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         mAdapter.addToStart(message, true);
                         xhsEmoticonsKeyBoard.getEtChat().setText("");
                     }
+                } else {
+                    ToastUtils.showToast(MessageListActivity.this, "聊天服务器未初始化，请重试");
+                    enterChatRoom();
+                    initChatView();
+                    initMsgAdapter();
                 }
             }
         });
@@ -3133,12 +3268,54 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
 
+        //消息长按事件
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
-            public void onMessageLongClick(View view, MyMessage message) {
-//                Toast.makeText(getApplicationContext(),
-//                        getApplicationContext().getString(R.string.message_long_click_hint),
-//                        Toast.LENGTH_SHORT).show();
+            public void onMessageLongClick(View view, final MyMessage message) {
+                if (message.getType() == IMessage.MessageType.RECEIVE_TEXT.ordinal()
+                        || message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
+                    int[] location = new int[2];
+                    view.getLocationOnScreen(location);
+                    float OldListY = (float) location[1];
+                    float OldListX = (float) location[0];
+                    new TipView.Builder(MessageListActivity.this, mChatView, (int) OldListX + view.getWidth() / 2, (int) OldListY + view.getHeight())
+                            .addItem(new TipItem("复制"))
+                            .setOnItemClickListener(new TipView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(String str, final int position) {
+                                    //复制
+                                    if (position == 0) {
+//                                        if (msg.getContentType() == ContentType.text) {
+                                        if (message.getType() == IMessage.MessageType.RECEIVE_TEXT.ordinal()
+                                                || message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
+//                                            final String content = ((TextContent) msg.getContent()).getText();
+                                            final String content = message.getText();
+                                            if (Build.VERSION.SDK_INT > 11) {
+                                                ClipboardManager clipboard = (ClipboardManager) mContext
+                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                ClipData clip = ClipData.newPlainText("Simple text", content);
+                                                clipboard.setPrimaryClip(clip);
+                                            } else {
+                                                android.text.ClipboardManager clip = (android.text.ClipboardManager) mContext
+                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                if (clip.hasText()) {
+                                                    clip.getText();
+                                                }
+                                            }
+                                            Toast.makeText(MessageListActivity.this, "已复制", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(MessageListActivity.this, "只支持复制文字", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void dismiss() {
+
+                                }
+                            })
+                            .create();
+                }
             }
         });
 
@@ -3178,8 +3355,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     Intent intent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
                     intent.putExtra("chatEventMessage", chatEventMessage);
                     intent.putExtra("roomId", roomID);
-
-
                     startActivity(intent);
                 } else {
                     ChatEventMessage chatEventMessage = (ChatEventMessage) message.getChatEventMessage();

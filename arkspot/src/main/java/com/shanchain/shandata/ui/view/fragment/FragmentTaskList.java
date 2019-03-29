@@ -1,6 +1,7 @@
 package com.shanchain.shandata.ui.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,7 +54,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     private MultiMyTaskAdapter adapter;
     private ProgressDialog mDialog;
     private TaskPresenter taskPresenter;
-    private String roomId = SCCacheUtils.getCacheRoomId();
+    private String roomId;
     String characterId = SCCacheUtils.getCacheCharacterId();
     String userId = SCCacheUtils.getCacheUserId();
     private int page = 0;
@@ -64,6 +65,9 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getActivity().getIntent();
+        roomId = intent.getStringExtra("roomId") != null ?
+                intent.getStringExtra("roomId") : SCCacheUtils.getCacheRoomId();
     }
 
     @Override
@@ -123,8 +127,8 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.MY_TASK_PUBLISH_LIST)
                 .addParams("characterId", characterId + "")
-                .addParams("page",page+"")
-                .addParams("pageSize",size+"")
+                .addParams("page", page + "")
+                .addParams("pageSize", size + "")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -147,7 +151,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
                             List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content, ChatEventMessage.class);
 
                             for (int i = 0; i < chatEventMessageList.size(); i++) {
-                                    taskList.add(chatEventMessageList.get(i));
+                                taskList.add(chatEventMessageList.get(i));
                             }
                         }
 
@@ -233,9 +237,9 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         return rootView;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void taskListEventBus(EventMessage event) {
-        if (event.getCode()==1){
+        if (event.getCode() == 1) {
             showProgress();
             onRefresh();
 //            ToastUtils.showToast(getContext(),"Evenbus执行");

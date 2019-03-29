@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,6 +19,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -64,6 +67,8 @@ import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
+import com.shanchain.shandata.widgets.other.TipItem;
+import com.shanchain.shandata.widgets.other.TipView;
 import com.shanchain.shandata.widgets.photochoose.ChoosePhoto;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
@@ -100,6 +105,7 @@ import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.CustomEvenMsgHolder;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
@@ -269,9 +275,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (diff > 3 * 60 * 1000) {
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                     String timeString = DateUtils.formatFriendly(new Date(messageTime));
-//                    message.setTimeString(timeString);
+                    message.setTimeString(timeString);
                 }
-//                                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                 message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
 //                                messageList.add(message);
@@ -305,7 +311,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             mMyInfo = JMessageClient.getMyInfo();
                             DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
                             myMessage.setUserInfo(user);
-//                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             myMessage.setText(input.toString());
                             mData.add(myMessage);
@@ -1017,6 +1023,32 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         }
                         mData.add(videoMessage);
                         break;
+                    case custom:
+                        LogUtils.d("ChatRoomMessageEvent custom", msg.getContent().toJson().toString());
+                        CustomContent customContent = (CustomContent) msg.getContent();
+                        MyMessage customMessage = new MyMessage("event", IMessage.MessageType.EVENT.ordinal());
+                        Map eventMap = customContent.getAllStringValues();
+                        ChatEventMessage eventMessage = new ChatEventMessage("event", IMessage.MessageType.EVENT.ordinal());
+                        //设置任务参数
+                        eventMessage.setTaskId((String) eventMap.get("taskId"));
+                        eventMessage.setBounty((String) eventMap.get("bounty"));
+                        eventMessage.setIntro((String) eventMap.get("dataString"));
+                        String expiryTime = (String) eventMap.get("time");
+//                    eventMessage.setExpiryTime(Long.valueOf(expiryTime));
+                        if (!DateUtils.isValidLong(expiryTime)) {
+                            String TimeStamp = DateUtils.date2TimeStamp(expiryTime, "yyyy-MM-dd HH:mm:ss");
+                            eventMessage.setExpiryTime(Long.valueOf(TimeStamp));
+                        } else {
+                            eventMessage.setExpiryTime(Long.valueOf(expiryTime));
+                        }
+
+                        customMessage.setChatEventMessage(eventMessage);
+                        DefaultUser user1 = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatar());
+                        user1.setHxUserId(msg.getFromID());
+                        customMessage.setUserInfo(user1);
+                        mData.add(customMessage);
+//                        mAdapter.addToStart(customMessage, true);
+                        break;
                     case file:
                         LogUtils.d("ChatRoomMessageEvent file", "第" + i + "个" + msg.getContent().toJson().toString());
                         final FileContent fileContent = (FileContent) msg.getContent();
@@ -1490,9 +1522,10 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 user1.setHxUserId(msg.getFromID());
                 customMessage.setUserInfo(user1);
                 mData.add(customMessage);
+                mAdapter.addToStart(customMessage, true);
                 break;
             case unknown:
-                LogUtils.d("ChatRoomMessageEvent unknown", msg.getContent().toJson().toString());
+                LogUtils.d("ChatRoomMessageEvent unknowmAdapter.addToStart(fileMessage, true);n", msg.getContent().toJson().toString());
                 break;
             case prompt:
                 break;
@@ -1704,7 +1737,10 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         };
 
         // Use default layout
+
         MsgListAdapter.HoldersConfig holdersConfig = new MsgListAdapter.HoldersConfig();
+        //设置系统消息样式
+        holdersConfig.setEventMessage(CustomEvenMsgHolder.class, R.layout.item_custom_event_message);
         mAdapter = new MsgListAdapter<>("0", holdersConfig, imageLoader);
 
         mAdapter.setOnMsgClickListener(new MsgListAdapter.OnMsgClickListener<MyMessage>() {
@@ -1720,11 +1756,16 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     }
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
-                    Intent intent = new Intent(SingleChatActivity.this, BrowserImageActivity.class);
-                    intent.putExtra("messageId", message.getMsgId());
-                    intent.putStringArrayListExtra("pathList", mPathList);
-                    intent.putStringArrayListExtra("idList", mMsgIdList);
-                    startActivity(intent);
+                    if (mMsgIdList.indexOf(message.getMsgId()) != -1) {
+                        Intent intent = new Intent(SingleChatActivity.this, BrowserImageActivity.class);
+                        intent.putExtra("messageId", message.getMsgId());
+                        intent.putStringArrayListExtra("pathList", mPathList);
+                        intent.putStringArrayListExtra("idList", mMsgIdList);
+                        startActivity(intent);
+                    } else {
+                        ToastUtils.showToast(mContext, "图片正在加载中，请滑动页面刷新");
+                    }
+
                 } else {
 //                    Toast.makeText(getApplicationContext(),
 //                            getApplicationContext().getString(R.string.message_click_hint),
@@ -1733,15 +1774,56 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             }
         });
 
-//        mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
-//            @Override
-//            public void onMessageLongClick(View view, MyMessage message) {
-//                Toast.makeText(getApplicationContext(),
-//                        getApplicationContext().getString(R.string.message_long_click_hint),
-//                        Toast.LENGTH_SHORT).show();
-//                // do something
-//            }
-//        });
+        //消息长按事件
+        mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
+            @Override
+            public void onMessageLongClick(View view, final MyMessage message) {
+                if (message.getType() == IMessage.MessageType.RECEIVE_TEXT.ordinal()
+                        || message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
+                    int[] location = new int[2];
+                    view.getLocationOnScreen(location);
+                    float OldListY = (float) location[1];
+                    float OldListX = (float) location[0];
+                    new TipView.Builder(SingleChatActivity.this, mChatView, (int) OldListX + view.getWidth() / 2, (int) OldListY + view.getHeight())
+                            .addItem(new TipItem("复制"))
+                            .setOnItemClickListener(new TipView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(String str, final int position) {
+                                    //复制
+                                    if (position == 0) {
+//                                        if (msg.getContentType() == ContentType.text) {
+                                        if (message.getType() == IMessage.MessageType.RECEIVE_TEXT.ordinal()
+                                                || message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
+//                                            final String content = ((TextContent) msg.getContent()).getText();
+                                            final String content = message.getText();
+                                            if (Build.VERSION.SDK_INT > 11) {
+                                                ClipboardManager clipboard = (ClipboardManager) SingleChatActivity.this
+                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                ClipData clip = ClipData.newPlainText("Simple text", content);
+                                                clipboard.setPrimaryClip(clip);
+                                            } else {
+                                                android.text.ClipboardManager clip = (android.text.ClipboardManager) mContext
+                                                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                if (clip.hasText()) {
+                                                    clip.getText();
+                                                }
+                                            }
+                                            Toast.makeText(SingleChatActivity.this, "已复制", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(SingleChatActivity.this, "只支持复制文字", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void dismiss() {
+
+                                }
+                            })
+                            .create();
+                }
+            }
+        });
 
 //        mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
 //            @Override

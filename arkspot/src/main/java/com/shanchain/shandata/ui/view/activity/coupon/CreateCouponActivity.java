@@ -916,7 +916,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(mContext, code + ":" + msg);
+//                            ToastUtils.showToast(mContext, code + ":" + msg);
                         }
                     });
                 }
