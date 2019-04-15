@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.shanchain.common.R;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
@@ -56,9 +57,6 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
         final String code = SCJsonUtils.parseCode(result);
 //        final String code = NetErrCode.WALLET_NOT_CREATE_PASSWORD;
         final String msg = SCJsonUtils.parseMsg(result);
-        if (mContext != null) {
-
-        }
         if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
             responseDoParse(result);
         } else if (NetErrCode.WALLET_NOT_CREATE.equals(code)) {
@@ -96,8 +94,19 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
         } else if (NetErrCode.WALLET_PASSWORD_INVALID.equals(code)) {
             if (mContext != null) {
                 //上传密码图片弹窗
-                EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
-                EventBus.getDefault().postSticky(busObject);
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        CustomDialog showPasswordDialog = new CustomDialog(mContext, true, 1.0,
+                                R.layout.dialog_bottom_wallet_password,
+                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                        EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, showPasswordDialog);
+                        EventBus.getDefault().postSticky(busObject);
+                    }
+                });
+//                EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
+//                EventBus.getDefault().postSticky(busObject);
+
             }
         } else if (NetErrCode.WALLET_NOT_CREATE_PASSWORD.equals(code)) {
             if (mContext != null) {
@@ -140,15 +149,24 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
                         mStandardDialog.show();
                     }
                 });
-            } else {
-                if (mContext != null) {
-                    ThreadUtils.runOnMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ToastUtils.showToast(mContext, code + ":" + msg);
-                        }
-                    });
-                }
+            }
+        } else if (NetErrCode.HAVE_BEEN_CODE.equals(code)) {
+            if (mContext != null) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToastLong(mContext, "" + msg);
+                    }
+                });
+            }
+        } else {
+            if (mContext != null) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToastLong(mContext, "" + msg);
+                    }
+                });
             }
         }
 

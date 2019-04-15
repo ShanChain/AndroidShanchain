@@ -2,6 +2,7 @@ package com.shanchain.shandata.base;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -26,6 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -36,28 +39,37 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.net.UpdateAppHttpUtil;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.manager.ActivityManager;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.umeng.analytics.MobclickAgent;
+import com.vector.update_app.UpdateAppBean;
+import com.vector.update_app.UpdateAppManager;
+import com.vector.update_app.service.DownloadService;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,6 +90,9 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
+import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
+import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 import static com.shanchain.data.common.utils.SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor;
 import static com.shanchain.data.common.utils.SystemUtils.MIUISetStatusBarLightModeWithWhiteColor;
 import static com.shanchain.data.common.utils.SystemUtils.setImmersiveStatusBar_API21;
@@ -215,6 +230,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             initViewsAndEvents();
             initStatusBar();
             initPushAgent();
+            initDeviceToken();
+            checkApkVersion();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -825,6 +842,223 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
+    private void initDeviceToken() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setDeviceToken();
+            }
+        });
+        thread.start();
+    }
+
+    private void checkApkVersion() {
+        final String localVersion = VersionUtils.getVersionName(mContext);
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.OSS_APK_GET_LASTEST)
+                .addParams("type", "android")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.i("获取版本信息失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        PackageManager packageManager = getApplicationContext().getPackageManager();
+                        String packagerName = getApplicationContext().getPackageName();
+                        try {
+                            //获取当前版本号
+                            String versionCode = packageManager.getPackageInfo(packagerName, 0).versionName;
+//                            ToastUtils.showToast(HomeActivity.this, versionCode);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            LogUtils.i("获取到版本信息 = " + response);
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                String data = SCJsonUtils.parseData(response);
+                                String forceUpdate = JSONObject.parseObject(data).getString("forceUpdate");
+                                boolean force = Boolean.parseBoolean(forceUpdate);
+                                String url = JSONObject.parseObject(data).getString("url");
+                                String version = JSONObject.parseObject(data).getString("version");
+                                boolean isUpdata = VersionUtils.compareVersion(localVersion, version);
+                                if (isUpdata) {
+                                    showUpdateDialog(url, force, version);
+                                } else {
+                                    return;
+                                }
+
+                            } else {
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    //版本更新提示弹窗
+    private void showUpdateDialog(final String url, final boolean force, String version) {
+        String msg = "";
+        if (force) {
+            msg = "新版本有较大改进，马上更新吧";
+        } else {
+            msg = "确定要更新吗？";
+        }
+        final StandardDialog dialog = new StandardDialog(this);
+        dialog.setStandardTitle("发现新版本 (" + version + ")");
+        dialog.setStandardMsg(msg);
+        dialog.setSureText("确定");
+        dialog.setCancelText("取消");
+        dialog.setCallback(new com.shanchain.data.common.base.Callback() {
+            @Override
+            public void invoke() {  //确定
+                downLoadApk(url);
+            }
+        }, new com.shanchain.data.common.base.Callback() {
+            @Override
+            public void invoke() {  //取消
+                if (force) {
+                    dialog.dismiss();
+                    ActivityStackManager.getInstance().finishAllActivity();
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(!force);
+        dialog.setCanceledOnTouchOutside(!force);
+    }
+
+    //下载APK版本
+    private void downLoadApk(String url) {
+        DownloadManager manager;
+//        manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        /*DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(downloadId);
+        query.setFilterByStatus(DownloadManager.STATUS_RUNNING);//正在下载
+        Cursor c = manager.query(query);
+        if (c.moveToNext()) {
+        } else {
+            DownloadManager.Request down = new DownloadManager.Request(Uri.parse(url));
+            down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+            down.setVisibleInDownloadsUi(true);
+            down.setTitle("马甲App");
+            down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+//            //down.setDestinationInExternalFilesDir(this, null, "arkspot-release.apk");
+//            String filePath = getCacheDir().getAbsoluteFile() + "arkspot-release.apk";
+//            File apkFile = new File(filePath);
+//            Uri.withAppendedPath(Uri.fromFile(getCacheDir()),"arkspot-release.apk");
+            down.setDestinationUri(Uri.withAppendedPath(Uri.fromFile(getExternalCacheDir()), "arkspot-release.apk"));
+            downloadId = manager.enqueue(down);
+        }*/
+
+        UpdateAppBean updateAppBean = new UpdateAppBean();
+        //设置 apk 的下载地址
+        updateAppBean.setApkFileUrl(url);
+        String path = "";
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || !Environment.isExternalStorageRemovable()) {
+            try {
+                path = getExternalCacheDir().getAbsolutePath();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (TextUtils.isEmpty(path)) {
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            }
+        } else {
+            path = getCacheDir().getAbsolutePath();
+        }
+
+        //设置apk 的保存路径
+        updateAppBean.setTargetPath(path);
+        //实现网络接口，只实现下载就可以
+        updateAppBean.setHttpManager(new UpdateAppHttpUtil());
+
+        UpdateAppManager.download(this, updateAppBean, new DownloadService.DownloadCallback() {
+            @Override
+            public void onStart() {
+//                HProgressDialogUtils.showHorizontalProgressDialog(JavaActivity.this, "下载进度", false);
+                Log.d(TAG, "onStart() called");
+            }
+
+            @Override
+            public void onProgress(float progress, long totalSize) {
+//                HProgressDialogUtils.setProgress(Math.round(progress * 100));
+                Log.d(TAG, "onProgress() called with: progress = [" + progress + "], totalSize = [" + totalSize + "]");
+
+            }
+
+            @Override
+            public void setMax(long totalSize) {
+                Log.d(TAG, "setMax() called with: totalSize = [" + totalSize + "]");
+            }
+
+            @Override
+            public boolean onFinish(File file) {
+//                HProgressDialogUtils.cancel();
+                Log.d(TAG, "onFinish() called with: file = [" + file.getAbsolutePath() + "]");
+                return true;
+            }
+
+            @Override
+            public void onError(String msg) {
+//                HProgressDialogUtils.cancel();
+                Log.e(TAG, "onError() called with: msg = [" + msg + "]");
+            }
+
+            @Override
+            public boolean onInstallAppAndAppOnForeground(File file) {
+                Log.d(TAG, "onInstallAppAndAppOnForeground() called with: file = [" + file + "]");
+                return false;
+            }
+        });
+
+    }
+
+    private void setDeviceToken() {
+        final String userId = SCCacheUtils.getCacheUserId();
+
+        if (!TextUtils.isEmpty(CommonCacheHelper.getInstance().getCache(userId, CACHE_DEVICE_TOKEN_STATUS)) && CommonCacheHelper.getInstance().getCache(userId, CACHE_DEVICE_TOKEN_STATUS).equalsIgnoreCase("true")) {
+            return;
+        }
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
+        if (TextUtils.isEmpty(token)) {
+            return;
+        }
+        if (!TextUtils.isEmpty(PrefUtils.getString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, ""))) {
+            SCHttpUtils.postWithUserId()
+                    .url(HttpApi.SET_DEVICE_TOKEN)
+                    .addParams("osType", "android")
+                    .addParams("token", token)
+                    .addParams("deviceToken", PrefUtils.getString(AppManager.getInstance().getContext(), SP_KEY_DEVICE_TOKEN, ""))
+                    .build()
+                    .execute(new SCHttpStringCallBack() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            LogUtils.i("设置DeviceToken失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = SCJsonUtils.parseCode(response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                CommonCacheHelper.getInstance().setCache(userId, CACHE_DEVICE_TOKEN_STATUS, "true");
+                            }
+
+                        }
+                    });
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -949,6 +1183,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             myLatLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+            HomeActivity.latLng = myLatLng;
             getChatRoomInfo(myLatLng);
         }
     }

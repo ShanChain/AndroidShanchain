@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="50dp"
     android:layout_marginRight="@dimen/dimens_20dp"
+    android:visibility="gone"
     hyman:position="right_top"
     hyman:radius="60dp">
 

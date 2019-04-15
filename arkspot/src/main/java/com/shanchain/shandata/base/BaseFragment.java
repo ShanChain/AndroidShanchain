@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
@@ -42,9 +44,22 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
 //        mTaskListActivity = (TaskListActivity) getActivity();
         TAG = this.getClass().getSimpleName();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventBusObject eventBusObject) {
+
+    }
 
     /**
      * 描述：为fragment填充布局

@@ -8,6 +8,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
@@ -16,6 +19,7 @@ import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
@@ -66,7 +70,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                 mobilePhone = editTextAccount.getText().toString().trim();
                 verifyCode = editTextCode.getText().toString().trim();
                 obtainCheckCode(mobilePhone);
-                LogUtils.d("sign",sign);
+                LogUtils.d("sign", sign);
             }
         });
 
@@ -83,10 +87,12 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                     return;
                 }
                 sign = MD5Utils.getMD5(verifyCode + salt + timestamp);
+                final String localVersion = VersionUtils.getVersionName(mContext);
                 SCHttpUtils.postNoToken()
                         .url(HttpApi.SMS_LOGIN)
-                        .addParams("deviceToken",JPushInterface.getRegistrationID(mContext))
-                        .addParams("os","android")
+                        .addParams("deviceToken", JPushInterface.getRegistrationID(mContext))
+                        .addParams("version", localVersion)
+                        .addParams("os", "android")
                         .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                         .addParams("encryptOpenId", encryptOpenId)
                         .addParams("mobile", mobilePhone)
@@ -105,9 +111,17 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                                 String code = JSONObject.parseObject(response).getString("code");
                                 if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                     String data = JSONObject.parseObject(response).getString("data");
+                                    String userInfo = JSONObject.parseObject(response).getString("userInfo");
+                                    String token = JSONObject.parseObject(data).getString("token");
+                                    String userId = JSONObject.parseObject(userInfo).getString("userId");
+
+                                    SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
+                                    SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
+                                    SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
+
                                     LogUtils.d("dynamicLogin", "三方登录成功");
 //                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
-                                    Intent intent = new Intent(BindPhoneActivity.this,FootPrintActivity.class);
+                                    Intent intent = new Intent(BindPhoneActivity.this, FootPrintActivity.class);
                                     startActivity(intent);
                                     finish();
                                     runOnUiThread(new Runnable() {
@@ -158,8 +172,8 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                             String data = JSONObject.parseObject(response).getString("data");
                             salt = JSONObject.parseObject(data).getString("salt");
                             timestamp = JSONObject.parseObject(data).getString("timestamp");
-                            LogUtils.d("response",data.toString());
-                            LogUtils.d("data","盐值"+ salt +" 时间戳："+ timestamp);
+                            LogUtils.d("response", data.toString());
+                            LogUtils.d("data", "盐值" + salt + " 时间戳：" + timestamp);
                         }
                     }
                 });

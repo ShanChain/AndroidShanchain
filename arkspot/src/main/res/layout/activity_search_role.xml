@@ -27,7 +27,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:visibility="gone"
+            android:visibility="visible"
             android:textCursorDrawable="@null"
             android:id="@+id/et_search_role_search"
             android:layout_width="match_parent"

@@ -17,14 +17,29 @@ public class UserEntry extends Model {
     @Column(name = "AppKey")
     public String appKey;
 
+    @Column(name = "Avatar")
+    public String avatar;
+
     public UserEntry() {
         super();
     }
 
-    public UserEntry(String username, String appKey) {
+    public UserEntry(String username, String avatar) {
+        super();
+        this.username = username;
+        this.avatar = avatar;
+    }
+
+    public UserEntry(String username, String appKey, String avatar) {
         super();
         this.username = username;
         this.appKey = appKey;
+        this.avatar = avatar;
+    }
+
+    public static UserEntry getUser(String username) {
+        return new Select().from(UserEntry.class).where("Username = ?", username)
+                .executeSingle();
     }
 
     public static UserEntry getUser(String username, String appKey) {

@@ -21,6 +21,7 @@ public class NetErrCode {
     public static final String USER_REPEAT_ERR_CODE = "999997";//账号已存在
     public static final String UN_VERIFIED_CODE = "999970";//未实名认证
     public static final String LOGIN_ERR_CODE = "999996";//账号或密码已错误
+    public static final String HAVE_BEEN_CODE = "999977";//该元社区已创建
     public static final String PARAMS_ERR_CODE = "999995";
     public static final String BIND_PONE_ERR_CODE = "999993";
     public static final String SPACE_CREATE_ERR_CODE = "999992";//创建时空，人物模型，话题名重复
@@ -35,4 +36,8 @@ public class NetErrCode {
 
     //上传钱包密码时选择图片返回
     public static final int WALLET_PHOTO = 10004;
+    //添加元社区成功
+    public static final int ADD_ROOM_SUCCESS = 99977;
+    //刷新社区帮，
+    public static final int REFRESH_MY_TASK = 99966;
 }

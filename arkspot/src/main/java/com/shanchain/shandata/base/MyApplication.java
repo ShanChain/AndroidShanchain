@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
+import com.android.tony.defenselib.DefenseCrash;
+import com.android.tony.defenselib.handler.IExceptionHandler;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
@@ -79,7 +81,7 @@ import okhttp3.OkHttpClient;
 //import me.shaohui.shareutil.ShareManager;
 
 
-public class MyApplication extends BaseApplication {
+public class MyApplication extends BaseApplication implements IExceptionHandler {
 
     private static Context mContext;
     private LocationClient locationClient;
@@ -150,6 +152,9 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
+        setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
+        SoLoader.init(this, /* native exopackage */ false);
         //加载ActiveAndroid配置文件
         Configuration.Builder builder = new Configuration.Builder(this);
         //手动的添加模型类
@@ -157,9 +162,6 @@ public class MyApplication extends BaseApplication {
         builder.addModelClasses(FriendEntry.class);
         builder.addModelClasses(FriendRecommendEntry.class);
         ActiveAndroid.initialize(builder.create());
-        mContext = getApplicationContext();
-        setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
-        SoLoader.init(this, /* native exopackage */ false);
         //facebook初始化
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -190,12 +192,6 @@ public class MyApplication extends BaseApplication {
         return UserEntry.getUser(JMessageClient.getMyInfo().getUserName(), JMessageClient.getMyInfo().getAppKey());
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
-
     private void initBaiduMap() {
         locationClient = new LocationClient(getApplicationContext());//声明LocationClient类
 //        locationClient.registerLocationListener(this);//注册监听函数
@@ -205,8 +201,8 @@ public class MyApplication extends BaseApplication {
         locationClient.setLocOption(option);//设置定位参数
         locationClient.start();
         Intent intent = new Intent();
-        intent.setAction(".receiver.MyLocationReceiver");
-        sendBroadcast(intent);
+//        intent.setAction(".receiver.MyLocationReceiver");
+//        sendBroadcast(intent);
     }
 
     /**
@@ -535,6 +531,40 @@ public class MyApplication extends BaseApplication {
 
     public static void setRealName(boolean realName) {
         isRealName = realName;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+        // step1: Initialize the lib.
+        DefenseCrash.initialize();
+        // setp2: Install the fire wall defense.
+        DefenseCrash.install(this);
+    }
+
+    @Override
+    public void onCaughtException(Thread thread, Throwable throwable, boolean b) {
+        // step3: 打印错误堆栈
+        throwable.printStackTrace();
+        // step4: 上报该错误到错误收集的平台,例如国内的Bugly,友盟等
+        CrashReport.postCatchedException(throwable,thread);
+    }
+
+    /* 框架使程序运行进入了安全模式,这种情况是在程序运行过程中发生了崩溃,
+    但是不要慌,已经被框架拦截并且进入了安全模式,这里你可以什么都不用做.
+    */
+    @Override
+    public void onEnterSafeMode() {
+
+    }
+
+    /* 这个回调说明在onLayout(),onMeasure() 和 onDraw()中出现了崩溃
+     这种崩溃会导致绘图异常和编舞者类崩溃我们建议你在这时候,重启当前的activity或者应用
+     */
+    @Override
+    public void onMayBeBlackScreen(Throwable throwable) {
+        throwable.printStackTrace();
     }
     //    private void sendNotification(EMMessage message) {
 //        EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();

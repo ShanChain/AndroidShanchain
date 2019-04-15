@@ -11,7 +11,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 9
-        versionName "2.3.7"
+        versionName "2.4.0"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -162,7 +162,8 @@ dependencies {
     //    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
 
     //    implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
-
+    //防止界面崩溃
+    implementation 'com.tonystark.android:defense_crash:2.0.0'
     //生成/扫描 二维码
     implementation 'cn.yipianfengye.android:zxing-library:2.2'
 

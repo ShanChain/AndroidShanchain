@@ -506,6 +506,8 @@ public interface HttpApi {
      * 获取聊天室信息
      */
     String CHAT_ROOM_INFO = BASE_URL + "/v1/lbs/coordinate/info";
+    /* 获取绘制方块坐标 */
+    String CUBE_INFO = BASE_URL + "/v1/lbs/hotChatRoom/coordinateInfo";
     //    String CHAT_ROOM_INFO = "http://95.169.24.11:8081" + "/v1/lbs/coordinate/info";
     /* 获取聊天室历史消息*/
     String CHAT_ROOM_HISTORY_MESSAGE = BASE_URL + "/jm/room/message";
@@ -517,6 +519,8 @@ public interface HttpApi {
 //    String CHAT_ROOM_HISTORY_MESSAGE = "http://67.218.159.56:8082" + "/jm/room/message";
     /* 查询广场上的所有任务列表 */
     String GROUP_TASK_LIST = BASE_URL + "/v1/task/roomtask/list";
+    /* 查询广场上的所有任务列表 */
+    String ALL_TASK_LIST = BASE_URL + "/v1/task/totaltask/list";
     //    String GROUP_TASK_LIST = "http://95.169.24.11:8081" + "/v1/task/roomtask/list";
     /* 查询用户的所有任务列表 */
     String USER_TASK_LIST = BASE_URL + "/v1/task/individual/list";
@@ -612,6 +616,10 @@ public interface HttpApi {
     String SHARE_CHAT_ROOM = BASE_URL + "/v1/2.0/share/shareRoom";
     /* 热门元社区 */
     String HOT_CHAT_ROOM = BASE_URL + "/web/api/sys/hotChatRoom";
+    /* 搜索房间 */
+    String SEARCH_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/search";
+    /* 添加社区 */
+    String ADD_HOT_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/add";
     /* 福包列表 */
     String RED_PAPER_LIST = BASE_URL + "/v1/2.0/redPaper/obtainList";
     /* 领取福包 */
@@ -619,6 +627,8 @@ public interface HttpApi {
     /* 卡劵接口 */
     /* 获取主页卡券列表 */
     String COUPONS_LIST = BASE_URL + "/wallet/api/coupons/vendor/list";
+    /* 获取全部卡劵列表 */
+    String COUPONS_ALL_LIST = BASE_URL + "/wallet/api/coupons/vendor/listAll";
     /* 创建卡券 */
     String COUPONS_CREATE = BASE_URL + "/wallet/api/coupons/vendor/create";
     /* 获取用户已发布的卡券列表 */

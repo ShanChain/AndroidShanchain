@@ -34,6 +34,7 @@ import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
@@ -474,9 +475,11 @@ public class LoginActivity extends BaseActivity {
         String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
         KeyboardUtils.hideSoftInput(this);
         showProgress();
+        final String localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.postWithParamsForLogin()
                 .url(HttpApi.USER_LOGIN)
                 .addParams("deviceToken", JPushInterface.getRegistrationID(this))
+                .addParams("version", localVersion)
                 .addParams("os", "android")
                 .addParams("channel", "" + channel)
                 .addParams("Timestamp", time)
@@ -783,9 +786,11 @@ public class LoginActivity extends BaseActivity {
     public void thridLogin(final String encryptOpenId, String encryptToken16, String headIcon, String nickName, String sex, String userType) {
         showProgress();
         try {
+            final String localVersion = VersionUtils.getVersionName(mContext);
             SCHttpUtils.postWithParamsForLogin()
                     .url(HttpApi.USER_THIRD_LOGIN)
                     .addParams("deviceToken", JPushInterface.getRegistrationID(this))
+                    .addParams("version", localVersion)
                     .addParams("os", "android")
                     .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                     .addParams("encryptOpenId", encryptOpenId + "")
@@ -901,12 +906,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void sureLogin(String mobilePhone, String sign, String verifyCode) {
+        final String localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_LOGIN)
                 .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
                 .addParams("mobile", mobilePhone)
                 .addParams("sign", sign)
                 .addParams("verifyCode", verifyCode)
+                .addParams("version", localVersion)
                 .build()
                 .execute(new SCHttpStringCallBack(LoginActivity.this) {
                     @Override

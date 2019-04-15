@@ -36,8 +36,8 @@ public class TaskPresenterImpl implements TaskPresenter {
         taskList.clear();
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.GROUP_TASK_LIST)
-                .addParams("characterId", characterId)
-                .addParams("roomId", roomId)
+                .addParams("characterId", characterId+"")
+                .addParams("roomId", roomId+"")
                 .addParams("page", ""+page)
                 .addParams("size", ""+size)
                 .build()

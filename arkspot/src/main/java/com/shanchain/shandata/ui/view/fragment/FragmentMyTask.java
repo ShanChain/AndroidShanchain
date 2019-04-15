@@ -34,6 +34,7 @@ import com.shanchain.shandata.adapter.MultiMyTaskAdapter;
 import com.shanchain.shandata.adapter.MultiTaskListAdapter;
 import com.shanchain.shandata.adapter.TaskListAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.TaskMode;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
@@ -221,6 +222,9 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                             }
                         }, 500);
                         break;
+                    default:
+                        initData();
+                        break;
                 }
             }
         });
@@ -238,7 +242,12 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void myTaskEvent(Object event) {
+    public void myTaskEventBus(EventMessage event) {
+        if (event.getCode() == NetErrCode.REFRESH_MY_TASK) {
+            showProgress();
+            onRefresh();
+//            ToastUtils.showToast(getContext(),"Evenbus执行");
+        }
 
     }
 

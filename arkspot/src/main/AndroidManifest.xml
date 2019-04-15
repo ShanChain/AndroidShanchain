@@ -35,6 +35,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 访问网络，网络定位需要上网 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 应用角标 -->
+    <uses-permission android:name=" com.huawei.android.launcher.permission. CHANGE_BADGE"/>
     <!-- SD卡读写操作 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -74,6 +76,16 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
+        <!--ActiveAndroid 数据库操作配置:数据库名称jchat.db , 版本号4-->
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="jchat.db" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="com.shanchain.shandata.ui.model.UserEntry,com.shanchain.shandata.ui.model.FriendEntry,com.shanchain.shandata.ui.model.FriendRecommendEntry,com.shanchain.shandata.ui.model.ConversationEntry,com.shanchain.shandata.ui.model.MessageEntry" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="5" />
 
         <!-- 百度地图 -->
         <meta-data
@@ -180,12 +192,12 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.MyLocationReceiver">
-            <intent-filter>
-                <action android:name=".receiver.MyLocationReceiver"></action>
-                <category android:name="com.shanchain.shandata"></category>
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".receiver.MyLocationReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name=".receiver.MyLocationReceiver"></action>-->
+                <!--<category android:name="com.shanchain.shandata"></category>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <!-- 极光推送  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调 -->
         <receiver android:name=".receiver.MyJPushMessageReceiver">
@@ -223,7 +235,9 @@
 
 
         <!-- activity页面注册 -->
-        <activity android:name=".ui.view.activity.login.LoginActivity">
+        <activity
+            android:name=".ui.view.activity.login.LoginActivity"
+            android:launchMode="singleTask">
             <meta-data
                 android:name="page_flag"
                 android:value="page_login" />
@@ -435,7 +449,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.view.activity.jmessageui.FootPrintActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".ui.view.activity.jmessageui.SingleChatActivity"
             android:label="@string/title_activity_single_chat"

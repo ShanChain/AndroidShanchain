@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -49,6 +50,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingerChatInfoActivity;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 
@@ -147,14 +149,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         if (null == chatRoomConversation) {
             chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
         }
-        //上传密码图片弹窗
-        showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(TaskDetailActivity.this, true, 1.0,
-                R.layout.dialog_bottom_wallet_password,
-                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
         initToolBar();
         initView();
         initData();
-
+        initLoadMoreListener();
     }
 
     private void initView() {
@@ -233,6 +231,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 @Override
                 public void onClick(View v) {
                     //领取任务请求
+                    //上传密码图片弹窗
+                    showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(TaskDetailActivity.this, true, 1.0,
+                            R.layout.dialog_bottom_wallet_password,
+                            new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
                     SCHttpUtils.postWithUserId()
                             .url(HttpApi.TASK_DETAIL_RECEIVE)
                             .addParams("roomId", roomID + "")
@@ -278,7 +280,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm");
                     String expiryTime = sdf.format(chatEventMessage.getExpiryTime());
                     lastTime.setText(expiryTime + "");
-                    EventBus.getDefault().postSticky(new EventMessage<ChatEventMessage>(1));
+                    EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
                     dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                         @Override
                         public void OnItemClick(final CustomDialog dialog, View view) {
@@ -322,8 +324,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private void initData() {
         srlTaskList.setOnRefreshListener(this);
         showLoadingDialog(true);
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.GROUP_TASK_LIST)
+//        SCHttpUtils.postWithUserId()
+//                .url(HttpApi.GROUP_TASK_LIST)
+        SCHttpUtils.getAndToken()
+                .url(HttpApi.ALL_TASK_LIST)
                 .addParams("characterId", characterId + "")
                 .addParams("roomId", roomID + "")
                 .addParams("page", page + "")
@@ -371,15 +375,15 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     }
 
     private void initToolBar() {
-        tbTaskComment.isShowChatRoom(false);//不在导航栏显示聊天室信息
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        tbTaskComment.isShowChatRoom(false);//不在导航栏显示聊天室信息
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+//                RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                RelativeLayout.LayoutParams.WRAP_CONTENT
+//        );
+//        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbTaskComment.setTitleText("社区帮");
         tbTaskComment.setTitleTextColor(Color.BLACK);
-        tbTaskComment.getTitleView().setLayoutParams(layoutParams);
+//        tbTaskComment.getTitleView().setLayoutParams(layoutParams);
         tbTaskComment.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         tbTaskComment.setOnLeftClickListener(this);
         tbTaskComment.setRightText("我的");
@@ -936,6 +940,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     public void onRefresh() {
+        page = 0;
         if (taskList.size() < 0) {
             return;
         }
@@ -944,5 +949,62 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         adapter.notifyDataSetChanged();
         rvTaskDetails.setAdapter(adapter);
         srlTaskList.setRefreshing(false);
+    }
+
+    private void initLoadMoreListener() {
+
+        rvTaskDetails.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
+                    page++;
+                    SCHttpUtils.getAndToken()
+                            .url(HttpApi.ALL_TASK_LIST)
+                            .addParams("characterId", characterId + "")
+                            .addParams("roomId", roomID + "")
+                            .addParams("page", page + "")
+                            .addParams("size", size + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    LogUtils.d("TaskPresenterImpl", "查询任务失败");
+                                    closeLoadingDialog();
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                        LogUtils.d("TaskPresenterImpl", "查询任务成功");
+                                        String data = JSONObject.parseObject(response).getString("data");
+                                        String content = JSONObject.parseObject(data).getString("content");
+
+                                        List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content
+                                                , ChatEventMessage.class);
+                                        adapter.addData(chatEventMessageList);
+                                        closeLoadingDialog();
+                                    }
+                                }
+                            });
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
     }
 }

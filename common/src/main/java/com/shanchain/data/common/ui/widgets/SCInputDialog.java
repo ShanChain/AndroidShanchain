@@ -18,7 +18,7 @@ import com.shanchain.data.common.utils.ToastUtils;
  * Created by zhoujian on 2017/10/21.
  */
 
-public class SCInputDialog{
+public class SCInputDialog {
 
     private String mTitle;
     private String mPlaceHolder;
@@ -28,13 +28,14 @@ public class SCInputDialog{
     private AlertDialog mAlertDialog;
     private Context mContext;
 
-    public SCInputDialog(@NonNull Context context,String title,String placeHolder) {
+    public SCInputDialog(@NonNull Context context, String title, String placeHolder) {
         this.mTitle = title;
         this.mPlaceHolder = placeHolder;
         mAlertDialog = new AlertDialog.Builder(context).create();
         mContext = context;
     }
-    public void show(){
+
+    public void show() {
         View view = View.inflate(mContext, R.layout.common_dialog_input, null);
         TextView tvTitle = (TextView) view.findViewById(R.id.tv_input_dialog_title);
         mEtContent = (EditText) view.findViewById(R.id.et_input_dialog_content);
@@ -47,10 +48,10 @@ public class SCInputDialog{
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (sureCallback != null){
+                if (sureCallback != null) {
                     sureCallback.invoke();
                 }
-                if(mAlertDialog != null){
+                if (mAlertDialog != null) {
                     mAlertDialog.dismiss();
                 }
             }
@@ -59,10 +60,10 @@ public class SCInputDialog{
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cancelCallback!=null){
+                if (cancelCallback != null) {
                     cancelCallback.invoke();
                 }
-                if(mAlertDialog != null){
+                if (mAlertDialog != null) {
                     mAlertDialog.dismiss();
                 }
             }
@@ -71,16 +72,22 @@ public class SCInputDialog{
         mAlertDialog.setCancelable(true);
         mAlertDialog.show();
     }
-    public void dismiss(){
-        if(mAlertDialog != null){
+
+    public void dismiss() {
+        if (mAlertDialog != null) {
             mAlertDialog.dismiss();
         }
     }
+
     public String getInputContent() {
         return mEtContent.getText().toString().trim();
     }
 
-    public void setCallback(final Callback sureCallback, final Callback cancelCallback){
+    public EditText getEtContent() {
+        return mEtContent;
+    }
+
+    public void setCallback(final Callback sureCallback, final Callback cancelCallback) {
         this.sureCallback = sureCallback;
         this.cancelCallback = cancelCallback;
     }

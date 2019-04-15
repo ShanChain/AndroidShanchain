@@ -38,7 +38,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
     private LinearLayout addCoupon;
     private RecyclerView recyclerView;
     private BGARefreshLayout refreshLayout;
-    private int pageNo = 0, pageSize = 10;
+    private int pageNo = 1, pageSize = 10;
     private String roomid;
     private String subUserId = SCCacheUtils.getCacheCharacterId();
     private List<CouponSubInfo> couponInfoList = new ArrayList<>();
@@ -55,7 +55,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
 
     @Override
     protected void initViewsAndEvents() {
-        roomid = getIntent() != null ? getIntent().getStringExtra("roomId") : "" + SCCacheUtils.getCacheRoomId();
+        roomid = getIntent() != null ? getIntent().getStringExtra("roomId") : SCCacheUtils.getCacheRoomId() + "";
         initToolBar();
         initView();
         initData();
@@ -112,12 +112,13 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
     //初始化数据
     private void initData() {
         showLoadingDialog(true);
-        SCHttpUtils.get()
-                .url(HttpApi.COUPONS_LIST)
+        SCHttpUtils.getAndToken()
+//                .url(HttpApi.COUPONS_LIST)
+                .url(HttpApi.COUPONS_ALL_LIST)
                 .addParams("pageNo", pageNo + "")
                 .addParams("pageSize", pageSize + "")
                 .addParams("subuserId", subUserId + "")
-                .addParams("roomId", roomid + "")
+//                .addParams("roomId", roomid + "")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -196,11 +197,12 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
     public boolean onBGARefreshLayoutBeginLoadingMore(final BGARefreshLayout refreshLayout) {
         if (pageNo != currentPage) {
             SCHttpUtils.get()
-                    .url(HttpApi.COUPONS_LIST)
+//                    .url(HttpApi.COUPONS_LIST)
+                    .url(HttpApi.COUPONS_ALL_LIST)
                     .addParams("pageNo", pageNo + "")
                     .addParams("pageSize", pageSize + "")
                     .addParams("subuserId", subUserId + "")
-                    .addParams("roomId", roomid + "")
+//                    .addParams("roomId", roomid + "")
                     .build()
                     .execute(new StringCallback() {
                         @Override

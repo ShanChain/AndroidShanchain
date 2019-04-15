@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.shanchain.common.R;
 import com.shanchain.data.common.utils.SystemUtils;
@@ -478,8 +479,8 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     }
 
     /*
-    * 底部布局（大厅/捡漏）
-    * */
+     * 底部布局（大厅/捡漏）
+     * */
     public RelativeLayout getRelativeCouponTitle() {
         return relativeCouponTitle;
     }
@@ -798,7 +799,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 用户头像
      */
     public void setOnUserHeadClickListener(OnUserHeadClickListener listener) {
-        this.onUserHeadClickListener = listener;
+        if (listener != null) {
+            this.onUserHeadClickListener = listener;
+        }
     }
 
     /**
@@ -806,7 +809,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 设置左侧接口
      */
     public void setOnLeftClickListener(OnLeftClickListener listener) {
-        this.mLeftListener = listener;
+        if (listener != null) {
+            this.mLeftListener = listener;
+        }
     }
 
     /**
@@ -814,7 +819,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 设置标题接口
      */
     public void setOnTitleClickListener(OnTitleClickListener listener) {
-        this.mTitleListener = listener;
+        if (listener != null) {
+            this.mTitleListener = listener;
+        }
     }
 
     /**
@@ -822,7 +829,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 设置收藏接口
      */
     public void setOnFavoriteClickListener(OnFavoriteClickListener listener) {
-        this.mFavoriteListener = listener;
+        if (listener != null) {
+            this.mFavoriteListener = listener;
+        }
     }
 
     /**
@@ -830,7 +839,9 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 设置聊天室信息按钮接口
      */
     public void setOnRelativeChatRoomClickListener(OnRelativeChatRoomClickListener listener) {
-        this.mRelativeChatRoomClickListener = listener;
+        if (listener != null) {
+            this.mRelativeChatRoomClickListener = listener;
+        }
     }
 
 
@@ -839,6 +850,8 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
      * 描述: 设置右侧接口
      */
     public void setOnRightClickListener(OnRightClickListener listener) {
-        this.mRightListener = listener;
+        if (listener != null) {
+            this.mRightListener = listener;
+        }
     }
 }

@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -32,6 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -75,11 +77,13 @@ import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.net.UpdateAppHttpUtil;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.RedPaperDialog;
+import com.shanchain.data.common.ui.widgets.SCInputDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -96,6 +100,7 @@ import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.push.ExampleUtil;
 import com.shanchain.shandata.receiver.MyReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.model.RNGDataBean;
 import com.shanchain.shandata.ui.model.RedPaper;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
@@ -106,11 +111,13 @@ import com.shanchain.shandata.utils.PermissionHelper;
 import com.shanchain.shandata.utils.PermissionInterface;
 import com.shanchain.shandata.utils.RequestCode;
 import com.tinkerpatch.sdk.TinkerPatch;
+import com.umeng.commonsdk.debug.E;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.service.DownloadService;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -124,6 +131,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.OnClick;
 import cn.jiguang.imui.model.MyMessage;
@@ -141,9 +149,11 @@ import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+import okhttp3.RequestBody;
 
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
 import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
@@ -185,6 +195,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private StandardDialog standardDialog;
     public static boolean isForeground = false;
     public static boolean isShowRush = false;
+    private boolean isAddRoom, isLoadMore;
     private MessageReceiver mMessageReceiver;
     public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_TITLE = "title";
@@ -298,6 +309,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private RedPaperDialog redPaperDialog;
     private File captureScreenFile;
     private String clearance;
+    private SCInputDialog mScInputDialog;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -318,6 +330,14 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             channelName = "订阅消息";
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
+        }
+        isAddRoom = getIntent().getBooleanExtra("isAddRoom", false);
+        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
+        if (isAddRoom == true) {
+            StandardDialog dialog = new StandardDialog(HomeActivity.this);
+            dialog.setStandardTitle("添加元社区");
+            dialog.setStandardMsg("点击地图添加元社区");
+            dialog.show();
         }
 //        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
     }
@@ -397,9 +417,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         break;
                 }
             }
-        }
-        ;
-
+        };
         //        UMConfigure.setLogEnabled(true); //显示友盟log日记
         //检查apk版本
         checkApkVersion();
@@ -724,7 +742,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 });
     }
 
-
     //点击请求方区
     public void initCubeMap(LatLng point) {
         //获取聊天室信息
@@ -746,7 +763,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
+                            LogUtils.d(TAG, "####### " + "获取聊天室地理位置信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
                             if (coordinates == null) {
@@ -843,7 +860,103 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         }
                         closeProgress();
                     }
+                });
+    }
 
+    //点击绘制方框
+    private void drawCubeMap(final LatLng gpsLatLng) {
+        SCHttpUtils.getAndToken()
+                .url(HttpApi.CUBE_INFO)
+                .addParams("latitude", gpsLatLng.latitude + "")
+                .addParams("longitude", gpsLatLng.longitude + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d(TAG, "网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            coordinates = JSONObject.parseObject(data, Coordinates.class);
+                            if (coordinates == null || coordinates.getCoordinates() == null) {
+                                return;
+                            }
+                            /*
+                             * 绘制所在位置的方区
+                             *
+                             * */
+                            List cubeMapList = new ArrayList();
+                            for (int i = 0; i < coordinates.getCoordinates().size(); i++) {
+                                double pointLatitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLatitude());
+                                double pointLongitude = Double.parseDouble(coordinates.getCoordinates().get(i).getLongitude());
+                                LatLng point = new LatLng(pointLatitude, pointLongitude);
+                                // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                                coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                                coordinateConverter.coord(point);
+                                LatLng desLatLng = coordinateConverter.convert();
+//                                pointList.add(desLatLng);
+
+                                cubeMapList.add(point);
+                            }
+
+                            double focusLatitude = Double.parseDouble(coordinates.getFocusLatitude());
+                            double focusLongitude = Double.parseDouble(coordinates.getFocusLongitude());
+                            myFocusPoint = new LatLng(focusLatitude, focusLongitude);
+                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                            coordinateConverter.coord(myFocusPoint);
+                            LatLng desLatLng = coordinateConverter.convert();
+                            //设置显示地图中心点
+//                            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(desLatLng); //转换后的坐标
+                            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(myFocusPoint); //未转换的坐标
+                            baiduMap.setMapStatus(mapStatusUpdate);
+                            baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
+//                            baiduMap.setBaiduHeatMapEnabled(true);
+
+
+                            //构建Marker图标
+                            BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                    .fromResource(R.mipmap.home_location);
+                            //构建MarkerOption，用于在地图上添加Marker
+                            OverlayOptions option = new MarkerOptions()
+                                    .position(myFocusPoint)
+                                    .icon(bitmap);
+                            //在地图上添加Marker，并显示
+//                           baiduMap.addOverlay(option);
+                            //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                            cubeMapList.add(cubeMapList.get(0));
+                            OverlayOptions ooPolyline = new PolylineOptions().width(4)
+                                    .color(0xAA121518).points(cubeMapList);
+                            Polyline mPolyline = (Polyline) baiduMap.addOverlay(ooPolyline);
+                            mPolyline.setDottedLine(true);
+                            //添加元社区
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mScInputDialog = new SCInputDialog(HomeActivity.this, "添加元社区",
+                                            "请输入元社区名称");
+                                    //显示输入元社区
+                                    mScInputDialog.setCallback(new Callback() {//确定
+                                        @Override
+                                        public void invoke() {
+//                                            addCustomChatRoom(baiduMap, gpsLatLng);
+                                        }
+                                    }, new Callback() {//取消
+                                        @Override
+                                        public void invoke() {
+
+                                        }
+                                    });
+                                    //显示输入元社区弹窗
+                                    mScInputDialog.show();
+                                }
+                            });
+                        }
+                    }
                 });
     }
 
@@ -852,7 +965,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //        LatLng myLatLang = new LatLng(20.045082, 110.32447);
         shareRedPaperDialog();
         //获取周边
-        showProgress();
         SCHttpUtils.get()
                 .url(HttpApi.CHAT_ROOM_COORDINATE)
                 .addParams("longitude", gpsLatLng.longitude + "")
@@ -867,7 +979,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        closeProgress();
                         LogUtils.d("####### USER_COORDINATE 请求成功 #######");
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
@@ -936,10 +1047,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                     }
                                 }
                             }).start();
-
-
                         }
-                        closeProgress();
                     }
                 });
 
@@ -953,7 +1061,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
-                        closeLoadingDialog();
                     }
 
                     @Override
@@ -961,7 +1068,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                         closeLoadingDialog();
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            LogUtils.d("####### " + "获取聊天室信息" + " ########");
+                            LogUtils.d("####### " + "获取当前聊天室地理位置信息" + " ########");
                             String data = JSONObject.parseObject(response).getString("data");
                             coordinates = JSONObject.parseObject(data, Coordinates.class);
                             if (coordinates == null) {
@@ -971,7 +1078,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             roomID = coordinates.getRoomId();
                             RoleManager.switchRoleCacheRoomId(roomID);
 //                            roomID = "12826211";
-
                             /*
                              * 绘制所在位置的方区
                              *
@@ -1046,7 +1152,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                 }
                             });
                         }
-                        closeProgress();
                     }
                 });
 
@@ -1308,8 +1413,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         }
     }
 
+    //跨年倒计时
     private void initView() {
-        //跨年倒计时
         activityHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -1396,10 +1501,10 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         setStyleCustom();
     }
 
+    /*
+     * 初始化定位
+     * */
     private void initBaiduMap() {
-        /*
-         * 初始化定位
-         * */
         baiduMap = mapView.getMap();
         locationClient = new LocationClient(getApplicationContext());//创建LocationClient对象
         LocationClientOption option = new LocationClientOption();
@@ -1481,30 +1586,25 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
              */
             public boolean onMarkerClick(Marker marker) {
 //                ToastUtils.showToast(HomeActivity.this, "点击MapMarkr");
-
                 marker.getPosition();
                 return false;
             }
         };
         baiduMap.setOnMarkerClickListener(listener);
-
         MapListener = new BaiduMap.OnMapClickListener() {
             /**
              * 地图单击事件回调函数
              * @param point 点击的地理坐标
              */
-            public void onMapClick(LatLng point) {
-                initCubeMap(point);
-                transYear(point);
-//                isShowRush = true;
-//                if (isShowRush) {
-//                    relativeCountDown.setVisibility(View.GONE);
-//                    relativeRush.setVisibility(View.VISIBLE);
-//                } else {
-//                    relativeRush.setVisibility(View.GONE);
-//                }
-//                shareRedPaperDialog();
-                locationClient.requestLocation();
+            public void onMapClick(final LatLng point) {
+                if (isAddRoom == true) {
+                    //绘制方区
+                    drawCubeMap(point);
+                } else {
+                    initCubeMap(point);
+                    transYear(point);
+                    locationClient.requestLocation();
+                }
             }
 
             @Override
@@ -1513,6 +1613,106 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             }
 
         };
+    }
+
+    //添加自定义社区
+    private void addCustomChatRoom(BaiduMap map, final LatLng myFocusPoint) {
+        //截图
+        final int rectTop = (mScreenHeight / 2 - mScreenWidth / 2);
+        final int rectBottom = rectTop + mScreenWidth + 10;
+        map.snapshotScope(new Rect(0, rectTop, mScreenWidth, rectBottom), new BaiduMap.SnapshotReadyCallback() {
+            // map.snapshot(new BaiduMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap bitmap) {
+                FileOutputStream out;
+                File screenshotFile = null;
+                try {
+                    String filePath = ImageUtils.getSDPath() + File.separator + "shanchain";
+                    //创建文件夹
+                    File fPath = new File(filePath);
+                    if (!fPath.exists()) {
+                        fPath.mkdir();
+                    }
+                    screenshotFile = new File(filePath + File.separator + ImageUtils.getTempFileName() + ".png");
+                    out = new FileOutputStream(screenshotFile);
+//                    Bitmap cropBitmap = Bitmap.createBitmap(bitmap, 0, rectTop, mScreenWidth, rectBottom);
+                    if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                        out.flush();
+                        out.close();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                List screenshot = new ArrayList();
+                screenshot.add(screenshotFile.getAbsolutePath() + "");
+                showLoadingDialog(true);
+                SCUploadImgHelper helper = new SCUploadImgHelper();
+                helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+                    @Override
+                    public void onUploadSuc(final List<String> urls) {
+                        closeLoadingDialog();
+                        LogUtils.d(TAG, "截图上传url:" + urls.get(0));
+//                        String customRoomName = mScInputDialog.getInputContent();
+                        EditText etContent = mScInputDialog.getEtContent();
+                        String customRoomName = etContent.getText().toString();
+                        if (TextUtils.isEmpty(customRoomName)) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, "请输入聊天室名称");
+                                }
+                            });
+                            return;
+                        }
+                        Map requestBody = new HashMap();
+                        requestBody.put("latitude", myFocusPoint.latitude);
+                        requestBody.put("longitude", myFocusPoint.longitude);
+                        requestBody.put("roomName", "" + customRoomName);
+                        requestBody.put("thumbnails", urls.get(0));
+//                                requestBody.put("background", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555322870&di=5fed039c96c08a9e670970b4f17517b9&imgtype=jpg&er=1&src=http%3A%2F%2Fpic.51yuansu.com%2Fpic2%2Fcover%2F00%2F35%2F94%2F5811ba4baee63_610.jpg");
+                        SCHttpUtils.postByBody(HttpApi.ADD_HOT_ROOM, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(mContext, null) {
+                            @Override
+                            public void responseDoParse(String string) throws IOException {
+                                final String code = JSONObject.parseObject(string).getString("code");
+                                final String msg = JSONObject.parseObject(string).getString("message");
+                                if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                                    String data = SCJsonUtils.parseData(string);
+                                    String coordinateInfo = SCJsonUtils.parseString(data, "coordinateInfo");
+                                    String ChatRoomInfo = SCJsonUtils.parseString(data, "hotChatRoom");
+                                    Coordinates coordas = SCJsonUtils.parseObj(coordinateInfo, Coordinates.class);
+                                    HotChatRoom hotChatRoom = SCJsonUtils.parseObj(ChatRoomInfo, HotChatRoom.class);
+                                    //刷新热门聊天室
+                                    EventBus.getDefault().post(new EventMessage(NetErrCode.ADD_ROOM_SUCCESS));
+                                    //进入聊天室
+                                    Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                                    intent.putExtra("roomId", "" + hotChatRoom.getRoomId());
+                                    intent.putExtra("roomName", "" + hotChatRoom.getRoomName());
+                                    startActivity(intent);
+                                }
+//                                else if (NetErrCode.HAVE_BEEN_CODE.equals(code)){
+//
+//                                }
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void error() {
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtils.showToast(mContext, getResources().getString(R.string.internet_error));
+                            }
+                        });
+                        closeLoadingDialog();
+                    }
+                });
+                helper.upLoadImg(HomeActivity.this, screenshot);
+            }
+        });
     }
 
 

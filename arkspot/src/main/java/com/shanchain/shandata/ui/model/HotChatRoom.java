@@ -3,7 +3,9 @@ package com.shanchain.shandata.ui.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class HotChatRoom implements Parcelable {
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
+public class HotChatRoom implements Parcelable, MultiItemEntity {
 
     /**
      * id : 1
@@ -19,9 +21,10 @@ public class HotChatRoom implements Parcelable {
     private String roomName;
     private String thumbnails;
     private String background;
+    private String type;
     private String sortNo;
 
-    public HotChatRoom(){
+    public HotChatRoom() {
 
     }
 
@@ -105,6 +108,14 @@ public class HotChatRoom implements Parcelable {
         this.sortNo = sortNo;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -119,5 +130,13 @@ public class HotChatRoom implements Parcelable {
         dest.writeString(background);
         dest.writeString(sortNo);
         dest.writeString(userNum);
+    }
+
+    @Override
+    public int getItemType() {
+        if (getType().equals("custom")) {
+            return 1;
+        }
+        return 0;
     }
 }

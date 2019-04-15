@@ -32,7 +32,9 @@ public class FriendInfoController implements View.OnClickListener {
                 Intent intent = new Intent(mContext, SingleChatActivity.class);
                 Bundle bundle1 = new Bundle();
                 if (friendInfo != null) {
-                    DefaultUser userInfo = new DefaultUser(0, friendInfo.getDisplayName(), friendInfo.getAvatarFile().getAbsolutePath());
+                    String avatar = friendInfo.getAvatarFile() != null ?
+                            friendInfo.getAvatarFile().getAbsolutePath() : "";
+                    DefaultUser userInfo = new DefaultUser(0, friendInfo.getDisplayName(), avatar);
                     userInfo.setHxUserId(friendInfo.getUserName() + "");
                     userInfo.setDisplayName(friendInfo.getDisplayName() + "");
                     userInfo.setSignature(friendInfo.getSignature() + "");

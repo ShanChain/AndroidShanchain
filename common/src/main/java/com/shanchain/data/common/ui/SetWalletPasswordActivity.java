@@ -289,7 +289,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                                             });
                                             btnNextStep.setClickable(true);
                                             btnNextStep.setBackground(getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
-                                        }else {
+                                        } else {
                                             ThreadUtils.runOnMainThread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -382,7 +382,13 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
 
                 break;
             case INTENT_TAKE:
-                Uri s = data.getData();
+                try {
+                    Uri imgUri = data.getData();
+                    SetWalletPasswordActivity.this.sendBroadcast(
+                            new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, imgUri));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 break;
         }

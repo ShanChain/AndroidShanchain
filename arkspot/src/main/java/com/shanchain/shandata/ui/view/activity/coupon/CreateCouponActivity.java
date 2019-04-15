@@ -405,7 +405,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 detail = editCouponDescribe.getText().toString();//说明
                 subuserId = SCCacheUtils.getCacheCharacterId();//角色ID
                 userId = SCCacheUtils.getCacheUserId();
-                showLoadingDialog(true);
+//                showLoadingDialog(true);
                 createCoupon(SCCacheUtils.getCacheAuthCode());
             }
         });
@@ -455,7 +455,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         }
         detail = TextUtils.isEmpty(detail) ? "empty" : detail;
         Map requestBody = new HashMap();
-        requestBody.put("authCode", authCode + "");
+        requestBody.put("authCode", authCode);
         requestBody.put("deviceToken", registrationId + "");
 //        requestBody.put("token", SCCacheUtils.getCacheToken() + "");
         requestBody.put("amount", amount + "");
@@ -468,11 +468,11 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
         requestBody.put("subuserId", subuserId + "");
         requestBody.put("tokenSymbol", "empty");
         requestBody.put("userId", userId + "");
-        CustomDialog showPasswordDialog = new CustomDialog(CreateCouponActivity.this, true, 1.0,
-                R.layout.dialog_bottom_wallet_password,
-                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+//        CustomDialog showPasswordDialog = new CustomDialog(CreateCouponActivity.this, true, 1.0,
+//                R.layout.dialog_bottom_wallet_password,
+//                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
 //        showLoadingDialog();
-        SCHttpUtils.postByBody(HttpApi.COUPONS_CREATE, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(CreateCouponActivity.this, showPasswordDialog) {
+        SCHttpUtils.postByBody(HttpApi.COUPONS_CREATE, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(CreateCouponActivity.this, null) {
             @Override
             public void responseDoParse(String string) {
                 closeLoadingDialog();
@@ -485,6 +485,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                         public void run() {
                             ToastUtils.showToast(CreateCouponActivity.this, "" + msg);
                             String data = JSONObject.parseObject(result).getString("data");
+                            closeLoadingDialog();
                             EventMessage eventMessage = new EventMessage(0);
                             EventBus.getDefault().post(eventMessage);
                             if (!TextUtils.isEmpty(SCCacheUtils.getCacheAuthCode())) {
@@ -733,12 +734,17 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             final String code = SCJsonUtils.parseCode(result);
                             final String msg = SCJsonUtils.parseMsg(result);
                             if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                                String data = SCJsonUtils.parseData(result);
+                                final String data = SCJsonUtils.parseData(result);
                                 authCode = data;
                                 String userId = SCCacheUtils.getCacheUserId();
                                 SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, data);
-                                createCoupon(data);
-                                pwdFree(file);
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        createCoupon(data);
+                                        pwdFree(file);
+                                    }
+                                });
                             } else {
                                 ThreadUtils.runOnMainThread(new Runnable() {
                                     @Override
@@ -779,12 +785,12 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 final String code = SCJsonUtils.parseCode(result);
                 final String msg = SCJsonUtils.parseMsg(result);
                 if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                    ThreadUtils.runOnMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ToastUtils.showToast(mContext, "" + msg);
-                        }
-                    });
+//                    ThreadUtils.runOnMainThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            ToastUtils.showToast(CreateCouponActivity.this, "验证密码成功");
+//                        }
+//                    });
                     releaseHandler.sendEmptyMessage(1);
                 } else {
                     ThreadUtils.runOnMainThread(new Runnable() {
@@ -865,14 +871,14 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 }, new com.shanchain.data.common.base.Callback() {//不开启免密
                     @Override
                     public void invoke() {
+                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
+                        SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, authCode);
                         Message message = new Message();
                         message.what = 1;
                         message.obj = false;
                         freePasswordHandler.sendMessage(message);
                         String userId = SCCacheUtils.getCacheUserId();
                         authCode = getAuCode(file);
-                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
-                        SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, authCode);
                         finish();
                     }
                 });

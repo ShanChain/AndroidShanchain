@@ -2,20 +2,29 @@ package com.shanchain.shandata.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.event.EventMessage;
+import com.shanchain.shandata.ui.model.TaskMode;
+import com.shanchain.shandata.ui.presenter.TaskPresenter;
+import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.ViewAnimUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -316,6 +325,10 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                 });
                     }
                 });
+                break;
+            default:
+                EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
+                notifyDataSetChanged();
                 break;
         }
 

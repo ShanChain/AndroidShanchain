@@ -166,6 +166,8 @@ public class FriendInfoActivity extends BaseActivity implements ArthurToolBar.On
                     mTitle = info.getNotename();
                     if (TextUtils.isEmpty(mTitle)) {
                         mTitle = info.getNickname();
+                    } else if (TextUtils.isEmpty(info.getNickname())) {
+                        mTitle = info.getUserName();
                     }
                     mFriendInfoView.initInfo(info);
                 } else {

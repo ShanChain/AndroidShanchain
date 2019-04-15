@@ -1,20 +1,26 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +28,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +47,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
+import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -47,31 +55,45 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.ImageUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.HotChatRoomAdapter;
 import com.shanchain.shandata.adapter.ImagePickerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
+import com.shanchain.shandata.ui.model.SearchResult;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.utils.GlideImageLoader;
 import com.shanchain.shandata.utils.RequestCode;
+import com.shanchain.shandata.utils.TextSearcher;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
 import com.shanchain.shandata.widgets.photochoose.DialogCreator;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
+import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
 import com.shanchain.shandata.widgets.pickerimage.utils.Extras;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,6 +104,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
@@ -94,7 +119,9 @@ import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
-public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, NavigationView.OnNavigationItemSelectedListener, ArthurToolBar.OnRightClickListener {
+public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        ArthurToolBar.OnRightClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
 
     private ArthurToolBar arthurToolBar;
     private LinearLayout linearFootPrint;
@@ -103,13 +130,22 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private DrawerLayout drawer;
     private TextView userNikeView;
     private TextView tvUserSign;
+    private TextView tvBtnCoupon, tvBtnTask;
+    private LinearLayout linearAddChatRoom;
+    private SearchView mSearchView;
     private ImageView ivUserModify;
     private ImageView userHeadView;
-    private List<HotChatRoom> hotChatRoomList;
+    BGARefreshLayout bgaRefreshLayout;
+    private List<HotChatRoom> hotChatRoomList,
+            searchRoomList = new ArrayList<>(),
+            adapterChatRoomList = new ArrayList<>();
     private UserInfo mMyInfo;
     private Coordinates mCoordinates;
-    private String roomName, mRoomID;
+    private String localRoomName, localRoomID;
+    private String localVersion;
     private boolean isIn;
+    private int pageNo = 0, searchPage = 0, size = 10, currentPage, totalPage = 1;
+    private boolean last = false, isLoadMore = false;
     private ArcMenu.OnMenuItemClickListener onMenuItemClickListener;
 
     public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
@@ -117,6 +153,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     public static final String KEY_MESSAGE = "message";
     public static final String KEY_EXTRAS = "extras";
     private MyMessageReceiver mMyMessageReceiver;
+    private BaseQuickAdapter mQuickAdapter;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -130,35 +167,69 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         Intent intent = new Intent();
         intent.setAction(".receiver.MyLocationReceiver");
 //        sendBroadcast(intent);
+        JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (i == 0) {
+                    com.shanchain.data.common.utils.LogUtils.d(TAG, "极光账号登录成功");
+                } else {
+                    com.shanchain.data.common.utils.LogUtils.d(TAG, "极光账号登录失败");
+                    ToastUtils.showToastLong(mContext, "账号登录失败,请重新登录");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            readyGo(LoginActivity.class);
+                        }
+                    }, 3000);
+
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        if (mQuickAdapter != null) {
+//            pageNo = 0;
+//            isLoadMore = false;
+//            initData(pageNo, size);
+//            mQuickAdapter.notifyLoadMoreToLoading();
+//        }
     }
 
     @Override
     protected void initViewsAndEvents() {
-        initToolBar();
-        initView();
-        initData();
-        //注册自定义消息广播
+        try {
+            initToolBar();
+            initView();
+            initData(pageNo, size);
+            //注册自定义消息广播
 //        registerMessageReceiver();
-
-
+            initMap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void initData() {
-
-    }
-
-    private void initView() {
-        linearFootPrint = findViewById(R.id.linear_foot_print);
-        reviewFoodPrint = findViewById(R.id.review_food_print);
-        reviewFoodPrint.setVisibility(View.VISIBLE);
-        linearFootPrint.setVisibility(View.GONE);
+    private void initData(int pageNo, int size) {
+//        showLoadingDialog();
         SCHttpUtils.get()
                 .url(HttpApi.HOT_CHAT_ROOM)
                 .addParams("token", SCCacheUtils.getCacheToken() + "")
+                .addParams("version", localVersion + "")
+                .addParams("page", pageNo + "")
+                .addParams("size", size + "")
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        closeLoadingDialog();
                         LogUtils.d("网络异常");
                     }
 
@@ -167,46 +238,72 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                         String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
                         if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                             String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
-//                            String roomId = com.alibaba.fastjson.JSONObject.parseObject(data).getString("roomId");
-////                            String Id = com.alibaba.fastjson.JSONObject.parseObject(data).getString("id");
-//                            String roomName = com.alibaba.fastjson.JSONObject.parseObject(data).getString("roomName");
-//                            String sortNo = com.alibaba.fastjson.JSONObject.parseObject(data).getString("sortNo");
-//                            String background = com.alibaba.fastjson.JSONObject.parseObject(data).getString("background");
-//                            String thumbnails = com.alibaba.fastjson.JSONObject.parseObject(data).getString("thumbnails");
-                            hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
-                            BaseQuickAdapter adapter = new BaseQuickAdapter<HotChatRoom, BaseViewHolder>(R.layout.item_hot_chat_room, hotChatRoomList) {
-                                @Override
-                                protected void convert(BaseViewHolder helper, final HotChatRoom item) {
-                                    RoundImageView roundImageView = helper.getView(R.id.item_round_view);
-                                    RoundImageView avatar = helper.getView(R.id.iv_item_msg_home_avatar);
-                                    TextView roomName = helper.getView(R.id.tv_item_room_name);
-                                    TextView roomNum = helper.getView(R.id.tv_item_member_num);
-                                    TextView visitTime = helper.getView(R.id.tv_item_visit_time);
-                                    Button btnJoin = helper.getView(R.id.bt_item_join);
-                                    RequestOptions options = new RequestOptions();
-                                    options.placeholder(R.mipmap.empty_foot_print);
-                                    Glide.with(FootPrintActivity.this).load(item.getBackground()).apply(options).into(roundImageView);
-                                    Glide.with(FootPrintActivity.this).load(item.getThumbnails()).apply(options).into(avatar);
-                                    roomName.setText(item.getRoomName());
-                                    roomNum.setText(item.getUserNum());
-                                    btnJoin.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
-                                            intent.putExtra("roomId", item.getRoomId());
-                                            intent.putExtra("roomName", item.getRoomName());
-                                            intent.putExtra("hotChatRoom", item);
-                                            intent.putExtra("isHotChatRoom", true);
-//                                intent.putExtra("isInCharRoom", isIn);
-                                            startActivity(intent);
-                                        }
-                                    });
-                                }
-                            };
+                            String content = SCJsonUtils.parseString(data, "content");
+//                            pageNo = SCJsonUtils.parseInt(data,"number");
+                            totalPage = SCJsonUtils.parseInt(data, "totalPage");
+                            last = SCJsonUtils.parseBoolean(data, "last");
+                            hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
+//                            hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
+                            if(mQuickAdapter!=null){
+                                mQuickAdapter.replaceData(hotChatRoomList);
+                            }
+                        }
+                        closeLoadingDialog();
+                    }
+                });
+    }
+
+    private void initView() {
+        linearFootPrint = findViewById(R.id.linear_foot_print);
+        reviewFoodPrint = findViewById(R.id.review_food_print);
+        reviewFoodPrint.setVisibility(View.VISIBLE);
+        linearFootPrint.setVisibility(View.GONE);
+        tvBtnCoupon = findViewById(R.id.text_btn_coupon);
+        tvBtnTask = findViewById(R.id.text_btn_task);
+        linearAddChatRoom = findViewById(R.id.linear_add_chat_room);
+        bgaRefreshLayout = findViewById(R.id.refresh_layout);
+        mSearchView = findViewById(R.id.search_view);
+        bgaRefreshLayout.setDelegate(this);
+        bgaRefreshLayout.beginLoadingMore();
+        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
+        BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(this, true);//微博效果
+        bgaRefreshLayout.setRefreshViewHolder(refreshViewHolder);
+        // 设置正在加载更多时的文本
+        refreshViewHolder.setLoadingMoreText("加载更多");
+        showLoadingDialog();
+        localVersion = VersionUtils.getVersionName(mContext);
+        SCHttpUtils.get()
+                .url(HttpApi.HOT_CHAT_ROOM)
+                .addParams("token", SCCacheUtils.getCacheToken() + "")
+                .addParams("version", localVersion + "")
+                .addParams("page", pageNo + "")
+                .addParams("size", size + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        closeLoadingDialog();
+                        LogUtils.d("网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
+                            String content = SCJsonUtils.parseString(data, "content");
+                            totalPage = SCJsonUtils.parseInt(data, "totalPage");
+                            last = SCJsonUtils.parseBoolean(data, "last");
+                            hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
+                            if (hotChatRoomList == null) {
+                                return;
+                            }
+                            //                                intent.putExtra("isInCharRoom", isIn);
+                            mQuickAdapter = new HotChatRoomAdapter(FootPrintActivity.this, hotChatRoomList);
                             LinearLayoutManager layoutManager = new LinearLayoutManager(FootPrintActivity.this, LinearLayoutManager.VERTICAL, false);
                             reviewFoodPrint.setLayoutManager(layoutManager);
-                            reviewFoodPrint.setAdapter(adapter);
-                            adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                            reviewFoodPrint.setAdapter(mQuickAdapter);
+                            mQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                                     Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
@@ -218,28 +315,121 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                     startActivity(intent);
                                 }
                             });
-
                         }
+                        closeLoadingDialog();
                     }
                 });
         initDrawer();
+        //底部邀按钮
+        tvBtnCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent couponIntent = new Intent(FootPrintActivity.this, CouponListActivity.class);
+                couponIntent.putExtra("roomId", SCCacheUtils.getCacheRoomId() + "");
+                startActivity(couponIntent);
+            }
+        });
+        //底部帮按钮
+        tvBtnTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent taskIntent = new Intent(FootPrintActivity.this, TaskDetailActivity.class);
+                taskIntent.putExtra("roomId", SCCacheUtils.getCacheRoomId() + "");
+                startActivity(taskIntent);
+            }
+        });
+        //底部添加按钮
+        linearAddChatRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FootPrintActivity.this, HomeActivity.class);
+                intent.putExtra("isAddRoom", true);
+                startActivity(intent);
+            }
+        });
+        //搜索按钮
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mQuickAdapter.replaceData(adapterChatRoomList);
+                mSearchView.clearFocus();
+                pageNo = 0;
+                last = false;
+                return false;
+            }
+        });
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchRoomList.clear();
+
+                if (!TextUtils.isEmpty(query) && hotChatRoomList != null) {
+                    adapterChatRoomList.clear();
+                    adapterChatRoomList.addAll(hotChatRoomList);
+//                    for (int i = 0; i < hotChatRoomList.size(); i++) {
+//                        String roomName = hotChatRoomList.get(i).getRoomName();
+//                        String roomId = hotChatRoomList.get(i).getRoomId();
+//                        if (TextSearcher.contains(false, roomId, query) || TextSearcher.contains(false, roomName, query)) {
+//                            searchRoomList.add(hotChatRoomList.get(i));
+//                        } else {
+//                    showLoadingDialog(true);
+                    SCHttpUtils.getAndToken()
+                            .url(HttpApi.SEARCH_ROOM)
+                            .addParams("page", searchPage + "")
+                            .addParams("size", size + "")
+                            .addParams("roomName", query + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack(FootPrintActivity.this) {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    closeLoadingDialog();
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = SCJsonUtils.parseCode(response);
+                                    if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                                        String data = SCJsonUtils.parseData(response);
+                                        searchRoomList = SCJsonUtils.parseArr(data, HotChatRoom.class);
+//                                        String content = SCJsonUtils.parseString(data, "content");
+//                                        searchRoomList = SCJsonUtils.parseArr(content, HotChatRoom.class);
+                                        mQuickAdapter.replaceData(searchRoomList);
+                                        mQuickAdapter.notifyDataSetChanged();
+                                    }
+                                    bgaRefreshLayout.setIsShowLoadingMoreView(false);
+                                    closeLoadingDialog();
+                                }
+                            });
+//                    }
+//                }
+//                mQuickAdapter.replaceData(searchRoomList);
+//                mQuickAdapter.notifyDataSetChanged();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() < 1) {
+                    pageNo = 0;
+                    last = false;
+                    mQuickAdapter.replaceData(adapterChatRoomList);
+                }
+                return false;
+            }
+        });
     }
 
     private void initToolBar() {
-        arthurToolBar = findViewById(R.id.toolbar_nav);
-        arthurToolBar.isShowChatRoom(false);//不在导航栏显示聊天室信息
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        arthurToolBar.getTitleView().setLayoutParams(layoutParams);
-        arthurToolBar.setTitleText("热门元社区");
-        arthurToolBar.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
-        arthurToolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        arthurToolBar = (ArthurToolBar) findViewById(R.id.toolbar_nav);
+//        arthurToolBar.isShowChatRoom(false);//不在导航栏显示聊天室信息
+        arthurToolBar.setTitleText("与一半地球人共创社区");
+//        arthurToolBar.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
+//        arthurToolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
 //        arthurToolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         arthurToolBar.setRightImage(R.mipmap.home_nav_map);
+        arthurToolBar.setOnFavoriteClickListener(null);
         arthurToolBar.setOnLeftClickListener(this);
         arthurToolBar.setOnRightClickListener(this);
 
@@ -326,7 +516,18 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             @Override
             public void onClick(View v) {
                 //设置头像
-                selectImage(FootPrintActivity.this);
+                int from = PickImageActivity.FROM_LOCAL;
+                int requestCode = PhotoUtils.INTENT_SELECT;
+                if (ContextCompat.checkSelfPermission(FootPrintActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(FootPrintActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+//            PickImageActivity.start(MessageListActivity.this, requestCode, from, tempFile(), true, 1,
+//                    true, false, 0, 0);
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    startActivityForResult(intent, requestCode);
+                }
             }
         });
 
@@ -490,42 +691,42 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 
     }
 
-    private void getChatRoomInfo(final String roomID, LatLng latLng) {
-        SCHttpUtils.get()
-                .url(HttpApi.CHAT_ROOM_INFO)
-                .addParams("longitude", latLng.longitude + "")
-                .addParams("latitude", latLng.latitude + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        com.shanchain.data.common.utils.LogUtils.d("####### GET_CHAT_ROOM_INFO 请求失败 #######");
-                        closeLoadingDialog();
-                    }
+    //搜索过滤元社区
+    private SearchResult filterChatRoom(String filterStr, List<HotChatRoom> hotChatRoomList) {
+        SearchResult searchResult = new SearchResult();
+        List<HotChatRoom> hotChatRooms = new ArrayList<>();
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        closeLoadingDialog();
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            com.shanchain.data.common.utils.LogUtils.d("####### " + "获取聊天室信息" + " ########");
-                            String data = JSONObject.parseObject(response).getString("data");
-                            mCoordinates = JSONObject.parseObject(data, Coordinates.class);
-                            //房间roomId
-                            mRoomID = mCoordinates.getRoomId();
-                            RoleManager.switchRoleCacheRoomId(mRoomID);
-                            if (roomID.equals(mCoordinates.getRoomId())) {
-                                isIn = true;
-                            } else {
-                                roomName = mCoordinates.getRoomName();
-                                isIn = false;
-                            }
-                            android.os.Message message = new android.os.Message();
-                            message.what = 3;
-                            message.obj = mCoordinates;
-                        }
-                    }
-                });
+        if (filterStr.equals("")) {
+            SearchResult result = new SearchResult();
+            result.setFilterStr("");
+            result.setChatRoomList(hotChatRooms);
+            return result;
+        }
+        if (filterStr.equals("'")) {
+            SearchResult result = new SearchResult();
+            result.setChatRoomList(hotChatRooms);
+            return result;
+        }
+
+        //所有好友名单
+        for (HotChatRoom chatRoom : hotChatRoomList) {
+            //如果好友名 包含 搜索内容 就把这个人的userinfo添加
+            if (TextSearcher.contains(false, chatRoom.getRoomId(), filterStr) ||
+                    TextSearcher.contains(false, chatRoom.getRoomName(), filterStr)) {
+                hotChatRooms.add(chatRoom);
+            }
+        }
+        searchResult.setFilterStr(filterStr);
+        searchResult.setChatRoomList(hotChatRooms);
+
+        return searchResult;
+    }
+
+    @Override
+    protected void getChatRoomInfo(LatLng latLng) {
+        super.getChatRoomInfo(latLng);
+        localRoomID = SCCacheUtils.getCacheRoomId();
+
     }
 
     @Override
@@ -628,7 +829,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     public void onLeftClick(View v) {
 //        finish();
-
     }
 
     @Override
@@ -652,11 +852,11 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             startActivity(intent);
         } else if (id == R.id.nav_my_coupon) {
             Intent intent = new Intent(FootPrintActivity.this, MyCouponListActivity.class);
-            intent.putExtra("roomId", mRoomID);
+            intent.putExtra("roomId", localRoomID);
             startActivity(intent);
         } else if (id == R.id.nav_my_task) {
             Intent intent = new Intent(FootPrintActivity.this, TaskListActivity.class);
-            intent.putExtra("roomId", mRoomID);
+            intent.putExtra("roomId", localRoomID);
             startActivity(intent);
 
         } else if (id == R.id.nav_my_message) {
@@ -698,5 +898,83 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             context.startActivity(customIntent);
         }
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(EventMessage eventMessage) {
+        if (eventMessage.getCode() == NetErrCode.ADD_ROOM_SUCCESS) {
+            if (mQuickAdapter != null) {
+                pageNo = 0;
+                isLoadMore = false;
+                last = false;
+                initData(pageNo, size);
+                mQuickAdapter.notifyLoadMoreToLoading();
+            }
+        }
+    }
+
+    /* 下拉刷新 */
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        pageNo = 0;
+        initData(pageNo, size);
+        refreshLayout.endRefreshing();
+    }
+
+
+    /* 上拉加载 */
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(final BGARefreshLayout refreshLayout) {
+//        mQuickAdapter.notifyLoadMoreToLoading();
+        // 设置正在加载更多时显示加载更多控件
+        bgaRefreshLayout.setIsShowLoadingMoreView(true);
+        if (last == false || isLoadMore == false) {
+//        if (isLoadMore == false) {
+//            showLoadingDialog(true);
+            pageNo++;
+            SCHttpUtils.get()
+                    .url(HttpApi.HOT_CHAT_ROOM)
+                    .addParams("token", SCCacheUtils.getCacheToken() + "")
+                    .addParams("version", localVersion + "")
+                    .addParams("page", pageNo + "")
+                    .addParams("size", size + "")
+                    .build()
+                    .execute(new SCHttpStringCallBack() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            closeLoadingDialog();
+                            LogUtils.d("网络异常");
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
+                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
+                                String content = SCJsonUtils.parseString(data, "content");
+                                totalPage = SCJsonUtils.parseInt(data, "totalPages");
+                                last = SCJsonUtils.parseBoolean(data, "last");
+                                List<HotChatRoom> roomList = JSONArray.parseArray(content, HotChatRoom.class);
+                                mQuickAdapter.addData(roomList);
+                                mQuickAdapter.notifyDataSetChanged();
+                                closeLoadingDialog();
+//                            mQuickAdapter.loadMoreEnd();
+                                refreshLayout.endLoadingMore();
+                                // 设置正在加载更多时显示加载更多控件
+                                bgaRefreshLayout.setIsShowLoadingMoreView(false);
+                            }
+                        }
+                    });
+            if (pageNo > totalPage) {
+                isLoadMore = true;
+            } else {
+                isLoadMore = false;
+            }
+        }
+
+//        if (pageNo == totalPage) {
+//                return true;
+//            }
+        return false;
     }
 }
