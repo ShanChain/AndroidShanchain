@@ -5,123 +5,191 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinEntity;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Transient;
+
 import cn.jpush.im.android.api.enums.ContentType;
+
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by WealChen
  * Date : 2019/4/3
  * Describe :
  */
-@Table(name = "message", id = "_id")
-public class MessageEntry extends Model {
+@Entity
+public class MessageEntry {
 
-    @Column(name = "conversation")
-    public ConversationEntry mConversationEntry;
+    @Id(autoincrement = true)
+    private Long id;
+    @NotNull
+    private String roomId;
+    private Long msgId;
+    private Long userId;
+    private String userName;
+    @NotNull
+    private String avatar;
+    @NotNull
+    private String jgUserName;
+    private String displayName;
+    private String messageText;
+    private long timeString;
+    private String messageType;
+    private String fileFormat;
+    private String mediaFilePath;
+    private long duration;
+    private String progress;
 
-    @Column(name = "FormUser")
-    public UserEntry formUser;
-
-    @Column(name = "MessageText")
-    public String messageText;
-
-    @Column(name = "TimeString")
-    public long timeString;
-
-    @Column(name = "MessageType")
-    public ContentType messageType;
-
-    @Column(name = "MediaFilePath")
-    public String mediaFilePath;
-
-    @Column(name = "Duration")
-    public long duration;
-
-    @Column(name = "Progress")
-    public String progress;
-
-    public MessageEntry() {
-        super();
+    @Generated(hash = 1644317303)
+    public MessageEntry(Long id, @NotNull String roomId, Long msgId, Long userId,
+            String userName, @NotNull String avatar, @NotNull String jgUserName,
+            String displayName, @NotNull String messageText, long timeString,
+            String messageType, String fileFormat, String mediaFilePath, long duration,
+            String progress) {
+        this.id = id;
+        this.roomId = roomId;
+        this.msgId = msgId;
+        this.userId = userId;
+        this.userName = userName;
+        this.avatar = avatar;
+        this.jgUserName = jgUserName;
+        this.displayName = displayName;
+        this.messageText = messageText;
+        this.timeString = timeString;
+        this.messageType = messageType;
+        this.fileFormat = fileFormat;
+        this.mediaFilePath = mediaFilePath;
+        this.duration = duration;
+        this.progress = progress;
     }
 
-    public MessageEntry(String messageText) {
-        super();
-        this.messageText = messageText;
+    @Generated(hash = 1450281958)
+    public MessageEntry() {
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRoomId() {
+        return this.roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public Long getMsgId() {
+        return this.msgId;
+    }
+
+    public void setMsgId(Long msgId) {
+        this.msgId = msgId;
+    }
+
+    public Long getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getAvatar() {
+        return this.avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getJgUserName() {
+        return this.jgUserName;
+    }
+
+    public void setJgUserName(String jgUserName) {
+        this.jgUserName = jgUserName;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getMessageText() {
+        return this.messageText;
     }
 
     public void setMessageText(String messageText) {
         this.messageText = messageText;
     }
 
+    public long getTimeString() {
+        return this.timeString;
+    }
+
     public void setTimeString(long timeString) {
         this.timeString = timeString;
     }
 
-    public void setMessageType(ContentType messageType) {
-        this.messageType = messageType;
+    public String getMediaFilePath() {
+        return this.mediaFilePath;
     }
 
     public void setMediaFilePath(String mediaFilePath) {
         this.mediaFilePath = mediaFilePath;
     }
 
+    public long getDuration() {
+        return this.duration;
+    }
+
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public String getProgress() {
+        return this.progress;
     }
 
     public void setProgress(String progress) {
         this.progress = progress;
     }
 
-    public void setFormUser(UserEntry formUser) {
-        this.formUser = formUser;
+    public String getMessageType() {
+        return this.messageType;
     }
 
-    public void setConversationEntry(ConversationEntry conversationEntry) {
-        mConversationEntry = conversationEntry;
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 
-    public ConversationEntry getConversationEntry() {
-        return mConversationEntry;
+    public String getFileFormat() {
+        return this.fileFormat;
     }
 
-    public UserEntry getFormUser() {
-        return formUser;
+    public void setFileFormat(String fileFormat) {
+        this.fileFormat = fileFormat;
     }
 
-    public String getMessageText() {
-        return messageText;
-    }
 
-    public long getTimeString() {
-        return timeString;
-    }
-
-    public ContentType getMessageType() {
-        return messageType;
-    }
-
-    public String getMediaFilePath() {
-        return mediaFilePath;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public String getProgress() {
-        return progress;
-    }
-
-    //根据有效期删除过期的历史消息
-    public static void deleteMessage(int date) {
-        long effectiveTime = date * 24 * 60 * 60 * 1000;
-        final long time = System.currentTimeMillis() - effectiveTime;
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new Delete().from(MessageEntry.class).where("TimeString <= ? ", time).execute();
-            }
-        });
-        thread.start();
-    }
 }

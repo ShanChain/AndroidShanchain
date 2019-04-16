@@ -82,7 +82,7 @@
             android:value="jchat.db" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.shanchain.shandata.ui.model.UserEntry,com.shanchain.shandata.ui.model.FriendEntry,com.shanchain.shandata.ui.model.FriendRecommendEntry,com.shanchain.shandata.ui.model.ConversationEntry,com.shanchain.shandata.ui.model.MessageEntry" />
+            android:value="com.shanchain.shandata.ui.model.UserEntry,com.shanchain.shandata.ui.model.FriendEntry,com.shanchain.shandata.ui.model.FriendRecommendEntry" />
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="5" />

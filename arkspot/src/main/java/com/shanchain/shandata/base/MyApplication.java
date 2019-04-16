@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +28,8 @@ import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.db.ContactDao;
+import com.shanchain.shandata.db.DaoMaster;
+import com.shanchain.shandata.db.DaoSession;
 import com.shanchain.shandata.ui.model.FriendEntry;
 import com.shanchain.shandata.ui.model.FriendRecommendEntry;
 import com.shanchain.shandata.ui.model.UserEntry;
@@ -122,6 +125,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     public static int maxImgCount;               //允许选择图片最大数
     public static final String GROUP_NAME = "groupName";
     private ApplicationLike tinkerApplicationLike;
+    private static DaoSession daoSession;
 
     /**
      * 描述：本地手机设备号
@@ -335,6 +339,23 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     private void initDB() {
         //初始化联系人数据库
         ContactDao.initContactDao(this);
+        //初始化GreenDao数据库
+        //升级时调用onUpgrade（）方法，删除所有表！。
+        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "jchat.db");
+        SQLiteDatabase database = devOpenHelper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(database);
+        daoSession = daoMaster.newSession();
+    }
+
+    public static DaoSession getDaoSession() {
+        if (null == daoSession) {
+            //升级时调用onUpgrade（）方法，删除所有表！。
+            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
+            SQLiteDatabase database = devOpenHelper.getWritableDatabase();
+            DaoMaster daoMaster = new DaoMaster(database);
+            daoSession = daoMaster.newSession();
+        }
+        return daoSession;
     }
 
     /*
@@ -548,7 +569,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         // step3: 打印错误堆栈
         throwable.printStackTrace();
         // step4: 上报该错误到错误收集的平台,例如国内的Bugly,友盟等
-        CrashReport.postCatchedException(throwable,thread);
+        CrashReport.postCatchedException(throwable, thread);
     }
 
     /* 框架使程序运行进入了安全模式,这种情况是在程序运行过程中发生了崩溃,
