@@ -220,6 +220,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                         eventTask.setTextColor(context.getResources().getColor(R.color.aurora_bg_edittext_default));
                                         eventTask.setBackground(context.getResources().getDrawable(R.drawable.shape_bg_even_msg));
                                         closeProgress();
+                                        EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
                                         notifyDataSetChanged();
                                     }
                                 });
@@ -256,6 +257,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                         confirm.setBackground(context.getResources().getDrawable(R.drawable.shape_bg_even_msg));
                                         confirm.setOnClickListener(null);
                                         notifyDataSetChanged();
+                                        EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
 
                                     }
                                 });
@@ -289,6 +291,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                         done.setBackground(context.getResources().getDrawable(R.drawable.shape_bg_even_msg));
                                         done.setOnClickListener(null);
                                         closeProgress();
+                                        EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
                                         notifyDataSetChanged();
 
                                     }
@@ -320,6 +323,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                                         done.setBackground(context.getResources().getDrawable(R.drawable.shape_bg_even_msg));
                                         done.setOnClickListener(null);
                                         closeProgress();
+                                        EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
                                         notifyDataSetChanged();
                                     }
                                 });
@@ -327,8 +331,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
                 });
                 break;
             default:
-                EventBus.getDefault().post(new EventMessage<ChatEventMessage>(NetErrCode.REFRESH_MY_TASK));
-                notifyDataSetChanged();
+
                 break;
         }
 

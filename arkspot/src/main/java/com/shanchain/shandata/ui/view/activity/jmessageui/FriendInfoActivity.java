@@ -82,7 +82,7 @@ public class FriendInfoActivity extends BaseActivity implements ArthurToolBar.On
                 }
             });
         }
-        initToolBar();
+//        initToolBar();
         mFriendInfoView.initModel(this);
         mFriendInfoController = new FriendInfoController(mFriendInfoView, this);
         mFriendInfoView.setListeners(mFriendInfoController);

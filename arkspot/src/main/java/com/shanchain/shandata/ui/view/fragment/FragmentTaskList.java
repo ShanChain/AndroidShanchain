@@ -85,6 +85,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         taskPresenter.initTask(characterId, roomId, page, size);
         srlTaskList.setOnRefreshListener(this);//下拉刷新
         initRecyclerView();
+        initLoadMoreListener();
     }
 
     private void initRecyclerView() {
@@ -288,6 +289,60 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void deleteTaskView(boolean isSuccess, int position) {
+
+    }
+
+    private void initLoadMoreListener() {
+
+        rvTaskList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
+                    page++;
+                    SCHttpUtils.postWithUserId()
+                            .url(HttpApi.GROUP_TASK_LIST)
+                            .addParams("characterId", characterId+"")
+                            .addParams("roomId", roomId+"")
+                            .addParams("page", ""+page)
+                            .addParams("size", ""+size)
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                        LogUtils.d("TaskPresenterIml", "请求任务列表i成功" +response);
+                                        String data = JSONObject.parseObject(response).getString("data");
+                                        String content = JSONObject.parseObject(data).getString("content");
+                                        List<ChatEventMessage> taskList = JSONObject.parseArray(content, ChatEventMessage.class);
+                                        adapter.addData(taskList);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
 
     }
 }

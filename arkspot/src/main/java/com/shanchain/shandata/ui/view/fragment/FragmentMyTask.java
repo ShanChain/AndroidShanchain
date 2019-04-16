@@ -223,7 +223,8 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
                         }, 500);
                         break;
                     default:
-                        initData();
+//                        initData();
+                        initLoadMoreListener();
                         break;
                 }
             }
@@ -280,6 +281,64 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     /*
      * 上拉加载
      * */
+    private void initLoadMoreListener() {
+
+        rvTaskList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
+                    page++;
+                    SCHttpUtils.postWithUserId()
+                            .url(HttpApi.MY_TASK_RECEIVE_LIST)
+                            .addParams("characterId", characterId + "")
+                            .addParams("page", page + "")
+                            .addParams("pageSize", size + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    LogUtils.d("TaskPresenterImpl", "查询任务失败");
+                                    closeLoadingDialog();
+                                    closeProgress();
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = JSONObject.parseObject(response).getString("code");
+                                    closeLoadingDialog();
+                                    closeProgress();
+                                    if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                        LogUtils.d("TaskPresenterImpl", "添加任务成功");
+                                        String data = JSONObject.parseObject(response).getString("data");
+                                        TaskMode taskMode = JSONObject.parseObject(data, TaskMode.class);
+
+                                        String content = JSONObject.parseObject(data).getString("content");
+                                        List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content, ChatEventMessage.class);
+                                        adapter.addData(chatEventMessageList);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
+    }
 
     public void showProgress() {
         mDialog = new ProgressDialog(getContext());
@@ -331,6 +390,5 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     public void deleteTaskView(boolean isSuccess, int position) {
 
     }
-
 
 }

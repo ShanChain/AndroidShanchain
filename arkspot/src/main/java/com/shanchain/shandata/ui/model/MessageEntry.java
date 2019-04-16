@@ -15,7 +15,7 @@ import cn.jpush.im.android.api.enums.ContentType;
 @Table(name = "message", id = "_id")
 public class MessageEntry extends Model {
 
-    @Column(name = "Conversation")
+    @Column(name = "conversation")
     public ConversationEntry mConversationEntry;
 
     @Column(name = "FormUser")

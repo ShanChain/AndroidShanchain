@@ -10,25 +10,30 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="48.5dp"
-        android:background="@color/colorViolet"
-        android:visibility="gone">
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/dimens_5dp"
+        android:visibility="visible">
 
         <ImageButton
             android:id="@+id/return_btn"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimens_15dp"
+            android:layout_centerVertical="true"
             android:background="@mipmap/abs_roleselection_btn_back_default" />
 
         <TextView
+            android:id="@+id/bar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_toRightOf="@id/return_btn"
+            android:layout_centerHorizontal="true"
             android:text="详细资料"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDefault"
+            android:textSize="16sp" />
 
 
         <ImageView
@@ -41,20 +46,20 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
-        android:id="@+id/tb_main"
-        style="@style/style_toolbar"
-        android:layout_gravity="top"
-        android:gravity="top"
-        app:titleColor="@color/colorTextDefault"
-        app:titleTextSize="16" />
+    <!--<com.shanchain.data.common.ui.toolBar.ArthurToolBar-->
+    <!--android:id="@+id/tb_main"-->
+    <!--style="@style/style_toolbar"-->
+    <!--android:layout_gravity="top"-->
+    <!--android:gravity="top"-->
+    <!--app:titleColor="@color/colorTextDefault"-->
+    <!--app:titleTextSize="16" />-->
 
     <ImageView
         android:id="@+id/iv_friendPhoto"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:layout_marginTop="26.67dp"
+        android:layout_marginTop="@dimen/dimens_20dp"
         android:scaleType="centerCrop"
         android:src="@drawable/aurora_headicon_default" />
 

@@ -52,9 +52,9 @@ public class FriendInfoController implements View.OnClickListener {
 ////                intent.putExtra("noteName", friendInfo.getNotename());
 ////                mContext.startActivity(intent);
 //                break;
-//            case R.id.return_btn:
-//                mContext.finish();
-//                break;
+            case R.id.return_btn:
+                mContext.finish();
+                break;
             default:
                 break;
         }

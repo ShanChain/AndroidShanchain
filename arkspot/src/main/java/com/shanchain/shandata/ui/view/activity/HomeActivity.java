@@ -943,7 +943,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                     mScInputDialog.setCallback(new Callback() {//确定
                                         @Override
                                         public void invoke() {
-//                                            addCustomChatRoom(baiduMap, gpsLatLng);
+                                            addCustomChatRoom(baiduMap, gpsLatLng);
                                         }
                                     }, new Callback() {//取消
                                         @Override

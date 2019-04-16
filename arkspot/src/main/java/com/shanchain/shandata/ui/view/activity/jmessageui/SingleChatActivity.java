@@ -238,7 +238,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             initMsgAdapter();
         }
         xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
-        xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
+        if (FORM_USER_ID.equals("123456")) {
+            xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.GONE);
+        }else {
+            xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
+        }
         initEmojiData();//初始化表情栏
         mReceiver = new HeadsetDetectReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -273,11 +277,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 long preTime = new Date().getTime();
                 long diff = preTime - messageTime;
                 if (diff > 3 * 60 * 1000) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                     String timeString = DateUtils.formatFriendly(new Date(messageTime));
                     message.setTimeString(timeString);
                 }
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                 message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
 //                                messageList.add(message);
@@ -311,7 +315,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             mMyInfo = JMessageClient.getMyInfo();
                             DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
                             myMessage.setUserInfo(user);
-                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                            myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             myMessage.setText(input.toString());
                             mData.add(myMessage);
@@ -872,6 +876,21 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         if (msg.getFromUser().getUserID() == mMyInfo.getUserID()) {
                             myMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
                         }
+                        if (i > 0) {
+                            long messageTime = msg.getCreateTime();
+                            long preTime = mConvData.get(i - 1).getCreateTime();
+                            long diff = messageTime - preTime;
+                            if (diff > 3 * 60 * 1000) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String timeString = sdf.format(new Date(messageTime));
+//                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                myMessage.setTimeString(timeString);
+                            }
+                        } else if (i == mConvData.size() - 1) {
+                            long messageTime = msg.getCreateTime();
+                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+//                            imgMessage.setTimeString(timeString);
+                        }
                         myMessage.setUserInfo(defaultUser);
                         mData.add(myMessage);
                         break;
@@ -912,14 +931,15 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long preTime = mConvData.get(i - 1).getCreateTime();
                             long diff = messageTime - preTime;
                             if (diff > 3 * 60 * 1000) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String timeString = sdf.format(new Date(messageTime));
+//                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
                                 imgMessage.setTimeString(timeString);
                             }
-                        } else {
+                        } else if (i == mConvData.size() - 1) {
                             long messageTime = msg.getCreateTime();
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                            imgMessage.setTimeString(timeString);
+//                            imgMessage.setTimeString(timeString);
                         }
                         mData.add(imgMessage);
                         break;
@@ -959,14 +979,15 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long preTime = mConvData.get(i - 1).getCreateTime();
                             long diff = messageTime - preTime;
                             if (diff > 3 * 60 * 1000) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String timeString = sdf.format(new Date(messageTime));
+//                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
                                 voiceMessage.setTimeString(timeString);
                             }
-                        } else {
+                        } else if (i == mConvData.size() - 1) {
                             long messageTime = msg.getCreateTime();
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                            voiceMessage.setTimeString(timeString);
+//                            imgMessage.setTimeString(timeString);
                         }
                         mData.add(voiceMessage);
                         break;
@@ -1012,14 +1033,15 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long preTime = mConvData.get(i - 1).getCreateTime();
                             long diff = messageTime - preTime;
                             if (diff > 3 * 60 * 1000) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String timeString = sdf.format(new Date(messageTime));
+//                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
                                 videoMessage.setTimeString(timeString);
                             }
-                        } else {
+                        } else if (i == mConvData.size() - 1) {
                             long messageTime = msg.getCreateTime();
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
-                            videoMessage.setTimeString(timeString);
+//                            imgMessage.setTimeString(timeString);
                         }
                         mData.add(videoMessage);
                         break;
@@ -1036,7 +1058,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         String expiryTime = (String) eventMap.get("time");
 //                    eventMessage.setExpiryTime(Long.valueOf(expiryTime));
                         if (!DateUtils.isValidLong(expiryTime)) {
-                            String TimeStamp = DateUtils.date2TimeStamp(expiryTime, "yyyy-MM-dd HH:mm:ss");
+                            String TimeStamp = DateUtils.date2TimeStamp(expiryTime, "yyyy年MM月dd日 HH:mm");
                             eventMessage.setExpiryTime(Long.valueOf(TimeStamp));
                         } else {
                             eventMessage.setExpiryTime(Long.valueOf(expiryTime));
@@ -1198,8 +1220,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long preTime = mConvData.get(i - 1).getCreateTime();
                             long diff = messageTime - preTime;
                             if (diff > 3 * 60 * 1000) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                String timeString = sdf.format(new Date(messageTime));//                                String timeString = DateUtils.formatFriendly(new Date(messageTime));
                                 textMessage.setTimeString(timeString);
                             }
                         } else {
@@ -1251,8 +1273,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         long preTime = mConvData.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String timeString = sdf.format(new Date(messageTime));
+//                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
                             imgMessage.setTimeString(timeString);
                         }
                     } else {
@@ -1301,8 +1324,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         long preTime = mConvData.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String timeString = sdf.format(new Date(messageTime));
+//                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
                             voiceMessage.setTimeString(timeString);
                         }
                     } else {
@@ -1358,8 +1382,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         long preTime = mConvData.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String timeString = sdf.format(new Date(messageTime));
+//                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
                             videoMessage.setTimeString(timeString);
                         }
                     } else {
@@ -1484,8 +1509,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         long preTime = mConvData.get(i - 1).getCreateTime();
                         long diff = messageTime - preTime;
                         if (diff > 3 * 60 * 1000) {
-                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String timeString = sdf.format(new Date(messageTime));
+//                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
                             fileMessage.setTimeString(timeString);
                         }
                     } else {
@@ -1862,6 +1888,23 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             }
         });
 
+        //头像点击事件
+        mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
+            @Override
+            public void onAvatarClick(MyMessage message) {
+                DefaultUser userInfo = (DefaultUser) message.getFromUser();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("userInfo", userInfo);
+                bundle.putString("targetId", message.getFromUser().getId() + "");
+                if (JMessageClient.getMyInfo().getUserID() == message.getFromUser().getId()) {
+                    return;
+//                    readyGo(PersonalActivity.class);
+                } else {
+//                    readyGo(SingerChatInfoActivity.class, bundle);
+                    readyGo(FriendInfoActivity.class, bundle);
+                }
+            }
+        });
         mChatView.setAdapter(mAdapter);
         mAdapter.getLayoutManager().scrollToPosition(0);
     }
