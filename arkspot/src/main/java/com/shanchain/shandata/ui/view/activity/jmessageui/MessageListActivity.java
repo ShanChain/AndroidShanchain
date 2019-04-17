@@ -2205,7 +2205,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     break;
                 case file:
                     messageEntry.setMessageType("file");
-//                    localSaveFileMessage(chatMessage, messageEntry);
+                    localSaveFileMessage(chatMessage, messageEntry);
                     break;
                 case location:
                     messageEntry.setMessageType("location");
@@ -2243,7 +2243,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
                 }
                 //本地存储聊天室消息
-                localSaveMessage(mMsgs);
+//                localSaveMessage(mMsgs);
             }
         }).start();
         //加载消息

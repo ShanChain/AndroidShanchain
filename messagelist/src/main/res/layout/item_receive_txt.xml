@@ -45,6 +45,8 @@
             android:layout_centerVertical="true"
             android:lineSpacingExtra="5dp"
             android:text="123456"
+            android:autoLink="all"
+            android:textColorLink="#157BFB"
             android:layout_toRightOf="@id/aurora_iv_msgitem_avatar"
             android:textColor="#000000"
             android:background="@color/white" />
