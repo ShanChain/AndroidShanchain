@@ -31,7 +31,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="44dp"
         android:layout_marginRight="44dp"
-        android:maxLines="5"
         android:textStyle="bold"
         android:lineSpacingExtra="4dp"
         android:ellipsize="end"
