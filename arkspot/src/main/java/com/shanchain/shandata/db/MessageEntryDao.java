@@ -59,14 +59,14 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MESSAGE_ENTRY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"ROOM_ID\" TEXT NOT NULL ," + // 1: roomId
+                "\"ROOM_ID\" TEXT NOT NULL UNIQUE ," + // 1: roomId
                 "\"MSG_ID\" INTEGER," + // 2: msgId
                 "\"USER_ID\" INTEGER," + // 3: userId
                 "\"USER_NAME\" TEXT," + // 4: userName
                 "\"AVATAR\" TEXT NOT NULL ," + // 5: avatar
                 "\"JG_USER_NAME\" TEXT NOT NULL ," + // 6: jgUserName
                 "\"DISPLAY_NAME\" TEXT," + // 7: displayName
-                "\"MESSAGE_TEXT\" TEXT NOT NULL ," + // 8: messageText
+                "\"MESSAGE_TEXT\" TEXT," + // 8: messageText
                 "\"TIME_STRING\" INTEGER NOT NULL ," + // 9: timeString
                 "\"MESSAGE_TYPE\" TEXT," + // 10: messageType
                 "\"FILE_FORMAT\" TEXT," + // 11: fileFormat
@@ -112,7 +112,11 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         if (displayName != null) {
             stmt.bindString(8, displayName);
         }
-        stmt.bindString(9, entity.getMessageText());
+ 
+        String messageText = entity.getMessageText();
+        if (messageText != null) {
+            stmt.bindString(9, messageText);
+        }
         stmt.bindLong(10, entity.getTimeString());
  
         String messageType = entity.getMessageType();
@@ -168,7 +172,11 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         if (displayName != null) {
             stmt.bindString(8, displayName);
         }
-        stmt.bindString(9, entity.getMessageText());
+ 
+        String messageText = entity.getMessageText();
+        if (messageText != null) {
+            stmt.bindString(9, messageText);
+        }
         stmt.bindLong(10, entity.getTimeString());
  
         String messageType = entity.getMessageType();
@@ -209,7 +217,7 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
             cursor.getString(offset + 5), // avatar
             cursor.getString(offset + 6), // jgUserName
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // displayName
-            cursor.getString(offset + 8), // messageText
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // messageText
             cursor.getLong(offset + 9), // timeString
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // messageType
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // fileFormat
@@ -230,7 +238,7 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         entity.setAvatar(cursor.getString(offset + 5));
         entity.setJgUserName(cursor.getString(offset + 6));
         entity.setDisplayName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setMessageText(cursor.getString(offset + 8));
+        entity.setMessageText(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setTimeString(cursor.getLong(offset + 9));
         entity.setMessageType(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setFileFormat(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));

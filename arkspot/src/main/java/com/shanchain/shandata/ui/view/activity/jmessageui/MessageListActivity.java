@@ -510,12 +510,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             }
                         });
                         //本地存储会话
-                        if (chatRoomConversation != null) {
+//                        if (chatRoomConversation != null) {
 //                            ConversationEntry conversationEntry = new ConversationEntry();
 //                            conversationEntry.setTargetName(roomID);
 //                            ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
 //                            entryDao.insertOrReplace(conversationEntry);
-                        }
+//                        }
                         closeLoadingDialog();
                     } else if (i == 851003) {//成员已在聊天室
                         LogUtils.d("enterChatRoom", "成员已在聊天室 code:" + i);
@@ -1526,6 +1526,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mTbMain.setOnRightClickListener(this);
         mTbMain.isShowChatRoom(true);//显示聊天室成员信息
         roomNum = mTbMain.findViewById(R.id.mRoomNum);
+        roomNum.setTextColor(getResources().getColor(R.color.colorViolet));
         relativeChatRoom = mTbMain.findViewById(R.id.relative_chatRoom);
         //获取聊天室信息
         final Set<Long> roomIds = new HashSet();
@@ -2204,7 +2205,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     break;
                 case file:
                     messageEntry.setMessageType("file");
-                    localSaveFileMessage(chatMessage, messageEntry);
+//                    localSaveFileMessage(chatMessage, messageEntry);
                     break;
                 case location:
                     messageEntry.setMessageType("location");
@@ -2240,9 +2241,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 for (int i = 0; i < mMsgs.size(); i++) {
                     Message msg = mMsgs.get(i);
 //                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
-                    //本地存储聊天室消息
-//                    localSaveMessage(mMsgs);
                 }
+                //本地存储聊天室消息
+                localSaveMessage(mMsgs);
             }
         }).start();
         //加载消息

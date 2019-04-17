@@ -18,8 +18,10 @@ import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.shanchain.shandata.db.DaoSession;
 import com.shanchain.shandata.db.MessageEntryDao;
 import com.shanchain.shandata.db.ConversationEntryDao;
@@ -31,6 +33,7 @@ public class ConversationEntry {
     private Long id;
 
     @NotNull
+    @Unique
     public String targetName;
 
     public Integer order;
@@ -40,11 +43,15 @@ public class ConversationEntry {
     })
     private List<MessageEntry> mMessageEntryList;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 469727349)
     private transient ConversationEntryDao myDao;
 
@@ -106,7 +113,9 @@ public class ConversationEntry {
         return mMessageEntryList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1969033880)
     public synchronized void resetMMessageEntryList() {
         mMessageEntryList = null;
@@ -148,7 +157,9 @@ public class ConversationEntry {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 953391257)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

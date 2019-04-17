@@ -15,6 +15,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import cn.jpush.im.android.api.enums.ContentType;
 
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by WealChen
@@ -27,6 +28,7 @@ public class MessageEntry {
     @Id(autoincrement = true)
     private Long id;
     @NotNull
+    @Unique
     private String roomId;
     private Long msgId;
     private Long userId;
@@ -44,12 +46,11 @@ public class MessageEntry {
     private long duration;
     private String progress;
 
-    @Generated(hash = 1644317303)
+    @Generated(hash = 1988675539)
     public MessageEntry(Long id, @NotNull String roomId, Long msgId, Long userId,
             String userName, @NotNull String avatar, @NotNull String jgUserName,
-            String displayName, @NotNull String messageText, long timeString,
-            String messageType, String fileFormat, String mediaFilePath, long duration,
-            String progress) {
+            String displayName, String messageText, long timeString, String messageType,
+            String fileFormat, String mediaFilePath, long duration, String progress) {
         this.id = id;
         this.roomId = roomId;
         this.msgId = msgId;

@@ -128,7 +128,7 @@ android {
 }
 
 greendao {
-    schemaVersion 4
+    schemaVersion 5
     // daoPackage "com.example.model" // set package of generated classes
     daoPackage  "com.shanchain.shandata.db"//greenDao生成代码所在的包名
     targetGenDir "src/main/java"//设置自动生成代码的目录

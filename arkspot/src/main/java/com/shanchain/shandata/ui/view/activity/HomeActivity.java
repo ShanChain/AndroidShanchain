@@ -331,14 +331,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
-        isAddRoom = getIntent().getBooleanExtra("isAddRoom", false);
-        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
-        if (isAddRoom == true) {
-            StandardDialog dialog = new StandardDialog(HomeActivity.this);
-            dialog.setStandardTitle("添加元社区");
-            dialog.setStandardMsg("点击地图添加元社区");
-            dialog.show();
-        }
 //        DownloadCompleteReceiver completeReceiver = new DownloadCompleteReceiver();
     }
 
@@ -366,6 +358,15 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
         String spaceId = SCCacheUtils.getCache(uId, Constants.CACHE_SPACE_ID);
         String characterId = SCCacheUtils.getCache(uId, Constants.CACHE_CHARACTER_ID);
+
+        isAddRoom = getIntent().getBooleanExtra("isAddRoom", false);
+        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
+        if (isAddRoom == true) {
+            StandardDialog dialog = new StandardDialog(HomeActivity.this);
+            dialog.setStandardTitle("创建元社区");
+            dialog.setStandardMsg("点击地图选择创建元社区的区域");
+            dialog.show();
+        }
 
         RNGDataBean rngDataBean = new RNGDataBean();
         rngDataBean.setUserId(uId);

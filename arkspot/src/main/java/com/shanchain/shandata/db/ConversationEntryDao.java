@@ -46,7 +46,7 @@ public class ConversationEntryDao extends AbstractDao<ConversationEntry, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONVERSATION_ENTRY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"TARGET_NAME\" TEXT NOT NULL ," + // 1: targetName
+                "\"TARGET_NAME\" TEXT NOT NULL UNIQUE ," + // 1: targetName
                 "\"ORDER\" INTEGER);"); // 2: order
     }
 

@@ -341,7 +341,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         ContactDao.initContactDao(this);
         //初始化GreenDao数据库
         //升级时调用onUpgrade（）方法，删除所有表！。
-        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "jchat.db");
+        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
         SQLiteDatabase database = devOpenHelper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(database);
         daoSession = daoMaster.newSession();
