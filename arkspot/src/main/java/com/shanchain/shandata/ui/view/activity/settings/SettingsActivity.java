@@ -30,6 +30,7 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
@@ -285,7 +286,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                                         String code = JSONObject.parseObject(response).getString("code");
                                                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                                             LogUtils.d("修改角色信息");
-                                                            SCCacheUtils.setCache(SCCacheUtils.getCacheUserId(),Constants.CACHE_AUTH_CODE,"");
+                                                            SCCacheUtils.setCache(SCCacheUtils.getCacheUserId(), Constants.CACHE_AUTH_CODE, "");
                                                         }
                                                     }
                                                 });
@@ -340,14 +341,16 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                         final String intro = SCJsonUtils.parseString(data, "intro"); //更新内容
                                         final String url = SCJsonUtils.parseString(data, "url"); //下载连接
                                         final String title = SCJsonUtils.parseString(data, "title"); //下载标题
+                                        final boolean isUpdata = VersionUtils.compareVersion(versionCode, serviceVersion);
                                         ThreadUtils.runOnMainThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                tvAppVersionCode.setText("V" + serviceVersion);
-                                                if (versionCode.equals(serviceVersion)) {
+                                                if (!isUpdata) {
+                                                    tvAppVersionCode.setText("V" + versionCode);
                                                     ToastUtils.showToast(SettingsActivity.this, "当前已是最新版本");
                                                 } else {
                                                     showUpdateDialog(url, serviceVersion, intro);
+                                                    tvAppVersionCode.setText("V" + serviceVersion);
                                                 }
                                             }
                                         });

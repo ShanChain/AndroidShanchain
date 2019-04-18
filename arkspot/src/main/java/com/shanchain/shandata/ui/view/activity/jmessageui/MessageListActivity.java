@@ -1,6 +1,5 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -226,7 +225,6 @@ import sj.keyboard.utils.EmoticonsKeyboardUtils;
 import sj.keyboard.utils.imageloader.ImageBase;
 import sj.keyboard.widget.EmoticonPageView;
 import sj.keyboard.widget.FuncLayout;
-
 
 public class MessageListActivity extends BaseActivity implements View.OnTouchListener,
         EasyPermissions.PermissionCallbacks,
