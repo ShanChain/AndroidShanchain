@@ -508,12 +508,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             }
                         });
                         //本地存储会话
-//                        if (chatRoomConversation != null) {
-//                            ConversationEntry conversationEntry = new ConversationEntry();
-//                            conversationEntry.setTargetName(roomID);
-//                            ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
-//                            entryDao.insertOrReplace(conversationEntry);
-//                        }
+                        if (chatRoomConversation != null) {
+                            ConversationEntry conversationEntry = new ConversationEntry();
+                            conversationEntry.setTargetName(roomID);
+                            ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
+                            entryDao.insertOrReplace(conversationEntry);
+                        }
                         closeLoadingDialog();
                     } else if (i == 851003) {//成员已在聊天室
                         LogUtils.d("enterChatRoom", "成员已在聊天室 code:" + i);
@@ -2143,6 +2143,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             LogUtils.d("chatMessageId", msgId + "");
             //构造存储消息体
             final MessageEntry messageEntry = new MessageEntry();
+            messageEntry.setMsgId(Long.valueOf(i));
             messageEntry.setRoomId(roomID + "");
             messageEntry.setUserId(userId);//用户Id
             messageEntry.setJgUserName(jgUserName);//极光ID
@@ -2241,7 +2242,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
                 }
                 //本地存储聊天室消息
-//                localSaveMessage(mMsgs);
+                localSaveMessage(mMsgs);
             }
         }).start();
         //加载消息

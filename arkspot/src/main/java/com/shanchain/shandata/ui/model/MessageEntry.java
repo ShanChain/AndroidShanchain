@@ -25,10 +25,10 @@ import org.greenrobot.greendao.annotation.Unique;
 @Entity
 public class MessageEntry {
 
-    @Id(autoincrement = true)
+    @Id
+    @Unique
     private Long id;
     @NotNull
-    @Unique
     private String roomId;
     private Long msgId;
     private Long userId;

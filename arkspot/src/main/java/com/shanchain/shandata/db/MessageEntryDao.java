@@ -58,8 +58,8 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MESSAGE_ENTRY\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"ROOM_ID\" TEXT NOT NULL UNIQUE ," + // 1: roomId
+                "\"_id\" INTEGER PRIMARY KEY UNIQUE ," + // 0: id
+                "\"ROOM_ID\" TEXT NOT NULL ," + // 1: roomId
                 "\"MSG_ID\" INTEGER," + // 2: msgId
                 "\"USER_ID\" INTEGER," + // 3: userId
                 "\"USER_NAME\" TEXT," + // 4: userName

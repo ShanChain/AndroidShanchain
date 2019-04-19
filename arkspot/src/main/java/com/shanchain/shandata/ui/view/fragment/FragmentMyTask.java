@@ -245,7 +245,6 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void myTaskEventBus(EventMessage event) {
         if (event.getCode() == NetErrCode.REFRESH_MY_TASK) {
-            showProgress();
             onRefresh();
 //            ToastUtils.showToast(getContext(),"Evenbus执行");
         }
@@ -269,7 +268,6 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
         if (taskList.size() < 0) {
             return;
         }
-        showProgress();
         initData();
         adapter.upData(taskList);
         adapter.notifyDataSetChanged();

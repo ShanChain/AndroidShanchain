@@ -265,7 +265,8 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                         if (chatEventMessage.getFromUser() != null) {
                                             IUser user = chatEventMessage.getFromUser();
                                             String displayName = chatEventMessage.getFromUser().getDisplayName();
-                                            defaultUser = new DefaultUser(user.getId(), displayName, user.getAvatarFilePath());
+                                            String avatar = user.getAvatarFilePath() != null ? user.getAvatarFilePath() : "";
+                                            defaultUser = new DefaultUser(user.getId(), displayName,avatar);
                                             defaultUser.setHxUserId(HxUserName);
                                         }
                                     }
@@ -572,6 +573,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 closeLoadingDialog();
                 return;
             }
+            showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(TaskDetailActivity.this, true, 1.0,
+                    R.layout.dialog_bottom_wallet_password,
+                    new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
             SCHttpUtils.postWithUserId()
                     .url(HttpApi.CHAT_TASK_ADD)
                     .addParams("authCode", "" + authCode)
@@ -614,7 +618,6 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     });
         }
     }
-
 
     @OnClick(R.id.tv_task_details_comment)
     public void onClick() {
@@ -740,12 +743,18 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                             final String code = SCJsonUtils.parseCode(result);
                             final String msg = SCJsonUtils.parseMsg(result);
                             if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                                String data = SCJsonUtils.parseData(result);
+                                final String data = SCJsonUtils.parseData(result);
                                 authCode = data;
                                 String userId = SCCacheUtils.getCacheUserId();
                                 SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, data);
-                                releaseTask(data, mDescribeEditText, mBountyEditText, limitedTime);
-                                pwdFree(file);
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        releaseTask(data, mDescribeEditText, mBountyEditText, limitedTime);
+                                        pwdFree(file);
+                                    }
+                                });
+
                             } else {
                                 ThreadUtils.runOnMainThread(new Runnable() {
                                     @Override

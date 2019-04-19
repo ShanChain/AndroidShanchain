@@ -35,7 +35,7 @@ public class SCJsonUtils {
             String msg = JSONObject.parseObject(response).getString("msg");
             return msg;
         } else {
-            String resultMsg = parseCode(response);
+            String resultMsg = "";
             return resultMsg;
         }
 
