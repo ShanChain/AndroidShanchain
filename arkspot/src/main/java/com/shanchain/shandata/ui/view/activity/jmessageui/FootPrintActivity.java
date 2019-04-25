@@ -244,7 +244,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             last = SCJsonUtils.parseBoolean(data, "last");
                             hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
 //                            hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
-                            if(mQuickAdapter!=null){
+                            if (mQuickAdapter != null) {
                                 mQuickAdapter.replaceData(hotChatRoomList);
                             }
                         }
@@ -306,6 +306,22 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             mQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    //更新首页热门元社区列表
+                                    SCHttpUtils.post()
+                                            .url(HttpApi.CHAT_ROOM_LIST_UPDATE)
+                                            .addParams("roomId", hotChatRoomList.get(position).getRoomId() + "")
+                                            .build()
+                                            .execute(new SCHttpStringCallBack() {
+                                                @Override
+                                                public void onError(Call call, Exception e, int id) {
+                                                    LogUtils.d(TAG, "网络异常");
+                                                }
+
+                                                @Override
+                                                public void onResponse(String response, int id) {
+                                                    LogUtils.d(TAG, "刷新首页列表数据成功");
+                                                }
+                                            });
                                     Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
                                     intent.putExtra("roomId", hotChatRoomList.get(position).getRoomId());
                                     intent.putExtra("roomName", hotChatRoomList.get(position).getRoomName());

@@ -25,12 +25,12 @@ import org.greenrobot.greendao.annotation.Unique;
 @Entity
 public class MessageEntry {
 
-    @Id
-    @Unique
+    @Id(autoincrement = true)
     private Long id;
     @NotNull
     private String roomId;
-    private Long msgId;
+    @Unique
+    private String msgId;
     private Long userId;
     private String userName;
     @NotNull
@@ -45,12 +45,12 @@ public class MessageEntry {
     private String mediaFilePath;
     private long duration;
     private String progress;
-
-    @Generated(hash = 1988675539)
-    public MessageEntry(Long id, @NotNull String roomId, Long msgId, Long userId,
+    @Generated(hash = 1084024613)
+    public MessageEntry(Long id, @NotNull String roomId, String msgId, Long userId,
             String userName, @NotNull String avatar, @NotNull String jgUserName,
-            String displayName, String messageText, long timeString, String messageType,
-            String fileFormat, String mediaFilePath, long duration, String progress) {
+            String displayName, String messageText, long timeString,
+            String messageType, String fileFormat, String mediaFilePath,
+            long duration, String progress) {
         this.id = id;
         this.roomId = roomId;
         this.msgId = msgId;
@@ -67,129 +67,98 @@ public class MessageEntry {
         this.duration = duration;
         this.progress = progress;
     }
-
     @Generated(hash = 1450281958)
     public MessageEntry() {
     }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getRoomId() {
         return this.roomId;
     }
-
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
-
-    public Long getMsgId() {
+    public String getMsgId() {
         return this.msgId;
     }
-
-    public void setMsgId(Long msgId) {
+    public void setMsgId(String msgId) {
         this.msgId = msgId;
     }
-
     public Long getUserId() {
         return this.userId;
     }
-
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
     public String getUserName() {
         return this.userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
     public String getAvatar() {
         return this.avatar;
     }
-
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
     public String getJgUserName() {
         return this.jgUserName;
     }
-
     public void setJgUserName(String jgUserName) {
         this.jgUserName = jgUserName;
     }
-
     public String getDisplayName() {
         return this.displayName;
     }
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-
     public String getMessageText() {
         return this.messageText;
     }
-
     public void setMessageText(String messageText) {
         this.messageText = messageText;
     }
-
     public long getTimeString() {
         return this.timeString;
     }
-
     public void setTimeString(long timeString) {
         this.timeString = timeString;
     }
-
-    public String getMediaFilePath() {
-        return this.mediaFilePath;
-    }
-
-    public void setMediaFilePath(String mediaFilePath) {
-        this.mediaFilePath = mediaFilePath;
-    }
-
-    public long getDuration() {
-        return this.duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public String getProgress() {
-        return this.progress;
-    }
-
-    public void setProgress(String progress) {
-        this.progress = progress;
-    }
-
     public String getMessageType() {
         return this.messageType;
     }
-
     public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
-
     public String getFileFormat() {
         return this.fileFormat;
     }
-
     public void setFileFormat(String fileFormat) {
         this.fileFormat = fileFormat;
+    }
+    public String getMediaFilePath() {
+        return this.mediaFilePath;
+    }
+    public void setMediaFilePath(String mediaFilePath) {
+        this.mediaFilePath = mediaFilePath;
+    }
+    public long getDuration() {
+        return this.duration;
+    }
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+    public String getProgress() {
+        return this.progress;
+    }
+    public void setProgress(String progress) {
+        this.progress = progress;
     }
 
 

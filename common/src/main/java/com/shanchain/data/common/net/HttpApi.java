@@ -515,6 +515,8 @@ public interface HttpApi {
     String CHAT_ROOM_MEMBER = BASE_URL + "/jm/room/RoomMembers";
     /* 更新极光用户信息 */
     String CHAT_USER_UPDATE = BASE_URL + "/jm/user/update";
+    /* 更新首页热门元社区列表 */
+    String CHAT_ROOM_LIST_UPDATE = BASE_URL + "/v1/2.0/hotChatRoom/updateList";
     //    String CHAT_ROOM_HISTORY_MESSAGE = "http://95.169.24.11:8082" + "/jm/room/message";
 //    String CHAT_ROOM_HISTORY_MESSAGE = "http://67.218.159.56:8082" + "/jm/room/message";
     /* 查询广场上的所有任务列表 */

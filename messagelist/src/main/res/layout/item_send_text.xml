@@ -58,6 +58,8 @@
             android:layout_marginRight="3dp"
             android:background="@color/white"
             android:textColor="#000000"
+            android:autoLink="web"
+            android:textColorLink="#157BFB"
             android:padding="5dp"
             android:paddingRight="20dp"
             android:text="asdf"/>

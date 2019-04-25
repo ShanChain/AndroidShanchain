@@ -47,6 +47,7 @@ import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
 import com.shanchain.shandata.utils.EncodingHandler;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -67,8 +68,12 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.view.CircleImageView;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -129,6 +134,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
     private File mPasswordFile;
     private CustomDialog mShowPasswordDialog;
     private StandardDialog mStandardDialog;
+    private UserInfo mInfo1;
+    private DefaultUser mDefaultUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,6 +469,8 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                 return;
                             }
                             String character = JSONObject.parseObject(data).getString("characterInfo");
+                            String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                            final String hxUserName = JSONObject.parseObject(hxAccount).getString("hxUserName");
                             final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                             final String headImg = characterInfo.getHeadImg();
                             ThreadUtils.runOnMainThread(new Runnable() {
@@ -471,6 +480,25 @@ public class CouponDetailsActivity extends BaseActivity implements ArthurToolBar
                                     RequestOptions options = new RequestOptions();
                                     options.placeholder(R.mipmap.aurora_headicon_default);
                                     Glide.with(CouponDetailsActivity.this).load(headImg).apply(options).into(ivCouponDetailsAvatar);
+                                }
+                            });
+                            ivCouponDetailsAvatar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    JMessageClient.getUserInfo(hxUserName, new GetUserInfoCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s, UserInfo userInfo) {
+                                            if (JMessageClient.getMyInfo().getUserName().equals(hxUserName)) {
+                                                return;
+                                            }
+                                            String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
+                                            mDefaultUser = new DefaultUser(0, userInfo.getNickname(), avatar);
+                                            mDefaultUser.setHxUserId(userInfo.getUserName() + "");
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelable("userInfo", mDefaultUser);
+                                            readyGo(SingleChatActivity.class, bundle);
+                                        }
+                                    });
                                 }
                             });
                         }

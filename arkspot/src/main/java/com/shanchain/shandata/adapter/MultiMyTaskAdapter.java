@@ -78,7 +78,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
         final Button confirm = (Button) holder.getViewId(R.id.btn_event_confirm);
         final Button cancel = (Button) holder.getViewId(R.id.item_task_cancel);
         final Button taskStatus = (Button) holder.getViewId(R.id.btn_event_task);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String expiryTime0 = simpleDateFormat.format(item.getExpiryTime());
         holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime0 + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
@@ -155,11 +155,17 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             holder.setTextView(R.id.tv_item_story_name, item.getName() + " 发布的:");
             holder.setTextView(R.id.task_receive_time, "领取时间 " + simpleDateFormat.format(item.getReceiveTime()));
             holder.setTextView(R.id.task_finish_time, "完成时间 " + simpleDateFormat.format(item.getCompleteTime()));
+        } else if (viewType == 8) {
+            holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg());
+            holder.setTextView(R.id.tv_item_story_name, item.getName());
+            holder.setTextView(R.id.tv_item_story_name, item.getName() + " 发布的:");
+            holder.setTextView(R.id.task_receive_time, "领取时间 " + simpleDateFormat.format(item.getReceiveTime()));
+            holder.setTextView(R.id.task_finish_time, " ");
 
         }
 
         this.chatEventMessage = item;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         LogUtils.d("复用问题", "" + holder.isRecyclable());
         holder.itemView.setTag(itemPosition);
 //        itemLayout点击事件

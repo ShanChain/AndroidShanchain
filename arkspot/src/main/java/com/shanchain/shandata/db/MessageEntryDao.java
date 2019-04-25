@@ -29,7 +29,7 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property RoomId = new Property(1, String.class, "roomId", false, "ROOM_ID");
-        public final static Property MsgId = new Property(2, Long.class, "msgId", false, "MSG_ID");
+        public final static Property MsgId = new Property(2, String.class, "msgId", false, "MSG_ID");
         public final static Property UserId = new Property(3, Long.class, "userId", false, "USER_ID");
         public final static Property UserName = new Property(4, String.class, "userName", false, "USER_NAME");
         public final static Property Avatar = new Property(5, String.class, "avatar", false, "AVATAR");
@@ -58,9 +58,9 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MESSAGE_ENTRY\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY UNIQUE ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ROOM_ID\" TEXT NOT NULL ," + // 1: roomId
-                "\"MSG_ID\" INTEGER," + // 2: msgId
+                "\"MSG_ID\" TEXT UNIQUE ," + // 2: msgId
                 "\"USER_ID\" INTEGER," + // 3: userId
                 "\"USER_NAME\" TEXT," + // 4: userName
                 "\"AVATAR\" TEXT NOT NULL ," + // 5: avatar
@@ -91,9 +91,9 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         }
         stmt.bindString(2, entity.getRoomId());
  
-        Long msgId = entity.getMsgId();
+        String msgId = entity.getMsgId();
         if (msgId != null) {
-            stmt.bindLong(3, msgId);
+            stmt.bindString(3, msgId);
         }
  
         Long userId = entity.getUserId();
@@ -151,9 +151,9 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         }
         stmt.bindString(2, entity.getRoomId());
  
-        Long msgId = entity.getMsgId();
+        String msgId = entity.getMsgId();
         if (msgId != null) {
-            stmt.bindLong(3, msgId);
+            stmt.bindString(3, msgId);
         }
  
         Long userId = entity.getUserId();
@@ -211,7 +211,7 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
         MessageEntry entity = new MessageEntry( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // roomId
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // msgId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // msgId
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // userId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // userName
             cursor.getString(offset + 5), // avatar
@@ -232,7 +232,7 @@ public class MessageEntryDao extends AbstractDao<MessageEntry, Long> {
     public void readEntity(Cursor cursor, MessageEntry entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setRoomId(cursor.getString(offset + 1));
-        entity.setMsgId(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setMsgId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setUserId(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setUserName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setAvatar(cursor.getString(offset + 5));

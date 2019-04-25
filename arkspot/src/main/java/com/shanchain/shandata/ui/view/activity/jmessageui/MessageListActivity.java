@@ -373,7 +373,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     };
     private List<Message> mMsgs;
-
+    private MessageEntryDao mEntryDao;
+    private List<MessageEntry> mMessageEntryList;
+    private boolean mIsHasRoom = true;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -400,6 +402,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         initData(roomID);
 //        getChatRoomMessage(roomID); //获取聊天室历史消息
         //必须执行在initView()方法之后；
+//        装载本地缓存消息
+        loadMessageData(roomID);
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
 //        initEmojiData();
 
@@ -512,8 +516,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             ConversationEntry conversationEntry = new ConversationEntry();
                             conversationEntry.setTargetName(roomID);
                             ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
-                            entryDao.insertOrReplace(conversationEntry);
+                            mIsHasRoom = entryDao.hasKey(conversationEntry);
+                            if (!mIsHasRoom) {
+                                entryDao.insertOrReplace(conversationEntry);
+                            }
                         }
+                        //从本地加载会话
+//                        loadMessageData(roomID);
                         closeLoadingDialog();
                     } else if (i == 851003) {//成员已在聊天室
                         LogUtils.d("enterChatRoom", "成员已在聊天室 code:" + i);
@@ -762,7 +771,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
             }
         };
-        initTaskDialog();
+//        initTaskDialog();
 
 
     }
@@ -1030,7 +1039,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 break;
         }
     }
-
 
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
@@ -1746,7 +1754,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     }
 
-
     //标题栏右侧按钮实现
     @Override
     public void onRightClick(final View v) {
@@ -2054,13 +2061,184 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 });
     }
 
+    //从本地数据库读取聊天消息
+    private void loadMessageData(String roomID) {
+        mEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
+        mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
+        if (mMessageEntryList.size() != 0) {
+            for (int i = 0; i < mMessageEntryList.size(); i++) {
+                MessageEntry messageEntry = mMessageEntryList.get(i);
+                final MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                //创建用户获取头像
+                String avatar = messageEntry.getAvatar() != null ? messageEntry.getAvatar() : "";
+                final DefaultUser defaultUser = new DefaultUser(messageEntry.getUserId(), messageEntry.getDisplayName(), avatar);
+                defaultUser.setHxUserId(messageEntry.getJgUserName() + "");
+                //从极光获取用户信息
+                JMessageClient.getUserInfo(messageEntry.getJgUserName() + "", new GetUserInfoCallback() {
+                    @Override
+                    public void gotResult(int i, String s, UserInfo userInfo) {
+                        defaultUser.setSignature(userInfo.getSignature() + "");
+                    }
+                });
+                //设置消息显示时间
+                if (i > 0) {
+                    long messageTime = messageEntry.getTimeString();
+                    long preTime = mMessageEntryList.get(i - 1).getTimeString();
+                    long diff = messageTime - preTime;
+                    if (diff > 3 * 60 * 1000) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        String timeString = sdf.format(new Date(messageTime));
+                        commonMessage.setTimeString(timeString);
+                    }
+                }
+                switch (messageEntry.getMessageType()) {
+                    case "text":
+                        commonMessage.setText(messageEntry.getMessageText());
+                        long id = messageEntry.getUserId();
+                        long currentId = JMessageClient.getMyInfo().getUserID();
+                        if (currentId == id) {
+                            commonMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                        }
+                        commonMessage.setUserInfo(defaultUser);
+                        messageList.add(commonMessage);
+                        mAdapter.addToStart(commonMessage, true);
+                        break;
+                    case "image":
+                        long id_img = messageEntry.getUserId();
+                        long currentId_img = JMessageClient.getMyInfo().getUserID();
+                        if (currentId_img == id_img) {
+                            commonMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                        } else {
+                            commonMessage.setType(IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                        }
+                        commonMessage.setUserInfo(defaultUser);
+                        commonMessage.setMediaFilePath(messageEntry.getMediaFilePath() + "");
+                        mPathList.add(messageEntry.getMediaFilePath());
+                        mMsgIdList.add(commonMessage.getMsgId() + "");
+                        messageList.add(commonMessage);
+                        mAdapter.addToStart(commonMessage, true);
+                        break;
+                    case "voice":
+                        long id_voice = messageEntry.getUserId();
+                        long currentId_voice = JMessageClient.getMyInfo().getUserID();
+                        if (currentId_voice == id_voice) {
+                            commonMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                        } else {
+                            commonMessage.setType(IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                        }
+                        commonMessage.setUserInfo(defaultUser);
+                        commonMessage.setDuration(messageEntry.getDuration());
+                        commonMessage.setMediaFilePath(messageEntry.getMediaFilePath() + "");
+                        messageList.add(commonMessage);
+                        mAdapter.addToStart(commonMessage, true);
+                        break;
+                    case "video":
+                        long id_video = messageEntry.getUserId();
+                        long currentId_video = JMessageClient.getMyInfo().getUserID();
+                        if (currentId_video == id_video) {
+                            commonMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                        } else {
+                            commonMessage.setType(IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                        }
+                        commonMessage.setUserInfo(defaultUser);
+                        commonMessage.setDuration(messageEntry.getDuration());
+                        commonMessage.setMediaFilePath(messageEntry.getMediaFilePath() + "");
+                        messageList.add(commonMessage);
+                        mAdapter.addToStart(commonMessage, true);
+                        break;
+                    case "file":
+                        long idFile = messageEntry.getUserId();
+                        long currentIdFile = JMessageClient.getMyInfo().getUserID();
+                        if (currentIdFile == idFile) {
+                            commonMessage.setType(IMessage.MessageType.SEND_FILE.ordinal());
+                        } else {
+                            commonMessage.setType(IMessage.MessageType.RECEIVE_FILE.ordinal());
+                        }
+                        loadFileTypeMessage(messageEntry, commonMessage);
+                        break;
+                    default:
+                        mData = messageList;
+                        break;
+                }
+            }
+        }
+    }
+
+    private void loadFileTypeMessage(MessageEntry messageEntry, MyMessage commonMessage) {
+        switch (messageEntry.getFileFormat()) {
+            case "jpg":
+                long fileId0 = messageEntry.getUserId();
+                long currentFileId0 = JMessageClient.getMyInfo().getUserID();
+                if (currentFileId0 == fileId0) {
+                    commonMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                }
+                if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                    commonMessage.setMediaFilePath(messageEntry.getMediaFilePath() + "");
+                    mPathList.add(messageEntry.getMediaFilePath());
+                    mMsgIdList.add(commonMessage.getMsgId() + "");
+                } else {
+
+                }
+
+                break;
+            case "mp4":
+                commonMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                long fileId1 = messageEntry.getUserId();
+                long currentFileId1 = JMessageClient.getMyInfo().getUserID();
+                if (currentFileId1 == fileId1) {
+                    commonMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                }
+                if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                    commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
+                    commonMessage.setDuration(messageEntry.getDuration());
+                } else {
+
+                }
+                break;
+            case "png":
+                long fileId2 = messageEntry.getUserId();
+                long currentFileId2 = JMessageClient.getMyInfo().getUserID();
+                commonMessage.setType(IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                if (currentFileId2 == fileId2) {
+                    commonMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                }
+                if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                    commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
+                    mPathList.add(messageEntry.getMediaFilePath());
+                    mMsgIdList.add(commonMessage.getMsgId() + "");
+                } else {
+
+                }
+                break;
+            case "mp3":
+                commonMessage.setType(IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+                long fileId3 = messageEntry.getUserId();
+                long currentFileId3 = JMessageClient.getMyInfo().getUserID();
+                if (currentFileId3 == fileId3) {
+                    commonMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                }
+                if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                    commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
+                    commonMessage.setDuration(messageEntry.getDuration());
+                } else {
+
+                }
+            default:
+                messageList.add(commonMessage);
+                mAdapter.addToStart(commonMessage, true);
+                break;
+        }
+    }
+
     //保存文件消息
-    private void localSaveFileMessage(Message message, final MessageEntry messageEntry) {
+    private void localSaveFileMessage(Message message, final MessageEntry messageEntry, final MessageEntryDao entryDao) {
+        entryDao.insertOrReplace(messageEntry);
         FileContent fileContent = (FileContent) message.getContent();
         fileContent.downloadFile(message, new DownloadCompletionCallback() {
             @Override
             public void onComplete(int i, String s, File file) {
                 messageEntry.setMediaFilePath(file.getAbsolutePath());
+                entryDao.update(messageEntry);
             }
         });
         switch (fileContent.getFormat()) {
@@ -2130,7 +2308,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     //本地存储聊天室消息
     private void localSaveMessage(List<Message> mMsgs) {
-        MessageEntryDao entryDao = MyApplication.getDaoSession().getMessageEntryDao();
+        final MessageEntryDao entryDao = MyApplication.getDaoSession().getMessageEntryDao();
         for (int i = 0; i < mMsgs.size(); i++) {
             Message chatMessage = mMsgs.get(i);
             //用户极光ID,userId,displayName,头像
@@ -2140,10 +2318,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             String headImg = chatMessage.getFromUser().getAvatarFile() != null ?
                     chatMessage.getFromUser().getAvatarFile().getAbsolutePath() : " ";
             int msgId = chatMessage.getId();
-            LogUtils.d("chatMessageId", msgId + "");
+//            LogUtils.d("chatMessageId", msgId + "");
             //构造存储消息体
             final MessageEntry messageEntry = new MessageEntry();
-            messageEntry.setMsgId(Long.valueOf(i));
+            String messageId = roomID + "_" + i;//构造msgId
+            messageEntry.setMsgId(messageId);
             messageEntry.setRoomId(roomID + "");
             messageEntry.setUserId(userId);//用户Id
             messageEntry.setJgUserName(jgUserName);//极光ID
@@ -2155,6 +2334,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     TextContent textContent = (TextContent) chatMessage.getContent();
                     messageEntry.setMessageType("text");
                     messageEntry.setMessageText(textContent.getText());
+                    if (!entryDao.hasKey(messageEntry)) {
+                        entryDao.insertOrReplace(messageEntry);
+                    }
                     break;
                 case image:
                     final ImageContent imageContent = (ImageContent) chatMessage.getContent();
@@ -2163,11 +2345,20 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         imageContent.downloadOriginImage(chatMessage, new DownloadCompletionCallback() {
                             @Override
                             public void onComplete(int i, String s, File file) {
+                                LogUtils.d("downloadOriginImage", file.getAbsolutePath() + "");
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
+                                entryDao.update(messageEntry);
                             }
                         });
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     } else {
+                        LogUtils.d("getLocalPath", imageContent.getLocalPath() + "");
                         messageEntry.setMediaFilePath(imageContent.getLocalPath());
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     }
                     break;
                 case voice:
@@ -2176,14 +2367,21 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (voiceContent.getLocalPath() != null) {
                         messageEntry.setMediaFilePath(voiceContent.getLocalPath());
                         messageEntry.setDuration(voiceContent.getDuration());
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     } else {
                         voiceContent.downloadVoiceFile(chatMessage, new DownloadCompletionCallback() {
                             @Override
                             public void onComplete(int i, String s, File file) {
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
                                 messageEntry.setDuration(voiceContent.getDuration());
+                                entryDao.update(messageEntry);
                             }
                         });
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     }
                     break;
                 case video:
@@ -2192,19 +2390,26 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (videoContent.getVideoLocalPath() != null) {
                         messageEntry.setMediaFilePath(videoContent.getVideoLocalPath());
                         messageEntry.setDuration(videoContent.getDuration());
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     } else {
                         videoContent.downloadVideoFile(chatMessage, new DownloadCompletionCallback() {
                             @Override
                             public void onComplete(int i, String s, File file) {
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
                                 messageEntry.setDuration(videoContent.getDuration());
+                                entryDao.update(messageEntry);
                             }
                         });
+                        if (!entryDao.hasKey(messageEntry)) {
+                            entryDao.insertOrReplace(messageEntry);
+                        }
                     }
                     break;
                 case file:
                     messageEntry.setMessageType("file");
-                    localSaveFileMessage(chatMessage, messageEntry);
+                    localSaveFileMessage(chatMessage, messageEntry, entryDao);
                     break;
                 case location:
                     messageEntry.setMessageType("location");
@@ -2216,10 +2421,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     messageEntry.setMessageType("unknown");
                     break;
                 default:
+                    LogUtils.d("messageEntry", "第" + i + "个本地缓存消息：" + messageEntry.getJgUserName());
                     break;
             }
-            LogUtils.d("messageEntry", "第" + i + "个本地缓存消息：" + messageEntry.getJgUserName());
-            entryDao.insertOrReplace(messageEntry);
         }
     }
 
@@ -2228,11 +2432,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         Log.d("tag", "ChatRoomMessageEvent received .");
         chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
         List chatRoomList = chatRoomConversation.getAllMessage();
+//        mEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
+//        mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
         mMsgs = event.getMessages();
         final MyMessage myMessage;
-        if (mMsgs == null) {
-            return;
-        }
         //打印消息
         new Thread(new Runnable() {
             @Override
@@ -2302,8 +2505,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                            textMessage.setTimeString(timeString);
                             }
-                            messageList.add(textMessage);
-                            mAdapter.addToStart(textMessage, true);
+                            if (mMsgs.size() == 1 || !mIsHasRoom) {
+                                messageList.add(textMessage);
+                                mAdapter.addToStart(textMessage, true);
+                            }
+
                         }
                         break;
                     case image:
@@ -2354,8 +2560,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        imgMessage.setTimeString(timeString);
                         }
-                        messageList.add(imgMessage);
-                        mAdapter.addToStart(imgMessage, true);
+                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                            messageList.add(imgMessage);
+                            mAdapter.addToStart(imgMessage, true);
+                        }
                         break;
                     case voice:
                         //处理语音消息
@@ -2403,8 +2611,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        voiceMessage.setTimeString(timeString);
                         }
-                        messageList.add(voiceMessage);
-                        mAdapter.addToStart(voiceMessage, true);
+                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                            messageList.add(voiceMessage);
+                            mAdapter.addToStart(voiceMessage, true);
+                        }
                         break;
                     case location:
                         break;
@@ -2460,8 +2670,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        videoMessage.setTimeString(timeString);
                         }
-                        messageList.add(videoMessage);
-                        mAdapter.addToStart(videoMessage, true);
+                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                            messageList.add(videoMessage);
+                            mAdapter.addToStart(videoMessage, true);
+                        }
                         break;
                     case file:
                         LogUtils.d("ChatRoomMessageEvent file", "第" + i + "个" + msg.getContent().toJson().toString());
@@ -2592,8 +2804,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        fileMessage.setTimeString(timeString);
                         }
-                        messageList.add(fileMessage);
-                        mAdapter.addToStart(fileMessage, true);
+                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                            messageList.add(fileMessage);
+                            mAdapter.addToStart(fileMessage, true);
+                        }
                     case eventNotification:
                         break;
                     case custom:
@@ -2635,11 +2849,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 closeProgress();
             }
 //        }
-            mData = messageList;
+//            mData = messageList;
 //        mAdapter.addToEndChronologically(mData);
 //        initMsgAdapter();
             closeProgress();
         }
+//        }
     }
 
     public void onEventMainThread(ConversationRefreshEvent event) {
@@ -3271,7 +3486,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         .load(string)
                         .apply(options)
                         .into(new SimpleTarget<Bitmap>() {
-
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                 int imageWidth = resource.getWidth();
