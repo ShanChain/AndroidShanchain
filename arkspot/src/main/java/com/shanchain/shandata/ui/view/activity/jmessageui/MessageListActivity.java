@@ -204,6 +204,7 @@ import cn.jpush.im.android.api.content.VoiceContent;
 import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.ChatRoomInfo;
 import cn.jpush.im.android.api.model.Conversation;
@@ -375,7 +376,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private List<Message> mMsgs;
     private MessageEntryDao mEntryDao;
     private List<MessageEntry> mMessageEntryList;
-    private boolean mIsHasRoom = true;
+    private boolean mIsHasRoom;
+    private MessageEntryDao mMessageEntryDao;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -403,6 +405,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        getChatRoomMessage(roomID); //获取聊天室历史消息
         //必须执行在initView()方法之后；
 //        装载本地缓存消息
+//        ConversationEntry conversationEntry = new ConversationEntry();
+//        conversationEntry.setTargetName(roomID);
+//        ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
+//        mIsHasRoom = entryDao.hasKey(conversationEntry);
         loadMessageData(roomID);
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
 //        initEmojiData();
@@ -517,7 +523,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             conversationEntry.setTargetName(roomID);
                             ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
                             mIsHasRoom = entryDao.hasKey(conversationEntry);
-                            if (!mIsHasRoom) {
+                            if (mIsHasRoom==false) {
                                 entryDao.insertOrReplace(conversationEntry);
                             }
                         }
@@ -1908,34 +1914,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         }
     }
 
-//    public void onEvent(LoginStateChangeEvent event) {
-//        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
-//        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
-//        switch (reason) {
-//            case user_password_change:
-//                //用户密码在服务器端被修改
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtils.showToast(MessageListActivity.this, "用户密码已被修改");
-//                    }
-//                });
-//                break;
-//            case user_logout:
-//                //用户换设备登录
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtils.showToast(MessageListActivity.this, "账号在别处登录");
-//                    }
-//                });
-//                JMessageClient.logout();
-//                break;
-//            case user_deleted:
-//                //用户被删除
-//                break;
-//        }
-//    }
 
     //从服务器接口获取消息
     private void getChatRoomMessage(String roomID) {
@@ -2065,6 +2043,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private void loadMessageData(String roomID) {
         mEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
         mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
+        messageList.clear();
         if (mMessageEntryList.size() != 0) {
             for (int i = 0; i < mMessageEntryList.size(); i++) {
                 MessageEntry messageEntry = mMessageEntryList.get(i);
@@ -2308,7 +2287,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     //本地存储聊天室消息
     private void localSaveMessage(List<Message> mMsgs) {
-        final MessageEntryDao entryDao = MyApplication.getDaoSession().getMessageEntryDao();
+
+        mMessageEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
         for (int i = 0; i < mMsgs.size(); i++) {
             Message chatMessage = mMsgs.get(i);
             //用户极光ID,userId,displayName,头像
@@ -2317,11 +2297,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             String displayName = chatMessage.getFromUser().getNickname();
             String headImg = chatMessage.getFromUser().getAvatarFile() != null ?
                     chatMessage.getFromUser().getAvatarFile().getAbsolutePath() : " ";
-            int msgId = chatMessage.getId();
+            long msgId = chatMessage.getServerMessageId();
 //            LogUtils.d("chatMessageId", msgId + "");
             //构造存储消息体
             final MessageEntry messageEntry = new MessageEntry();
-            String messageId = roomID + "_" + i;//构造msgId
+            String messageId = roomID + "_" + msgId;//构造msgId
             messageEntry.setMsgId(messageId);
             messageEntry.setRoomId(roomID + "");
             messageEntry.setUserId(userId);//用户Id
@@ -2334,8 +2314,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     TextContent textContent = (TextContent) chatMessage.getContent();
                     messageEntry.setMessageType("text");
                     messageEntry.setMessageText(textContent.getText());
-                    if (!entryDao.hasKey(messageEntry)) {
-                        entryDao.insertOrReplace(messageEntry);
+                    if (!mMessageEntryDao.hasKey(messageEntry)) {
+                        mMessageEntryDao.insertOrReplace(messageEntry);
                     }
                     break;
                 case image:
@@ -2347,17 +2327,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             public void onComplete(int i, String s, File file) {
                                 LogUtils.d("downloadOriginImage", file.getAbsolutePath() + "");
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
-                                entryDao.update(messageEntry);
+                                mMessageEntryDao.update(messageEntry);
                             }
                         });
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     } else {
                         LogUtils.d("getLocalPath", imageContent.getLocalPath() + "");
                         messageEntry.setMediaFilePath(imageContent.getLocalPath());
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     }
                     break;
@@ -2367,8 +2347,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (voiceContent.getLocalPath() != null) {
                         messageEntry.setMediaFilePath(voiceContent.getLocalPath());
                         messageEntry.setDuration(voiceContent.getDuration());
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     } else {
                         voiceContent.downloadVoiceFile(chatMessage, new DownloadCompletionCallback() {
@@ -2376,11 +2356,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             public void onComplete(int i, String s, File file) {
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
                                 messageEntry.setDuration(voiceContent.getDuration());
-                                entryDao.update(messageEntry);
+                                mMessageEntryDao.update(messageEntry);
                             }
                         });
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     }
                     break;
@@ -2390,8 +2370,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (videoContent.getVideoLocalPath() != null) {
                         messageEntry.setMediaFilePath(videoContent.getVideoLocalPath());
                         messageEntry.setDuration(videoContent.getDuration());
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     } else {
                         videoContent.downloadVideoFile(chatMessage, new DownloadCompletionCallback() {
@@ -2399,17 +2379,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             public void onComplete(int i, String s, File file) {
                                 messageEntry.setMediaFilePath(file.getAbsolutePath());
                                 messageEntry.setDuration(videoContent.getDuration());
-                                entryDao.update(messageEntry);
+                                mMessageEntryDao.update(messageEntry);
                             }
                         });
-                        if (!entryDao.hasKey(messageEntry)) {
-                            entryDao.insertOrReplace(messageEntry);
+                        if (!mMessageEntryDao.hasKey(messageEntry)) {
+                            mMessageEntryDao.insertOrReplace(messageEntry);
                         }
                     }
                     break;
                 case file:
                     messageEntry.setMessageType("file");
-                    localSaveFileMessage(chatMessage, messageEntry, entryDao);
+                    localSaveFileMessage(chatMessage, messageEntry, mMessageEntryDao);
                     break;
                 case location:
                     messageEntry.setMessageType("location");
@@ -2431,9 +2411,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     public void onEventMainThread(ChatRoomMessageEvent event) {
         Log.d("tag", "ChatRoomMessageEvent received .");
         chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-        List chatRoomList = chatRoomConversation.getAllMessage();
+        List<Message> chatRoomConversationAllMessage = chatRoomConversation.getAllMessage();
 //        mEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
-//        mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
+        mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
         mMsgs = event.getMessages();
         final MyMessage myMessage;
         //打印消息
@@ -2475,6 +2455,16 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 defaultUser.setSignature(msg.getFromUser().getSignature().length() >= 0 ? msg.getFromUser().getSignature() : "该用户很懒，没有设置签名");
                 defaultUser.setHxUserId(msg.getFromID() + "");
 //            MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                //构造缓存消息体
+                long msgId = msg.getServerMessageId();
+                final MessageEntry messageEntry = new MessageEntry();
+                String messageId = roomID + "_" + msgId;//构造msgId
+                messageEntry.setRoomId(roomID + "");
+                messageEntry.setUserId(msg.getFromUser().getUserID());//用户Id
+                messageEntry.setJgUserName(msg.getFromID() + "");//极光ID
+                messageEntry.setDisplayName(msg.getFromUser().getNickname());//昵称
+                messageEntry.setAvatar(avatar);//头像
+                messageEntry.setTimeString(msg.getCreateTime());//时间
                 switch (msg.getContentType()) {
                     case text:
                         LogUtils.d("ChatRoomMessageEvent text", "第" + i + "个" + msg.getContent().toJson().toString());
@@ -2505,9 +2495,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                            String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                            textMessage.setTimeString(timeString);
                             }
-                            if (mMsgs.size() == 1 || !mIsHasRoom) {
+//                            if (mMsgs.size() == 1 || !mIsHasRoom) {
+                            if (mMsgs.size() == 1||mMessageEntryList==null||mMessageEntryList.size()==0) {
                                 messageList.add(textMessage);
                                 mAdapter.addToStart(textMessage, true);
+//                                messageEntry.setMessageType("text");
+//                                messageEntry.setMessageText(textContent.getText() + "");
+//                                mMessageEntryDao.insertOrReplace(messageEntry);
+                                localSaveMessage(chatRoomConversationAllMessage);
                             }
 
                         }
@@ -2519,7 +2514,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         imageContent.getLocalPath();//图片本地地址
                         imageContent.getLocalThumbnailPath();//图片对应缩略图的本地地址
                         long imageId = msg.getFromUser().getUserID();
-                        msg.getFromID();
                         final MyMessage imgMessage = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         long currentimageId = JMessageClient.getMyInfo().getUserID();
                         if (currentimageId == imageId) {
@@ -2560,7 +2554,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                        String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        imgMessage.setTimeString(timeString);
                         }
-                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                        if (mMsgs.size() == 1||mMessageEntryList==null||mMessageEntryList.size()==0) {
                             messageList.add(imgMessage);
                             mAdapter.addToStart(imgMessage, true);
                         }
@@ -2611,7 +2605,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        voiceMessage.setTimeString(timeString);
                         }
-                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                        if (mMsgs.size() == 1||mMessageEntryList==null||mMessageEntryList.size()==0) {
                             messageList.add(voiceMessage);
                             mAdapter.addToStart(voiceMessage, true);
                         }
@@ -2670,7 +2664,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        videoMessage.setTimeString(timeString);
                         }
-                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                        if (mMsgs.size() == 1||mMessageEntryList==null||mMessageEntryList.size()==0) {
                             messageList.add(videoMessage);
                             mAdapter.addToStart(videoMessage, true);
                         }
@@ -2804,7 +2798,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                        fileMessage.setTimeString(timeString);
                         }
-                        if (mMsgs.size() == 1 || !mIsHasRoom) {
+                        if (mMsgs.size() == 1||mMessageEntryList==null||mMessageEntryList.size()==0) {
                             messageList.add(fileMessage);
                             mAdapter.addToStart(fileMessage, true);
                         }
@@ -2833,8 +2827,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         DefaultUser user1 = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatar());
                         user1.setHxUserId(msg.getFromID());
                         customMessage.setUserInfo(user1);
-                        messageList.add(customMessage);
-                        mAdapter.addToStart(customMessage, true);
+//                        messageList.add(customMessage);
+//                        mAdapter.addToStart(customMessage, true);
                         break;
                     case unknown:
                         LogUtils.d("ChatRoomMessageEvent unknown", "第" + i + "个" + msg.getContent().toJson().toString());
@@ -2861,6 +2855,50 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         chatRoomConversation = event.getConversation();
         List<Message> messageList = chatRoomConversation.getAllMessage();
 
+    }
+
+    //监听用户登录状态
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+        switch (reason) {
+            case user_password_change:
+                //用户密码在服务器端被修改
+                LogUtils.d("LoginStateChangeEvent", "用户密码在服务器端被修改");
+//                ToastUtils.showToast(mContext, "您的密码已被修改");
+                break;
+            case user_logout:
+                //用户换设备登录
+                LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
+                final StandardDialog standardDialog = new StandardDialog(MessageListActivity.this);
+                standardDialog.setStandardTitle("提示");
+                standardDialog.setStandardMsg("账号已在其他设备上登录，请重新登录");
+                standardDialog.setSureText("重新登录");
+                standardDialog.setCancelText("取消");
+                standardDialog.setCallback(new Callback() {//确定
+                    @Override
+                    public void invoke() {
+                        readyGo(LoginActivity.class);
+                    }
+                }, new Callback() {//取消
+                    @Override
+                    public void invoke() {
+
+                    }
+                });
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        ToastUtils.showToast(getApplicationContext(), "账号在其他设备上登录");
+                        standardDialog.show();
+                    }
+                });
+
+                break;
+            case user_deleted:
+                //用户被删除
+                break;
+        }
     }
 
     /**
@@ -3035,6 +3073,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         return StorageUtil.getWritePath(filename, StorageType.TYPE_TEMP);
     }
 
+
     private void initChatView() {
         mChatView.initModule();
         mChatView.isShowBtnInputJoin(true);//显示加入按钮
@@ -3086,8 +3125,18 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         }
 //                      message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-//                                messageList.add(message);
                         JMessageClient.sendMessage(msg);
+                        msg.getServerMessageId();
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                List<Message> allMessages = chatRoomConversation.getAllMessage();
+                                localSaveMessage(allMessages);
+//                                long msgId = msg.getServerMessageId();
+//                                TextContent textContent = (TextContent) msg.getContent();
+//                                LogUtils.d("发送消息的ID:", msgId + "" + textContent.getText());
+                            }
+                        });
                         mAdapter.addToStart(message, true);
                         xhsEmoticonsKeyBoard.getEtChat().setText("");
                     } else {

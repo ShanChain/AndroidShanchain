@@ -47,6 +47,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -54,6 +55,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
@@ -114,6 +116,7 @@ import cn.jiguang.imui.view.RoundImageView;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.content.VideoContent;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
@@ -167,6 +170,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         Intent intent = new Intent();
         intent.setAction(".receiver.MyLocationReceiver");
 //        sendBroadcast(intent);
+        JMessageClient.registerEventReceiver(this);
         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -181,7 +185,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             readyGo(LoginActivity.class);
                         }
                     }, 3000);
-
                 }
             }
         });
@@ -914,6 +917,50 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             context.startActivity(customIntent);
         }
 
+    }
+
+    //监听用户登录状态
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+        switch (reason) {
+            case user_password_change:
+                //用户密码在服务器端被修改
+                com.shanchain.data.common.utils.LogUtils.d("LoginStateChangeEvent", "用户密码在服务器端被修改");
+//                ToastUtils.showToast(mContext, "您的密码已被修改");
+                break;
+            case user_logout:
+                //用户换设备登录
+                com.shanchain.data.common.utils.LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
+                final StandardDialog standardDialog = new StandardDialog(FootPrintActivity.this);
+                standardDialog.setStandardTitle("提示");
+                standardDialog.setStandardMsg("账号已在其他设备上登录，请重新登录");
+                standardDialog.setSureText("重新登录");
+                standardDialog.setCancelText("取消");
+                standardDialog.setCallback(new Callback() {//确定
+                    @Override
+                    public void invoke() {
+                        readyGo(LoginActivity.class);
+                    }
+                }, new Callback() {//取消
+                    @Override
+                    public void invoke() {
+
+                    }
+                });
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        ToastUtils.showToast(getApplicationContext(), "账号在其他设备上登录");
+                        standardDialog.show();
+                    }
+                });
+
+                break;
+            case user_deleted:
+                //用户被删除
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -351,7 +351,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         }
     }
 
-    public static DaoSession getDaoSession() {
+    public static synchronized DaoSession getDaoSession() {
         if (null == daoSession) {
             //升级时调用onUpgrade（）方法，删除所有表！。
             try {

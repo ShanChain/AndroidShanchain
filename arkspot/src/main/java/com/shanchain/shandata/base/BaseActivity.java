@@ -65,6 +65,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.umeng.analytics.MobclickAgent;
 import com.vector.update_app.UpdateAppBean;
@@ -83,6 +84,8 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
+import cn.jpush.im.android.api.model.UserInfo;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -192,6 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }        //获取极光推送绑定的设备号
         registrationId = JPushInterface.getRegistrationID(getApplicationContext());
+//        JMessageClient.registerEventReceiver(getApplicationContext());
         //获取本机唯一标识
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -457,11 +461,49 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-//    //用户下线事件
-//    public void onEventMainThread(LoginStateChangeEvent event) {
-//        StandardDialog dialog = new StandardDialog(getApplicationContext());
-//        dialog.setStandardMsg("该账号已在其他设备上登录");
-//    }
+    //监听用户登录状态
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+        switch (reason) {
+            case user_password_change:
+                //用户密码在服务器端被修改
+                LogUtils.d("LoginStateChangeEvent", "用户密码在服务器端被修改");
+//                ToastUtils.showToast(mContext, "您的密码已被修改");
+                break;
+            case user_logout:
+                //用户换设备登录
+                LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
+                final StandardDialog standardDialog = new StandardDialog(mContext);
+                standardDialog.setStandardTitle("提示");
+                standardDialog.setStandardMsg("账号已在其他设备上登录，请重新登录");
+                standardDialog.setSureText("重新登录");
+                standardDialog.setCancelText("取消");
+                standardDialog.setCallback(new com.shanchain.data.common.base.Callback() {//确定
+                    @Override
+                    public void invoke() {
+                        readyGo(LoginActivity.class);
+                    }
+                }, new com.shanchain.data.common.base.Callback() {//取消
+                    @Override
+                    public void invoke() {
+
+                    }
+                });
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        ToastUtils.showToast(getApplicationContext(), "账号在其他设备上登录");
+                        standardDialog.show();
+                    }
+                });
+
+                break;
+            case user_deleted:
+                //用户被删除
+                break;
+        }
+    }
 
 
     protected void checkPassword(final File file) {
