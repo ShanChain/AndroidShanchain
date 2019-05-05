@@ -135,7 +135,6 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             holder.setTextView(R.id.tv_item_story_name, item.getName());
             holder.setTextView(R.id.tv_item_story_name, item.getName() + " 发布的:");
             holder.setTextView(R.id.task_receive_time, "领取时间 " + simpleDateFormat.format(item.getReceiveTime()));
-
         } else if (viewType == 4) {
             holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg());
             holder.setTextView(R.id.tv_item_story_name, item.getName());
@@ -149,6 +148,10 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             holder.setTextView(R.id.task_receive_time, "领取时间 " + simpleDateFormat.format(item.getReceiveTime()));
             holder.setTextView(R.id.task_finish_time, "完成时间 " + simpleDateFormat.format(item.getCompleteTime()));
             holder.setTextView(R.id.task_verify_time, "确认时间 " + simpleDateFormat.format(item.getVerifyTime()));
+            if (!String.valueOf(characterId).equals(SCCacheUtils.getCacheCharacterId())) {
+                holder.getViewId(R.id.item_finish_show).setVisibility(View.GONE);
+            }
+
         } else if (viewType == 6) {
             holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg());
             holder.setTextView(R.id.tv_item_story_name, item.getName());

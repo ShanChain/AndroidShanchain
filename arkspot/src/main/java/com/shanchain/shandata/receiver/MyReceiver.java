@@ -18,9 +18,13 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.push.ExampleUtil;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
+import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import org.json.JSONException;
@@ -76,51 +80,83 @@ public class MyReceiver extends BroadcastReceiver {
                 LogUtils.d(TAG, "[MyReceiver] 接收到推送下来的通知");
                 int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
                 LogUtils.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
-
-            } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
-                LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
                     JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
-                    String jguserName = SCJsonUtils.parseString(messageJson.toString(), "jguserName");
-                    String extra = SCJsonUtils.parseString(messageJson.toString(), "extra");
-                    String sysPage = SCJsonUtils.parseString(messageJson.toString(), "sysPage");
-                    String title = SCJsonUtils.parseString(messageJson.toString(), "title");
-                    String msgContent = SCJsonUtils.parseString(messageJson.toString(), "msgContent");
+                    if (!TextUtils.isEmpty(messageJson.toString()) && !messageJson.toString().equals("{}")) {
+                        String jguserName = SCJsonUtils.parseString(messageJson.toString(), "jguserName");
+                        String extra = SCJsonUtils.parseString(messageJson.toString(), "extra");
+                        String sysPage = SCJsonUtils.parseString(messageJson.toString(), "sysPage");
+                        String title = SCJsonUtils.parseString(messageJson.toString(), "title");
+                        String msgContent = SCJsonUtils.parseString(messageJson.toString(), "msgContent");
 //                    String android = messageJson.getString("android");
 //                    String extras = SCJsonUtils.parseString(android, "extras");
 //                    String extras = SCJsonUtils.parseString(messageJson.toString(), "extras");
 //                    String jguserName = SCJsonUtils.parseString(extras, "jguserName");
 //                    String extra = SCJsonUtils.parseString(extras, "extra");
 //                    String sysPage = SCJsonUtils.parseString(extras, "sysPage");
+                        if (!TextUtils.isEmpty(jguserName) && !TextUtils.isEmpty(extra)) {
+                            mConversation = JMessageClient.getSingleConversation(jguserName);
+                            if (mConversation == null) {
+                                mConversation = Conversation.createSingleConversation(jguserName);
+                            }
+                            Map customMap = new HashMap();
+                            customMap.put("taskId", 0 + "");
+                            customMap.put("bounty", title + "");
+                            customMap.put("dataString", "" + extra);
+                            customMap.put("time", "" + System.currentTimeMillis());
 
-                    mConversation = JMessageClient.getSingleConversation(jguserName);
-                    if (mConversation == null) {
-                        mConversation = Conversation.createSingleConversation(jguserName);
+                            mSendCustomMessage = mConversation.createSendCustomMessage(customMap, jguserName);
+                            JMessageClient.sendMessage(mSendCustomMessage);
+                        }
                     }
-                    Map customMap = new HashMap();
-                    customMap.put("taskId", 0 + "");
-                    customMap.put("bounty", title + "");
-                    customMap.put("dataString", "" + extra);
-                    customMap.put("time", "" + System.currentTimeMillis());
+                }
+//
 
-                    mSendCustomMessage = mConversation.createSendCustomMessage(customMap, jguserName);
-                    JMessageClient.sendMessage(mSendCustomMessage);
-//                    Message msg;
-//                    TextContent content = new TextContent(extra);
-//                    msg = mConversation.createSendMessage(content,jguserName);
-//                    JMessageClient.sendMessage(msg);
-//                    if (sysPage.equals("messageList")) {
-                    Intent i = new Intent(context, MyMessageActivity.class);
-                    i.putExtras(bundle);
-                    //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(i);
-//                    } else {
-//                        Intent i = new Intent(context, FootPrintActivity.class);
-//                        i.putExtras(bundle);
-//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        context.startActivity(i);
-//                    }
+            } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+                LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
+                if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
+                    JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+                    if (!TextUtils.isEmpty(messageJson.toString()) && !messageJson.toString().equals("{}")) {
+                        String jguserName = SCJsonUtils.parseString(messageJson.toString(), "jguserName");
+                        String extra = SCJsonUtils.parseString(messageJson.toString(), "extra");
+                        String sysPage = SCJsonUtils.parseString(messageJson.toString(), "sysPage");
+                        String title = SCJsonUtils.parseString(messageJson.toString(), "title");
+                        String msgContent = SCJsonUtils.parseString(messageJson.toString(), "msgContent");
+                        if (!TextUtils.isEmpty(sysPage) && sysPage.equals("messageList")) {
+                            Intent i = new Intent(context, MyMessageActivity.class);
+                            i.putExtras(bundle);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(i);
+                        } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("publishTaskList")) {
+                            Intent i = new Intent(context, TaskListActivity.class);
+                            i.putExtras(bundle);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(i);
+
+                    } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("receiveTaskList")) {
+                            Intent i = new Intent(context, TaskDetailActivity.class);
+                            i.putExtras(bundle);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(i);
+
+                        } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("couponsVendorList")) {
+                            Intent i = new Intent(context, CouponListActivity.class);
+                            i.putExtras(bundle);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(i);
+
+                        } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("couponsClientGet")) {
+                            Intent i = new Intent(context, CouponDetailsActivity.class);
+                            i.putExtras(bundle);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(i);
+                        }
+                    }
                 }
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
                 LogUtils.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
@@ -208,6 +244,7 @@ public class MyReceiver extends BroadcastReceiver {
         }
 
         Intent broadcastIntent = new Intent(context, CustomMessageReceiver.class);
+//        Intent broadcastIntent = new Intent(context, MyMessageActivity.class);
         broadcastIntent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.
                 getBroadcast(context, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
