@@ -1,6 +1,7 @@
 package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
@@ -45,8 +46,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+//import com.example.test_webview_demo.BrowserActivity;
+//import com.example.test_webview_demo.MainActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
+import com.nostra13.universalimageloader.utils.L;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.base.RoleManager;
@@ -67,6 +72,8 @@ import com.shanchain.shandata.adapter.HotChatRoomAdapter;
 import com.shanchain.shandata.adapter.ImagePickerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
+//import com.shanchain.shandata.rn.activity.X5WebViewActivity;
+import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
@@ -169,6 +176,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         super.onCreate(savedInstanceState);
         Intent intent = new Intent();
         intent.setAction(".receiver.MyLocationReceiver");
+        Activity activity = SCWebViewActivity.mActivity;
 //        sendBroadcast(intent);
         JMessageClient.registerEventReceiver(this);
         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
@@ -247,7 +255,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             last = SCJsonUtils.parseBoolean(data, "last");
                             hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
 //                            hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
-                            if (mQuickAdapter != null) {
+                            if (mQuickAdapter != null && hotChatRoomList != null) {
                                 mQuickAdapter.replaceData(hotChatRoomList);
                             }
                         }
@@ -371,7 +379,9 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                mQuickAdapter.replaceData(adapterChatRoomList);
+                if (mQuickAdapter != null && adapterChatRoomList != null) {
+                    mQuickAdapter.replaceData(adapterChatRoomList);
+                }
                 mSearchView.clearFocus();
                 pageNo = 0;
                 last = false;
@@ -413,8 +423,10 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                         searchRoomList = SCJsonUtils.parseArr(data, HotChatRoom.class);
 //                                        String content = SCJsonUtils.parseString(data, "content");
 //                                        searchRoomList = SCJsonUtils.parseArr(content, HotChatRoom.class);
-                                        mQuickAdapter.replaceData(searchRoomList);
-                                        mQuickAdapter.notifyDataSetChanged();
+                                        if (searchRoomList != null && mQuickAdapter != null) {
+                                            mQuickAdapter.replaceData(searchRoomList);
+                                            mQuickAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                     bgaRefreshLayout.setIsShowLoadingMoreView(false);
                                     closeLoadingDialog();
@@ -433,7 +445,9 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                 if (newText.length() < 1) {
                     pageNo = 0;
                     last = false;
-                    mQuickAdapter.replaceData(adapterChatRoomList);
+                    if (mQuickAdapter != null && adapterChatRoomList != null) {
+                        mQuickAdapter.replaceData(adapterChatRoomList);
+                    }
                 }
                 return false;
             }
@@ -863,6 +877,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         int id = item.getItemId();
         if (id == R.id.nav_my_wallet) {
             Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
+//            Intent intent = new Intent(mContext, X5WebViewActivity.class);
             JSONObject obj = new JSONObject();
             obj.put("url", HttpApi.SEAT_WALLET);
             obj.put("title", getResources().getString(R.string.nav_my_wallet));

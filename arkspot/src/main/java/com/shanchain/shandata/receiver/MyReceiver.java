@@ -1,5 +1,6 @@
 package com.shanchain.shandata.receiver;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,14 +13,18 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.push.ExampleUtil;
+import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
@@ -114,6 +119,8 @@ public class MyReceiver extends BroadcastReceiver {
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
+                Activity topActivity = null;
+                Intent mainIntent = new Intent(context, FootPrintActivity.class);
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
                     JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
                     if (!TextUtils.isEmpty(messageJson.toString()) && !messageJson.toString().equals("{}")) {
@@ -125,36 +132,64 @@ public class MyReceiver extends BroadcastReceiver {
                         if (!TextUtils.isEmpty(sysPage) && sysPage.equals("messageList")) {
                             Intent i = new Intent(context, MyMessageActivity.class);
                             i.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(i);
+                            Intent[] intents = new Intent[]{mainIntent, i};
+                            context.startActivities(intents);
                         } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("publishTaskList")) {
                             Intent i = new Intent(context, TaskListActivity.class);
                             i.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i);
 
-                    } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("receiveTaskList")) {
-                            Intent i = new Intent(context, TaskDetailActivity.class);
+                        } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("receiveTaskList")) {
+                            Intent i = new Intent(context, TaskListActivity.class);
+                            i.putExtra("receiveTaskList", "receiveTaskList");
                             i.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i);
 
                         } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("couponsVendorList")) {
-                            Intent i = new Intent(context, CouponListActivity.class);
+                            Intent i = new Intent(context, MyCouponListActivity.class);
+//                            i.putExtra("subCoupId", "");
+                            i.putExtra("couponsId", "");
                             i.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i);
 
                         } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("couponsClientGet")) {
                             Intent i = new Intent(context, CouponDetailsActivity.class);
-                            i.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(i);
+                            if (!TextUtils.isEmpty(extra)) {
+                                i.putExtra("subCoupId", extra);
+//                            i.putExtra("couponsId", "");
+                                i.putExtras(bundle);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                context.startActivity(i);
+                            }
+                        } else if (!TextUtils.isEmpty(sysPage) && sysPage.equals("webView")) {
+                            String url = SCJsonUtils.parseString(messageJson.toString(), "url");
+                            if (!TextUtils.isEmpty(url)) {
+                                Intent i = new Intent(context, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
+                                com.alibaba.fastjson.JSONObject obj = new com.alibaba.fastjson.JSONObject();
+                                obj.put("url", url);
+//                                obj.put("title", context.getResources().getString(R.string.nav_my_wallet));
+                                obj.put("title", "交易推送");
+                                String webParams = obj.toJSONString();
+                                i.putExtra("webParams", webParams);
+                                i.putExtra("url", url);
+                                i.putExtra("title", "交易推送");
+                                i.putExtras(bundle);
+                                Activity activity = SCWebViewActivity.mActivity;
+                                if (activity != null && !ActivityStackManager.getInstance().isTopActivity(activity)) {
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                }
+                                if (ActivityStackManager.getInstance().isTopActivity(activity)) {
+                                    ActivityStackManager.getInstance().finishActivity(SCWebViewActivity.class);
+                                }
+                                context.startActivity(i);
+                            }
                         }
                     }
                 }

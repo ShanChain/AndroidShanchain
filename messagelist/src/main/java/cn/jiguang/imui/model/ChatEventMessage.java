@@ -49,6 +49,7 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
     private String price;
     private String bountyString;
     private int topping;
+    private String hxUserName;
     private String name;
     private String headImg;
     private String intro;
@@ -105,6 +106,14 @@ public class ChatEventMessage extends MyMessage implements IMessage, MultiItemEn
 
     public void setCompleteTime(long completeTime) {
         this.completeTime = completeTime;
+    }
+
+    public String getHxUserName() {
+        return hxUserName;
+    }
+
+    public void setHxUserName(String hxUserName) {
+        this.hxUserName = hxUserName;
     }
 
     public String getName() {

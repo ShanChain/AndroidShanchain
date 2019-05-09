@@ -261,36 +261,36 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                         stringMap.put("token", "" + SCCacheUtils.getCacheToken());
                                         stringMap.put("deviceToken", "" + JPushInterface.getRegistrationID(mContext));
                                         if (isChecked) {
-                                            stringMap.put("bind", true);
+//                                            stringMap.put("bind", true);
+//                                            stringMap.put("bind", false);
                                             EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, customDialog);
                                             EventBus.getDefault().post(busObject);
                                         } else {
                                             stringMap.put("bind", false);
-                                        }
-                                        String userId = SCCacheUtils.getCacheUserId();
-                                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
-                                        modifyUser = JSONObject.toJSONString(stringMap);
-                                        SCHttpUtils.postWithUserId()
-                                                .url(HttpApi.MODIFY_CHARACTER)
-                                                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
-                                                .addParams("dataString", modifyUser)
-                                                .build()
-                                                .execute(new SCHttpStringCallBack() {
-                                                    @Override
-                                                    public void onError(Call call, Exception e, int id) {
-                                                        LogUtils.d("修改角色信息失败");
-                                                    }
-
-                                                    @Override
-                                                    public void onResponse(String response, int id) {
-                                                        String code = JSONObject.parseObject(response).getString("code");
-                                                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                                            LogUtils.d("修改角色信息");
-                                                            SCCacheUtils.setCache(SCCacheUtils.getCacheUserId(), Constants.CACHE_AUTH_CODE, "");
+                                            String userId = SCCacheUtils.getCacheUserId();
+                                            SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
+                                            modifyUser = JSONObject.toJSONString(stringMap);
+                                            SCHttpUtils.postWithUserId()
+                                                    .url(HttpApi.MODIFY_CHARACTER)
+                                                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                                                    .addParams("dataString", modifyUser)
+                                                    .build()
+                                                    .execute(new SCHttpStringCallBack() {
+                                                        @Override
+                                                        public void onError(Call call, Exception e, int id) {
+                                                            LogUtils.d("修改角色信息失败");
                                                         }
-                                                    }
-                                                });
-//                                    }
+
+                                                        @Override
+                                                        public void onResponse(String response, int id) {
+                                                            String code = JSONObject.parseObject(response).getString("code");
+                                                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                                                LogUtils.d("修改角色信息");
+                                                                SCCacheUtils.setCache(SCCacheUtils.getCacheUserId(), Constants.CACHE_AUTH_CODE, "");
+                                                            }
+                                                        }
+                                                    });
+                                        }
                                     }
 
                                 });

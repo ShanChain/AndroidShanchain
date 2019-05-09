@@ -1,2 +1,1 @@
 include ':common', ':thirdparty', ':PushSDK', ':arkspot', ':baidumap', ':chatinput', ':messagelist', ':KeyboardLibrary', ':reclib-chat', ':reclib-testeremoji'
-include 'RN_improv','react-native'

@@ -2,6 +2,8 @@ package com.shanchain.shandata.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -12,9 +14,11 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FriendInfoActivity;
 import com.shanchain.shandata.utils.DateUtils;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +26,9 @@ import java.util.Date;
 import java.util.List;
 
 import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.DefaultUser;
+import cn.jpush.im.android.api.JMessageClient;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 
 
@@ -84,9 +91,30 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
 
     private void setViewOnClick(BaseViewHolder holder, final ChatEventMessage itemData, int viewType) {
         position = holder.getLayoutPosition();
-        int characterId = itemData.getCharacterId();
+        final int characterId = itemData.getCharacterId();
+        final int userId = itemData.getUserId();
         String character = SCCacheUtils.getCacheCharacterId();
         final TextView btnEvenTask = holder.getViewId(R.id.btn_event_task);
+        CircleImageView avatar = holder.getViewId(R.id.iv_item_story_avatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DefaultUser userInfo = new DefaultUser(0, itemData.getName(), itemData.getHeadImg());
+                userInfo.setHxUserId(itemData.getHxUserName());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("userInfo", userInfo);
+                LogUtils.d("CacheUserId", SCCacheUtils.getCacheUserId() + "");
+                LogUtils.d("CacheCharacter", SCCacheUtils.getCacheCharacterId() + "");
+                if (String.valueOf(userId).equals(SCCacheUtils.getCacheUserId()) &&
+                        String.valueOf(characterId).equals(SCCacheUtils.getCacheCharacterId())) {
+                    return;
+                } else {
+                    Intent intent = new Intent(context, FriendInfoActivity.class);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            }
+        });
         btnEvenTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

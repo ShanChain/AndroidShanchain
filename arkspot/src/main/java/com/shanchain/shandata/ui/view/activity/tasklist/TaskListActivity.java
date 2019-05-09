@@ -74,8 +74,8 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
     protected void initViewsAndEvents() {
 
         Intent intent = getIntent();
-        roomID = intent.getStringExtra("roomId")!=null?
-                intent.getStringExtra("roomId"):SCCacheUtils.getCacheRoomId();
+        roomID = intent.getStringExtra("roomId") != null ?
+                intent.getStringExtra("roomId") : SCCacheUtils.getCacheRoomId();
 
         String uId = SCCacheUtils.getCache("0", CACHE_CUR_USER);
         String token = SCCacheUtils.getCache(uId, Constants.CACHE_TOKEN);
@@ -116,7 +116,11 @@ public class TaskListActivity extends BaseActivity implements ViewPager.OnPageCh
         vpTask.setOffscreenPageLimit(2);
         vpTask.setAdapter(adapter);
         tabTask.setupWithViewPager(vpTask);
-        vpTask.setCurrentItem(0);
+        if (getIntent().getStringExtra("receiveTaskList") != null) {
+            vpTask.setCurrentItem(1);
+        } else {
+            vpTask.setCurrentItem(0);
+        }
         vpTask.setOnPageChangeListener(this);
 
     }

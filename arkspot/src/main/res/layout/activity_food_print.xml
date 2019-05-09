@@ -18,7 +18,8 @@
         android:layout_height="35dp"
         android:layout_below="@+id/toolbar_nav"
         android:layout_margin="5dp"
-        android:background="@drawable/shape_edit_search_pressed"
+        android:iconifiedByDefault="false"
+        android:background="@drawable/shape_bg_even_msg"
         app:defaultQueryHint="请输入元社区名称"
         app:showDividers="none"></android.support.v7.widget.SearchView>
 

@@ -124,7 +124,7 @@ public class RecordVoiceButton extends Button {
     private void init() {
         mVolumeHandler = new ShowVolumeHandler(this);
         //如果需要跳动的麦克图 将五张相同的图片替换即可
-        res = new int[] {IdHelper.getDrawable(mContext, "jmui_mic"), IdHelper.getDrawable(mContext, "jmui_mic"),
+        res = new int[]{IdHelper.getDrawable(mContext, "jmui_mic"), IdHelper.getDrawable(mContext, "jmui_mic"),
                 IdHelper.getDrawable(mContext, "jmui_mic"), IdHelper.getDrawable(mContext, "jmui_mic"),
                 IdHelper.getDrawable(mContext, "jmui_mic"), IdHelper.getDrawable(mContext, "jmui_cancel_record")};
     }
@@ -135,6 +135,7 @@ public class RecordVoiceButton extends Button {
         mChatView = chatView;
 
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.setPressed(true);
@@ -314,12 +315,13 @@ public class RecordVoiceButton extends Button {
                         VoiceContent content = new VoiceContent(myRecAudioFile, duration);
                         Message msg = mConv.createSendMessage(content);
                         final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(),avatar));
                         message.setMediaFilePath(myRecAudioFile.getPath());
                         message.setDuration(duration);
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
 
-                        mMsgListAdapter.addToStart(message,true);
+                        mMsgListAdapter.addToStart(message, true);
                         if (mConv.getType() == ConversationType.single) {
                             UserInfo userInfo = (UserInfo) msg.getTargetInfo();
                             MessageSendingOptions options = new MessageSendingOptions();
@@ -525,7 +527,7 @@ public class RecordVoiceButton extends Button {
         mListener = listener;
     }
 
-    public void setCustomMenuClickListener(CustomMenuEventListener listener){
+    public void setCustomMenuClickListener(CustomMenuEventListener listener) {
         mMenuManager.setCustomMenuClickListener(listener);
     }
 
@@ -579,7 +581,7 @@ public class RecordVoiceButton extends Button {
 //                            .getString(controller.mContext, "jmui_rest_record_time_hint")), restTime));
                     controller.mMicShow.setVisibility(GONE);
                     controller.mTimeDown.setVisibility(VISIBLE);
-                    controller.mTimeDown.setText(restTime+"");
+                    controller.mTimeDown.setText(restTime + "");
 
                     // 倒计时结束，发送语音, 重置状态
                 } else if (restTime == 0) {

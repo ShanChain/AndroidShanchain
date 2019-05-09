@@ -2,6 +2,8 @@ package com.shanchain.shandata.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.TaskMode;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.presenter.impl.TaskPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FriendInfoActivity;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.ViewAnimUtils;
 
@@ -31,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.jiguang.imui.model.ChatEventMessage;
+import cn.jiguang.imui.model.DefaultUser;
 import okhttp3.Call;
 
 
@@ -67,7 +71,8 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
     public void setData(final BaseViewHolder holder, final ChatEventMessage item, int viewType, final int itemPosition) {
 //        this.position = holder.getLayoutPosition();
 //        this.position = itemPosition;
-        int characterId = item.getCharacterId();
+        final int userId = item.getUserId();
+        final int characterId = item.getCharacterId();
         String character = SCCacheUtils.getCacheCharacterId();
         if (holder.itemView.getTag() != null) {
             this.position = (Integer) holder.itemView.getTag();
@@ -108,7 +113,20 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
             }
         });
 //        }
-
+        if (holder.getViewId(R.id.iv_item_story_avatar) != null) {
+            holder.getViewId(R.id.iv_item_story_avatar).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DefaultUser userInfo = new DefaultUser(0, item.getName(), item.getHeadImg());
+                    userInfo.setHxUserId(item.getHxUserName());
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("userInfo", userInfo);
+                    Intent intent = new Intent(context, FriendInfoActivity.class);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
+        }
         if (viewType != 0 || viewType != 7 || viewType != 8) {
             if (holder.getViewId(R.id.tv_item_story_time) != null) {
                 holder.setTextView(R.id.tv_item_story_time, DateUtils.formatFriendly(new Date(item.getCreateTime())) + "");
@@ -184,6 +202,7 @@ public class MultiMyTaskAdapter extends CommonAdapter<ChatEventMessage> implemen
 
     private void setViewOnClick(final BaseViewHolder holder, final ChatEventMessage itemData, int viewType, int position) {
         int characterId = itemData.getCharacterId();
+        int userId = itemData.getUserId();
         String character = SCCacheUtils.getCacheCharacterId();
         final TextView taskReleaseTime = (TextView) holder.getViewId(R.id.task_release_time);
         TextView taskReceiveTime = (TextView) holder.getViewId(R.id.task_receive_time);

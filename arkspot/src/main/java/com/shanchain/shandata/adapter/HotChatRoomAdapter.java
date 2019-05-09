@@ -82,7 +82,7 @@ public class HotChatRoomAdapter extends BaseMultiItemQuickAdapter<HotChatRoom, B
             }
         });
         RequestOptions options = new RequestOptions();
-        options.placeholder(R.mipmap.empty_foot_print);
+//        options.placeholder(R.mipmap.empty_foot_print);
         Glide.with(mContext).load(item.getThumbnails()).apply(options).into(avatar);
         if (item.getItemType() == 0) {
             Glide.with(mContext).load(item.getBackground()).apply(options).into(roundImageView);

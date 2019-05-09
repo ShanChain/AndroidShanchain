@@ -151,6 +151,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
      * 描述：是否开通推送
      */
     protected static boolean isRealName = false;
+    private static DaoMaster daoMaster;
 
 
     @Override
@@ -342,28 +343,42 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         //初始化GreenDao数据库
         //升级时调用onUpgrade（）方法，删除所有表！。
         try {
-//            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
-//            SQLiteDatabase database = devOpenHelper.getWritableDatabase();
-//            DaoMaster daoMaster = new DaoMaster(database);
-//            daoSession = daoMaster.newSession();
+            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
+            SQLiteDatabase database = devOpenHelper.getWritableDatabase();
+            daoMaster = new DaoMaster(database);
+            daoSession = daoMaster.newSession();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static synchronized DaoSession getDaoSession() {
+    public static DaoSession getDaoSession() {
         if (null == daoSession) {
             //升级时调用onUpgrade（）方法，删除所有表！。
             try {
                 DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
                 SQLiteDatabase database = devOpenHelper.getWritableDatabase();
-                DaoMaster daoMaster = new DaoMaster(database);
+                daoMaster = new DaoMaster(database);
                 daoSession = daoMaster.newSession();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return daoSession;
+    }
+
+    public static DaoMaster getDaoMaster() {
+        if (null == daoMaster) {
+            //升级时调用onUpgrade（）方法，删除所有表！。
+            try {
+                DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
+                SQLiteDatabase database = devOpenHelper.getWritableDatabase();
+                daoMaster = new DaoMaster(database);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return daoMaster;
     }
 
     /*

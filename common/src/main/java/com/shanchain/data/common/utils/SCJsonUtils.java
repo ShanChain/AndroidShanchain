@@ -1,5 +1,6 @@
 package com.shanchain.data.common.utils;
 
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.net.NetErrCode;
 
@@ -15,7 +16,13 @@ public class SCJsonUtils {
     }
 
     public static String parseCode(String response) {
-        return JSONObject.parseObject(response).getString("code");
+        String code = "";
+        try {
+            code = JSONObject.parseObject(response).getString("code");
+        } catch (JSONException jsonException) {
+            code = "";
+        }
+        return code;
     }
 
     public static String parseData(String response) {

@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -143,7 +144,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 描述：Activity对象
      */
-    protected Activity mActivity = null;
+    protected static Activity mActivity = null;
 
     // 屏幕信息 -------------------------
 
@@ -195,7 +196,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }        //获取极光推送绑定的设备号
         registrationId = JPushInterface.getRegistrationID(getApplicationContext());
-//        JMessageClient.registerEventReceiver(getApplicationContext());
         //获取本机唯一标识
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -217,6 +217,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
         ActivityStackManager.getInstance().addActivity(this);
+        //判断Activity栈是否为空
+        if (!ActivityStackManager.getInstance().getActivityStack().empty()) {
+            JMessageClient.registerEventReceiver(mContext);
+        }
         //竖屏锁定
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -531,13 +535,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                final String code = SCJsonUtils.parseCode(result);
-                final String msg = SCJsonUtils.parseMsg(result);
+                String code = "";
+                String msg = "";
+                try {
+                    code = SCJsonUtils.parseCode(result);
+                    msg = SCJsonUtils.parseMsg(result);
+                } catch (JSONException jsonException) {
+                    code = "";
+                    msg = "密码错误";
+                }
+                final String finalMsg = msg;
+                final String finalCode = code;
                 if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(mContext, "" + msg);
+                            ToastUtils.showToast(mContext, "" + finalMsg);
                             passwordFree(file);
                             mNewCustomDialog.dismiss();
                         }
@@ -546,7 +559,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(mContext, code + ":" + msg);
+                            mNewCustomDialog.dismiss();
+                            ToastUtils.showToast(mContext, finalCode + ":" + finalMsg);
                         }
                     });
                 }
@@ -667,7 +681,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(mContext, code + ":" + msg);
+//                            ToastUtils.showToast(mContext, code + ":" + msg);
                         }
                     });
                 }
@@ -746,8 +760,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         // 调用父类方法
         super.onDestroy();
-        //解绑聊天会话事件
-//        JMessageClient.unRegisterEventReceiver(this);
         // 解除注解绑定
         ButterKnife.unbind(this);
         // 反注册EventBus
@@ -1119,7 +1131,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 cursor.close();
                 final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
                 mPasswordFile = new File(photoPath);
-                if (showPasswordDialog != null) {
+                if (showPasswordDialog != null && showPasswordDialog.getContext() != null) {
                     showPasswordDialog.dismiss();
                 }
                 mNewCustomDialog = new CustomDialog(mActivity, true, 1.0, com.shanchain.common.R.layout.dialog_bottom_wallet_password, new int[]{com.shanchain.common.R.id.iv_dialog_add_picture, com.shanchain.common.R.id.tv_dialog_sure});
@@ -1137,7 +1149,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 checkPassword(mPasswordFile);
                                 EventBus eventBus = new EventBus();
                                 eventBus.post(new EventBusObject<String>(EventConstant.EVENT_RELEASE));
-                                if (showPasswordDialog != null) {
+                                if (showPasswordDialog != null && showPasswordDialog.getContext() != null) {
                                     showPasswordDialog.dismiss();
                                 }
                             }

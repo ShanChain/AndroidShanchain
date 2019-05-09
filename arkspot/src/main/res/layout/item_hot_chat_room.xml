@@ -32,7 +32,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@mipmap/empty_foot_print"/>
+            android:background="@null"/>
 
         <LinearLayout
             android:id="@+id/item_chat_room_info"
