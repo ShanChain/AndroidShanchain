@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.utils.FileHelper;
 import com.shanchain.shandata.widgets.photochoose.HandleResponseCode;
@@ -313,6 +314,9 @@ public class RecordVoiceButton extends Button {
                     }
                     try {
                         VoiceContent content = new VoiceContent(myRecAudioFile, duration);
+                        content.setStringExtra("userName", JMessageClient.getMyInfo().getUserName() + "");
+                        content.setStringExtra("appkey", MyApplication.JM_APP_KEY);
+                        content.setStringExtra("conversationType", "single");
                         Message msg = mConv.createSendMessage(content);
                         final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";

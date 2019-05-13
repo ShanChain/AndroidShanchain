@@ -562,7 +562,7 @@
         <activity android:name="com.shanchain.data.common.ui.SetWalletPasswordActivity" />
         <activity android:name=".ui.view.activity.jmessageui.FriendInfoActivity" />
         <activity android:name=".ui.view.activity.jmessageui.PersonalActivity" />
-        <activity android:name=".rn.activity.X5WebViewActivity" />
+        <!--<activity android:name=".rn.activity.X5WebViewActivity" />-->
     </application>
 
 </manifest>

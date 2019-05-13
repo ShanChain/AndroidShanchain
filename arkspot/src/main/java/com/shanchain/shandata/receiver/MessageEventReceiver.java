@@ -1,9 +1,15 @@
 package com.shanchain.shandata.receiver;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
+
+import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.content.CustomContent;
 import cn.jpush.im.android.api.content.EventNotificationContent;
@@ -12,9 +18,12 @@ import cn.jpush.im.android.api.content.PromptContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.content.VoiceContent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.NotificationClickEvent;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
 
 class MessageEventReceiver extends Activity {
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +67,8 @@ class MessageEventReceiver extends Activity {
                 break;
             case eventNotification:
                 //处理事件提醒消息
-                EventNotificationContent eventNotificationContent = (EventNotificationContent)msg.getContent();
-                switch (eventNotificationContent.getEventNotificationType()){
+                EventNotificationContent eventNotificationContent = (EventNotificationContent) msg.getContent();
+                switch (eventNotificationContent.getEventNotificationType()) {
                     case group_member_added:
                         //群成员加群事件
                         break;
@@ -81,5 +90,21 @@ class MessageEventReceiver extends Activity {
                 promptContent.getPromptText();//提示文本，“当前版本不支持此类型消息，请更新sdk版本”
                 break;
         }
+    }
+
+    public void onEvent(NotificationClickEvent event) {
+        Message message = event.getMessage();
+        UserInfo userInfo = message.getFromUser();
+        String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
+        DefaultUser mDefaultUser = new DefaultUser(0, userInfo.getNickname(), avatar);
+        mDefaultUser.setHxUserId(userInfo.getUserName() + "");
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("userInfo", mDefaultUser);
+        Intent intent = new Intent(mContext,SingleChatActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+//        readyGo(SingleChatActivity.class, bundle);
+//        Intent notificationIntent = new Intent(mContext, MyMessageActivity.class);
+//        mContext.startActivity(notificationIntent);//自定义跳转到指定页面
     }
 }

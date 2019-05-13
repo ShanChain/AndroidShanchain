@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.MessageListAdapter;
@@ -48,10 +50,13 @@ import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.EventNotificationContent;
+import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 
@@ -83,6 +88,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     protected void initViewsAndEvents() {
+        JMessageClient.registerEventReceiver(this);
         if (getIntent().getExtras() != null && getIntent().getExtras().getString(JPushInterface.EXTRA_EXTRA) != null) {
             try {
                 Bundle bundle = getIntent().getExtras();
@@ -157,17 +163,21 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 
     }
 
-    public void onEvent(Message message) {
-        //有新消息到来
-        LogUtils.d("会话fragment接收到新消息");
-        if (messageListAdapter != null) {
-            LogUtils.d("适配器不为null");
-
-            messageListAdapter.notifyDataSetChanged();
-        } else {
-            LogUtils.d("适配器为null");
-        }
+    public void onEvent(MessageEvent event) {
+        final Message message = event.getMessage();
+        conversationList = JMessageClient.getConversationList();
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (messageListAdapter != null) {
+//                    messageListAdapter.replaceData(chatRoomlist);
+//                    rvMessageList.setAdapter(messageListAdapter);
+                    messageListAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
+
 
     private void initData() {
         String hxusername = SCCacheUtils.getCacheHxUserName();

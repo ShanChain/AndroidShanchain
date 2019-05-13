@@ -66,6 +66,7 @@ import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.utils.PermissionHelper;
 import com.umeng.analytics.MobclickAgent;
@@ -83,9 +84,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.event.LoginStateChangeEvent;
+import cn.jpush.im.android.api.event.NotificationClickEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -487,6 +490,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     @Override
                     public void invoke() {
                         readyGo(LoginActivity.class);
+                        ActivityStackManager.getInstance().finishAllActivity();
                     }
                 }, new com.shanchain.data.common.base.Callback() {//取消
                     @Override
@@ -508,7 +512,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 break;
         }
     }
-
 
     protected void checkPassword(final File file) {
         //创建requestBody

@@ -62,6 +62,20 @@ public class ActivityStackManager {
         }
     }
 
+    public boolean hasActivityInStack(Class<?> clazz) {
+        if (activities != null && activities.size() > 0) {
+            Activity activity;
+            Iterator<Activity> it = activities.iterator();
+            while (it.hasNext()) {
+                activity = it.next();
+                if (activity != null && activity.getClass().equals(clazz)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void setTopActivity(Activity activity) {
         if (activities != null && activities.size() > 0) {
             if (activities.search(activity) == -1) {

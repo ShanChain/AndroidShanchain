@@ -30,6 +30,7 @@ import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.db.ContactDao;
 import com.shanchain.shandata.db.DaoMaster;
 import com.shanchain.shandata.db.DaoSession;
+import com.shanchain.shandata.db.MyDbOpenHelper;
 import com.shanchain.shandata.ui.model.FriendEntry;
 import com.shanchain.shandata.ui.model.FriendRecommendEntry;
 import com.shanchain.shandata.ui.model.UserEntry;
@@ -122,6 +123,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     public static final String TARGET_ID = "targetId";
     public static final String ATUSER = "atuser";
     public static final String TARGET_APP_KEY = "targetAppKey";
+    public static final String JM_APP_KEY = "0a20b6277a625655791e3cd9";
     public static int maxImgCount;               //允许选择图片最大数
     public static final String GROUP_NAME = "groupName";
     private ApplicationLike tinkerApplicationLike;
@@ -343,10 +345,11 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         //初始化GreenDao数据库
         //升级时调用onUpgrade（）方法，删除所有表！。
         try {
-            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(mContext, "app_chat_message.db");
+            MyDbOpenHelper devOpenHelper = new MyDbOpenHelper(mContext, "app_chat_message.db");
             SQLiteDatabase database = devOpenHelper.getWritableDatabase();
             daoMaster = new DaoMaster(database);
             daoSession = daoMaster.newSession();
+//            devOpenHelper.onUpgrade(database, 4, 5);
         } catch (Exception e) {
             e.printStackTrace();
         }

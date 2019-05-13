@@ -266,7 +266,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                             IUser user = chatEventMessage.getFromUser();
                                             String displayName = chatEventMessage.getFromUser().getDisplayName();
                                             String avatar = user.getAvatarFilePath() != null ? user.getAvatarFilePath() : "";
-                                            defaultUser = new DefaultUser(user.getId(), displayName,avatar);
+                                            defaultUser = new DefaultUser(user.getId(), displayName, avatar);
                                             defaultUser.setHxUserId(HxUserName);
                                         }
                                     }
@@ -422,45 +422,60 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         taskDialog = new CustomDialog(TaskDetailActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
         View layout = View.inflate(TaskDetailActivity.this, R.layout.common_dialog_chat_room_task, null);
         taskDialog.setView(layout);
+        taskDialog.setAddTextChangedListener(new CustomDialog.OnAddTextChangedListener() {
+            @Override
+            public void TextChanged(CustomDialog dialog, EditText editText, String s, int start, int before, int count) {
+                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
+                if (s.length() > 0) {
+                    final Double bounty = Double.valueOf(s);
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvSeatRate.setText(("≈ " + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
+                        }
+                    });
+                }
+            }
+        });
         taskDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(final CustomDialog dialog, View view) {
+//                bountyEditText.setFocusable(true);
                 mDescribeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
                 mBountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
-//                bountyEditText.setFocusable(true);
-//                bountyEditText.setFocusableInTouchMode(true);
-                mBountyEditText.requestFocus();
+//                mBountyEditText.requestFocus();
+//                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
                 limitedTime = (EditText) dialog.getByIdView(R.id.dialog_select_task_time);
-                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
-                tvSeatRate.setText("= 0 SEAT");
-                //输入框监听
-                mBountyEditText.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (s.toString().length() > 0) {
-                            Double bounty = Double.valueOf(s.toString());
-                            tvSeatRate.setText(("= " + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        if (s.toString().length() > 0) {
-                            s.insert(0, "SEAT");
-                        }
-                    }
-                });
-
+//                tvSeatRate.setText("= 0 SEAT");
                 switch (view.getId()) {
                     case R.id.et_input_dialog_describe:
 //                        ToastUtils.showToast(TaskDetailActivity.this, getResources().getString(R.string.my_task_release_des_hint));
                         break;
                     case R.id.et_input_dialog_bounty:
+//                        mBountyEditText.addTextChangedListener(new TextWatcher() {
+//                            @Override
+//                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                                if (s.toString().length() > 0) {
+//                                    final Double bounty = Double.valueOf(s.toString());
+//                                    ThreadUtils.runOnMainThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            tvSeatRate.setText(("≈ " + decimalFormat.format(bounty / seatRmbRate)) + " SEAT");
+//                                        }
+//                                    });
+//
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void afterTextChanged(Editable s) {
+//                            }
+//                        });
 //                        ToastUtils.showToast(TaskDetailActivity.this, getResources().getString(R.string.my_task_release_reward_hint));
                         break;
                     case R.id.btn_dialog_input_sure:
@@ -472,6 +487,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                         break;
                     //选择时间
                     case R.id.dialog_select_task_time:
+                        if (scTimePickerView != null) {
+                            scTimePickerView.dismiss();
+                        }
                         initPickerView();
                         scTimePickerView.setOnTimeSelectListener(onTimeSelectListener);
                         scTimePickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {

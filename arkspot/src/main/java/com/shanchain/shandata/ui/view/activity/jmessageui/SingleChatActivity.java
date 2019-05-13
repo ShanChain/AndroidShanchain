@@ -119,6 +119,7 @@ import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.CustomContent;
 import cn.jpush.im.android.api.content.FileContent;
 import cn.jpush.im.android.api.content.ImageContent;
+import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.content.VideoContent;
 import cn.jpush.im.android.api.content.VoiceContent;
@@ -240,7 +241,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         xhsEmoticonsKeyBoard = findViewById(R.id.ek_bar);
         if (FORM_USER_ID.equals("123456")) {
             xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.GONE);
-        }else {
+        } else {
             xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
         }
         initEmojiData();//初始化表情栏
@@ -262,6 +263,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 Message msg;
                 TextContent content = new TextContent(mcgContent);
                 msg = mConv.createSendMessage(content);
+                //设置用户和消息体Extras参数
+                setMsgUserInfo(msg);
                 JMessageClient.sendMessage(msg);
                 //构造消息
                 MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
@@ -298,12 +301,16 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     return false;
                 }
                 TextContent textContent = new TextContent(input.toString());
-                Map extrasMap = new HashMap();
-                extrasMap.put("userName", JMessageClient.getMyInfo().getUserName() + "");
-                extrasMap.put("conversationType", "single");
+//                Map extrasMap = new HashMap();
+//                extrasMap.put("userName", JMessageClient.getMyInfo().getUserName() + "");
+//                extrasMap.put("conversationType", "single");
 //                extrasMap.put("appkey",conversationMessage.getFromUser().getDisplayName()+"");
-                textContent.setExtras(extrasMap);
+//                textContent.setExtras(extrasMap);
+//                textContent.setStringExtra("userName", JMessageClient.getMyInfo().getUserName() + "");
+//                textContent.setStringExtra("conversationType", "single");
                 final Message conversationMessage = mConv.createSendMessage(textContent);
+                //设置用户和消息体Extras参数
+                setMsgUserInfo(conversationMessage);
 //                final Message conversationMessage = mConv.createSendTextMessage(textContent);
                 conversationMessage.setOnSendCompleteCallback(new BasicCallback() {
                     @Override
@@ -369,6 +376,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(item.getFilePath());
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        //设置用户和消息体Extras参数
+                        setMsgUserInfo(msg);
                         JMessageClient.sendMessage(msg);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -475,7 +484,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 final Message msg;
                 final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                 try {
-                    msg = mConv.createSendVoiceMessage(voiceFile, duration);
+//                    msg = mConv.createSendVoiceMessage(voiceFile, duration);
+                    VoiceContent voiceContent = new VoiceContent(voiceFile, duration);
+                    msg = mConv.createSendMessage(voiceContent);
                     msg.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
@@ -490,6 +501,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     message.setDuration(duration);
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     mAdapter.addToStart(message, true);
+                    //设置用户和消息体Extras参数
+                    setMsgUserInfo(msg);
                     JMessageClient.sendMessage(msg);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -530,11 +543,14 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (mConv != null) {
                     try {
                         msg = mConv.createSendImageMessage(new File(photoPath));
+                        UserInfo userInfo = msg.getFromUser();
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(photoPath);
                         mPathList.add(photoPath);
                         mMsgIdList.add(message.getMsgId());
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                        //设置用户和消息体Extras参数
+                        setMsgUserInfo(msg);
                         JMessageClient.sendMessage(msg);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -708,6 +724,21 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         pageSetAdapter.add(xhsPageSetEntity);
         xhsEmoticonsKeyBoard.setAdapter(pageSetAdapter);
         xhsEmoticonsKeyBoard.getEtChat().addEmoticonFilter(new MyEmojiFilter());
+    }
+
+    private void setMsgUserInfo(Message msg) {
+        UserInfo msgUserInfo = msg.getFromUser();
+        MessageContent messageContent = msg.getContent();
+        if (msgUserInfo != null) {
+            msgUserInfo.setUserExtras("appkey", MyApplication.JM_APP_KEY);
+            msgUserInfo.setUserExtras("userName", JMessageClient.getMyInfo().getUserName() + "");
+            msgUserInfo.setUserExtras("conversationType", "single");
+        }
+        if (messageContent != null) {
+            messageContent.setStringExtra("userName", JMessageClient.getMyInfo().getUserName() + "");
+            messageContent.setStringExtra("appkey", MyApplication.JM_APP_KEY);
+            messageContent.setStringExtra("conversationType", "single");
+        }
     }
 
     private void initToolbar() {
@@ -1941,7 +1972,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                     if (mConv != null) {
                         try {
-                            msg = mConv.createSendImageMessage(new File(photoPath));
+//                            msg = mConv.createSendImageMessage(new File(photoPath));
+                            ImageContent imageContent = new ImageContent(new File(photoPath));
+                            msg = mConv.createSendMessage(imageContent);
+                            //设置用户和消息体Extras参数
+                            setMsgUserInfo(msg);
 //                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             message.setMediaFilePath(photoPath);
                             mPathList.add(photoPath);
@@ -1984,7 +2019,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         media.setDataSource(path);
                         Bitmap bitmap = media.getFrameAtTime();
                         VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
+//                        Message msg = mConv.createSendMessage(video);
                         Message msg = mConv.createSendMessage(video);
+
+                        ///设置用户和消息体Extras参数
+                        setMsgUserInfo(msg);
 //                            Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
                         msg.setOnSendCompleteCallback(new BasicCallback() {
                             @Override
@@ -2020,13 +2059,17 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                     if (mConv != null) {
                         try {
-                            msg = mConv.createSendImageMessage(new File(photoPath));
+//                            msg = mConv.createSendImageMessage(new File(photoPath));
+                            ImageContent imageContent = new ImageContent(new File(photoPath));
+                            msg = mConv.createSendMessage(imageContent);
 //                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             message.setMediaFilePath(photoPath);
                             mPathList.add(photoPath);
                             mMsgIdList.add(message.getMsgId());
                             String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
+                            //设置用户和消息体Extras参数
+                            setMsgUserInfo(msg);
                             JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();

@@ -95,8 +95,8 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         final int userId = itemData.getUserId();
         String character = SCCacheUtils.getCacheCharacterId();
         final TextView btnEvenTask = holder.getViewId(R.id.btn_event_task);
-        CircleImageView avatar = holder.getViewId(R.id.iv_item_story_avatar);
-        avatar.setOnClickListener(new View.OnClickListener() {
+        //头像点击事件
+        holder.getViewId(R.id.iv_item_story_avatar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DefaultUser userInfo = new DefaultUser(0, itemData.getName(), itemData.getHeadImg());

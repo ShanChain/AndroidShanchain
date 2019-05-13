@@ -28,6 +28,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
@@ -40,11 +41,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.event.NotificationClickEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -59,9 +63,12 @@ public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = "JIGUANG-Example";
     private Conversation mConversation;
     private Message mSendCustomMessage;
+    private Context mContext;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.mContext = context;
+        JMessageClient.registerEventReceiver(this);
         try {
             Bundle bundle = intent.getExtras();
             LogUtils.d(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
@@ -241,6 +248,30 @@ public class MyReceiver extends BroadcastReceiver {
         }
         return sb.toString();
     }
+
+    public void onEvent(NotificationClickEvent event) {
+        Message message = event.getMessage();
+        UserInfo userInfo = message.getFromUser();
+        String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
+        DefaultUser mDefaultUser = new DefaultUser(0, userInfo.getNickname(), avatar);
+        mDefaultUser.setHxUserId(userInfo.getUserName() + "");
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("userInfo", mDefaultUser);
+        Intent intent = new Intent(mContext, SingleChatActivity.class);
+        intent.putExtras(bundle);
+        if (ActivityStackManager.getInstance().hasActivityInStack(FootPrintActivity.class)) {
+            mContext.startActivity(intent);
+        } else {
+            Intent mainIntent = new Intent(mContext, FootPrintActivity.class);
+            mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            Intent myMessageIntent = new Intent(mContext, MyMessageActivity.class);
+            Intent[] intents = new Intent[]{mainIntent, intent};
+            mContext.startActivities(intents);
+        }
+//        Intent notificationIntent = new Intent(mContext, MyMessageActivity.class);
+//        mContext.startActivity(notificationIntent);//自定义跳转到指定页面
+    }
+
 
     private void createNotification(Context context, String jsonString, Bundle bundle) throws JSONException {
 

@@ -142,7 +142,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/dimens_20dp"
             android:focusable="true"
-            android:text="= 0 SEAT" />
+            android:text="≈ 0 SEAT" />
 
         <LinearLayout
             android:layout_width="match_parent"

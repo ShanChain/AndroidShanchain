@@ -157,7 +157,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private int pageNo = 0, searchPage = 0, size = 10, currentPage, totalPage = 1;
     private boolean last = false, isLoadMore = false;
     private ArcMenu.OnMenuItemClickListener onMenuItemClickListener;
-
+    public static boolean isForeground = false;
     public static final String MESSAGE_RECEIVED_ACTION = "com.shanchain.shandata.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_TITLE = "title";
     public static final String KEY_MESSAGE = "message";
@@ -200,6 +200,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     public void onResume() {
+        isForeground = true;
         super.onResume();
     }
 
@@ -212,6 +213,12 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 //            initData(pageNo, size);
 //            mQuickAdapter.notifyLoadMoreToLoading();
 //        }
+    }
+
+    @Override
+    public void onPause() {
+        isForeground = false;
+        super.onPause();
     }
 
     @Override
@@ -956,6 +963,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                     @Override
                     public void invoke() {
                         readyGo(LoginActivity.class);
+                        ActivityStackManager.getInstance().finishAllActivity();
                     }
                 }, new Callback() {//取消
                     @Override

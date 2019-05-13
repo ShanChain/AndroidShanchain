@@ -11,8 +11,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 10
-        versionName "2.4.2"
+        versionCode 11
+        versionName "2.4.3"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -130,7 +130,7 @@ android {
 }
 
 greendao {
-    schemaVersion 5
+    schemaVersion 6
     // daoPackage "com.example.model" // set package of generated classes
     daoPackage "com.shanchain.shandata.db"//greenDao生成代码所在的包名
     targetGenDir "src/main/java"//设置自动生成代码的目录
