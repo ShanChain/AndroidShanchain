@@ -3,7 +3,7 @@ package com.shanchain.shandata.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.facebook.stetho.common.LogUtil;
+import com.shanchain.data.common.utils.LogUtils;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -24,7 +24,7 @@ public class MyDbOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
-        LogUtil.d("DataBaseVersion", "之前的版本："+oldVersion + "---更新之后的版本---" + newVersion);
+        LogUtils.d("DataBaseVersion", "之前的版本："+oldVersion + "---更新之后的版本---" + newVersion);
         MigrationHelper.getInstance().migrate(db, ConversationEntryDao.class, MessageEntryDao.class);
 //        DaoMaster.dropAllTables(db,true);
 //        DaoMaster.createAllTables(db,false);

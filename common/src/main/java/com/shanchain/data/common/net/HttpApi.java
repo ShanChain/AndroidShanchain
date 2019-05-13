@@ -578,8 +578,8 @@ public interface HttpApi {
     //隐私政策
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
-//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+//    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
@@ -620,6 +620,8 @@ public interface HttpApi {
     String HOT_CHAT_ROOM = BASE_URL + "/web/api/sys/hotChatRoom";
     /* 搜索房间 */
     String SEARCH_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/search";
+//    /* 是否为聊天室 */
+    String ROOM_OWNER = BASE_URL + "/jm/room/ownerVerify";
     /* 添加社区 */
     String ADD_HOT_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/add";
     /* 福包列表 */

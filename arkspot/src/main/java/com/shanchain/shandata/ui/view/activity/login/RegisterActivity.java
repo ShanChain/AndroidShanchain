@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
@@ -142,10 +143,10 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .addParams("encryptPassword", passwordAccount)
                 .addParams("userType", UserType.USER_TYPE_MOBILE)
                 .build()
-                .execute(new SCHttpCallBack<ResponseRegisteUserBean>(ResponseRegisteUserBean.class) {
+                .execute(new SCHttpCallBack<ResponseRegisteUserBean>(ResponseRegisteUserBean.class, RegisterActivity.this) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.showToast(mContext, "注册失败！");
+//                        ToastUtils.showToast(mContext, "注册失败！"+ id);
                         LogUtils.d("注册失败 ; 错误码：" + id);
                         e.printStackTrace();
                     }
@@ -153,10 +154,15 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                     @Override
                     public void onResponse(ResponseRegisteUserBean response, int id) {
                         if (response == null) {
-                            ToastUtils.showToast(mContext, "注册失败！");
+//                            ToastUtils.showToast(mContext, "注册失败！" + id);
                             LogUtils.d("注册失败 ; 错误码：" + id);
                         } else {
-                            ToastUtils.showToast(mContext, "注册成功");
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(mContext, "注册成功");
+                                }
+                            });
                             LogUtils.d("userID = " + response.getUserInfo().getUserId());
 //                            JMessageClient.register(encryptAccount, passwordAccount, new BasicCallback() {
 //                                @Override
