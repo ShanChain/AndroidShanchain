@@ -324,29 +324,9 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             mQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                    //更新首页热门元社区列表
-                                    SCHttpUtils.post()
-                                            .url(HttpApi.CHAT_ROOM_LIST_UPDATE)
-                                            .addParams("roomId", hotChatRoomList.get(position).getRoomId() + "")
-                                            .build()
-                                            .execute(new SCHttpStringCallBack() {
-                                                @Override
-                                                public void onError(Call call, Exception e, int id) {
-                                                    LogUtils.d(TAG, "网络异常");
-                                                }
-
-                                                @Override
-                                                public void onResponse(String response, int id) {
-                                                    LogUtils.d(TAG, "刷新首页列表数据成功");
-                                                }
-                                            });
-                                    Intent intent = new Intent(FootPrintActivity.this, MessageListActivity.class);
-                                    intent.putExtra("roomId", hotChatRoomList.get(position).getRoomId());
-                                    intent.putExtra("roomName", hotChatRoomList.get(position).getRoomName());
-                                    intent.putExtra("hotChatRoom", hotChatRoomList.get(position));
-                                    intent.putExtra("isHotChatRoom", true);
-//                                intent.putExtra("isInCharRoom", isIn);
-                                    startActivity(intent);
+                                    //获取当前item的对象
+                                    HotChatRoom hotChatRoom = (HotChatRoom) adapter.getItem(position);
+                                    isInBlacklist(hotChatRoom.getRoomId(), hotChatRoom);
                                 }
                             });
                         }
@@ -432,7 +412,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 //                                        searchRoomList = SCJsonUtils.parseArr(content, HotChatRoom.class);
                                         if (searchRoomList != null && mQuickAdapter != null) {
                                             mQuickAdapter.replaceData(searchRoomList);
-                                            mQuickAdapter.notifyDataSetChanged();
                                         }
                                     }
                                     bgaRefreshLayout.setIsShowLoadingMoreView(false);
@@ -441,8 +420,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             });
 //                    }
 //                }
-//                mQuickAdapter.replaceData(searchRoomList);
-//                mQuickAdapter.notifyDataSetChanged();
                 }
                 return false;
             }
@@ -648,6 +625,48 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 //
 //            }
 //        };
+    }
+
+    private void isInBlacklist(String roomID, final HotChatRoom item) {
+        //判断是否在群黑名单里
+        final boolean[] isBlackMember = new boolean[1];
+        SCHttpUtils.get()
+                .url(HttpApi.IS_BLACK_MEMBER)
+                .addParams("roomId", roomID)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                            String data = SCJsonUtils.parseData(response);
+                            boolean isBlackMember = Boolean.valueOf(data);
+                            if (!isBlackMember) {
+                                Intent intent = new Intent(mContext, MessageListActivity.class);
+                                intent.putExtra("roomId", item.getRoomId());
+                                intent.putExtra("roomName", item.getRoomName());
+                                intent.putExtra("hotChatRoom", item);
+                                intent.putExtra("isHotChatRoom", true);
+//                                intent.putExtra("isInCharRoom", isIn);
+                                mContext.startActivity(intent);
+                            } else {
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showToast(mContext, "您已被该聊天室管理员删除");
+                                    }
+                                });
+                            }
+
+
+                        }
+                    }
+                });
     }
 
     /**

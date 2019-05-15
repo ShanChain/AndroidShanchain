@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorTransparent"
+    android:orientation="vertical">
+
+    <!--<View-->
+    <!--style="@style/style_text_line_match"-->
+    <!--android:layout_marginLeft="@dimen/dimens_10dp"-->
+    <!--android:layout_marginRight="@dimen/dimens_10dp"/>-->
+
+    <TextView
+        android:id="@+id/tv_dialog_msg_focus"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:text="删除聊天室成员"
+        android:textColor="@color/colorRed"
+        android:textSize="14sp" />
+
+
+    <TextView
+        android:id="@+id/tv_dialog_msg_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:background="@drawable/shape_bg_dialog_item"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/colorViolet"
+        android:textSize="14sp" />
+
+</LinearLayout>

@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,11 +22,16 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.widgets.SCBottomDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.Members;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.shandata.widgets.dialog.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +58,27 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
     RecyclerView rvMessageList;
     @Bind(R.id.srl_message_list)
     BGARefreshLayout srlMessageList;
+    @Bind(R.id.tv)
+    TextView tv;
+    @Bind(R.id.tv_select_num)
+    TextView tvSelectNum;
+    @Bind(R.id.btn_delete)
+    Button btnDelete;
+    @Bind(R.id.select_all)
+    TextView selectAll;
+    @Bind(R.id.ll_mycollection_bottom_dialog)
+    LinearLayout llMycollectionBottomDialog;
+
 
     private String roomID;
+    private boolean isSelect = false, editStatus;
     private BaseQuickAdapter adapter;
-    private int page = 0, size = 10, count = 1;
+    private int page = 0, size = 10, count = 1, selectCount;
     private List chatRoomlist = new ArrayList();
+    private List delMemberList = new ArrayList();
     private String photoUrlBase = "http://shanchain-picture.oss-cn-beijing.aliyuncs.com/";
+    private boolean mIsOwner;
+    private CustomDialog mDeleteMemberDialog;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -81,6 +104,7 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
     }
 
     private void initData() {
+        //获取群成员
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.CHAT_ROOM_MEMBER)
                 .addParams("roomId", roomID)
@@ -111,6 +135,14 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
                                 protected void convert(final BaseViewHolder helper, final Members item) {
                                     helper.setIsRecyclable(false);
 //                                    BaseViewHolder viewHolder;
+                                    final TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
+                                    //显示勾选按钮
+                                    if (editStatus == true) {
+                                        helper.getView(R.id.check_box).setVisibility(View.VISIBLE);
+                                        focus.setOnClickListener(null);
+                                    } else {
+                                        helper.getView(R.id.check_box).setVisibility(View.GONE);
+                                    }
                                     JMessageClient.getUserInfo(item.getUsername(), new GetUserInfoCallback() {
                                         @Override
                                         public void gotResult(int i, String s, final UserInfo userInfo) {
@@ -131,7 +163,6 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
 
                                                 }
                                             });
-                                            TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
                                             focus.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -146,11 +177,86 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
                                             });
                                         }
                                     });
-
                                     helper.setText(R.id.tv_item_contact_child_focus, "对话");
                                 }
                             };
                             rvMessageList.setAdapter(adapter);
+                            adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                                    ToastUtils.showToast(MemberActivity.this, "点击Item:" + position);
+                                    final ImageView checkBox = view.findViewById(R.id.check_box);
+                                    final Members item = (Members) adapter.getItem(position);
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            checkBox.setImageResource(R.mipmap.ic_checked);
+                                            if (item.isSelect() == false) {
+                                                checkBox.setImageResource(R.mipmap.ic_checked);
+                                                selectCount++;
+                                                item.setSelect(true);
+                                                delMemberList.add(item);
+                                            } else {
+                                                checkBox.setImageResource(R.mipmap.ic_uncheck);
+                                                selectCount--;
+                                                item.setSelect(false);
+                                                if (delMemberList.size() > 0) {
+                                                    delMemberList.remove(item);
+                                                }
+                                            }
+//                                            ToastUtils.showToast(MemberActivity.this, "选择item数:" + selectCount);
+                                            tvSelectNum.setText("" + selectCount);
+                                            if (selectCount > 0) {
+                                                btnDelete.setTextColor(getResources().getColor(R.color.colorViolet));
+                                                //删除群成员操作
+                                                btnDelete.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+//                                                        ToastUtils.showToast(MemberActivity.this, "删除群成员" + selectCount + "个");
+                                                        //调用删除接口
+                                                        deleteMember(delMemberList);
+                                                        tvSelectNum.setText("" + 0);
+                                                    }
+                                                });
+                                            } else {
+                                                btnDelete.setTextColor(getResources().getColor(R.color.colorHint));
+                                                btnDelete.setOnClickListener(null);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+
+                });
+        //判断是否为群主
+        SCHttpUtils.get()
+                .url(HttpApi.ROOM_OWNER)
+                .addParams("roomId", roomID)
+                .build()
+                .execute(new SCHttpStringCallBack(MemberActivity.this) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                            String data = SCJsonUtils.parseData(response);
+                            mIsOwner = Boolean.parseBoolean(data);
+                            if (mIsOwner == true) {
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tbMain.setRightText("管理");
+                                        tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
+                                    }
+                                });
+
+                            }
                         }
                     }
                 });
@@ -167,14 +273,101 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
         tbMain.setTitleText("群成员");
+        if (mIsOwner == true) {
+            tbMain.setRightText("管理");
+            tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
+        }
         tbMain.setBackgroundColor(getResources().getColor(R.color.white));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
+        List<String> items = new ArrayList<>();
+        items.add("删除聊天室成员");
+        items.add("取消");
+        final SCBottomDialog scBottomDialog = new SCBottomDialog(MemberActivity.this);
+        scBottomDialog.setItems(items);
+        scBottomDialog.setCallback(new SCBottomDialog.BottomCallBack() {
+            @Override
+            public void btnClick(String btnValue) {
+                if (adapter == null) {
+                    return;
+                }
+                if (btnValue.equals("删除聊天室成员")) {
+                    editStatus = true;
+                    adapter.notifyDataSetChanged();
+                    llMycollectionBottomDialog.setVisibility(View.VISIBLE);
+                    tbMain.setRightText("取消");
+                    scBottomDialog.dismiss();
+                } else if (btnValue.equals("取消")) {
+                    editStatus = false;
+                    adapter.notifyDataSetChanged();
+                    llMycollectionBottomDialog.setVisibility(View.GONE);
+                    tbMain.setRightText("管理");
+                    scBottomDialog.dismiss();
+                }
+            }
+        });
         tbMain.setOnLeftClickListener(new ArthurToolBar.OnLeftClickListener() {
             @Override
             public void onLeftClick(View v) {
                 finish();
             }
         });
+        tbMain.setOnRightClickListener(new ArthurToolBar.OnRightClickListener() {
+            @Override
+            public void onRightClick(final View v) {
+                //当前不是编辑模式，显示弹窗编辑
+                if (editStatus == false) {
+                    scBottomDialog.show();
+                } else {
+                    editStatus = false;
+                    adapter.notifyDataSetChanged();
+                    llMycollectionBottomDialog.setVisibility(View.GONE);
+                    tbMain.setRightText("管理");
+                }
+            }
+        });
+    }
+
+    private void deleteMember(final List<Members> delMemberList) {
+        List<String> userNames = new ArrayList();
+        String myUserName = JMessageClient.getMyInfo().getUserName();
+        for (int i = 0; i < delMemberList.size(); i++) {
+            userNames.add(delMemberList.get(i).getUsername());
+            if (userNames.contains("11111")) {
+                ToastUtils.showToast(MemberActivity.this, "不能删除系统成员");
+                return;
+            } else if (userNames.contains(myUserName)) {
+                ToastUtils.showToast(MemberActivity.this, "不能删除自己");
+                return;
+            }
+        }
+        String jArray = JSONArray.toJSONString(userNames);
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_ROOM_MEMBERS)
+                .addParams("roomId", roomID + "")
+                .addParams("jArray", jArray + "")
+                .build()
+                .execute(new SCHttpStringCallBack(MemberActivity.this) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        String msg = SCJsonUtils.parseMsg(response);
+                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                            ToastUtils.showToast(MemberActivity.this, "删除成功");
+                            if (chatRoomlist != null && delMemberList != null) {
+                                chatRoomlist.removeAll(delMemberList);
+                                adapter.notifyDataSetChanged();
+                                selectCount = 0;
+
+                                delMemberList.clear();
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -186,7 +379,10 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
     //刷新
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        initData();
+        if (chatRoomlist != null) {
+            chatRoomlist.clear();
+            initData();
+        }
         refreshLayout.endRefreshing();
     }
 

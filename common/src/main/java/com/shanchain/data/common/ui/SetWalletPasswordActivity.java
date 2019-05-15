@@ -261,7 +261,6 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                         File fPath = new File(dirPath);
                         if (!fPath.exists()) {
                             fPath.mkdir();
-
                         }
                         passwordImage = new File(filePath);
                         fos = new FileOutputStream(passwordImage);

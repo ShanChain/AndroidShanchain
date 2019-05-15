@@ -20,6 +20,8 @@
             android:layout_marginRight="@dimen/dimens_10dp"
             android:background="@drawable/shape_bg_dialog_top"
             android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
             android:text="3上"
             android:textColor="@color/colorDialogBtn"
             android:textSize="20sp"/>
@@ -37,6 +39,8 @@
             android:layout_marginRight="@dimen/dimens_10dp"
             android:background="@color/colorWhite"
             android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
             android:text="3中"
             android:textColor="@color/colorDialogBtn"
             android:textSize="20sp"/>
@@ -54,6 +58,8 @@
             android:layout_marginRight="@dimen/dimens_10dp"
             android:background="@drawable/shape_bg_dialog_bottom"
             android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
             android:text="3下"
             android:textColor="@color/colorDialogBtn"
             android:textSize="20sp"/>
@@ -71,6 +77,8 @@
         android:layout_marginRight="@dimen/dimens_10dp"
         android:background="@drawable/shape_bg_dialog_item"
         android:gravity="center"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
         android:text="扫码"
         android:textColor="@color/colorDialogBtn"
         android:textSize="20sp"/>

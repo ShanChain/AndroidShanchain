@@ -579,7 +579,7 @@ public interface HttpApi {
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
     String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-//    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+    //    String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
@@ -620,8 +620,14 @@ public interface HttpApi {
     String HOT_CHAT_ROOM = BASE_URL + "/web/api/sys/hotChatRoom";
     /* 搜索房间 */
     String SEARCH_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/search";
-//    /* 是否为聊天室 */
+    /* 是否为聊天室创建人员 */
     String ROOM_OWNER = BASE_URL + "/jm/room/ownerVerify";
+    /* 删除聊天室成员 */
+    String DELETE_ROOM_MEMBERS = BASE_URL + "/jm/room/rmMembers";
+    /* 聊天室黑名单 */
+    String ROOM_BLACK_LIST = BASE_URL + "/jm/room/blackMember/list";
+    /* 判断是否聊天室黑名单成员 */
+    String IS_BLACK_MEMBER = BASE_URL + "/jm/room/blackMember/authenticate";
     /* 添加社区 */
     String ADD_HOT_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/add";
     /* 福包列表 */

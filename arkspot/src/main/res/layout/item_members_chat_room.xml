@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="@color/colorWhite">
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:focusableInTouchMode="false">
+
+    <ImageView
+        android:id="@+id/check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:src="@mipmap/ic_uncheck"
+        android:visibility="gone" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_marginTop="@dimen/dimens_10dp"
-        android:layout_marginBottom="@dimen/dimens_10dp"
         android:id="@+id/iv_item_contact_child_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dimens_15dp"
-        android:scaleType="centerCrop"/>
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:layout_toRightOf="@+id/check_box"
+        android:background="@drawable/aurora_headicon_default"
+        android:scaleType="centerCrop"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_item_contact_child_name"
@@ -21,26 +35,25 @@
         android:layout_marginLeft="@dimen/dimens_15dp"
         android:layout_marginTop="@dimen/dimens_10dp"
         android:layout_toRightOf="@id/iv_item_contact_child_avatar"
+        android:ellipsize="end"
         android:lines="1"
         android:maxLength="10"
-        android:ellipsize="end"
         android:text=""
         android:textColor="@color/colorTextDefault"
-        android:textSize="14sp"/>
-
+        android:textSize="14sp" />
 
 
     <TextView
-        android:drawablePadding="5dp"
-        android:drawableTop="@mipmap/abs_contactperson_btn_attention_default"
         android:id="@+id/tv_item_contact_child_focus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/dimens_15dp"
+        android:drawableTop="@mipmap/abs_contactperson_btn_attention_default"
+        android:drawablePadding="5dp"
         android:text="对话"
         android:textColor="@color/colorActive"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
 
 </RelativeLayout>

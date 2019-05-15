@@ -12,10 +12,11 @@ public class Members {
      */
 
     private String username;
-    private int flag;
+    private int flag = 0;
     private String room_ctime;
     private String mtime;
     private String ctime;
+    private boolean isSelect;
 
     public String getUsername() {
         return username;
@@ -55,5 +56,13 @@ public class Members {
 
     public void setCtime(String ctime) {
         this.ctime = ctime;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 }
