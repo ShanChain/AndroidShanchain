@@ -1064,6 +1064,27 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             mMsgIdList.add(message.getMsgId());
                             String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
+                            mAdapter.addToStart(message, true);
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        List<Message> lastMessage = new ArrayList<Message>();
+                                        lastMessage.add(msg);
+                                        localSaveMessage(lastMessage);
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    } else {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    }
+                                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(message);
+
+                                        }
+                                    });
+                                }
+                            });
                             JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -1087,7 +1108,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (data != null) {
                     String path = data.getStringExtra("video");
                     long videoDuration = data.getLongExtra("duration", 0);
-                    MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                     message.setDuration(videoDuration);
                     File videoFile = new File(path);
                     try {
@@ -1095,23 +1116,36 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         media.setDataSource(path);
                         Bitmap bitmap = media.getFrameAtTime();
                         VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
-                        Message msg = chatRoomConversation.createSendMessage(video);
+                        final Message msg = chatRoomConversation.createSendMessage(video);
 //                            Message msg = chatRoomConversation.createSendFileMessage(videoFile, item.getFileName());
-                        msg.setOnSendCompleteCallback(new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                if (i == 0) {
-
-                                }
-                            }
-                        });
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setDuration(videoDuration);
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
-                        JMessageClient.sendMessage(msg);
                         mAdapter.addToStart(message, true);
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
+                                    List<Message> lastMessage = new ArrayList<Message>();
+                                    lastMessage.add(msg);
+                                    localSaveMessage(lastMessage);
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                } else {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                }
+                                MessageListActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mAdapter.updateMessage(message);
+
+                                    }
+                                });
+                            }
+                        });
+                        JMessageClient.sendMessage(msg);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1137,23 +1171,29 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             mMsgIdList.add(message.getMsgId());
                             String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
-                            JMessageClient.sendMessage(msg);
-                            message.setmMsgStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                            MessageListActivity.this.runOnUiThread(new Runnable() {
+                            mAdapter.addToStart(message, true);
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
                                 @Override
-                                public void run() {
-                                    mAdapter.addToStart(message, true);
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        List<Message> lastMessage = new ArrayList<Message>();
+                                        lastMessage.add(msg);
+                                        localSaveMessage(lastMessage);
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    } else {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    }
+                                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(message);
+                                        }
+                                    });
                                 }
                             });
+                            JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
-                            MessageListActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    message.setmMsgStatus(IMessage.MessageStatus.SEND_FAILED);
-                                    mAdapter.addToStart(message, true);
-                                }
-                            });
                         }
                     }
                 }
@@ -1469,22 +1509,27 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 customMap.put("time", timeStamp + "");
 
                                 Message sendCustomMessage = chatRoomConversation.createSendCustomMessage(customMap);
+                                final MyMessage myMessage = new MyMessage();
+                                mAdapter.addToStart(myMessage, true);
                                 sendCustomMessage.setOnSendCompleteCallback(new BasicCallback() {
                                     @Override
                                     public void gotResult(int i, String s) {
                                         String s1 = s;
-                                        MyMessage myMessage = new MyMessage();
                                         if (0 == i) {
                                             Toast.makeText(MessageListActivity.this, "发送任务消息成功", Toast.LENGTH_SHORT);
                                             LogUtils.d("发送任务消息", "code: " + i + " 回调信息：" + s);
                                             chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                             myMessage.setChatEventMessage(chatEventMessage1);
-                                            mAdapter.addToStart(myMessage, true);
                                         } else {
                                             chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
                                             myMessage.setChatEventMessage(chatEventMessage1);
-                                            mAdapter.addToStart(myMessage, true);
                                         }
+                                        MessageListActivity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mAdapter.updateMessage(myMessage);
+                                            }
+                                        });
                                     }
                                 });
                                 JMessageClient.sendMessage(sendCustomMessage);
@@ -2480,6 +2525,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             long currentId = JMessageClient.getMyInfo().getUserID();
                             if (currentId == id) {
                                 textMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                                textMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
 //                    String s1 = msg.getFromUser().getAvatar();
                             textMessage.setUserInfo(defaultUser);
@@ -2522,6 +2568,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         long currentimageId = JMessageClient.getMyInfo().getUserID();
                         if (currentimageId == imageId) {
                             imgMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                            imgMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                         }
                         UserInfo userInfo = msg.getFromUser();
 //                    String s11 = userInfo.getAvatarFile().getAbsolutePath();
@@ -2542,6 +2589,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             mPathList.add(imageContent.getLocalPath());
                             mMsgIdList.add(imgMessage.getMsgId() + "");
                             imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
+                            mAdapter.updateMessage(imgMessage);
                         }
                         if (i > 0) {
                             long messageTime = msg.getCreateTime();
@@ -2575,6 +2623,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         long currentVoiceId = JMessageClient.getMyInfo().getUserID();
                         if (currentVoiceId == voiceId) {
                             voiceMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                            voiceMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                         }
                         String avatarMedialD = msg.getFromUser().getAvatar();
 //
@@ -2628,6 +2677,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         long currentVideoId = JMessageClient.getMyInfo().getUserID();
                         if (currentVideoId == videoId) {
                             videoMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                            videoMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                         }
                         videoMessage.setUserInfo(defaultUser);
 //                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
@@ -2690,6 +2740,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             long currentFileId1 = JMessageClient.getMyInfo().getUserID();
                             if (currentFileId1 == fileId1) {
                                 fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                                fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
                             fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
                         } else {
@@ -2699,6 +2750,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     long currentFileId = JMessageClient.getMyInfo().getUserID();
                                     if (currentFileId == fileId) {
                                         fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                        fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                     }
                                     if (fileContent.getLocalPath() != null) {
                                         mPathList.add(fileContent.getLocalPath());
@@ -2721,6 +2773,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     long currentFileId1 = JMessageClient.getMyInfo().getUserID();
                                     if (currentFileId1 == fileId1) {
                                         fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                                        fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                     }
 //                                final VideoContent video = (VideoContent) msg.getContent();
 //                                LogUtils.d("VideoContent",fileContent.toJson().toString()+fileContent.needAutoDownloadWhenRecv());
@@ -2746,6 +2799,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     long currentFileId2 = JMessageClient.getMyInfo().getUserID();
                                     if (currentFileId2 == fileId2) {
                                         fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                        fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                     }
                                     if (fileContent.getLocalPath() != null) {
                                         ImageContent imageContent1 = (ImageContent) msg.getContent();
@@ -3104,11 +3158,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (mcgContent.equals("")) {
                     return;
                 }
-                Message msg = null;
-                MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
+                final MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
                 TextContent content = new TextContent(mcgContent);
                 if (chatRoomConversation != null) {
-                    msg = chatRoomConversation.createSendMessage(content);
+                    final Message msg = chatRoomConversation.createSendMessage(content);
                     //构造消息
                     if (msg != null && msg.getFromUser() != null) {
                         if (msg.getFromUser().getAvatarFile() != null) {
@@ -3128,21 +3181,34 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                      message.setTimeString(timeString);
                         }
 //                      message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                        JMessageClient.sendMessage(msg);
                         msg.getServerMessageId();
+                        mAdapter.addToStart(message, true);
                         msg.setOnSendCompleteCallback(new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
-                                List<Message> allMessages = chatRoomConversation.getAllMessage();
-                                localSaveMessage(allMessages);
+                                if (i == 0) {
+//                                    List<Message> allMessages = chatRoomConversation.getAllMessage();
+//                                    localSaveMessage(allMessages);
+                                    List<Message> lastMessage = new ArrayList<Message>();
+                                    lastMessage.add(msg);
+                                    localSaveMessage(lastMessage);
 //                                long msgId = msg.getServerMessageId();
 //                                TextContent textContent = (TextContent) msg.getContent();
 //                                LogUtils.d("发送消息的ID:", msgId + "" + textContent.getText());
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                } else {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                }
+                                MessageListActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mAdapter.updateMessage(message);
+                                        xhsEmoticonsKeyBoard.getEtChat().setText("");
+                                    }
+                                });
                             }
                         });
-                        mAdapter.addToStart(message, true);
-                        xhsEmoticonsKeyBoard.getEtChat().setText("");
+                        JMessageClient.sendMessage(msg);
                     } else {
                         message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
                         mAdapter.addToStart(message, true);
@@ -3175,11 +3241,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 inputString = input.toString();
                 if (inputString.length() > 0 && chatRoomConversation != null) {
                     final Message msg = chatRoomConversation.createSendTextMessage(inputString + "");//实际聊天室可以支持所有类型的消息发送，demo为了简便，仅仅实现了文本类型的消息发送
+                    final MyMessage message = new MyMessage(inputString, IMessage.MessageType.SEND_TEXT.ordinal());
+                    mAdapter.addToStart(message, true);
                     msg.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int responseCode, String responseMessage) {
-
-                            MyMessage message = new MyMessage(inputString, IMessage.MessageType.SEND_TEXT.ordinal());
                             if (0 == responseCode) {
                                 String s = responseMessage;
 //                                Toast.makeText(MessageListActivity.this, "发送消息成功", Toast.LENGTH_SHORT);
@@ -3202,26 +3268,24 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
 //                                messageList.add(message);
-                                mAdapter.addToStart(message, true);
                             } else if (847001 == responseCode) {
                                 message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
                                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                 message.setText(inputString);
                                 message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                mAdapter.addToStart(message, true);
                             } else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MessageListActivity.this, "发送消息失败", Toast.LENGTH_SHORT);
-                                    }
-                                });
                                 message.setUserInfo(new DefaultUser(0, msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
                                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                 message.setText(inputString);
                                 message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                mAdapter.addToStart(message, true);
                             }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    Toast.makeText(MessageListActivity.this, "发送消息失败", Toast.LENGTH_SHORT);
+                                    mAdapter.updateMessage(message);
+                                }
+                            });
                         }
                     });
 
@@ -3259,37 +3323,54 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             VideoContent video = new VideoContent(bitmap, "mp4", videoFile, item.getFileName(), (int) duration);
                             Message msg = chatRoomConversation.createSendMessage(video);
 //                            Message msg = chatRoomConversation.createSendFileMessage(videoFile, item.getFileName());
-                            msg.setOnSendCompleteCallback(new BasicCallback() {
-                                @Override
-                                public void gotResult(int i, String s) {
-                                    if (i == 0) {
-
-                                    }
-                                }
-                            });
                             message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             message.setMediaFilePath(item.getFilePath());
                             message.setDuration(((VideoItem) item).getDuration());
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                            final MyMessage finalMessage = message;
+                            mAdapter.addToStart(message, true);
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        finalMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    } else {
+                                        finalMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    }
+                                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(finalMessage);
+
+                                        }
+                                    });
+                                }
+                            });
                             JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
+                            final MyMessage myMessage = message;
+                            MessageListActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.addToStart(myMessage, true);
+
+                                }
+                            });
                         } catch (IOException e) {
                             e.printStackTrace();
+                            final MyMessage myMessage = message;
+                            MessageListActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.addToStart(myMessage, true);
+
+                                }
+                            });
                         }
                     } else {
                         throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
                     }
-
-
-                    final MyMessage fMsg = message;
-                    MessageListActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(fMsg, true);
-
-                        }
-                    });
                 }
             }
 
@@ -3391,23 +3472,33 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                 try {
                     msg = chatRoomConversation.createSendVoiceMessage(voiceFile, duration);
-                    msg.setOnSendCompleteCallback(new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            int i1 = i;
-                            String s1 = s;
-                            if (i == 0) {
-                            }
-                        }
-                    });
                     message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
                     message.setMediaFilePath(voiceFile.getPath());
                     message.setDuration(duration);
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     mAdapter.addToStart(message, true);
+                    msg.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i == 0) {
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                            } else {
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                            }
+                            MessageListActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.updateMessage(message);
+
+                                }
+                            });
+                        }
+                    });
                     JMessageClient.sendMessage(msg);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                    mAdapter.updateMessage(message);
                 }
 
 

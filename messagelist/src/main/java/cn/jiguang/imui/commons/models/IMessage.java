@@ -7,18 +7,21 @@ public interface IMessage {
 
     /**
      * Message id.
+     *
      * @return unique
      */
     String getMsgId();
 
     /**
      * Get user info of message.
+     *
      * @return UserInfo of message
      */
     IUser getFromUser();
 
     /**
      * Time string that display in message list.
+     *
      * @return Time string
      */
     String getTimeString();
@@ -27,12 +30,14 @@ public interface IMessage {
      * Type of Message
      */
     enum MessageType {
-        EVENT,
         SEND_TEXT,
         RECEIVE_TEXT,
 
         SEND_IMAGE,
         RECEIVE_IMAGE,
+
+        SEND_LOCATION,
+        RECEIVE_LOCATION,
 
         SEND_VOICE,
         RECEIVE_VOICE,
@@ -40,8 +45,7 @@ public interface IMessage {
         SEND_VIDEO,
         RECEIVE_VIDEO,
 
-        SEND_LOCATION,
-        RECEIVE_LOCATION,
+        EVENT,
 
         SEND_FILE,
         RECEIVE_FILE,
@@ -49,12 +53,14 @@ public interface IMessage {
         SEND_CUSTOM,
         RECEIVE_CUSTOM;
 
+
         MessageType() {
         }
     }
 
     /**
      * Type of message
+     *
      * @return integer
      */
     int getType();
@@ -78,6 +84,7 @@ public interface IMessage {
 
     /**
      * Text of message.
+     *
      * @return text
      */
     String getText();
@@ -85,12 +92,14 @@ public interface IMessage {
     /**
      * If message type is photo, voice, video or file,
      * get file path through this method.
+     *
      * @return file path
      */
     String getMediaFilePath();
 
     /**
      * If message type is voice or video, get duration through this method.
+     *
      * @return duration of audio or video, TimeUnit: SECONDS.
      */
     long getDuration();
@@ -99,6 +108,7 @@ public interface IMessage {
 
     /**
      * Return extra key value of message
+     *
      * @return {@link HashMap<>}
      */
     HashMap<String, String> getExtras();

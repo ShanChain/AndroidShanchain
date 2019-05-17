@@ -39,7 +39,6 @@ import okhttp3.Call;
  */
 public class HotChatRoomAdapter extends BaseMultiItemQuickAdapter<HotChatRoom, BaseViewHolder> {
     private Context mContext;
-    private boolean isBlackMember;
 
     public HotChatRoomAdapter(@Nullable Context context, List<HotChatRoom> data) {
         super(data);
@@ -105,7 +104,7 @@ public class HotChatRoomAdapter extends BaseMultiItemQuickAdapter<HotChatRoom, B
                         String code = SCJsonUtils.parseCode(response);
                         if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
                             String data = SCJsonUtils.parseData(response);
-
+                            boolean isBlackMember = Boolean.valueOf(data);
                             if (!isBlackMember) {
                                 Intent intent = new Intent(mContext, MessageListActivity.class);
                                 intent.putExtra("roomId", item.getRoomId());

@@ -35,8 +35,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         implements ScrollMoreListener.OnLoadMoreListener {
 
     // Text message
-    private final int TYPE_RECEIVE_TXT = 0;
-    private final int TYPE_SEND_TXT = 1;
+    private final int TYPE_SEND_TXT = 0;
+    private final int TYPE_RECEIVE_TXT =1 ;
 
     // Photo message
     private final int TYPE_SEND_IMAGE = 2;

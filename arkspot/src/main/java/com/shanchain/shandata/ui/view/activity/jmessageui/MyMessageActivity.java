@@ -140,6 +140,8 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 //                Intent intent = new Intent(mActivity, SingleChatActivity.class);
                 MessageHomeInfo messageHomeInfo = chatRoomlist.get(position);
                 messageHomeInfo.setUnRead(0);
+                Conversation conversation = messageHomeInfo.getJMConversation();
+                conversation.setUnReadMessageCnt(0);
                 String toChatName = messageHomeInfo.getJMConversation().getTargetId();
                 DefaultUser defaultUser = new DefaultUser(0, toChatName, messageHomeInfo.getImg());
                 defaultUser.setHxUserId(messageHomeInfo.getHxUser());
@@ -165,13 +167,12 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 
     public void onEvent(MessageEvent event) {
         final Message message = event.getMessage();
-        conversationList = JMessageClient.getConversationList();
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 if (messageListAdapter != null) {
-//                    messageListAdapter.replaceData(chatRoomlist);
-//                    rvMessageList.setAdapter(messageListAdapter);
+                    chatRoomlist.clear();
+                    initData();
                     messageListAdapter.notifyDataSetChanged();
                 }
             }

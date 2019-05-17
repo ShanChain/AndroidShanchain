@@ -55,6 +55,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AppsAdapter;
@@ -260,14 +261,11 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (mcgContent.equals("")) {
                     return;
                 }
-                Message msg;
+                final Message msg;
                 TextContent content = new TextContent(mcgContent);
                 msg = mConv.createSendMessage(content);
-                //设置用户和消息体Extras参数
-                setMsgUserInfo(msg);
-                JMessageClient.sendMessage(msg);
                 //构造消息
-                MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
+                final MyMessage message = new MyMessage(mcgContent, IMessage.MessageType.SEND_TEXT.ordinal());
                 if (msg.getFromUser().getAvatarFile() != null) {
                     DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getDisplayName(), msg.getFromUser().getAvatarFile().getAbsolutePath());
                     message.setUserInfo(defaultUser);
@@ -284,11 +282,27 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     String timeString = DateUtils.formatFriendly(new Date(messageTime));
                     message.setTimeString(timeString);
                 }
-//                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-
-//                                messageList.add(message);
+                //设置用户和消息体Extras参数
+                setMsgUserInfo(msg);
                 mAdapter.addToStart(message, true);
+                msg.setOnSendCompleteCallback(new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        } else {
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                        }
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.updateMessage(message);
+                            }
+                        });
+                    }
+                });
+                JMessageClient.sendMessage(msg);
+
                 xhsEmoticonsKeyBoard.getEtChat().setText("");
             }
         });
@@ -309,13 +323,14 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 //                textContent.setStringExtra("userName", JMessageClient.getMyInfo().getUserName() + "");
 //                textContent.setStringExtra("conversationType", "single");
                 final Message conversationMessage = mConv.createSendMessage(textContent);
+//                final Message conversationMessage = mConv.createSendTextMessage(textContent);
+                final MyMessage myMessage = new MyMessage("" + input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
                 //设置用户和消息体Extras参数
                 setMsgUserInfo(conversationMessage);
-//                final Message conversationMessage = mConv.createSendTextMessage(textContent);
+                mAdapter.addToStart(myMessage, true);
                 conversationMessage.setOnSendCompleteCallback(new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        MyMessage myMessage = new MyMessage("" + input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
                         String s1 = s;
                         int i1 = i;
                         if (i == 0) {
@@ -326,7 +341,6 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             myMessage.setText(input.toString());
                             mData.add(myMessage);
-                            mAdapter.addToStart(myMessage, true);
                         } else {
                             ToastUtils.showToast(SingleChatActivity.this, "发送消息失败");
                             DefaultUser user = new DefaultUser(mMyInfo.getUserID(), mMyInfo.getDisplayName(), mMyInfo.getAvatar());
@@ -334,8 +348,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             myMessage.setText(input.toString());
                             myMessage.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                            mAdapter.addToStart(myMessage, true);
                         }
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.updateMessage(myMessage);
+                            }
+                        });
 
                     }
                 });
@@ -364,35 +383,52 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     }
                     File videoFile = new File(item.getFilePath());
                     try {
-                        Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
-                        msg.setOnSendCompleteCallback(new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                if (i == 0) {
-
-                                }
-                            }
-                        });
+                        final Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(item.getFilePath());
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
                         //设置用户和消息体Extras参数
                         setMsgUserInfo(msg);
+                        mAdapter.addToStart(message, true);
+                        final MyMessage finalMsg = message;
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
+                                    finalMsg.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                } else {
+                                    finalMsg.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                }
+                                SingleChatActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mAdapter.updateMessage(finalMsg);
+                                    }
+                                });
+                            }
+                        });
                         JMessageClient.sendMessage(msg);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
+                        final MyMessage myMessage = message;
+                        myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                        SingleChatActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.updateMessage(myMessage);
+                            }
+                        });
                     } catch (JMFileSizeExceedException e) {
                         e.printStackTrace();
+                        final MyMessage myMessage = message;
+                        myMessage.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                        SingleChatActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.updateMessage(myMessage);
+                            }
+                        });
                     }
-
-                    final MyMessage fMsg = message;
-                    SingleChatActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(fMsg, true);
-
-                        }
-                    });
                 }
             }
 
@@ -487,22 +523,31 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 //                    msg = mConv.createSendVoiceMessage(voiceFile, duration);
                     VoiceContent voiceContent = new VoiceContent(voiceFile, duration);
                     msg = mConv.createSendMessage(voiceContent);
+                    message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
+                    message.setMediaFilePath(voiceFile.getPath());
+                    message.setDuration(duration);
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    //设置用户和消息体Extras参数
+                    setMsgUserInfo(msg);
+                    mAdapter.addToStart(message, true);
                     msg.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
                             int i1 = i;
                             String s1 = s;
                             if (i == 0) {
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                            } else {
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
                             }
+                            SingleChatActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.updateMessage(message);
+                                }
+                            });
                         }
                     });
-                    message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), msg.getFromUser().getAvatarFile().getAbsolutePath()));
-                    message.setMediaFilePath(voiceFile.getPath());
-                    message.setDuration(duration);
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    mAdapter.addToStart(message, true);
-                    //设置用户和消息体Extras参数
-                    setMsgUserInfo(msg);
                     JMessageClient.sendMessage(msg);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -1216,6 +1261,9 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         Log.d("tag", "ChatRoomMessageEvent received .");
 //        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
         mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
+        if (mConv != null) {
+            mConv.setUnReadMessageCnt(0);
+        }
         mConvData = mConv.getAllMessage();
         final Message evMsg = event.getMessage();
         final MyMessage myMessage;
@@ -1236,11 +1284,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 TextContent textContent = (TextContent) msg.getContent();
                 if (textContent.getText() != null && !TextUtils.isEmpty(textContent.getText())) {
                     MyMessage textMessage = new MyMessage(textContent.getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                    textMessage.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
                     long id = msg.getFromUser().getUserID();
                     msg.getFromID();
                     long currentId = JMessageClient.getMyInfo().getUserID();
                     if (currentId == id) {
                         textMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
+                        textMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                     }
 //                    String s1 = msg.getFromUser().getAvatar();
                     textMessage.setUserInfo(defaultUser);
@@ -1277,27 +1327,13 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 long currentimageId = JMessageClient.getMyInfo().getUserID();
                 if (currentimageId == imageId) {
                     imgMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                    imgMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                 }
                 UserInfo userInfo = msg.getFromUser();
 //                    String s11 = userInfo.getAvatarFile().getAbsolutePath();
 //                    String s12 = userInfo.getAvatarFile().getPath();
                 imgMessage.setUserInfo(defaultUser);
                 String mediaID = imageContent.getMediaID();
-                if (imageContent.getLocalPath() == null) {
-                    imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
-                        @Override
-                        public void onComplete(int i, String s, File file) {
-                            mPathList.add(file.getAbsolutePath());
-                            mMsgIdList.add(imgMessage.getMsgId() + "");
-                            imgMessage.setMediaFilePath(file.getAbsolutePath());
-                            mAdapter.updateMessage(imgMessage);
-                        }
-                    });
-                } else {
-                    mPathList.add(imageContent.getLocalPath());
-                    mMsgIdList.add(imgMessage.getMsgId() + "");
-                    imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
-                }
                 for (int i = 0; i < mConvData.size(); i++) {
                     if (i > 0) {
                         long messageTime = msg.getCreateTime();
@@ -1317,6 +1353,22 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 }
 //                mData.add(imgMessage);
                 mAdapter.addToStart(imgMessage, true);
+                if (imageContent.getLocalPath() == null) {
+                    imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
+                        @Override
+                        public void onComplete(int i, String s, File file) {
+                            mPathList.add(file.getAbsolutePath());
+                            mMsgIdList.add(imgMessage.getMsgId() + "");
+                            imgMessage.setMediaFilePath(file.getAbsolutePath());
+                            mAdapter.updateMessage(imgMessage);
+                        }
+                    });
+                } else {
+                    mPathList.add(imageContent.getLocalPath());
+                    mMsgIdList.add(imgMessage.getMsgId() + "");
+                    imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
+                    mAdapter.updateMessage(imgMessage);
+                }
                 break;
             case voice:
                 //处理语音消息
@@ -1330,6 +1382,8 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 long currentVoiceId = JMessageClient.getMyInfo().getUserID();
                 if (currentVoiceId == voiceId) {
                     voiceMessage.setType(IMessage.MessageType.SEND_VOICE.ordinal());
+                    voiceMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
                 }
                 String avatarMedialD = msg.getFromUser().getAvatar();
 //                    UserInfo userInfo = msg.getFromUser();
@@ -1383,6 +1437,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 long currentVideoId = JMessageClient.getMyInfo().getUserID();
                 if (currentVideoId == videoId) {
                     videoMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                    videoMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                 }
                 videoMessage.setUserInfo(defaultUser);
 //                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
@@ -1444,6 +1499,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                     long currentFileId1 = JMessageClient.getMyInfo().getUserID();
                     if (currentFileId1 == fileId1) {
                         fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                        fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                     }
                     fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
                 } else {
@@ -1453,6 +1509,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long currentFileId = JMessageClient.getMyInfo().getUserID();
                             if (currentFileId == fileId) {
                                 fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
                             if (fileContent.getLocalPath() != null) {
                                 mPathList.add(fileContent.getLocalPath());
@@ -1476,6 +1533,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long currentFileId1 = JMessageClient.getMyInfo().getUserID();
                             if (currentFileId1 == fileId1) {
                                 fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                                fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
                             if (fileContent.getLocalPath() != null) {
                                 fileMessage.setMediaFilePath(fileContent.getLocalPath());
@@ -1496,6 +1554,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             long currentFileId2 = JMessageClient.getMyInfo().getUserID();
                             if (currentFileId2 == fileId2) {
                                 fileMessage.setType(IMessage.MessageType.SEND_IMAGE.ordinal());
+                                fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
                             if (fileContent.getLocalPath() != null) {
                                 ImageContent imageContent1 = (ImageContent) msg.getContent();
@@ -1975,25 +2034,35 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 //                            msg = mConv.createSendImageMessage(new File(photoPath));
                             ImageContent imageContent = new ImageContent(new File(photoPath));
                             msg = mConv.createSendMessage(imageContent);
-                            //设置用户和消息体Extras参数
-                            setMsgUserInfo(msg);
-//                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                             message.setMediaFilePath(photoPath);
                             mPathList.add(photoPath);
                             mMsgIdList.add(message.getMsgId());
                             String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
+                            //设置用户和消息体Extras参数
+                            setMsgUserInfo(msg);
+                            mAdapter.addToStart(message, true);
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    } else {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    }
+                                    SingleChatActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(message);
+                                        }
+                                    });
+                                }
+                            });
                             JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
                     }
-                    SingleChatActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(message, true);
-                        }
-                    });
 
                     /*ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
                         @Override
@@ -2011,7 +2080,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 if (data != null) {
                     String path = data.getStringExtra("video");
                     long videoDuration = data.getLongExtra("duration", 0);
-                    MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                     message.setDuration(videoDuration);
                     File videoFile = new File(path);
                     try {
@@ -2020,26 +2089,32 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                         Bitmap bitmap = media.getFrameAtTime();
                         VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
 //                        Message msg = mConv.createSendMessage(video);
-                        Message msg = mConv.createSendMessage(video);
-
-                        ///设置用户和消息体Extras参数
-                        setMsgUserInfo(msg);
+                        final Message msg = mConv.createSendMessage(video);
 //                            Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
-                        msg.setOnSendCompleteCallback(new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                if (i == 0) {
-
-                                }
-                            }
-                        });
-//                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setDuration(videoDuration);
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
-                        JMessageClient.sendMessage(msg);
+                        //设置用户和消息体Extras参数
+                        setMsgUserInfo(msg);
                         mAdapter.addToStart(message, true);
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                } else {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                }
+                                SingleChatActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mAdapter.updateMessage(message);
+                                    }
+                                });
+                            }
+                        });
+                        JMessageClient.sendMessage(msg);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -2052,7 +2127,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 boolean local = data.getBooleanExtra(Extras.EXTRA_FROM_LOCAL, false);
                 if (local) {
                     // 本地相册
-                    ToastUtils.showToastLong(SingleChatActivity.this, data.getDataString());
+//                    ToastUtils.showToastLong(SingleChatActivity.this, data.getDataString());
                     final String photoPath = data.getStringExtra(Extras.EXTRA_FILE_PATH);
                     Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
                     final Message msg;
@@ -2070,17 +2145,28 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getUserName(), avatar));
                             //设置用户和消息体Extras参数
                             setMsgUserInfo(msg);
+                            mAdapter.addToStart(message, true);
+                            msg.setOnSendCompleteCallback(new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    if (i == 0) {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    } else {
+                                        message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    }
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(message);
+                                        }
+                                    });
+                                }
+                            });
                             JMessageClient.sendMessage(msg);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
                     }
-                    SingleChatActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(message, true);
-                        }
-                    });
                 }
                 break;
             case PhotoUtils.INTENT_SELECT:

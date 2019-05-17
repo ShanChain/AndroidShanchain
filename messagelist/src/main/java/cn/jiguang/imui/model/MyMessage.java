@@ -20,6 +20,7 @@ public class MyMessage implements IMessage {
     private long duration;
     private String progress;
     private ChatEventMessage chatEventMessage;
+    //    private MessageStatus mMsgStatus = MessageStatus.SEND_GOING;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
 
     public MyMessage() {
@@ -54,14 +55,6 @@ public class MyMessage implements IMessage {
         this.text = text;
     }
 
-    public MessageStatus getmMsgStatus() {
-        return mMsgStatus;
-    }
-
-    public void setmMsgStatus(MessageStatus mMsgStatus) {
-        this.mMsgStatus = mMsgStatus;
-    }
-
     public ChatEventMessage getChatEventMessage() {
         return chatEventMessage;
     }
@@ -73,7 +66,7 @@ public class MyMessage implements IMessage {
     @Override
     public IUser getFromUser() {
         if (defaultUser == null) {
-            return new DefaultUser( 0, "user1", null);
+            return new DefaultUser(0, "user1", null);
         }
         return defaultUser;
     }
@@ -130,7 +123,7 @@ public class MyMessage implements IMessage {
     public void setType(int type) {
         if (type >= 0 && type <= 12) {
             this.type = type;
-        }else {
+        } else {
             throw new IllegalArgumentException("Message type should not take the value between 0 and 12");
         }
 
@@ -144,15 +137,17 @@ public class MyMessage implements IMessage {
 
     /**
      * Set Message status. After sending Message, change the status so that the progress bar will dismiss.
+     *
      * @param messageStatus {@link cn.jiguang.imui.commons.models.IMessage.MessageStatus}
      */
+
     public void setMessageStatus(MessageStatus messageStatus) {
         this.mMsgStatus = messageStatus;
     }
 
     @Override
     public MessageStatus getMessageStatus() {
-        return this.mMsgStatus;
+        return mMsgStatus;
     }
 
     @Override

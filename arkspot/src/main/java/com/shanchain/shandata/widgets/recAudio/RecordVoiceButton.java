@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
@@ -58,6 +59,7 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.api.options.MessageSendingOptions;
+import cn.jpush.im.api.BasicCallback;
 
 
 public class RecordVoiceButton extends Button {
@@ -320,12 +322,33 @@ public class RecordVoiceButton extends Button {
                         Message msg = mConv.createSendMessage(content);
                         final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
-                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(),avatar));
+                        message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
                         message.setMediaFilePath(myRecAudioFile.getPath());
                         message.setDuration(duration);
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        msg.setOnSendCompleteCallback(new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                if (i == 0) {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mMsgListAdapter.addToStart(message, true);
+                                        }
+                                    });
+                                } else {
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mMsgListAdapter.addToStart(message, true);
+                                        }
+                                    });
+                                }
+                            }
+                        });
 
-                        mMsgListAdapter.addToStart(message, true);
                         if (mConv.getType() == ConversationType.single) {
                             UserInfo userInfo = (UserInfo) msg.getTargetInfo();
                             MessageSendingOptions options = new MessageSendingOptions();

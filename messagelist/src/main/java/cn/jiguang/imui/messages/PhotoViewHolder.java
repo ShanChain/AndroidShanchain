@@ -24,10 +24,9 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     private TextView mDisplayNameTv;
     private ShapeImageView mPhotoIv;
     private RoundImageView mAvatarIv;
-//    private CircleImageView mAvatarIv;
+    //    private CircleImageView mAvatarIv;
     private ProgressBar mSendingPb;
     private ImageButton mResendIb;
-
 
 
     public PhotoViewHolder(View itemView, boolean isSender) {
@@ -155,8 +154,8 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         } else {
             if (style.getShowReceiverDisplayName()) {
                 mDisplayNameTv.setVisibility(View.VISIBLE);
-                mDisplayNameTv.setVisibility(View.GONE);            } else {
-
+            } else {
+                mDisplayNameTv.setVisibility(View.GONE);
             }
             mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
         }

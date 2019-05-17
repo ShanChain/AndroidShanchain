@@ -15,6 +15,7 @@
         <cn.jiguang.imui.view.RoundImageView
             android:id="@+id/aurora_iv_msgitem_avatar"
             android:contentDescription="@string/aurora_avatar_desc"
+            android:background="@drawable/aurora_headicon_default"
             style="@style/aurora_msgitem_receiver_avatar_style"/>
 
         <TextView
@@ -22,7 +23,7 @@
             style="@style/aurora_msgitem_receiver_display_name_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/aurora_iv_msgitem_avatar"
+            android:layout_toRightOf="@+id/aurora_iv_msgitem_avatar"
             />
 
         <cn.jiguang.imui.view.ShapeImageView

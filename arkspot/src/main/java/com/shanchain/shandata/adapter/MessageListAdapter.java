@@ -46,10 +46,10 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         if (unreadMsgCount <= 0) {
             helper.setVisible(R.id.tv_item_msg_home_unread, false);
         } else if (unreadMsgCount <= 99 && unreadMsgCount > 0) {
-            helper.setVisible(R.id.tv_item_msg_home_unread, false);
+            helper.setVisible(R.id.tv_item_msg_home_unread, true);
             helper.setText(R.id.tv_item_msg_home_unread, unreadMsgCount + "");
         } else {
-            helper.setVisible(R.id.tv_item_msg_home_unread, false);
+            helper.setVisible(R.id.tv_item_msg_home_unread, true);
             helper.setText(R.id.tv_item_msg_home_unread, "99+");
         }
 

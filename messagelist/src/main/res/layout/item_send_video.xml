@@ -16,6 +16,7 @@
         <cn.jiguang.imui.view.RoundImageView
             android:id="@+id/aurora_iv_msgitem_avatar"
             android:contentDescription="@string/aurora_avatar_desc"
+            android:background="@drawable/aurora_headicon_default"
             style="@style/aurora_msgitem_sender_avatar_style" />
 
         <TextView
@@ -89,7 +90,7 @@
             android:layout_toLeftOf="@id/aurora_fl_msgitem_video_container"
             android:layout_alignTop="@+id/aurora_fl_msgitem_video_container"
             android:layout_alignBottom="@+id/aurora_fl_msgitem_video_container"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

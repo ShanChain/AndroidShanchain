@@ -128,6 +128,7 @@ public class MyReceiver extends BroadcastReceiver {
                 LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 Activity topActivity = null;
                 Intent mainIntent = new Intent(context, FootPrintActivity.class);
+                mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
                     JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
                     if (!TextUtils.isEmpty(messageJson.toString()) && !messageJson.toString().equals("{}")) {
@@ -189,13 +190,15 @@ public class MyReceiver extends BroadcastReceiver {
                                 i.putExtra("title", "交易推送");
                                 i.putExtras(bundle);
                                 Activity activity = SCWebViewActivity.mActivity;
-                                if (activity != null && !ActivityStackManager.getInstance().isTopActivity(activity)) {
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                try {
+                                    if (ActivityStackManager.getInstance().isTopActivity(activity)) {
+                                        ActivityStackManager.getInstance().finishActivity(SCWebViewActivity.class);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                                if (ActivityStackManager.getInstance().isTopActivity(activity)) {
-                                    ActivityStackManager.getInstance().finishActivity(SCWebViewActivity.class);
-                                }
-                                context.startActivity(i);
+                                Intent [] intents = new Intent[]{mainIntent,i};
+                                context.startActivities(intents);
                             }
                         }
                     }

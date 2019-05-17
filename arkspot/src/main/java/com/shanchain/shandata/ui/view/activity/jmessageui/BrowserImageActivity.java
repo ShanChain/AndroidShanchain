@@ -187,8 +187,9 @@ public class BrowserImageActivity extends Activity {
                 return;
             }
 
-            String picPath = StorageUtil.getSystemImagePath();
-            String dstPath = picPath + path;
+//            String picPath = StorageUtil.getSystemImagePath();
+            String picPath = StorageUtil.getShanchainPath();
+            String dstPath = picPath + File.separator + path;
             if (AttachmentStore.copy(path, dstPath) != -1) {
                 try {
                     ContentValues values = new ContentValues(2);
