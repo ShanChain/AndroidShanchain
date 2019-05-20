@@ -123,7 +123,6 @@ public class MyReceiver extends BroadcastReceiver {
                     }
                 }
 //
-
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 Activity topActivity = null;

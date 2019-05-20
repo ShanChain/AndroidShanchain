@@ -52,6 +52,36 @@ public class DateUtils {
         return "刚刚";
     }
 
+    public static String formatMessageDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        long diff = new Date().getTime() - date.getTime();
+        long r = 0;
+        if (diff > YEAR) {
+            r = (diff / YEAR);
+            return r + "年前";
+        }
+        if (diff > MONTH) {
+            r = (diff / MONTH);
+            return r + "个月前";
+        }
+        if (diff > DAY) {
+            r = (diff / DAY);
+            return r + "天前";
+        }
+        if (diff > HOUR) {
+            r = (diff / HOUR);
+            return r + "个小时前";
+        }
+        if (diff > MINUTE) {
+            r = (diff / MINUTE);
+            return r + "分钟前";
+        }
+        return "刚刚";
+    }
+
+
     public static boolean isValidLong(String str){
         try{
             long _v = Long.parseLong(str);
