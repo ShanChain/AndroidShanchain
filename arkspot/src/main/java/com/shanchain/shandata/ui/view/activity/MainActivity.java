@@ -456,7 +456,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         }
     }
 
-
     @Override
     public void onRightClick(View v) {
         switch (mFragmentId) {

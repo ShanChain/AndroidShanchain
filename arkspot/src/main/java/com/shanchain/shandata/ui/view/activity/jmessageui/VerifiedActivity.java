@@ -98,7 +98,7 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                         .addParams("token", SCCacheUtils.getCacheToken())
                         .addParams("userId", SCCacheUtils.getCacheUserId())
                         .build()
-                        .execute(new StringCallback() {
+                        .execute(new SCHttpStringCallBack(VerifiedActivity.this) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
                                 LogUtils.d(TAG, "网络异常");
@@ -107,7 +107,8 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                             @Override
                             public void onResponse(String response, int id) {
                                 String code = JSONObject.parseObject(response).getString("code");
-                                StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
+                                String msg = SCJsonUtils.parseMsg(response);
+                                final StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
                                 standardDialog.setSureText("确定");
                                 standardDialog.setCancelText("取消");
                                 if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
@@ -115,7 +116,6 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                                     String desc = JSONObject.parseObject(data).getString("desc");
                                     standardDialog.setStandardTitle("实名认证成功");
                                     standardDialog.setStandardMsg("实名认证成功！");
-                                    standardDialog.show();
                                     standardDialog.setCallback(new Callback() {
                                         @Override
                                         public void invoke() {
@@ -127,10 +127,27 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                                             finish();
                                         }
                                     });
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            standardDialog.show();
+                                        }
+                                    });
+
                                 } else {
                                     standardDialog.setStandardTitle("实名认证失败");
-                                    standardDialog.setStandardMsg("实名认证失败请检查姓名、身份证号");
-                                    standardDialog.show();
+                                    if (!TextUtils.isEmpty(msg)) {
+                                        standardDialog.setStandardMsg("" + msg);
+                                    } else {
+                                        standardDialog.setStandardMsg("实名认证失败请检查姓名、身份证号");
+                                    }
+
+                                    ThreadUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            standardDialog.show();
+                                        }
+                                    });
                                 }
                             }
                         });
