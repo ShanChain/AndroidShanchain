@@ -701,7 +701,6 @@ public class MainActivity extends BaseActivity implements ArthurToolBar.OnRightC
         }
     }
 
-
     private void setDeviceToken() {
         final String userId = SCCacheUtils.getCacheUserId();
 
