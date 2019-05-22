@@ -552,93 +552,6 @@ public class LoginActivity extends BaseActivity {
         readyGo(ResetPwdActivity.class);
     }
 
-    /*    final LoginListener listener = new LoginListener() {
-            @Override
-            public void loginSuccess(LoginResult result) {
-                //登录成功， 如果你选择了获取用户信息，可以通过
-                int platform = result.getPlatform();
-
-                BaseToken token = result.getToken();
-                String accessToken = token.getAccessToken();
-                BaseUser userInfo = result.getUserInfo();
-                String nickname = userInfo.getNickname();
-                String headImageUrl = userInfo.getHeadImageUrl();
-                String openId = userInfo.getOpenId();
-                String headImageUrlLarge = userInfo.getHeadImageUrlLarge();
-                String userType = UserType.USER_TYPE_WEIXIN;
-                int sex = userInfo.getSex();
-                switch (platform) {
-                    case LoginPlatform.QQ:
-                        userType = UserType.USER_TYPE_QQ;
-                        LogUtils.d("QQ登录成功 ！！！"
-                                + "\r\n token = " + token
-                                + ";\r\n >< " + "昵称=" + nickname
-                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                                + ";\r\n headImageUrl = " + headImageUrl
-                                + ";\r\n openId = " + openId
-                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                                + ";\r\n accessToken = " + accessToken
-                        );
-
-                        break;
-                    case LoginPlatform.WX:
-                        userType = UserType.USER_TYPE_WEIXIN;
-                        LogUtils.d("微信登录成功 ！！！"
-                                + "\r\n token = " + token
-                                + ";\r\n  " + "昵称=" + nickname
-                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                                + ";\r\n headImageUrl = " + headImageUrl
-                                + ";\r\n openId = " + openId
-                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                                + ";\r\n accessToken = " + accessToken);
-
-                        break;
-
-                    case LoginPlatform.WEIBO:
-                        userType = UserType.USER_TYPE_WEIBO;
-                        LogUtils.d("微博登录成功 ！！！"
-                                + "\r\n token = " + token
-                                + ";\r\n  " + "昵称=" + nickname
-                                + ";\r\n 性别 = " + (sex == 1 ? "男" : "女")
-                                + ";\r\n headImageUrl = " + headImageUrl
-                                + ";\r\n openId = " + openId
-                                + ";\r\n headImageUrlLarge = " + headImageUrlLarge
-                                + ";\r\n accessToken = " + accessToken);
-                        break;
-                    default:
-                        break;
-                }
-
-                String time = String.valueOf(System.currentTimeMillis());
-                //加密后的openid
-                String encryptOpenId = Base64.encode(AESUtils.encrypt(openId, Base64.encode(userType + time)));
-                //加密后的accesstoken
-                LogUtils.d("accessToken : " + accessToken);
-                String accesToken = accessToken.substring(0, 16);
-                LogUtils.d("accesToken截取 : " + accesToken);
-                String encryptToken16 = Base64.encode(AESUtils.encrypt(MD5Utils.md5(accesToken), Base64.encode(userType + time + openId)));
-
-                LogUtils.d("加密后openid：" + encryptOpenId);
-                LogUtils.d("加密后accesstoken：" + encryptToken16);
-                LogUtils.d("用户类型：" + userType);
-                LogUtils.i("回调了登录成功");
-                thridLogin(time, encryptOpenId, encryptToken16, headImageUrlLarge, nickname, sex == 1 ? "0" : "1", userType);
-
-            }
-
-            @Override
-            public void loginFailure(Exception e) {
-                closeProgress();
-                ToastUtils.showToast(mContext, "网络异常");
-                LogUtils.i("还回调了登录失败");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void loginCancel() {
-                LogUtils.d("登录取消");
-            }
-        };*/
     public void thirdPlatform(final String userType) {
         List<String> platformList = JShareInterface.getPlatformList();
         mAuthListener = new AuthListener() {
@@ -818,7 +731,7 @@ public class LoginActivity extends BaseActivity {
                                  public void onResponse(String response, int id) {
                                      try {
                                          LogUtils.i("第三方注册结果 = " + response);
-                                         String code = SCJsonUtils.parseCode(response);
+                                         final String code = SCJsonUtils.parseCode(response);
                                          if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                              String data = SCJsonUtils.parseData(response);
                                              ResponseLoginBean responseLoginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
@@ -836,14 +749,25 @@ public class LoginActivity extends BaseActivity {
                                              Intent intent = new Intent(LoginActivity.this, BindPhoneActivity.class);
                                              intent.putExtra("encryptOpenId", encryptOpenId);
                                              startActivity(intent);
+                                             finish();
                                          } else {
                                              closeProgress();
-                                             ToastUtils.showToast(mContext, "网络异常");
+                                             ThreadUtils.runOnMainThread(new Runnable() {
+                                                 @Override
+                                                 public void run() {
+                                                     ToastUtils.showToast(mContext, code + ":未知异常");
+                                                 }
+                                             });
                                          }
-                                     } catch (Exception e) {
+                                     } catch (final Exception e) {
                                          closeProgress();
                                          e.printStackTrace();
-                                         ToastUtils.showToast(mContext, "网络异常");
+                                         ThreadUtils.runOnMainThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 ToastUtils.showToast(mContext, "未知异常：" + e.getMessage());
+                                             }
+                                         });
                                      }
                                  }
                              }

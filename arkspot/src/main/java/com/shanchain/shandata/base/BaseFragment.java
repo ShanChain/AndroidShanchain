@@ -108,6 +108,12 @@ public abstract class BaseFragment extends Fragment {
         mCustomDialog.setCancelable(false);
     }
 
+    protected void showLoadingDialog(boolean isShow) {
+        mCustomDialog = new CustomDialog(getContext(), 0.4, R.layout.common_dialog_progress, null);
+        mCustomDialog.show();
+        mCustomDialog.setCancelable(isShow);
+    }
+
     protected void closeLoadingDialog() {
         if (mCustomDialog != null) {
             mCustomDialog.dismiss();

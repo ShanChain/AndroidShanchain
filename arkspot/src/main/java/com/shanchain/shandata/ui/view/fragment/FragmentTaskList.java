@@ -89,24 +89,6 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     }
 
     private void initRecyclerView() {
-
-        for (int i = 2; i < 20; i++) {
-            ChatEventMessage chatEventMessage = new ChatEventMessage("测试", IMessage.MessageType.RECEIVE_TEXT.ordinal());
-            chatEventMessage.setIntro("测试" + i);
-            chatEventMessage.setTimeString("2018-12-10 12:12:12");
-            chatEventMessage.setBounty("80");
-            chatEventMessage.setName("测试" + i);
-            chatEventMessage.setRoomName("1235");
-            chatEventMessage.setExpiryTime(1542209938);
-            if (i % 2 == 0) {
-                chatEventMessage.setStatus(5);
-            } else if (i == 7) {
-                chatEventMessage.setStatus(10);
-            } else {
-                chatEventMessage.setStatus(20);
-            }
-//            taskList.add(chatEventMessage);
-        }
         //5未领取 10已领取/正在完成， //15领取方已确认完成
         //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -194,6 +176,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         if (taskList.size() < 0) {
             return;
         }
+        page = 0;
         initData();
         adapter.upData(taskList);
         adapter.notifyDataSetChanged();
@@ -306,10 +289,10 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
                     page++;
                     SCHttpUtils.postWithUserId()
                             .url(HttpApi.GROUP_TASK_LIST)
-                            .addParams("characterId", characterId+"")
-                            .addParams("roomId", roomId+"")
-                            .addParams("page", ""+page)
-                            .addParams("size", ""+size)
+                            .addParams("characterId", characterId + "")
+                            .addParams("roomId", roomId + "")
+                            .addParams("page", "" + page)
+                            .addParams("size", "" + size)
                             .build()
                             .execute(new SCHttpStringCallBack() {
                                 @Override
@@ -321,7 +304,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
                                 public void onResponse(String response, int id) {
                                     String code = JSONObject.parseObject(response).getString("code");
                                     if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                        LogUtils.d("TaskPresenterIml", "请求任务列表i成功" +response);
+                                        LogUtils.d("TaskPresenterIml", "请求任务列表i成功" + response);
                                         String data = JSONObject.parseObject(response).getString("data");
                                         String content = JSONObject.parseObject(data).getString("content");
                                         List<ChatEventMessage> taskList = JSONObject.parseArray(content, ChatEventMessage.class);

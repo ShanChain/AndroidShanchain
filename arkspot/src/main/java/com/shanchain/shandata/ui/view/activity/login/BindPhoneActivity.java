@@ -111,7 +111,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                                 String code = JSONObject.parseObject(response).getString("code");
                                 if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                                     String data = JSONObject.parseObject(response).getString("data");
-                                    String userInfo = JSONObject.parseObject(response).getString("userInfo");
+                                    String userInfo = JSONObject.parseObject(data).getString("userInfo");
                                     String token = JSONObject.parseObject(data).getString("token");
                                     String userId = JSONObject.parseObject(userInfo).getString("userId");
 

@@ -31,6 +31,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,6 +49,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 //import com.example.test_webview_demo.BrowserActivity;
 //import com.example.test_webview_demo.MainActivity;
+import com.chad.library.adapter.base.loadmore.SimpleLoadMoreView;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.nostra13.universalimageloader.utils.L;
@@ -93,6 +95,7 @@ import com.shanchain.shandata.utils.GlideImageLoader;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.utils.TextSearcher;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
+import com.shanchain.shandata.widgets.other.MyLoadMoreView;
 import com.shanchain.shandata.widgets.photochoose.DialogCreator;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
@@ -117,6 +120,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jiguang.imui.view.RoundImageView;
@@ -145,6 +149,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private SearchView mSearchView;
     private ImageView ivUserModify;
     private ImageView userHeadView;
+    private View footerView;
     BGARefreshLayout bgaRefreshLayout;
     private List<HotChatRoom> hotChatRoomList,
             searchRoomList = new ArrayList<>(),
@@ -226,7 +231,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         try {
             initToolBar();
             initView();
-            initData(pageNo, size);
+            initData(pageNo, size, bgaRefreshLayout);
             //注册自定义消息广播
 //        registerMessageReceiver();
             initMap();
@@ -235,7 +240,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         }
     }
 
-    private void initData(int pageNo, int size) {
+    private void initData(int pageNo, int size, final BGARefreshLayout refreshLayout) {
 //        showLoadingDialog();
         SCHttpUtils.get()
                 .url(HttpApi.HOT_CHAT_ROOM)
@@ -257,13 +262,18 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                         if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
                             String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
                             String content = SCJsonUtils.parseString(data, "content");
-//                            pageNo = SCJsonUtils.parseInt(data,"number");
-                            totalPage = SCJsonUtils.parseInt(data, "totalPage");
-                            last = SCJsonUtils.parseBoolean(data, "last");
+                            String allPage = JSONObject.parseObject(data).getString("totalPages");
+                            totalPage = Integer.valueOf(allPage);
+//                                last = SCJsonUtils.parseBoolean(data, "last");
+                            String isLast = JSONObject.parseObject(data).getString("last");
+                            last = Boolean.valueOf(isLast);
                             hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
 //                            hotChatRoomList = JSONArray.parseArray(data, HotChatRoom.class);
                             if (mQuickAdapter != null && hotChatRoomList != null) {
                                 mQuickAdapter.replaceData(hotChatRoomList);
+                                if (refreshLayout != null) {
+                                    refreshLayout.endRefreshing();
+                                }
                             }
                         }
                         closeLoadingDialog();
@@ -274,6 +284,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private void initView() {
         linearFootPrint = findViewById(R.id.linear_foot_print);
         reviewFoodPrint = findViewById(R.id.review_food_print);
+        footerView = LayoutInflater.from(this).inflate(R.layout.view_load_more, null);
         reviewFoodPrint.setVisibility(View.VISIBLE);
         linearFootPrint.setVisibility(View.GONE);
         tvBtnCoupon = findViewById(R.id.text_btn_coupon);
@@ -282,12 +293,15 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         bgaRefreshLayout = findViewById(R.id.refresh_layout);
         mSearchView = findViewById(R.id.search_view);
         bgaRefreshLayout.setDelegate(this);
-        bgaRefreshLayout.beginLoadingMore();
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(this, true);//微博效果
-        bgaRefreshLayout.setRefreshViewHolder(refreshViewHolder);
         // 设置正在加载更多时的文本
-        refreshViewHolder.setLoadingMoreText("加载更多");
+//        refreshViewHolder.setLoadingMoreText("加载更多");
+        // 设置正在加载更多时显示加载更多控件
+        bgaRefreshLayout.setIsShowLoadingMoreView(true);
+        bgaRefreshLayout.beginLoadingMore();
+        LogUtils.d("刷新列表 开始", bgaRefreshLayout.isLoadingMore() + "");
+        bgaRefreshLayout.setRefreshViewHolder(refreshViewHolder);
         showLoadingDialog();
         localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.get()
@@ -311,7 +325,8 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
                             String content = SCJsonUtils.parseString(data, "content");
                             totalPage = SCJsonUtils.parseInt(data, "totalPage");
-                            last = SCJsonUtils.parseBoolean(data, "last");
+                            String isLast = JSONObject.parseObject(response).getString("last");
+                            last = Boolean.valueOf(isLast);
                             hotChatRoomList = JSONArray.parseArray(content, HotChatRoom.class);
                             if (hotChatRoomList == null) {
                                 return;
@@ -320,6 +335,9 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                             mQuickAdapter = new HotChatRoomAdapter(FootPrintActivity.this, hotChatRoomList);
                             LinearLayoutManager layoutManager = new LinearLayoutManager(FootPrintActivity.this, LinearLayoutManager.VERTICAL, false);
                             reviewFoodPrint.setLayoutManager(layoutManager);
+                            mQuickAdapter.setLoadMoreView(new MyLoadMoreView());
+                            mQuickAdapter.setFooterView(footerView);
+                            initLoadMoreListener();
                             reviewFoodPrint.setAdapter(mQuickAdapter);
                             mQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                                 @Override
@@ -414,7 +432,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                                             mQuickAdapter.replaceData(searchRoomList);
                                         }
                                     }
-                                    bgaRefreshLayout.setIsShowLoadingMoreView(false);
                                     closeLoadingDialog();
                                 }
                             });
@@ -1012,74 +1029,91 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                 pageNo = 0;
                 isLoadMore = false;
                 last = false;
-                initData(pageNo, size);
+                initData(pageNo, size, bgaRefreshLayout);
                 mQuickAdapter.notifyLoadMoreToLoading();
             }
         }
+    }
+
+    //初始化上拉加载
+    private void initLoadMoreListener() {
+        reviewFoodPrint.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (last == true) {
+                    return;
+
+                }
+                //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mQuickAdapter.getItemCount()) {
+                    mQuickAdapter.getFooterLayout().setVisibility(View.VISIBLE);
+                    pageNo++;
+                    SCHttpUtils.get()
+                            .url(HttpApi.HOT_CHAT_ROOM)
+                            .addParams("token", SCCacheUtils.getCacheToken() + "")
+                            .addParams("version", localVersion + "")
+                            .addParams("page", pageNo + "")
+                            .addParams("size", size + "")
+                            .build()
+                            .execute(new SCHttpStringCallBack() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    closeLoadingDialog();
+                                    LogUtils.d("网络异常");
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
+                                    if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                                        String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
+                                        String content = SCJsonUtils.parseString(data, "content");
+                                        String allPage = JSONObject.parseObject(data).getString("totalPages");
+                                        totalPage = Integer.valueOf(allPage);
+//                                last = SCJsonUtils.parseBoolean(data, "last");
+                                        String isLast = JSONObject.parseObject(data).getString("last");
+                                        last = Boolean.valueOf(isLast);
+                                        List<HotChatRoom> roomList = JSONArray.parseArray(content, HotChatRoom.class);
+                                        mQuickAdapter.addData(roomList);
+                                        mQuickAdapter.notifyDataSetChanged();
+                                        mQuickAdapter.getFooterLayout().setVisibility(View.GONE);
+                                        closeLoadingDialog();
+//                                        mQuickAdapter.loadMoreEnd(true);
+                                    }
+                                }
+                            });
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
     }
 
     /* 下拉刷新 */
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         pageNo = 0;
-        initData(pageNo, size);
-        refreshLayout.endRefreshing();
+        initData(pageNo, size, refreshLayout);
     }
 
 
     /* 上拉加载 */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(final BGARefreshLayout refreshLayout) {
-//        mQuickAdapter.notifyLoadMoreToLoading();
-        // 设置正在加载更多时显示加载更多控件
-        bgaRefreshLayout.setIsShowLoadingMoreView(true);
-        if (last == false || isLoadMore == false) {
-//        if (isLoadMore == false) {
-//            showLoadingDialog(true);
-            pageNo++;
-            SCHttpUtils.get()
-                    .url(HttpApi.HOT_CHAT_ROOM)
-                    .addParams("token", SCCacheUtils.getCacheToken() + "")
-                    .addParams("version", localVersion + "")
-                    .addParams("page", pageNo + "")
-                    .addParams("size", size + "")
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            closeLoadingDialog();
-                            LogUtils.d("网络异常");
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            String code = com.alibaba.fastjson.JSONObject.parseObject(response).getString("code");
-                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                                String data = com.alibaba.fastjson.JSONObject.parseObject(response).getString("data");
-                                String content = SCJsonUtils.parseString(data, "content");
-                                totalPage = SCJsonUtils.parseInt(data, "totalPages");
-                                last = SCJsonUtils.parseBoolean(data, "last");
-                                List<HotChatRoom> roomList = JSONArray.parseArray(content, HotChatRoom.class);
-                                mQuickAdapter.addData(roomList);
-                                mQuickAdapter.notifyDataSetChanged();
-                                closeLoadingDialog();
-//                            mQuickAdapter.loadMoreEnd();
-                                refreshLayout.endLoadingMore();
-                                // 设置正在加载更多时显示加载更多控件
-                                bgaRefreshLayout.setIsShowLoadingMoreView(false);
-                            }
-                        }
-                    });
-            if (pageNo > totalPage) {
-                isLoadMore = true;
-            } else {
-                isLoadMore = false;
-            }
-        }
-
-//        if (pageNo == totalPage) {
-//                return true;
-//            }
+//        LogUtils.d("刷新列表", bgaRefreshLayout.isLoadingMore() + "");
+//        LogUtils.d("mQuickAdapter刷新列表", mQuickAdapter.isLoading() + "");
         return false;
     }
 }

@@ -33,7 +33,8 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import okhttp3.Call;
 
-public class CouponListActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener, ArthurToolBar.OnRightClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
+public class CouponListActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener,
+        ArthurToolBar.OnRightClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
     private ArthurToolBar toolBar;
     private LinearLayout addCoupon;
     private RecyclerView recyclerView;
@@ -66,28 +67,15 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
         refreshLayout = findViewById(R.id.refresh_layout);
         addCoupon = findViewById(R.id.linear_add_coupon);
         recyclerView = findViewById(R.id.recycler_view_coupon);
-//        for (int i = 0; i < 20; i++) {
-//            CouponSubInfo couponInfo = new CouponSubInfo();
-//            couponInfo.setTokenName("肯定基饭店" + i);
-//            couponInfo.setPrice("" + i);
-//            couponInfo.setUserStatus("领取");
-//            couponInfo.setRemainAmount("" + i);
-//            couponInfoList.add(couponInfo);
-//        }
-
         refreshLayout.setDelegate(this);
         refreshLayout.beginLoadingMore();
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(this, true);//微博效果
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
-        // 设置正在加载更多时不显示加载更多控件
+//         设置正在加载更多时不显示加载更多控件
         refreshLayout.setIsShowLoadingMoreView(true);
         // 设置正在加载更多时的文本
         refreshViewHolder.setLoadingMoreText("加载更多");
-//        couponListAdapter = new CouponListAdapter(CouponListActivity.this, couponInfoList, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two});
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(CouponListActivity.this, LinearLayoutManager.VERTICAL, false);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setAdapter(couponListAdapter);
 
         //添加卡劵
         addCoupon.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +183,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
     /* 上拉加载 */
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(final BGARefreshLayout refreshLayout) {
+        refreshLayout.setIsShowLoadingMoreView(true);
         if (pageNo != currentPage) {
             SCHttpUtils.get()
 //                    .url(HttpApi.COUPONS_LIST)
@@ -208,6 +197,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             closeLoadingDialog();
+                            refreshLayout.setIsShowLoadingMoreView(false);
                         }
 
                         @Override
@@ -215,7 +205,6 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                             closeLoadingDialog();
                             String code = JSONObject.parseObject(response).getString("code");
                             final String msg = JSONObject.parseObject(response).getString("msg");
-                            closeLoadingDialog();
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -239,7 +228,8 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                                     couponListAdapter.addData(loadMore);
                                     couponListAdapter.notifyDataSetChanged();
                                 }
-                                refreshLayout.endLoadingMore();
+//                                refreshLayout.endLoadingMore();
+                                refreshLayout.setIsShowLoadingMoreView(false);
                             } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
                                 Intent intent = new Intent(CouponListActivity.this, VerifiedActivity.class);
                                 startActivity(intent);
@@ -249,6 +239,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                     });
         }
         if (pageNo == currentPage) {
+            refreshLayout.setIsShowLoadingMoreView(false);
             return true;
         }
         return false;

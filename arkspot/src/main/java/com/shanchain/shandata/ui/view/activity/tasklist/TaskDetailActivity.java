@@ -123,6 +123,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
     private Conversation chatRoomConversation;
     private int page = 0;
     private int size = 10;
+    private boolean last = false, isLoadMore = false;
     private String characterId = SCCacheUtils.getCacheCharacterId();
     private String userId = SCCacheUtils.getCacheUserId();
     private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
@@ -986,7 +987,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
+                if (last == true) {
+                    return;
+                }
                 //判断RecyclerView的状态 是空闲时，同时，是最后一个可见的ITEM时才加载
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
                     page++;
@@ -1011,7 +1014,8 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                         LogUtils.d("TaskPresenterImpl", "查询任务成功");
                                         String data = JSONObject.parseObject(response).getString("data");
                                         String content = JSONObject.parseObject(data).getString("content");
-
+                                        String isLast = JSONObject.parseObject(response).getString("last");
+                                        last = Boolean.valueOf(isLast);
                                         List<ChatEventMessage> chatEventMessageList = JSONObject.parseArray(content
                                                 , ChatEventMessage.class);
                                         adapter.addData(chatEventMessageList);

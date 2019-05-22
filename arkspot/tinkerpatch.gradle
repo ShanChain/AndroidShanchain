@@ -7,7 +7,7 @@ import java.util.regex.Pattern
  */
 def bakPath = file("${buildDir}/bakApk/")
 def currentDate = getCurrentDateString()
-def baseInfo = "arkspot-2.3.7-0328-00-21-43"
+def baseInfo = "arkspot-2.4.3-0522-14-44-14"
 def variantName = "arkspot-release"
 
 /**
@@ -16,7 +16,7 @@ def variantName = "arkspot-release"
  */
 tinkerpatchSupport {
     /** 可以在debug的时候关闭 tinkerPatch, isRelease() 可以判断BuildType是否为Release **/
-    tinkerEnable = true
+    tinkerEnable = isRelease()
     reflectApplication = true
     /**
      * 是否开启加固模式，只能在APK将要进行加固时使用，否则会patch失败。
@@ -34,7 +34,7 @@ tinkerpatchSupport {
     appKey = "20235dfb4775b6d9"
 
     /** 注意: 若发布新的全量包, appVersion一定要更新 **/
-    appVersion = "2.3.7"
+    appVersion = "2.4.3"
 
     def pathPrefix = "${bakPath}/${baseInfo}/${variantName}"
     def name = "${project.name}-${variantName}"

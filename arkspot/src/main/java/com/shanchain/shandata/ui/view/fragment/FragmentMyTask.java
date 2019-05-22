@@ -99,31 +99,6 @@ public class FragmentMyTask extends BaseFragment implements SwipeRefreshLayout.O
         taskList.clear();
         taskPresenter.initUserTaskList(characterId, page, size);
         srlTaskList.setOnRefreshListener(this);
-
-//        ToastUtils.showToastLong(getContext(),SCCacheUtils.getCacheCharacterId());
-        for (int i = 2; i < 20; i++) {
-            ChatEventMessage chatEventMessage = new ChatEventMessage("测试", IMessage.MessageType.RECEIVE_TEXT.ordinal());
-            chatEventMessage.setIntro("测试" + i);
-            chatEventMessage.setTimeString("2018-12-10 12:12:12");
-            chatEventMessage.setBounty("80");
-            chatEventMessage.setName("测试" + i);
-            chatEventMessage.setRoomName("1235");
-            chatEventMessage.setExpiryTime(1542209938);
-            if (i == 0) {
-                chatEventMessage.setStatus(5);
-            } else if (i == 1) {
-                chatEventMessage.setStatus(15);
-            } else if (i == 2) {
-                chatEventMessage.setStatus(20);
-            } else if (i == 3) {
-                chatEventMessage.setStatus(21);
-            } else if (i == 4) {
-                chatEventMessage.setStatus(22);
-            } else {
-                chatEventMessage.setStatus(25);
-            }
-//            taskList.add(chatEventMessage);
-        }
         //5未领取 10已领取/正在完成， //15领取方已确认完成
         //20发布方确认完成，21发布方确认任务未完成 22 任务超时 25领取方任务取消
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
