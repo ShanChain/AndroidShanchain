@@ -20,10 +20,13 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
@@ -72,6 +75,7 @@ import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.HotChatRoomAdapter;
 import com.shanchain.shandata.adapter.ImagePickerAdapter;
+import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.event.EventMessage;
 //import com.shanchain.shandata.rn.activity.X5WebViewActivity;
@@ -91,6 +95,8 @@ import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
+import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
+import com.shanchain.shandata.ui.view.fragment.MainChatRoomFragment;
 import com.shanchain.shandata.utils.GlideImageLoader;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.utils.TextSearcher;
@@ -102,6 +108,8 @@ import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
 import com.shanchain.shandata.widgets.pickerimage.utils.Extras;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.zhangke.websocket.WebSocketHandler;
+import com.zhangke.websocket.WebSocketManager;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -150,10 +158,13 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private ImageView ivUserModify;
     private ImageView userHeadView;
     private View footerView;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
     BGARefreshLayout bgaRefreshLayout;
     private List<HotChatRoom> hotChatRoomList,
             searchRoomList = new ArrayList<>(),
             adapterChatRoomList = new ArrayList<>();
+    private List<Fragment> fragmentList = new ArrayList();
     private UserInfo mMyInfo;
     private Coordinates mCoordinates;
     private String localRoomName, localRoomID;
@@ -231,6 +242,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         try {
             initToolBar();
             initView();
+            setFragment();
             initData(pageNo, size, bgaRefreshLayout);
             //注册自定义消息广播
 //        registerMessageReceiver();
@@ -291,7 +303,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
         tvBtnTask = findViewById(R.id.text_btn_task);
         linearAddChatRoom = findViewById(R.id.linear_add_chat_room);
         bgaRefreshLayout = findViewById(R.id.refresh_layout);
-        mSearchView = findViewById(R.id.search_view);
+//        mSearchView = findViewById(R.id.search_view);
         bgaRefreshLayout.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(this, true);//微博效果
@@ -379,80 +391,25 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                 startActivity(intent);
             }
         });
-        //搜索按钮
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                if (mQuickAdapter != null && adapterChatRoomList != null) {
-                    mQuickAdapter.replaceData(adapterChatRoomList);
-                }
-                mSearchView.clearFocus();
-                pageNo = 0;
-                last = false;
-                return false;
-            }
-        });
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchRoomList.clear();
+    }
 
-                if (!TextUtils.isEmpty(query) && hotChatRoomList != null) {
-                    adapterChatRoomList.clear();
-                    adapterChatRoomList.addAll(hotChatRoomList);
-//                    for (int i = 0; i < hotChatRoomList.size(); i++) {
-//                        String roomName = hotChatRoomList.get(i).getRoomName();
-//                        String roomId = hotChatRoomList.get(i).getRoomId();
-//                        if (TextSearcher.contains(false, roomId, query) || TextSearcher.contains(false, roomName, query)) {
-//                            searchRoomList.add(hotChatRoomList.get(i));
-//                        } else {
-//                    showLoadingDialog(true);
-                    SCHttpUtils.getAndToken()
-                            .url(HttpApi.SEARCH_ROOM)
-                            .addParams("page", searchPage + "")
-                            .addParams("size", size + "")
-                            .addParams("roomName", query + "")
-                            .build()
-                            .execute(new SCHttpStringCallBack(FootPrintActivity.this) {
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    closeLoadingDialog();
-                                }
+    private void setFragment() {
+        mViewPager = findViewById(R.id.vp_main);
+        mTabLayout = findViewById(R.id.tab_layout_main);
+        String[] titles = {"热门元社区","ARS",};
+        fragmentList.add(new MainChatRoomFragment());
+        fragmentList.add(new MainARSGameFragment());
+        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setAdapter(adapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+        if (getIntent().getStringExtra("receiveTaskList") != null) {
+            mViewPager.setCurrentItem(1);
+        } else {
+            mViewPager.setCurrentItem(0);
+        }
+//        mViewPager.setOnPageChangeListener(this);
 
-                                @Override
-                                public void onResponse(String response, int id) {
-                                    String code = SCJsonUtils.parseCode(response);
-                                    if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                                        String data = SCJsonUtils.parseData(response);
-                                        searchRoomList = SCJsonUtils.parseArr(data, HotChatRoom.class);
-//                                        String content = SCJsonUtils.parseString(data, "content");
-//                                        searchRoomList = SCJsonUtils.parseArr(content, HotChatRoom.class);
-                                        if (searchRoomList != null && mQuickAdapter != null) {
-                                            mQuickAdapter.replaceData(searchRoomList);
-                                        }
-                                    }
-                                    closeLoadingDialog();
-                                }
-                            });
-//                    }
-//                }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() < 1) {
-                    pageNo = 0;
-                    last = false;
-                    if (mQuickAdapter != null && adapterChatRoomList != null) {
-                        mQuickAdapter.replaceData(adapterChatRoomList);
-                    }
-                }
-                return false;
-            }
-        });
     }
 
     private void initToolBar() {

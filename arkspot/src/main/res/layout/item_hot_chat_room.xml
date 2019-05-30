@@ -80,12 +80,13 @@
                 android:textColor="@color/colorTextDefault"
                 android:textSize="12sp" />
         </LinearLayout>
-        <Button
+        <TextView
             android:id="@+id/bt_item_join"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/shape_bg_msg_send_pressed"
+            android:gravity="center"
             android:text="进入"
             android:textColor="@color/white"
             android:textStyle="bold"

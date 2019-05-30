@@ -122,7 +122,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         settings.setBuiltInZoomControls(false);//是否显示缩放按钮，默认false
         settings.setUseWideViewPort(false);//设置此属性，可任意比例缩放。大视图模式
         settings.setLoadWithOverviewMode(true);//和setUseWideViewPort(true)一起解决网页自适应问题
-        settings.setAppCacheEnabled(false);//是否使用缓存
+        settings.setAppCacheEnabled(true);//是否使用缓存
         settings.setDomStorageEnabled(true);//开启本地DOM存储
 //        settings.setLayoutAlgorithm(com.tencent.smtt.sdk.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
@@ -258,12 +258,15 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         });
         mTvWebTbTitle.setText(mTitle);
 //        if (mTitle.equals("交易推送")) {
-//            mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=JPush";
+//            mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=JPush"+ "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");;
 //        } else {
 //            mUrl = mUrl + "?token=" + SCCacheUtils.getCacheToken() + "&characterId=" + SCCacheUtils.getCacheCharacterId() + "&userId=" + SCCacheUtils.getCacheUserId() + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
 //        }
 //        mWbSc.loadUrl("http://www.baidu.com");//加载url
 //        mWbSc.loadUrl(mUrl);//加载url
+        /**
+         * 防止token过期，获取最新token后再加载webView
+         */
         SCHttpUtils.postWithUserId()
                 .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
                 .url(HttpApi.CHARACTER_GET_CURRENT)
@@ -303,6 +306,11 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                             LogUtils.d("httpUrl", "" + mWbSc.getUrl() + " getOriginalUrl:" + mWbSc.getOriginalUrl());
                             LogUtils.d("httpTitle", "" + mTitle);
                         } else {
+                            if (mTitle.equals("交易推送")) {
+                                mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=" + map.get("JPush") + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
+                            } else {
+                                mUrl = mUrl + "?token=" + SCCacheUtils.getCacheToken() + "&characterId=" + SCCacheUtils.getCacheCharacterId() + "&userId=" + SCCacheUtils.getCacheUserId() + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
+                            }
                             mWbSc.loadUrl(mUrl);
                         }
                     }

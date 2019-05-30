@@ -29,4 +29,5 @@ public class MyDbOpenHelper extends DaoMaster.OpenHelper {
 //        DaoMaster.dropAllTables(db,true);
 //        DaoMaster.createAllTables(db,false);
     }
+
 }

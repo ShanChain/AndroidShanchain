@@ -77,7 +77,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
-        <!--ActiveAndroid 数据库操作配置:数据库名称jchat.db , 版本号4-->
+        <!-- ActiveAndroid 数据库操作配置:数据库名称jchat.db , 版本号4 -->
         <meta-data
             android:name="AA_DB_NAME"
             android:value="jchat.db" />
@@ -87,7 +87,6 @@
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="5" />
-
         <meta-data
             android:name="JPUSH_CHANNEL"
             android:value="developer-default" />
@@ -184,46 +183,50 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <!--Required 用户注册 SDK 的 intent-->
+
+                <!-- Required 用户注册 SDK 的 intent -->
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />
-                <!--Required 用户接收 SDK 消息的 intent-->
+                <!-- Required 用户接收 SDK 消息的 intent -->
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
-                <!--Required 用户接收 SDK 通知栏信息的 intent-->
+                <!-- Required 用户接收 SDK 通知栏信息的 intent -->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
-                <!--Required 用户打开自定义通知栏的 intent-->
+                <!-- Required 用户打开自定义通知栏的 intent -->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
+
                 <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
 
-        <!-- 推送自定义消息-->
-        <!--<receiver android:name=".receiver.CustomMessageReceiver">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="com.shanchain.shandata.MY_MESSAGE_RECEIVED_ACTION"></action>-->
-        <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> &lt;!&ndash; Required  用户接收SDK通知栏信息的intent &ndash;&gt;-->
-        <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />-->
-        <!--<category android:name="com.shanchain.shandata" />-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- 推送自定义消息 -->
+        <!-- <receiver android:name=".receiver.CustomMessageReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.shanchain.shandata.MY_MESSAGE_RECEIVED_ACTION"></action> -->
+        <!-- <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> &lt;!&ndash; Required  用户接收SDK通知栏信息的intent &ndash;&gt; -->
+        <!-- <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> -->
+        <!-- <category android:name="com.shanchain.shandata" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
-        <!--<receiver android:name=".receiver.MyLocationReceiver">-->
-        <!--<intent-filter>-->
-        <!--<action android:name=".receiver.MyLocationReceiver"></action>-->
-        <!--<category android:name="com.shanchain.shandata"></category>-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+
+        <!-- <receiver android:name=".receiver.MyLocationReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name=".receiver.MyLocationReceiver"></action> -->
+        <!-- <category android:name="com.shanchain.shandata"></category> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+
 
         <!-- 极光推送  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调 -->
-        <!--<receiver android:name=".receiver.MyJPushMessageReceiver">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />-->
-        <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> &lt;!&ndash; Required  用户接收SDK通知栏信息的intent &ndash;&gt;-->
-        <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />-->
-        <!--<category android:name="com.shanchain.shandata" />-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver android:name=".receiver.MyJPushMessageReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" /> -->
+        <!-- <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> &lt;!&ndash; Required  用户接收SDK通知栏信息的intent &ndash;&gt; -->
+        <!-- <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> -->
+        <!-- <category android:name="com.shanchain.shandata" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <!--
             &lt;!&ndash; Required since JMessage 2.7.0 SDK 核心功能 &ndash;&gt;
         <provider
@@ -244,9 +247,9 @@
 
         </service>
         -->
-        <!-- Required SDK 核心功能-->
+        <!-- Required SDK 核心功能 -->
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
-        <!-- Required SDK 核心功能-->
+        <!-- Required SDK 核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -259,7 +262,7 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </activity>
-        <!-- SDK 核心功能-->
+        <!-- SDK 核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PopWinActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -270,12 +273,11 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </activity>
-        <!-- Required SDK 核心功能-->
+        <!-- Required SDK 核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false"></service>
-
+            android:exported="false" />
 
         <!-- activity页面注册 -->
         <activity
@@ -562,7 +564,8 @@
         <activity android:name="com.shanchain.data.common.ui.SetWalletPasswordActivity" />
         <activity android:name=".ui.view.activity.jmessageui.FriendInfoActivity" />
         <activity android:name=".ui.view.activity.jmessageui.PersonalActivity" />
-        <!--<activity android:name=".rn.activity.X5WebViewActivity" />-->
+        <!-- <activity android:name=".rn.activity.X5WebViewActivity" /> -->
+        <activity android:name=".ui.view.activity.MainEntranceActivity"></activity>
     </application>
 
 </manifest>

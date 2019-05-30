@@ -2,6 +2,7 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -74,6 +75,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -86,6 +88,7 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -140,6 +143,11 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
 import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
+import com.zhangke.websocket.SimpleListener;
+import com.zhangke.websocket.SocketListener;
+import com.zhangke.websocket.WebSocketHandler;
+import com.zhangke.websocket.WebSocketManager;
+import com.zhangke.websocket.response.ErrorResponse;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -148,6 +156,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -334,6 +343,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private List imgList = new ArrayList();
     private LatLng myLatLng;
     private Bundle mBundle;
+    private WebSocketManager mWebSocketManager;
     private Handler shareHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
@@ -341,7 +351,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             closeProgress();
             String toastMsg = (String) msg.obj;
             Toast.makeText(MessageListActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
-
         }
     };
     private PlatActionListener mPlatActionListener = new PlatActionListener() {
@@ -378,6 +387,114 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private List<MessageEntry> mMessageEntryList;
     private boolean mIsHasRoom;
     private MessageEntryDao mMessageEntryDao;
+    private com.shanchain.data.common.ui.widgets.CustomDialog sureDialog;
+    //webSocket监听
+    private SocketListener mSocketListener = new SimpleListener() {
+        @Override
+        public <T> void onMessage(final String message, T data) {
+//                super.onMessage(message, data);
+            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "接收到的message:" + message);
+            String webSocketCode = SCJsonUtils.parseString(message, "code");
+            String webSocketData = SCJsonUtils.parseString(message, "data");
+            String type = SCJsonUtils.parseString(message, "type");
+            if ("00000000".equals(webSocketCode)) {
+                switch (type) {
+                    case "ARSPaySuccess"://支付成功进入首层
+                        String userId = SCJsonUtils.parseString(webSocketData, "userId");
+                        if (userId.equals(SCCacheUtils.getCacheUserId())) {
+
+                        }
+                        break;
+                    case "makeSure"://确认进入下一层
+//                        if (sureDialog != null) {
+//                            sureDialog.dismiss();
+//                        }
+//                        String joinNextUse = SCJsonUtils.parseString(webSocketData, "userId");
+//                        if (joinNextUse.equals(SCCacheUtils.getCacheUserId())) {
+//                            showLoadingDialog(false);
+//                            String s = SCCacheUtils.getCacheUserId();
+//                            enterNextRoom();
+//                        }
+                        break;
+                    case "confirmNum":
+                        String num = SCJsonUtils.parseString(webSocketData, "num");
+                        String confirmString = SCJsonUtils.parseString(webSocketData, "confirmList");
+                        List<String> confirmList = SCJsonUtils.parseArr(confirmString, String.class);
+                        //是否点击确认
+                        isConfirm(num, confirmList);
+                        break;
+                    case "SysMessage": //显示确认进入
+                        final String endTime = SCJsonUtils.parseString(webSocketData, "endTime");
+                        String list = SCJsonUtils.parseString(webSocketData, "list");
+                        List<String> users = SCJsonUtils.parseArr(list, String.class);
+                        if (users.indexOf("" + SCCacheUtils.getCacheUserId()) != -1) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
+                                    sureDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(topActivity, false, 1.0,
+                                            R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
+                                    sureDialog.setDialogTitle("下一层元社区已开启");
+                                    sureDialog.setMessageContent("点击确认进入元社区，否则您将被踢出聊天室");
+                                    sureDialog.setSureText("确认");
+                                    sureDialog.setMessageContentSize(16);
+                                    sureDialog.show();
+                                    sureDialog.setCanceledOnTouchOutside(false);
+                                    sureDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
+                                        @Override
+                                        public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
+                                            switch (view.getId()) {
+                                                case R.id.btn_dialog_task_detail_sure:
+                                                    Map dataMap = new HashMap();
+                                                    dataMap.put("userId", SCCacheUtils.getCacheUserId());
+                                                    dataMap.put("charcterId", SCCacheUtils.getCacheCharacterId());
+                                                    dataMap.put("type", "makeSure");
+                                                    final String dataString = JSONObject.toJSONString(dataMap);
+                                                    WebSocketHandler.getDefault().send(dataString);
+                                                    long overTime = Long.valueOf(endTime);//结束时间
+                                                    long currentTime = System.currentTimeMillis(); //当前时间
+                                                    if (currentTime > overTime) {
+                                                        sureDialog.dismiss();
+                                                        ThreadUtils.runOnMainThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                ToastUtils.showToast(MessageListActivity.this, "进入下一层时间已过期");
+                                                            }
+                                                        });
+                                                    } else {
+                                                        //进入下一层
+                                                        showLoadingDialog(false);
+                                                        enterNextRoom();
+                                                        sureDialog.dismiss();
+                                                    }
+
+                                                    break;
+                                                case R.id.linear_layout:
+
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        break;
+                }
+            }
+        }
+
+        @Override
+        public void onSendDataError(ErrorResponse errorResponse) {
+            super.onSendDataError(errorResponse);
+            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "发送消息失败:" + errorResponse.toString());
+        }
+
+        @Override
+        public <T> void onMessage(ByteBuffer bytes, T data) {
+            super.onMessage(bytes, data);
+            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "接收到的bytes:");
+        }
+    };
 
     @Override
     protected int getContentViewLayoutID() {
@@ -460,6 +577,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 }
             }
         };
+
     }
 
     @Override
@@ -471,8 +589,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         roomName = intent.getStringExtra("roomName");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
         isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
-        JMessageClient.registerEventReceiver(MessageListActivity.this);
+        JMessageClient.registerEventReceiver(this);
+        //进入聊天室
+        showLoadingDialog();
         enterChatRoom();
+//        获取WebSocket管理对象
+        WebSocketHandler.getDefault().addListener(mSocketListener);
         super.onCreate(savedInstanceState);
     }
 
@@ -541,6 +663,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 enterChatRoom();
                             }
                         });
+                        closeLoadingDialog();
                     } else if (i == 871300) {//未登录
                         LogUtils.d("enterChatRoom", "成员未登录 code:" + i);
                         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxUserName(), new BasicCallback() {
@@ -562,9 +685,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 }
                             }
                         });
+                        closeLoadingDialog();
                     } else if (i == 852001) {
                         closeLoadingDialog();
                     }
+                    closeLoadingDialog();
                 }
             });
         } else {
@@ -586,7 +711,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("####### USER_COORDINATE 请求失败 #######");
-                        closeProgress();
+                        closeLoadingDialog();
                     }
 
                     @Override
@@ -603,6 +728,58 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         closeLoadingDialog();
                     }
                 });
+    }
+
+    //进入下一层
+    private void enterNextRoom() {
+        SCHttpUtils.post()
+                .url(HttpApi.ENTER_NEXT_CHAT_ROOM)
+                .addParams("userId", "" + SCCacheUtils.getCacheUserId())
+                .addParams("subuserId", "" + SCCacheUtils.getCacheCharacterId())
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        closeLoadingDialog();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        LogUtils.d("进入下一层", "response:" + response);
+                        closeLoadingDialog();
+                        ThreadUtils.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtils.showToast(MessageListActivity.this, "已进入下一层房间");
+                            }
+                        });
+                        if (sureDialog != null) {
+                            sureDialog.dismiss();
+                        }
+                    }
+                });
+    }
+
+    //是否点击确认
+    private void isConfirm(String num, List<String> confirmList) {
+        if (!num.equals("0")) {
+            if (confirmList.indexOf(SCCacheUtils.getCacheUserId()) != -1) {
+                if (sureDialog != null) {
+                    sureDialog.dismiss();
+                }
+            }
+        } else {
+            if (sureDialog != null) {
+                sureDialog.dismiss();
+            }
+//            ThreadUtils.runOnMainThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ToastUtils.showToast(MessageListActivity.this, "进入下一层时间已过期");
+//                }
+//            });
+        }
     }
 
     private void initView() {
@@ -3991,6 +4168,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                LogUtils.d("leaveChatRoom", "离开聊天室");
 //            }
 //        });
+        WebSocketHandler.getDefault().removeListener(mSocketListener);
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
     }

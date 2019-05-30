@@ -578,8 +578,8 @@ public interface HttpApi {
     //隐私政策
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
-//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-        String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+    //        String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
@@ -618,6 +618,8 @@ public interface HttpApi {
     String SHARE_CHAT_ROOM = BASE_URL + "/v1/2.0/share/shareRoom";
     /* 热门元社区 */
     String HOT_CHAT_ROOM = BASE_URL + "/web/api/sys/hotChatRoom";
+    //ARS聊天室
+    String ARS_ROOM_LIST = BASE_URL + "/v1/2.0/arsRoomList";
     /* 搜索房间 */
     String SEARCH_ROOM = BASE_URL + "/v1/2.0/hotChatRoom/search";
     /* 是否为聊天室创建人员 */
@@ -659,5 +661,9 @@ public interface HttpApi {
     String COUPON_CHECK_TOKEN = BASE_URL + "/wallet/api/coupons/token";
     /* 核销子卡劵 */
     String COUPON_CLIENT_USE = BASE_URL + "/wallet/api/coupons/client/useCoupons";
+    //进入首层接口
+    String ENTER_CHAT_ROOM = BASE_URL + "/v1/2.0/ars/enterfirstfloor";
+    //进入下一层接口
+    String ENTER_NEXT_CHAT_ROOM = BASE_URL + "/v1/2.0/ars/confirm";
 
 }

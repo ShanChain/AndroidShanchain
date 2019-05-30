@@ -27,5 +27,6 @@
     <color name="aurora_video_message_duration_text_color">#545454</color>
     <!--首页地图按钮-->
     <color name="colorHomeBtn">#56D1F4</color>
+    <color name="colorARS">#e056D1F4</color>
 
 </resources>

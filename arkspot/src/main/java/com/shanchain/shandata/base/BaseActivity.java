@@ -199,6 +199,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }        //获取极光推送绑定的设备号
         registrationId = JPushInterface.getRegistrationID(getApplicationContext());
+        // 添加Activity入栈
+        ActivityManager.getInstance().addActivity(this);
+        ActivityStackManager.getInstance().addActivity(this);
         //获取本机唯一标识
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -217,12 +220,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
 //        RNManager.getInstance().init(getApplication());
-        // 添加Activity入栈
-        ActivityManager.getInstance().addActivity(this);
-        ActivityStackManager.getInstance().addActivity(this);
         //判断Activity栈是否为空
         if (!ActivityStackManager.getInstance().getActivityStack().empty()) {
-            JMessageClient.registerEventReceiver(mContext);
+            if (mContext != null) {
+//                JMessageClient.registerEventReceiver(mContext);
+            }
         }
         //竖屏锁定
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
@@ -968,7 +970,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             msg = "确定要更新吗？";
         }
-        final StandardDialog dialog = new StandardDialog(this);
+        final StandardDialog dialog = new StandardDialog(mContext);
         dialog.setStandardTitle("发现新版本 (" + version + ")");
         dialog.setStandardMsg(msg);
         dialog.setSureText("确定");
@@ -1181,15 +1183,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void showLoadingDialog(boolean cancelable) {
-        mCustomDialog = new CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
-        mCustomDialog.show();
-        mCustomDialog.setCancelable(cancelable);
+        if (mContext != null) {
+            mCustomDialog = new CustomDialog(mContext, 0.4, R.layout.common_dialog_progress, null);
+            mCustomDialog.show();
+            mCustomDialog.setCanceledOnTouchOutside(cancelable);
+        }
     }
 
     protected void showLoadingDialog() {
-        mCustomDialog = new CustomDialog(this, 0.4, R.layout.common_dialog_progress, null);
-        mCustomDialog.show();
-        mCustomDialog.setCancelable(false);
+        if (mContext != null) {
+            mCustomDialog = new CustomDialog(mContext, 0.4, R.layout.common_dialog_progress, null);
+            mCustomDialog.show();
+            mCustomDialog.setCanceledOnTouchOutside(false);
+        }
     }
 
     protected void closeLoadingDialog() {

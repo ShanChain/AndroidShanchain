@@ -50,7 +50,11 @@ import com.tinkerpatch.sdk.server.callback.RollbackCallBack;
 import com.tinkerpatch.sdk.server.callback.TinkerPatchRequestCallback;
 import com.tinkerpatch.sdk.tinker.callback.ResultCallBack;
 import com.tinkerpatch.sdk.tinker.service.TinkerServerResultService;
+import com.umeng.commonsdk.debug.W;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
+import com.zhangke.websocket.WebSocketHandler;
+import com.zhangke.websocket.WebSocketManager;
+import com.zhangke.websocket.WebSocketSetting;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -59,6 +63,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cn.jiguang.share.android.api.JShareInterface;
@@ -127,7 +132,6 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     public static int maxImgCount;               //允许选择图片最大数
     public static final String GROUP_NAME = "groupName";
     private ApplicationLike tinkerApplicationLike;
-    private static DaoSession daoSession;
 
     /**
      * 描述：本地手机设备号
@@ -154,12 +158,14 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
      */
     protected static boolean isRealName = false;
     private static DaoMaster daoMaster;
+    private static DaoSession daoSession;
+    private WebSocketManager mWebSocketManager;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = getApplicationContext();
+        mContext = this;
         setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
         SoLoader.init(this, /* native exopackage */ false);
         //加载ActiveAndroid配置文件
@@ -170,7 +176,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         builder.addModelClasses(FriendRecommendEntry.class);
         ActiveAndroid.initialize(builder.create());
         //facebook初始化
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(this);
         AppEventsLogger.activateApp(this);
         SDKInitializer.initialize(this);//初始化百度地图sdk
         initBaiduMap();//初始化百度地图
@@ -182,9 +188,10 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         initDB();
         initSCCache();
         //初始化Tinker热修复
-//        initTinkerPatch();
         useSample();
         initBugly();//bugly崩溃日志上报
+        //初始化WebSocket
+//        initWebSocket();
     }
 
     public String getSystemLanguge() {
@@ -210,6 +217,40 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         Intent intent = new Intent();
 //        intent.setAction(".receiver.MyLocationReceiver");
 //        sendBroadcast(intent);
+    }
+
+    //初始化webSocket
+    private void initWebSocket() {
+        WebSocketSetting setting = new WebSocketSetting();
+        //设置连接的地址
+        setting.setConnectUrl("ws://test.qianqianshijie.com:8081/websocket/" + SCCacheUtils.getCacheUserId());
+//        setting.setConnectUrl("ws://121.40.165.18:8800");
+        //设置连接超时时间，单位：毫秒
+        setting.setConnectTimeout(20 * 1000);
+        //设置心跳间隔时间单位：秒
+        setting.setConnectionLostTimeout(60 * 3);
+        //设置断开后的重连次数，可以设置的很大，不会有什么性能上的影响
+        setting.setReconnectFrequency(400);
+        //设置 Headers
+//        Map header = new HashMap();
+//        header.put("userId", "" + SCCacheUtils.getCacheUserId());
+//        setting.setHttpHeaders(header);
+        //设置消息分发器，接收到数据后先进入该类中处理，处理完再发送到下游
+        setting.setResponseProcessDispatcher(new AppResponseDispatcher());
+//        接收到数据后是否放入子线程处理，只有设置了 ResponseProcessDispatcher 才有意义
+        setting.setProcessDataOnBackground(true);
+        //网络状态发生变化后是否重连，
+//        需要调用 WebSocketHandler.registerNetworkChangedReceiver(context) 方法注册网络监听广播
+        setting.setReconnectWithNetworkChanged(true);
+        //通过 init 方法初始化默认的 WebSocketManager 对象
+        WebSocketManager mWebSocketManager = WebSocketHandler.init(setting);
+        //通过UserId做为唯一标识，新建一个 WebSocket 连接
+//        mWebSocketManager = WebSocketHandler.initGeneralWebSocket(SCCacheUtils.getCacheUserId(), setting);
+        //启动连接
+        mWebSocketManager.start();
+        //注意，需要在 AndroidManifest 中配置网络状态获取权限
+        //注册网路连接状态变化广播
+        WebSocketHandler.registerNetworkChangedReceiver(this);
     }
 
     /**
@@ -286,7 +327,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
                     .setPatchCondition("userId", "" + SCCacheUtils.getCacheUserId())
                     //设置补丁合成成功后,锁屏重启程序
                     //默认是等应用自然重启
-                    .setPatchRestartOnSrceenOff(true)
+                    .setPatchRestartOnSrceenOff(false)
                     //我们可以通过ResultCallBack设置对合成后的回调
                     //例如弹框什么
                     //注意，setPatchResultCallback 的回调是运行在 intentService 的线程中

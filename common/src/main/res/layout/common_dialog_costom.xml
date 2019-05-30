@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -23,7 +24,7 @@
             android:layout_marginBottom="@dimen/dimens_10dp"
             android:text="活动规则"
             android:textColor="@color/colorTextDefault"
-            android:textSize="20sp" />
+            android:textSize="@dimen/sp_16" />
 
         <ImageView
             android:id="@+id/iv_dialog_close"
@@ -50,7 +51,7 @@
         android:singleLine="false"
         android:text=""
         android:textColor="@color/colorTextDefault"
-        android:textSize="12sp" />
+        android:textSize="16sp" />
 
 
 
@@ -64,12 +65,12 @@
         <Button
             android:id="@+id/btn_dialog_task_detail_sure"
             android:layout_width="180dp"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:background="@drawable/shape_btn_dialog_sure"
             android:text="我知道了"
             android:textColor="#fff"
             android:focusableInTouchMode="false"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 

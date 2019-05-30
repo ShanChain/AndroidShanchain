@@ -23,6 +23,11 @@ public class HotChatRoom implements Parcelable, MultiItemEntity {
     private String background;
     private String type;
     private String sortNo;
+    private String userNum;
+    private String byUser;
+    private boolean litUp;
+    private boolean pay;
+
 
     public HotChatRoom() {
 
@@ -57,8 +62,6 @@ public class HotChatRoom implements Parcelable, MultiItemEntity {
     public void setUserNum(String userNum) {
         this.userNum = userNum;
     }
-
-    private String userNum;
 
     public int getId() {
         return id;
@@ -114,6 +117,30 @@ public class HotChatRoom implements Parcelable, MultiItemEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getByUser() {
+        return byUser;
+    }
+
+    public void setByUser(String byUser) {
+        this.byUser = byUser;
+    }
+
+    public boolean isLitUp() {
+        return litUp;
+    }
+
+    public void setLitUp(boolean litUp) {
+        this.litUp = litUp;
+    }
+
+    public boolean isPay() {
+        return pay;
+    }
+
+    public void setPay(boolean pay) {
+        this.pay = pay;
     }
 
     @Override
