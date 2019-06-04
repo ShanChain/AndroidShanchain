@@ -175,7 +175,7 @@ dependencies {
     //webSocketDemo依赖
     implementation 'com.github.0xZhangKe:WebSocketDemo:3.0.1'
     //androidasync  WebSocket
-    implementation 'com.koushikdutta.async:androidasync:2.+'
+//    implementation 'com.koushikdutta.async:androidasync:2.+'
     //greendao依赖
     implementation 'org.greenrobot:greendao:3.2.2'
 

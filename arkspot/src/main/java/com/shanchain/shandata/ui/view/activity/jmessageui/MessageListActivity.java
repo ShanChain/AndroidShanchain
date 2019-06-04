@@ -122,6 +122,7 @@ import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
+import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.GlideImageLoader;
 import com.shanchain.shandata.utils.MyEmojiFilter;
@@ -319,6 +320,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private ArrayList<String> mMsgIdList = new ArrayList<>();
     private ChatEventMessage chatEventMessage;
     private List<MyMessage> messageList = new ArrayList<>();
+    private List<MyMessage> mEventMessageList = new ArrayList<>();
     private Conversation chatRoomConversation, localConversation;
     private List<Conversation> allRoomConversation;
 
@@ -427,6 +429,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         final String endTime = SCJsonUtils.parseString(webSocketData, "endTime");
                         String list = SCJsonUtils.parseString(webSocketData, "list");
                         List<String> users = SCJsonUtils.parseArr(list, String.class);
+                        final long overTime = Long.valueOf(endTime);//结束时间
+                        final long currentTime = System.currentTimeMillis(); //当前系统时间
                         if (users.indexOf("" + SCCacheUtils.getCacheUserId()) != -1) {
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
@@ -440,6 +444,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                     sureDialog.setMessageContentSize(16);
                                     sureDialog.show();
                                     sureDialog.setCanceledOnTouchOutside(false);
+                                    if (currentTime < overTime) {
+                                        TextView countDown = sureDialog.findViewById(R.id.text_count_down);
+                                        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(countDown, "确认倒计时：", overTime - currentTime, 1000);
+                                        countDownTimeUtils.start();
+                                    }
                                     sureDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
                                         @Override
                                         public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
@@ -451,8 +460,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                                     dataMap.put("type", "makeSure");
                                                     final String dataString = JSONObject.toJSONString(dataMap);
                                                     WebSocketHandler.getDefault().send(dataString);
-                                                    long overTime = Long.valueOf(endTime);//结束时间
-                                                    long currentTime = System.currentTimeMillis(); //当前时间
                                                     if (currentTime > overTime) {
                                                         sureDialog.dismiss();
                                                         ThreadUtils.runOnMainThread(new Runnable() {
@@ -2654,6 +2661,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 localSaveMessage(mMsgs);
             }
         }).start();
+        if (mMsgs.size() > 1) {
+            mEventMessageList.clear();
+        }
         //加载消息
         MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
 //        if (mConversationEntry.getMessageEntry() != null) {
@@ -2729,9 +2739,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                                messageEntry.setMessageType("text");
 //                                messageEntry.setMessageText(textContent.getText() + "");
 //                                mMessageEntryDao.insertOrReplace(messageEntry);
-                                localSaveMessage(chatRoomConversationAllMessage);
+//                                localSaveMessage(chatRoomConversationAllMessage);
                             }
-
+                            mEventMessageList.add(textMessage);
                         }
                         break;
                     case image:
@@ -2787,6 +2797,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             messageList.add(imgMessage);
                             mAdapter.addToStart(imgMessage, true);
                         }
+                        mEventMessageList.add(imgMessage);
                         break;
                     case voice:
                         //处理语音消息
@@ -2839,6 +2850,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             messageList.add(voiceMessage);
                             mAdapter.addToStart(voiceMessage, true);
                         }
+                        mEventMessageList.add(voiceMessage);
                         break;
                     case location:
                         break;
@@ -2899,6 +2911,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             messageList.add(videoMessage);
                             mAdapter.addToStart(videoMessage, true);
                         }
+                        mEventMessageList.add(videoMessage);
                         break;
                     case file:
                         LogUtils.d("ChatRoomMessageEvent file", "第" + i + "个" + msg.getContent().toJson().toString());
@@ -3037,6 +3050,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             messageList.add(fileMessage);
                             mAdapter.addToStart(fileMessage, true);
                         }
+                        mEventMessageList.add(fileMessage);
                     case eventNotification:
                         break;
                     case custom:
@@ -3071,19 +3085,18 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     case prompt:
                         break;
                     default:
-//                    initMsgAdapter();
                         closeProgress();
                         break;
                 }
-                closeProgress();
             }
 //        }
-//            mData = messageList;
-//        mAdapter.addToEndChronologically(mData);
-//        initMsgAdapter();
-            closeProgress();
         }
-//        }
+        if (mMsgs.size() > 1) {
+            mAdapter.clear();
+            mAdapter.addToEndChronologically(mEventMessageList);
+            mAdapter.notifyDataSetChanged();
+        }
+//    }
     }
 
     public void onEventMainThread(ConversationRefreshEvent event) {

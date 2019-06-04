@@ -12,11 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.koushikdutta.async.http.AsyncHttpClient;
+//import com.koushikdutta.async.http.AsyncHttpClient;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -40,6 +41,7 @@ import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainEntranceActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.other.MyLoadMoreView;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.zhangke.websocket.SimpleListener;
@@ -134,12 +136,15 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                     case "SysMessage": //显示确认进入
                         final String endTime = SCJsonUtils.parseString(webSocketData, "endTime");
                         String list = SCJsonUtils.parseString(webSocketData, "list");
+                        final long overTime = Long.valueOf(endTime);//结束时间
+                        final long currentTime = System.currentTimeMillis(); //当前时间
                         List<String> users = SCJsonUtils.parseArr(list, String.class);
                         if (users.indexOf("" + SCCacheUtils.getCacheUserId()) != -1) {
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
+                                    Activity topActivity = ActivityStackManager.getInstance().getTopActivity() != null ?
+                                            ActivityStackManager.getInstance().getTopActivity() : getActivity();
                                     sureDialog = new CustomDialog(topActivity, false, 1.0,
                                             R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
                                     sureDialog.setDialogTitle("下一层元社区已开启");
@@ -148,6 +153,11 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                     sureDialog.setMessageContentSize(16);
                                     sureDialog.show();
                                     sureDialog.setCanceledOnTouchOutside(false);
+                                    if (currentTime < overTime) {
+                                        TextView countDown = sureDialog.findViewById(R.id.text_count_down);
+                                        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(countDown, "确认倒计时：", overTime - currentTime, 1000);
+                                        countDownTimeUtils.start();
+                                    }
                                     sureDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                                         @Override
                                         public void OnItemClick(CustomDialog dialog, View view) {
@@ -159,8 +169,6 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                                     dataMap.put("type", "makeSure");
                                                     final String dataString = JSONObject.toJSONString(dataMap);
                                                     WebSocketHandler.getDefault().send(dataString);
-                                                    long overTime = Long.valueOf(endTime);//结束时间
-                                                    long currentTime = System.currentTimeMillis(); //当前时间
                                                     if (currentTime > overTime) {
                                                         sureDialog.dismiss();
                                                         ThreadUtils.runOnMainThread(new Runnable() {
@@ -266,7 +274,8 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         super.onCreate(savedInstanceState);
         //获取WebSocket管理对象
         final WebSocketSetting socketSetting = new WebSocketSetting();
-        socketSetting.setConnectUrl("ws://test.qianqianshijie.com:8081/websocket/" + SCCacheUtils.getCacheUserId());
+//        socketSetting.setConnectUrl("ws://test.qianqianshijie.com:8081/websocket/" + SCCacheUtils.getCacheUserId());
+        socketSetting.setConnectUrl("ws://api.qianqianshijie.com:8081/websocket/" + SCCacheUtils.getCacheUserId());
         //设置连接超时时间，单位：毫秒
         socketSetting.setConnectTimeout(20 * 1000);
         //心跳包
@@ -286,7 +295,11 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
             }
         });
         //注册网路连接状态变化广播
-        WebSocketHandler.registerNetworkChangedReceiver(getContext());
+        try {
+            WebSocketHandler.registerNetworkChangedReceiver(getContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Map webSocket = WebSocketHandler.getAllWebSocket();
         LogUtils.d("webSocketSize", webSocket.size() + "");
     }

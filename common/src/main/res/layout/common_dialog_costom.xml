@@ -53,6 +53,13 @@
         android:textColor="@color/colorTextDefault"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/text_count_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorViolet"
+        android:gravity="center"
+        android:layout_gravity="center"/>
 
 
     <LinearLayout
