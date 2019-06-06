@@ -3,8 +3,13 @@ package com.shanchain.shandata.ui.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +21,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 //import com.koushikdutta.async.http.AsyncHttpClient;
 import com.shanchain.data.common.base.ActivityStackManager;
@@ -23,11 +30,13 @@ import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.VersionUtils;
@@ -39,10 +48,13 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainEntranceActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CreateCouponActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.other.MyLoadMoreView;
+import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.zhangke.websocket.SimpleListener;
 import com.zhangke.websocket.SocketListener;
@@ -52,8 +64,11 @@ import com.zhangke.websocket.WebSocketSetting;
 import com.zhangke.websocket.response.ErrorResponse;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +78,8 @@ import butterknife.ButterKnife;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.jpush.im.android.api.JMessageClient;
 import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.WebSocket;
@@ -247,6 +264,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
             LogUtils.d("WebSocketHandler", "接收到的bytes:");
         }
     };
+    private CustomDialog mShowPasswordDialog;
 
     //是否点击确认
     private void isConfirm(String num, List<String> confirmList) {
@@ -373,18 +391,60 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 @Override
                                 public void onItemClick(final BaseQuickAdapter adapter, View view, final int position) {
                                     HotChatRoom item = (HotChatRoom) adapter.getItem(position);
-                                    if (position == 0) {
-                                        //构造webSocket消息
-                                        Map dataMap = new HashMap();
-                                        dataMap.put("userId", SCCacheUtils.getCacheUserId());
-                                        dataMap.put("type", "ARSPaySuccess");
-                                        final String dataString = JSONObject.toJSONString(dataMap);
-                                        WebSocketHandler.getDefault().send("" + dataString);
-                                        //asyncHttpWebSocket消息发送及回调'
-//                                        httpWebSocket(dataString, "ws://test.qianqianshijie.com:8081/websocket/" + "123456");
+                                    if (position == 0 && !item.isPay()) {
+//                                        //构造webSocket消息
+//                                        Map dataMap = new HashMap();
+//                                        dataMap.put("userId", SCCacheUtils.getCacheUserId());
+//                                        dataMap.put("type", "ARSPaySuccess");
+//                                        final String dataString = JSONObject.toJSONString(dataMap);
+//                                        WebSocketHandler.getDefault().send("" + dataString);
 
-//                                        httpWebSocket(dataString, "ws://121.40.165.18:8800");
-//                                        enterChatRoom();
+                                        final StandardDialog standardDialog = new StandardDialog(getContext());
+                                        standardDialog.setStandardTitle("支付SEAT");
+                                        standardDialog.setStandardMsg("进入首层需支付100 SEAT");
+                                        standardDialog.setSureText("确认支付");
+                                        standardDialog.setCallback(new Callback() {
+                                            @Override
+                                            public void invoke() {//确认
+                                                standardDialog.dismiss();
+                                                ThreadUtils.runOnMainThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        //显示上传密码弹窗
+                                                        mShowPasswordDialog = new CustomDialog(getContext(), true, 1.0,
+                                                                R.layout.dialog_bottom_wallet_password,
+                                                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                                                        mShowPasswordDialog.setPasswordBitmap(null);
+                                                        mShowPasswordDialog.show();
+                                                        mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                                                            @Override
+                                                            public void OnItemClick(CustomDialog dialog, View view) {
+                                                                switch (view.getId()) {
+                                                                    case R.id.iv_dialog_add_picture:
+                                                                        selectImage(getContext());
+                                                                        break;
+                                                                    case R.id.tv_dialog_sure:
+                                                                        ToastUtils.showToast(getContext(), "请上传图片二维码");
+                                                                        break;
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }, new Callback() {//取消
+                                            @Override
+                                            public void invoke() {
+                                                standardDialog.dismiss();
+                                            }
+                                        });
+                                        ThreadUtils.runOnMainThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                standardDialog.show();
+                                            }
+                                        });
+
                                     } else {
                                         if (item.isLitUp()) {
                                             Intent intent = new Intent(getContext(), MessageListActivity.class);
@@ -407,6 +467,39 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                         closeLoadingDialog();
                     }
                 });
+    }
+
+    private void payForARS(File file, String money) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        double payMoney = Double.parseDouble(money);
+        //创建requestBody
+        MediaType MEDIA_TYPE = MediaType.parse("image/*");
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                .addFormDataPart("file", file.getName(), fileBody)
+                .addFormDataPart("subuserId", "" + SCCacheUtils.getCacheCharacterId())
+                .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
+                .addFormDataPart("value", "" + money)//支付金额
+                .setType(MultipartBody.FORM);
+        RequestBody multiBody = multiBuilder.build();
+        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyCallBack(getContext(), null) {
+            @Override
+            public void responseDoParse(String string) throws IOException {
+                String code = SCJsonUtils.parseCode(string);
+                String msg = SCJsonUtils.parseMsg(string);
+                if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                    String data = SCJsonUtils.parseData(string);
+                    if (mShowPasswordDialog != null) {
+                        mShowPasswordDialog.dismiss();
+                    }
+                    Map dataMap = new HashMap();
+                    dataMap.put("userId", SCCacheUtils.getCacheUserId());
+                    dataMap.put("type", "ARSPaySuccess");
+                    final String dataString = JSONObject.toJSONString(dataMap);
+                    WebSocketHandler.getDefault().send("" + dataString);
+                }
+            }
+        });
     }
 
     //刷新首页列表
@@ -446,19 +539,6 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                         closeLoadingDialog();
                     }
                 });
-    }
-
-    private void httpWebSocket(final String dataString, String webSocketUrl) {
-        Request request = new Request.Builder()
-                .url(webSocketUrl)
-                .build();
-        OkHttpUtils.getInstance().getOkHttpClient().newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                super.onMessage(webSocket, text);
-                LogUtils.d("webSocket", "接收到的消息： " + text);
-            }
-        }).send(dataString);
     }
 
     //进入首层
@@ -665,5 +745,50 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         pageNo = 0;
         refreshRoomList(pageNo, size, refreshLayoutArsgame);
         refreshLayoutArsgame.setRefreshing(false);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && data.getData() != null) {
+            if (requestCode == NetErrCode.WALLET_PHOTO) {
+                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContext().getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                //获取照片路径
+                String photoPath = cursor.getString(columnIndex);
+//            ToastUtils.showToastLong(getContext(), "选择的图片途径：" + photoPath);
+                cursor.close();
+                final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                final File mPasswordFile = new File(photoPath);
+                if (mShowPasswordDialog != null) {
+                    mShowPasswordDialog.dismiss();
+                    mShowPasswordDialog.setPasswordBitmap(null);
+                }
+                mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getContext(), true, 1.0,
+                        R.layout.dialog_bottom_wallet_password,
+                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                mShowPasswordDialog.setPasswordBitmap(bitmap);
+                mShowPasswordDialog.show();
+                mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(CustomDialog dialog, View view) {
+                        switch (view.getId()) {
+                            case R.id.iv_dialog_add_picture:
+                                selectImage(getContext());
+                                break;
+                            case R.id.tv_dialog_sure:
+                                payForARS(mPasswordFile, "0.0001");
+                                break;
+                        }
+                    }
+                });
+
+            }
+        }
     }
 }

@@ -396,7 +396,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private void setFragment() {
         mViewPager = findViewById(R.id.vp_main);
         mTabLayout = findViewById(R.id.tab_layout_main);
-        String[] titles = {"热门元社区","ARS",};
+        String[] titles = {"热门元社区", "ARS",};
         fragmentList.add(new MainChatRoomFragment());
         fragmentList.add(new MainARSGameFragment());
         TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
@@ -764,6 +764,11 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode,resultCode,data);
+        if (fragmentList.size() >= 2) {
+            Fragment mainArsFragment = fragmentList.get(1);
+            mainArsFragment.onActivityResult(requestCode, resultCode, data);
+        }
         switch (requestCode) {
             case PhotoUtils.INTENT_SELECT:
                 if (data == null) {
