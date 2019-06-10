@@ -392,6 +392,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 public void onItemClick(final BaseQuickAdapter adapter, View view, final int position) {
                                     HotChatRoom item = (HotChatRoom) adapter.getItem(position);
                                     if (position == 0 && !item.isPay()) {
+//                                    if (position == 0) {
 //                                        //构造webSocket消息
 //                                        Map dataMap = new HashMap();
 //                                        dataMap.put("userId", SCCacheUtils.getCacheUserId());
@@ -400,8 +401,11 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
 //                                        WebSocketHandler.getDefault().send("" + dataString);
 
                                         final StandardDialog standardDialog = new StandardDialog(getContext());
-                                        standardDialog.setStandardTitle("支付SEAT");
-                                        standardDialog.setStandardMsg("进入首层需支付100 SEAT");
+                                        standardDialog.setStandardTitle(" ");
+//                                        standardDialog.setStandardMsg("支付100个 SEAT 参与ARS活动\n" +
+//                                                "      (公测期间0.001个SEAT)");
+                                        standardDialog.setStandardMsg("支付0.001个 SEAT 参与ARS活动");
+
                                         standardDialog.setSureText("确认支付");
                                         standardDialog.setCallback(new Callback() {
                                             @Override
@@ -442,6 +446,8 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                             @Override
                                             public void run() {
                                                 standardDialog.show();
+                                                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                                                msgTextView.setTextSize(18);
                                             }
                                         });
 
@@ -782,7 +788,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 selectImage(getContext());
                                 break;
                             case R.id.tv_dialog_sure:
-                                payForARS(mPasswordFile, "0.0001");
+                                payForARS(mPasswordFile, "0.001");
                                 break;
                         }
                     }
