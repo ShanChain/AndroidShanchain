@@ -226,5 +226,27 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="shequbang">社区帮</string>
+    <string name="Load_more">加载更多</string>
+    <string name="create_ven">创建马甲券</string>
+    <string name="reset_password">重置登录密码</string>
+    <string name="set_logo_password">设置新登录密码</string>
+    <string name="finish">完成</string>
+    <string name="input_phone">输入当前的绑定手机</string>
+    <string name="next_step">下一步</string>
+    <string name="change_phone">更换绑定手机</string>
+    <string name="commit">提交</string>
+    <string name="mj_web">马甲官网</string>
+    <string name="mj_xieyi">《马甲用户协议》</string>
+    <string name="yinsi">《隐私政策》</string>
+    <string name="create_m_sq">创建元社区</string>
+    <string name="express_time_to">有效期至：</string>
+    <string name="get_yi">已领取</string>
+    <string name="shengyu">剩余</string>
+    <string name="get">领取</string>
+    <string name="enter_shequ">请输入元社区名称</string>
+    <string name="add_meta_c">添加元社区</string>
+    <string name="enter_m_name">请输入元社区名称</string>
+    <string name="hot_meta">热门元社区</string>
 
 </resources>

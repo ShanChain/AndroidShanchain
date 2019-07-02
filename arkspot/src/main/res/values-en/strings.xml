@@ -106,7 +106,7 @@
     <string name="str_txt_login_third">Others</string>
     <string name="input_type_pwd">1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.@#$%^*()!,。?</string>
     <string name="str_reset_pwd">Please enter a new password</string>
-    <string name="str_sure">sure</string>
+    <string name="str_sure">Sure</string>
     <string name="str_friend_home_longtext">长文</string>
     <string name="str_friend_home_drama">大戏</string>
     <string name="str_friend_home_conversation">和TA对话</string>
@@ -162,5 +162,29 @@
         <item>History message 9</item>
         <item>History message 10</item>
     </string-array>
+
+    <string name="shequbang">Cooperation</string>
+    <string name="Load_more">Load more</string>
+    <string name="nav_coupon">Voucher</string>
+    <string name="create_ven">Create Voucher</string>
+    <string name="reset_password">Reset login password</string>
+    <string name="set_logo_password">Set login password</string>
+    <string name="finish">Finish</string>
+    <string name="input_phone">Enter the currently bound phone</string>
+    <string name="next_step">Next step</string>
+    <string name="change_phone">Replacement of bound cell phone number</string>
+    <string name="commit">Commit</string>
+    <string name="mj_web">MarJar web</string>
+    <string name="mj_xieyi">《MarJar User Protocol》</string>
+    <string name="yinsi">《Privacy Policy》</string>
+    <string name="create_m_sq">Create a meta-community</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="express_time_to">Expire time：</string>
+    <string name="get">Get</string>
+    <string name="enter_shequ">Please enter the meta-community name</string>
+    <string name="add_meta_c">Create a meta-community</string>
+    <string name="enter_m_name">Please enter the meta-community name</string>
+    <string name="hot_meta">HOT!</string>
+
 
 </resources>
