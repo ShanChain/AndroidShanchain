@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_btn_even_message_task"
-        android:text="提交"
+        android:text="@string/commit"
         android:textColor="@color/white"
         android:layout_margin="@dimen/dimens_20dp"/>
 

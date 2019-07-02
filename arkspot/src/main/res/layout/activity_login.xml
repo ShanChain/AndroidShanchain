@@ -23,26 +23,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible">
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="38dp"
+            android:layout_marginRight="38dp"
+            android:background="@drawable/shape_bg_edit_report">
+            <Spinner
+                android:id="@+id/sp_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"></Spinner>
         <EditText
             android:id="@+id/et_login_account"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_marginLeft="38dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="38dp"
-            android:background="@drawable/shape_bg_edit_report"
+            android:background="@null"
             android:gravity="center_vertical"
             android:hint="@string/str_login_account"
             android:inputType="number"
             android:lines="1"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:textColor="@color/colorTextDefault"
             android:textColorHint="@color/colorLoginHint"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/sp_14" />
-
+        </LinearLayout>
         <EditText
             android:id="@+id/et_login_pwd"
             android:layout_width="match_parent"
@@ -123,26 +130,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="38dp"
+            android:layout_marginRight="38dp"
+            android:background="@drawable/shape_bg_edit_report">
+            <Spinner
+                android:id="@+id/sp_phone_number_dn"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"></Spinner>
         <EditText
             android:id="@+id/et_dynamic_login_account"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_marginLeft="38dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="38dp"
-            android:background="@drawable/shape_bg_edit_report"
             android:gravity="center_vertical"
             android:hint="@string/str_login_account"
             android:inputType="number"
+            android:background="@null"
             android:lines="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:textColor="@color/colorTextDefault"
             android:textColorHint="@color/colorLoginHint"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/sp_14" />
-
+        </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"

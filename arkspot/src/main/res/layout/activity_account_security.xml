@@ -310,6 +310,7 @@
         <RelativeLayout
             android:id="@+id/relative_identity"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="@dimen/dp_40"
             android:layout_below="@+id/relative_facebook"
             android:background="@drawable/selector_click_bg_msg">

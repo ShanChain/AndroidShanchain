@@ -48,7 +48,7 @@
             android:layout_width="60dp"
             android:layout_height="30dp"
             android:background="@drawable/shape_btn_dialog_cancel"
-            android:text="取消"
+            android:text="@string/str_cancel"
             android:textColor="@color/colorViolet"
             android:textSize="@dimen/sp_14" />
 
@@ -58,7 +58,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="40dp"
             android:background="@drawable/shape_btn_dialog_sure"
-            android:text="确定"
+            android:text="@string/str_sure"
             android:textColor="#fff"
             android:textSize="@dimen/sp_14" />
 

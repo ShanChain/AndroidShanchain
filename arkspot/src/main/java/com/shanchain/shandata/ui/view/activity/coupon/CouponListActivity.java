@@ -75,7 +75,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
 //         设置正在加载更多时不显示加载更多控件
         refreshLayout.setIsShowLoadingMoreView(true);
         // 设置正在加载更多时的文本
-        refreshViewHolder.setLoadingMoreText("加载更多");
+        refreshViewHolder.setLoadingMoreText(getString(R.string.Load_more));
 
         //添加卡劵
         addCoupon.setOnClickListener(new View.OnClickListener() {

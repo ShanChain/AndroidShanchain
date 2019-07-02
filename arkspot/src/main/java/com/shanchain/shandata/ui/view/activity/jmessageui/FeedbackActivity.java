@@ -42,7 +42,7 @@ public class FeedbackActivity extends AppCompatActivity implements ArthurToolBar
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
         tbMain.setTitleText(getResources().getString(R.string.nav_feedback));
-        tbMain.setRightText("确定");
+        tbMain.setRightText(getString(R.string.str_sure));
         tbMain.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);

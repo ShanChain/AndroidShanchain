@@ -42,7 +42,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
         holder.setTextView(R.id.tv_coupon_code, item.getTokenSymbol());//代号
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String time = sdf.format(new Date(Long.valueOf(item.getDeadline())));
-        holder.setTextView(R.id.even_message_last_time, "有效期至： " + time);//失效时间
+        holder.setTextView(R.id.even_message_last_time, context.getString(R.string.express_time_to) + time);//失效时间
 //        holder.setTextView(R.id.even_message_last_time, item.getDeadline());//失效时间
         holder.setImageURL(R.id.iv_item_story_avatar, item.getPhotoUrl());
         //卡劵状态
@@ -89,16 +89,16 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                             holder.setTextView(R.id.tv_coupon_check, "查看");
                             break;
                         case CouponInfo.COUPONS_RECEIVER:
-                            holder.setTextView(R.id.tv_coupon_check, "已领取");
+                            holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.get_yi));
                             break;
                         case CouponInfo.COUPONS_UN_RECEIVER:
                             if (item.getSubuserId() != Integer.valueOf(SCCacheUtils.getCacheUserId())) {
-                                holder.setTextView(R.id.tv_coupon_check, "领取");
+                                holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.get));
                             }
                             break;
                     }
                 }
-                holder.setTextView(R.id.even_message_location, "剩余 " + item.getRemainAmount() + " 张");
+                holder.setTextView(R.id.even_message_location, context.getString(R.string.shengyu) + item.getRemainAmount() + " 张");
                 if (item.getRemainAmount().equals("0")) {
                     holder.setTextView(R.id.even_message_location, "全部被领取");
                 }

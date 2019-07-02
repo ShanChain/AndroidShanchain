@@ -363,7 +363,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
         if (isAddRoom == true) {
             StandardDialog dialog = new StandardDialog(HomeActivity.this);
-            dialog.setStandardTitle("创建元社区");
+            dialog.setStandardTitle(getString(R.string.create_m_sq));
             dialog.setStandardMsg("点击地图选择创建元社区的区域");
             dialog.show();
         }
@@ -938,8 +938,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mScInputDialog = new SCInputDialog(HomeActivity.this, "添加元社区",
-                                            "请输入元社区名称");
+                                    mScInputDialog = new SCInputDialog(HomeActivity.this, getString(R.string.add_meta_c),
+                                            getString(R.string.enter_m_name));
                                     //显示输入元社区
                                     mScInputDialog.setCallback(new Callback() {//确定
                                         @Override
@@ -1127,17 +1127,20 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             final double lang = Double.valueOf(strings[1]);
                             final String latLocation, langLocation;
                             DecimalFormat df = new DecimalFormat("#.00");
+                            DecimalFormat enDf = new DecimalFormat("#.00");
+                            String sta = MyApplication.systemLanguge;
+                            LogUtils.d(TAG,"当前系统语言: "+sta);
                             if (lat < 0) {
-                                latLocation = "南纬" + df.format(lat);
+                                latLocation = sta.equals("zh") ? "南纬" + df.format(lat) : enDf.format(lat) + "'S";
 
                             } else {
-                                latLocation = "北纬" + df.format(lat);
+                                latLocation = sta.equals("zh") ? "北纬" + df.format(lat) : enDf.format(lat) + "'N";
                             }
                             if (lang > 0) {
-                                langLocation = "东经" + df.format(lang);
+                                langLocation = sta.equals("zh") ? "东经" + df.format(lang) : enDf.format(lang) + "'E";
 
                             } else {
-                                langLocation = "西经" + df.format(lang);
+                                langLocation = sta.equals("zh") ? "西经" + df.format(lang) : enDf.format(lang) + "'W";
                             }
 
                             roomName = langLocation + "°," + latLocation + "°";

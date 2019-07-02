@@ -383,7 +383,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //                RelativeLayout.LayoutParams.WRAP_CONTENT
 //        );
 //        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        tbTaskComment.setTitleText("社区帮");
+        tbTaskComment.setTitleText(getResources().getString(R.string.shequbang));
         tbTaskComment.setTitleTextColor(Color.BLACK);
 //        tbTaskComment.getTitleView().setLayoutParams(layoutParams);
         tbTaskComment.setBackgroundColor(getResources().getColor(R.color.colorWhite));

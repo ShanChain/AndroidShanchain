@@ -8,11 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,9 +132,18 @@ public class LoginActivity extends BaseActivity {
     RelativeLayout rlLoginFb;
     @Bind(R.id.rl_login_qq)
     RelativeLayout rlLoginQq;
+    @Bind(R.id.sp_phone_number)
+    Spinner spPhoneNumber;
+    @Bind(R.id.sp_phone_number_dn)
+    Spinner spPhoneNumberDn;
 
     private ProgressDialog mDialog;
     private List<String> dataList = new ArrayList<String>();
+
+    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
+    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
+    private String aAcount = "";
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -169,6 +181,8 @@ public class LoginActivity extends BaseActivity {
         LogUtils.d("appChannel", channel);
         btnDynamicLogin.setClickable(false);
         btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
+
+        addCountrysPhone();
     }
 
     private void checkCache() {
@@ -397,6 +411,41 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    //添加几个测试国家的手机号前缀
+    private void addCountrysPhone(){
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, countrysAttr);
+        //下拉的样式res
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spPhoneNumber.setAdapter(spinnerAdapter);
+        spPhoneNumberDn.setAdapter(spinnerAdapter);
+
+        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                aAcount = countryPhoneAttr[pos];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
+        spPhoneNumberDn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                aAcount = countryPhoneAttr[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        aAcount = countryPhoneAttr[0];
+    }
+
     @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_fb, R.id.rl_login_wx, R.id.rl_login_wb, R.id.rl_login_fb, R.id.rl_login_qq})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -463,10 +512,15 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showToast(this, "账号或密码为空！");
             return;
         }
-        if (!AccountUtils.isPhone(account)) {
+        /*if (!AccountUtils.isPhone(account)) {
             ToastUtils.showToast(this, "账号格式不正确！");
             return;
+        }*/
+        //暂时处理下账号,如果是中国大陆号码，则不需要拼接前缀，其他的需要拼接前缀
+        if(!"+86".equals(aAcount)){
+            account = aAcount.substring(1,aAcount.length())+account;
         }
+
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
         String encryptAccount = Base64.encode(AESUtils.encrypt(account, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
@@ -790,12 +844,13 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showToast(this, "请填写手机号码");
             return;
         } else {
-            if (AccountUtils.isPhone(mobilePhone)) {
+            /*if (AccountUtils.isPhone(mobilePhone)) {
                 getCheckCode(mobilePhone, verifyCode);
             } else {
                 ToastUtils.showToast(this, "请输入正确格式的账号");
                 return;
-            }
+            }*/
+            getCheckCode(mobilePhone, verifyCode);
         }
 
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
@@ -804,6 +859,9 @@ public class LoginActivity extends BaseActivity {
 
     //从后台获取验证码
     private void getCheckCode(String phone, final String verifyCode) {
+        if(!"+86".equals(aAcount)){
+            phone = aAcount.substring(1,aAcount.length())+phone;
+        }
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_BIND_UNLOGIN_VERIFYCODE)
                 .addParams("mobile", phone)
@@ -828,8 +886,11 @@ public class LoginActivity extends BaseActivity {
                 });
 
     }
-
+    //动态验证码登录
     private void sureLogin(String mobilePhone, String sign, String verifyCode) {
+        if(!"+86".equals(aAcount)){
+            mobilePhone = aAcount.substring(1,aAcount.length())+mobilePhone;
+        }
         final String localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_LOGIN)
@@ -898,11 +959,13 @@ public class LoginActivity extends BaseActivity {
             case R.id.tv_normal_login:
                 normalLogin.setVisibility(View.VISIBLE);
                 dynamicLogin.setVisibility(View.GONE);
+                aAcount = countryPhoneAttr[0];
                 break;
             //动态密码登录
             case R.id.tv_dynamic_login:
                 dynamicLogin.setVisibility(View.VISIBLE);
                 normalLogin.setVisibility(View.GONE);
+                aAcount = countryPhoneAttr[0];
                 break;
             case R.id.linear_normal_login:
                 break;

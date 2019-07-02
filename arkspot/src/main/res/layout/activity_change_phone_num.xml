@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/relative_change_phone"
             android:layout_marginTop="30dp"
-            android:text="更换绑定手机"
+            android:text="@string/change_phone"
             android:textSize="@dimen/dimens_20dp"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="输入当前绑定手机"
+                android:text="@string/input_phone"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -130,7 +130,7 @@
             android:layout_marginRight="25dp"
             android:background="@drawable/common_shape_coupon_btn_bg_gray"
             android:clickable="false"
-            android:text="下一步"
+            android:text="@string/next_step"
             android:textColor="@color/white" />
     </RelativeLayout>
     <!-- 第二步输入更换绑定的手机 -->

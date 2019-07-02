@@ -3,11 +3,15 @@ package com.shanchain.shandata.ui.view.activity.login;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
@@ -51,9 +55,14 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     Button mBtnRegisterAgree;
     @Bind(R.id.tv_register_terms)
     TextView mTvRegisterTerms;
+    @Bind(R.id.sp_phone_number)
+    Spinner spPhoneNumber;
     private String verifyCode = "";
     private String mMobile;
 
+    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
+    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
+    private String aAcount = "";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_register;
@@ -64,6 +73,8 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         initToolBar();
         mBtnRegisterAgree.setClickable(false);
         mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
+
+        addCountrysPhone();
     }
 
     private void initToolBar() {
@@ -71,6 +82,29 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         mTbRegister.setOnLeftClickListener(this);
     }
 
+    //添加几个测试国家的手机号前缀
+    private void addCountrysPhone(){
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, countrysAttr);
+        //下拉的样式res
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spPhoneNumber.setAdapter(spinnerAdapter);
+
+        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+//                ToastUtils.showToast(RegisterActivity.this, countryPhoneAttr[pos]);
+                aAcount = countryPhoneAttr[pos];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
+        aAcount = countryPhoneAttr[0];
+    }
 
     @OnClick({R.id.tv_register_code, R.id.btn_register_agree, R.id.tv_register_terms})
     public void onClick(View view) {
@@ -111,7 +145,10 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this, "验证码错误");
             return;
         }
-
+        //支持国外手机号判断
+        if(!"+86".equals(aAcount)){
+            phone = aAcount.substring(1,aAcount.length())+phone;
+        }
         if (!TextUtils.equals(phone, mMobile)) {
             ToastUtils.showToast(this, "账号错误");
             return;
@@ -216,6 +253,9 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
 
     //从后台获取验证码
     private void getCheckCode(String phone) {
+        if(!"+86".equals(aAcount)){
+            phone = aAcount.substring(1,aAcount.length())+phone;
+        }
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_UNLOGIN_VERIFYCODE)
                 .addParams("mobile", phone)

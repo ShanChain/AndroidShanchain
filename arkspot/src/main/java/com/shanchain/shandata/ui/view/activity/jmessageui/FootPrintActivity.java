@@ -396,7 +396,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private void setFragment() {
         mViewPager = findViewById(R.id.vp_main);
         mTabLayout = findViewById(R.id.tab_layout_main);
-        String[] titles = {"热门元社区", "ARS",};
+        String[] titles = {getString(R.string.hot_meta), "ARS",};
         fragmentList.add(new MainChatRoomFragment());
         fragmentList.add(new MainARSGameFragment());
         TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
@@ -415,7 +415,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     private void initToolBar() {
         arthurToolBar = (ArthurToolBar) findViewById(R.id.toolbar_nav);
 //        arthurToolBar.isShowChatRoom(false);//不在导航栏显示聊天室信息
-        arthurToolBar.setTitleText("与一半地球人共创社区");
+        arthurToolBar.setTitleText("");
 //        arthurToolBar.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
 //        arthurToolBar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
 //        arthurToolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);

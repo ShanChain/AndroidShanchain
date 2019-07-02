@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="马甲官网" />
+            android:text="@string/mj_web" />
 
         <TextView
             android:id="@+id/tv_web_home_link"
@@ -56,7 +56,7 @@
             android:id="@+id/tv_user_rule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="《马甲用户协议》"
+            android:text="@string/mj_xieyi"
             android:textStyle="bold" />
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toRightOf="@+id/tv_user_rule"
-            android:text="《隐私政策》"
+            android:text="@string/yinsi"
             android:textStyle="bold" />
 
         <TextView
