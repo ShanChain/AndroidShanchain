@@ -152,7 +152,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                         ThreadUtils.runOnMainThread(new Runnable() {
                             @Override
                             public void run() {
-                                ToastUtils.showToast(mContext, "网络异常");
+                                ToastUtils.showToast(mContext, R.string.network_wrong);
                             }
                         });
                     }
@@ -347,7 +347,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
                                             public void run() {
                                                 if (!isUpdata) {
                                                     tvAppVersionCode.setText("V" + versionCode);
-                                                    ToastUtils.showToast(SettingsActivity.this, "当前已是最新版本");
+                                                    ToastUtils.showToast(SettingsActivity.this, R.string.version_new_current);
                                                 } else {
                                                     showUpdateDialog(url, serviceVersion, intro);
                                                     tvAppVersionCode.setText("V" + serviceVersion);
@@ -375,10 +375,10 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
     //版本更新提示弹窗
     private void showUpdateDialog(final String url, String title, String intro) {
         final StandardDialog dialog = new StandardDialog(this);
-        dialog.setStandardTitle("版本更新V" + title);
+        dialog.setStandardTitle(getString(R.string.version_update)+"V" + title);
         dialog.setStandardMsg(intro + "");
-        dialog.setSureText("立即更新");
-        dialog.setCancelText("取消");
+        dialog.setSureText(getString(R.string.update_immediately));
+        dialog.setCancelText(getString(R.string.str_cancel));
         dialog.setCallback(new Callback() {
             @Override
             public void invoke() {  //确定

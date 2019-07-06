@@ -149,10 +149,10 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
             case R.id.btn_set_phone_sure:
                 String mobilePhone = editPhoneNum.getText().toString().trim();
                 if (TextUtils.isEmpty(mobilePhone)) {
-                    ToastUtils.showToast(this, "请填写手机号码");
+                    ToastUtils.showToast(this, R.string.str_hint_register_phone);
                     return;
                 } else {
-                    if (AccountUtils.isPhone(mobilePhone)) {
+//                    if (AccountUtils.isPhone(mobilePhone)) {
                         sign = MD5Utils.getMD5(smsVerifyCode + salt + timestamp);
                         SCHttpUtils.postWithUserId()
                                 .url(HttpApi.CHANGE_PHONE)
@@ -170,17 +170,17 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
                                         String code = SCJsonUtils.parseCode(response);
                                         String msg = SCJsonUtils.parseMsg(response);
                                         if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
-                                            ToastUtils.showToast(ChangePhoneNumActivity.this, "绑定手机号修改成功！");
+                                            ToastUtils.showToast(ChangePhoneNumActivity.this, R.string.phone_change_susscss);
                                         } else {
                                             ToastUtils.showToast(ChangePhoneNumActivity.this, "" + msg);
 
                                         }
                                     }
                                 });
-                    } else {
-                        ToastUtils.showToast(this, "手机号格式错误");
-                        return;
-                    }
+//                    } else {
+//                        ToastUtils.showToast(this, "手机号格式错误");
+//                        return;
+//                    }
                 }
                 break;
         }
@@ -189,7 +189,7 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
     //检验手机号和验证码
     private void obtainCheckCode(String mobilePhone) {
         if (TextUtils.isEmpty(mobilePhone)) {
-            ToastUtils.showToast(this, "手机号码有误");
+            ToastUtils.showToast(this, R.string.str_hint_register_phone);
             return;
         } else {
             getCheckCode(mobilePhone);
@@ -207,7 +207,7 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.showToast(ChangePhoneNumActivity.this, "网络异常");
+                        ToastUtils.showToast(ChangePhoneNumActivity.this, R.string.network_wrong);
                     }
 
                     @Override

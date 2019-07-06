@@ -87,14 +87,30 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
             public void onClick(View v) {
                 name = editCouponName.getText().toString();
                 code = editCouponCode.getText().toString();
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(code)) {
-                    ToastUtils.showToast(VerifiedActivity.this, "请输入完整信息");
+                if (TextUtils.isEmpty(name) ) {
+                    ToastUtils.showToast(VerifiedActivity.this, R.string.real_name_not_entity);
                     return;
+                }
+                if (TextUtils.isEmpty(code)) {
+                    ToastUtils.showToast(VerifiedActivity.this, R.string.id_not_entity);
+                    return;
+                }
+                /*if(code.length()<5){
+                    ToastUtils.showToast(VerifiedActivity.this, "身份证信息不能低于5位数");
+                    return;
+                }*/
+                String sta = MyApplication.systemLanguge;
+                String language;
+                if("zh".equals(sta)){
+                    language = "zh";
+                }else {
+                    language = "en";
                 }
                 SCHttpUtils.get()
                         .url(HttpApi.VERIFIED)
                         .addParams("cardno", "" + code)
                         .addParams("name", "" + name)
+                        .addParams("language",language)
                         .addParams("token", SCCacheUtils.getCacheToken())
                         .addParams("userId", SCCacheUtils.getCacheUserId())
                         .build()
@@ -109,13 +125,13 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                                 String code = JSONObject.parseObject(response).getString("code");
                                 String msg = SCJsonUtils.parseMsg(response);
                                 final StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
-                                standardDialog.setSureText("确定");
-                                standardDialog.setCancelText("取消");
+                                standardDialog.setSureText(getString(R.string.btn_send));
+                                standardDialog.setCancelText(getString(R.string.cancel));
                                 if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
-                                    String data = JSONObject.parseObject(response).getString("data");
-                                    String desc = JSONObject.parseObject(data).getString("desc");
-                                    standardDialog.setStandardTitle("实名认证成功");
-                                    standardDialog.setStandardMsg("实名认证成功！");
+                                    /*String data = JSONObject.parseObject(response).getString("data");
+                                    String desc = JSONObject.parseObject(data).getString("desc");*/
+                                    standardDialog.setStandardTitle(getString(R.string.vertify_success));
+                                    standardDialog.setStandardMsg(getString(R.string.pass_verdify));
                                     standardDialog.setCallback(new Callback() {
                                         @Override
                                         public void invoke() {
@@ -135,11 +151,11 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                                     });
 
                                 } else {
-                                    standardDialog.setStandardTitle("实名认证失败");
+                                    standardDialog.setStandardTitle(getString(R.string.realname_vdf_failed));
                                     if (!TextUtils.isEmpty(msg)) {
                                         standardDialog.setStandardMsg("" + msg);
                                     } else {
-                                        standardDialog.setStandardMsg("实名认证失败请检查姓名、身份证号");
+                                        standardDialog.setStandardMsg(getString(R.string.check_information));
                                     }
 
                                     ThreadUtils.runOnMainThread(new Runnable() {
@@ -167,12 +183,13 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .execute(new SCHttpStringCallBack(mContext, showPasswordDialog) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtils.d(TAG, "网络异常");
+                        LogUtils.d(TAG, getString(R.string.network_wrong));
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         String code = SCJsonUtils.parseCode(response);
+                        LogUtils.d("------realName--",response);
                         if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
                             String data = SCJsonUtils.parseData(response);
                             final String cardType = SCJsonUtils.parseString(data, "cardType");

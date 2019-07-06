@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginLeft="@dimen/dp_10"
-                    android:text="更换"
+                    android:text="@string/change"
                     android:textColor="@color/colorViolet" />
             </LinearLayout>
             <!-- 卡劵创建信息 -->
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/edit_coupon_name"
                     android:layout_marginLeft="@dimen/dp_40"
-                    android:text="名称:"
+                    android:text="@string/vendour_name"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
@@ -158,7 +158,7 @@
                     android:layout_alignBaseline="@+id/edit_coupon_price"
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_toLeftOf="@+id/edit_coupon_price"
-                    android:text="单价(￥):"
+                    android:text="@string/unit_price"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
@@ -181,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/edit_coupon_price"
-                   android:text="请输入整数"
+                   android:text="@string/coupon_price"
                     android:visibility="gone"
                     android:layout_alignLeft="@+id/edit_coupon_price"
                     android:textColor="@color/colorRed"
@@ -196,7 +196,7 @@
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_toLeftOf="@+id/edit_coupon_price"
                     android:inputType="numberDecimal"
-                    android:text="数量:"
+                    android:text="@string/number_s"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
@@ -220,7 +220,7 @@
                     android:layout_alignBaseline="@+id/edit_coupon_expiration"
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_toLeftOf="@+id/edit_coupon_price"
-                    android:text="失效时间:"
+                    android:text="@string/expiration_time"
                     android:textSize="@dimen/sp_14" />
 
                 <TextView
@@ -246,7 +246,7 @@
                     android:layout_marginTop="@dimen/dimens_5dp"
                     android:drawableRight="@mipmap/question"
                     android:drawablePadding="@dimen/dimens_5dp"
-                    android:text="示例"
+                    android:text="@string/example"
                     android:textColor="@color/colorViolet" />
 
                 <TextView
@@ -256,7 +256,7 @@
                     android:layout_alignBaseline="@+id/edit_coupon_describe"
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_toLeftOf="@+id/edit_coupon_price"
-                    android:text="使用说明:"
+                    android:text="@string/instructions"
                     android:textSize="@dimen/sp_14" />
 
                 <EditText
@@ -279,7 +279,7 @@
                     android:layout_below="@+id/edit_coupon_describe"
                     android:layout_alignRight="@+id/tv_coupon_name"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:text="*实名认证" />
+                    android:text="@string/real_idf" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -287,7 +287,7 @@
                     android:layout_below="@+id/edit_coupon_describe"
                     android:layout_alignRight="@+id/edit_coupon_name"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:text="已认证"
+                    android:text="@string/certified"
                     android:textColor="@color/colorViolet"
                     android:textStyle="bold" />
 

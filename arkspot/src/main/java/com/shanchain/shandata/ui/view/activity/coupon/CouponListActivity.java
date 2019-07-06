@@ -92,7 +92,7 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
     private void initToolBar() {
         toolBar = findViewById(R.id.tb_coupon);
         toolBar.setTitleText(getResources().getString(R.string.nav_coupon));
-        toolBar.setRightText("我的");
+        toolBar.setRightText(getString(R.string.my_));
         toolBar.setOnLeftClickListener(this);
         toolBar.setOnRightClickListener(this);
     }

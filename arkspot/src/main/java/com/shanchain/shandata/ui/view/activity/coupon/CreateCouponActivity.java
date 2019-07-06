@@ -178,7 +178,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
     protected void initViewsAndEvents() {
         roomId = getIntent().getStringExtra("roomId");
         // 标题栏
-        tbCoupon.setTitleText("创建马甲劵");
+        tbCoupon.setTitleText(getString(R.string.create_vender));
         tbCoupon.setOnLeftClickListener(this);
         subuserId = SCCacheUtils.getCacheCharacterId();//角色ID
         userId = SCCacheUtils.getCacheUserId();
@@ -450,7 +450,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
 
     private void createCoupon(String authCode) {
         if (TextUtils.isEmpty(amount) || Integer.valueOf(amount) < 1 || TextUtils.isEmpty(deadline) || TextUtils.isEmpty(name) || TextUtils.isEmpty(price) || Integer.valueOf(price) < 1) {
-            ToastUtils.showToast(CreateCouponActivity.this, "请输入完整信息");
+            ToastUtils.showToast(CreateCouponActivity.this, R.string.full_information);
             return;
         }
         detail = TextUtils.isEmpty(detail) ? "empty" : detail;
@@ -497,7 +497,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(CreateCouponActivity.this, "您的余额不足");
+                            ToastUtils.showToast(CreateCouponActivity.this, R.string.yue_not_enough);
                         }
                     });
                     closeLoadingDialog();
@@ -505,7 +505,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(CreateCouponActivity.this, "创建失败");
+                            ToastUtils.showToast(CreateCouponActivity.this, R.string.create_faile);
                         }
                     });
                     closeLoadingDialog();
@@ -548,10 +548,10 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 .setDecorView((ViewGroup) findViewById(android.R.id.content).getRootView())
 //                .setDecorView((ViewGroup) dialog.getWindow().getDecorView().getRootView())
                 .isCenterLabel(true)
-                .setLabel("年", "月", "日", "时", "分", "秒")
-                .setCancelText("清除")
+                .setLabel(getString(R.string.year), getString(R.string.month), getString(R.string.day), getString(R.string.hour), getString(R.string.minute), getString(R.string.second))
+                .setCancelText(getString(R.string.clean))
                 .setCancelColor(CreateCouponActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                .setSubmitText("完成")
+                .setSubmitText(getString(R.string.finish))
                 .setRangDate(startDate, endDate)
                 .setSubCalSize(18)
                 .setTitleSize(18)
@@ -608,7 +608,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                     if (view.getId() == com.shanchain.common.R.id.iv_dialog_add_picture) {
                         selectImage(ActivityStackManager.getInstance().getTopActivity());
                     } else if (view.getId() == com.shanchain.common.R.id.tv_dialog_sure) {
-                        ToastUtils.showToastLong(ActivityStackManager.getInstance().getTopActivity(), "请上传二维码图片");
+                        ToastUtils.showToastLong(ActivityStackManager.getInstance().getTopActivity(), getString(R.string.upload_qr_code));
                     }
                 }
             });
@@ -723,7 +723,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtils.showToast(mContext, "网络异常");
+                                    ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                                 }
                             });
                         }
@@ -773,7 +773,7 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.showToast(mContext, "网络异常");
+                        ToastUtils.showToast(mContext, getString(R.string.network_wrong));
 
                     }
                 });
@@ -849,10 +849,10 @@ public class CreateCouponActivity extends BaseActivity implements ArthurToolBar.
             @Override
             public void run() {
                 mStandardDialog = new StandardDialog(mContext);
-                mStandardDialog.setStandardTitle("验证成功！");
-                mStandardDialog.setStandardMsg("您也可以选择开启免密功能，在下次使用马甲券时便无需再次上传安全码，让使用更加方便快捷，是否开通免密功能？");
-                mStandardDialog.setCancelText("暂不需要");
-                mStandardDialog.setSureText("立即开通");
+                mStandardDialog.setStandardTitle(getString(R.string.check_success));
+                mStandardDialog.setStandardMsg(getString(R.string.mianmi_kaitong_tip));
+                mStandardDialog.setCancelText(getString(R.string.not_need));
+                mStandardDialog.setSureText(getString(R.string.go_kt));
                 //开通免密
                 mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
                     @Override

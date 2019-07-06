@@ -62,7 +62,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         String expiryTime = simpleDateFormat.format(new Date(item.getExpiryTime()));//截止时间
         String createTime = DateUtils.formatFriendly(new Date(item.getCreateTime()));//创建时间
 
-        holder.setTextView(R.id.even_message_last_time, "完成时限：" + expiryTime + "");
+        holder.setTextView(R.id.even_message_last_time, context.getResources().getString(R.string.time_llimit) + expiryTime + "");
         holder.setTextView(R.id.even_message_content, item.getIntro() + "");
         holder.setTextView(R.id.even_message_bounty, "" + item.getBounty());
 //        holder.setTextView(R.id.even_message_bounty, "" + item.getPrice());
@@ -74,7 +74,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
             holder.setTextView(R.id.tv_item_story_time, createTime + "");
             CharacterInfo characterInfo = com.alibaba.fastjson.JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
             holder.setImageURL(R.id.iv_item_story_avatar, item.getHeadImg() != null ? item.getHeadImg() : characterInfo.getHeadImg());
-            holder.setTextView(R.id.tv_item_story_name, item.getName() == null ? "无昵称" : item.getName());
+            holder.setTextView(R.id.tv_item_story_name, item.getName() == null ? context.getResources().getString(R.string.no_nickname) : item.getName());
 
         } else if (viewType == 1) {
             holder.setTextView(R.id.tv_item_story_time, createTime + "");
@@ -132,7 +132,7 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
                         .execute(new SCHttpStringCallBack(context, showPasswordDialog) {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                ToastUtils.showToast(context, "任务已被领取");
+                                ToastUtils.showToast(context, R.string.renwu_lingqub);
                             }
 
                             @Override

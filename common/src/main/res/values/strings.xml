@@ -47,5 +47,13 @@
     <string name="my_task_btn_undone">帮不了</string>
     <string name="my_task_btn_done">帮完了</string>
     <string name="my_task_expired">没人帮</string>
+    <string name="enter_wallet_code">请上传钱包安全码进行验证</string>
+    <string name="wallet_code_image">（钱包安全码为一张二维码图片）</string>
+    <string name="open_marjar_wallet">您尚未开通马甲钱包，开通后方可使用该功能</string>
+    <string name="go_kt">去开通</string>
+    <string name="not_vertifu">您尚未进行实名认证，</string>
+    <string name="uses_fun">实名后方可使用该功能</string>
+    <string name="not_support">暂未支持该功能</string>
+    <string name="not_user_majar">很抱歉你无法核销他人创建的马甲劵,尝试创建自己的马甲劵吧</string>
 
 </resources>

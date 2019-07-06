@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_change_phone_hint"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="+xx xxxxxxxxxx"
+                android:text=""
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/tv_change_phone"
                 android:layout_toRightOf="@+id/tv_change_phone"
-                android:text=" 收到的验证码"
+                android:text="@string/get_verdify_code"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -116,7 +116,7 @@
             android:layout_below="@+id/edit_set_phone"
             android:layout_alignLeft="@+id/edit_set_phone"
             android:layout_margin="@dimen/dp_10"
-            android:text="验证码错误"
+            android:text="@string/sms_code_wrong"
             android:textColor="@color/colorRed"
             android:visibility="invisible" />
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tv_select_num"
             android:layout_marginTop="30dp"
-            android:text="输入新的手机号码"
+            android:text="@string/new_phone"
             android:textSize="@dimen/dimens_20dp"
             android:textStyle="bold" />
 
@@ -196,7 +196,7 @@
             android:layout_marginTop="25dp"
             android:layout_below="@+id/edit_phone_num"
             android:background="@drawable/shape_btn_dialog_sure"
-            android:text="完成"
+            android:text="@string/finish"
             android:textColor="@color/white" />
     </RelativeLayout>
 

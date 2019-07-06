@@ -166,7 +166,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                             R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
                                     sureDialog.setDialogTitle("下一层元社区已开启");
                                     sureDialog.setMessageContent("点击确认进入元社区，否则您将被踢出聊天室");
-                                    sureDialog.setSureText("确认");
+                                    sureDialog.setSureText(getString(R.string.str_sure));
                                     sureDialog.setMessageContentSize(16);
                                     sureDialog.show();
                                     sureDialog.setCanceledOnTouchOutside(false);
@@ -227,7 +227,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.showToast(MainARSGameFragment.this.getContext(), "服务连接成功");
+                        ToastUtils.showToast(MainARSGameFragment.this.getContext(), R.string.service_on_success);
                     }
                 });
                 disconnect = false;
@@ -242,7 +242,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    ToastUtils.showToast(MainARSGameFragment.this.getContext(), "服务连接已断开，正在重新连接");
+                    ToastUtils.showToast(MainARSGameFragment.this.getContext(), R.string.rebuild_server);
                 }
             });
         }
@@ -253,7 +253,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override
                 public void run() {
-                    ToastUtils.showToast(MainARSGameFragment.this.getContext(), "服务连接失败，请检查网络状态");
+                    ToastUtils.showToast(MainARSGameFragment.this.getContext(), R.string.server_error_reset);
                 }
             });
         }
@@ -404,9 +404,9 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                         standardDialog.setStandardTitle(" ");
 //                                        standardDialog.setStandardMsg("支付100个 SEAT 参与ARS活动\n" +
 //                                                "      (公测期间0.001个SEAT)");
-                                        standardDialog.setStandardMsg("支付0.001个 SEAT 参与ARS活动");
+                                        standardDialog.setStandardMsg(getString(R.string.payfor_join,"0.001"));
 
-                                        standardDialog.setSureText("确认支付");
+                                        standardDialog.setSureText(getString(R.string.commit_payfor));
                                         standardDialog.setCallback(new Callback() {
                                             @Override
                                             public void invoke() {//确认
@@ -428,7 +428,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                                                         selectImage(getContext());
                                                                         break;
                                                                     case R.id.tv_dialog_sure:
-                                                                        ToastUtils.showToast(getContext(), "请上传图片二维码");
+                                                                        ToastUtils.showToast(getContext(), R.string.upload_qr_code);
                                                                         break;
                                                                 }
                                                             }
@@ -460,7 +460,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                             intent.putExtra("isHotChatRoom", true);
                                             startActivity(intent);
                                         } else {
-                                            ToastUtils.showToast(getContext(), "您没有权限进入该元社区");
+                                            ToastUtils.showToast(getContext(), R.string.not_peimition);
                                         }
                                     }
                                 }
@@ -705,7 +705,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 ThreadUtils.runOnMainThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        ToastUtils.showToast(getContext(), "您已被该聊天室管理员删除");
+                                        ToastUtils.showToast(getContext(), R.string.delete_by_manager);
                                     }
                                 });
                             }

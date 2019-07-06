@@ -79,7 +79,7 @@ public class MyCreateCouponFragment extends BaseFragment implements BGARefreshLa
         // 设置正在加载更多时不显示加载更多控件
         srlCouponList.setIsShowLoadingMoreView(true);
         // 设置正在加载更多时的文本
-        refreshViewHolder.setLoadingMoreText("加载更多");
+        refreshViewHolder.setLoadingMoreText(getString(R.string.Load_more));
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvCouponList.setLayoutManager(linearLayoutManager);
         getMycreateCouponList();
@@ -123,7 +123,7 @@ public class MyCreateCouponFragment extends BaseFragment implements BGARefreshLa
     public void showProgress() {
         mDialog = new ProgressDialog(getContext());
         mDialog.setMax(100);
-        mDialog.setMessage("数据请求中..");
+        mDialog.setMessage(getString(R.string.data_requesting));
         mDialog.setCancelable(false);
         mDialog.show();
     }

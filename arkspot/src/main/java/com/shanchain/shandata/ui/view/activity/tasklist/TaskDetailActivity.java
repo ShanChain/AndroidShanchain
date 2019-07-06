@@ -164,9 +164,9 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             public void handleMessage(android.os.Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    ToastUtils.showToastLong(TaskDetailActivity.this, "求助发布失败，您的余额不足");
+                    ToastUtils.showToastLong(TaskDetailActivity.this, getString(R.string.yue_not_enough));
                 } else if (msg.what == 2) {
-                    ToastUtils.showToastLong(TaskDetailActivity.this, "求助发布失败，网络连接错误");
+                    ToastUtils.showToastLong(TaskDetailActivity.this, getString(R.string.network_wrong));
                 }
             }
         };
@@ -202,12 +202,12 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
         }
         if (chatEventMessage.getHeadImg() != null && chatEventMessage.getName() != null) {
             GlideUtils.load(mContext, chatEventMessage.getHeadImg(), ivAvatar, 0);//加载头像
-            tvName.setText(chatEventMessage.getName() == null ? "无昵称" : chatEventMessage.getName());
+            tvName.setText(chatEventMessage.getName() == null ? getString(R.string.no_nickname) : chatEventMessage.getName());
         } else {
             GlideUtils.load(mContext, characterInfo.getHeadImg(), ivAvatar, 0);//加载头像
-            tvName.setText(characterInfo.getName() == null ? "无昵称" : characterInfo.getName());
+            tvName.setText(characterInfo.getName() == null ? getString(R.string.no_nickname) : characterInfo.getName());
         }
-        bounty.setText("赏金：SEAT " + chatEventMessage.getBounty());
+        bounty.setText(getString(R.string.bounty_m) + chatEventMessage.getBounty());
         tvContent.setText(chatEventMessage.getIntro() + "");
         mTvHeadLike.setText(chatEventMessage.getSupportCount() + "");
         mTvHeadComment.setText(chatEventMessage.getCommentCount() + "");
@@ -218,12 +218,12 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //        String expiryTime = DateUtils.formatFriendly(new Date(chatEventMessage.getExpiryTime()));
 
         tvTime.setText(createTime + "");
-        tvLastTime.setText("完成时限：" + expiryTime + "");
+        tvLastTime.setText(getString(R.string.time_llimit) + expiryTime + "");
 
 
         //领取任务
         if (chatEventMessage.getStatus() >= 10) {
-            btnEvenTask.setText("已被领取");
+            btnEvenTask.setText(R.string.been_received);
             btnEvenTask.setFocusable(false);
             btnEvenTask.setOnClickListener(null);
             btnEvenTask.setTextColor(getResources().getColor(R.color.aurora_bg_edittext_default));
@@ -248,7 +248,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ToastUtils.showToast(TaskDetailActivity.this, "网络异常");
+                                            ToastUtils.showToast(TaskDetailActivity.this, getString(R.string.network_wrong));
                                         }
                                     });
                                 }
@@ -259,7 +259,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                                     if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                         String data = JSONObject.parseObject(response).getString("data");
                                         final String HxUserName = JSONObject.parseObject(data).getString("HxUserName");
-                                        btnEvenTask.setText("已被领取");
+                                        btnEvenTask.setText(getString(R.string.been_received));
                                         btnEvenTask.setFocusable(false);
                                         btnEvenTask.setOnClickListener(null);
                                         btnEvenTask.setTextColor(getResources().getColor(R.color.aurora_bg_edittext_default));
@@ -388,7 +388,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //        tbTaskComment.getTitleView().setLayoutParams(layoutParams);
         tbTaskComment.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         tbTaskComment.setOnLeftClickListener(this);
-        tbTaskComment.setRightText("我的");
+        tbTaskComment.setRightText(getString(R.string.my_));
         tbTaskComment.setOnRightClickListener(this);
 
     }
@@ -511,7 +511,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 0:
-                        ToastUtils.showToast(mContext, "发布成功");
+                        ToastUtils.showToast(mContext, R.string.publish_success);
                         taskDialog.dismiss();
                         break;
                 }
@@ -536,10 +536,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 .setDecorView((ViewGroup) findViewById(android.R.id.content).getRootView())
 //                .setDecorView((ViewGroup) dialog.getWindow().getDecorView().getRootView())
                 .isCenterLabel(true)
-                .setLabel("年", "月", "日", "时", "分", "秒")
-                .setCancelText("清除")
+                .setLabel(getString(R.string.year), getString(R.string.month), getString(R.string.day), getString(R.string.hour), getString(R.string.minute), getString(R.string.second))
+                .setCancelText(getString(R.string.clean))
                 .setCancelColor(TaskDetailActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                .setSubmitText("完成")
+                .setSubmitText(getString(R.string.finish))
                 .setRangDate(startDate, endDate)
                 .setSubCalSize(15)
                 .setTitleSize(15)
@@ -575,7 +575,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
      * */
     private void releaseTask(String authCode, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
         if (TextUtils.isEmpty(describeEditText.getText().toString()) || TextUtils.isEmpty(bountyEditText.getText().toString()) || TextUtils.isEmpty(textViewTime.getText().toString())) {
-            ToastUtils.showToast(TaskDetailActivity.this, "请输入完整信息");
+            ToastUtils.showToast(TaskDetailActivity.this, getString(R.string.toast_no_empty));
             closeLoadingDialog();
         } else {
             final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
@@ -588,7 +588,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
 //            final String createTime = simpleDateFormat.format(LimitedTtime);
             //向服务器请求添加任务
             if (timeStamp < System.currentTimeMillis() + 60 * 60 * 1000) {
-                ToastUtils.showToastLong(TaskDetailActivity.this, "必须选择大于当前时间1小时");
+                ToastUtils.showToastLong(TaskDetailActivity.this, getString(R.string.one_hour_lage));
                 closeLoadingDialog();
                 return;
             }
@@ -671,7 +671,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                     if (view.getId() == com.shanchain.common.R.id.iv_dialog_add_picture) {
                         selectImage(ActivityStackManager.getInstance().getTopActivity());
                     } else if (view.getId() == com.shanchain.common.R.id.tv_dialog_sure) {
-                        ToastUtils.showToastLong(ActivityStackManager.getInstance().getTopActivity(), "请上传二维码图片");
+                        ToastUtils.showToastLong(ActivityStackManager.getInstance().getTopActivity(), getString(R.string.upload_qr_code));
                     }
                 }
             });
@@ -751,7 +751,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtils.showToast(mContext, "网络异常");
+                                    ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                                 }
                             });
                         }
@@ -803,7 +803,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.showToast(mContext, "网络异常");
+                        ToastUtils.showToast(mContext, getString(R.string.network_wrong));
 
                     }
                 });
@@ -880,10 +880,10 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
             @Override
             public void run() {
                 mStandardDialog = new StandardDialog(mContext);
-                mStandardDialog.setStandardTitle("验证成功！");
-                mStandardDialog.setStandardMsg("您也可以选择开启免密功能，在下次使用马甲券时便无需再次上传安全码，让使用更加方便快捷，是否开通免密功能？");
-                mStandardDialog.setCancelText("暂不需要");
-                mStandardDialog.setSureText("立即开通");
+                mStandardDialog.setStandardTitle(getString(R.string.check_success));
+                mStandardDialog.setStandardMsg(getString(R.string.mianmi_kaitong_tip));
+                mStandardDialog.setCancelText(getString(R.string.not_need));
+                mStandardDialog.setSureText(getString(R.string.go_kt));
                 //开通免密
                 mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
                     @Override
@@ -931,7 +931,7 @@ public class TaskDetailActivity extends BaseActivity implements ArthurToolBar.On
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.showToast(mContext, "网络异常");
+                        ToastUtils.showToast(mContext, getString(R.string.network_wrong));
 
                     }
                 });

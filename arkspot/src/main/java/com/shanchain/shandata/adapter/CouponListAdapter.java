@@ -49,7 +49,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
         switch (item.getTokenStatus()) {
             case CouponSubInfo.CREATE_INVALID:
                 holder.setTextView(R.id.tv_item_story_name, item.getName() + "");//卡劵名称
-                holder.setTextView(R.id.tv_coupon_check, "已失效");
+                holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.expired));
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
                     public void OnItemClick(View view) {
@@ -82,11 +82,11 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                 break;
             case CouponSubInfo.CREATE_WAIT:
                 holder.setTextView(R.id.tv_item_story_name, item.getName() + "");//卡劵名称
-                holder.setTextView(R.id.tv_coupon_check, "查看");
+                holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.check));
                 if (item.getGetStatus() != 0) {
                     switch (item.getGetStatus()) {
                         case CouponInfo.COUPONS_CREATE:
-                            holder.setTextView(R.id.tv_coupon_check, "查看");
+                            holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.check));
                             break;
                         case CouponInfo.COUPONS_RECEIVER:
                             holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.get_yi));
@@ -98,9 +98,9 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                             break;
                     }
                 }
-                holder.setTextView(R.id.even_message_location, context.getString(R.string.shengyu) + item.getRemainAmount() + " 张");
+                holder.setTextView(R.id.even_message_location, context.getString(R.string.shengyu,item.getRemainAmount()));
                 if (item.getRemainAmount().equals("0")) {
-                    holder.setTextView(R.id.even_message_location, "全部被领取");
+                    holder.setTextView(R.id.even_message_location, context.getString(R.string.all_get));
                 }
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
@@ -134,7 +134,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                 break;
             case CouponSubInfo.RECEIVER://已领取待使用
                 holder.setTextView(R.id.tv_item_story_name, item.getTokenName() + "");//卡劵名称
-                holder.setTextView(R.id.tv_coupon_check, "待使用");
+                holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.to_be_used));
                 holder.getViewId(R.id.even_message_location).setVisibility(View.GONE);
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
@@ -176,7 +176,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                 break;
             case CouponSubInfo.RECEIVER_USE:
                 holder.setTextView(R.id.tv_item_story_name, item.getTokenName() + "");//卡劵名称
-                holder.setTextView(R.id.tv_coupon_check, "已使用");
+                holder.setTextView(R.id.tv_coupon_check, context.getString(R.string.used));
                 holder.getViewId(R.id.even_message_location).setVisibility(View.GONE);
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
@@ -197,7 +197,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                 break;
             case CouponSubInfo.RECEIVER_INVALID:
                 holder.setTextView(R.id.tv_item_story_name, item.getTokenName() + "");//卡劵名称
-                holder.setTextView(R.id.tv_coupon_check, "已失效");
+                holder.setTextView(R.id.tv_coupon_check, context.getResources().getString(R.string.expired));
                 holder.getViewId(R.id.even_message_location).setVisibility(View.GONE);
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
@@ -217,7 +217,7 @@ public class CouponListAdapter extends CommonAdapter<CouponSubInfo> implements B
                 });
                 break;
             default:
-                holder.setTextView(R.id.tv_coupon_check, "查看");
+                holder.setTextView(R.id.tv_coupon_check, context.getResources().getString(R.string.check));
                 holder.setViewOnClick(R.id.tv_coupon_check, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two}, viewType, position, new BaseViewHolder.OnItemClickListener() {
                     @Override
                     public void OnItemClick(View view) {

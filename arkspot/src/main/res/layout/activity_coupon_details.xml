@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dimens_5dp"
-                android:text="用户名" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/tv_coupon_token_name"
@@ -148,7 +148,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:text="剩余0张"
+                        android:text=""
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_20dp"
-                    android:text="使用规则："
+                    android:text="@string/usage_rules"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
 
@@ -176,7 +176,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="right"
                     android:layout_margin="@dimen/dp_10"
-                    android:text="有效期至：2019-01-01  23:59"
+                    android:text=""
                     android:textSize="@dimen/sp_12" />
             </LinearLayout>
         </LinearLayout>

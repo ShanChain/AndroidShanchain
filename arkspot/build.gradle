@@ -11,8 +11,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 12
-        versionName "2.4.4"
+        versionCode 15
+        versionName "2.4.5"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -105,7 +105,7 @@ android {
 //        ali {
 //            applicationId "com.shanchain.shandata"
 //        }//投放阿里平台
-//        googlePlay {}//投放google商店
+        googlePlay {}//投放google商店
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }

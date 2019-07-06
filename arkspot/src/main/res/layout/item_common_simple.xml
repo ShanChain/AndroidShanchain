@@ -16,7 +16,7 @@
         android:layout_marginLeft="@dimen/dimens_20dp"
         android:layout_marginTop="2dp"
         android:lines="1"
-        android:text="必胜客餐厅"
+        android:text=""
         android:textColor="@color/colorBlack"
         android:textSize="10sp" />
 
@@ -40,7 +40,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimens_20dp"
         android:lines="1"
-        android:text="已领取"
+        android:text=""
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/sp_12" />
 </RelativeLayout>

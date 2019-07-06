@@ -172,13 +172,13 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
             case R.id.btn_set_password_sure:
                 String password = editSetPassword.getText().toString().trim();
                 if (password.length() < 8 || password.length() > 20) {
-                    ToastUtils.showToast(SetPasswordActivity.this, "请输入密码8~20位，至少包含字母/数字/符号2种组合");
+                    ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.password_fh));
                 } else if (password.matches("^[0-9]+$")) {//排除纯数字
-                    ToastUtils.showToast(SetPasswordActivity.this, "至少包含字母/数字/符号2种组合");
+                    ToastUtils.showToast(SetPasswordActivity.this, R.string.least_have_two);
                 } else if (password.matches("^[A-Za-z]+$")) {//排除纯字母
-                    ToastUtils.showToast(SetPasswordActivity.this, "至少包含字母/数字/符号2种组合");
+                    ToastUtils.showToast(SetPasswordActivity.this, R.string.least_have_two);
                 } else if (password.matches(SPE_CHAT)) {//排除纯符号
-                    ToastUtils.showToast(SetPasswordActivity.this, "至少包含字母/数字/符号2种组合");
+                    ToastUtils.showToast(SetPasswordActivity.this, R.string.least_have_two);
                 } else {
 //                    ToastUtils.showToast(mContext, "设置密码成功");
                     resetPwd();
@@ -198,7 +198,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
     private void resetPwd() {
         String pwd = editSetPassword.getText().toString().trim();
         if (TextUtils.isEmpty(pwd)) {
-            ToastUtils.showToast(this, "请输入密码");
+            ToastUtils.showToast(this, getString(R.string.str_login_pwd));
             return;
         }
         String time = String.valueOf(System.currentTimeMillis());
@@ -225,7 +225,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                 .execute(new SCHttpStringCallBack(mContext, showPasswordDialog) {
                              @Override
                              public void onError(Call call, Exception e, int id) {
-                                 ToastUtils.showToast(mContext, "请检查网络连接");
+//                                 ToastUtils.showToast(mContext, "请检查网络连接");
                                  LogUtils.e("设置密码失败");
                                  e.printStackTrace();
                              }
@@ -243,10 +243,10 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                                                  CustomDialog customDialog = new CustomDialog(mContext, R.layout.common_dialog_costom,
                                                          new int[]{R.id.tv_input_dialog_title,
                                                                  R.id.btn_dialog_task_detail_sure, R.id.even_message_content});
-                                                 customDialog.setMessageContent("密码重置成功，请重新登录！");
+                                                 customDialog.setMessageContent(getString(R.string.login_again));
                                                  customDialog.setDialogTitle("  ");
                                                  customDialog.setMessageContentSize(16);
-                                                 customDialog.setSureText("确定");
+                                                 customDialog.setSureText(getString(R.string.str_sure));
                                                  customDialog.setCancelable(false);
                                                  customDialog.setCanceledOnTouchOutside(false);
                                                  customDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
@@ -264,11 +264,11 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                                              }
                                          });
                                      } else {
-                                         ToastUtils.showToast(mContext, "设置密码失败 " + msg);
+                                         ToastUtils.showToast(mContext, getString(R.string.password_set_failed) + msg);
                                      }
                                  } catch (Exception e) {
                                      e.printStackTrace();
-                                     ToastUtils.showToast(mContext, "设置密码失败");
+                                     ToastUtils.showToast(mContext, getString(R.string.password_set_failed));
                                  }
                              }
                          }
@@ -277,12 +277,13 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
 
     //检验手机号和验证码
     private void obtainCheckCode(String mobilePhone) {
-        if (TextUtils.isEmpty(mobilePhone)) {
+        /*if (TextUtils.isEmpty(mobilePhone)) {
             ToastUtils.showToast(this, "手机号码有误");
             return;
         } else {
             getCheckCode(mobilePhone);
-        }
+        }*/
+        getCheckCode(mobilePhone);
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
         countDownTimeUtils.start();
     }
@@ -296,7 +297,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.showToast(SetPasswordActivity.this, "网络异常");
+                        ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.network_wrong));
                     }
 
                     @Override

@@ -30,7 +30,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_centerHorizontal="true"
-            android:text="详细资料"
+            android:text="@string/detail_infor"
             android:textStyle="bold"
             android:textColor="@color/colorTextDefault"
             android:textSize="16sp" />
@@ -101,8 +101,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:src="@mipmap/user_logo"
@@ -110,7 +110,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="用户名" />
+            android:text="@string/user_name" />
 
         <TextView
             android:id="@+id/tv_userName"
@@ -141,15 +141,15 @@
         android:visibility="gone">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:src="@mipmap/nick_logo" />
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="昵称" />
+            android:text="@string/nick_name" />
 
         <TextView
             android:id="@+id/tv_nick"
@@ -178,8 +178,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:src="@mipmap/gender_logo"
@@ -187,7 +187,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="性别" />
+            android:text="@string/sex" />
 
         <TextView
             android:id="@+id/tv_gender"
@@ -213,8 +213,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:src="@mipmap/birthday_logo"
@@ -222,7 +222,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="生日" />
+            android:text="@string/berthday" />
 
         <TextView
             android:id="@+id/tv_birthday"
@@ -248,8 +248,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:src="@mipmap/address_logo"
@@ -257,7 +257,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="地区" />
+            android:text="@string/area" />
 
         <TextView
             android:id="@+id/tv_address"
@@ -285,7 +285,7 @@
             android:layout_marginRight="14dp"
             android:background="@drawable/common_shape_bg_btn_login"
             android:gravity="center"
-            android:text="发消息"
+            android:text="@string/send_message"
             android:textColor="@drawable/blue_text_selector"
             android:textSize="16sp" />
     </LinearLayout>

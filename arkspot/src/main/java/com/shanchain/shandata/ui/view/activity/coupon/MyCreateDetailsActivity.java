@@ -117,7 +117,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
     protected void initViewsAndEvents() {
         couponsId = getIntent().getStringExtra("couponsId");
         subCoupId = getIntent().getStringExtra("subCoupId");
-        tbCouponDetail.setTitleText("马甲劵详情");
+        tbCouponDetail.setTitleText(getString(R.string.nav_coupon_details));
         tbCouponDetail.setOnLeftClickListener(this);
 //        tbCouponDetail.setOnRightClickListener(this);
         srlCouponList.setDelegate(this);
@@ -128,7 +128,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
         // 设置正在加载更多时不显示加载更多控件
         srlCouponList.setIsShowLoadingMoreView(true);
         // 设置正在加载更多时的文本
-        refreshViewHolder.setLoadingMoreText("加载更多");
+        refreshViewHolder.setLoadingMoreText(getString(R.string.Load_more));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyCreateDetailsActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerViewCouponCheckList.setLayoutManager(linearLayoutManager);
         initData();
@@ -169,7 +169,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                 }
                                 tvItemCode.setText(couponSubInfo.getTokenSymbol() + "");
                                 evenMessageBounty.setText(couponSubInfo.getPrice() + "");
-                                tvCouponNum.setText("共 " + couponSubInfo.getAmount() + " 张");
+                                tvCouponNum.setText(getString(R.string.picker_image_folder_info,couponSubInfo.getAmount()));
                                 tvRuleDetails.setText(couponSubInfo.getDetail());
                                 tvCouponWaitingCheckNum.setText(couponSubInfo.getUnusedNum() + "");
                                 tvCouponCheckedNum.setText(couponSubInfo.getUsedNum() + "");
@@ -178,7 +178,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                 String createTime = sdf.format(new Date(Long.valueOf(couponSubInfo.getCreateTime())));
                                 tvCreateTime.setText(createTime + "");
                                 String expiration = sdf.format(new Date(Long.valueOf(couponSubInfo.getDeadline())));
-                                tvCouponDetailsExpiration.setText("有效期至：" + expiration + "");
+                                tvCouponDetailsExpiration.setText(getString(R.string.express_time_to) + expiration + "");
 //                                tvCreateTime.setText(couponSubInfo.getCreateTime() + "");
                                 //获取领劵人员的列表
                                 getClientList(couponSubInfo);
@@ -222,7 +222,7 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                                     switch (item.getTokenStatus()) {
                                         case CouponSubInfo.RECEIVER:
-                                            helper.setText(R.id.tv_item_coupon_status, "已领取");
+                                            helper.setText(R.id.tv_item_coupon_status, getString(R.string.get_yi));
                                             if (item.getGetTime() == null) return;
                                             String getTime = sdf.format(new Date(Long.valueOf(item.getGetTime())));
                                             helper.setText(R.id.tv_item_receive_time, "" + getTime);
@@ -231,13 +231,13 @@ public class MyCreateDetailsActivity extends BaseActivity implements ArthurToolB
                                             helper.setText(R.id.tv_item_coupon_status, "" + item.getTokenStatus());
                                             break;
                                         case CouponSubInfo.RECEIVER_USE:
-                                            helper.setText(R.id.tv_item_coupon_status, "已核销");
+                                            helper.setText(R.id.tv_item_coupon_status, R.string.yihexiao);
                                             if (item.getUseTime() == null) return;
                                             String useTime = sdf.format(new Date(Long.valueOf(item.getUseTime())));
                                             helper.setText(R.id.tv_item_receive_time, "" + useTime);
                                             break;
                                         case CouponSubInfo.RECEIVER_INVALID:
-                                            helper.setText(R.id.tv_item_coupon_status, "已失效");
+                                            helper.setText(R.id.tv_item_coupon_status, getString(R.string.expired));
                                             break;
                                     }
                                 }

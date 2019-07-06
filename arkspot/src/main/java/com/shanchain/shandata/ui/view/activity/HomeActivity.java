@@ -93,6 +93,7 @@ import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.VersionUtils;
+import com.shanchain.shandata.BuildConfig;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
@@ -276,7 +277,6 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
             }
         }
     };
-    ;
     TextView tvLocation, tvCountDown, tvSecond;
     ImageView imgInfo;
     ImageView imgHistory;
@@ -320,7 +320,9 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //每次进入主界面自动查询是否有补丁文件更新
-        TinkerPatch.with().fetchPatchUpdate(true);
+        if(BuildConfig.TINKER_ENABLE){
+            TinkerPatch.with().fetchPatchUpdate(true);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
             String channelName = "聊天消息";
@@ -364,7 +366,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
         if (isAddRoom == true) {
             StandardDialog dialog = new StandardDialog(HomeActivity.this);
             dialog.setStandardTitle(getString(R.string.create_m_sq));
-            dialog.setStandardMsg("点击地图选择创建元社区的区域");
+            dialog.setStandardMsg(getString(R.string.create_meta_commity));
             dialog.show();
         }
 
@@ -1225,7 +1227,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        PackageManager packageManager = getApplicationContext().getPackageManager();
+                        /*PackageManager packageManager = getApplicationContext().getPackageManager();
                         String packagerName = getApplicationContext().getPackageName();
                         try {
                             //获取当前版本号
@@ -1233,8 +1235,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 //                            ToastUtils.showToast(HomeActivity.this, versionCode);
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
-                        }
-
+                        }*/
                         try {
                             LogUtils.i("获取到版本信息 = " + response);
                             String code = SCJsonUtils.parseCode(response);
@@ -1265,15 +1266,15 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     private void showUpdateDialog(final String url, final boolean force, String version) {
         String msg = "";
         if (force) {
-            msg = "新版本有较大改进，马上更新吧";
+            msg = getString(R.string.update_version_new);
         } else {
-            msg = "确定要更新吗？";
+            msg = getString(R.string.update_sure);
         }
         final StandardDialog dialog = new StandardDialog(this);
-        dialog.setStandardTitle("发现新版本 (" + version + ")");
+        dialog.setStandardTitle(getString(R.string.find_new_version)+" (" + version + ")");
         dialog.setStandardMsg(msg);
-        dialog.setSureText("确定");
-        dialog.setCancelText("取消");
+        dialog.setSureText(getString(R.string.str_sure));
+        dialog.setCancelText(getString(R.string.str_cancel));
         dialog.setCallback(new Callback() {
             @Override
             public void invoke() {  //确定
@@ -1453,7 +1454,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                 long mS = (millisSecond - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
 //                                tvCountDown.setText(df.format(hour - mHour) + ":" + df.format(min - minutes) + ":" + df.format(s) + "");
                                 tvCountDown.setText(df.format(mHour) + ":" + df.format(mMin) + ":" + df.format(mS) + "");
-                                tvSecond.setText("秒");
+                                tvSecond.setText(getString(R.string.second));
                             } else {
                                 tvCountDown.setText(day + "");
                             }
@@ -1461,7 +1462,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
 
                         @Override
                         public void onFinish() {
-                            tvCountDown.setText("活动结束");
+                            tvCountDown.setText(R.string.activity_end);
                             relativeRush.setVisibility(View.GONE);
                             relativeCountDown.setVisibility(View.GONE);
                         }
@@ -1665,7 +1666,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtils.showToast(mContext, "请输入聊天室名称");
+                                    ToastUtils.showToast(mContext, R.string.enter_char_room);
                                 }
                             });
                             return;
@@ -1960,7 +1961,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                                                 ThreadUtils.runOnMainThread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        ToastUtils.showToastLong(HomeActivity.this, "领取成功，可在钱包中查看");
+                                                        ToastUtils.showToastLong(HomeActivity.this, getString(R.string.get_sussecc_wallet));
                                                     }
                                                 });
 
@@ -2207,7 +2208,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     public void showProgress() {
         mDialog = new ProgressDialog(this);
         mDialog.setMax(100);
-        mDialog.setMessage("数据请求中..");
+        mDialog.setMessage(getString(R.string.data_requesting));
         mDialog.setCancelable(true);
         mDialog.show();
     }
@@ -2263,7 +2264,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                     NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     Notification notification = new NotificationCompat.Builder(HomeActivity.this, "subscribe")
                             .setDefaults(Notification.DEFAULT_ALL)
-                            .setContentTitle("收到一条订阅消息")
+                            .setContentTitle(getString(R.string.receive_message))
                             .setContentText(showMsg.toString())
                             .setWhen(System.currentTimeMillis())
                             .setContentIntent(pendingIntent)

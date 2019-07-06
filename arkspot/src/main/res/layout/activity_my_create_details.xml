@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimens_20dp"
-                    android:text="使用规则："
+                    android:text="@string/usage_rules"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/tv_use_rule"
                     android:layout_alignParentRight="true"
-                    android:text="共 0 张"
+                    android:text=""
                     android:textSize="10sp" />
 
                 <TextView
@@ -132,7 +132,7 @@
                     android:layout_below="@+id/tv_coupon_num"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="@dimen/dimens_5dp"
-                    android:text="2019.5.20 "
+                    android:text=""
                     android:textSize="10sp" />
 
                 <TextView
@@ -157,7 +157,7 @@
                 android:layout_marginLeft="@dimen/dimens_20dp"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="bottom|left"
-                android:text="有效期至：2019-01-01  23:59"
+                android:text=""
                 android:textSize="10sp" />
         </LinearLayout>
 
@@ -183,7 +183,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="待核销:"
+            android:text="@string/hexiao_d"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -198,7 +198,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="张"
+            android:text=""
             android:textSize="@dimen/sp_12" />
 
 
@@ -206,7 +206,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_20dp"
-            android:text="已核销:"
+            android:text="@string/yihexiaoshu"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -221,14 +221,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="张"
+            android:text=""
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimens_20dp"
-            android:text="剩余："
+            android:text="@string/remain_nums"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -243,7 +243,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="张"
+            android:text=""
             android:textSize="@dimen/sp_12" />
 
     </LinearLayout>

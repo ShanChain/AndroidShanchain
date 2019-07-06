@@ -103,7 +103,7 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
-        tbMain.setTitleText("个人资料");
+        tbMain.setTitleText(getString(R.string.personal_information));
         tbMain.setBackgroundColor(getResources().getColor(R.color.white));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);
@@ -128,16 +128,16 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
         if (mMyInfo != null) {
             mTv_nickName.setText(mMyInfo.getNickname());
             SharePreferenceManager.setRegisterUsername(mMyInfo.getNickname());
-            mTv_userName.setText("用户名:" + mMyInfo.getUserName());
+            mTv_userName.setText(getString(R.string.user_name)+":" + mMyInfo.getUserName());
             mTv_sign.setText(mMyInfo.getSignature());
             UserInfo.Gender gender = mMyInfo.getGender();
             if (gender != null) {
                 if (gender.equals(UserInfo.Gender.male)) {
-                    mTv_gender.setText("男");
+                    mTv_gender.setText(R.string.man);
                 } else if (gender.equals(UserInfo.Gender.female)) {
-                    mTv_gender.setText("女");
+                    mTv_gender.setText(getString(R.string.woman));
                 } else {
-                    mTv_gender.setText("保密");
+                    mTv_gender.setText(getString(R.string.unknown));
                 }
             }
             long birthday = mMyInfo.getBirthday();
@@ -216,7 +216,7 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
                 //头像
                 if ((ContextCompat.checkSelfPermission(PersonalActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) ||
                         (ContextCompat.checkSelfPermission(PersonalActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-                    Toast.makeText(PersonalActivity.this, "请在应用管理中打开“读写存储”和“相机”访问权限！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalActivity.this, R.string.permission_check, Toast.LENGTH_SHORT).show();
                 }
                 mChoosePhoto.setInfo(PersonalActivity.this, true);
                 mChoosePhoto.showPhotoDialog(PersonalActivity.this);
@@ -251,17 +251,17 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
                             public void gotResult(int responseCode, String responseMessage) {
                                 if (responseCode == 0) {
                                     mTv_birthday.setText(getDataTime(date));
-                                    Toast.makeText(PersonalActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PersonalActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(PersonalActivity.this, "更新失败", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PersonalActivity.this, R.string.update_failed, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     }
                 })
                         .setType(new boolean[]{true, true, true,false, false, false})
-                        .setCancelText("取消")
-                        .setSubmitText("确定")
+                        .setCancelText(getString(R.string.cancel))
+                        .setSubmitText(getString(R.string.str_sure))
                         .setContentSize(20)//滚轮文字大小
                         .setTitleSize(20)//标题文字大小
                         .setOutSideCancelable(true)
@@ -312,9 +312,9 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
                                 public void gotResult(int responseCode, String responseMessage) {
                                     if (responseCode == 0) {
                                         mTv_sign.setText(sign);
-                                        ToastUtils.showToast(PersonalActivity.this, "更新成功");
+                                        ToastUtils.showToast(PersonalActivity.this, getString(R.string.update_success));
                                     } else {
-                                        ToastUtils.showToast(PersonalActivity.this, "更新失败");
+                                        ToastUtils.showToast(PersonalActivity.this, getString(R.string.update_failed));
                                     }
                                 }
                             });
@@ -332,9 +332,9 @@ public class PersonalActivity extends BaseActivity implements SelectAddressInter
                                 public void gotResult(int responseCode, String responseMessage) {
                                     if (responseCode == 0) {
                                         mTv_nickName.setText(nick);
-                                        ToastUtils.showToast(PersonalActivity.this, "更新成功");
+                                        ToastUtils.showToast(PersonalActivity.this, getString(R.string.update_success));
                                     } else {
-                                        ToastUtils.showToast(PersonalActivity.this, "更新失败,请正确输入");
+                                        ToastUtils.showToast(PersonalActivity.this, getString(R.string.update_failed));
                                     }
                                 }
                             });

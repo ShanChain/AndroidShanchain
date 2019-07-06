@@ -51,8 +51,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -60,7 +60,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="昵称"/>
+            android:text="@string/nick_name"/>
 
         <TextView
             android:id="@+id/tv_nickName"
@@ -98,8 +98,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -107,7 +107,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="二维码"/>
+            android:text="@string/qr_code"/>
 
         <ImageView
             android:id="@+id/iv_arrow"
@@ -121,7 +121,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我的二维码"
+            android:text="@string/my_qrcord"
             android:textColor="#FF999999"
             android:textSize="14sp"
             android:layout_centerVertical="true"
@@ -141,8 +141,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -150,7 +150,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="性别"/>
+            android:text="@string/sex"/>
 
         <TextView
             android:id="@+id/tv_gender"
@@ -187,8 +187,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -196,7 +196,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="生日"/>
+            android:text="@string/berthday"/>
 
         <TextView
             android:id="@+id/tv_birthday"
@@ -230,8 +230,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -239,7 +239,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="地区"/>
+            android:text="@string/area"/>
 
         <TextView
             android:id="@+id/tv_city"
@@ -277,8 +277,8 @@
         android:background="#fff">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:tint="@color/colorViolet"
@@ -286,7 +286,7 @@
 
         <TextView
             style="@style/info_left_txt_style"
-            android:text="个性签名"/>
+            android:text="@string/signature"/>
 
         <TextView
             android:id="@+id/tv_sign"

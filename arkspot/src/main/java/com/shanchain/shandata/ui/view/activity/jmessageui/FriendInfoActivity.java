@@ -13,6 +13,7 @@ import com.activeandroid.query.Update;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.NativeImageLoader;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
@@ -124,7 +125,7 @@ public class FriendInfoActivity extends BaseActivity implements ArthurToolBar.On
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
-        tbMain.setTitleText("详细资料");
+        tbMain.setTitleText(getString(R.string.detail_infor));
         tbMain.setBackgroundColor(getResources().getColor(R.color.white));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         tbMain.setOnLeftClickListener(this);

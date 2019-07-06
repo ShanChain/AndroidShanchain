@@ -190,19 +190,22 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent();
-        intent.setAction(".receiver.MyLocationReceiver");
-        Activity activity = SCWebViewActivity.mActivity;
-//        sendBroadcast(intent);
+        initJPushUser();
+    }
+
+    /**
+     * 登录极光账号
+     */
+    private void initJPushUser(){
         JMessageClient.registerEventReceiver(this);
         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 if (i == 0) {
-                    com.shanchain.data.common.utils.LogUtils.d(TAG, "极光账号登录成功");
+                    LogUtils.d(TAG, "极光账号登录成功");
                 } else {
-                    com.shanchain.data.common.utils.LogUtils.d(TAG, "极光账号登录失败");
-                    ToastUtils.showToastLong(mContext, "账号登录失败,请重新登录");
+                    LogUtils.d(TAG, "极光账号登录失败");
+                    ToastUtils.showToastLong(mContext, getString(R.string.login_faile_again));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

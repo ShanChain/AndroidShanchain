@@ -59,18 +59,11 @@ public class MyCouponListActivity extends BaseActivity implements ArthurToolBar.
     }
 
     private void initData() {
-        for (int i = 0; i < 20; i++) {
-            CouponInfo couponInfo = new CouponInfo();
-            couponInfo.setName("肯定基饭店" + i);
-            couponInfo.setPrice("" + i);
-            couponInfo.setUserStatus("领取" + i);
-            couponInfo.setRemainAmount("剩余" + i);
-//            couponInfoList.add(couponInfo);
-        }
+
     }
 
     private void initView() {
-        String[] titles = {"我领取的", "我创建的"};
+        String[] titles = {getString(R.string.l_received), getString(R.string.i_created)};
         List fragments = new ArrayList();
         fragments.add(new MyReciverCouponFragment());
         fragments.add(new MyCreateCouponFragment());
@@ -87,7 +80,7 @@ public class MyCouponListActivity extends BaseActivity implements ArthurToolBar.
 
     private void initToolBar() {
         toolBar = findViewById(R.id.tb_main);
-        toolBar.setTitleText("我的马甲劵");
+        toolBar.setTitleText(getString(R.string.my_voucher));
         toolBar.setRightImage(R.mipmap.scan);
         toolBar.setOnLeftClickListener(this);//左侧导航栏监听
         toolBar.setOnRightClickListener(this);//右侧导航栏监听
@@ -173,7 +166,7 @@ public class MyCouponListActivity extends BaseActivity implements ArthurToolBar.
                             });
 
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                    Toast.makeText(MyCouponListActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyCouponListActivity.this, R.string.pase_qrcode_faile, Toast.LENGTH_LONG).show();
                 }
             }
         }

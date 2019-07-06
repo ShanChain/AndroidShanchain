@@ -117,7 +117,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
             @Override
             protected void convert(BaseViewHolder helper, MessageHomeInfo item) {
                 helper.setText(R.id.tv_item_contact_child_name, item.getJMConversation().getTargetId());
-                helper.setText(R.id.tv_item_contact_child_focus, "对话");
+                helper.setText(R.id.tv_item_contact_child_focus, R.string.dialogue);
                 helper.setText(R.id.tv_item_contact_child_des, "" + item.getJMConversation().getLatestText());
             }
 

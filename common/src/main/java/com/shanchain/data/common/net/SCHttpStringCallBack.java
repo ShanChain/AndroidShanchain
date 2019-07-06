@@ -16,6 +16,7 @@ import com.shanchain.common.R;
 import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -51,6 +52,7 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
     @Override
     public String parseNetworkResponse(Response response, int id) throws Exception {
         String result = response.body().string();
+        LogUtils.d("Resonse: ", result);
         final String code = SCJsonUtils.parseCode(result);
 //        final String code = NetErrCode.WALLET_NOT_CREATE_PASSWORD;
         final String msg = SCJsonUtils.parseMsg(result);
@@ -101,10 +103,10 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                         public void run() {
                             mStandardDialog = new StandardDialog(mContext);
                             mStandardDialog.setStandardTitle("  ");
-                            mStandardDialog.setStandardMsg("您尚未进行实名认证，\n" +
-                                    "实名后方可使用该功能");
-                            mStandardDialog.setCancelText("返回");
-                            mStandardDialog.setSureText("去实名");
+                            mStandardDialog.setStandardMsg(mContext.getString(R.string.not_vertifu)+"\n" +
+                                    mContext.getString(R.string.uses_fun));
+                            mStandardDialog.setCancelText(mContext.getString(R.string.str_cancel));
+                            mStandardDialog.setSureText(mContext.getString(R.string.go_kt));
                             mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
                                 @Override
                                 public void invoke() {
@@ -153,7 +155,7 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                             if (!TextUtils.isEmpty(msg)) {
                                 ToastUtils.showToast(mContext, code + "" + msg);
                             } else {
-                                ToastUtils.showToast(mContext, "暂未支持该功能");
+                                ToastUtils.showToast(mContext, R.string.not_support);
                             }
                         }
                     });
@@ -180,9 +182,9 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                         public void run() {
                             mStandardDialog = new StandardDialog(mContext);
                             mStandardDialog.setStandardTitle("  ");
-                            mStandardDialog.setStandardMsg("您尚未开通马甲钱包，开通后方可使用该功能");
-                            mStandardDialog.setCancelText("返回");
-                            mStandardDialog.setSureText("去开通");
+                            mStandardDialog.setStandardMsg(mContext.getString(R.string.open_marjar_wallet));
+                            mStandardDialog.setCancelText(mContext.getString(R.string.str_cancel));
+                            mStandardDialog.setSureText(mContext.getString(R.string.go_kt));
                             mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
                                 @Override
                                 public void invoke() {
@@ -209,7 +211,7 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                             final CustomDialog invalidCode = new CustomDialog(mContext, R.layout.common_dialog_costom, new int[]{R.id.even_message_content});
                             invalidCode.setDialogTitle("");
                             invalidCode.setMessageContentSize(14);
-                            invalidCode.setMessageContent("很抱歉你无法核销他人创建的马甲劵,尝试创建自己的马甲劵吧");
+                            invalidCode.setMessageContent(mContext.getString(R.string.not_user_majar));
                             invalidCode.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
                                 @Override
                                 public void OnItemClick(CustomDialog dialog, View view) {

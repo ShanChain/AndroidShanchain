@@ -66,9 +66,9 @@ public class ModifyUserInfoActivity extends BaseActivity {
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         mTbMain.getTitleView().setLayoutParams(layoutParams);
-        mTbMain.setTitleText("修改个人资料");
+        mTbMain.setTitleText(getString(R.string.modify_detail));
         mTbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
-        mTbMain.setRightText("确定");
+        mTbMain.setRightText(getString(R.string.str_sure));
         mTbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         mTbMain.setBackgroundColor(getResources().getColor(R.color.white));
 

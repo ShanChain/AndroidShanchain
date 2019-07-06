@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dimens_5dp"
             android:layout_marginTop="7dp"
-            android:text="寻求帮助"
+            android:text="@string/askfor_help"
             android:textColor="@color/colorWhite"
             android:textSize="13sp" />
     </LinearLayout>
@@ -68,7 +68,7 @@
         android:drawablePadding="@dimen/dimens_20dp"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dimens_15dp"
-        android:text="在这里说点什么吧"
+        android:text="@string/say_something"
         android:textColor="@color/colorHint"
         android:textSize="12sp"
         android:visibility="gone" />

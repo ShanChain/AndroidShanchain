@@ -112,23 +112,23 @@ public class FriendInfoView extends LinearLayout {
             if (!TextUtils.isEmpty(noteName) && !TextUtils.isEmpty(nickName)) {
                 mRl_NickName.setVisibility(View.VISIBLE);
                 mTv_NickName.setText(nickName);
-                mTv_noteName.setText("备注名: " + noteName);
+                mTv_noteName.setText(getContext().getString(R.string.remark_name) + noteName);
             }
             //没有备注 有昵称
             else if (TextUtils.isEmpty(noteName) && !TextUtils.isEmpty(nickName)) {
                 mRl_NickName.setVisibility(View.GONE);
-                mTv_noteName.setText("昵称: " + nickName);
+                mTv_noteName.setText(getContext().getResources().getString(R.string.nick_name)+": " + nickName);
             }
             //有备注 没有昵称
             else if (!TextUtils.isEmpty(noteName) && TextUtils.isEmpty(nickName)) {
                 mRl_NickName.setVisibility(View.VISIBLE);
                 mTv_NickName.setText(userInfo.getNickname());
-                mTv_noteName.setText("备注名: " + noteName);
+                mTv_noteName.setText(getContext().getString(R.string.remark_name) + noteName);
             }
             //没有备注名 没有昵称
             else {
                 mRl_NickName.setVisibility(View.GONE);
-                mTv_noteName.setText("用户名: " + userName);
+                mTv_noteName.setText(getContext().getResources().getString(R.string.user_name)+": " + userName);
             }
             if (userInfo.getGender() == UserInfo.Gender.male) {
                 mTv_gender.setText(mContext.getString(R.string.man));

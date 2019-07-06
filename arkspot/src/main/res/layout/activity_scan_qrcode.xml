@@ -54,7 +54,7 @@
         android:layout_gravity="top"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="扫一扫"
+        app:titleText="@string/scan"
         app:titleTextSize="16" />
 
 </FrameLayout>

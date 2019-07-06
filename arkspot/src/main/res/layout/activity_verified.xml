@@ -111,9 +111,10 @@
             android:id="@+id/verified_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dimens_20dp"
-            android:text="您已通过实名认证!"
+            android:text="@string/pass_verdify"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -131,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="真实姓名："
+                android:text="@string/real_name"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -142,7 +143,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@+id/tv_real_name"
-                android:text="*琳"
+                android:text=""
                 android:textColor="@color/colorHint" />
 
             <View
@@ -165,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="证件类型："
+                android:text="@string/id_type"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -176,7 +177,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@+id/tv_certificates_type"
-                android:text="身份证"
+                android:text="@string/id_card"
                 android:textColor="@color/colorTextDefault" />
 
             <View
@@ -199,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:text="证件号码："
+                android:text="@string/id_card_no"
                 android:textColor="@color/colorTextDefault"
                 android:textSize="@dimen/sp_14" />
 
@@ -210,7 +211,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@+id/tv_identity_code"
-                android:text="4***********1"
+                android:text=""
                 android:textColor="@color/colorTextDefault" />
 
             <View
@@ -226,7 +227,7 @@
             android:layout_below="@+id/relative_identity_code"
             android:layout_marginLeft="@dimen/dimens_20dp"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="证件信息设置后不能修改"
+            android:text="@string/setting_not_change"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_14" />
 
@@ -239,7 +240,7 @@
             android:layout_marginRight="@dimen/dimens_20dp"
             android:layout_marginBottom="@dimen/dp_10"
             android:textAlignment="center"
-            android:text="为了马甲用户的账号安全，以及避免盗号者盗取用户的账号后恶意更改其他账号证件信息，马甲账号在绑定证件后不支持解绑和更换证件。感谢您对马甲App的理解和支持。"
+            android:text="@string/app_zhichi_yy"
             android:textColor="@color/colorHint"
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>
