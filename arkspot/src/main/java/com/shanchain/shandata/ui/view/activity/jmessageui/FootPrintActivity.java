@@ -197,7 +197,6 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
      */
     private void initJPushUser(){
         JMessageClient.registerEventReceiver(this);
-        LogUtils.d("-----login2-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
         JMessageClient.login(SCCacheUtils.getCacheHxUserName(), SCCacheUtils.getCacheHxPwd(), new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {

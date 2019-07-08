@@ -81,6 +81,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
     private String timestamp;
     private String verifyCode;
     private String sign;
+    private CountDownTimeUtils countDownTimeUtils;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -147,6 +148,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                         if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
                             String data = SCJsonUtils.parseData(response);
                             phone = SCJsonUtils.parseString(data, "mobile");
+                            LogUtils.d(TAG,"Current phone number is: "+phone);
                             tvChangePhone.setText(phone);
                         }
                     }
@@ -158,6 +160,10 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
         ArthurToolBar arthurToolBar = findViewById(R.id.tb_setting);
         arthurToolBar.setTitleText("");
         arthurToolBar.setOnLeftClickListener(this);
+
+        countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
+
     }
 
     @Override
@@ -284,9 +290,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
             getCheckCode(mobilePhone);
         }*/
         getCheckCode(mobilePhone);
-        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
-        countDownTimeUtils.setContext(this);
-        countDownTimeUtils.start();
+
     }
 
     //从后台获取验证码
@@ -304,13 +308,16 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
                     @Override
                     public void onResponse(String response, int id) {
                         String code = JSONObject.parseObject(response).getString("code");
+                        String data = SCJsonUtils.parseData(response);
                         if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
-                            String data = SCJsonUtils.parseData(response);
                             smsVerifyCode = SCJsonUtils.parseString(data, "smsVerifyCode");
                             salt = SCJsonUtils.parseString(data, "salt");
                             timestamp = SCJsonUtils.parseString(data, "timestamp");
                             String mobile = SCJsonUtils.parseString(data, "mobile");
                             LogUtils.d("data", "盐值" + salt + " 时间戳：" + timestamp);
+                            countDownTimeUtils.start();
+                        }else {
+                            ToastUtils.showToast(SetPasswordActivity.this, JSONObject.parseObject(response).getString("message"));
                         }
                     }
                 });

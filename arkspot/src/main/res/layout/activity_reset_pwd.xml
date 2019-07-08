@@ -12,23 +12,31 @@
         style="@style/style_toolbar"
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextDefault"
-        app:titleText="重置密码"
+        app:titleText="@string/reset_psw"
         app:titleTextSize="16"/>
 
     <View style="@style/style_text_line_match"/>
 
     <LinearLayout
         style="@style/style_obtain_focus"/>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp"
+        android:background="@drawable/shape_bg_edit_report">
+        <Spinner
+            android:id="@+id/sp_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"></Spinner>
     <EditText
         android:inputType="number"
         android:id="@+id/et_reset_phone"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_marginLeft="38dp"
-        android:layout_marginRight="38dp"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/shape_bg_edit_report"
+        android:background="@null"
         android:gravity="center_vertical"
         android:hint="@string/str_hint_register_phone"
         android:lines="1"
@@ -38,7 +46,7 @@
         android:textColorHint="@color/colorLoginHint"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/sp_14"/>
-
+    </LinearLayout>
     <RelativeLayout
         android:background="@drawable/shape_bg_edit_report"
         android:layout_width="match_parent"

@@ -70,16 +70,26 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
     private String encryptOpenId = "", sign = "";
     private String salt;
     private String timestamp;
+    private CountDownTimeUtils countDownTimeUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        phone = getIntent().getStringExtra("account");
         setContentView(R.layout.activity_change_phone_num);
         ButterKnife.bind(this);
+
+        initData();
+
+
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData() {
+        phone = getIntent().getStringExtra("account");
         tbSetting.setTitleText("");
         tbSetting.setOnLeftClickListener(this);
-        initData();
         editVerifyCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -110,10 +120,15 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
                 }
             }
         });
-
+        countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
+        getUserPhoneData();
     }
 
-    private void initData() {
+    /**
+     * 获取用户绑定的手机号
+     */
+    private void getUserPhoneData(){
         SCHttpUtils.postWithUserId()
                 .url(HttpApi.USER_BOUND)
                 .build()
@@ -194,9 +209,7 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
         } else {
             getCheckCode(mobilePhone);
         }
-        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
-        countDownTimeUtils.setContext(this);
-        countDownTimeUtils.start();
+
     }
 
     //从后台获取验证码
@@ -221,6 +234,9 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
                             timestamp = SCJsonUtils.parseString(data, "timestamp");
                             String mobile = SCJsonUtils.parseString(data, "mobile");
                             LogUtils.d("data", "盐值" + salt + " 时间戳：" + timestamp);
+                            countDownTimeUtils.start();
+                        }else {
+                            ToastUtils.showToast(ChangePhoneNumActivity.this, JSONObject.parseObject(response).getString("message"));
                         }
                     }
                 });

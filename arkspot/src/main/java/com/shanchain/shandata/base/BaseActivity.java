@@ -245,6 +245,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             initPushAgent();
             initDeviceToken();
             checkApkVersion();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

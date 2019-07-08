@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.eventbus.EventConstant;
 import com.shanchain.data.common.eventbus.SCBaseEvent;
+import com.shanchain.data.common.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 

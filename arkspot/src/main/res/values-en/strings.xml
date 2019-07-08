@@ -361,5 +361,9 @@
     <string name="next_step_1">Next step</string>
     <string name="album">Album</string>
     <string name="take_photo">Take a photo</string>
+    <string name="reset_psw">Reset Password</string>
+    <string name="account_error">Account error</string>
+    <string name="reset_psw_faile">Failed to reset password</string>
+    <string name="reset_psw_success">Reset password successfully</string>
 
 </resources>

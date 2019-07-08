@@ -2,8 +2,11 @@ package com.shanchain.shandata.ui.view.activity.login;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.shanchain.data.common.base.UserType;
@@ -44,8 +47,16 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     EditText mEtResetCode;
     @Bind(R.id.btn_reset_sure)
     Button mBtnResetSure;
+    @Bind(R.id.sp_phone_number)
+    Spinner spPhoneNumber;
+
     private String verifyCode = "";
     private String mMobile = "";
+
+    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
+    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
+    private String aAcount = "";
+    private CountDownTimeUtils countDownTimeUtils;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -60,8 +71,35 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void initToolBar() {
         mTbResetPwd.setBtnEnabled(true, false);
         mTbResetPwd.setOnLeftClickListener(this);
+
+        countDownTimeUtils = new CountDownTimeUtils(mTvResetCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
+
+        addCountrysPhone();
     }
 
+    //添加几个测试国家的手机号前缀
+    private void addCountrysPhone(){
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, countrysAttr);
+        //下拉的样式res
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spPhoneNumber.setAdapter(spinnerAdapter);
+
+        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                aAcount = countryPhoneAttr[pos];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
+        aAcount = countryPhoneAttr[0];
+    }
 
     @OnClick({R.id.tv_reset_code, R.id.btn_reset_sure})
     public void onClick(View view) {
@@ -83,20 +121,21 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
         String pwd = mEtResetPwd.getText().toString().trim();
 
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd)) {
-            ToastUtils.showToast(this, "请填写完整数据");
+            ToastUtils.showToast(this, getString(R.string.toast_no_empty));
             return;
         }
-
+        if(!"+86".equals(aAcount)){
+            phone = aAcount.substring(1,aAcount.length())+phone;
+        }
         if (!TextUtils.equals(phone, mMobile)) {
-            ToastUtils.showToast(this, "账号错误");
+            ToastUtils.showToast(this, R.string.account_error);
             return;
         }
 
         if (!TextUtils.equals(verifyCode, code)) {
-            ToastUtils.showToast(this, "验证码错误");
+            ToastUtils.showToast(this, getString(R.string.sms_code_wrong));
             return;
         }
-
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
         String encryptAccount = Base64.encode(AESUtils.encrypt(phone, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
@@ -116,7 +155,7 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
                 .execute(new SCHttpStringCallBack() {
                              @Override
                              public void onError(Call call, Exception e, int id) {
-                                 ToastUtils.showToast(mContext, "重置密码失败");
+                                 ToastUtils.showToast(mContext, R.string.reset_psw_faile);
                                  LogUtils.e("重置密码失败");
                                  e.printStackTrace();
                              }
@@ -127,14 +166,14 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
                                      LogUtils.i("重置密码成功 = " + response);
                                      String code = SCJsonUtils.parseCode(response);
                                      if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)){
-                                         ToastUtils.showToast(mContext,"重置密码成功");
+                                         ToastUtils.showToast(mContext,R.string.reset_psw_success);
                                          finish();
                                      }else{
-                                         ToastUtils.showToast(mContext, "重置密码失败");
+                                         ToastUtils.showToast(mContext, R.string.reset_psw_faile);
                                      }
                                  } catch (Exception e) {
                                      e.printStackTrace();
-                                     ToastUtils.showToast(mContext, "重置密码失败");
+                                     ToastUtils.showToast(mContext, R.string.reset_psw_faile);
                                  }
                              }
                          }
@@ -150,23 +189,25 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void obtainCheckCode() {
         String phone = mEtResetPhone.getText().toString().trim();
         if (TextUtils.isEmpty(phone)) {
-            ToastUtils.showToast(this, "请填写手机号码");
+            ToastUtils.showToast(this, getString(R.string.str_login_account));
             return;
         } else {
-            if (AccountUtils.isPhone(phone)) {
+            /*if (AccountUtils.isPhone(phone)) {
                 getCheckCode(phone);
             } else {
                 ToastUtils.showToast(this, "请输入正确格式的账号");
                 return;
-            }
+            }*/
+            getCheckCode(phone);
         }
 
-        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(mTvResetCode, 60 * 1000, 1000);
-        countDownTimeUtils.setContext(this);
-        countDownTimeUtils.start();
+
     }
 
     private void getCheckCode(String phone) {
+        if(!"+86".equals(aAcount)){
+            phone = aAcount.substring(1,aAcount.length())+phone;
+        }
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_UNLOGIN_VERIFYCODE)
                 .addParams("mobile", phone)
@@ -183,6 +224,7 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
                         if (response != null) {
                             verifyCode = response.getSmsVerifyCode();
                             mMobile = response.getMobile();
+                            countDownTimeUtils.start();
                             LogUtils.d("从后台获取的验证码:" + verifyCode + "\n 手机账号 :" + mMobile);
                         } else {
                             LogUtils.d("请求的数据为空");
