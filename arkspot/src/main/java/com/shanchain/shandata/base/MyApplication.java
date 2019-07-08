@@ -113,9 +113,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     private static final String QQ_ID = "1106258060";
     private static final String WX_ID = "wx0c49828919e7fd03";
     private static final String QQ_KEY = "cc7M3ByR9jPcsIDg";
-    //    private static final String WEIBO_ID = "2916880440";
     private static final String WEIBO_ID = "1619531897";
-    //    private static final String WEIBO_SECRET = "8a25275c367126c9c6708f90ab5d5edd";
     private static final String WEIBO_SECRET = "a669a85dffd04fc23f2051c96c73c68f";
     private static final String REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
     private static final String WX_SECRET = "3a8e3a6794d962d1dbbbea2041e57308";
@@ -214,9 +212,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         option.setIsNeedLocationDescribe(true);
         locationClient.setLocOption(option);//设置定位参数
         locationClient.start();
-        Intent intent = new Intent();
-//        intent.setAction(".receiver.MyLocationReceiver");
-//        sendBroadcast(intent);
+
     }
 
     //初始化webSocket

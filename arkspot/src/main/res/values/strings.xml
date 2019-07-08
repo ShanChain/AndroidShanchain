@@ -366,5 +366,18 @@
     <string name="dialogue">对话</string>
     <string name="tell_all_us">把你的遇到的问题、想法、意见告诉我们吧~</string>
     <string name="make_better_marjar">一起把MarJar做得更好！</string>
+    <string name="again_send_sms">%s s后可重发</string>
+    <string name="passw_or_account_entity">账号或密码为空！</string>
+    <string name="login_failed">登录失败，请检查用户名密码</string>
+    <string name="ac_ps_wrong">账号或密码错误</string>
+    <string name="ar_wrong">授权失败</string>
+    <string name="delete_at_failed">删除授权失败</string>
+    <string name="get_info_faile">获取个人信息失败</string>
+    <string name="deauthorization">取消授权</string>
+    <string name="phone_sms_not_entity">请输入手机号、验证码</string>
+    <string name="unknown_ex">未知异常</string>
+    <string name="prompt">提示</string>
+    <string name="account_other_login">账号已在其他设备上登录，请重新登录</string>
+    <string name="re_login">重新登录</string>
 
 </resources>

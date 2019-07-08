@@ -285,6 +285,7 @@ public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.O
         }*/
         getCheckCode(mobilePhone);
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
         countDownTimeUtils.start();
     }
 

@@ -333,5 +333,33 @@
     <string name="dialogue">Dialogue</string>
     <string name="tell_all_us">Tell us about your problems, ideas, and opinions~</string>
     <string name="make_better_marjar">Make MarJar better together!</string>
+    <string name="str_normal_login">Password login</string>
+    <string name="again_send_sms">Resend after %s s</string>
+    <string name="passw_or_account_entity">Account or password is empty！</string>
+    <string name="login_failed">Login failed, please check username and password</string>
+    <string name="ac_ps_wrong">Incorrect username or password</string>
+    <string name="ar_wrong">Authorization failure</string>
+    <string name="delete_at_failed">Delete authorization failed</string>
+    <string name="get_info_faile">Failed to get personal information</string>
+    <string name="deauthorization">Deauthorization</string>
+    <string name="phone_sms_not_entity">Please enter your mobile number or SMS code</string>
+    <string name="str_bind_phone">Associated mobile phone</string>
+    <string name="unknown_ex">Unknown exception</string>
+    <string name="prompt">Prompt</string>
+    <string name="account_other_login">The account has been logged in on another device, please log in again</string>
+    <string name="re_login">Re-login</string>
+    <string name="set_wallet_psw">Set the wallet password</string>
+    <string name="save_image">Please save the picture</string>
+    <string name="create_save_code">The security code will be generated, it will not be changed after the generation, and the confirmation will be generated?</string>
+    <string name="open_permission">It is detected that the mobile phone system has closed the read album permission, please go to [Settings] - [Permission Management] to open</string>
+    <string name="save_success">Save success</string>
+    <string name="save_faile">Save failed</string>
+    <string name="create_qrcode_1">Please upload a picture you like to generate a unique security code</string>
+    <string name="create_1">Create</string>
+    <string name="click_save">Save</string>
+    <string name="wallet_psw_not_save">The vest APP will not record the user\'s wallet password. If it is lost, it will not be retrieved. Please save it properly. Please do not save the screenshot to avoid the loss of funds.</string>
+    <string name="next_step_1">Next step</string>
+    <string name="album">Album</string>
+    <string name="take_photo">Take a photo</string>
 
 </resources>

@@ -173,6 +173,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                     if (currentTime < overTime) {
                                         TextView countDown = sureDialog.findViewById(R.id.text_count_down);
                                         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(countDown, "确认倒计时：", overTime - currentTime, 1000);
+                                        countDownTimeUtils.setContext(getActivity());
                                         countDownTimeUtils.start();
                                     }
                                     sureDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {

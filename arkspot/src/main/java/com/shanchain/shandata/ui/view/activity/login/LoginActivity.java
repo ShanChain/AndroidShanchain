@@ -196,6 +196,7 @@ public class LoginActivity extends BaseActivity {
             String hxUserName = SCCacheUtils.getCacheHxUserName();
             String hxPwd = SCCacheUtils.getCacheHxPwd();
             String token = SCCacheUtils.getCacheToken();
+            LogUtils.d("-----login0-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
 //            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
                 checkServer();
@@ -216,7 +217,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         closeProgress();
-                        ToastUtils.showToast(mContext, "网络异常");
+                        ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                         LogUtils.i("获取当前角色失败");
                         e.printStackTrace();
                     }
@@ -230,14 +231,14 @@ public class LoginActivity extends BaseActivity {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 if (TextUtils.isEmpty(data)) {
                                     closeProgress();
-                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码1");
+                                    ToastUtils.showToast(LoginActivity.this, R.string.login_failed);
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
                                 RoleManager.switchRoleCacheCharacterInfo(character);
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
-                                    ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码2");
+                                    ToastUtils.showToast(LoginActivity.this, R.string.login_failed);
                                     return;
                                 } else {
                                     String isBindPwd = SCJsonUtils.parseString(character, "isBindPwd");
@@ -248,7 +249,7 @@ public class LoginActivity extends BaseActivity {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
                                     if (characterInfo == null) {
                                         closeProgress();
-                                        ToastUtils.showToast(LoginActivity.this, "登录失败，请检查用户名密码3");
+                                        ToastUtils.showToast(LoginActivity.this, R.string.login_failed);
                                     } else {
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
                                         RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
@@ -267,11 +268,11 @@ public class LoginActivity extends BaseActivity {
                                 //code错误
                                 closeProgress();
                                 LogUtils.i("获取当前角色code错误");
-                                ToastUtils.showToast(mContext, "网络异常");
+                                ToastUtils.showToast(mContext, R.string.network_wrong);
                             }
                         } catch (Exception e) {
                             closeProgress();
-                            ToastUtils.showToast(mContext, "网络异常");
+                            ToastUtils.showToast(mContext, R.string.network_wrong);
                             LogUtils.i("获取当前角色信息数据解析错误");
                             e.printStackTrace();
                         }
@@ -327,6 +328,7 @@ public class LoginActivity extends BaseActivity {
                         }
 
 //                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        LogUtils.d("-----login1-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
                         Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
                         startActivity(intent);
                         finish();
@@ -403,7 +405,7 @@ public class LoginActivity extends BaseActivity {
 
                 } else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                    ToastUtils.showToastLong(LoginActivity.this, "登录失败，请检查用户名密码");
+                    ToastUtils.showToastLong(LoginActivity.this, getString(R.string.login_failed));
 
                 }
             }
@@ -509,7 +511,7 @@ public class LoginActivity extends BaseActivity {
         String pwd = mEtLoginPwd.getText().toString().trim();
 
         if (TextUtils.isEmpty(account) || TextUtils.isEmpty(pwd)) {
-            ToastUtils.showToast(this, "账号或密码为空！");
+            ToastUtils.showToast(this, R.string.passw_or_account_entity);
             return;
         }
         /*if (!AccountUtils.isPhone(account)) {
@@ -546,7 +548,7 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.i("登录错误");
                         e.printStackTrace();
-                        ToastUtils.showToast(mContext, "网络错误");
+                        ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                         closeProgress();
                     }
 
@@ -586,15 +588,15 @@ public class LoginActivity extends BaseActivity {
                                 }
                                 checkCache();
                             } else if (TextUtils.equals(code, NetErrCode.LOGIN_ERR_CODE)) {
-                                ToastUtils.showToast(mContext, "账号或密码错误");
+                                ToastUtils.showToast(mContext, R.string.ac_ps_wrong);
                                 closeProgress();
                             } else {
-                                ToastUtils.showToast(mContext, "网络错误");
+                                ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                                 closeProgress();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            ToastUtils.showToast(mContext, "网络错误");
+                            ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                             closeProgress();
                         }
                     }
@@ -676,13 +678,13 @@ public class LoginActivity extends BaseActivity {
                 String toastMsg = null;
                 switch (action) {
                     case Platform.ACTION_AUTHORIZING:
-                        toastMsg = "授权失败";
+                        toastMsg = getString(R.string.ar_wrong);
                         break;
                     case Platform.ACTION_REMOVE_AUTHORIZING:
-                        toastMsg = "删除授权失败";
+                        toastMsg = getString(R.string.delete_at_failed);
                         break;
                     case Platform.ACTION_USER_INFO:
-                        toastMsg = "获取个人信息失败";
+                        toastMsg = getString(R.string.get_info_faile);
                         break;
                 }
                 if (handler != null) {
@@ -698,12 +700,12 @@ public class LoginActivity extends BaseActivity {
                 String toastMsg = null;
                 switch (action) {
                     case Platform.ACTION_AUTHORIZING:
-                        toastMsg = "取消授权";
+                        toastMsg = getString(R.string.deauthorization);
                         break;
                     case Platform.ACTION_REMOVE_AUTHORIZING:
                         break;
                     case Platform.ACTION_USER_INFO:
-                        toastMsg = "取消获取个人信息";
+                        toastMsg = getString(R.string.get_info_faile);
                         break;
                 }
                 if (handler != null) {
@@ -775,7 +777,7 @@ public class LoginActivity extends BaseActivity {
                                      ThreadUtils.runOnMainThread(new Runnable() {
                                          @Override
                                          public void run() {
-                                             ToastUtils.showToast(mContext, "网络异常");
+                                             ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                                          }
                                      });
 
@@ -809,7 +811,7 @@ public class LoginActivity extends BaseActivity {
                                              ThreadUtils.runOnMainThread(new Runnable() {
                                                  @Override
                                                  public void run() {
-                                                     ToastUtils.showToast(mContext, code + ":未知异常");
+                                                     ToastUtils.showToast(mContext, code + ":"+getString(R.string.unknown_ex));
                                                  }
                                              });
                                          }
@@ -819,7 +821,7 @@ public class LoginActivity extends BaseActivity {
                                          ThreadUtils.runOnMainThread(new Runnable() {
                                              @Override
                                              public void run() {
-                                                 ToastUtils.showToast(mContext, "未知异常：" + e.getMessage());
+                                                 ToastUtils.showToast(mContext, getString(R.string.unknown_ex)+":" + e.getMessage());
                                              }
                                          });
                                      }
@@ -829,7 +831,7 @@ public class LoginActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
             closeProgress();
-            ToastUtils.showToast(mContext, "网络异常");
+            ToastUtils.showToast(mContext, getString(R.string.network_wrong));
             LogUtils.i("网络异常");
         }
     }
@@ -841,7 +843,7 @@ public class LoginActivity extends BaseActivity {
         mobilePhone = etDynamicLoginAccount.getText().toString().trim();
         verifyCode = etDynamicLoginCode.getText().toString().trim();
         if (TextUtils.isEmpty(mobilePhone)) {
-            ToastUtils.showToast(this, "请填写手机号码");
+            ToastUtils.showToast(this, getString(R.string.str_hint_register_phone));
             return;
         } else {
             /*if (AccountUtils.isPhone(mobilePhone)) {
@@ -854,6 +856,7 @@ public class LoginActivity extends BaseActivity {
         }
 
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
         countDownTimeUtils.start();
     }
 
@@ -980,7 +983,7 @@ public class LoginActivity extends BaseActivity {
                 mobilePhone = etDynamicLoginAccount.getText().toString().trim();
                 verifyCode = etDynamicLoginCode.getText().toString().trim();
                 if (TextUtils.isEmpty(verifyCode) || TextUtils.isEmpty(mobilePhone)) {
-                    ToastUtils.showToast(LoginActivity.this, "请输入手机号、验证码");
+                    ToastUtils.showToast(LoginActivity.this, R.string.phone_sms_not_entity);
                     return;
                 }
                 sign = MD5Utils.getMD5(verifyCode + salt + timestamp);

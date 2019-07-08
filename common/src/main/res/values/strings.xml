@@ -55,5 +55,18 @@
     <string name="uses_fun">实名后方可使用该功能</string>
     <string name="not_support">暂未支持该功能</string>
     <string name="not_user_majar">很抱歉你无法核销他人创建的马甲劵,尝试创建自己的马甲劵吧</string>
+    <string name="set_wallet_psw">设置钱包密码</string>
+    <string name="save_image">请保存图片</string>
+    <string name="create_save_code">即将生成安全码，生成后将不可更改，是否确认生成?</string>
+    <string name="open_permission">检测到手机系统已关闭读取相册权限，请前往【设置】-【权限管理】中开启</string>
+    <string name="save_success">保存成功</string>
+    <string name="save_faile">保存失败</string>
+    <string name="create_qrcode_1">请上传一张你喜欢的图片 生成专属安全码</string>
+    <string name="create_1">一键生成</string>
+    <string name="click_save">点击保存</string>
+    <string name="wallet_psw_not_save">马甲APP不会记录用户的钱包密码，若丢失将无法找回，请妥善保存，请勿截图保存，以免造成资金损失。</string>
+    <string name="next_step_1">下一步</string>
+    <string name="album">相册</string>
+    <string name="take_photo">拍照</string>
 
 </resources>

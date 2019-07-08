@@ -102,7 +102,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
     }
 
     private void initToolBar() {
-        tbWallet.setTitleText("设置钱包密码");
+        tbWallet.setTitleText(getString(R.string.set_wallet_psw));
 //        tbWallet.setRightText("提示");
         tbWallet.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
         tbWallet.setRightTextColor(getResources().getColor(R.color.colorViolet));
@@ -120,7 +120,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                     finish();
                 } else {
                     tbWallet.setLeftImage(0);
-                    ToastUtils.showToast(SetWalletPasswordActivity.this, "请保存图片");
+                    ToastUtils.showToast(SetWalletPasswordActivity.this, R.string.save_image);
                 }
             }
         });
@@ -168,9 +168,9 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                 return;
             }
             StandardDialog standardDialog = new StandardDialog(SetWalletPasswordActivity.this);
-            standardDialog.setCancelText("取消");
-            standardDialog.setSureText("确认");
-            standardDialog.setStandardMsg("即将生成安全码，生成后将不可更改，是否确认生成?");
+            standardDialog.setCancelText(getString(R.string.str_cancel));
+            standardDialog.setSureText(getString(R.string.str_sure));
+            standardDialog.setStandardMsg(getString(R.string.create_save_code));
             standardDialog.setStandardTitle("  ");
             standardDialog.show();
             standardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
@@ -247,7 +247,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
         } else if (i == R.id.btn_save_wallet_password) {
             if (ContextCompat.checkSelfPermission(SetWalletPasswordActivity.this, Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-                ToastUtils.showToastLong(SetWalletPasswordActivity.this, "检测到手机系统已关闭读取相册权限，请前往【设置】-【权限管理】中开启");
+                ToastUtils.showToastLong(SetWalletPasswordActivity.this, getString(R.string.open_permission));
             }
             if (mResultBytes != null) {
                 final Bitmap bitmap = BitmapFactory.decodeByteArray(mResultBytes, 0, mResultBytes.length);
@@ -283,7 +283,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                                             ThreadUtils.runOnMainThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, "保存成功");
+                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, R.string.save_success);
                                                 }
                                             });
                                             btnNextStep.setClickable(true);
@@ -292,7 +292,7 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                                             ThreadUtils.runOnMainThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, "保存失败");
+                                                    ToastUtils.showToast(SetWalletPasswordActivity.this, R.string.save_faile);
                                                 }
                                             });
                                         }
@@ -300,11 +300,11 @@ public class SetWalletPasswordActivity extends AppCompatActivity implements View
                                     }
                                 });
                     } else {
-                        ToastUtils.showToast(SetWalletPasswordActivity.this, "保存失败");
+                        ToastUtils.showToast(SetWalletPasswordActivity.this, R.string.save_faile);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ToastUtils.showToast(SetWalletPasswordActivity.this, "保存失败");
+                    ToastUtils.showToast(SetWalletPasswordActivity.this, R.string.save_faile);
                 } finally {
                     displayToGallery(SetWalletPasswordActivity.this, passwordImage);
                 }

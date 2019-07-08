@@ -195,6 +195,7 @@ public class ChangePhoneNumActivity extends AppCompatActivity implements ArthurT
             getCheckCode(mobilePhone);
         }
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
         countDownTimeUtils.start();
     }
 

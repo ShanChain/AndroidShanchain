@@ -278,6 +278,7 @@ public class BindInfoActivity extends BaseActivity implements ArthurToolBar.OnLe
         }
 
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(mTvResetCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
         countDownTimeUtils.start();
     }
 

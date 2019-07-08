@@ -440,13 +440,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                             R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
                                     sureDialog.setDialogTitle("下一层元社区已开启");
                                     sureDialog.setMessageContent("点击确认进入元社区，否则您将被踢出聊天室");
-                                    sureDialog.setSureText("确认");
+                                    sureDialog.setSureText(getString(R.string.str_sure));
                                     sureDialog.setMessageContentSize(16);
                                     sureDialog.show();
                                     sureDialog.setCanceledOnTouchOutside(false);
                                     if (currentTime < overTime) {
                                         TextView countDown = sureDialog.findViewById(R.id.text_count_down);
                                         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(countDown, "确认倒计时：", overTime - currentTime, 1000);
+                                        countDownTimeUtils.setContext(MessageListActivity.this);
                                         countDownTimeUtils.start();
                                     }
                                     sureDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {

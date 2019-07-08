@@ -1,8 +1,11 @@
 package com.shanchain.shandata.utils;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
+
+import com.shanchain.shandata.R;
 
 import java.text.DecimalFormat;
 
@@ -15,6 +18,11 @@ public class CountDownTimeUtils extends CountDownTimer {
 
     private TextView view;
     private String mString;
+    private Context mContext;
+
+    public void setContext(Context context) {
+        mContext = context;
+    }
 
     public CountDownTimeUtils(TextView textView, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
@@ -48,7 +56,7 @@ public class CountDownTimeUtils extends CountDownTimer {
             }
         } else {
             view.setEnabled(false);
-            view.setText(millisUntilFinished / 1000 + "s后可重发");
+            view.setText(mContext.getResources().getString(R.string.again_send_sms,(millisUntilFinished / 1000)+""));
         }
     }
 
@@ -59,7 +67,7 @@ public class CountDownTimeUtils extends CountDownTimer {
             view.setVisibility(View.GONE);
         } else {
             view.setEnabled(true);
-            view.setText("获取验证码");
+            view.setText(mContext.getResources().getString(R.string.str_register_code_obtain));
         }
     }
 
