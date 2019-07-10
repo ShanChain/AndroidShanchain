@@ -196,5 +196,14 @@
         <attr name="progres" format="integer" />
     </declare-styleable>
 
+    <style name="CustomAppTheme_textinputLayout" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/white_btn_press</item>
+        <item name="android:textColorHint">@color/login_marjar_color</item>
+        <item name="android:textColor">@color/login_marjar_color</item>
+        <item name="colorControlActivated">@color/white_btn_press</item>
+        <item name="colorControlHighlight">@color/login_marjar_color</item>
+        <item name="colorControlNormal">@color/login_marjar_color</item>
+    </style>
+
 
 </resources>

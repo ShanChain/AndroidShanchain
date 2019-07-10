@@ -566,6 +566,9 @@
         <activity android:name=".ui.view.activity.jmessageui.PersonalActivity" />
         <!-- <activity android:name=".rn.activity.X5WebViewActivity" /> -->
         <activity android:name=".ui.view.activity.MainEntranceActivity"></activity>
+
+        <activity android:name=".ui.view.activity.login.PhoneFrontActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

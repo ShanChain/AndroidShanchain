@@ -78,4 +78,9 @@
     <color name="shadow">#cc222222</color>
     <color name="Red_800">#ffb93221</color>
     <color name="white">#fff</color>
+
+    <!-- marjar-twideo -->
+    <color name="login_marjar_color">#9967ea</color>
+    <color name="register_marjar_color">#7383e0</color>
+    <color name="register_marjar_color_s">#5e73ea</color>
 </resources>

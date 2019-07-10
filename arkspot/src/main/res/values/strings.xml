@@ -383,5 +383,12 @@
     <string name="account_error">账号错误</string>
     <string name="reset_psw_faile">重置密码失败</string>
     <string name="reset_psw_success">重置密码成功</string>
+    <string name="get_code_failed">获取验证码失败</string>
+    <string name="enter_sms_coed_1">输入验证码</string>
+    <string name="enter_sms_coed_tip">短信验证码已发送至 %s</string>
+    <string name="select_c_d">选择国家或地区</string>
+    <string name="user_agreement">用户服务协议（草案）</string>
+    <string name="psw_twice_dif">两次输入的密码不相同</string>
+    <string name="register_success">注册成功</string>
 
 </resources>

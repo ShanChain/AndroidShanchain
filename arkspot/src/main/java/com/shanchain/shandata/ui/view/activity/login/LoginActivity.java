@@ -47,11 +47,15 @@ import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
+import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +92,6 @@ import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
 
 public class LoginActivity extends BaseActivity {
 
-    @Bind(R.id.tb_login)
-    ArthurToolBar mTbLogin;
     @Bind(R.id.et_login_account)
     EditText mEtLoginAccount;
     @Bind(R.id.et_login_pwd)
@@ -102,8 +104,6 @@ public class LoginActivity extends BaseActivity {
     Button mBtnRegister;
     @Bind(R.id.iv_login_wx)
     ImageView mIvLoginWx;
-    @Bind(R.id.iv_login_wb)
-    ImageView mIvLoginWb;
     @Bind(R.id.iv_login_qq)
     ImageView mIvLoginQq;
     @Bind(R.id.tv_dynamic_login)
@@ -120,29 +120,32 @@ public class LoginActivity extends BaseActivity {
     TextView tvNormalLogin;
     @Bind(R.id.btn_dynamic_login)
     Button btnDynamicLogin;
+    @Bind(R.id.btn_dynamic_login_next)
+    Button btnDynamicLoginNext;
     @Bind(R.id.linear_dynamic_login)
     LinearLayout dynamicLogin;
     @Bind(R.id.iv_login_fb)
     ImageView ivLoginFb;
-    @Bind(R.id.rl_login_wx)
-    RelativeLayout rlLoginWx;
-    @Bind(R.id.rl_login_wb)
-    RelativeLayout rlLoginWb;
-    @Bind(R.id.rl_login_fb)
-    RelativeLayout rlLoginFb;
-    @Bind(R.id.rl_login_qq)
-    RelativeLayout rlLoginQq;
     @Bind(R.id.sp_phone_number)
     Spinner spPhoneNumber;
     @Bind(R.id.sp_phone_number_dn)
     Spinner spPhoneNumberDn;
+    @Bind(R.id.rl_enter_phone)
+    RelativeLayout rlEnterPhone;
+    @Bind(R.id.rl_code_item)
+    RelativeLayout rlCodeItem;
+    @Bind(R.id.tv_sms_tip)
+    TextView tvSmsTip;
+    @Bind(R.id.tv_phone_q_1)
+    TextView tvPhoneQ1;
+    @Bind(R.id.tv_phone_q_2)
+    TextView tvPhoneQ2;
 
     private ProgressDialog mDialog;
     private List<String> dataList = new ArrayList<String>();
 
-    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
-    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
-    private String aAcount = "";
+    private String aAcount = "+86";
+    private CountDownTimeUtils countDownTimeUtils;
 
     private Handler handler = new Handler() {
         @Override
@@ -174,15 +177,30 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initViewsAndEvents() {
-        mTbLogin.setBtnEnabled(false);
         String RegistrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", RegistrationID);
         channel = MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL");
         LogUtils.d("appChannel", channel);
         btnDynamicLogin.setClickable(false);
-        btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
+//        btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
 
-        addCountrysPhone();
+        countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+        countDownTimeUtils.setContext(this);
+
+        PhoneFrontActivity.setListener(new PhoneFrontActivity.PhoneFrontNumCallback() {
+            @Override
+            public void getPhoneData(PhoneFrontBean phoneFrontBean) {
+                if(phoneFrontBean !=null){
+                    if(phoneFrontBean.getSourceType() ==1){
+                        tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
+
+                    }else {
+                        tvPhoneQ2.setText(phoneFrontBean.getPhoneFront());
+                    }
+                    aAcount = phoneFrontBean.getPhoneFront();
+                }
+            }
+        });
     }
 
     private void checkCache() {
@@ -417,42 +435,8 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    //添加几个测试国家的手机号前缀
-    private void addCountrysPhone(){
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, countrysAttr);
-        //下拉的样式res
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spPhoneNumber.setAdapter(spinnerAdapter);
-        spPhoneNumberDn.setAdapter(spinnerAdapter);
 
-        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                aAcount = countryPhoneAttr[pos];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-        spPhoneNumberDn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                aAcount = countryPhoneAttr[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        aAcount = countryPhoneAttr[0];
-    }
-
-    @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_fb, R.id.rl_login_wx, R.id.rl_login_wb, R.id.rl_login_fb, R.id.rl_login_qq})
+    @OnClick({R.id.tv_login_forget, R.id.btn_login, R.id.btn_register, R.id.iv_login_fb, R.id.iv_login_wx, R.id.iv_login_qq})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_login_forget:
@@ -467,24 +451,9 @@ public class LoginActivity extends BaseActivity {
                 //注册
                 readyGo(RegisterActivity.class);
                 break;
-            case R.id.rl_login_wx:
+            case R.id.iv_login_wx:
                 //微信登录
                 thirdPlatform(UserType.USER_TYPE_WEIXIN);
-//                LoginUtil.login(this, LoginPlatform.WX, listener, true);
-                break;
-            case R.id.rl_login_wb:
-                //微博登录
-                thirdPlatform(UserType.USER_TYPE_WEIBO);
-//                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
-                break;
-            case R.id.rl_login_fb:
-                //facebook登录
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-                    ToastUtils.showToastLong(LoginActivity.this, getResources().getString(R.string.third_platform));
-                    return;
-                } else {
-                    thirdPlatform(UserType.USER_TYPE_FB);
-                }
                 break;
             case R.id.iv_login_fb:
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
@@ -496,7 +465,7 @@ public class LoginActivity extends BaseActivity {
 //                LoginUtil.login(this, LoginPlatform.WEIBO, listener, true);
                 break;
 
-            case R.id.rl_login_qq:
+            case R.id.iv_login_qq:
                 //qq登录
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
                     ToastUtils.showToastLong(LoginActivity.this, getResources().getString(R.string.third_platform));
@@ -508,6 +477,29 @@ public class LoginActivity extends BaseActivity {
             default:
                 break;
         }
+    }
+
+    /**
+     * 动态密码登录获取验证码
+     */
+    @OnClick(R.id.btn_dynamic_login_next)
+    void getSmscodeByDynamicLogin(){
+        obtainCheckCode();
+    }
+
+    /**
+     * 选择其他国家的手机号前缀
+     */
+    @OnClick(R.id.tv_phone_q_1)
+    void getPhoneQ1(){
+        startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",1));
+    }
+    /**
+     * 选择其他国家的手机号前缀
+     */
+    @OnClick(R.id.tv_phone_q_2)
+    void getPhoneQ2(){
+        startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",2));
     }
 
     private void login() {
@@ -841,42 +833,32 @@ public class LoginActivity extends BaseActivity {
     }
 
     /*
-     * 绑定获取验证码
+     * 动态密码登录获取验证码
      * */
     private void obtainCheckCode() {
         mobilePhone = etDynamicLoginAccount.getText().toString().trim();
-        verifyCode = etDynamicLoginCode.getText().toString().trim();
         if (TextUtils.isEmpty(mobilePhone)) {
             ToastUtils.showToast(this, getString(R.string.str_hint_register_phone));
             return;
         } else {
-            /*if (AccountUtils.isPhone(mobilePhone)) {
-                getCheckCode(mobilePhone, verifyCode);
-            } else {
-                ToastUtils.showToast(this, "请输入正确格式的账号");
-                return;
-            }*/
-            getCheckCode(mobilePhone, verifyCode);
+            getCheckCode();
         }
 
-        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
-        countDownTimeUtils.setContext(this);
-        countDownTimeUtils.start();
     }
 
     //从后台获取验证码
-    private void getCheckCode(String phone, final String verifyCode) {
+    private void getCheckCode() {
         if(!"+86".equals(aAcount)){
-            phone = aAcount.substring(1,aAcount.length())+phone;
+            mobilePhone = aAcount.substring(1,aAcount.length())+mobilePhone;
         }
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_BIND_UNLOGIN_VERIFYCODE)
-                .addParams("mobile", phone)
+                .addParams("mobile", mobilePhone)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.showToast(LoginActivity.this, "获取验证码失败");
+                        ToastUtils.showToast(LoginActivity.this, R.string.get_code_failed);
                     }
 
                     @Override
@@ -887,17 +869,27 @@ public class LoginActivity extends BaseActivity {
                             salt = JSONObject.parseObject(data).getString("salt");
                             timestamp = JSONObject.parseObject(data).getString("timestamp");
                             btnDynamicLogin.setClickable(true);
-                            btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
+//                            btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
+                            countDownTimeUtils.start();
+
+                            //显示下一步输入验证码界面
+                            rlEnterPhone.setVisibility(View.GONE);
+                            rlCodeItem.setVisibility(View.VISIBLE);
+                            tvSmsTip.setText(getString(R.string.enter_sms_coed_tip,mobilePhone));
+
+
+                        }else{
+                            ToastUtils.showToast(LoginActivity.this, R.string.get_code_failed);
                         }
                     }
                 });
 
     }
     //动态验证码登录
-    private void sureLogin(String mobilePhone, String sign, String verifyCode) {
-        if(!"+86".equals(aAcount)){
+    private void sureLogin(String sign, String verifyCode) {
+        /*if(!"+86".equals(aAcount)){
             mobilePhone = aAcount.substring(1,aAcount.length())+mobilePhone;
-        }
+        }*/
         final String localVersion = VersionUtils.getVersionName(mContext);
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_LOGIN)
@@ -959,20 +951,27 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.tv_dynamic_login, R.id.linear_normal_login, R.id.et_dynamic_login_account, R.id.tv_register_code, R.id.et_dynamic_login_code, R.id.tv_normal_login, R.id.btn_dynamic_login, R.id.linear_dynamic_login})
+    @OnClick({R.id.tv_dynamic_login, R.id.linear_normal_login, R.id.et_dynamic_login_account, R.id.tv_register_code, R.id.et_dynamic_login_code, R.id.tv_normal_login,R.id.tv_normal_login_next, R.id.btn_dynamic_login, R.id.linear_dynamic_login})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //密码账号登录
             case R.id.tv_normal_login:
+            case R.id.tv_normal_login_next:
                 normalLogin.setVisibility(View.VISIBLE);
                 dynamicLogin.setVisibility(View.GONE);
-                aAcount = countryPhoneAttr[0];
+                aAcount = "+86";
+                tvPhoneQ1.setText(aAcount);
+                etDynamicLoginAccount.setText("");
+                etDynamicLoginCode.setText("");
+                rlEnterPhone.setVisibility(View.VISIBLE);
+                rlCodeItem.setVisibility(View.GONE);
                 break;
             //动态密码登录
             case R.id.tv_dynamic_login:
                 dynamicLogin.setVisibility(View.VISIBLE);
                 normalLogin.setVisibility(View.GONE);
-                aAcount = countryPhoneAttr[0];
+                aAcount = "+86";
+                tvPhoneQ2.setText(aAcount);
                 break;
             case R.id.linear_normal_login:
                 break;
@@ -984,14 +983,14 @@ public class LoginActivity extends BaseActivity {
             case R.id.et_dynamic_login_code:
                 break;
             case R.id.btn_dynamic_login:
-                mobilePhone = etDynamicLoginAccount.getText().toString().trim();
+//                mobilePhone = etDynamicLoginAccount.getText().toString().trim();
                 verifyCode = etDynamicLoginCode.getText().toString().trim();
-                if (TextUtils.isEmpty(verifyCode) || TextUtils.isEmpty(mobilePhone)) {
-                    ToastUtils.showToast(LoginActivity.this, R.string.phone_sms_not_entity);
+                if (TextUtils.isEmpty(verifyCode)) {
+                    ToastUtils.showToast(LoginActivity.this, R.string.str_register_code_input);
                     return;
                 }
                 sign = MD5Utils.getMD5(verifyCode + salt + timestamp);
-                sureLogin(mobilePhone, sign, verifyCode);
+                sureLogin(sign, verifyCode);
                 break;
             case R.id.linear_dynamic_login:
                 break;

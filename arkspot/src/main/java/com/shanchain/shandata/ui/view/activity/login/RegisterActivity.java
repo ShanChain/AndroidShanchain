@@ -17,6 +17,7 @@ import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
+import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
@@ -55,14 +56,14 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     Button mBtnRegisterAgree;
     @Bind(R.id.tv_register_terms)
     TextView mTvRegisterTerms;
-    @Bind(R.id.sp_phone_number)
-    Spinner spPhoneNumber;
+    @Bind(R.id.tv_psd_login)
+    TextView tvPsdLogin;
+    @Bind(R.id.tv_phone_q_1)
+    TextView tvPhoneQ1;
     private String verifyCode = "";
     private String mMobile;
 
-    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
-    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
-    private String aAcount = "";
+    private String aAcount = "+86";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_register;
@@ -71,42 +72,28 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     protected void initViewsAndEvents() {
         initToolBar();
-        mBtnRegisterAgree.setClickable(false);
-        mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
+//        mBtnRegisterAgree.setClickable(false);
+//        mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
 
-        addCountrysPhone();
     }
 
     private void initToolBar() {
         mTbRegister.setBtnEnabled(true, false);
         mTbRegister.setOnLeftClickListener(this);
-    }
 
-    //添加几个测试国家的手机号前缀
-    private void addCountrysPhone(){
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, countrysAttr);
-        //下拉的样式res
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spPhoneNumber.setAdapter(spinnerAdapter);
-
-        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        PhoneFrontActivity.setListener(new PhoneFrontActivity.PhoneFrontNumCallback() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-//                ToastUtils.showToast(RegisterActivity.this, countryPhoneAttr[pos]);
-                aAcount = countryPhoneAttr[pos];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
+            public void getPhoneData(PhoneFrontBean phoneFrontBean) {
+                if(phoneFrontBean !=null){
+                    tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
+                    aAcount = phoneFrontBean.getPhoneFront();
+                }
             }
         });
-        aAcount = countryPhoneAttr[0];
     }
 
-    @OnClick({R.id.tv_register_code, R.id.btn_register_agree, R.id.tv_register_terms})
+
+    @OnClick({R.id.tv_register_code, R.id.btn_register_agree, R.id.tv_register_terms,R.id.tv_psd_login,R.id.tv_phone_q_1})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_register_code:
@@ -122,10 +109,17 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
                 JSONObject obj = new JSONObject();
                 obj.put("url", "http://h5.qianqianshijie.com/agreement");
-                obj.put("title", "用户服务协议（草案）");
+                obj.put("title", getString(R.string.user_agreement));
                 String webParams = obj.toJSONString();
                 intent.putExtra("webParams", webParams);
                 startActivity(intent);
+                break;
+            case R.id.tv_psd_login:
+                readyGo(LoginActivity.class);
+                finish();
+                break;
+            case R.id.tv_phone_q_1:
+                startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",3));
                 break;
         }
     }
@@ -137,12 +131,12 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         String pwdConfirm = mEtRegisterPwdConfirm.getText().toString().trim();
 
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdConfirm)) {
-            ToastUtils.showToast(this, "请填写完整数据");
+            ToastUtils.showToast(this, getString(R.string.full_information));
             return;
         }
 
         if (!TextUtils.equals(code, verifyCode)) {
-            ToastUtils.showToast(this, "验证码错误");
+            ToastUtils.showToast(this, getString(R.string.sms_code_wrong));
             return;
         }
         //支持国外手机号判断
@@ -150,12 +144,12 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
             phone = aAcount.substring(1,aAcount.length())+phone;
         }
         if (!TextUtils.equals(phone, mMobile)) {
-            ToastUtils.showToast(this, "账号错误");
+            ToastUtils.showToast(this, getString(R.string.account_error));
             return;
         }
 
         if (!TextUtils.equals(pwd, pwdConfirm)) {
-            ToastUtils.showToast(this, "两次输入的密码不相同");
+            ToastUtils.showToast(this, R.string.psw_twice_dif);
             return;
         }
 
@@ -197,7 +191,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                             ThreadUtils.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtils.showToast(mContext, "注册成功");
+                                    ToastUtils.showToast(mContext, R.string.register_success);
                                 }
                             });
                             LogUtils.d("userID = " + response.getUserInfo().getUserId());
@@ -236,7 +230,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
     private void obtainCheckCode() {
         String phone = mEtRegisterPhone.getText().toString().trim();
         if (TextUtils.isEmpty(phone)) {
-            ToastUtils.showToast(this, "请填写手机号码");
+            ToastUtils.showToast(this, getString(R.string.str_login_account));
             return;
         } else {
 //            if (AccountUtils.isPhone(phone)){
@@ -272,8 +266,8 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                     public void onResponse(ResponseSmsBean response, int id) {
                         if (response != null) {
                             verifyCode = response.getSmsVerifyCode();
-                            mBtnRegisterAgree.setClickable(true);
-                            mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
+                            /*mBtnRegisterAgree.setClickable(true);
+                            mBtnRegisterAgree.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));*/
                             mMobile = response.getMobile();
                             LogUtils.d("从后台获取的验证码:" + verifyCode + "\n 手机账号 :" + mMobile);
                         } else {

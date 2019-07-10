@@ -365,5 +365,12 @@
     <string name="account_error">Account error</string>
     <string name="reset_psw_faile">Failed to reset password</string>
     <string name="reset_psw_success">Reset password successfully</string>
+    <string name="get_code_failed">Failed to get verification code</string>
+    <string name="enter_sms_coed_1">Enter a SMS code</string>
+    <string name="enter_sms_coed_tip">SMS verification code has been sent to %s</string>
+    <string name="select_c_d">Select country or region</string>
+    <string name="user_agreement">User Service Agreement (Draft)</string>
+    <string name="psw_twice_dif">The passwords entered twice are different</string>
+    <string name="register_success">Registration success</string>
 
 </resources>

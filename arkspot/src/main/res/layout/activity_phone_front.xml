@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        android:id="@+id/tb_register"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleText="@string/select_c_d"
+        app:titleTextSize="16"/>
+    <View style="@style/style_text_line_match"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_phone_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
