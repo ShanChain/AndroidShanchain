@@ -22,6 +22,7 @@
     <!-- 账号密码登录 -->
     <include layout="@layout/login_item_layout"
         android:id="@+id/linear_normal_login"
+        android:visibility="visible"
         />
 
     <!-- 动态密码登录 -->

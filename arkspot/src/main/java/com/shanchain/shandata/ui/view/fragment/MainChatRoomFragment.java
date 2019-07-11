@@ -295,6 +295,8 @@ public class MainChatRoomFragment extends BaseFragment implements SwipeRefreshLa
                             }
 
 
+                        }else{
+                            LogUtils.d("-----room--",response);
                         }
                         closeLoadingDialog();
                     }

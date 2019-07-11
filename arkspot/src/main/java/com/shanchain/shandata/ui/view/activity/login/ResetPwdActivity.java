@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,15 +25,21 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-
+/**
+ * 忘记密码
+ */
 public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
 
     @Bind(R.id.tb_reset_pwd)
@@ -47,15 +54,13 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     EditText mEtResetCode;
     @Bind(R.id.btn_reset_sure)
     Button mBtnResetSure;
-    @Bind(R.id.sp_phone_number)
-    Spinner spPhoneNumber;
+    @Bind(R.id.tv_phone_q_1)
+    TextView tvPhoneQ1;
 
     private String verifyCode = "";
     private String mMobile = "";
 
-    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
-    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
-    private String aAcount = "";
+    private String aAcount = "+86";
     private CountDownTimeUtils countDownTimeUtils;
 
     @Override
@@ -75,33 +80,21 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
         countDownTimeUtils = new CountDownTimeUtils(mTvResetCode, 60 * 1000, 1000);
         countDownTimeUtils.setContext(this);
 
-        addCountrysPhone();
+    }
+    /**
+     * 收到用户选择某个手机前缀
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getPhoneFront(PhoneFrontBean phoneFrontBean){
+        if(phoneFrontBean !=null){
+            if(phoneFrontBean.getSourceType() == 4){
+                tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
+                aAcount = phoneFrontBean.getPhoneFront();
+            }
+        }
     }
 
-    //添加几个测试国家的手机号前缀
-    private void addCountrysPhone(){
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, countrysAttr);
-        //下拉的样式res
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spPhoneNumber.setAdapter(spinnerAdapter);
-
-        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                aAcount = countryPhoneAttr[pos];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-        aAcount = countryPhoneAttr[0];
-    }
-
-    @OnClick({R.id.tv_reset_code, R.id.btn_reset_sure})
+    @OnClick({R.id.tv_reset_code, R.id.btn_reset_sure,R.id.tv_phone_q_1})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_reset_code:
@@ -111,6 +104,9 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
             case R.id.btn_reset_sure:
                 //确定修改
                 resetPwd();
+                break;
+            case R.id.tv_phone_q_1:
+                startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",4));
                 break;
         }
     }

@@ -502,6 +502,7 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",2));
     }
 
+
     private void login() {
         String account = mEtLoginAccount.getText().toString().trim();
         String pwd = mEtLoginPwd.getText().toString().trim();
@@ -875,9 +876,7 @@ public class LoginActivity extends BaseActivity {
                             //显示下一步输入验证码界面
                             rlEnterPhone.setVisibility(View.GONE);
                             rlCodeItem.setVisibility(View.VISIBLE);
-                            tvSmsTip.setText(getString(R.string.enter_sms_coed_tip,mobilePhone));
-
-
+                            tvSmsTip.setText(getString(R.string.enter_sms_coed_tip,phoneSecurityParse(aAcount,mobilePhone)));
                         }else{
                             ToastUtils.showToast(LoginActivity.this, R.string.get_code_failed);
                         }
@@ -885,6 +884,15 @@ public class LoginActivity extends BaseActivity {
                 });
 
     }
+    //截取手机号显示
+    private String phoneSecurityParse(String front,String phone){
+        if(TextUtils.isEmpty(front) || TextUtils.isEmpty(phone) || phone.length()<4){
+            return "";
+        }
+        return front+"******"+phone.substring(phone.length()-4,(phone.length()));
+
+    }
+
     //动态验证码登录
     private void sureLogin(String sign, String verifyCode) {
         /*if(!"+86".equals(aAcount)){

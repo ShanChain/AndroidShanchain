@@ -31,6 +31,9 @@ import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
@@ -81,17 +84,20 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
         mTbRegister.setBtnEnabled(true, false);
         mTbRegister.setOnLeftClickListener(this);
 
-        PhoneFrontActivity.setListener(new PhoneFrontActivity.PhoneFrontNumCallback() {
-            @Override
-            public void getPhoneData(PhoneFrontBean phoneFrontBean) {
-                if(phoneFrontBean !=null){
-                    tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
-                    aAcount = phoneFrontBean.getPhoneFront();
-                }
-            }
-        });
-    }
 
+    }
+    /**
+     * 收到用户选择某个手机前缀
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getPhoneFront(PhoneFrontBean phoneFrontBean){
+        if(phoneFrontBean !=null){
+            if(phoneFrontBean.getSourceType() == 3){
+                tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
+                aAcount = phoneFrontBean.getPhoneFront();
+            }
+        }
+    }
 
     @OnClick({R.id.tv_register_code, R.id.btn_register_agree, R.id.tv_register_terms,R.id.tv_psd_login,R.id.tv_phone_q_1})
     public void onClick(View view) {

@@ -74,6 +74,7 @@ public class PhoneFrontActivity extends BaseActivity implements ArthurToolBar.On
                 if(null != p){
                     p.setSourceType(sourceType);
                     mListener.getPhoneData(p);
+                    EventBus.getDefault().post(p);
                     finish();
                 }
             }

@@ -80,7 +80,7 @@
     <color name="white">#fff</color>
 
     <!-- marjar-twideo -->
-    <color name="login_marjar_color">#9967ea</color>
+    <color name="login_marjar_color">#a260e6</color>
     <color name="register_marjar_color">#7383e0</color>
     <color name="register_marjar_color_s">#5e73ea</color>
 </resources>

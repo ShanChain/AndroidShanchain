@@ -71,7 +71,7 @@
 
     <!-- coupon -->
     <string name="coupon_name">Please enter a name</string>
-    <string name="coupon_code">Please enter a code number.</string>
+    <string name="coupon_code">Please enter a code number</string>
     <string name="coupon_price">Please enter unit price</string>
     <string name="coupon_num">Please enter the number of releases</string>
     <string name="coupon_expiration">Year - month - day</string>
@@ -93,11 +93,11 @@
     <string name="str_register_hint_pwd">Please enter your password (at least 6 bits)</string>
     <string name="str_register_hint_pwd_confirm">Please enter your password again (at least 6 bits)</string>
     <string name="str_register_agree">Agree to Terms of Service and Register</string>
-    <string name="str_register_code_input">Please enter identifying code</string>
-    <string name="str_register_code_obtain">Get the SMS code</string>
+    <string name="str_register_code_input">Please enter the SMS code</string>
+    <string name="str_register_code_obtain">Get SMS code</string>
     <string name="str_title_tb_login">Login MarJar</string>
-    <string name="str_login_pwd">Please enter password.</string>
-    <string name="str_login_account">Please enter phone number.</string>
+    <string name="str_login_pwd">Please enter password</string>
+    <string name="str_login_account">Please enter phone number</string>
     <string name="str_login_forget">Forget password？</string>
     <string name="str_dynamic_login">SMS log in</string>
     <string name="str_login_btn_login">Log in</string>
@@ -131,7 +131,7 @@
     <string name="avatar_click_hint">Avatar click event</string>
 
     <!-- Request permission start -->
-    <string name="rationale_record_voice">This app needs access microphone to record voice.</string>
+    <string name="rationale_record_voice">This app needs access microphone to record voice</string>
     <string name="rationale_photo">This app needs access photos.</string>
     <string name="rationale_camera">This app needs access camera.</string>
     <!-- Request permission end -->
@@ -371,6 +371,6 @@
     <string name="select_c_d">Select country or region</string>
     <string name="user_agreement">User Service Agreement (Draft)</string>
     <string name="psw_twice_dif">The passwords entered twice are different</string>
-    <string name="register_success">Registration success</string>
+    <string name="register_success">Registration success</string>d
 
 </resources>
