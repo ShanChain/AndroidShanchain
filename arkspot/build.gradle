@@ -11,7 +11,7 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 18
+        versionCode 19
         versionName "2.4.5"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -85,26 +85,26 @@ android {
         arkspot {
 //            manifestPlaceholders = [APP_NAME: "@string/app_name"] // 配置app的应用名称
         }
-//        qianqian {
-//            applicationIdSuffix ".qianqian"
-//        manifestPlaceholders = [APP_NAME: "@string/app_name"] // 配置测试包的应用名称
-//            resValue 'string', 'baidu_api_key', 'He8wMBsN4ZHiwENjiZ6q2OTT5D6c1IhD'
-//        }
-//        tencent {}//投放应用宝市场
-//        baidu {}//投放百度市场
-//        "360" {}//投放360市场
-//        "91zhushou" {}//投放91助手
-//        ANZHI {}//投放安智市场
-//        oppo {}//投放OPPO手机应用商店
-//        vivo {}//投放VIVO手机应用商店
-//        meizu {}//投放魅族手机应用商店
-//        huawei {}//投放华为手机应用商店
-//        xiaomi {}//投放小米手机应用商店
-//        wandoujia {}//投放豌豆荚
-//        androidmarket {}//投放安卓市场
-//        ali {
-//            applicationId "com.shanchain.shandata"
-//        }//投放阿里平台
+        /*qianqian {
+            applicationIdSuffix ".qianqian"
+        manifestPlaceholders = [APP_NAME: "@string/app_name"] // 配置测试包的应用名称
+            resValue 'string', 'baidu_api_key', 'He8wMBsN4ZHiwENjiZ6q2OTT5D6c1IhD'
+        }*/
+        tencent {}//投放应用宝市场
+        baidu {}//投放百度市场
+        "360" {}//投放360市场
+        "91zhushou" {}//投放91助手
+        ANZHI {}//投放安智市场
+        oppo {}//投放OPPO手机应用商店
+        vivo {}//投放VIVO手机应用商店
+        meizu {}//投放魅族手机应用商店
+        huawei {}//投放华为手机应用商店
+        xiaomi {}//投放小米手机应用商店
+        wandoujia {}//投放豌豆荚
+        androidmarket {}//投放安卓市场
+        ali {
+            applicationId "com.shanchain.shandata"
+        }//投放阿里平台
         googlePlay {}//投放google商店
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]

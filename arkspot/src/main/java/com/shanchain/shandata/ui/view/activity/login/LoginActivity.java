@@ -305,7 +305,6 @@ public class LoginActivity extends BaseActivity {
         JPushInterface.init(getApplicationContext());
         String registrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", registrationID);
-        LogUtils.d("-----login-2-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
         if (guided && !TextUtils.isEmpty(registrationID)) {
             //登录极光账号
 //            showProgress();
@@ -347,7 +346,6 @@ public class LoginActivity extends BaseActivity {
                         }
 
 //                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        LogUtils.d("-----login1-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
                         Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
                         startActivity(intent);
                         finish();
@@ -371,9 +369,7 @@ public class LoginActivity extends BaseActivity {
                         public void gotResult(int i, String s) {
                             if (i == 0 || s.equals("Success")) {
                                 LogUtils.d("极光IM############## 注册成功 ##############极光IM");
-                                LogUtils.d("-----login-v-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
                                 RoleManager.switchRoleCacheHx(jmUser, jmPassword);
-                                LogUtils.d("-----login-v2-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
                             } else {
                                 LogUtils.d("极光IM############## 注册失败 ##############极光IM");
 //                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
@@ -384,7 +380,6 @@ public class LoginActivity extends BaseActivity {
                     });
                 }
             });
-            LogUtils.d("-----login-3-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
             startActivity(new Intent(mContext, GuideActivity.class));
             finish();
         }
@@ -564,7 +559,6 @@ public class LoginActivity extends BaseActivity {
                                 LoginUserInfoBean userInfo = loginBean.getUserInfo();
                                 int userId = userInfo.getUserId();
                                 LogUtils.d("登录成功  uid" + userId);
-                                LogUtils.d("-----login-1-----",SCCacheUtils.getCacheHxUserName()+"----"+SCCacheUtils.getCacheHxPwd());
                                 SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                                 SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                                 SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
@@ -930,8 +924,11 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache("0", Constants.CACHE_CUR_USER, userId + "");
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
-                            readyGo(FootPrintActivity.class);
-                            finish();
+
+                            /*readyGo(FootPrintActivity.class);
+                            finish();*/
+
+                            checkServer();
                         }
                     }
                 });

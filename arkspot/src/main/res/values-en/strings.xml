@@ -371,6 +371,10 @@
     <string name="select_c_d">Select country or region</string>
     <string name="user_agreement">User Service Agreement (Draft)</string>
     <string name="psw_twice_dif">The passwords entered twice are different</string>
-    <string name="register_success">Registration success</string>d
+    <string name="register_success">Registration success</string>
+    <string name="delete_user_a">You have been deleted by the chat room administrator</string>
+    <string name="authentication">Authentication</string>
+    <string name="real_ar">We will not reveal your privacy</string>
+    <string name="add_you_xyz">Complete certification to help you increase your credit</string>
 
 </resources>

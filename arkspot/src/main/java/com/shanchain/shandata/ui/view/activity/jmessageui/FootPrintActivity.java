@@ -209,6 +209,7 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
                         @Override
                         public void run() {
                             readyGo(LoginActivity.class);
+                            finish();
                         }
                     }, 3000);
                 }

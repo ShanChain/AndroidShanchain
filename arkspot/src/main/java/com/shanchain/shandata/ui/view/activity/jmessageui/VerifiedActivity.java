@@ -5,10 +5,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -29,11 +31,13 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.jiguang.imui.view.CircleImageView;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import okhttp3.Call;
 
 public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
-
-
     @Bind(R.id.tb_main)
     ArthurToolBar tbMain;
     @Bind(R.id.edit_coupon_name)
@@ -52,6 +56,13 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
     RelativeLayout relativeVerifiedInfo;
     @Bind(R.id.relative_hint)
     RelativeLayout relativeHint;
+    @Bind(R.id.iv_user_head)
+    CircleImageView ivＵserＨead;
+    @Bind(R.id.iv_user_head_1)
+    CircleImageView ivＵserＨead1;
+    @Bind(R.id.im_back)
+    ImageView imBack;
+
 
     private String name, code;
     private boolean idcard;
@@ -82,94 +93,16 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
             relativeVerifiedInfo.setVisibility(View.VISIBLE);
             relativeHint.setVisibility(View.GONE);
         }
-        btnVerified.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                name = editCouponName.getText().toString();
-                code = editCouponCode.getText().toString();
-                if (TextUtils.isEmpty(name) ) {
-                    ToastUtils.showToast(VerifiedActivity.this, R.string.real_name_not_entity);
-                    return;
-                }
-                if (TextUtils.isEmpty(code)) {
-                    ToastUtils.showToast(VerifiedActivity.this, R.string.id_not_entity);
-                    return;
-                }
-                /*if(code.length()<5){
-                    ToastUtils.showToast(VerifiedActivity.this, "身份证信息不能低于5位数");
-                    return;
-                }*/
-                String sta = MyApplication.systemLanguge;
-                String language;
-                if("zh".equals(sta)){
-                    language = "zh";
-                }else {
-                    language = "en";
-                }
-                SCHttpUtils.get()
-                        .url(HttpApi.VERIFIED)
-                        .addParams("cardno", "" + code)
-                        .addParams("name", "" + name)
-                        .addParams("language",language)
-                        .addParams("token", SCCacheUtils.getCacheToken())
-                        .addParams("userId", SCCacheUtils.getCacheUserId())
-                        .build()
-                        .execute(new SCHttpStringCallBack(VerifiedActivity.this) {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                LogUtils.d(TAG, "网络异常");
-                            }
 
-                            @Override
-                            public void onResponse(String response, int id) {
-                                String code = JSONObject.parseObject(response).getString("code");
-                                String msg = SCJsonUtils.parseMsg(response);
-                                final StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
-                                standardDialog.setSureText(getString(R.string.btn_send));
-                                standardDialog.setCancelText(getString(R.string.cancel));
-                                if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
-                                    /*String data = JSONObject.parseObject(response).getString("data");
-                                    String desc = JSONObject.parseObject(data).getString("desc");*/
-                                    standardDialog.setStandardTitle(getString(R.string.vertify_success));
-                                    standardDialog.setStandardMsg(getString(R.string.pass_verdify));
-                                    standardDialog.setCallback(new Callback() {
-                                        @Override
-                                        public void invoke() {
-                                            finish();
-                                        }
-                                    }, new Callback() {
-                                        @Override
-                                        public void invoke() {
-                                            finish();
-                                        }
-                                    });
-                                    ThreadUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            standardDialog.show();
-                                        }
-                                    });
-
-                                } else {
-                                    standardDialog.setStandardTitle(getString(R.string.realname_vdf_failed));
-                                    if (!TextUtils.isEmpty(msg)) {
-                                        standardDialog.setStandardMsg("" + msg);
-                                    } else {
-                                        standardDialog.setStandardMsg(getString(R.string.check_information));
-                                    }
-
-                                    ThreadUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            standardDialog.show();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-            }
-        });
-
+        //设置头像
+        UserInfo userInfo = JMessageClient.getMyInfo();
+        if (userInfo != null && userInfo.getAvatarFile() != null) {
+            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath()).into(ivＵserＨead);
+            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath()).into(ivＵserＨead1);
+        } else {
+            Glide.with(this).load(SCCacheUtils.getCacheHeadImg()).into(ivＵserＨead);
+            Glide.with(this).load(SCCacheUtils.getCacheHeadImg()).into(ivＵserＨead1);
+        }
 
     }
 
@@ -210,11 +143,92 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
                 });
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+    //提交认证信息
+    @OnClick(R.id.verified_sure)
+    void commitVertifyInfo(){
+        name = editCouponName.getText().toString();
+        code = editCouponCode.getText().toString();
+        if (TextUtils.isEmpty(name) ) {
+            ToastUtils.showToast(VerifiedActivity.this, R.string.real_name_not_entity);
+            return;
+        }
+        if (TextUtils.isEmpty(code)) {
+            ToastUtils.showToast(VerifiedActivity.this, R.string.id_not_entity);
+            return;
+        }
+        String sta = MyApplication.systemLanguge;
+        String language;
+        if("zh".equals(sta)){
+            language = "zh";
+        }else {
+            language = "en";
+        }
+        SCHttpUtils.get()
+                .url(HttpApi.VERIFIED)
+                .addParams("cardno", "" + code)
+                .addParams("name", "" + name)
+                .addParams("language",language)
+                .addParams("token", SCCacheUtils.getCacheToken())
+                .addParams("userId", SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new SCHttpStringCallBack(VerifiedActivity.this) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d(TAG, "网络异常");
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        String msg = SCJsonUtils.parseMsg(response);
+                        final StandardDialog standardDialog = new StandardDialog(VerifiedActivity.this);
+                        standardDialog.setSureText(getString(R.string.btn_send));
+                        standardDialog.setCancelText(getString(R.string.cancel));
+                        if (NetErrCode.COMMON_SUC_CODE.equals(code)) {
+                                    /*String data = JSONObject.parseObject(response).getString("data");
+                                    String desc = JSONObject.parseObject(data).getString("desc");*/
+                            standardDialog.setStandardTitle(getString(R.string.vertify_success));
+                            standardDialog.setStandardMsg(getString(R.string.pass_verdify));
+                            standardDialog.setCallback(new Callback() {
+                                @Override
+                                public void invoke() {
+                                    finish();
+                                }
+                            }, new Callback() {
+                                @Override
+                                public void invoke() {
+                                    finish();
+                                }
+                            });
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    standardDialog.show();
+                                }
+                            });
+
+                        } else {
+                            standardDialog.setStandardTitle(getString(R.string.realname_vdf_failed));
+                            if (!TextUtils.isEmpty(msg)) {
+                                standardDialog.setStandardMsg("" + msg);
+                            } else {
+                                standardDialog.setStandardMsg(getString(R.string.check_information));
+                            }
+
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    standardDialog.show();
+                                }
+                            });
+                        }
+                    }
+                });
+    }
+
+    @OnClick(R.id.im_back)
+    void finished(){
+        finish();
     }
 
     @Override

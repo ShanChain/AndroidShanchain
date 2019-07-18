@@ -5,244 +5,273 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.view.activity.jmessageui.VerifiedActivity">
+    android:background="@drawable/arth_bg">
 
     <com.shanchain.data.common.ui.toolBar.ArthurToolBar
         android:id="@+id/tb_main"
         style="@style/style_toolbar"
         app:titleColor="@color/colorTextDefault"
+        android:visibility="gone"
         app:titleTextSize="16">
 
     </com.shanchain.data.common.ui.toolBar.ArthurToolBar>
 
     <RelativeLayout
-        android:id="@+id/relative_verified_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tb_main"
-        android:visibility="gone">
+        android:layout_below="@+id/tb_main">
+        <ImageView
+            android:id="@+id/im_back"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:src="@mipmap/back_white"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="120dp"
+            android:gravity="center"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/dimens_10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/verified_name"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/edit_coupon_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="7"
-                    android:background="@null"
-                    android:hint="@string/verified_name_hint"
-                    android:padding="@dimen/dp_10"
-                    android:textSize="@dimen/sp_14" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:text="@string/authentication"
+                />
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/dimens_10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/verified_code"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/sp_14" />
-
-                <EditText
-                    android:id="@+id/edit_coupon_code"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="7"
-                    android:background="@null"
-                    android:hint="@string/verified_code_hint"
-                    android:padding="@dimen/dp_10"
-                    android:textSize="@dimen/sp_14" />
-
-            </LinearLayout>
+                android:layout_marginTop="15dp"
+                android:text="@string/real_ar"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/add_you_xyz"/>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/verified_sure"
+        <RelativeLayout
+            android:id="@+id/relative_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginBottom="150dp"
-            android:background="@drawable/shape_btn_dialog_sure"
-            android:text="@string/verified_button_sure"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_marginBottom="20dp"
+            android:visibility="visible">
 
-    <RelativeLayout
-        android:id="@+id/relative_hint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/tb_main"
-        android:visibility="visible">
-
-        <TextView
-            android:id="@+id/verified_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimens_20dp"
-            android:text="@string/pass_verdify"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <RelativeLayout
-            android:id="@+id/relative_real_name"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/verified_title"
-            android:layout_marginTop="@dimen/dimens_20dp"
-            android:background="@color/white">
-
-            <TextView
-                android:id="@+id/tv_real_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:text="@string/real_name"
-                android:textColor="@color/colorTextDefault"
-                android:textSize="@dimen/sp_14" />
-
-            <TextView
-                android:id="@+id/tv_real_name_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_toRightOf="@+id/tv_real_name"
-                android:text=""
-                android:textColor="@color/colorHint" />
-
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorBgGray"></View>
+                android:layout_height="180dp"
+                android:orientation="vertical"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/arthurite_user">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_real_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="right|center"
+                        android:text="@string/verified_name"
+                        android:textColor="@color/colorTextDefault"
+                        android:textSize="@dimen/sp_14" />
+                    <TextView
+                        android:id="@+id/tv_real_name_info"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:text=""
+                        android:textColor="@color/colorTextDefault" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="right|center"
+                        android:text="@string/id_type"
+                        android:textColor="@color/colorTextDefault"
+                        android:textSize="@dimen/sp_14" />
+                    <TextView
+                        android:id="@+id/tv_certificates_type_info"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:text=""
+                        android:textColor="@color/colorTextDefault" />
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_identity_code"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right|center"
+                    android:text="@string/id_card_no"
+                    android:maxLines="2"
+                    android:textColor="@color/colorTextDefault"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:id="@+id/tv_tv_identity_code_info"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_identity_code"
+                    android:text=""
+                    android:textColor="@color/colorTextDefault" />
+            </LinearLayout>
+
+            </LinearLayout>
+
+            <cn.jiguang.imui.view.CircleImageView
+                android:id="@+id/iv_user_head"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:src="@drawable/aurora_headicon_default" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relative_certificates_type"
+            android:id="@+id/relative_verified_info"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/relative_real_name"
-            android:background="@color/white">
-
-            <TextView
-                android:id="@+id/tv_certificates_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:text="@string/id_type"
-                android:textColor="@color/colorTextDefault"
-                android:textSize="@dimen/sp_14" />
-
-            <TextView
-                android:id="@+id/tv_certificates_type_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_toRightOf="@+id/tv_certificates_type"
-                android:text="@string/id_card"
-                android:textColor="@color/colorTextDefault" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorBgGray"></View>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relative_identity_code"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/relative_certificates_type"
-            android:background="@color/white">
-
-            <TextView
-                android:id="@+id/tv_identity_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:text="@string/id_card_no"
-                android:textColor="@color/colorTextDefault"
-                android:textSize="@dimen/sp_14" />
-
-            <TextView
-                android:id="@+id/tv_tv_identity_code_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_toRightOf="@+id/tv_identity_code"
-                android:text=""
-                android:textColor="@color/colorTextDefault" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorBgGray"></View>
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/relative_identity_code"
-            android:layout_marginLeft="@dimen/dimens_20dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:text="@string/setting_not_change"
-            android:textColor="@color/colorHint"
-            android:textSize="@dimen/sp_14" />
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dimens_20dp"
-            android:layout_marginRight="@dimen/dimens_20dp"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:textAlignment="center"
-            android:text="@string/app_zhichi_yy"
-            android:textColor="@color/colorHint"
-            android:textSize="@dimen/sp_12" />
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:orientation="vertical"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/arthurite_user">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="30dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="right|center"
+                        android:text="@string/verified_name"
+                        android:textColor="@color/colorTextDefault"
+                        android:textSize="@dimen/sp_14" />
+                    <EditText
+                        android:id="@+id/edit_coupon_name"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/arth_user_enter"
+                        android:hint="@string/verified_name_hint"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="right|center"
+                        android:text="@string/id_card_no"
+                        android:maxLines="2"
+                        android:textColor="@color/colorTextDefault"
+                        android:textSize="@dimen/sp_14" />
+
+                    <EditText
+                        android:id="@+id/edit_coupon_code"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:layout_weight="3"
+                        android:background="@drawable/arth_user_enter"
+                        android:hint="@string/verified_code_hint"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/verified_sure"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/shape_btn_dialog_sure"
+                    android:text="@string/verified_button_sure"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <cn.jiguang.imui.view.CircleImageView
+                android:id="@+id/iv_user_head_1"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:src="@drawable/aurora_headicon_default" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

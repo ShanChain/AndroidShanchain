@@ -273,6 +273,7 @@ public class MainChatRoomFragment extends BaseFragment implements SwipeRefreshLa
 
                     @Override
                     public void onResponse(String response, int id) {
+                        LogUtils.d("-----room1--",response);
                         String code = SCJsonUtils.parseCode(response);
                         if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
                             String data = SCJsonUtils.parseData(response);
@@ -289,14 +290,13 @@ public class MainChatRoomFragment extends BaseFragment implements SwipeRefreshLa
                                 ThreadUtils.runOnMainThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        ToastUtils.showToast(getContext(), "您已被该聊天室管理员删除");
+                                        ToastUtils.showToast(getContext(), R.string.delete_user_a);
                                     }
                                 });
                             }
 
 
                         }else{
-                            LogUtils.d("-----room--",response);
                         }
                         closeLoadingDialog();
                     }

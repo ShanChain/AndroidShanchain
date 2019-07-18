@@ -251,7 +251,7 @@
     <string name="real_name">真实姓名：</string>
     <string name="id_type">证件类型：</string>
     <string name="id_card">身份证</string>
-    <string name="id_card_no">证件号码：</string>
+    <string name="id_card_no">证件号：</string>
     <string name="create_vender">创建马甲劵</string>
     <string name="vendour_name">名称:</string>
     <string name="number_s">数量:</string>
@@ -390,5 +390,9 @@
     <string name="user_agreement">用户服务协议（草案）</string>
     <string name="psw_twice_dif">两次输入的密码不相同</string>
     <string name="register_success">注册成功</string>
+    <string name="delete_user_a">您已被该聊天室管理员删除</string>
+    <string name="authentication">身份验证</string>
+    <string name="real_ar">我们不会泄露您的隐私</string>
+    <string name="add_you_xyz">完成认证，帮助您增加信用值</string>
 
 </resources>
