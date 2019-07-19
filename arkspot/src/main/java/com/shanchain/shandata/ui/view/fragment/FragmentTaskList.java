@@ -43,7 +43,9 @@ import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jpush.im.android.eventbus.EventBus;
 import okhttp3.Call;
 
-
+/**
+ * 帮助过我的
+ */
 public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, TaskView {
     //    private String roomId = "15198852";
 
@@ -82,6 +84,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         }
         taskList.clear();
         taskPresenter = new TaskPresenterImpl(this);
+        LogUtils.d("-------ddd------",characterId+"---"+roomId);
         taskPresenter.initTask(characterId, roomId, page, size);
         srlTaskList.setOnRefreshListener(this);//下拉刷新
         initRecyclerView();
@@ -192,7 +195,7 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
     public void showProgress() {
         mDialog = new ProgressDialog(getContext());
         mDialog.setMax(100);
-        mDialog.setMessage("数据请求中..");
+        mDialog.setMessage(getString(R.string.data_requesting));
         mDialog.setCancelable(false);
         mDialog.show();
     }

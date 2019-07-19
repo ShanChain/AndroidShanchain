@@ -39,11 +39,12 @@ import okhttp3.Call;
 
 import static com.shanchain.data.common.base.Constants.CACHE_CUR_USER;
 
-
+/**
+ * 我的帮助
+ */
 public class TaskListActivity extends BaseActivity implements ViewPager.OnPageChangeListener,
         ArthurToolBar.OnRightClickListener,
         ArthurToolBar.OnLeftClickListener {
-
     @Bind(R.id.tb_main)
     ArthurToolBar mTbMain;
     @Bind(R.id.tab_task)
