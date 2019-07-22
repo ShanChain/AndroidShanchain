@@ -376,5 +376,9 @@
     <string name="authentication">Authentication</string>
     <string name="real_ar">We will not reveal your privacy</string>
     <string name="add_you_xyz">Complete certification to help you increase your credit</string>
+    <string name="twices_pwd_wrong">Two passwords are inconsistent</string>
+    <string name="agai_exit_app">Press again to exit the app</string>
+    <string name="nothing_left">He is a little lazy, nothing left...</string>
+    <string name="square">Square</string>
 
 </resources>

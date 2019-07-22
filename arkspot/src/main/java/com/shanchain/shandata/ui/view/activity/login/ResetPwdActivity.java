@@ -48,6 +48,8 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
     EditText mEtResetPhone;
     @Bind(R.id.et_reset_pwd)
     EditText mEtResetPwd;
+    @Bind(R.id.et_reset_pwd_2)
+    EditText mEtResetPwd2;
     @Bind(R.id.tv_reset_code)
     TextView mTvResetCode;
     @Bind(R.id.et_reset_code)
@@ -115,6 +117,7 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
         String phone = mEtResetPhone.getText().toString().trim();
         String code = mEtResetCode.getText().toString().trim();
         String pwd = mEtResetPwd.getText().toString().trim();
+        String pwd2 = mEtResetPwd2.getText().toString().trim();
 
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd)) {
             ToastUtils.showToast(this, getString(R.string.toast_no_empty));
@@ -130,6 +133,10 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
 
         if (!TextUtils.equals(verifyCode, code)) {
             ToastUtils.showToast(this, getString(R.string.sms_code_wrong));
+            return;
+        }
+        if(!pwd.equals(pwd2)){
+            ToastUtils.showToast(this, getString(R.string.twices_pwd_wrong));
             return;
         }
         String time = String.valueOf(System.currentTimeMillis());

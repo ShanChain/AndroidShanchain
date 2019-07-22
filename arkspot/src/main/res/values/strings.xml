@@ -247,7 +247,7 @@
     <string name="enter_shequ">请输入元社区名称</string>
     <string name="add_meta_c">添加元社区</string>
     <string name="enter_m_name">请输入元社区名称</string>
-    <string name="hot_meta">热门元社区</string>
+    <string name="hot_meta">元社区</string>
     <string name="real_name">真实姓名：</string>
     <string name="id_type">证件类型：</string>
     <string name="id_card">身份证</string>
@@ -394,5 +394,9 @@
     <string name="authentication">身份验证</string>
     <string name="real_ar">我们不会泄露您的隐私</string>
     <string name="add_you_xyz">完成认证，帮助您增加信用值</string>
+    <string name="twices_pwd_wrong">两次密码不一致</string>
+    <string name="agai_exit_app">再按一次退出app</string>
+    <string name="nothing_left">他有点懒，什么也没留下...</string>
+    <string name="square">广场</string>
 
 </resources>

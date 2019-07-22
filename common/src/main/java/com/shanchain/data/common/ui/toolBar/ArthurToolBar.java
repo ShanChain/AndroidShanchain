@@ -596,6 +596,14 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
         return this.mLeftText;
     }
 
+    /**
+     * 左侧按钮设置显示或者隐藏
+     * @param visible
+     */
+    public void setLeftTitleLayoutView(int visible){
+        this.mLeftText.setVisibility(visible);
+    }
+
     // 右侧按钮 ------------------------------------------------------------
 
     /**

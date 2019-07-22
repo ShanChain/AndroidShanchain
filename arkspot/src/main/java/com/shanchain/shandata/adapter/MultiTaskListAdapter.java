@@ -51,6 +51,10 @@ public class MultiTaskListAdapter extends CommonAdapter<ChatEventMessage> implem
         this.itemLayoutId = itemLayoutId;
     }
 
+    public void setList(List<ChatEventMessage> list){
+        this.list = list;
+    }
+
     @Override
     public void setData(BaseViewHolder holder, ChatEventMessage item, int viewType, int position) {
         this.chatEventMessage = item;

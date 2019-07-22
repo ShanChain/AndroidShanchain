@@ -569,6 +569,12 @@
 
         <activity android:name=".ui.view.activity.login.PhoneFrontActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.view.activity.jmessageui.FootPrintNewActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+
     </application>
 
 </manifest>

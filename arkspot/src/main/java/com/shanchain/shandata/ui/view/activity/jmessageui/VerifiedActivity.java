@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -97,11 +98,19 @@ public class VerifiedActivity extends BaseActivity implements ArthurToolBar.OnLe
         //设置头像
         UserInfo userInfo = JMessageClient.getMyInfo();
         if (userInfo != null && userInfo.getAvatarFile() != null) {
-            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath()).into(ivＵserＨead);
-            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath()).into(ivＵserＨead1);
+            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
+                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                            .error(R.drawable.aurora_headicon_default)).into(ivＵserＨead);
+            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
+                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                            .error(R.drawable.aurora_headicon_default)).into(ivＵserＨead1);
         } else {
-            Glide.with(this).load(SCCacheUtils.getCacheHeadImg()).into(ivＵserＨead);
-            Glide.with(this).load(SCCacheUtils.getCacheHeadImg()).into(ivＵserＨead1);
+            Glide.with(this).load(SCCacheUtils.getCacheHeadImg())
+                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                            .error(R.drawable.aurora_headicon_default)).into(ivＵserＨead);
+            Glide.with(this).load(SCCacheUtils.getCacheHeadImg())
+                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                            .error(R.drawable.aurora_headicon_default)).into(ivＵserＨead1);
         }
 
     }

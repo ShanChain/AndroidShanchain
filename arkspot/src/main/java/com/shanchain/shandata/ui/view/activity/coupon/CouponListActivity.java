@@ -119,13 +119,6 @@ public class CouponListActivity extends BaseActivity implements ArthurToolBar.On
                         closeLoadingDialog();
                         String code = JSONObject.parseObject(response).getString("code");
                         final String msg = JSONObject.parseObject(response).getString("msg");
-                        closeLoadingDialog();
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                ToastUtils.showToast(CouponListActivity.this, "" + msg);
-                            }
-                        });
                         if (NetErrCode.SUC_CODE.equals(code)) {
                             String data = JSONObject.parseObject(response).getString("data");
                             String list = JSONObject.parseObject(data).getString("list");

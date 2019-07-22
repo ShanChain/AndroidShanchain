@@ -728,6 +728,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         String code = JSONObject.parseObject(response).getString("code");
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             String data = JSONObject.parseObject(response).getString("data");
+                            LogUtils.d("-----dddd-----",data);
                             isSuper = data;
                             //极光消息监听注册
                             JMessageClient.registerEventReceiver(MessageListActivity.this, 1000);

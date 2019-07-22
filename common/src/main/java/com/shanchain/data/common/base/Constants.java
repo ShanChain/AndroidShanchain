@@ -147,4 +147,11 @@ public interface Constants {
 
     String share_platform_type_weixin = "";
 
+    //加载的数据数量
+    int pageSize = 10;
+
+    //下拉刷新
+    int pullRefress = 1;
+    int pillLoadmore = 2;
+
 }
