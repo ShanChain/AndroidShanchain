@@ -1,17 +1,13 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
-import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseFragment;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by WealChen
