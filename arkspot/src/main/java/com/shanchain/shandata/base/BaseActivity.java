@@ -1249,4 +1249,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             getChatRoomInfo(myLatLng);
         }
     }
+    //跳转到我的钱包页面
+    public void goToMyWallet(){
+        Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
+        JSONObject obj = new JSONObject();
+        obj.put("url", HttpApi.SEAT_WALLET);
+        obj.put("title", getResources().getString(R.string.nav_my_wallet));
+        String webParams = obj.toJSONString();
+        intent.putExtra("webParams", webParams);
+        startActivity(intent);
+    }
 }

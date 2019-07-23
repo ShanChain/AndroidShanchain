@@ -15,6 +15,7 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
@@ -81,10 +82,9 @@ public class SplashActivity extends AppCompatActivity {
                 checkServer();
             } else {
                 loginJm(hxUserName, hxPwd, cacheCharacter);
-//                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-                Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
-//                Intent intent = new Intent(SplashActivity.this, MainEntranceActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
+                startActivity(intent);*/
+                goToMyWallet();
                 finish();
 
 
@@ -134,9 +134,9 @@ public class SplashActivity extends AppCompatActivity {
 
                     }
 
-                    Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
-//                    Intent intent = new Intent(SplashActivity.this, MainEntranceActivity.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
+                    startActivity(intent);*/
+                    goToMyWallet();
                     finish();
 
                 } else {
@@ -282,4 +282,14 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
+    //跳转到我的钱包页面
+    public void goToMyWallet(){
+        Intent intent = new Intent(this, SCWebViewActivity.class);
+        JSONObject obj = new JSONObject();
+        obj.put("url", HttpApi.SEAT_WALLET);
+        obj.put("title", getResources().getString(R.string.nav_my_wallet));
+        String webParams = obj.toJSONString();
+        intent.putExtra("webParams", webParams);
+        startActivity(intent);
+    }
 }

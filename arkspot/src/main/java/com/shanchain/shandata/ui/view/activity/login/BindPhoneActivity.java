@@ -131,8 +131,9 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
 
                                     LogUtils.d("dynamicLogin", "三方登录成功");
 //                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
-                                    Intent intent = new Intent(BindPhoneActivity.this, FootPrintActivity.class);
-                                    startActivity(intent);
+                                    /*Intent intent = new Intent(BindPhoneActivity.this, FootPrintActivity.class);
+                                    startActivity(intent);*/
+                                    goToMyWallet();
                                     finish();
                                     runOnUiThread(new Runnable() {
                                         @Override
@@ -224,4 +225,6 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
     public void onLeftClick(View v) {
         finish();
     }
+
+
 }

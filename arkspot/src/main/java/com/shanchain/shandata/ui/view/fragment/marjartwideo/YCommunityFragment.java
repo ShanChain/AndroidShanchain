@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.stetho.common.LogUtil;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.shandata.R;
@@ -39,6 +38,7 @@ import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
 import com.shanchain.shandata.ui.view.fragment.MainChatRoomFragment;
+import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +162,7 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
             mMyInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
                 @Override
                 public void gotResult(int responseCode, String responseMessage, Bitmap avatarBitmap) {
-                    LogUtil.d(TAG,"get Jushinfo responseMessage:"+responseMessage+",responseCode: "+responseCode);
+                    LogUtils.d(TAG,"get Jushinfo responseMessage:"+responseMessage+",responseCode: "+responseCode);
                     if (responseCode == 0) {
                         userHeadView.setImageBitmap(avatarBitmap);
                         ivUserHead.setImageBitmap(avatarBitmap);

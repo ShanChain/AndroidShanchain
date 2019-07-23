@@ -897,8 +897,8 @@ public class FootPrintActivity extends BaseActivity implements ArthurToolBar.OnL
             readyGo(MyMessageActivity.class);
 
         } else if (id == R.id.nav_my_favorited) {
-            readyGo(FootPrintActivity.class);
-
+//            readyGo(FootPrintActivity.class);
+            goToMyWallet();
         } else if (id == R.id.real_identity) {
 //            readyGo(VerifiedActivity.class);
 

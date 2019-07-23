@@ -8,8 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,8 +28,6 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
-import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -50,12 +46,8 @@ import com.shanchain.shandata.ui.model.LoginUserInfoBean;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
-import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,13 +179,17 @@ public class LoginActivity extends BaseActivity {
         countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
         countDownTimeUtils.setContext(this);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         PhoneFrontActivity.setListener(new PhoneFrontActivity.PhoneFrontNumCallback() {
             @Override
             public void getPhoneData(PhoneFrontBean phoneFrontBean) {
                 if(phoneFrontBean !=null){
                     if(phoneFrontBean.getSourceType() ==1){
                         tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
-
                     }else {
                         tvPhoneQ2.setText(phoneFrontBean.getPhoneFront());
                     }
@@ -346,8 +342,9 @@ public class LoginActivity extends BaseActivity {
                         }
 
 //                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
-                        startActivity(intent);
+                        /*Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
+                        startActivity(intent);*/
+                        goToMyWallet();
                         finish();
 
                     } else {
@@ -416,8 +413,9 @@ public class LoginActivity extends BaseActivity {
                         });
                     }
 
-                    Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
-                    startActivity(intent);
+                    /*Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
+                    startActivity(intent);*/
+                    goToMyWallet();
                     finish();
 
                 } else {

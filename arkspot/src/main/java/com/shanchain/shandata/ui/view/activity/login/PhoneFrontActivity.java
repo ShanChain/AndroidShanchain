@@ -1,6 +1,5 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,7 +10,6 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.PhoneFrontAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
-import com.shanchain.shandata.utils.entity.Event;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by WealChen
@@ -73,7 +70,9 @@ public class PhoneFrontActivity extends BaseActivity implements ArthurToolBar.On
                 PhoneFrontBean p = (PhoneFrontBean) adapter.getItem(position);
                 if(null != p){
                     p.setSourceType(sourceType);
-                    mListener.getPhoneData(p);
+                    if(mListener!=null){
+                        mListener.getPhoneData(p);
+                    }
                     EventBus.getDefault().post(p);
                     finish();
                 }

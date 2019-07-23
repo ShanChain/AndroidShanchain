@@ -53,6 +53,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.tencent.smtt.sdk.DownloadListener;
 
 import java.io.File;
@@ -66,7 +67,7 @@ import okhttp3.Call;
 public class SCWebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mIvWebBack;
-    private TextView mTvWebTbTitle;
+    private TextView mTvWebTbTitle,tvSeting;
     private WebView mWbSc;
     //    private com.tencent.smtt.sdk.WebView mWbSc;
     //    private X5WebView mX5WebView;
@@ -550,6 +551,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
         mIvWebBack = (ImageView) findViewById(R.id.iv_web_back);
         mTvWebTbTitle = (TextView) findViewById(R.id.tv_web_tb_title);
+        tvSeting = findViewById(R.id.tv_setting);
         mPbWeb = (ProgressBar) findViewById(R.id.pb_web);
 //        mWbSc = (WebView) findViewById(R.id.wb_sc);
         mMTextGo = findViewById(R.id.text_go_url);
@@ -563,6 +565,12 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 if (mMEditUrl.getText().toString() != null) {
                     mWbSc.loadUrl(mMEditUrl.getText().toString());
                 }
+            }
+        });
+        tvSeting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SCWebViewActivity.this, SettingsActivity.class));
             }
         });
 
