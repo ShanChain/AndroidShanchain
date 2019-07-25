@@ -573,7 +573,8 @@
             android:name=".ui.view.activity.jmessageui.FootPrintNewActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
+        <activity android:name=".ui.view.activity.article.PublishArticleActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

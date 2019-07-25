@@ -6,4 +6,7 @@ package com.shanchain.shandata.ui.view.fragment.marjartwideo.view;
  * Describe :
  */
 public interface SquareView {
+    void showProgressStart();
+    void showProgressEnd();
+    void setListDataResponse(String response,int pullType);
 }

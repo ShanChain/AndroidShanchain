@@ -51,6 +51,7 @@ import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.RegisterHxBean;
 import com.shanchain.shandata.ui.model.ResponseLoginBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.KeyboardUtils;
 
@@ -187,13 +188,17 @@ public class LoginActivity extends BaseActivity {
         countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
         countDownTimeUtils.setContext(this);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         PhoneFrontActivity.setListener(new PhoneFrontActivity.PhoneFrontNumCallback() {
             @Override
             public void getPhoneData(PhoneFrontBean phoneFrontBean) {
                 if(phoneFrontBean !=null){
                     if(phoneFrontBean.getSourceType() ==1){
                         tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
-
                     }else {
                         tvPhoneQ2.setText(phoneFrontBean.getPhoneFront());
                     }
@@ -346,7 +351,7 @@ public class LoginActivity extends BaseActivity {
                         }
 
 //                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, FootPrintNewActivity.class);
                         startActivity(intent);
                         finish();
 
@@ -416,7 +421,7 @@ public class LoginActivity extends BaseActivity {
                         });
                     }
 
-                    Intent intent = new Intent(LoginActivity.this, FootPrintActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, FootPrintNewActivity.class);
                     startActivity(intent);
                     finish();
 

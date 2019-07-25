@@ -667,5 +667,9 @@ public interface HttpApi {
     String ENTER_CHAT_ROOM = BASE_URL + "/v1/2.0/ars/enterfirstfloor";
     //进入下一层接口
     String ENTER_NEXT_CHAT_ROOM = BASE_URL + "/v1/2.0/ars/confirm";
+    //发布帖子
+    String PUBLISH_ARTICLE = BASE_URL + "/v1/invitation/insertTInvitation";
+    //获取帖子列表
+    String INOVATION_LIST = BASE_URL + "/v1/invitation/queryList";
 
 }

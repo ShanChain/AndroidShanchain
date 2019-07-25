@@ -6,4 +6,5 @@ package com.shanchain.shandata.ui.presenter;
  * Describe :
  */
 public interface SquarePresenter {
+    void getListData(String title,int page,int size,int pullType);
 }

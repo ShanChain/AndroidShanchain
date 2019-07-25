@@ -380,5 +380,17 @@
     <string name="agai_exit_app">Press again to exit the app</string>
     <string name="nothing_left">He is a little lazy, nothing left...</string>
     <string name="square">Square</string>
+    <string name="publish_essay">Publish essay</string>
+    <string name="publish_long_text">Publish long text</string>
+    <string name="publish_link">Publish link</string>
+    <string name="closed">Closed</string>
+    <string name="publish">Publish</string>
+    <string name="share_y_opoint">Share your opinion...</string>
+    <string name="enter_400_words">You can also enter %s words</string>
+    <string name="enter_post_content">Please enter the post content</string>
+    <string name="publish_failed">Publishing failed</string>
+
+    <string name="to_expand_hint">Expand</string>
+    <string name="to_shrink_hint">Shrink</string>
 
 </resources>

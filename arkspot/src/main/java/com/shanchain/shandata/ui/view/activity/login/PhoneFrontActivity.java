@@ -73,7 +73,9 @@ public class PhoneFrontActivity extends BaseActivity implements ArthurToolBar.On
                 PhoneFrontBean p = (PhoneFrontBean) adapter.getItem(position);
                 if(null != p){
                     p.setSourceType(sourceType);
-                    mListener.getPhoneData(p);
+                    if(mListener!=null){
+                        mListener.getPhoneData(p);
+                    }
                     EventBus.getDefault().post(p);
                     finish();
                 }

@@ -11,8 +11,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 19
-        versionName "2.4.5"
+        versionCode 20
+        versionName "2.4.6"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -138,6 +138,7 @@ greendao {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:27.1.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -264,4 +265,5 @@ dependencies {
     //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+
 }

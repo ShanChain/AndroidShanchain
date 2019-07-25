@@ -398,5 +398,15 @@
     <string name="agai_exit_app">再按一次退出app</string>
     <string name="nothing_left">他有点懒，什么也没留下...</string>
     <string name="square">广场</string>
-
+    <string name="publish_essay">发布微文</string>
+    <string name="publish_long_text">发布长文</string>
+    <string name="publish_link">发布链接</string>
+    <string name="closed">关闭</string>
+    <string name="publish">发布</string>
+    <string name="share_y_opoint">分享你的看法...</string>
+    <string name="enter_400_words">还可以输入%s个字</string>
+    <string name="enter_post_content">请输入发布内容</string>
+    <string name="publish_failed">发布失败</string>
+    <string name="to_expand_hint">展开</string>
+    <string name="to_shrink_hint">收起</string>
 </resources>
