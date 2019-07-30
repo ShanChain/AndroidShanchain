@@ -575,6 +575,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".ui.view.activity.article.PublishArticleActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.article.ArticleDetailActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

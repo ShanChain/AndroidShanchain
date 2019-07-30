@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        android:id="@+id/tb_task_comment"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextThree"
+        app:titleTextSize="16" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="45dp"
+            android:scrollbars="none">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <include layout="@layout/square_list_item"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/colorBtnBg"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="left|center">
+                <ImageView
+                    android:layout_width="@dimen/dimens_20dp"
+                    android:layout_height="@dimen/dimens_20dp"
+                    android:src="@mipmap/icon_bi"/>
+                <TextView
+                    android:id="@+id/tv_content_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="评论(0)"
+                    android:layout_marginLeft="10dp"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:background="@color/colorBtnBg"/>
+
+            <com.shanchain.shandata.widgets.CustomListView
+                android:id="@+id/cl_content_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="0.8dp"
+                android:divider="@color/colorBtnBg"/>
+            <LinearLayout
+                android:id="@+id/ll_notdata"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="150dp">
+                <include layout="@layout/not_data_item_view"/>
+            </LinearLayout>
+        </LinearLayout>
+        </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/et_content_input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:hint="写下你的观点"
+            android:textSize="14sp"
+            android:background="@drawable/content_inputstyle_shape"/>
+            <TextView
+                android:id="@+id/tv_send"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/send_content_selector"
+                android:textColor="@color/white"
+                android:text="发表"/>
+    </LinearLayout>
+</RelativeLayout>

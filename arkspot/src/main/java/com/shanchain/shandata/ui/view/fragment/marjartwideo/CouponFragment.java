@@ -139,7 +139,7 @@ public class CouponFragment extends BaseFragment implements CounponListView,
         if (NetErrCode.SUC_CODE.equals(code)) {
             String data = JSONObject.parseObject(response).getString("data");
             String list = JSONObject.parseObject(data).getString("list");
-            if (TextUtils.isEmpty(list)) {
+            if (list==null) {
                 return;
             }
             List<CouponSubInfo> counpList = JSONObject.parseArray(list, CouponSubInfo.class);

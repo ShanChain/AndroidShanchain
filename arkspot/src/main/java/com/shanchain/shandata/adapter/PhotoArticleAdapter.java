@@ -78,14 +78,10 @@ public class PhotoArticleAdapter extends BaseAdapter {
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.llRootview.getLayoutParams();
-//        RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams) viewHolder.rlPhoto.getLayoutParams();
         int with = (int)((DensityUtils.getScreenWidth(mContext)-DensityUtils.dip2px(mContext,50))/4);
         layoutParams.width = with;
         layoutParams.height = with;
-//        layoutParams1.width = with;
-//        layoutParams1.height = with;
         viewHolder.llRootview.setLayoutParams(layoutParams);
-//        viewHolder.rlPhoto.setLayoutParams(layoutParams1);
         PhotoBean photoBean = mList.get(position);
         if(photoBean!=null){
             if(TextUtils.isEmpty(photoBean.getUrl())){

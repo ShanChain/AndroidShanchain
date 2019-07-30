@@ -1,6 +1,10 @@
 package com.shanchain.shandata.ui.presenter.impl;
 
+import android.text.TextUtils;
+
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -42,6 +46,24 @@ public class TaskDetailPresenterImpl implements TaskDetailPresenter {
                     public void onResponse(String response, int id) {
                         mTaskDetailListView.showProgressEnd();
                         mTaskDetailListView.setTaskDetailList(response,pullType);
+                    }
+                });
+    }
+
+    @Override
+    public void getCurrency() {
+        SCHttpUtils.get()
+                .url(HttpApi.GET_SEAT_CURRENCY)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mTaskDetailListView.setCurrencyInfo(response);
                     }
                 });
     }

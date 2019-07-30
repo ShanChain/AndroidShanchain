@@ -392,5 +392,10 @@
 
     <string name="to_expand_hint">Expand</string>
     <string name="to_shrink_hint">Shrink</string>
+    <string name="enter_comment">Please enter a comment</string>
+    <string name="detail_1">Detail</string>
+    <string name="share_1">Share</string>
+    <string name="comment_nums">Comment(%s)</string>
+    <string name="not_data">No data</string>
 
 </resources>

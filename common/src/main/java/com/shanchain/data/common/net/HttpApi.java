@@ -671,5 +671,11 @@ public interface HttpApi {
     String PUBLISH_ARTICLE = BASE_URL + "/v1/invitation/insertTInvitation";
     //获取帖子列表
     String INOVATION_LIST = BASE_URL + "/v1/invitation/queryList";
+    //上传图片文件
+    String UPLOAD_IMAGE = BASE_URL + "/filesUpload/filesUpload";
+    //获取帖子的评论列表
+    String TITLE_COMMENT_LIST = BASE_URL + "/v1/reviceInv/queryList";
+    //添加评论
+    String ADD_COMMENT = BASE_URL + "/v1/reviceInv/insertTReviceInv";
 
 }

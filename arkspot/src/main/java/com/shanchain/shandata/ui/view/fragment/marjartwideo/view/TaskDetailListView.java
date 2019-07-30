@@ -9,4 +9,5 @@ public interface TaskDetailListView {
     void showProgressStart();
     void showProgressEnd();
     void setTaskDetailList(String response,int pullType);
+    void setCurrencyInfo(String response);
 }

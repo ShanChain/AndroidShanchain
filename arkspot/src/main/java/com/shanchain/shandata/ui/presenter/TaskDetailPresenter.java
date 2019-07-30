@@ -7,5 +7,6 @@ package com.shanchain.shandata.ui.presenter;
  */
 public interface TaskDetailPresenter {
     void getTaskListData(String characterId,String roomId,int page,int size,int pullType);
+    void getCurrency();
 
 }

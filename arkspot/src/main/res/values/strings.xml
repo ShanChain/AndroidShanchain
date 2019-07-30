@@ -409,4 +409,9 @@
     <string name="publish_failed">发布失败</string>
     <string name="to_expand_hint">展开</string>
     <string name="to_shrink_hint">收起</string>
+    <string name="enter_comment">请输入评论内容</string>
+    <string name="detail_1">详情</string>
+    <string name="share_1">分享</string>
+    <string name="comment_nums">评论(%s)</string>
+    <string name="not_data">暂无数据</string>
 </resources>

@@ -195,12 +195,13 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
     }
 
     private void setFragment() {
-        String[] titles = {getResources().getString(R.string.hot_meta), getResources().getString(R.string.square),"ARS",};
-        fragmentList.add(new MainChatRoomFragment());
+//        String[] titles = {getResources().getString(R.string.hot_meta), getResources().getString(R.string.square),"ARS",};
+        String[] titles = { getResources().getString(R.string.square),"ARS",};
+//        fragmentList.add(new MainChatRoomFragment());
         fragmentList.add(new SquareFragment());
         fragmentList.add(new MainARSGameFragment());
         TaskPagerAdapter adapter = new TaskPagerAdapter(getChildFragmentManager(), titles, fragmentList);
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(0);

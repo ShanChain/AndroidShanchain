@@ -24,7 +24,6 @@ public class SquarePresenterImpl implements SquarePresenter {
         mSquareView.showProgressStart();
         SCHttpUtils.post()
                 .url(HttpApi.INOVATION_LIST)
-                .addParams("title", title)
                 .addParams("page", page + "")
                 .addParams("size", size + "")
                 .build()
