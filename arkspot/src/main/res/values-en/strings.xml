@@ -397,5 +397,14 @@
     <string name="share_1">Share</string>
     <string name="comment_nums">Comment(%s)</string>
     <string name="not_data">No data</string>
+    <string name="images_upload_failed">Images submission failed</string>
+    <string name="attention">Attention</string>
+    <string name="Concerned">Concerned</string>
+    <string name="myself_attention">I can\'t pay attention to myself</string>
+    <string name="operation_failed">Operation failed</string>
+    <string name="unfollowed">Unfollowed</string>
+    <string name="write_y_op">Write your opinion</string>
+    <string name="liked">Liked</string>
+    <string name="cancel_like">Cancel like</string>
 
 </resources>

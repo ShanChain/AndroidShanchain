@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
@@ -71,9 +72,8 @@ public class GVPhotoAdapter extends BaseAdapter {
         layoutParams.width = with;
         layoutParams.height = with;
         viewHolder.llRootview.setLayoutParams(layoutParams);
-        LogUtils.d("---photo path-- ",photoList.get(position));
         String s = photoList.get(position).replaceAll("\\\\","");
-        Glide.with(mContext).load(s.substring(1,s.length()-1))
+        Glide.with(mContext).load(HttpApi.BASE_URL+s)
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                         .error(R.drawable.aurora_headicon_default)).into(viewHolder.ivItem);
 

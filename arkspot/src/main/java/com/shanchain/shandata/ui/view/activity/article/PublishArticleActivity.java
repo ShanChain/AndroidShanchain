@@ -21,12 +21,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
@@ -54,13 +54,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * Created by WealChen
@@ -86,6 +79,8 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
     private List<PhotoBean> mList = new ArrayList<>();
     private final MyHandler mHandler = new MyHandler(this);
     private PublishArticlePresenter mArticlePresenter;
+    private String content="";
+    private String []attr;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_publish_article;
@@ -115,66 +110,22 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
     //发布
     @OnClick(R.id.tv_publish)
     void publishContent(){
-        /*String content = etContent.getText().toString().trim();
+        content = etContent.getText().toString().trim();
         if(TextUtils.isEmpty(content)){
             ToastUtil.showToast(this, R.string.enter_post_content);
             return;
         }
-        String userId = SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER);
-        mArticlePresenter.addArticleNoPictrue(Integer.parseInt(userId),content.length()>10 ? content.substring(0,10):content,content,null);*/
         for (int i = 0; i < mList.size(); i++) {
             if(TextUtils.isEmpty(mList.get(i).getUrl())){
                 mList.remove(i);
             }
         }
         if(mList.size()>0){
-            OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
-            MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
-            int i = 0;
-            for(PhotoBean p:mList){
-                if(new File(p.getUrl()).exists()){
-                    LogUtils.d("imageName:",p.getUrl()+"======="+p.getFileName());//经过测试，此处的名称不能相同，如果相同，只能保存最后一个图片，不知道那些同名的大神是怎么成功保存图片的。
-                    mbody.addFormDataPart("image"+i,p.getFileName(), RequestBody.create(SCHttpUtils.FORM_DATA,new File(p.getUrl())));
-                    i++;
-                }
-            }
-            RequestBody requestBody =mbody.build();
-            Request request = new Request.Builder()
-                    .url(HttpApi.UPLOAD_IMAGE)
-                    .post(requestBody)
-                    .build();
-            mOkHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    LogUtils.d("Resonse IOException: ", e.toString());
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    LogUtils.d("----file upload---",response.body().toString());
-                    String result = response.body().string();
-                    LogUtils.d("Resonse: ", result);
-                }
-            });
-
-
-
-
-    /*        OkHttpUtils.getInstance().postFile()
-                    .url(HttpApi.UPLOAD_IMAGE)
-                    .file(new File(mList.get(0).getUrl()))
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            LogUtils.d("----file upload---",response);
-                        }
-                    });*/
+            //有图片先上传图片d
+            mArticlePresenter.uploadPhotoListToServer(mList);
+        }else {
+            //没有图片直接发布
+            mArticlePresenter.addArticleNoPictrue(Integer.parseInt(SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER)),content.length()>10 ? content.substring(0,10):content,content,"");
         }
     }
 
@@ -358,6 +309,18 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         }
     }
 
+    @Override
+    public void setPhotoListSuccess(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("filenames");
+            attr = data.substring(1,data.length()-1).split(",");
+            mHandler.sendEmptyMessage(2);
+        }else {
+            ToastUtil.showToast(PublishArticleActivity.this, getString(R.string.images_upload_failed));
+        }
+    }
+
     private class MyHandler extends Handler {
         private final WeakReference<PublishArticleActivity> mActivity;
 
@@ -367,10 +330,24 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         @Override
         public void handleMessage(Message msg) {
             PublishArticleActivity activity = mActivity.get();
-            if (activity != null) {
-                resetPhoteoList();
-                mAdapter.notifyDataSetChanged();
+            switch (msg.what){
+                case 2:
+                    String a="";
+                    for (int i = 0; i < attr.length; i++) {
+                        String phth = attr[i].substring(1,attr[i].length()-1);
+                        a += phth+",";
+                    }
+                    mArticlePresenter.addArticleNoPictrue(Integer.parseInt(SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER)),content.length()>10 ? content.substring(0,10):content,content,
+                            a.substring(0,a.length()-1));
+                    break;
+                case 1:
+                    if (activity != null) {
+                        resetPhoteoList();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                 break;
             }
+
         }
     }
 }

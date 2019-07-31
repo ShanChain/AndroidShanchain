@@ -135,7 +135,6 @@ public class CouponFragment extends BaseFragment implements CounponListView,
     public void setCounponList(String response,int pullType) {
         refreshLayoutArsgame.setRefreshing(false);
         String code = JSONObject.parseObject(response).getString("code");
-        final String msg = JSONObject.parseObject(response).getString("msg");
         if (NetErrCode.SUC_CODE.equals(code)) {
             String data = JSONObject.parseObject(response).getString("data");
             String list = JSONObject.parseObject(data).getString("list");

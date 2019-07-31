@@ -677,5 +677,13 @@ public interface HttpApi {
     String TITLE_COMMENT_LIST = BASE_URL + "/v1/reviceInv/queryList";
     //添加评论
     String ADD_COMMENT = BASE_URL + "/v1/reviceInv/insertTReviceInv";
+    //关注某个用户
+    String ADD_ATTENTION = BASE_URL + "/v1/attentionLog/insert";
+    //删除关注某个用户
+    String DELETE_ATTENTION = BASE_URL + "/v1/attentionLog/delete";
+    //点赞某个帖子
+    String ADD_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/insert";
+    //取消点赞某个帖子
+    String DELETE_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/delete";
 
 }

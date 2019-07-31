@@ -8,4 +8,6 @@ package com.shanchain.shandata.ui.presenter;
 public interface ArticleDetailPresenter {
     void getAllArticleComment(int invitationId,int currentPage,int pagesize);
     void addComment(int invitationId, String content,int sendUserId,int toUserId);
+    void attentionUser(int userId,int attentionUserId);
+    void deleteAttentionUser(int userId,int attentionUserId);
 }

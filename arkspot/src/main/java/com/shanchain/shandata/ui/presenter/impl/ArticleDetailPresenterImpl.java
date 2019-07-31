@@ -67,4 +67,48 @@ public class ArticleDetailPresenterImpl implements ArticleDetailPresenter {
                     }
                 });
     }
+
+    @Override
+    public void attentionUser(int userId, int attentionUserId) {
+        mArticleDetailView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mArticleDetailView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.showProgressEnd();
+                        mArticleDetailView.setAttentionResponse(response,0);
+                    }
+                });
+    }
+
+    @Override
+    public void deleteAttentionUser(int userId, int attentionUserId) {
+        mArticleDetailView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mArticleDetailView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.showProgressEnd();
+                        mArticleDetailView.setAttentionResponse(response,1);
+                    }
+                });
+    }
 }

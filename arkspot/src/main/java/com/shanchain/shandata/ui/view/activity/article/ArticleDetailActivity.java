@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -77,8 +79,11 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
     TextView tvSend;
     @Bind(R.id.ll_notdata)
     LinearLayout llNotdata;
+    @Bind(R.id.im_zan)
+    ImageView imZan;
     private SqureDataEntity mSqureDataEntity;
     private ArticleDetailPresenter mPresenter;
+    private String userId = SCCacheUtils.getCache("0", "curUser");
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_article_detail;
@@ -114,15 +119,26 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
         if(!TextUtils.isEmpty(mSqureDataEntity.getListImg())){
             GVPhotoAdapter gvPhotoAdapter = new GVPhotoAdapter(mContext);
-            String []attr = mSqureDataEntity.getListImg().substring(1,mSqureDataEntity.getListImg().length()-1).split(",");
+            String []attr = mSqureDataEntity.getListImg().split(",");
             gvPhotoAdapter.setPhotoList(Arrays.asList(attr));
             gvPhoto.setAdapter(gvPhotoAdapter);
+        }
+        if("0".equals(mSqureDataEntity.getIsPraise())){
+            //未点赞
+            imZan.setBackgroundResource(R.mipmap.dianzan);
+        }else {
+            imZan.setBackgroundResource(R.mipmap.dianzan_done);
+        }
+        if("0".equals(mSqureDataEntity.getIsAttention())){
+            updateUserAttention(0);
+        }else {
+            updateUserAttention(1);
         }
 
         mPresenter.getAllArticleComment(mSqureDataEntity.getId(),0,1000);
 
     }
-
+    //发表评论
     @OnClick(R.id.tv_send)
     void addComment(){
         String comment = etContentInput.getText().toString().trim();
@@ -132,6 +148,20 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }
         mPresenter.addComment(mSqureDataEntity.getId(),comment,Integer.parseInt(SCCacheUtils.getCache("0", "curUser")),
                 mSqureDataEntity.getUserId());
+    }
+
+    //关注，取消关注
+    @OnClick(R.id.tv_attention)
+    void attentionOperation(){
+        if(Integer.parseInt(userId) == mSqureDataEntity.getUserId()){
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.myself_attention);
+            return;
+        }
+        if("0".equals(mSqureDataEntity.getIsAttention())){
+            mPresenter.attentionUser(Integer.parseInt(userId),mSqureDataEntity.getUserId());
+        }else {
+            mPresenter.deleteAttentionUser(Integer.parseInt(userId),mSqureDataEntity.getUserId());
+        }
     }
 
 
@@ -180,5 +210,36 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
     @Override
     public void addCommentResponse(String response) {
 
+    }
+
+    @Override
+    public void setAttentionResponse(String response, int type) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            if(type==0){
+                updateUserAttention(1);
+                mSqureDataEntity.setIsAttention("1");
+                ToastUtil.showToast(ArticleDetailActivity.this,getString(R.string.Concerned));
+            }else {
+                updateUserAttention(0);
+                mSqureDataEntity.setIsAttention("0");
+                ToastUtil.showToast(ArticleDetailActivity.this, R.string.unfollowed);
+            }
+
+        }else {
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+        }
+    }
+
+    private void updateUserAttention(int type) {
+        if(type==0){
+            tvAttention.setBackgroundResource(R.drawable.squra_attention_n_shape);
+            tvAttention.setTextColor(getResources().getColor(R.color.login_marjar_color));
+            tvAttention.setText(getResources().getString(R.string.attention));
+        }else {
+            tvAttention.setBackgroundResource(R.drawable.squra_attention_y_shape);
+            tvAttention.setTextColor(getResources().getColor(R.color.white));
+            tvAttention.setText(getResources().getString(R.string.Concerned));
+        }
     }
 }

@@ -21,6 +21,8 @@ public class SqureDataEntity implements Serializable {
     int isHot;
     int isRecommend;
     String listImg;
+    String isPraise;
+    String isAttention;
 
     public int getId() {
         return id;
@@ -124,5 +126,21 @@ public class SqureDataEntity implements Serializable {
 
     public void setListImg(String listImg) {
         this.listImg = listImg;
+    }
+
+    public String getIsPraise() {
+        return isPraise;
+    }
+
+    public void setIsPraise(String isPraise) {
+        this.isPraise = isPraise;
+    }
+
+    public String getIsAttention() {
+        return isAttention;
+    }
+
+    public void setIsAttention(String isAttention) {
+        this.isAttention = isAttention;
     }
 }

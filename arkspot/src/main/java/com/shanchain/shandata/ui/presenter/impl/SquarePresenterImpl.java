@@ -20,12 +20,13 @@ public class SquarePresenterImpl implements SquarePresenter {
         this.mSquareView = view;
     }
     @Override
-    public void getListData(String title, int page, int size, final int pullType) {
+    public void getListData(String title, String userId,int page, int size, final int pullType) {
         mSquareView.showProgressStart();
         SCHttpUtils.post()
                 .url(HttpApi.INOVATION_LIST)
-                .addParams("page", page + "")
-                .addParams("size", size + "")
+                .addParams("currentPage", page + "")
+                .addParams("pagesize", size + "")
+                .addParams("userId",userId)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -38,6 +39,94 @@ public class SquarePresenterImpl implements SquarePresenter {
                     public void onResponse(String response, int id) {
                         mSquareView.showProgressEnd();
                         mSquareView.setListDataResponse(response,pullType);
+                    }
+                });
+    }
+
+    @Override
+    public void attentionUser(int userId, int attentionUserId) {
+        mSquareView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mSquareView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSquareView.showProgressEnd();
+                        mSquareView.setAttentionResponse(response,0);
+                    }
+                });
+    }
+
+    @Override
+    public void deleteAttentionUser(int userId, int attentionUserId) {
+        mSquareView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mSquareView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSquareView.showProgressEnd();
+                        mSquareView.setAttentionResponse(response,1);
+                    }
+                });
+    }
+
+    @Override
+    public void addPraiseToArticle(int userId, int invitationId) {
+        mSquareView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_PRAISE_TITLE)
+                .addParams("userId", userId + "")
+                .addParams("invitationId", invitationId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mSquareView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSquareView.showProgressEnd();
+                        mSquareView.setPraiseResponse(response,0);
+                    }
+                });
+    }
+
+    @Override
+    public void deletePraiseToArticle(int userId, int invitationId) {
+        mSquareView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_PRAISE_TITLE)
+                .addParams("userId", userId + "")
+                .addParams("invitationId", invitationId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mSquareView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSquareView.showProgressEnd();
+                        mSquareView.setPraiseResponse(response,1);
                     }
                 });
     }

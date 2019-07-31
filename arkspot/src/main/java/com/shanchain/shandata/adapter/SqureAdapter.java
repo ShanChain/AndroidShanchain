@@ -3,18 +3,24 @@ package com.shanchain.shandata.adapter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.utils.TimeUtils;
 import com.shanchain.shandata.widgets.CustomGridView;
-import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -29,12 +35,20 @@ import cn.jiguang.imui.view.CircleImageView;
  * Describe :
  */
 public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolder> {
+    private IAttentionCallback mIAttentionCallback;
+    private IPraiseCallback mIPraiseCallback;
+    public void setIAttentionCallback(IAttentionCallback callback){
+        this.mIAttentionCallback = callback;
+    }
+    public void setIPraiseCallback(IPraiseCallback callback){
+        this.mIPraiseCallback = callback;
+    }
     public SqureAdapter(int layoutResId, @Nullable List<SqureDataEntity> data) {
         super(layoutResId, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, SqureDataEntity item) {
+    protected void convert(BaseViewHolder helper, final SqureDataEntity item) {
         CircleImageView circleImageView = helper.getView(R.id.iv_user_head);
         Glide.with(mContext).load(item.getHeadIcon())
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
@@ -45,14 +59,52 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
         helper.setText(R.id.tv_conin,item.getPraiseCount()+"");
         helper.setText(R.id.tv_message,item.getReviceCount()+"");
         helper.setText(R.id.tv_share,item.getCollectCount()+"");
-        CustomGridView gridView = helper.getView(R.id.gv_photo);
+        ImageView ivBg = helper.getView(R.id.im_bg);
         if(!TextUtils.isEmpty(item.getListImg())){
-            GVPhotoAdapter gvPhotoAdapter = new GVPhotoAdapter(mContext);
-            String []attr = item.getListImg().substring(1,item.getListImg().length()-1).split(",");
-            gvPhotoAdapter.setPhotoList(Arrays.asList(attr));
-            gridView.setAdapter(gvPhotoAdapter);
+            String []attr = item.getListImg().replaceAll("\\\\","").split(",");
+            Glide.with(mContext).load(HttpApi.BASE_URL+attr[0])
+                    .apply(new RequestOptions()
+                            .error(R.drawable.aurora_headicon_default)).into(ivBg);
+            ivBg.setVisibility(View.VISIBLE);
+        }else {
+            ivBg.setVisibility(View.GONE);
         }
-
-
+        if("0".equals(item.getIsPraise())){
+            //未点赞
+            helper.getView(R.id.iv_paise).setBackgroundResource(R.mipmap.dianzan);
+        }else {
+            helper.getView(R.id.iv_paise).setBackgroundResource(R.mipmap.dianzan_done);
+        }
+        TextView textView = helper.getView(R.id.tv_attention);
+        if("0".equals(item.getIsAttention())){
+            //未关注
+            textView.setBackgroundResource(R.drawable.squra_attention_n_shape);
+            textView.setTextColor(mContext.getResources().getColor(R.color.login_marjar_color));
+            textView.setText(mContext.getResources().getString(R.string.attention));
+        }else {
+            textView.setBackgroundResource(R.drawable.squra_attention_y_shape);
+            textView.setTextColor(mContext.getResources().getColor(R.color.white));
+            textView.setText(mContext.getResources().getString(R.string.Concerned));
+        }
+        //关注
+        helper.getView(R.id.tv_attention).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIAttentionCallback!=null){
+                    mIAttentionCallback.attentionUser(item);
+                }
+            }
+        });
+        //点赞
+        helper.getView(R.id.iv_paise).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIPraiseCallback!=null){
+                    mIPraiseCallback.praiseToArticle(item);
+                }
+            }
+        });
     }
+
+
 }

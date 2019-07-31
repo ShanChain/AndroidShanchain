@@ -414,4 +414,13 @@
     <string name="share_1">分享</string>
     <string name="comment_nums">评论(%s)</string>
     <string name="not_data">暂无数据</string>
+    <string name="images_upload_failed">图片提交失败</string>
+    <string name="attention">关注</string>
+    <string name="Concerned">已关注</string>
+    <string name="myself_attention">自己不能关注自己</string>
+    <string name="operation_failed">操作失败</string>
+    <string name="unfollowed">已取消关注</string>
+    <string name="write_y_op">写下你的观点</string>
+    <string name="liked">已点赞</string>
+    <string name="cancel_like">取消点赞</string>
 </resources>

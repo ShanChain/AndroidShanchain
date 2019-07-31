@@ -9,5 +9,6 @@ public interface PublishArticleView {
     void showProgressStart();
     void showProgressEnd();
     void addArticleResponse(String response);
+    void setPhotoListSuccess(String response);
 
 }

@@ -17,14 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SqureAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
@@ -33,7 +37,6 @@ import com.shanchain.shandata.ui.presenter.impl.SquarePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
 import com.shanchain.shandata.ui.view.activity.article.PublishArticleActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.SquareView;
-import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +60,13 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
 
     private AlertDialog mAlertDialog;
     private SquarePresenter mSquarePresenter;
-    private int pageIndex = 1;
+    private int pageIndex = 0;
     private SqureAdapter mSqureAdapter;
     private List<SqureDataEntity> mList = new ArrayList<>();
     private View footerView;
     private boolean isLast = false;
+    private SqureDataEntity mSqureDataEntity = null;
+    private String userId = SCCacheUtils.getCache("0", "curUser");
     @Override
     public View initView() {
         return View.inflate(getActivity(), R.layout.fragment_square, null);
@@ -70,7 +75,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public void initData() {
         mSquarePresenter = new SquarePresenterImpl(this);
-        mSqureAdapter = new SqureAdapter(R.layout.square_list_item,mList);
+        mSqureAdapter = new SqureAdapter(R.layout.square_list_item_1,mList);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
@@ -89,7 +94,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public void onResume() {
         super.onResume();
-        mSquarePresenter.getListData("",pageIndex, Constants.pageSize,Constants.pullRefress);
+        mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
     }
 
     //点击添加内容弹窗
@@ -102,8 +107,8 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        pageIndex = 1;
-        mSquarePresenter.getListData("",pageIndex, Constants.pageSize,Constants.pullRefress);
+        pageIndex = 0;
+        mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
     }
 
     private void showContentViewDialog(){
@@ -191,8 +196,41 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
 
         }
     }
-    //上拉加载
+
+    @Override
+    public void setAttentionResponse(String response,int type) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            updateUserAttention(type);
+            if(type==0){
+                ToastUtil.showToast(getActivity(),getString(R.string.Concerned));
+            }else {
+                ToastUtil.showToast(getActivity(), R.string.unfollowed);
+            }
+
+        }else {
+            ToastUtil.showToast(getActivity(), R.string.operation_failed);
+        }
+    }
+
+    @Override
+    public void setPraiseResponse(String response, int type) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            updateUserPraise(type);
+            if(type == 0){
+                ToastUtil.showToast(getActivity(), R.string.liked);
+            }else {
+                ToastUtil.showToast(getActivity(), R.string.cancel_like);
+            }
+        }else {
+            ToastUtil.showToast(getActivity(), R.string.operation_failed);
+        }
+    }
+
+    //相关监听
     private void initLoadMoreListener() {
+        //上拉加载
         recyclerViewCoupon.setOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem;
             @Override
@@ -202,7 +240,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mSqureAdapter.getItemCount()){
                     pageIndex ++;
-                    mSquarePresenter.getListData("",pageIndex, Constants.pageSize,Constants.pillLoadmore);
+                    mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pillLoadmore);
                 }
             }
 
@@ -223,5 +261,67 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                 }
             }
         });
+        //关注
+        mSqureAdapter.setIAttentionCallback(new IAttentionCallback() {
+            @Override
+            public void attentionUser(SqureDataEntity item) {
+                mSqureDataEntity = item;
+                if(Integer.parseInt(userId) == item.getUserId()){
+                    ToastUtil.showToast(getActivity(), R.string.myself_attention);
+                    return;
+                }
+                //未关注
+                if("0".equals(mSqureDataEntity.getIsAttention())){
+                    mSquarePresenter.attentionUser(Integer.parseInt(userId),item.getUserId());
+                }else {//已关注
+                    mSquarePresenter.deleteAttentionUser(Integer.parseInt(userId),item.getUserId());
+                }
+            }
+        });
+        //点赞
+        mSqureAdapter.setIPraiseCallback(new IPraiseCallback() {
+            @Override
+            public void praiseToArticle(SqureDataEntity item) {
+                mSqureDataEntity = item;
+                if("0".equals(mSqureDataEntity.getIsPraise())){//未点赞
+                    mSquarePresenter.addPraiseToArticle(Integer.parseInt(userId),item.getId());
+                }else {
+                    mSquarePresenter.deletePraiseToArticle(Integer.parseInt(userId),item.getId());
+                }
+            }
+        });
+    }
+
+    //关注成功后更新界面
+    private void updateUserAttention(int type){
+        if(mSqureDataEntity == null || mList.size()==0)return;
+        for (SqureDataEntity s:mList) {
+            if(s.getId() == mSqureDataEntity.getId()){
+                if(type==0){
+                    s.setIsAttention("1");
+                }else {
+                    s.setIsAttention("0");
+                }
+                break;
+            }
+        }
+        mSqureAdapter.notifyDataSetChanged();
+    }
+    //点赞成功后更新数据
+    private void updateUserPraise(int type){
+        if(mSqureDataEntity == null || mList.size()==0)return;
+        for (SqureDataEntity s:mList) {
+            if(s.getId() == mSqureDataEntity.getId()){
+                if(type==0){
+                    s.setIsPraise("1");
+                    s.setPraiseCount(s.getPraiseCount()+1);
+                }else {
+                    s.setIsPraise("0");
+                    s.setPraiseCount(s.getPraiseCount()-1);
+                }
+                break;
+            }
+        }
+        mSqureAdapter.notifyDataSetChanged();
     }
 }
