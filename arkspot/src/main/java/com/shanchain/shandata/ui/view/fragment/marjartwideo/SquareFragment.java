@@ -296,13 +296,13 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     private void updateUserAttention(int type){
         if(mSqureDataEntity == null || mList.size()==0)return;
         for (SqureDataEntity s:mList) {
-            if(s.getId() == mSqureDataEntity.getId()){
+            if(s.getUserId() == mSqureDataEntity.getUserId()){
                 if(type==0){
                     s.setIsAttention("1");
                 }else {
                     s.setIsAttention("0");
                 }
-                break;
+                continue;
             }
         }
         mSqureAdapter.notifyDataSetChanged();

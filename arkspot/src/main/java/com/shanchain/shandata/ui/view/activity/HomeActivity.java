@@ -2103,7 +2103,8 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_history:
-                readyGo(FootPrintActivity.class);
+//                readyGo(FootPrintActivity.class);
+                finish();
                 break;
             case R.id.img_view_hide:
 

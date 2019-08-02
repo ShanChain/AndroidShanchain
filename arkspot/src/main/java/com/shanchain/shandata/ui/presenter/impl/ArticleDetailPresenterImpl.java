@@ -20,10 +20,11 @@ public class ArticleDetailPresenterImpl implements ArticleDetailPresenter {
         this.mArticleDetailView = view;
     }
     @Override
-    public void getAllArticleComment(int invitationId, int currentPage, int pagesize) {
+    public void getAllArticleComment(int userId,int invitationId, int currentPage, int pagesize) {
         mArticleDetailView.showProgressStart();
         SCHttpUtils.getAndToken()
                 .url(HttpApi.TITLE_COMMENT_LIST)
+                .addParams("userId", userId+"")
                 .addParams("invitationId", invitationId+"")
                 .addParams("currentPage", currentPage+"")
                 .addParams("pagesize", pagesize + "")
@@ -108,6 +109,88 @@ public class ArticleDetailPresenterImpl implements ArticleDetailPresenter {
                     public void onResponse(String response, int id) {
                         mArticleDetailView.showProgressEnd();
                         mArticleDetailView.setAttentionResponse(response,1);
+                    }
+                });
+    }
+
+    @Override
+    public void addPraiseToArticle(int userId, int invitationId) {
+        mArticleDetailView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_PRAISE_TITLE)
+                .addParams("userId", userId + "")
+                .addParams("invitationId", invitationId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mArticleDetailView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.showProgressEnd();
+                        mArticleDetailView.setPraiseResponse(response,0);
+                    }
+                });
+    }
+
+    @Override
+    public void deletePraiseToArticle(int userId, int invitationId) {
+        mArticleDetailView.showProgressStart();
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_PRAISE_TITLE)
+                .addParams("userId", userId + "")
+                .addParams("invitationId", invitationId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mArticleDetailView.showProgressEnd();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.showProgressEnd();
+                        mArticleDetailView.setPraiseResponse(response,1);
+                    }
+                });
+    }
+
+    @Override
+    public void addAttentToCommentUser(int userId, int attentionUserId) {
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.setAttentionCommentResponse(response,0);
+                    }
+                });
+    }
+
+    @Override
+    public void deleteAttentionCommentUser(int userId, int attentionUserId) {
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_ATTENTION)
+                .addParams("userId", userId + "")
+                .addParams("attentionUserId", attentionUserId + "")
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.setAttentionCommentResponse(response,1);
                     }
                 });
     }

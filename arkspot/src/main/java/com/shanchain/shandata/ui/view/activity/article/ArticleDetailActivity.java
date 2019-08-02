@@ -1,9 +1,13 @@
 package com.shanchain.shandata.ui.view.activity.article;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +26,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CommetListAdapter;
 import com.shanchain.shandata.adapter.GVPhotoAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.presenter.ArticleDetailPresenter;
@@ -33,6 +38,7 @@ import com.shanchain.shandata.widgets.CustomListView;
 import com.shanchain.shandata.widgets.ExpandableTextView;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,8 +88,12 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
     @Bind(R.id.im_zan)
     ImageView imZan;
     private SqureDataEntity mSqureDataEntity;
+    private CommentEntity mCommentEntity;
     private ArticleDetailPresenter mPresenter;
     private String userId = SCCacheUtils.getCache("0", "curUser");
+    private CommetListAdapter mAdapter;
+    private List<CommentEntity> mList = new ArrayList<>();
+    private String []attrPhotos;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_article_detail;
@@ -102,6 +112,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
 
         mSqureDataEntity = (SqureDataEntity) getIntent().getSerializableExtra("info");
         mPresenter = new ArticleDetailPresenterImpl(this);
+        mAdapter = new CommetListAdapter(this);
         initData();
     }
     //初始化数据
@@ -119,8 +130,8 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
         if(!TextUtils.isEmpty(mSqureDataEntity.getListImg())){
             GVPhotoAdapter gvPhotoAdapter = new GVPhotoAdapter(mContext);
-            String []attr = mSqureDataEntity.getListImg().split(",");
-            gvPhotoAdapter.setPhotoList(Arrays.asList(attr));
+            attrPhotos = mSqureDataEntity.getListImg().split(",");
+            gvPhotoAdapter.setPhotoList(Arrays.asList(attrPhotos));
             gvPhoto.setAdapter(gvPhotoAdapter);
         }
         if("0".equals(mSqureDataEntity.getIsPraise())){
@@ -135,8 +146,8 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             updateUserAttention(1);
         }
 
-        mPresenter.getAllArticleComment(mSqureDataEntity.getId(),0,1000);
-
+        mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
+        initListener();
     }
     //发表评论
     @OnClick(R.id.tv_send)
@@ -146,7 +157,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             ToastUtils.showToast(ArticleDetailActivity.this, getResources().getString(R.string.enter_comment));
             return;
         }
-        mPresenter.addComment(mSqureDataEntity.getId(),comment,Integer.parseInt(SCCacheUtils.getCache("0", "curUser")),
+        mPresenter.addComment(mSqureDataEntity.getId(),comment,Integer.parseInt(userId),
                 mSqureDataEntity.getUserId());
     }
 
@@ -162,6 +173,46 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }else {
             mPresenter.deleteAttentionUser(Integer.parseInt(userId),mSqureDataEntity.getUserId());
         }
+    }
+
+    //文章点赞
+    @OnClick(R.id.im_zan)
+    void praiseTitle(){
+        if("0".equals(mSqureDataEntity.getIsPraise())){//未点赞
+            mPresenter.addPraiseToArticle(Integer.parseInt(userId),mSqureDataEntity.getId());
+        }else {
+            mPresenter.deletePraiseToArticle(Integer.parseInt(userId),mSqureDataEntity.getId());
+        }
+    }
+
+    private void initListener(){
+        mAdapter.setICommentPraiseCallback(new ICommentPraiseCallback() {
+            @Override
+            public void praiseToUser(CommentEntity item) {
+                mCommentEntity = item;
+                if(Integer.parseInt(userId) == item.getSendUserId()){
+                    ToastUtil.showToast(ArticleDetailActivity.this, R.string.myself_attention);
+                    return;
+                }
+                if("0".equals(item.getIsAttention())){
+                    mPresenter.addAttentToCommentUser(Integer.parseInt(userId),item.getSendUserId());
+                }else {
+                    mPresenter.deleteAttentionCommentUser(Integer.parseInt(userId),item.getSendUserId());
+                }
+
+            }
+        });
+
+        //点击图片查看大图
+        gvPhoto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                List<String> list = Arrays.asList(attrPhotos);
+                ArrayList<String> arrayList = new ArrayList<>(list);
+                startActivity(new Intent(ArticleDetailActivity.this,PhotoPagerActivity.class)
+                                        .putExtra("list", arrayList));
+            }
+        });
     }
 
 
@@ -193,11 +244,11 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                 llNotdata.setVisibility(View.VISIBLE);
                 return;
             }
-            List<CommentEntity> mList = JSONObject.parseArray(listdata,CommentEntity.class);
+            mList.clear();
+            mList = JSONObject.parseArray(listdata,CommentEntity.class);
             if(mList!=null && mList.size()>0){
                 clContentList.setVisibility(View.VISIBLE);
                 llNotdata.setVisibility(View.GONE);
-                CommetListAdapter mAdapter = new CommetListAdapter(this);
                 mAdapter.setList(mList);
                 clContentList.setAdapter(mAdapter);
             }else {
@@ -209,13 +260,33 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
 
     @Override
     public void addCommentResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            etContentInput.setText("");
+            hideKeyboard(etContentInput);
+            mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
 
+            mSqureDataEntity.setReviceCount(mSqureDataEntity.getReviceCount()+1);
+            tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
+            tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
+        }else {
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+        }
+    }
+
+    public void hideKeyboard(View view){
+        InputMethodManager imm = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+        }
     }
 
     @Override
     public void setAttentionResponse(String response, int type) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            updateUserCommentListFromDetail(type);
             if(type==0){
                 updateUserAttention(1);
                 mSqureDataEntity.setIsAttention("1");
@@ -225,12 +296,53 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                 mSqureDataEntity.setIsAttention("0");
                 ToastUtil.showToast(ArticleDetailActivity.this, R.string.unfollowed);
             }
+            //更新评论列表的关注状态
+
 
         }else {
             ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
         }
     }
 
+    @Override
+    public void setPraiseResponse(String response, int type) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            if(type==0){
+                mSqureDataEntity.setIsPraise("1");
+                mSqureDataEntity.setPraiseCount(mSqureDataEntity.getPraiseCount()+1);
+                imZan.setBackgroundResource(R.mipmap.dianzan_done);
+                ToastUtil.showToast(ArticleDetailActivity.this, R.string.liked);
+            }else {
+                mSqureDataEntity.setIsPraise("0");
+                mSqureDataEntity.setPraiseCount(mSqureDataEntity.getPraiseCount()-1);
+                imZan.setBackgroundResource(R.mipmap.dianzan);
+                ToastUtil.showToast(ArticleDetailActivity.this, R.string.cancel_like);
+            }
+            tvConin.setText(mSqureDataEntity.getPraiseCount()+"");
+
+        }else {
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+        }
+    }
+
+    @Override
+    public void setAttentionCommentResponse(String response, int type) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            updateUserCommentList(type);
+            updateUserAttentionData(type);
+            if(type==0){
+                ToastUtil.showToast(ArticleDetailActivity.this,getString(R.string.Concerned));
+            }else {
+                ToastUtil.showToast(ArticleDetailActivity.this, R.string.unfollowed);
+            }
+        }else {
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+        }
+    }
+
+    //详情关注用户后更新状态
     private void updateUserAttention(int type) {
         if(type==0){
             tvAttention.setBackgroundResource(R.drawable.squra_attention_n_shape);
@@ -241,5 +353,48 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             tvAttention.setTextColor(getResources().getColor(R.color.white));
             tvAttention.setText(getResources().getString(R.string.Concerned));
         }
+    }
+
+    //评论列表关注成功后更新界面
+    private void updateUserCommentList(int type){
+        if(mCommentEntity == null || mList.size()==0)return;
+        for (CommentEntity s:mList) {
+            if(s.getSendUserId() == mCommentEntity.getSendUserId()){
+                if(type==0){
+                    s.setIsAttention("1");
+                }else {
+                    s.setIsAttention("0");
+                }
+                continue;
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+    //如果评论列表更新关注后更新详情用户的关注状态
+    private void updateUserAttentionData(int type){
+        if(mSqureDataEntity.getUserId() == mCommentEntity.getSendUserId()){
+            if(type==0){
+                updateUserAttention(1);
+                mSqureDataEntity.setIsAttention("1");
+            }else {
+                updateUserAttention(0);
+                mSqureDataEntity.setIsAttention("0");
+            }
+        }
+    }
+    //详情界面更新关注状态后更新评论列表用户的关注状态
+    private void updateUserCommentListFromDetail(int type){
+        if(mSqureDataEntity == null || mList.size()==0)return;
+        for (CommentEntity s:mList) {
+            if(s.getSendUserId() == mSqureDataEntity.getUserId()){
+                if(type==0){
+                    s.setIsAttention("1");
+                }else {
+                    s.setIsAttention("0");
+                }
+                continue;
+            }
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

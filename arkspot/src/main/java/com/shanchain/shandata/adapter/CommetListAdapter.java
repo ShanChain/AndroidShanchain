@@ -10,7 +10,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
+import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -29,12 +32,14 @@ import cn.jiguang.imui.view.CircleImageView;
 public class CommetListAdapter extends BaseAdapter {
     private List<CommentEntity> mList;
     private Context mContext;
-
+    private ICommentPraiseCallback mICommentPraiseCallback;
     public CommetListAdapter(Context context) {
         this.mContext = context;
         mList = new ArrayList<>();
     }
-
+    public void setICommentPraiseCallback(ICommentPraiseCallback callback){
+        this.mICommentPraiseCallback = callback;
+    }
     public void setList(List<CommentEntity> mList){
         if(mList!=null && mList.size()>0){
             this.mList = mList;
@@ -67,7 +72,7 @@ public class CommetListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        CommentEntity commentEntity = mList.get(position);
+        final CommentEntity commentEntity = mList.get(position);
         if(null != commentEntity){
             Glide.with(mContext).load(commentEntity.getSendHeadIcon())
                     .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
@@ -75,6 +80,25 @@ public class CommetListAdapter extends BaseAdapter {
             viewHolder.tvNickname.setText(commentEntity.getSendNickName());
             viewHolder.tvTime.setText(TimeUtils.friendlyTime1(new Date(commentEntity.getCreateTime())));
             viewHolder.tvComment.setText(commentEntity.getContent());
+            if("0".equals(commentEntity.getIsAttention())){
+                //未关注
+                viewHolder.tvAttention.setBackgroundResource(R.drawable.squra_attention_n_shape);
+                viewHolder.tvAttention.setTextColor(mContext.getResources().getColor(R.color.login_marjar_color));
+                viewHolder.tvAttention.setText(mContext.getResources().getString(R.string.attention));
+            }else {
+                viewHolder.tvAttention.setBackgroundResource(R.drawable.squra_attention_y_shape);
+                viewHolder.tvAttention.setTextColor(mContext.getResources().getColor(R.color.white));
+                viewHolder.tvAttention.setText(mContext.getResources().getString(R.string.Concerned));
+            }
+            //关注
+            viewHolder.tvAttention.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mICommentPraiseCallback!=null){
+                        mICommentPraiseCallback.praiseToUser(commentEntity);
+                    }
+                }
+            });
         }
 
         return convertView;

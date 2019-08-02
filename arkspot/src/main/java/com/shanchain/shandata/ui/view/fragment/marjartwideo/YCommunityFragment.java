@@ -23,9 +23,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.stetho.common.LogUtil;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseFragment;
@@ -162,7 +162,7 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
             mMyInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
                 @Override
                 public void gotResult(int responseCode, String responseMessage, Bitmap avatarBitmap) {
-                    LogUtil.d(TAG,"get Jushinfo responseMessage:"+responseMessage+",responseCode: "+responseCode);
+                    LogUtils.d(TAG,"get Jushinfo responseMessage:"+responseMessage+",responseCode: "+responseCode);
                     if (responseCode == 0) {
                         userHeadView.setImageBitmap(avatarBitmap);
                         ivUserHead.setImageBitmap(avatarBitmap);

@@ -35,10 +35,11 @@
         </LinearLayout>
         <TextView
             android:id="@+id/tv_attention"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingTop="3dp"
+            android:minWidth="50dp"
             android:paddingBottom="3dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"

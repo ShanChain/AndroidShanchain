@@ -2001,7 +2001,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         standardDialog.setCallback(new Callback() {
             @Override
             public void invoke() {
-                readyGo(FootPrintActivity.class);
+//                readyGo(FootPrintActivity.class);
+                readyGo(FootPrintNewActivity.class);
             }
         }, new Callback() {
             @Override
@@ -2101,8 +2102,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             readyGo(MyMessageActivity.class);
 
         } else if (id == R.id.nav_my_favorited) {
-            readyGo(FootPrintActivity.class);
-
+//            readyGo(FootPrintActivity.class);
+            readyGo(FootPrintNewActivity.class);
         } else if (id == R.id.real_identity) {
 //            readyGo(VerifiedActivity.class);
 

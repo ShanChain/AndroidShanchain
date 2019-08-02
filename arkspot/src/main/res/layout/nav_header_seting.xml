@@ -24,7 +24,7 @@
 
     <LinearLayout
         android:id="@+id/linear_center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_toEndOf="@+id/iv_user_head"
@@ -32,7 +32,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
@@ -42,8 +42,9 @@
                 android:id="@+id/tv_nike_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text=""
+                android:gravity="center|left"
+                android:text="1111"
+                android:textColor="@color/colorBtnBg"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -75,6 +76,7 @@
                 android:id="@+id/tv_user_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorBtnBg"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:text="" />
 

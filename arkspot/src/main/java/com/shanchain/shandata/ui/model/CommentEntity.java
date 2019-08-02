@@ -17,6 +17,7 @@ public class CommentEntity implements Serializable {
     long updateTime;
     String sendNickName;
     String sendHeadIcon;
+    String isAttention;
 
     public int getId() {
         return id;
@@ -88,5 +89,13 @@ public class CommentEntity implements Serializable {
 
     public void setSendHeadIcon(String sendHeadIcon) {
         this.sendHeadIcon = sendHeadIcon;
+    }
+
+    public String getIsAttention() {
+        return isAttention;
+    }
+
+    public void setIsAttention(String isAttention) {
+        this.isAttention = isAttention;
     }
 }

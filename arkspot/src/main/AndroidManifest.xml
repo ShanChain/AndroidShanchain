@@ -577,6 +577,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.article.ArticleDetailActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.article.PhotoPagerActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

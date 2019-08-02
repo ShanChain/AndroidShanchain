@@ -1,9 +1,15 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +34,7 @@ import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
@@ -44,12 +51,15 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -58,6 +68,11 @@ import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by WealChen
@@ -100,6 +115,9 @@ public class TaskDetailFragment extends BaseFragment implements ArthurToolBar.On
     private ChatEventMessage chatEventMessage1;
     private Handler handler, dialogHandler;
     private com.shanchain.data.common.ui.widgets.CustomDialog showPasswordDialog;
+    private File mPasswordFile;
+    private StandardDialog mStandardDialog;
+    private String mAuthCode;
     @Override
     public View initView() {
         return View.inflate(getActivity(), R.layout.activity_task_detail, null);
@@ -472,4 +490,276 @@ public class TaskDetailFragment extends BaseFragment implements ArthurToolBar.On
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null && data.getData() != null) {
+            if (requestCode == NetErrCode.WALLET_PHOTO) {
+
+                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                //获取照片路径
+                String photoPath = cursor.getString(columnIndex);
+//            ToastUtils.showToastLong(mBusContext, "选择的图片途径：" + photoPath);
+                cursor.close();
+                final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                mPasswordFile = new File(photoPath);
+                if (showPasswordDialog != null) {
+                    showPasswordDialog.dismiss();
+                }
+                showPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getActivity(), true, 1.0,
+                        R.layout.dialog_bottom_wallet_password,
+                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                showPasswordDialog.setPasswordBitmap(bitmap);
+                showPasswordDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
+                        if (view.getId() == com.shanchain.common.R.id.iv_dialog_add_picture) {
+                            selectImage(ActivityStackManager.getInstance().getTopActivity());
+                            showPasswordDialog.dismiss();
+                        } else if (view.getId() == com.shanchain.common.R.id.tv_dialog_sure) {
+                            checkPwd(mPasswordFile);
+                            if (showPasswordDialog != null) {
+                                showPasswordDialog.dismiss();
+                            }
+                        }
+                    }
+                });
+                showPasswordDialog.show();
+
+            }
+        }
+    }
+
+    private void checkPwd(final File file) {
+        final Handler releaseHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    MediaType MEDIA_TYPE = MediaType.parse("image/*");
+                    RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+                    MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                            .addFormDataPart("file", file.getName(), fileBody)
+                            .addFormDataPart("deviceToken", "" + JPushInterface.getRegistrationID(getActivity().getApplicationContext()))
+                            .setType(MultipartBody.FORM);
+                    RequestBody multiBody = multiBuilder.build();
+                    SCHttpUtils.postByBody(HttpApi.WALLET_BIND_PHONE_IMEI + SCCacheUtils.getCacheToken(), multiBody, new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            ThreadUtils.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showToast(getActivity(), getString(R.string.network_wrong));
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String result = response.body().string();
+                            final String code = SCJsonUtils.parseCode(result);
+                            final String msg = SCJsonUtils.parseMsg(result);
+                            if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                                final String data = SCJsonUtils.parseData(result);
+                                String authCode = data;
+                                String userId = SCCacheUtils.getCacheUserId();
+                                SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, data);
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        releaseTask(data, mDescribeEditText, mBountyEditText, limitedTime);
+                                        pwdFree(file);
+                                    }
+                                });
+
+                            } else {
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showToast(getActivity(), code + ":" + msg);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        //创建requestBody
+        MediaType MEDIA_TYPE = MediaType.parse("image/*");
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                .addFormDataPart("file", file.getName(), fileBody)
+                .addFormDataPart("suberUser", "" + SCCacheUtils.getCacheCharacterId())
+                .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
+                .setType(MultipartBody.FORM);
+        RequestBody multiBody = multiBuilder.build();
+        SCHttpUtils.postByBody(HttpApi.WALLET_CHECK_USE_PASSWORD + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(getActivity(), getString(R.string.network_wrong));
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                final String code = SCJsonUtils.parseCode(result);
+                final String msg = SCJsonUtils.parseMsg(result);
+                if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                    releaseHandler.sendEmptyMessage(1);
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(getActivity(), "" + msg);
+                        }
+                    });
+                } else {
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(getActivity(), code + ":" + msg);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void pwdFree(final File file) {
+        //设置免密操作
+        final Handler freePasswordHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                final boolean bind = (boolean) msg.obj;
+                switch (msg.what) {
+                    case 1:
+                        if (!TextUtils.isEmpty(SCCacheUtils.getCacheAuthCode())) {
+                            Map stringMap = new HashMap();
+                            stringMap.put("os", "android");
+                            stringMap.put("token", "" + SCCacheUtils.getCacheToken());
+                            stringMap.put("deviceToken", "" + JPushInterface.getRegistrationID(getActivity()));
+                            stringMap.put("bind", bind);
+                            String modifyUser = JSONObject.toJSONString(stringMap);
+                            SCHttpUtils.postWithUserId()
+                                    .url(HttpApi.MODIFY_CHARACTER)
+                                    .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                                    .addParams("dataString", modifyUser)
+                                    .build()
+                                    .execute(new SCHttpStringCallBack() {
+                                        @Override
+                                        public void onError(Call call, Exception e, int id) {
+                                            LogUtils.d("修改角色信息失败");
+                                        }
+
+                                        @Override
+                                        public void onResponse(String response, int id) {
+                                            String code = JSONObject.parseObject(response).getString("code");
+                                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                                                LogUtils.d("修改角色信息");
+                                            }
+                                        }
+                                    });
+
+                        }
+                        break;
+                }
+            }
+        };
+
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                mStandardDialog = new StandardDialog(getActivity());
+                mStandardDialog.setStandardTitle(getString(R.string.check_success));
+                mStandardDialog.setStandardMsg(getString(R.string.mianmi_kaitong_tip));
+                mStandardDialog.setCancelText(getString(R.string.not_need));
+                mStandardDialog.setSureText(getString(R.string.go_kt));
+                //开通免密
+                mStandardDialog.setCallback(new com.shanchain.data.common.base.Callback() {
+                    @Override
+                    public void invoke() {
+                        String userId = SCCacheUtils.getCacheUserId();
+                        String passwordCode = getAuCode(file);
+                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, passwordCode);
+                        SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, passwordCode);
+                        Message message = new Message();
+                        message.what = 1;
+                        message.obj = true;
+                        ActivityStackManager.getInstance().getTopActivity();
+                        freePasswordHandler.sendMessage(message);
+                    }
+                }, new com.shanchain.data.common.base.Callback() {//不开启免密
+                    @Override
+                    public void invoke() {
+                        Message message = new Message();
+                        message.what = 1;
+                        message.obj = false;
+                        freePasswordHandler.sendMessage(message);
+                        String userId = SCCacheUtils.getCacheUserId();
+                        mAuthCode = getAuCode(file);
+                        SCCacheUtils.setCache(userId, Constants.CACHE_AUTH_CODE, "");
+                        SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, mAuthCode);
+                    }
+                });
+                mStandardDialog.show();
+            }
+        });
+    }
+
+    private String authCode = "";
+    private String getAuCode(File file) {
+        //创建requestBody,获取密码凭证
+        MediaType MEDIA_TYPE = MediaType.parse("image/*");
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                .addFormDataPart("file", file.getName(), fileBody)
+                .addFormDataPart("deviceToken", "" + JPushInterface.getRegistrationID(getActivity()))
+                .setType(MultipartBody.FORM);
+        RequestBody multiBody = multiBuilder.build();
+        SCHttpUtils.postByBody(HttpApi.WALLET_BIND_PHONE_IMEI + SCCacheUtils.getCacheToken(), multiBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(getActivity(), getString(R.string.network_wrong));
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                final String code = SCJsonUtils.parseCode(result);
+                final String msg = SCJsonUtils.parseMsg(result);
+                if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+                    String data = SCJsonUtils.parseData(result);
+                    authCode = data;
+                    String userId = SCCacheUtils.getCacheUserId();
+                    SCCacheUtils.setCache(userId, Constants.TEMPORARY_CODE, authCode);
+                } else {
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(getActivity(), code + ":" + msg);
+                        }
+                    });
+                }
+            }
+        });
+        return authCode;
+    }
 }
