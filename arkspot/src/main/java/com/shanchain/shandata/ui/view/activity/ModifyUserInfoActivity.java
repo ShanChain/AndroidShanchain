@@ -21,8 +21,12 @@ import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,16 +79,23 @@ public class ModifyUserInfoActivity extends BaseActivity {
         mTbMain.setOnRightClickListener(new ArthurToolBar.OnRightClickListener() {
             @Override
             public void onRightClick(View v) {
-                String charater = SCCacheUtils.getCacheCharacterInfo();
+                /*String charater = SCCacheUtils.getCacheCharacterInfo();
                 CharacterInfo characterInfo = JSONObject.parseObject(charater, CharacterInfo.class);
                 String headImg = characterInfo.getHeadImg();
-                String cacheHeadImg = SCCacheUtils.getCacheHeadImg();
+                String cacheHeadImg = SCCacheUtils.getCacheHeadImg();*/
                 ModifyUserInfo modifyUserInfo = new ModifyUserInfo();
                 modifyUserInfo.setName(etInputNikeName.getText().toString());
                 modifyUserInfo.setSignature(etInputSign.getText().toString());
                 modifyUserInfo.setRestartActivity(true);
 //                modifyUserInfo.setHeadImg(headImg);
-                String modifyUser = JSONObject.toJSONString(modifyUserInfo);
+                Map<String,String >  dataMap = new HashMap<>();
+                if(!TextUtils.isEmpty(etInputNikeName.getText().toString().trim())){
+                    dataMap.put("name",etInputNikeName.getText().toString().trim());
+                }
+                if(!TextUtils.isEmpty(etInputSign.getText().toString().trim())){
+                    dataMap.put("signature",etInputSign.getText().toString().trim());
+                }
+                String modifyUser = JSONObject.toJSONString(dataMap);
                 SCHttpUtils.postWithUserId()
                         .url(HttpApi.MODIFY_CHARACTER)
                         .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
@@ -103,16 +114,14 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                     LogUtils.d("修改角色信息");
                                     String data = JSONObject.parseObject(response).getString("data");
                                     String character = JSONObject.parseObject(data).getString("characterInfo");
-                                    String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                    JmAccount jmAccount = JSONObject.parseObject(character, JmAccount.class);
                                     String headImg = characterInfo.getHeadImg();
                                     String name = characterInfo.getName();
                                     String signature = characterInfo.getSignature();
 
                                     UserInfo jmUserInfo = JMessageClient.getMyInfo();
                                     if (jmUserInfo != null) {
-                                        if (TextUtils.isEmpty(name)) {
+                                        if (!TextUtils.isEmpty(name)) {
                                             jmUserInfo.setNickname(name);//设置昵称
                                             JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
                                                 @Override
@@ -121,7 +130,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                                 }
                                             });
                                         }
-                                        if (TextUtils.isEmpty(signature)) {
+                                        if (!TextUtils.isEmpty(signature)) {
                                             jmUserInfo.setSignature(signature);//设置签名
                                             JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
                                                 @Override
@@ -136,12 +145,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                 }
                             }
                         });
-//                Intent intent = new Intent(ModifyUserInfoActivity.this,MessageListActivity.class);
-//                intent.putExtra("name",modifyUserInfo.getName());
-//                intent.putExtra("signature",modifyUserInfo.getSignature());
-//                intent.putExtra("HeadImg",modifyUserInfo.getHeadImg());
-//                startActivity(intent);
-                org.greenrobot.eventbus.EventBus.getDefault().post(modifyUserInfo);
+                EventBus.getDefault().post(modifyUserInfo);
                 finish();
 
             }

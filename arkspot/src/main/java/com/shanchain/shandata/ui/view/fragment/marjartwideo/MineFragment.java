@@ -1,43 +1,82 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.cache.SharedPreferencesUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.SCUploadImgHelper;
+import com.shanchain.data.common.utils.ThreadUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.interfaces.IUpdateUserHeadCallback;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
+import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.ModifyUserInfo;
+import com.shanchain.shandata.ui.presenter.MinePresenter;
+import com.shanchain.shandata.ui.presenter.impl.MinePresenterImpl;
+import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
-import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MineView;
+import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
+import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jiguang.imui.view.CircleImageView;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
+import okhttp3.Call;
 
 /**
  * Created by WealChen
  * Date : 2019/7/19
  * Describe :我的
  */
-public class MineFragment extends BaseFragment {
+public class MineFragment extends BaseFragment implements MineView {
     @Bind(R.id.iv_user_head)
     CircleImageView ivUserHead;
     @Bind(R.id.tv_username)
@@ -57,6 +96,8 @@ public class MineFragment extends BaseFragment {
     @Bind(R.id.ll_setting)
     LinearLayout llSetting;
 
+    private MinePresenter mMinePresenter;
+    private String photoPath = "";
     @Override
     public View initView() {
         return View.inflate(getActivity(), R.layout.fragment_mine_new, null);
@@ -67,10 +108,32 @@ public class MineFragment extends BaseFragment {
         return fragment;
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    String obj = (String) msg.obj;
+                    mMinePresenter.modifyUserInfo(obj);
+                    break;
+                case 2:
+                    Intent intent=new Intent();
+                    intent.setAction("com.my.sentborad");
+                    intent.putExtra("url",currentPath);
+                    getActivity().sendBroadcast(intent);
+                    break;
+            }
+        }
+    };
+
+
     @Override
     public void initData() {
+        mMinePresenter = new MinePresenterImpl(this);
         initUserData();
     }
+
+
 
     //设置用户基本信息
     private void initUserData(){
@@ -97,6 +160,27 @@ public class MineFragment extends BaseFragment {
         }
 
     }
+
+    //修改名称页面修改之后更新我的页面
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateUserInfo(ModifyUserInfo modifyUserInfo){
+        if(modifyUserInfo!=null){
+            if(!TextUtils.isEmpty(modifyUserInfo.getName())){
+                tvUsername.setText(modifyUserInfo.getName());
+            }
+            if(!TextUtils.isEmpty(modifyUserInfo.getSignature())){
+                tvUserdescipt.setText(modifyUserInfo.getSignature());
+            }
+            if(!TextUtils.isEmpty(modifyUserInfo.getHeadImg())){
+                Glide.with(this)
+                        .load(modifyUserInfo.getHeadImg())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                        .error(R.drawable.aurora_headicon_default))
+                        .into(ivUserHead);
+            }
+        }
+    }
+
 
     //编辑用户签名
     @OnClick(R.id.im_edit)
@@ -148,4 +232,135 @@ public class MineFragment extends BaseFragment {
         startActivity(new Intent(getActivity(), SettingsActivity.class));
     }
 
+    //点击头像替换
+    @OnClick(R.id.iv_user_head)
+    void updateUserHeadImage(){
+        int requestCode = PhotoUtils.INTENT_SELECT;
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 100);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK, null);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case PhotoUtils.INTENT_SELECT:
+                if (data == null) {
+                    return;
+                }
+                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                photoPath = cursor.getString(columnIndex);  //获取照片路径
+                cursor.close();
+                LogUtils.d("-----iamge url---",photoPath);
+
+                uploadImageToOss(photoPath);
+                break;
+        }
+    }
+    private String currentPath = "";
+    //上传图片到阿里云oss
+    private void uploadImageToOss(String imagePath){
+        if(TextUtils.isEmpty(imagePath))return;
+        SCUploadImgHelper helper = new SCUploadImgHelper();
+        List list = new ArrayList();
+        list.add(imagePath);
+        helper.upLoadImg(getActivity(), list);
+        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
+            @Override
+            public void onUploadSuc(List<String> urls) {
+                //把图片地址上传到服务器
+                LogUtils.d("----upload address-oss",urls.get(0));
+                currentPath = urls.get(0);
+                //更改头像
+                /*String characterInfo = SCCacheUtils.getCacheCharacterInfo();
+                CharacterInfo character = JSONObject.parseObject(characterInfo, CharacterInfo.class);
+                ModifyUserInfo modifyUserInfo = new ModifyUserInfo();
+                modifyUserInfo.setName(character.getName());
+                modifyUserInfo.setSignature(character.getSignature());
+                modifyUserInfo.setHeadImg(urls.get(0));*/
+                Map<String  ,String> dataMap = new HashMap<>();
+                dataMap.put("headImg",urls.get(0));
+                String modifyUser = JSONObject.toJSONString(dataMap);
+                Message message = new Message();
+                message.what = 1;
+                message.obj = modifyUser;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void error() {
+                LogUtils.i("oss上传失败");
+            }
+        });
+
+
+    }
+
+    @Override
+    public void showProgressStart() {
+        showLoadingDialog();
+    }
+
+    @Override
+    public void showProgressEnd() {
+        closeLoadingDialog();
+    }
+
+    //头像上传之后
+    @Override
+    public void updateUserInfoResponse(String response) {
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            String signature = JSONObject.parseObject(data).getString("signature");
+            String headImg = JSONObject.parseObject(data).getString("headImg");
+            String name = JSONObject.parseObject(data).getString("name");
+            String avatar = JSONObject.parseObject(data).getString("avatar");
+            CharacterInfo characterInfo = new CharacterInfo();
+            characterInfo.setHeadImg(headImg);
+            characterInfo.setName(name);
+            characterInfo.setSignature(signature);
+            String character = JSONObject.toJSONString(characterInfo);
+            RoleManager.switchRoleCacheCharacterInfo(character);
+            RoleManager.switchRoleCacheHeadImg(avatar);
+
+            //更新头像
+            Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+            //个人中心换头像
+            ivUserHead.setImageBitmap(bitmap);
+
+            //更新到极光
+            JMessageClient.updateUserAvatar(new File(photoPath), new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if(i == 0){
+                        //通知侧滑栏更新头像
+                        Message message = new Message();
+                        message.what = 2;
+                        handler.sendMessage(message);
+                    }
+                }
+            });
+
+        }else {
+            ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
+        }
+    }
 }

@@ -40,6 +40,7 @@ public class FootPrintNewActivity extends BaseActivity implements BottomTab.OnTa
 
     @Override
     protected void initViewsAndEvents() {
+        initMap();
         initFragment();
     }
 

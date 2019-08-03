@@ -213,6 +213,13 @@ public class ExpandableTextView extends TextView {
     public int getExpandState(){
         return mCurrState;
     }
+    public void setExpandState(int state){
+        this.mCurrState = state;
+    }
+
+    public void setShowToExpandHint(boolean isExspance){
+        this.mShowToExpandHint = isExspance;
+    }
 
     /**
      * refresh and get a will-be-displayed text by current configuration

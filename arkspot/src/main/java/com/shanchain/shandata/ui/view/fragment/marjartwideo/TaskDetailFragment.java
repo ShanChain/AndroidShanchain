@@ -431,14 +431,10 @@ public class TaskDetailFragment extends BaseFragment implements ArthurToolBar.On
             ToastUtils.showToast(getActivity(), getString(R.string.toast_no_empty));
             closeLoadingDialog();
         } else {
-            final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
             final String bounty = bountyEditText.getText().toString();
             final String dataString = describeEditText.getText().toString();
-            final String LimitedTtime = textViewTime.getText().toString();
 
             final String characterId = SCCacheUtils.getCacheCharacterId();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            final String createTime = simpleDateFormat.format(LimitedTtime);
             //向服务器请求添加任务
             if (timeStamp < System.currentTimeMillis() + 60 * 60 * 1000) {
                 ToastUtils.showToastLong(getActivity(), getString(R.string.one_hour_lage));
@@ -473,7 +469,6 @@ public class TaskDetailFragment extends BaseFragment implements ArthurToolBar.On
                         public void onResponse(String response, int id) {
                             closeLoadingDialog();
                             String code = JSONObject.parseObject(response).getString("code");
-                            final String message = JSONObject.parseObject(response).getString("message");
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 String data = JSONObject.parseObject(response).getString("data");
                                 String task = JSONObject.parseObject(data).getString("Task");

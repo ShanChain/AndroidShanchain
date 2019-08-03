@@ -113,6 +113,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         mSqureDataEntity = (SqureDataEntity) getIntent().getSerializableExtra("info");
         mPresenter = new ArticleDetailPresenterImpl(this);
         mAdapter = new CommetListAdapter(this);
+        etContent.setExpandState(ExpandableTextView.STATE_EXPAND);
         initData();
     }
     //初始化数据

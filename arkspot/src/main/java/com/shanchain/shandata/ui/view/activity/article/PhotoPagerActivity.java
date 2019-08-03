@@ -49,15 +49,6 @@ public class PhotoPagerActivity extends BaseActivity {
         photoList = new ArrayList<>();
         photoList = getIntent().getStringArrayListExtra("list");
 
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < photoList.size(); i++) {
-                    mUriList.add(Uri.parse(HttpApi.BASE_URL+photoList.get(position).replaceAll("\\\\","")));
-                }
-            }
-        }).start();*/
-
         viewPager.setAdapter(new SamplePagerAdapter());
         viewPager.setCurrentItem(position);
         tvTitle.setText((position+1)+"/"+photoList.size());

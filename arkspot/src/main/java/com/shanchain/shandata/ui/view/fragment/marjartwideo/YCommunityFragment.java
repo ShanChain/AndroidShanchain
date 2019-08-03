@@ -1,8 +1,12 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -29,8 +33,10 @@ import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.interfaces.IUpdateUserHeadCallback;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.JmAccount;
+import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
@@ -39,6 +45,9 @@ import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
 import com.shanchain.shandata.ui.view.fragment.MainChatRoomFragment;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +91,7 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
     private UserInfo mMyInfo;
     private String TAG = "YCommunityFragment";
     private List<Fragment> fragmentList = new ArrayList();
+    private MyBroadcastReceiver mReceiver;
     @Override
     public View initView() {
         return View.inflate(getActivity(), R.layout.fragment_yuan_comunity, null);
@@ -92,10 +102,49 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
         return fragment;
     }
 
+
+    //定义接受头像变更的广播
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //这里的intent可以获取发送广播时传入的数据
+            final String urlPath = intent.getStringExtra("url");
+            if(!TextUtils.isEmpty(urlPath)){
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(getActivity())
+                                .load(urlPath)
+                                .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                        .error(R.drawable.aurora_headicon_default))
+                                .into(ivUserHead);
+                        Glide.with(getActivity())
+                                .load(urlPath)
+                                .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                        .error(R.drawable.aurora_headicon_default))
+                                .into(userHeadView);
+                        /*ivUserHead.invalidate();
+                        userHeadView.invalidate();*/
+                    }
+                });
+            }
+
+        }
+    }
+    //注册广播
+    private void registerBroadcase(){
+        mReceiver = new MyBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.my.sentborad");
+        getActivity().registerReceiver(mReceiver, filter);
+    }
+
+
     @Override
     public void initData() {
         initDrawer();
         setFragment();
+        registerBroadcase();
     }
 
     //创建元社区
@@ -111,6 +160,12 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
     void openLeftLayout(){
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         toggle.onDrawerOpened(drawer);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getActivity().unregisterReceiver(mReceiver);
     }
 
     //初始化侧滑栏
@@ -242,4 +297,19 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //修改名称页面修改之后更新我的页面
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void updateUserInfo(ModifyUserInfo modifyUserInfo){
+        if(modifyUserInfo!=null){
+            if(!TextUtils.isEmpty(modifyUserInfo.getName())){
+                userNikeView.setText(modifyUserInfo.getName());
+            }
+            if(!TextUtils.isEmpty(modifyUserInfo.getSignature())){
+                tvUserSign.setText(modifyUserInfo.getSignature());
+            }
+
+        }
+    }
+
 }

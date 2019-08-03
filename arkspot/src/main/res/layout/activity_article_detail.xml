@@ -56,6 +56,7 @@
                 android:id="@+id/cl_content_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="100dp"
                 android:dividerHeight="0.8dp"
                 android:divider="@color/colorBtnBg"/>
             <LinearLayout
@@ -64,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:visibility="gone"
-                android:layout_marginTop="150dp">
+                android:layout_marginTop="100dp">
                 <include layout="@layout/not_data_item_view"/>
             </LinearLayout>
         </LinearLayout>

@@ -87,8 +87,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
 
-
-
             }
         } else {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -98,6 +96,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loginJm(final String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
+        LogUtils.d("-----characterInfo: " + characterInfo.getName());
         final long startTime = System.currentTimeMillis();
         Date date = new Date(startTime);
         LogUtils.i("登录极光IM = 开始时间 = " + date.toString());
@@ -116,7 +115,7 @@ public class SplashActivity extends AppCompatActivity {
                         LogUtils.d("极光Signature: " + userInfo.getSignature());
                         userInfo.setNickname(characterInfo.getName());
                         userInfo.setSignature(characterInfo.getSignature());
-                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
+                        /*JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
                                 String s1 = s;
@@ -130,7 +129,7 @@ public class SplashActivity extends AppCompatActivity {
                                 String s1 = s;
                                 int i1 = i;
                             }
-                        });
+                        });*/
 
                     }
 
@@ -185,14 +184,13 @@ public class SplashActivity extends AppCompatActivity {
                                     return;
                                 } else {
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                    RoleManager.switchRoleCacheHeadImg(characterInfo.getHeadImg());
+//                                    RoleManager.switchRoleCacheHeadImg(characterInfo.getHeadImg());
                                     if (characterInfo == null) {
                                         LogUtils.d("获取角色ID", "角色ID为空");
                                         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     } else {
-
                                         String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
                                         if (hxAccount == null) {
                                             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);

@@ -103,7 +103,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         gvPhoto.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-        initEditeViewListener();
+//        initEditeViewListener();
         setIAddPhotoCallback();
     }
 
