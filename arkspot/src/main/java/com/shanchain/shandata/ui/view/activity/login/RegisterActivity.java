@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
 import com.shanchain.data.common.base.RoleManager;
+import com.shanchain.data.common.utils.AccountUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
@@ -112,7 +113,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 break;
             case R.id.tv_register_terms:
                 //查看条款
-                Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
+                Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewXYActivity.class);
                 JSONObject obj = new JSONObject();
                 obj.put("url", "http://h5.qianqianshijie.com/agreement");
                 obj.put("title", getString(R.string.user_agreement));
@@ -138,6 +139,10 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
 
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code) || TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdConfirm)) {
             ToastUtils.showToast(this, getString(R.string.full_information));
+            return;
+        }
+        if(pwd.length()<6){
+            ToastUtils.showToast(this, getString(R.string.str_register_hint_pwd));
             return;
         }
 
@@ -239,12 +244,16 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this, getString(R.string.str_login_account));
             return;
         } else {
-//            if (AccountUtils.isPhone(phone)){
-            getCheckCode(phone);
-//            }else {
-//                ToastUtils.showToast(this,"请输入正确格式的账号");
-//                return;
-//            }
+            if ("+86".equals(aAcount)){
+                if(AccountUtils.isPhone(phone)){
+                    getCheckCode(phone);
+                }else {
+                    ToastUtils.showToast(this, R.string.phone_right);
+                    return;
+                }
+            }else {
+                getCheckCode(phone);
+            }
         }
 
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(mTvRegisterCode, 60 * 1000, 1000);

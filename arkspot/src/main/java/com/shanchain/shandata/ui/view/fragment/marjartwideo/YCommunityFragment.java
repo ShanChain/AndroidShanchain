@@ -59,7 +59,6 @@ import cn.jiguang.imui.view.CircleImageView;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by WealChen
@@ -251,12 +250,12 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
 
     private void setFragment() {
 //        String[] titles = {getResources().getString(R.string.hot_meta), getResources().getString(R.string.square),"ARS",};
-        String[] titles = { getResources().getString(R.string.square),"ARS",};
+        String[] titles = { getResources().getString(R.string.square)};
 //        fragmentList.add(new MainChatRoomFragment());
         fragmentList.add(new SquareFragment());
         fragmentList.add(new MainARSGameFragment());
         TaskPagerAdapter adapter = new TaskPagerAdapter(getChildFragmentManager(), titles, fragmentList);
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(1);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(0);

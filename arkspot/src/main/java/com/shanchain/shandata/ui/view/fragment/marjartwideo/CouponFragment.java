@@ -163,6 +163,16 @@ public class CouponFragment extends BaseFragment implements CounponListView,
         }
     }
 
+    @Override
+    public void setMyGetCounponList(String response, int pullType) {
+
+    }
+
+    @Override
+    public void setMyCreateCounponList(String response, int pullType) {
+
+    }
+
     //上拉加载
     private void initLoadMoreListener() {
         recyclerViewCoupon.setOnScrollListener(new RecyclerView.OnScrollListener() {

@@ -8,5 +8,8 @@ package com.shanchain.shandata.ui.presenter;
 public interface CouponListPresenter {
     //获取马甲券列表
     void getCounponList(String subuserId,int page,int size,int pullType);
-
+    //获取我领取的马甲券列表
+    void getMyGetCounponList(String subuserId,int page,int size,int pullType);
+    //获取我创建的马甲券列表
+    void getMyCreateCounponList(String subuserId,int page,int size,int pullType);
 }

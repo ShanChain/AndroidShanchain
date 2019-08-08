@@ -1,73 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:background="@color/white"
-    android:gravity="center"
-    android:orientation="horizontal">
-    <LinearLayout
-        android:id="@+id/ll_shouye"
-        style="@style/BottomTabLLStyle">
-        <ImageView
-            android:id="@+id/iv_shouye"
-            style="@style/BottomTabImgStyle"
-            android:src="@mipmap/maya_c" />
-
-        <TextView
-            android:id="@+id/tv_shouye"
-            style="@style/BottomTabTVStyle"
-            android:text="@string/nav_coupon"
-            android:textSize="10sp" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/ll_cause"
-        style="@style/BottomTabLLStyle">
-
-        <ImageView
-            android:id="@+id/iv_cause"
-            style="@style/BottomTabImgStyle"
-            android:src="@mipmap/yuansq_c" />
-
-        <TextView
-            android:id="@+id/tv_cause"
-            style="@style/BottomTabTVStyle"
-            android:text="@string/hot_meta"
-            android:textSize="10sp" />
-
-    </LinearLayout>
+    android:layout_height="49dp"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:gravity="bottom">
 
     <LinearLayout
-        android:id="@+id/ll_bankuai"
-        style="@style/BottomTabLLStyle">
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/ll_shouye"
+            style="@style/BottomTabLLStyle"
+            android:layout_gravity="bottom">
+            <ImageView
+                android:id="@+id/iv_shouye"
+                style="@style/BottomTabImgStyle"
+                android:src="@mipmap/maya_c" />
 
-        <ImageView
-            android:id="@+id/iv_bankuai"
-            style="@style/BottomTabImgStyle"
-            android:src="@mipmap/sheqb_c" />
+            <TextView
+                android:id="@+id/tv_shouye"
+                style="@style/BottomTabTVStyle"
+                android:text="@string/nav_coupon"
+                android:textSize="10sp" />
 
-        <TextView
-            android:id="@+id/tv_bankuai"
-            style="@style/BottomTabTVStyle"
-            android:text="@string/shequbang"
-            android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_bankuai"
+            style="@style/BottomTabLLStyle"
+            android:layout_gravity="bottom">
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/ll_news"
-        style="@style/BottomTabLLStyle">
+            <ImageView
+                android:id="@+id/iv_bankuai"
+                style="@style/BottomTabImgStyle"
+                android:src="@mipmap/sheqb_c" />
 
-        <ImageView
-            android:id="@+id/iv_news"
-            style="@style/BottomTabImgStyle"
-            android:src="@mipmap/mine_c" />
+            <TextView
+                android:id="@+id/tv_bankuai"
+                style="@style/BottomTabTVStyle"
+                android:text="ARS"
+                android:textSize="10sp" />
 
-        <TextView
-            android:id="@+id/tv_news"
-            style="@style/BottomTabTVStyle"
-            android:text="@string/my_"
-            android:textSize="10sp" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_cause"
+            style="@style/BottomTabLLStyle"
+            >
+
+            <ImageView
+                android:id="@+id/iv_cause"
+                style="@style/BottomTabImgStyle"
+                android:src="@mipmap/sheqb_c" />
+            <TextView
+                android:id="@+id/tv_cause"
+                style="@style/BottomTabTVStyle"
+                android:textSize="10sp"
+                android:text="挖矿" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_squre"
+            style="@style/BottomTabLLStyle"
+            android:layout_gravity="bottom">
+
+            <ImageView
+                android:id="@+id/iv_squre"
+                style="@style/BottomTabImgStyle"
+                android:src="@mipmap/yuansq_c" />
+
+            <TextView
+                android:id="@+id/tv_squre"
+                style="@style/BottomTabTVStyle"
+                android:text="@string/squre"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_news"
+            style="@style/BottomTabLLStyle"
+            android:layout_gravity="bottom">
+
+            <ImageView
+                android:id="@+id/iv_news"
+                style="@style/BottomTabImgStyle"
+                android:src="@mipmap/mine_c" />
+
+            <TextView
+                android:id="@+id/tv_news"
+                style="@style/BottomTabTVStyle"
+                android:text="@string/my_"
+                android:textSize="10sp" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

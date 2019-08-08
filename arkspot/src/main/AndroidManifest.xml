@@ -579,6 +579,12 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.article.PhotoPagerActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.square.MyGroupActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".rn.activity.SCWebViewXYActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.square.PayforSuccessActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

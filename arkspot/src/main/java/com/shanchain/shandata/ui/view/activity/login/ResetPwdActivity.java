@@ -123,6 +123,10 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this, getString(R.string.toast_no_empty));
             return;
         }
+        if(pwd.length()<6){
+            ToastUtils.showToast(this, getString(R.string.str_register_hint_pwd));
+            return;
+        }
         if(!"+86".equals(aAcount)){
             phone = aAcount.substring(1,aAcount.length())+phone;
         }
@@ -195,13 +199,16 @@ public class ResetPwdActivity extends BaseActivity implements ArthurToolBar.OnLe
             ToastUtils.showToast(this, getString(R.string.str_login_account));
             return;
         } else {
-            /*if (AccountUtils.isPhone(phone)) {
+            if ("+86".equals(aAcount)){
+                if(AccountUtils.isPhone(phone)){
+                    getCheckCode(phone);
+                }else {
+                    ToastUtils.showToast(this, R.string.phone_right);
+                    return;
+                }
+            }else {
                 getCheckCode(phone);
-            } else {
-                ToastUtils.showToast(this, "请输入正确格式的账号");
-                return;
-            }*/
-            getCheckCode(phone);
+            }
         }
 
 

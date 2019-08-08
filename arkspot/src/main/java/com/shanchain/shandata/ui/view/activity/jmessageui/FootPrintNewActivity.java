@@ -8,7 +8,9 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.FragmentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.CouponFragment;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.HomeFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.MineFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.TaskDetailFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.YCommunityFragment;
@@ -49,18 +51,19 @@ public class FootPrintNewActivity extends BaseActivity implements BottomTab.OnTa
      */
     private void initFragment() {
         mFragmentList.add(CouponFragment.newInstance());
+        mFragmentList.add(MainARSGameFragment.newInstance());
+        mFragmentList.add(HomeFragment.newInstance());
         mFragmentList.add(YCommunityFragment.newInstance());
-        mFragmentList.add(TaskDetailFragment.newInstance());
         mFragmentList.add(MineFragment.newInstance());
 
         fragmentAdapter=new FragmentAdapter(getSupportFragmentManager());
         fragmentAdapter.setFragments(mFragmentList);
         mViewpager.setAdapter(fragmentAdapter);
-        mViewpager.setOffscreenPageLimit(3);
+        mViewpager.setOffscreenPageLimit(4);
         bottomTab.changeState(0);
         bottomTab.setOnTabClickListener(this);
         mViewpager.setCurrentItem(0);
-        mViewpager.setNoScroll(false);
+        mViewpager.setNoScroll(true);
         mViewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

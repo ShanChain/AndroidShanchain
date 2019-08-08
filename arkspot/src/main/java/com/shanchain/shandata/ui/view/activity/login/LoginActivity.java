@@ -185,8 +185,7 @@ public class LoginActivity extends BaseActivity {
         btnDynamicLogin.setClickable(false);
 //        btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
 
-        countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
-        countDownTimeUtils.setContext(this);
+
 
     }
 
@@ -841,7 +840,16 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showToast(this, getString(R.string.str_hint_register_phone));
             return;
         } else {
-            getCheckCode();
+            if ("+86".equals(aAcount)){
+                if(AccountUtils.isPhone(mobilePhone)){
+                    getCheckCode();
+                }else {
+                    ToastUtils.showToast(this, R.string.phone_right);
+                    return;
+                }
+            }else {
+                getCheckCode();
+            }
         }
 
     }
@@ -870,6 +878,8 @@ public class LoginActivity extends BaseActivity {
                             timestamp = JSONObject.parseObject(data).getString("timestamp");
                             btnDynamicLogin.setClickable(true);
 //                            btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_bg_btn_login));
+                            countDownTimeUtils = new CountDownTimeUtils(tvRegisterCode, 60 * 1000, 1000);
+                            countDownTimeUtils.setContext(LoginActivity.this);
                             countDownTimeUtils.start();
 
                             //显示下一步输入验证码界面
@@ -930,10 +940,9 @@ public class LoginActivity extends BaseActivity {
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_USER_INFO, new Gson().toJson(userInfo));
                             SCCacheUtils.setCache(userId + "", Constants.CACHE_TOKEN, userId + "_" + token);
 
-                            /*readyGo(FootPrintActivity.class);
-                            finish();*/
-
                             checkServer();
+                        }else {
+                            ToastUtils.showToast(LoginActivity.this, R.string.sms_code_wrong);
                         }
                     }
                 });

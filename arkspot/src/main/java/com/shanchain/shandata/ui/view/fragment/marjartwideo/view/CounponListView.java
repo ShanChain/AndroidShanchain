@@ -9,4 +9,6 @@ public interface CounponListView {
     void showProgressStart();
     void showProgressEnd();
     void setCounponList(String response,int pullType);
+    void setMyGetCounponList(String response,int pullType);
+    void setMyCreateCounponList(String response,int pullType);
 }

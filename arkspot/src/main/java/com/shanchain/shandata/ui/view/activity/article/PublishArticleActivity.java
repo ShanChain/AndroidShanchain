@@ -234,9 +234,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 try {
                     //要存到data目录下的文件夹名
                     String basePath = getApplication().getCacheDir() +"";
-//                    String basePath = Environment.getExternalStorageDirectory() + File.separator+ "3maz";
                     File folder = new File(basePath);
-//                    String fname=basePath+File.separator+getTime()+fileName;
                     String fname=basePath+File.separator+fileName;
                     File myCaptureFile = new File(fname);
                     if (!folder.exists() && !folder.isDirectory()) {
@@ -244,7 +242,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                         folder.mkdirs();
                     }
                     BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-                    bm1.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                    bm1.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                     LogUtils.d("filename",fname);
                     PhotoBean p = new PhotoBean();
                     p.setFileName(fileName);

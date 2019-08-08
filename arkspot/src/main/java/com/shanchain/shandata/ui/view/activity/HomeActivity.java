@@ -964,7 +964,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
     }
 
     //请求接口数据
-    private void initData(LatLng gpsLatLng) {
+    private void getCurrentDta(LatLng gpsLatLng) {
 //        LatLng myLatLang = new LatLng(20.045082, 110.32447);
         shareRedPaperDialog();
         //获取周边
@@ -2189,7 +2189,7 @@ public class HomeActivity extends BaseActivity implements PermissionInterface {
                 MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
                 baiduMap.setMapStatus(mapStatusUpdate);
 
-                initData(latLng);
+                getCurrentDta(latLng);
                 transYear(latLng);
                 baiduMap.setOnMapClickListener(MapListener);
 

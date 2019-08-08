@@ -20,14 +20,17 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
     private LinearLayout ll1;
     private LinearLayout ll2;
     private LinearLayout ll3;
+    private LinearLayout ll4;
     private ImageView iv0;
     private ImageView iv1;
     private ImageView iv2;
     private ImageView iv3;
+    private ImageView iv4;
     private TextView tv0;
     private TextView tv1;
     private TextView tv2;
     private TextView tv3;
+    private TextView tv4;
     private OnTabClickListener onTabClickListener;
 
 
@@ -40,6 +43,7 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
         this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.item_view_bottom_tab, this);
         initViews(view);
+        view.setAlpha(0.8f);
         initListener();
     }
 
@@ -48,21 +52,25 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
         ll1.setOnClickListener(this);
         ll2.setOnClickListener(this);
         ll3.setOnClickListener(this);
+        ll4.setOnClickListener(this);
     }
 
     private void initViews(View view) {
         ll0= (LinearLayout) view.findViewById(R.id.ll_shouye);
-        ll1 = (LinearLayout) view.findViewById(R.id.ll_cause);
-        ll2 = (LinearLayout) view.findViewById(R.id.ll_bankuai);
-        ll3 = (LinearLayout) view.findViewById(R.id.ll_news);
+        ll1 = (LinearLayout) view.findViewById(R.id.ll_bankuai);
+        ll2 = (LinearLayout) view.findViewById(R.id.ll_cause);
+        ll3 = (LinearLayout) view.findViewById(R.id.ll_squre);
+        ll4 = (LinearLayout) view.findViewById(R.id.ll_news);
         iv0 = (ImageView) view.findViewById(R.id.iv_shouye);
-        iv1 = (ImageView) view.findViewById(R.id.iv_cause);
-        iv2 = (ImageView) view.findViewById(R.id.iv_bankuai);
-        iv3 = (ImageView) view.findViewById(R.id.iv_news);
+        iv1 = (ImageView) view.findViewById(R.id.iv_bankuai);
+        iv2 = (ImageView) view.findViewById(R.id.iv_cause);
+        iv3 = (ImageView) view.findViewById(R.id.iv_squre);
+        iv4 = (ImageView) view.findViewById(R.id.iv_news);
         tv0 = (TextView) view.findViewById(R.id.tv_shouye);
-        tv1 = (TextView) view.findViewById(R.id.tv_cause);
-        tv2 = (TextView) view.findViewById(R.id.tv_bankuai);
-        tv3 = (TextView) view.findViewById(R.id.tv_news);
+        tv1 = (TextView) view.findViewById(R.id.tv_bankuai);
+        tv2 = (TextView) view.findViewById(R.id.tv_cause);
+        tv3 = (TextView) view.findViewById(R.id.tv_squre);
+        tv4 = (TextView) view.findViewById(R.id.tv_news);
     }
 
     @Override
@@ -74,20 +82,25 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
                 if (onTabClickListener != null)
                     onTabClickListener.onItemClick(0);
                 break;
-            case R.id.ll_cause:
+            case R.id.ll_bankuai:
                 changeState(1);
                 if (onTabClickListener != null)
                     onTabClickListener.onItemClick(1);
                 break;
-            case R.id.ll_bankuai:
+            case R.id.ll_cause:
                 changeState(2);
                 if (onTabClickListener != null)
                     onTabClickListener.onItemClick(2);
                 break;
-            case R.id.ll_news:
+            case R.id.ll_squre:
                 changeState(3);
                 if (onTabClickListener != null)
                     onTabClickListener.onItemClick(3);
+                break;
+            case R.id.ll_news:
+                changeState(4);
+                if (onTabClickListener != null)
+                    onTabClickListener.onItemClick(4);
                 break;
         }
     }
@@ -97,17 +110,19 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
         tv1.setTextColor(getResources().getColor(R.color.white_btn_press));
         tv2.setTextColor(getResources().getColor(R.color.white_btn_press));
         tv3.setTextColor(getResources().getColor(R.color.white_btn_press));
+        tv4.setTextColor(getResources().getColor(R.color.white_btn_press));
         iv0.setImageResource(R.mipmap.maya_c);
-        iv1.setImageResource(R.mipmap.yuansq_c);
+        iv1.setImageResource(R.mipmap.sheqb_c);
         iv2.setImageResource(R.mipmap.sheqb_c);
-        iv3.setImageResource(R.mipmap.mine_c);
+        iv3.setImageResource(R.mipmap.yuansq_c);
+        iv4.setImageResource(R.mipmap.mine_c);
         switch (position) {
             case 0:
                 iv0.setImageResource(R.mipmap.majia_s);
                 tv0.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 1:
-                iv1.setImageResource(R.mipmap.yuansq_s);
+                iv1.setImageResource(R.mipmap.sheqb_s);
                 tv1.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 2:
@@ -115,8 +130,12 @@ public class BottomTab extends LinearLayout implements View.OnClickListener {
                 tv2.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 3:
-                iv3.setImageResource(R.mipmap.mine_s);
+                iv3.setImageResource(R.mipmap.yuansq_s);
                 tv3.setTextColor(getResources().getColor(R.color.login_marjar_color));
+                break;
+            case 4:
+                iv4.setImageResource(R.mipmap.mine_s);
+                tv4.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
 
         }

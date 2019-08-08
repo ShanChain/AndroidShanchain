@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,13 @@ public abstract class BaseFragment extends Fragment {
         }
         registrationId = JPushInterface.getRegistrationID(getContext());
 
+        // 获取屏幕宽高及密度
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // 初始化屏幕属性
+        mScreenDensity = displayMetrics.density;
+        mScreenHeight = displayMetrics.heightPixels;
+        mScreenWidth = displayMetrics.widthPixels;
     }
 
     @Override
@@ -384,4 +392,17 @@ public abstract class BaseFragment extends Fragment {
     }
 
 //    public
+    /**
+     * 描述：屏幕宽度
+     */
+    protected int mScreenWidth = 0;
+
+    /**
+     * 描述：屏幕高度
+     */
+    protected int mScreenHeight = 0;
+    /**
+     * 描述：屏幕密度
+     */
+    protected float mScreenDensity = 0.0f;
 }

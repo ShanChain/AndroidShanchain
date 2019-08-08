@@ -406,5 +406,12 @@
     <string name="write_y_op">Write your opinion</string>
     <string name="liked">Liked</string>
     <string name="cancel_like">Cancel like</string>
+    <string name="squre">Square</string>
+    <string name="phone_right">Please enter the phone in the correct format</string>
+    <string name="mining_area">Mining area</string>
+    <string name="can_join_mining">Can join the mining area</string>
+    <string name="my_mine">My mine</string>
+    <string name="i_create">I created</string>
+    <string name="i_joined">I joined</string>
 
 </resources>

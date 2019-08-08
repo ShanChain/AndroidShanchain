@@ -423,4 +423,11 @@
     <string name="write_y_op">写下你的观点</string>
     <string name="liked">已点赞</string>
     <string name="cancel_like">取消点赞</string>
+    <string name="squre">广场</string>
+    <string name="phone_right">请输入正确格式的手机</string>
+    <string name="mining_area">矿区</string>
+    <string name="can_join_mining">可加入矿区</string>
+    <string name="my_mine">我的矿区</string>
+    <string name="i_create">我创建的</string>
+    <string name="i_joined">我加入的</string>
 </resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDivider">
+    <com.shanchain.data.common.ui.toolBar.ArthurToolBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/tb_register"
+        style="@style/style_toolbar"
+        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:titleColor="@color/colorTextDefault"
+        app:titleTextSize="16"/>
+    <android.support.design.widget.TabLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/tab_layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorWhite"
+        app:tabIndicatorColor="@color/colorViolet"
+        app:tabMaxWidth="0dp"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
+        app:tabSelectedTextColor="@color/colorViolet"
+        app:tabTextColor="@color/colorTextDefault" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="3dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_main"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linear_bottom_bar"
+        android:layout_below="@+id/view_line"/>
+</LinearLayout>

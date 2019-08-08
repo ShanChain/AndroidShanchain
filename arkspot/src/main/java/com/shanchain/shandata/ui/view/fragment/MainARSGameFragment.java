@@ -33,6 +33,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -52,6 +53,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CreateCouponActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.HomeFragment;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.other.MyLoadMoreView;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
@@ -96,7 +98,8 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
     RecyclerView recyclerViewArsgame;
     @Bind(R.id.refresh_layout_arsgame)
     SwipeRefreshLayout refreshLayoutArsgame;
-
+    @Bind(R.id.tb_coupon)
+    ArthurToolBar toolBar;
     private String localVersion;
     private int totalPage, size = 10, pageNo = 0;
     private boolean last, disconnect = false;
@@ -106,12 +109,6 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
     private View footerView;
     private com.shanchain.data.common.ui.widgets.CustomDialog sureDialog;
     private com.shanchain.shandata.widgets.dialog.CustomDialog mCustomDialog;
-    //    private com.shanchain.shandata.widgets.dialog.CustomDialog mCustomDialog
-//            = new com.shanchain.shandata.widgets.dialog.CustomDialog(getContext(),
-//            0.4, R.layout.common_dialog_progress, null);
-//    private com.shanchain.shandata.widgets.dialog.CustomDialog mCustomDialog1
-//            = new com.shanchain.shandata.widgets.dialog.CustomDialog(getContext(),
-//            0.4, R.layout.common_dialog_progress, null);
     private SocketListener mSocketListener = new SimpleListener() {
         @Override
         public <T> void onMessage(final String message, T data) {
@@ -282,6 +279,10 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         }
     }
 
+    public static MainARSGameFragment newInstance() {
+        MainARSGameFragment fragment = new MainARSGameFragment();
+        return fragment;
+    }
 
     @Override
     public View initView() {
@@ -321,11 +322,14 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         }
         Map webSocket = WebSocketHandler.getAllWebSocket();
         LogUtils.d("webSocketSize", webSocket.size() + "");
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        toolBar.setTitleText("ARS");
+        toolBar.setLeftTitleLayoutView(View.GONE);
         if (mQuickAdapter != null && refreshLayoutArsgame != null) {
             refreshRoomList(pageNo, size, refreshLayoutArsgame);
         }
