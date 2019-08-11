@@ -68,5 +68,6 @@
     <string name="next_step_1">下一步</string>
     <string name="album">相册</string>
     <string name="take_photo">拍照</string>
+    <string name="share_to">分享到</string>
 
 </resources>

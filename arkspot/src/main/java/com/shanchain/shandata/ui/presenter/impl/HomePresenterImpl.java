@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.cache.CommonCacheHelper;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
@@ -27,6 +28,7 @@ import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.presenter.HomePresenter;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.HomeView;
+import com.zhangke.websocket.WebSocketHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,6 +39,9 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
@@ -138,7 +143,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void createChatRoom(LatLng myFocusPoint, String roomName, String urlPath, Context context) {
-//        mHomeView.showProgressStart();
+        mHomeView.showProgressStart();
         Map requestBody = new HashMap();
         requestBody.put("latitude", myFocusPoint.latitude);
         requestBody.put("longitude", myFocusPoint.longitude);
@@ -147,7 +152,7 @@ public class HomePresenterImpl implements HomePresenter {
         SCHttpUtils.postByBody(HttpApi.ADD_HOT_ROOM, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(context, null) {
             @Override
             public void responseDoParse(String string) throws IOException {
-//                mHomeView.showProgressEnd();
+                mHomeView.showProgressEnd();
                 mHomeView.setCreateChatRoomResponse(string);
             }
         });
@@ -182,5 +187,46 @@ public class HomePresenterImpl implements HomePresenter {
             }
         });
         helper.upLoadImg(context, screenshot);
+    }
+
+    @Override
+    public void checkPasswordToServer(Context context,String file, String value) {
+        mHomeView.showProgressStart();
+        MediaType MEDIA_TYPE = MediaType.parse("image/*");
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
+                .addFormDataPart("file", file, fileBody)
+                .addFormDataPart("subuserId", "" + SCCacheUtils.getCacheCharacterId())
+                .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
+                .addFormDataPart("value", "" + value)//支付金额
+                .setType(MultipartBody.FORM);
+        RequestBody multiBody = multiBuilder.build();
+        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyCallBack(context, null) {
+            @Override
+            public void responseDoParse(String string) throws IOException {
+                mHomeView.showProgressEnd();
+                mHomeView.setCheckPasswResponse(string);
+            }
+        });
+    }
+
+    @Override
+    public void addMiningRoom(String userId, String roomId) {
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_MINING_ROOM)
+                .addParams("createUser",userId)
+                .addParams("roomId",roomId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setAddMiningRoomResponse(response);
+                    }
+                });
     }
 }

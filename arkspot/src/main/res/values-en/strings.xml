@@ -413,5 +413,9 @@
     <string name="my_mine">My mine</string>
     <string name="i_create">I created</string>
     <string name="i_joined">I joined</string>
+    <string name="share_to">Share</string>
+    <string name="payfor_create_mining">Pay %s SEAT to create a mine</string>
+    <string name="wheel_seat">Wheel seat</string>
+    <string name="bio_mining">Bionic mining</string>
 
 </resources>

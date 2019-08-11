@@ -160,8 +160,8 @@ public abstract class BaseFragment extends Fragment {
         } else {
             Intent intent = new Intent(Intent.ACTION_PICK, null);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            Activity activity = (Activity) context;
-            activity.startActivityForResult(intent, NetErrCode.WALLET_PHOTO);
+//            Activity activity = (Activity) context;
+            startActivityForResult(intent, NetErrCode.WALLET_PHOTO);
         }
     }
 

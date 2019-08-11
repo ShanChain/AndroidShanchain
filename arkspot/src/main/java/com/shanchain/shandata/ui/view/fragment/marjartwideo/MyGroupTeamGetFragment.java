@@ -4,15 +4,24 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.GroupTeamAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
+import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
+import com.shanchain.shandata.ui.presenter.impl.MyGroupTeamPresenterImpl;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +35,7 @@ import butterknife.OnClick;
  * Date : 2019/8/7
  * Describe :我的小分队
  */
-public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, MyGroupTeamView {
     @Bind(R.id.recycler_view_coupon)
     RecyclerView recyclerViewCoupon;
     @Bind(R.id.refresh_layout)
@@ -35,9 +44,15 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     TextView tvCreate;
     @Bind(R.id.tv_join)
     TextView tvJoin;
+    @Bind(R.id.ll_notdata)
+    LinearLayout llNotdata;
 
     private GroupTeamAdapter mGroupTeamAdapter;
     private List<GroupTeamBean> mList = new ArrayList<>();
+    private MyGroupTeamPresenter mPresenter;
+    private int pageIndex = 0;
+    private boolean isLast = false;
+    private int currentType = 1;//1我创建的矿区；2我加入的矿区
 
     public static MyGroupTeamGetFragment getInstance() {
         MyGroupTeamGetFragment fragment = new MyGroupTeamGetFragment();
@@ -51,37 +66,49 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void initData() {
+        mPresenter = new MyGroupTeamPresenterImpl(this);
         refreshLayout.setOnRefreshListener(this);
         mGroupTeamAdapter = new GroupTeamAdapter(R.layout.group_team_item, mList);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color), getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewCoupon.setLayoutManager(layoutManager);
-        for (int i = 0; i < 5; i++) {
-            GroupTeamBean b = new GroupTeamBean();
-            b.setId(i + 1);
-            b.setName(i + "");
-            mList.add(b);
-        }
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
+
+        getMyMiningData(currentType,Constants.pullRefress);
+        initLoadMoreListener();
+    }
+
+    //获取我的矿区数据
+    private void getMyMiningData(int type,int pullType){
+        if(type ==1){
+            mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),pageIndex, Constants.pageSize,pullType);
+        }else {
+            mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "",pageIndex, Constants.pageSize,pullType);
+        }
     }
 
     @Override
     public void onRefresh() {
-        refreshLayout.setRefreshing(false);
+        pageIndex = 0;
+        getMyMiningData(currentType,Constants.pullRefress);
     }
 
     //我创建的
     @OnClick(R.id.tv_create)
     void myCreate(){
-        changeBackgroup(1);
+        currentType = 1;
+        changeBackgroup(currentType);
+        getMyMiningData(currentType,Constants.pullRefress);
     }
 
     //我参加的
     @OnClick(R.id.tv_join)
     void myJoined(){
-        changeBackgroup(2);
+        currentType = 2;
+        changeBackgroup(currentType);
+        getMyMiningData(currentType,Constants.pullRefress);
     }
 
     //点击变化背景和字体颜色
@@ -99,4 +126,68 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         }
     }
 
+    @Override
+    public void showProgressStart() {
+        showLoadingDialog();
+    }
+
+    @Override
+    public void showProgressEnd() {
+        closeLoadingDialog();
+    }
+
+    @Override
+    public void setQuearyMygoupTeamResponse(String response, int pullType) {
+        refreshLayout.setRefreshing(false);
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            String list = JSONObject.parseObject(data).getString("list");
+            List<GroupTeamBean> listDara = JSONObject.parseArray(list,GroupTeamBean.class);
+            if(listDara.size()<Constants.pageSize){
+                isLast = true;
+            }else {
+                isLast = false;
+            }
+            if(pullType == Constants.pullRefress){
+                mList.clear();
+                mList.addAll(listDara);
+                recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
+                mGroupTeamAdapter.notifyDataSetChanged();
+            }else {
+                mGroupTeamAdapter.addData(listDara);
+            }
+            if(mList!=null && mList.size()>0){
+                llNotdata.setVisibility(View.GONE);
+                refreshLayout.setVisibility(View.VISIBLE);
+            }else {
+                llNotdata.setVisibility(View.VISIBLE);
+                refreshLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    //上拉加载监听
+    private void initLoadMoreListener() {
+        //上拉加载
+        recyclerViewCoupon.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(isLast){
+                    return;
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mGroupTeamAdapter.getItemCount()){
+                    pageIndex ++;
+                    getMyMiningData(currentType,Constants.pillLoadmore);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });}
 }

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/share_close"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -21,7 +21,7 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:background="@mipmap/fb_circel_close"
             android:focusable="true"
-            android:focusableInTouchMode="false" />
+            android:focusableInTouchMode="false" />-->
 
         <RelativeLayout
             android:id="@+id/share_window"
@@ -29,6 +29,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/relative_bottom"
             android:layout_margin="50dp"
+            android:visibility="gone"
             android:background="@null">
 
             <ImageView
@@ -128,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="23dp"
-                android:text="分享到"
+                android:text="@string/share_to"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:textSize="13sp" />
 
@@ -232,6 +233,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/selector_click_bg_msg"
                     android:focusable="true"
+                    android:visibility="gone"
                     android:focusableInTouchMode="false">
 
                     <ImageView
@@ -306,6 +308,16 @@
                 <!--</RelativeLayout>-->
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/share_close"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@mipmap/fb_circel_close"
+                android:focusable="true"
+                android:focusableInTouchMode="false"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

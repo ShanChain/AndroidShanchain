@@ -42,4 +42,13 @@
             android:layout_margin="10dp"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_notdata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <include layout="@layout/not_data_item_view"/>
+    </LinearLayout>
 </LinearLayout>

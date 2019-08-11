@@ -16,6 +16,8 @@ public interface HomeView {
     void setCoordinateInfoResponse(String response);
     void setCreateChatRoomResponse(String response);
     void setUploadImageToOSSResponse(String url, boolean isSucess, LatLng point);
+    void setCheckPasswResponse(String response);
+    void setAddMiningRoomResponse(String response);
 
 
 }

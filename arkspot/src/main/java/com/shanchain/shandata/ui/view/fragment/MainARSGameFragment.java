@@ -328,7 +328,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
     @Override
     public void onResume() {
         super.onResume();
-        toolBar.setTitleText("ARS");
+        toolBar.setTitleText(getResources().getString(R.string.wheel_seat));
         toolBar.setLeftTitleLayoutView(View.GONE);
         if (mQuickAdapter != null && refreshLayoutArsgame != null) {
             refreshRoomList(pageNo, size, refreshLayoutArsgame);

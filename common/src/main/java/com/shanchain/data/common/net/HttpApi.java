@@ -686,4 +686,9 @@ public interface HttpApi {
     //取消点赞某个帖子
     String DELETE_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/delete";
 
+    //加入矿区表接口
+    String ADD_MINING_ROOM = BASE_URL + "/probecoin/tDiggings/insertSelective";
+    //查询我的矿区列表
+    String QUERY_MY_GROUPTEAM = BASE_URL + "/probecoin/tDiggings/getPageTDiggings";
+
 }

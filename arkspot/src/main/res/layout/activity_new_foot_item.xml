@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/ll_shouye"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_gravity="bottom">
+                <ImageView
+                    android:id="@+id/iv_shouye"
+                    style="@style/BottomTabImgStyle"
+                    android:src="@mipmap/maya_c" />
+
+                <TextView
+                    android:id="@+id/tv_shouye"
+                    style="@style/BottomTabTVStyle"
+                    android:text="@string/nav_coupon"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_bankuai"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_gravity="bottom">
+
+                <ImageView
+                    android:id="@+id/iv_bankuai"
+                    style="@style/BottomTabImgStyle"
+                    android:src="@mipmap/sheqb_c" />
+
+                <TextView
+                    android:id="@+id/tv_bankuai"
+                    style="@style/BottomTabTVStyle"
+                    android:text="@string/wheel_seat"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_cause"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:gravity="center"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginRight="-5dp"
+                android:orientation="vertical"
+                android:background="@drawable/foot_new_item_shape"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_cause"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/midle_icon" />
+                <TextView
+                    android:id="@+id/tv_cause"
+                    style="@style/BottomTabTVStyle"
+                    android:textSize="10sp"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/bio_mining" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_squre"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_gravity="bottom">
+
+                <ImageView
+                    android:id="@+id/iv_squre"
+                    style="@style/BottomTabImgStyle"
+                    android:src="@mipmap/yuansq_c" />
+
+                <TextView
+                    android:id="@+id/tv_squre"
+                    style="@style/BottomTabTVStyle"
+                    android:text="@string/squre"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_news"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_gravity="bottom">
+
+                <ImageView
+                    android:id="@+id/iv_news"
+                    style="@style/BottomTabImgStyle"
+                    android:src="@mipmap/mine_c" />
+
+                <TextView
+                    android:id="@+id/tv_news"
+                    style="@style/BottomTabTVStyle"
+                    android:text="@string/my_"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

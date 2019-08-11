@@ -38,11 +38,15 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
     @Override
     protected void convert(BaseViewHolder helper, final GroupTeamBean item) {
         RoundImageView circleImageView = helper.getView(R.id.iv_avatar);
-        Glide.with(mContext).load(R.mipmap.ic_launcher)
+        Glide.with(mContext).load(item.getRoomImage())
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                         .error(R.drawable.aurora_headicon_default)).into(circleImageView);
-        helper.setText(R.id.tv_title,"我的小分队");
-        helper.setText(R.id.tv_person_nums,"3");
+        if(!TextUtils.isEmpty(item.getRoomName())){
+            helper.setText(R.id.tv_title,item.getRoomName());
+        }else {
+            helper.setText(R.id.tv_title,"我的小分队");
+        }
+        helper.setText(R.id.tv_person_nums,item.getUserCount()+"");
 
 
     }

@@ -40,4 +40,7 @@ public class NetErrCode {
     public static final int ADD_ROOM_SUCCESS = 99977;
     //刷新社区帮，
     public static final int REFRESH_MY_TASK = 99966;
+
+    //新的数据成功返回码
+    public static final String COMMON_SUC_CODE_NEW = "1";
 }
