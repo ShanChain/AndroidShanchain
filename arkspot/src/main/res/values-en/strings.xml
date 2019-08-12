@@ -415,7 +415,14 @@
     <string name="i_joined">I joined</string>
     <string name="share_to">Share</string>
     <string name="payfor_create_mining">Pay %s SEAT to create a mine</string>
+    <string name="payfor_add_mining">Pay %s SEAT to join a mine</string>
     <string name="wheel_seat">Wheel seat</string>
     <string name="bio_mining">Bionic mining</string>
+    <string name="just_a_minut">Just a moment ago</string>
+    <string name="minutes_ago">Minutes ago</string>
+    <string name="hours_ago">Hours ago</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="befort_yest">The day before yesterday</string>
+    <string name="days_ago">Days ago</string>
 
 </resources>

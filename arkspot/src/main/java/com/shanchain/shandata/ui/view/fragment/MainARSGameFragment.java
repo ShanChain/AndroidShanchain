@@ -496,6 +496,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyCallBack(getContext(), null) {
             @Override
             public void responseDoParse(String string) throws IOException {
+                LogUtils.d("----->>>ars: "+string);
                 String code = SCJsonUtils.parseCode(string);
                 String msg = SCJsonUtils.parseMsg(string);
                 if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {

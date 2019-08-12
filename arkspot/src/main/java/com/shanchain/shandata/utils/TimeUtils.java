@@ -1,8 +1,10 @@
 package com.shanchain.shandata.utils;
 
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.shanchain.shandata.R;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import java.text.ParseException;
@@ -88,11 +90,11 @@ public class TimeUtils {
      * @param sdate
      * @return
      */
-    public static String friendlyTime(String sdate) {
+    /*public static String friendlyTime(String sdate) {
         LogUtils.d("----time2---",sdate+"");
         Date time = toDate(sdate);
         return friendlyTime1(time);
-    }
+    }*/
 
     /**
      * 以友好的方式显示时间
@@ -100,8 +102,7 @@ public class TimeUtils {
      * @param time
      * @return
      */
-    public static String friendlyTime1(Date time) {
-        LogUtils.d("-----time1---",time+"");
+    public static String friendlyTime1(Context context,Date time) {
         if (time == null) {
             return "Unknown";
         }
@@ -117,12 +118,18 @@ public class TimeUtils {
         String paramDate = dateFormater2.get().format(time);
         if (curDate.equals(paramDate)) {
             int hour = (int) ((serviceTime.getTime() - time.getTime()) / 3600000);
-            if (hour == 0)
-                ftime = Math.max(
-                        (serviceTime.getTime() - time.getTime()) / 60000, 1)
-                        + "分钟前";
-            else
-                ftime = hour + "小时前";
+            if (hour == 0) {
+                int minute = (int)((serviceTime.getTime() - time.getTime()) / 60000);
+                if(minute <2){
+                    ftime = context.getString(R.string.just_a_minut);
+                }else {
+                    ftime = Math.max(
+                            (serviceTime.getTime() - time.getTime()) / 60000, 1)
+                            + context.getString(R.string.minutes_ago);
+                }
+            }else{
+                    ftime = hour + context.getString(R.string.hours_ago);
+                }
             return ftime;
         }
 
@@ -131,18 +138,24 @@ public class TimeUtils {
         int days = (int) (ct - lt);
         if (days == 0) {
             int hour = (int) ((serviceTime.getTime() - time.getTime()) / 3600000);
-            if (hour == 0)
-                ftime = Math.max(
-                        (serviceTime.getTime() - time.getTime()) / 60000, 1)
-                        + "分钟前";
-            else
-                ftime = hour + "小时前";
+            if (hour == 0) {
+                int minute = (int)((serviceTime.getTime() - time.getTime()) / 60000);
+                if(minute <2){
+                    ftime = context.getString(R.string.just_a_minut);
+                }else {
+                    ftime = Math.max(
+                            (serviceTime.getTime() - time.getTime()) / 60000, 1)
+                            + context.getString(R.string.minutes_ago);
+                }
+            }else {
+                ftime = hour + context.getString(R.string.hours_ago);
+            }
         } else if (days == 1) {
-            ftime = "昨天";
+            ftime = context.getString(R.string.yesterday);
         } else if (days == 2) {
-            ftime = "前天";
+            ftime = context.getString(R.string.befort_yest);
         } else if (days > 2 && days <= 10) {
-            ftime = days + "天前";
+            ftime = days + context.getString(R.string.days_ago);
         } else if (days > 10) {
             ftime = dateFormater2.get().format(time);
         }

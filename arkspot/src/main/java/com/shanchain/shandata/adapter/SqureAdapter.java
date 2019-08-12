@@ -12,10 +12,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.ICheckBigPhotoCallback;
 import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
@@ -37,11 +39,15 @@ import cn.jiguang.imui.view.CircleImageView;
 public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolder> {
     private IAttentionCallback mIAttentionCallback;
     private IPraiseCallback mIPraiseCallback;
+    private ICheckBigPhotoCallback mPhotoCallback;
     public void setIAttentionCallback(IAttentionCallback callback){
         this.mIAttentionCallback = callback;
     }
     public void setIPraiseCallback(IPraiseCallback callback){
         this.mIPraiseCallback = callback;
+    }
+    public void setPhotoCallback(ICheckBigPhotoCallback callback){
+        this.mPhotoCallback = callback;
     }
     public SqureAdapter(int layoutResId, @Nullable List<SqureDataEntity> data) {
         super(layoutResId, data);
@@ -54,7 +60,7 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                         .error(R.drawable.aurora_headicon_default)).into(circleImageView);
         helper.setText(R.id.tv_nickname,item.getNickName());
-        helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(new Date(item.getCreateTime())));
+        helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(mContext,new Date(item.getCreateTime())));
         helper.setText(R.id.et_content,item.getContent());
         helper.setText(R.id.tv_conin,item.getPraiseCount()+"");
         helper.setText(R.id.tv_message,item.getReviceCount()+"");
@@ -86,6 +92,11 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
             textView.setText(mContext.getResources().getString(R.string.Concerned));
         }
+        if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == item.getUserId()){
+            textView.setVisibility(View.GONE);
+        }else {
+            textView.setVisibility(View.VISIBLE);
+        }
         //关注
         helper.getView(R.id.tv_attention).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,11 +107,20 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             }
         });
         //点赞
-        helper.getView(R.id.iv_paise).setOnClickListener(new View.OnClickListener() {
+        helper.getView(R.id.ll_praise).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mIPraiseCallback!=null){
                     mIPraiseCallback.praiseToArticle(item);
+                }
+            }
+        });
+        //查看大图
+        helper.getView(R.id.im_bg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mPhotoCallback!=null){
+                    mPhotoCallback.checkBigPhoto(item);
                 }
             }
         });

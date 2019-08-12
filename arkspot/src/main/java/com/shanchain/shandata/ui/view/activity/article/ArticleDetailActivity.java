@@ -123,7 +123,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                         .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
         tvNickname.setText(mSqureDataEntity.getNickName());
-        tvTime.setText(TimeUtils.friendlyTime1(new Date(mSqureDataEntity.getCreateTime())));
+        tvTime.setText(TimeUtils.friendlyTime1(this,new Date(mSqureDataEntity.getCreateTime())));
         etContent.setText(mSqureDataEntity.getContent());
         tvConin.setText(mSqureDataEntity.getPraiseCount()+"");
         tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
@@ -145,6 +145,11 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             updateUserAttention(0);
         }else {
             updateUserAttention(1);
+        }
+        if(Integer.parseInt(userId) == mSqureDataEntity.getUserId()){
+            tvAttention.setVisibility(View.GONE);
+        }else {
+            tvAttention.setVisibility(View.VISIBLE);
         }
 
         mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);

@@ -28,6 +28,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SqureAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.ICheckBigPhotoCallback;
 import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
@@ -35,10 +36,12 @@ import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.presenter.SquarePresenter;
 import com.shanchain.shandata.ui.presenter.impl.SquarePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
+import com.shanchain.shandata.ui.view.activity.article.PhotoPagerActivity;
 import com.shanchain.shandata.ui.view.activity.article.PublishArticleActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.SquareView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -87,7 +90,6 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         mSqureAdapter.notifyDataSetChanged();
 
         initLoadMoreListener();
-
 
     }
 
@@ -243,7 +245,6 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                     mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pillLoadmore);
                 }
             }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -287,6 +288,21 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                     mSquarePresenter.addPraiseToArticle(Integer.parseInt(userId),item.getId());
                 }else {
                     mSquarePresenter.deletePraiseToArticle(Integer.parseInt(userId),item.getId());
+                }
+            }
+        });
+        //查看大图
+        mSqureAdapter.setPhotoCallback(new ICheckBigPhotoCallback() {
+            @Override
+            public void checkBigPhoto(SqureDataEntity item) {
+                if(!TextUtils.isEmpty(item.getListImg())){
+                    String attrPhotos[] = item.getListImg().split(",");
+                    if(attrPhotos.length>0){
+                        List<String> list = Arrays.asList(attrPhotos);
+                        ArrayList<String> arrayList = new ArrayList<>(list);
+                        startActivity(new Intent(getActivity(), PhotoPagerActivity.class)
+                                .putExtra("list", arrayList));
+                    }
                 }
             }
         });

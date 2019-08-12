@@ -9,4 +9,6 @@ public interface MyGroupTeamView {
     void showProgressStart();
     void showProgressEnd();
     void setQuearyMygoupTeamResponse(String response,int pullType);
+    void setCheckPasswResponse(String response);
+    void setAddMinigRoomResponse(String response);
 }

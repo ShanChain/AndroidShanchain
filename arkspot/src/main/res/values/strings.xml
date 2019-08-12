@@ -431,6 +431,13 @@
     <string name="i_create">我创建的</string>
     <string name="i_joined">我加入的</string>
     <string name="payfor_create_mining">支付%s个 SEAT 创建矿区</string>
+    <string name="payfor_add_mining">支付%s个 SEAT 加入矿区</string>
     <string name="wheel_seat">年轮座</string>
     <string name="bio_mining">仿生挖矿</string>
+    <string name="just_a_minut">刚刚</string>
+    <string name="minutes_ago">分钟前</string>
+    <string name="hours_ago">小时前</string>
+    <string name="yesterday">昨天</string>
+    <string name="befort_yest">前天</string>
+    <string name="days_ago">天前</string>
 </resources>

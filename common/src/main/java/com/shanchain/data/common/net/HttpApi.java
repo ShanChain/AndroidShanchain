@@ -691,4 +691,7 @@ public interface HttpApi {
     //查询我的矿区列表
     String QUERY_MY_GROUPTEAM = BASE_URL + "/probecoin/tDiggings/getPageTDiggings";
 
+    //他人加入矿区接口
+    String ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/insertSelective";
+
 }

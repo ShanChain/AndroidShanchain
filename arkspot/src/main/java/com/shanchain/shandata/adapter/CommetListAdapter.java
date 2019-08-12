@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.interfaces.IAttentionCallback;
 import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
@@ -78,7 +79,7 @@ public class CommetListAdapter extends BaseAdapter {
                     .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                             .error(R.drawable.aurora_headicon_default)).into(viewHolder.ivUserHead1);
             viewHolder.tvNickname.setText(commentEntity.getSendNickName());
-            viewHolder.tvTime.setText(TimeUtils.friendlyTime1(new Date(commentEntity.getCreateTime())));
+            viewHolder.tvTime.setText(TimeUtils.friendlyTime1(mContext,new Date(commentEntity.getCreateTime())));
             viewHolder.tvComment.setText(commentEntity.getContent());
             if("0".equals(commentEntity.getIsAttention())){
                 //未关注
@@ -90,6 +91,12 @@ public class CommetListAdapter extends BaseAdapter {
                 viewHolder.tvAttention.setTextColor(mContext.getResources().getColor(R.color.white));
                 viewHolder.tvAttention.setText(mContext.getResources().getString(R.string.Concerned));
             }
+            if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == commentEntity.getSendUserId()){
+                viewHolder.tvAttention.setVisibility(View.GONE);
+            }else {
+                viewHolder.tvAttention.setVisibility(View.VISIBLE);
+            }
+
             //关注
             viewHolder.tvAttention.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,7 +107,6 @@ public class CommetListAdapter extends BaseAdapter {
                 }
             });
         }
-
         return convertView;
     }
 

@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.NetErrCode;
@@ -21,7 +23,9 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
 import com.shanchain.shandata.ui.presenter.impl.MyGroupTeamPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
+import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +73,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         mPresenter = new MyGroupTeamPresenterImpl(this);
         refreshLayout.setOnRefreshListener(this);
         mGroupTeamAdapter = new GroupTeamAdapter(R.layout.group_team_item, mList);
+        mGroupTeamAdapter.setType(2);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color), getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -167,6 +172,16 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         }
     }
 
+    @Override
+    public void setCheckPasswResponse(String response) {
+
+    }
+
+    @Override
+    public void setAddMinigRoomResponse(String response) {
+
+    }
+
     //上拉加载监听
     private void initLoadMoreListener() {
         //上拉加载
@@ -189,5 +204,24 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
                 //最后一个可见的ITEM
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
-        });}
+        });
+        mGroupTeamAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                GroupTeamBean groupTeamBean = (GroupTeamBean) adapter.getItem(position);
+                if(groupTeamBean!=null){
+                    LogUtils.d("----->>enter room "+groupTeamBean.toString());
+                    gotoMessageRoom(groupTeamBean);
+                }
+            }
+        });
+    }
+    //进入聊天室
+    private void gotoMessageRoom(GroupTeamBean groupTeamBean){
+        if(TextUtils.isEmpty(groupTeamBean.getRoomId()))return;
+        Intent intent = new Intent(getActivity(), MessageListActivity.class);
+        intent.putExtra("roomId", "" + groupTeamBean.getRoomId());
+        intent.putExtra("roomName", "" + groupTeamBean.getRoomName());
+        startActivity(intent);
+    }
 }

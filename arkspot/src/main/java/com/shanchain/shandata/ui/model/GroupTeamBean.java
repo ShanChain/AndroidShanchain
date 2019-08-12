@@ -1,6 +1,7 @@
 package com.shanchain.shandata.ui.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by WealChen
@@ -19,6 +20,8 @@ public class GroupTeamBean implements Serializable {
     String level;
     String roomImage;
     String createUser;
+//    String tDiggingJoinLogs;
+    List<TDiggingJoinLogs> tDiggingJoinLogs;
 
 
     public int getId() {
@@ -107,5 +110,31 @@ public class GroupTeamBean implements Serializable {
 
     public void setCreateUser(String createUser) {
         this.createUser = createUser;
+    }
+
+    public List<TDiggingJoinLogs> gettDiggingJoinLogs() {
+        return tDiggingJoinLogs;
+    }
+
+    public void settDiggingJoinLogs(List<TDiggingJoinLogs> tDiggingJoinLogs) {
+        this.tDiggingJoinLogs = tDiggingJoinLogs;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupTeamBean{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", roomId='" + roomId + '\'' +
+                ", roomName='" + roomName + '\'' +
+                ", userCount=" + userCount +
+                ", spaceId=" + spaceId +
+                ", inviteCode='" + inviteCode + '\'' +
+                ", status='" + status + '\'' +
+                ", level='" + level + '\'' +
+                ", roomImage='" + roomImage + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", tDiggingJoinLogs=" + tDiggingJoinLogs +
+                '}';
     }
 }

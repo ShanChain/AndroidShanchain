@@ -190,10 +190,10 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                     mHomePresenter.createChatRoom(point,customRoomName,url,getActivity());
                     break;
                 case 1002:
-                    /*String filePath = (String) msg.obj;
-                    mHomePresenter.checkPasswordToServer(getActivity(),filePath,"0.001");*/
+                    String filePath = (String) msg.obj;
+                    mHomePresenter.checkPasswordToServer(getActivity(),filePath,"0.001");
                     //由于验证钱包功能接口暂时不可用，这里先直接调用创建矿区接口
-                    addCustomChatRoom();
+//                    addCustomChatRoom();
                     break;
             }
 
