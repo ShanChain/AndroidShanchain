@@ -35,6 +35,7 @@
         android:layout_marginTop="8dp"
         android:text=""
         android:textColor="#000"
+        android:gravity="center"
         android:textStyle="bold"
         android:textSize="14sp" />
 
@@ -62,7 +63,6 @@
             android:layout_height="@dimen/dimens_15dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimens_5dp"
-            android:background="@mipmap/room_num"
             android:visibility="gone" />
 
         <!-- 聊天室的人数 -->

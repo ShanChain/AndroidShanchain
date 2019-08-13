@@ -120,7 +120,7 @@ public class TimeUtils {
             int hour = (int) ((serviceTime.getTime() - time.getTime()) / 3600000);
             if (hour == 0) {
                 int minute = (int)((serviceTime.getTime() - time.getTime()) / 60000);
-                if(minute <2){
+                if(minute <1){
                     ftime = context.getString(R.string.just_a_minut);
                 }else {
                     ftime = Math.max(
@@ -140,7 +140,7 @@ public class TimeUtils {
             int hour = (int) ((serviceTime.getTime() - time.getTime()) / 3600000);
             if (hour == 0) {
                 int minute = (int)((serviceTime.getTime() - time.getTime()) / 60000);
-                if(minute <2){
+                if(minute <1){
                     ftime = context.getString(R.string.just_a_minut);
                 }else {
                     ftime = Math.max(

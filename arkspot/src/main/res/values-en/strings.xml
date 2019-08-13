@@ -424,5 +424,6 @@
     <string name="yesterday">Yesterday</string>
     <string name="befort_yest">The day before yesterday</string>
     <string name="days_ago">Days ago</string>
+    <string name="enter_key_w">Please enter key words</string>
 
 </resources>

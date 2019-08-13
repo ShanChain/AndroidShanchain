@@ -585,6 +585,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.square.PayforSuccessActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.square.SearchTeamActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

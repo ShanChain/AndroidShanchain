@@ -1,13 +1,13 @@
 package com.shanchain.shandata.ui.view.activity.square;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -18,24 +18,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by WealChen
  * Date : 2019/8/7
  * Describe :我的小分队
  */
-public class MyGroupActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener{
-    @Bind(R.id.tb_register)
-    ArthurToolBar mTbRegister;
+public class MyGroupActivity extends BaseActivity {
     @Bind(R.id.tab_layout_main)
     TabLayout mTabLayout;
     @Bind(R.id.view_line)
     View viewLine;
     @Bind(R.id.vp_main)
     ViewPager mViewPager;
+    @Bind(R.id.im_back)
+    ImageView imBack;
+    @Bind(R.id.im_search)
+    ImageView imSearch;
+
 
     private List<Fragment> fragmentList = new ArrayList();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_mygroup;
@@ -48,15 +51,24 @@ public class MyGroupActivity extends BaseActivity implements ArthurToolBar.OnLef
     }
 
     private void initToolBar() {
-        mTbRegister.setTitleTextColor(Color.BLACK);
-        mTbRegister.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        mTbRegister.setOnLeftClickListener(this);
-        mTbRegister.setTitleText(getString(R.string.mining_area));
+        imBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        imSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //调整搜索界面
+                startActivity(new Intent(MyGroupActivity.this,SearchTeamActivity.class));
+            }
+        });
 
     }
 
     private void setFragment() {
-        String[] titles = {getString(R.string.can_join_mining),getString(R.string.my_mine)};
+        String[] titles = {getString(R.string.can_join_mining), getString(R.string.my_mine)};
         fragmentList.add(MyGroupTeamFragment.getInstance());
         fragmentList.add(MyGroupTeamGetFragment.getInstance());
         TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
@@ -66,8 +78,5 @@ public class MyGroupActivity extends BaseActivity implements ArthurToolBar.OnLef
         mViewPager.setCurrentItem(0);
     }
 
-    @Override
-    public void onLeftClick(View v) {
-        finish();
-    }
+
 }

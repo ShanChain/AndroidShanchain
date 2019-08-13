@@ -27,16 +27,16 @@ import okhttp3.Response;
  * Date : 2019/2/21
  * Describe :
  */
-public abstract class SCHttpPostBodyCallBack implements Callback {
+public abstract class SCHttpPostBodyNewCallBack implements Callback {
     Context mContext;
     CustomDialog mCustomDialog;
     StandardDialog mStandardDialog;
 
-    public SCHttpPostBodyCallBack() {
+    public SCHttpPostBodyNewCallBack() {
 
     }
 
-    public SCHttpPostBodyCallBack(Context context, CustomDialog customDialog) {
+    public SCHttpPostBodyNewCallBack(Context context, CustomDialog customDialog) {
         this.mContext = context;
         this.mCustomDialog = customDialog;
     }
@@ -55,12 +55,13 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         String result = response.body().string();
-        LogUtils.d("------check password image response : "+result);
         final String code = SCJsonUtils.parseCode(result);
         final String msg = SCJsonUtils.parseMsg(result);
+        LogUtils.d("------check password image response : "+result);
         if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
             responseDoParse(result);
         } else if (NetErrCode.WALLET_NOT_CREATE.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
@@ -93,6 +94,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
                 });
             }
         } else if (NetErrCode.WALLET_PASSWORD_INVALID.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 //上传密码图片弹窗
                 ThreadUtils.runOnMainThread(new Runnable() {
@@ -110,12 +112,14 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
 
             }
         } else if (NetErrCode.WALLET_NOT_CREATE_PASSWORD.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 Intent ScWebView = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
                 mContext.startActivity(ScWebView);
                 Activity activity = (Activity) mContext;
             }
         } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
@@ -125,6 +129,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
                 });
             }
         } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
@@ -152,6 +157,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
                 });
             }
         } else if (NetErrCode.HAVE_BEEN_CODE.equals(code)) {
+            responseDoFaile(result);
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
@@ -161,6 +167,7 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
                 });
             }
         } else {
+            responseDoFaile(result);
             if (mContext != null) {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
@@ -174,5 +181,6 @@ public abstract class SCHttpPostBodyCallBack implements Callback {
     }
 
     public abstract void responseDoParse(String string) throws IOException;
+    public abstract void responseDoFaile(String string) throws IOException;
 
 }

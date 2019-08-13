@@ -1,20 +1,26 @@
 package com.shanchain.shandata.ui.presenter.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.AppManager;
+import com.shanchain.data.common.base.EventBusObject;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
+import com.shanchain.data.common.net.SCHttpPostBodyNewCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -25,13 +31,16 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.HotChatRoom;
+import com.shanchain.shandata.ui.model.PhotoBean;
 import com.shanchain.shandata.ui.presenter.HomePresenter;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.HomeView;
 import com.zhangke.websocket.WebSocketHandler;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +48,15 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
+import static com.shanchain.data.common.base.Constants.CACHE_TOKEN;
 import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
 
 /**
@@ -52,7 +66,8 @@ import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
  */
 public class HomePresenterImpl implements HomePresenter {
     private HomeView mHomeView;
-
+    private CustomDialog mCustomDialog;
+    private StandardDialog mStandardDialog;
     public HomePresenterImpl(HomeView homeView){
         this.mHomeView = homeView;
     }
@@ -190,24 +205,35 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     @Override
-    public void checkPasswordToServer(Context context,String file, String value) {
+    public void checkPasswordToServer(final Context mContext,String file, String value) {
+        LogUtils.d("Resonse file: ", file);
         mHomeView.showProgressStart();
+        final File f = new File(file);
+        String userId = SCCacheUtils.getCache("0", "curUser");
+        String token = SCCacheUtils.getCache(userId, CACHE_TOKEN);
         MediaType MEDIA_TYPE = MediaType.parse("image/*");
-        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
+        RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, f);
         MultipartBody.Builder multiBuilder = new MultipartBody.Builder()
-                .addFormDataPart("file", file, fileBody)
+                .addFormDataPart("file", f.getName(), fileBody)
                 .addFormDataPart("subuserId", "" + SCCacheUtils.getCacheCharacterId())
                 .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
                 .addFormDataPart("value", "" + value)//支付金额
+                .addFormDataPart("token",token)
                 .setType(MultipartBody.FORM);
         RequestBody multiBody = multiBuilder.build();
-        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyCallBack(context, null) {
+        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyNewCallBack(mContext, null) {
             @Override
             public void responseDoParse(String string) throws IOException {
                 mHomeView.showProgressEnd();
                 mHomeView.setCheckPasswResponse(string);
             }
+
+            @Override
+            public void responseDoFaile(String string) throws IOException {
+                mHomeView.showProgressEnd();
+            }
         });
+
     }
 
     @Override

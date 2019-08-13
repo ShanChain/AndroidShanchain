@@ -88,9 +88,9 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     //获取我的矿区数据
     private void getMyMiningData(int type,int pullType){
         if(type ==1){
-            mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),pageIndex, Constants.pageSize,pullType);
+            mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),"",pageIndex, Constants.pageSize,pullType);
         }else {
-            mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "",pageIndex, Constants.pageSize,pullType);
+            mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "","",pageIndex, Constants.pageSize,pullType);
         }
     }
 

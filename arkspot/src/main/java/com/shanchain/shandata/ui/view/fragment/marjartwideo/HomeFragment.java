@@ -960,7 +960,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
-                String photoPath = cursor.getString(columnIndex);
+                final String photoPath = cursor.getString(columnIndex);
                 cursor.close();
                 LogUtils.showLog("----->HomeFragment: select image path is "+photoPath);
                  Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
@@ -985,7 +985,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                                 //去支付
                                 Message message = new Message();
                                 message.what = 1002;
-                                message.obj = mPasswordFile.getName();
+                                message.obj = photoPath;
                                 handler.sendMessage(message);
                                 break;
                         }
