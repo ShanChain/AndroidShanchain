@@ -19,72 +19,100 @@
     <LinearLayout style="@style/style_obtain_focus" />
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="60dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginLeft="38dp"
         android:layout_marginRight="38dp"
-        android:background="@drawable/shape_bg_edit_report">
-        <Spinner
-            android:id="@+id/sp_phone_number"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"></Spinner>
-        <EditText
-            android:id="@+id/et_login_account"
+        android:layout_marginTop="80dp">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="@string/str_login_account"
-            android:inputType="number"
-            android:lines="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:textColor="@color/colorTextDefault"
-            android:textColorHint="@color/colorLoginHint"
-            android:textCursorDrawable="@null"
-            android:textSize="@dimen/sp_14" />
-    </LinearLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_marginLeft="38dp"
-        android:layout_marginTop="@dimen/dimens_15dp"
-        android:layout_marginRight="38dp">
-
-        <TextView
-            android:id="@+id/tv_register_code"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
             android:gravity="center"
-            android:padding="@dimen/dimens_5dp"
-            android:background="@drawable/shape_bg_edit_get_code"
-            android:text="@string/str_register_code_obtain"
-            android:textColor="@color/colorTextDefault"
-            android:textSize="@dimen/sp_14" />
+            >
+            <TextView
+                android:id="@+id/tv_phone_q_1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/login_marjar_color"
+                android:text="+86"
+                android:gravity="center"
+                android:textSize="15sp"/>
+            <View
+                android:layout_width="0.7dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/login_marjar_color"/>
 
-        <EditText
-            android:id="@+id/et_register_code"
+            <EditText
+                android:id="@+id/et_login_account"
+                android:layout_width="match_parent"
+                android:hint="@string/str_login_account"
+                android:textColor="@color/login_marjar_color"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:inputType="number"
+                android:textSize="14sp"
+                android:textCursorDrawable="@null"
+                android:layout_height="40dp" />
+        </LinearLayout>
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/tv_register_code"
-            android:background="@drawable/shape_bg_edit_report"
-            android:gravity="center_vertical"
-            android:hint="@string/str_register_code_input"
-            android:inputType="number"
-            android:lines="1"
-            android:paddingLeft="@dimen/dimens_20dp"
-            android:textColor="@color/colorTextDefault"
-            android:textColorHint="@color/colorLoginHint"
-            android:textCursorDrawable="@null"
-            android:textSize="@dimen/sp_14" />
+            android:layout_height="1dp"
+            android:layout_marginTop="3dp"
+            android:background="@color/white_btn_press"/>
+    </LinearLayout>
 
 
-    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp"
+        android:gravity="center"
+        >
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_register_code"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:hint="@string/str_register_code_input"
+                android:background="@null"
+                android:lines="2"
+                android:textSize="14sp"
+                android:textColor="@color/login_marjar_color"
+                android:inputType="number"
+                android:layout_height="40dp" />
+            <TextView
+                android:id="@+id/tv_register_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/login_marjar_color"
+                android:text="@string/str_register_code_obtain"
+                android:textSize="@dimen/sp_14"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/white_btn_press"/>
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btn_sure"

@@ -100,11 +100,12 @@ public abstract class SCHttpPostBodyNewCallBack implements Callback {
                 ThreadUtils.runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        CustomDialog showPasswordDialog = new CustomDialog(mContext, true, 1.0,
+                        /*CustomDialog showPasswordDialog = new CustomDialog(mContext, true, 1.0,
                                 R.layout.dialog_bottom_wallet_password,
-                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                        EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, showPasswordDialog);
-                        EventBus.getDefault().postSticky(busObject);
+                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});*/
+                        /*EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, showPasswordDialog);
+                        EventBus.getDefault().postSticky(busObject);*/
+                        ToastUtils.showToast(mContext, R.string.password_error);
                     }
                 });
 //                EventBusObject busObject = new EventBusObject(NetErrCode.WALLET_PHOTO, mCustomDialog);
@@ -116,7 +117,6 @@ public abstract class SCHttpPostBodyNewCallBack implements Callback {
             if (mContext != null) {
                 Intent ScWebView = new Intent(Intent.ACTION_VIEW, Uri.parse("activity://qianqianshijie:80/webview"));
                 mContext.startActivity(ScWebView);
-                Activity activity = (Activity) mContext;
             }
         } else if (NetErrCode.BALANCE_NOT_ENOUGH.equals(code)) {
             responseDoFaile(result);

@@ -54,7 +54,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     private GroupTeamAdapter mGroupTeamAdapter;
     private List<GroupTeamBean> mList = new ArrayList<>();
     private MyGroupTeamPresenter mPresenter;
-    private int pageIndex = 0;
+    private int pageIndex = 1;
     private boolean isLast = false;
     private int currentType = 1;//1我创建的矿区；2我加入的矿区
 
@@ -96,7 +96,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        pageIndex = 0;
+        pageIndex = 1;
         getMyMiningData(currentType,Constants.pullRefress);
     }
 

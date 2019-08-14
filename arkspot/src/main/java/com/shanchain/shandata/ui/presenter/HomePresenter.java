@@ -26,4 +26,6 @@ public interface HomePresenter {
     void checkPasswordToServer(Context context,String file,String value);
     //加入矿区表
     void addMiningRoom(String userId,String roomId);
+    //判断是否已加入矿区接口
+    void checkIsJoinMining(String userId,String diggingsId);
 }

@@ -18,6 +18,7 @@ public interface HomeView {
     void setUploadImageToOSSResponse(String url, boolean isSucess, LatLng point);
     void setCheckPasswResponse(String response);
     void setAddMiningRoomResponse(String response);
+    void setCheckIsJoinMiningRsponse(String response);
 
 
 }

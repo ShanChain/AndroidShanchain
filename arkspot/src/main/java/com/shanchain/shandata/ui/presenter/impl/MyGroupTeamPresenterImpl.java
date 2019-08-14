@@ -82,6 +82,7 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
                 .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
                 .addFormDataPart("value", "" + value)//支付金额
                 .addFormDataPart("token",token)
+                .addFormDataPart("memo","payMining")//挖矿支付标识
                 .setType(MultipartBody.FORM);
         RequestBody multiBody = multiBuilder.build();
         SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyNewCallBack(context, null) {

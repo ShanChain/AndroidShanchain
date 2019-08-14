@@ -81,10 +81,10 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         fragmentAdapter.setFragments(mFragmentList);
         mViewpager.setAdapter(fragmentAdapter);
         mViewpager.setOffscreenPageLimit(4);
-        changeState(0);
+        changeState(2);
+        mViewpager.setCurrentItem(2);
         /*bottomTab.changeState(0);
         bottomTab.setOnTabClickListener(this);*/
-        mViewpager.setCurrentItem(0);
         mViewpager.setNoScroll(true);
         mViewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

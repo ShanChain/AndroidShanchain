@@ -16,6 +16,7 @@ public class Coordinates {
     private String focusLatitude;
     private String focusLongitude;
     private int status;
+    private String diggingId;
     private List<CoordinatesBean> coordinates;
 
     public String getRoomId() {
@@ -64,6 +65,14 @@ public class Coordinates {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getDiggingId() {
+        return diggingId;
+    }
+
+    public void setDiggingId(String diggingId) {
+        this.diggingId = diggingId;
     }
 
     public static class CoordinatesBean {

@@ -66,7 +66,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private GroupTeamAdapter mGroupTeamAdapter;
     private List<GroupTeamBean> mList = new ArrayList<>();
     private MyGroupTeamPresenter mPresenter;
-    private int pageIndex = 0;
+    private int pageIndex = 1;
     private boolean isLast = false;
     private StandardDialog standardDialog;
     private CustomDialog mShowPasswordDialog;
@@ -116,7 +116,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
-        pageIndex=0;
+        pageIndex=1;
         mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress);
 
     }
@@ -165,7 +165,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     @Override
     public void setCheckPasswResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
-        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+        if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
             if (mShowPasswordDialog != null) {
                 mShowPasswordDialog.dismiss();
             }

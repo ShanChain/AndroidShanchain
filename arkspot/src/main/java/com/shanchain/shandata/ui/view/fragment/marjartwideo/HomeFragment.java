@@ -81,7 +81,9 @@ import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.receiver.MessageReceiver;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.model.HotChatRoom;
+import com.shanchain.shandata.ui.model.MiningRoomBeam;
 import com.shanchain.shandata.ui.model.ShareBean;
 import com.shanchain.shandata.ui.presenter.HomePresenter;
 import com.shanchain.shandata.ui.presenter.impl.HomePresenterImpl;
@@ -160,8 +162,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private CoordinateConverter coordinateConverter;
     private LatLng myFocusPoint;
     private SCInputDialog mScInputDialog;
-    private String roomID = "";
-    private String roomName;
+//    private String roomID = "";
     public static LatLng latLng;
     private boolean isFirstLoc = true; // 是否首次定位
     private BDLocation myLocation;
@@ -397,9 +398,10 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
              * @param marker 被点击的 marker
              */
             public boolean onMarkerClick(Marker marker) {
-//                ToastUtils.showToast(HomeActivity.this, "点击MapMarkr");
-                marker.getPosition();
-                return false;
+                //点击了Marker,调用接口获取diggingsId（矿区id）
+                myFocusPoint = marker.getPosition();
+                initCubeMap();
+                return true;
             }
         };
         baiduMap.setOnMarkerClickListener(listener);
@@ -465,12 +467,12 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             LogUtils.d(TAG, "####### " + "获取聊天室地理位置信息" + " ########");
             String data = JSONObject.parseObject(response).getString("data");
-            coordinates = JSONObject.parseObject(data, Coordinates.class);
+            /*coordinates = JSONObject.parseObject(data, Coordinates.class);
             if (coordinates == null) {
                 return;
             }
             roomID = coordinates.getRoomId();
-            String latLang = coordinates.getRoomName();
+            String latLang = coordinates.getRoomName();*/
             //设置经纬度显示
 //            setCurrentAddress(latLang);
 
@@ -498,14 +500,19 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         String code = JSONObject.parseObject(response).getString("code");
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             String data = JSONObject.parseObject(response).getString("data");
-            Coordinates coordas = SCJsonUtils.parseObj(data, Coordinates.class);
-            if(coordas.getStatus() == 1 || coordas.getStatus() == 2){//
-                ToastUtils.showToast(getActivity(),"此区域已被锁定，请到空白区域创建");
+            coordinates = SCJsonUtils.parseObj(data, Coordinates.class);
+            if(coordinates.getStatus() == 1 || coordinates.getStatus() == 2){//
+                //已创建的区域
+                if(!TextUtils.isEmpty(coordinates.getDiggingId())){
+                    mHomePresenter.checkIsJoinMining(SCCacheUtils.getCacheUserId(),coordinates.getDiggingId());
+                }else {
+                    ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
+                }
             }else{
                 //弹出提示创建
-                if(!TextUtils.isEmpty(coordas.getFocusLatitude()) && !TextUtils.isEmpty(coordas.getFocusLongitude())){
+                if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
                     //设置经纬度显示
-                    setCurrentAddress(coordas);
+                    setCurrentAddress(coordinates);
                 }
             }
         }
@@ -555,7 +562,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     @Override
     public void setCheckPasswResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
-        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+        if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
             if (mShowPasswordDialog != null) {
                 mShowPasswordDialog.dismiss();
             }
@@ -586,7 +593,44 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 startActivity(new Intent(getActivity(),PayforSuccessActivity.class).putExtra("info",shareBean));
             }
 
+        }else {
+            ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
         }
+    }
+
+    @Override
+    public void setCheckIsJoinMiningRsponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            List<MiningRoomBeam> mList = JSONObject.parseArray(data, MiningRoomBeam.class);
+            if(mList.size()==0)return;
+            String userId = mList.get(0).getUserId();
+            if(SCCacheUtils.getCacheUserId().equals(userId)){//说明是自己创建的或者参与的
+                //直接进入聊天室
+                gotoMessageRoom();
+            }else {
+                if(coordinates.getStatus() ==2){
+                    ToastUtils.showToast(getActivity(), R.string.enter_with_black_area);
+                }else {
+                    //弹出提示创建
+                    if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
+                        //设置经纬度显示
+                        setCurrentAddress(coordinates);
+                    }
+                }
+
+            }
+        }
+    }
+
+    //进入聊天室
+    private void gotoMessageRoom(){
+        if(TextUtils.isEmpty(coordinates.getRoomId()))return;
+        Intent intent = new Intent(getActivity(), MessageListActivity.class);
+        intent.putExtra("roomId", "" + coordinates.getRoomId());
+        intent.putExtra("roomName", "" + coordinates.getRoomName());
+        startActivity(intent);
     }
 
     /**
@@ -743,14 +787,14 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                mScInputDialog = new SCInputDialog(getActivity(), getString(R.string.add_meta_c),
-                        getString(R.string.enter_m_name));
+                mScInputDialog = new SCInputDialog(getActivity(), getString(R.string.add_minig),
+                        getString(R.string.enter_mine_name));
                 //显示输入元社区
                 mScInputDialog.setCallback(new Callback() {//确定
                     @Override
                     public void invoke() {
                         if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText())){
-                            ToastUtils.showToast(getActivity(), R.string.enter_char_room);
+                            ToastUtils.showToast(getActivity(), R.string.enter_mine_name);
                             return;
                         }
 //                        addCustomChatRoom(baiduMap, gpsLatLng);
@@ -945,7 +989,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         //获取周边聊天室
         mHomePresenter.getCurrentChatRoom(gpsLatLng);
         //获取当前地址聊天室信息
-        mHomePresenter.getCurrentPoint(gpsLatLng);
+//        mHomePresenter.getCurrentPoint(gpsLatLng);
     }
 
     @Override
@@ -964,7 +1008,6 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 cursor.close();
                 LogUtils.showLog("----->HomeFragment: select image path is "+photoPath);
                  Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                 final File mPasswordFile = new File(photoPath);
                 if (mShowPasswordDialog != null) {
                     mShowPasswordDialog.dismiss();
                     mShowPasswordDialog.setPasswordBitmap(null);

@@ -593,7 +593,7 @@ public interface HttpApi {
     //查询钱包信息
     String WALLET_INFO = BASE_URL + "/web/api/wallet/info";
     //进入聊天室支付金额
-    String PAY_FOR_ARS = BASE_URL + "/wallet/api/wallet/2.0/payARS";
+    String PAY_FOR_ARS = BASE_URL + "/wallet/api/wallet/2.0/pay";//2019.8.14变更，payARS
     /* 实名认证 */
     String VERIFIED = BASE_URL + "/v1/2.0/Verified";
     /* 是否实名 */
@@ -693,5 +693,7 @@ public interface HttpApi {
 
     //他人加入矿区接口
     String ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/insertSelective";
+    //判断是否加入矿区接口
+    String CHECK_ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/queryTDiggingJoinLogList";
 
 }

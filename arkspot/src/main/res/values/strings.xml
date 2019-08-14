@@ -441,4 +441,13 @@
     <string name="befort_yest">前天</string>
     <string name="days_ago">天前</string>
     <string name="enter_key_w">请输入关键字</string>
+    <string name="add_minig">添加矿区</string>
+    <string name="enter_mine_name">输入矿区名称</string>
+    <string name="enter_with_black_area">此区域已被锁定，请到空白区域创建</string>
+    <string name="skip_mining_enter">跳过，直接进入矿区</string>
+    <string name="share_liji">立即分享</string>
+    <string name="my_invitation">我的专属邀请码</string>
+    <string name="join_to_wk">邀请三位好友即可开始您的挖矿之旅</string>
+    <string name="create_y_code">您的专属邀请码已生成</string>
+    <string name="payfor_success">支付成功</string>
 </resources>

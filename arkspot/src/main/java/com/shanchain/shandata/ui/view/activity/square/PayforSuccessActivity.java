@@ -77,7 +77,6 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
         initToolBar();
         shareBean = (ShareBean) getIntent().getSerializableExtra("info");
         if(shareBean!=null){
-            LogUtils.showLog("------>>>sharebean:"+shareBean.toString());
             tvCodeNum.setText(shareBean.getInviteCode());
             Bitmap bitmap = CodeUtils.createImage(shareBean.getInviteCode(), 400, 400, null);
             ivScode.setImageBitmap(bitmap);

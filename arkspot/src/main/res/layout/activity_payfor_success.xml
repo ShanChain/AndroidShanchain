@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        android:text="支付成功"
+        android:text="@string/payfor_success"
         android:textSize="16sp"
         />
     <TextView
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:text="您的专属邀请码已生成"
+        android:text="@string/create_y_code"
         android:textSize="18sp"
         />
     <TextView
@@ -47,13 +47,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:text="邀请三位好友即可开始您的挖矿之旅"
+        android:text="@string/join_to_wk"
         android:textSize="15sp"
         />
     <ImageView
         android:id="@+id/iv_scode"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
     <TextView
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_gravity="center"
-        android:text="我的专属邀请码"
+        android:text="@string/my_invitation"
         android:textSize="16sp"
         />
     <TextView
@@ -76,16 +76,16 @@
     <Button
         android:id="@+id/btn_reset_sure"
         android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_btn_login_selector"
-        android:text="立即分享"
+        android:text="@string/share_liji"
         android:textColor="@color/colorWhite"/>
 
-    <Space
+    <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="25dp"
-        android:text="跳过，直接进入矿区"
+        android:text="@string/skip_mining_enter"
         android:textSize="14sp"
         />
 </LinearLayout>

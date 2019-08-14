@@ -219,8 +219,10 @@ public class HomePresenterImpl implements HomePresenter {
                 .addFormDataPart("userId", "" + SCCacheUtils.getCacheUserId())
                 .addFormDataPart("value", "" + value)//支付金额
                 .addFormDataPart("token",token)
+                .addFormDataPart("memo","payMining")//挖矿支付标识
                 .setType(MultipartBody.FORM);
         RequestBody multiBody = multiBuilder.build();
+        LogUtils.d("------>>>>checkPassword para: "+SCCacheUtils.getCacheCharacterId()+"--"+userId+"---"+value);
         SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyNewCallBack(mContext, null) {
             @Override
             public void responseDoParse(String string) throws IOException {
@@ -238,6 +240,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void addMiningRoom(String userId, String roomId) {
+        LogUtils.d("----->>>ADD_MINING_ROOM：userId "+userId+"-----roomId:"+roomId);
         SCHttpUtils.post()
                 .url(HttpApi.ADD_MINING_ROOM)
                 .addParams("createUser",userId)
@@ -252,6 +255,27 @@ public class HomePresenterImpl implements HomePresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         mHomeView.setAddMiningRoomResponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void checkIsJoinMining(String userId, String diggingsId) {
+        LogUtils.d("----->>>diggingsId:"+diggingsId+"----userid:"+userId);
+        SCHttpUtils.post()
+                .url(HttpApi.CHECK_ADD_MMINING_ROOM)
+                .addParams("userId",userId)
+                .addParams("diggingsId",diggingsId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setCheckIsJoinMiningRsponse(response);
                     }
                 });
     }

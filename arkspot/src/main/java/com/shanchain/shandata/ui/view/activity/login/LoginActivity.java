@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity {
                 if(phoneFrontBean !=null){
                     if(phoneFrontBean.getSourceType() ==1){
                         tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
-                    }else {
+                    }else if(phoneFrontBean.getSourceType() ==2){
                         tvPhoneQ2.setText(phoneFrontBean.getPhoneFront());
                     }
                     aAcount = phoneFrontBean.getPhoneFront();

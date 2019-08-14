@@ -69,5 +69,6 @@
     <string name="album">相册</string>
     <string name="take_photo">拍照</string>
     <string name="share_to">分享到</string>
+    <string name="password_error">密码错误</string>
 
 </resources>

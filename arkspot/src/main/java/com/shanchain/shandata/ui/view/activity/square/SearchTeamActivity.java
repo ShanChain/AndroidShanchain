@@ -176,7 +176,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
     @Override
     public void setCheckPasswResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
-        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+        if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
             if (mShowPasswordDialog != null) {
                 mShowPasswordDialog.dismiss();
             }

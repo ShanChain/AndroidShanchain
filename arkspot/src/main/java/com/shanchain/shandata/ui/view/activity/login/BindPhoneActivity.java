@@ -1,13 +1,11 @@
 package com.shanchain.shandata.ui.view.activity.login;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -27,26 +25,39 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
+import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
 
 public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
-    private ArthurToolBar toolBar;
-    private EditText editTextAccount;
-    private EditText editTextCode;
-    private TextView textViewCode;
-    private Button sure;
+    @Bind(R.id.tb_bind_pone)
+    ArthurToolBar toolBar;
+    @Bind(R.id.tv_phone_q_1)
+    TextView tvPhoneQ1;
+    @Bind(R.id.et_login_account)
+    EditText editTextAccount;
+    @Bind(R.id.et_register_code)
+    EditText editTextCode;
+    @Bind(R.id.tv_register_code)
+    TextView textViewCode;
+    @Bind(R.id.btn_sure)
+    Button sure;
     private String mobilePhone, verifyCode;
     private String encryptOpenId = "", sign = "";
     private String salt;
     private String timestamp;
-    private Spinner spPhoneNumber;
-    private String [] countrysAttr= new String[]{"+86(CHN)","+852(HK)","+65(SGP)","+44(UK)"};
-    private String [] countryPhoneAttr = new String[]{"+86","+852","+65","+44"};
-    private String aAcount = "";
+    private String aAcount = "+86";
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_bind_phone;
@@ -54,19 +65,23 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
 
     @Override
     protected void initViewsAndEvents() {
-        toolBar = findViewById(R.id.tb_bind_pone);
         toolBar.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
-        toolBar = findViewById(R.id.tb_bind_pone);
-        editTextAccount = findViewById(R.id.et_login_account);
-        editTextCode = findViewById(R.id.et_register_code);
-        textViewCode = findViewById(R.id.tv_register_code);
-        spPhoneNumber = findViewById(R.id.sp_phone_number);
-        sure = findViewById(R.id.btn_sure);
         toolBar.setOnLeftClickListener(this);
-//        sign = MD5Utils.getMD5("647414" +"817372"+ "1545047532084");
 
         initData();
-        addCountrysPhone();
+    }
+
+    /**
+     * 收到用户选择某个手机前缀
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getPhoneFront(PhoneFrontBean phoneFrontBean){
+        if(phoneFrontBean !=null){
+            if(phoneFrontBean.getSourceType() == 4){
+                tvPhoneQ1.setText(phoneFrontBean.getPhoneFront());
+                aAcount = phoneFrontBean.getPhoneFront();
+            }
+        }
     }
 
     private void initData() {
@@ -93,8 +108,8 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
                     ToastUtils.showToast(BindPhoneActivity.this, getString(R.string.phone_sms_not_entity));
                     return;
                 }
-                if(!"+86".equals(aAcount)){
-                    mobilePhone = aAcount.substring(1,aAcount.length())+mobilePhone;
+                if (!"+86".equals(aAcount)) {
+                    mobilePhone = aAcount.substring(1, aAcount.length()) + mobilePhone;
                 }
                 sign = MD5Utils.getMD5(verifyCode + salt + timestamp);
                 final String localVersion = VersionUtils.getVersionName(mContext);
@@ -131,7 +146,7 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
 
                                     LogUtils.d("dynamicLogin", "三方登录成功");
 //                                    Intent intent = new Intent(BindPhoneActivity.this,HomeActivity.class);
-                                    Intent intent = new Intent(BindPhoneActivity.this, FootPrintActivity.class);
+                                    Intent intent = new Intent(BindPhoneActivity.this, FootPrintNewActivity.class);
                                     startActivity(intent);
                                     finish();
                                     runOnUiThread(new Runnable() {
@@ -147,28 +162,10 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
         });
     }
 
-    //添加几个测试国家的手机号前缀
-    private void addCountrysPhone(){
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, countrysAttr);
-        //下拉的样式res
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spPhoneNumber.setAdapter(spinnerAdapter);
-
-        spPhoneNumber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                aAcount = countryPhoneAttr[pos];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-
-        aAcount = countryPhoneAttr[0];
+    //获取手机号前缀
+    @OnClick(R.id.tv_phone_q_1)
+    void phoneFront(){
+        startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",4));
     }
 
     private void obtainCheckCode(String mobilePhone) {
@@ -176,13 +173,17 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
             ToastUtils.showToast(this, getString(R.string.str_hint_register_phone));
             return;
         } else {
-            /*if (AccountUtils.isPhone(mobilePhone)) {
+            if ("+86".equals(aAcount)){
+                if(AccountUtils.isPhone(mobilePhone)){
+                    getCheckCode(mobilePhone);
+                }else {
+                    ToastUtils.showToast(this, R.string.phone_right);
+                    return;
+                }
+            }else {
                 getCheckCode(mobilePhone);
-            } else {
-                ToastUtils.showToast(this, "请输入正确格式的账号");
-                return;
-            }*/
-            getCheckCode(mobilePhone);
+            }
+
         }
         CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(textViewCode, 60 * 1000, 1000);
         countDownTimeUtils.setContext(this);
@@ -191,8 +192,8 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
 
     //从后台获取验证码
     private void getCheckCode(String phone) {
-        if(!"+86".equals(aAcount)){
-            phone = aAcount.substring(1,aAcount.length())+phone;
+        if (!"+86".equals(aAcount)) {
+            phone = aAcount.substring(1, aAcount.length()) + phone;
         }
         SCHttpUtils.postNoToken()
                 .url(HttpApi.SMS_BIND_UNLOGIN_VERIFYCODE)
@@ -224,4 +225,5 @@ public class BindPhoneActivity extends BaseActivity implements ArthurToolBar.OnL
     public void onLeftClick(View v) {
         finish();
     }
+
 }

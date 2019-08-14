@@ -425,5 +425,14 @@
     <string name="befort_yest">The day before yesterday</string>
     <string name="days_ago">Days ago</string>
     <string name="enter_key_w">Please enter key words</string>
-
+    <string name="password_error">Password error</string>
+    <string name="add_minig">Add a mine</string>
+    <string name="enter_mine_name">Enter the mine name</string>
+    <string name="enter_with_black_area">This area has been locked, please create it in a blank area</string>
+    <string name="skip_mining_enter">Skip and go directly to the mining area</string>
+    <string name="share_liji">Share</string>
+    <string name="my_invitation">My exclusive invitation code</string>
+    <string name="join_to_wk">Invite three friends to start your mining journey</string>
+    <string name="create_y_code">Your unique invitation code has been generated</string>
+    <string name="payfor_success">Payment successful</string>
 </resources>
