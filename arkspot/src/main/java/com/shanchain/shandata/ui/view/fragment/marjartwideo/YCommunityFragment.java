@@ -209,41 +209,26 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
 
     //初始化用户信息
     private void initUserInfo() {
-        mMyInfo = JMessageClient.getMyInfo();
-        if(null != mMyInfo){
-            userNikeView.setText("" + mMyInfo.getNickname());
-            tvUserSign.setText(mMyInfo.getSignature());
-            mMyInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                @Override
-                public void gotResult(int responseCode, String responseMessage, Bitmap avatarBitmap) {
-                    LogUtils.d(TAG,"get Jushinfo responseMessage:"+responseMessage+",responseCode: "+responseCode);
-                    if (responseCode == 0) {
-                        userHeadView.setImageBitmap(avatarBitmap);
-                        ivUserHead.setImageBitmap(avatarBitmap);
-                    } else {
-                        userHeadView.setImageResource(R.mipmap.aurora_headicon_default);
-                        ivUserHead.setImageResource(R.mipmap.aurora_headicon_default);
-                    }
-                }
-            });
-        }else {
-            CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
-            if (characterInfo != null && characterInfo.getCharacterId() != 0) {
-                String nikeName = characterInfo.getName() != null ? characterInfo.getName() : "";
-                String signature = characterInfo.getSignature() != null ? characterInfo.getSignature() : "";
-                final String headImg = characterInfo.getHeadImg() != null ? characterInfo.getHeadImg() : "";
-                if (!TextUtils.isEmpty(nikeName)) {
-                    userNikeView.setText(nikeName);
-                }
-                if (!TextUtils.isEmpty(signature)) {
-                    tvUserSign.setText(signature);
-                }
-                if (!TextUtils.isEmpty(headImg)) {
-                    RequestOptions options = new RequestOptions();
-                    options.placeholder(R.mipmap.aurora_headicon_default);
-                    Glide.with(getActivity()).load(headImg).apply(options).into(userHeadView);
-                    Glide.with(getActivity()).load(headImg).apply(options).into(ivUserHead);
-                }
+        CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+        if(characterInfo!=null){
+            String nikeName = characterInfo.getName() != null ? characterInfo.getName() : "";
+            String signature = characterInfo.getSignature() != null ? characterInfo.getSignature() : "";
+            final String headImg = characterInfo.getHeadImg() != null ? characterInfo.getHeadImg() : "";
+            if (!TextUtils.isEmpty(nikeName)) {
+                userNikeView.setText(nikeName);
+            }else {
+                userNikeView.setText(characterInfo.getUserId()+"");
+            }
+            if (!TextUtils.isEmpty(signature)) {
+                tvUserSign.setText(signature);
+            }
+            if (!TextUtils.isEmpty(headImg)) {
+                Glide.with(this).load(headImg)
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
+                Glide.with(this).load(headImg)
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(userHeadView);
             }
         }
     }

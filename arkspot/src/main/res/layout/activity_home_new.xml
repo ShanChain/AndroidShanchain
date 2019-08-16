@@ -45,10 +45,16 @@
             android:layout_marginRight="30dp"
             android:layout_marginBottom="40dp">
             <ImageView
+                android:id="@+id/im_wk_rule"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/hot"/>
+            <ImageView
                 android:id="@+id/im_person"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:visibility="gone"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:src="@mipmap/person_icon"/>
 
@@ -57,7 +63,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:src="@mipmap/wa_kuang_icon" />
         </LinearLayout>
 

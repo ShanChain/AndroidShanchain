@@ -435,4 +435,7 @@
     <string name="join_to_wk">Invite three friends to start your mining journey</string>
     <string name="create_y_code">Your unique invitation code has been generated</string>
     <string name="payfor_success">Payment successful</string>
+    <string name="creat_time">Time：%s</string>
+    <string name="room_exit_failed">Chat room already exists in this area, creation failed</string>
+    <string name="success_join_mining">Successfully joined the mine</string>
 </resources>

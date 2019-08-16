@@ -167,8 +167,9 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_shouye:
-                changeState(0);
-                mViewpager.setCurrentItem(0);
+                /*changeState(0);
+                mViewpager.setCurrentItem(0);*/
+                ToastUtils.showToast(this,"该功能暂未开放，敬请期待");
                 break;
             case R.id.ll_bankuai:
                 changeState(1);

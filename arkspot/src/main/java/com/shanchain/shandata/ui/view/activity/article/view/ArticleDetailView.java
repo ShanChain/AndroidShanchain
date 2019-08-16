@@ -13,4 +13,5 @@ public interface ArticleDetailView {
     void setAttentionResponse(String response,int type);//0加关注，1删除关注
     void setPraiseResponse(String response,int type);//0点赞，1删除点赞
     void setAttentionCommentResponse(String response,int type);//0加关注，1删除关注
+    void setQueryArticleDetailResponse(String response);
 }

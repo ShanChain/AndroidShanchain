@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.presenter.impl;
 
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
@@ -193,5 +194,25 @@ public class ArticleDetailPresenterImpl implements ArticleDetailPresenter {
                         mArticleDetailView.setAttentionCommentResponse(response,1);
                     }
                 });
+    }
+
+    @Override
+    public void queryArticleDetail(String articleId) {
+        SCHttpUtils.post()
+                .url(HttpApi.QUERY_DETAIL_TITLE)
+                .addParams("id",articleId)
+                .addParams("userId", SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.setQueryArticleDetailResponse(response);
+                    }
+                });
+
     }
 }

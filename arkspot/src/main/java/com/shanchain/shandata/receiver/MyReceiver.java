@@ -26,6 +26,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
@@ -126,7 +127,7 @@ public class MyReceiver extends BroadcastReceiver {
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 LogUtils.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 Activity topActivity = null;
-                Intent mainIntent = new Intent(context, FootPrintActivity.class);
+                Intent mainIntent = new Intent(context, FootPrintNewActivity.class);
                 mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
                     JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
@@ -261,10 +262,10 @@ public class MyReceiver extends BroadcastReceiver {
         bundle.putParcelable("userInfo", mDefaultUser);
         Intent intent = new Intent(mContext, SingleChatActivity.class);
         intent.putExtras(bundle);
-        if (ActivityStackManager.getInstance().hasActivityInStack(FootPrintActivity.class)) {
+        if (ActivityStackManager.getInstance().hasActivityInStack(FootPrintNewActivity.class)) {
             mContext.startActivity(intent);
         } else {
-            Intent mainIntent = new Intent(mContext, FootPrintActivity.class);
+            Intent mainIntent = new Intent(mContext, FootPrintNewActivity.class);
             mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            Intent myMessageIntent = new Intent(mContext, MyMessageActivity.class);
             Intent[] intents = new Intent[]{mainIntent, intent};

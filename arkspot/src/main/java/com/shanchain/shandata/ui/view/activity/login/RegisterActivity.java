@@ -18,6 +18,7 @@ import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.data.common.base.UserType;
+import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.ResponseRegisteUserBean;
 import com.shanchain.shandata.ui.model.ResponseSmsBean;
@@ -113,7 +114,7 @@ public class RegisterActivity extends BaseActivity implements ArthurToolBar.OnLe
                 break;
             case R.id.tv_register_terms:
                 //查看条款
-                Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewXYActivity.class);
+                Intent intent = new Intent(mContext, SCWebViewXYActivity.class);
                 JSONObject obj = new JSONObject();
                 obj.put("url", "http://h5.qianqianshijie.com/agreement");
                 obj.put("title", getString(R.string.user_agreement));

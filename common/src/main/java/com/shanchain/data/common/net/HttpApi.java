@@ -578,8 +578,8 @@ public interface HttpApi {
     //隐私政策
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
-    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-//      String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+//    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
+      String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
@@ -685,6 +685,8 @@ public interface HttpApi {
     String ADD_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/insert";
     //取消点赞某个帖子
     String DELETE_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/delete";
+    //查询某个帖子
+    String QUERY_DETAIL_TITLE = BASE_URL + "/v1/invitation/getTInvitation";
 
     //加入矿区表接口
     String ADD_MINING_ROOM = BASE_URL + "/probecoin/tDiggings/insertSelective";

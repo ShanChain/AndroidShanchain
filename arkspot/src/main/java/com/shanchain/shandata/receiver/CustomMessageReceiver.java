@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 
 import cn.jpush.android.api.JPushInterface;
@@ -32,7 +33,7 @@ public class CustomMessageReceiver extends BroadcastReceiver {
                 customIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(customIntent);
             } else {
-                Intent customIntent = new Intent(context, FootPrintActivity.class);
+                Intent customIntent = new Intent(context, FootPrintNewActivity.class);
                 customIntent.putExtras(bundle);
                 customIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(customIntent);

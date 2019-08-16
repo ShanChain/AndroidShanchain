@@ -105,7 +105,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!TextUtils.isEmpty(s)){
-                    mPresenter.queryGroupTeam("", "","",0, 30,Constants.pullRefress);
+                    mPresenter.queryGroupTeam("", "","",1, 30,Constants.pullRefress);
                 }
             }
 
@@ -229,7 +229,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
     private void isJoinMiningTip(){
         standardDialog = new StandardDialog(SearchTeamActivity.this);
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,"0.001"));
+        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,Constants.PAYFOR_MINING_MONEY));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override
@@ -291,9 +291,8 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
                 //获取照片路径
                 final String photoPath = cursor.getString(columnIndex);
                 cursor.close();
-                LogUtils.showLog("----->SearchActivity: select image path is "+photoPath);
+                LogUtils.d("----->SearchActivity: select image path is "+photoPath);
                 Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                final File mPasswordFile = new File(photoPath);
                 if (mShowPasswordDialog != null) {
                     mShowPasswordDialog.dismiss();
                     mShowPasswordDialog.setPasswordBitmap(null);

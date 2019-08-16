@@ -60,7 +60,8 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                         .error(R.drawable.aurora_headicon_default)).into(circleImageView);
         helper.setText(R.id.tv_nickname,item.getNickName());
-        helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(mContext,new Date(item.getCreateTime())));
+        helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(mContext,new Date(item.getUpdateTime())));
+        helper.setText(R.id.tv_create_time,TimeUtils.formatTimeMonth((item.getCreateTime()/1000)+""));
         helper.setText(R.id.et_content,item.getContent());
         helper.setText(R.id.tv_conin,item.getPraiseCount()+"");
         helper.setText(R.id.tv_message,item.getReviceCount()+"");
@@ -70,10 +71,16 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             String []attr = item.getListImg().replaceAll("\\\\","").split(",");
             Glide.with(mContext).load(HttpApi.BASE_URL+attr[0])
                     .apply(new RequestOptions()
-                            .error(R.drawable.aurora_headicon_default)).into(ivBg);
-            ivBg.setVisibility(View.VISIBLE);
+                            .placeholder(R.drawable.squrea_bg_shape)
+                            .error(R.drawable.squrea_bg_shape)).into(ivBg);
+            helper.getView(R.id.rl_bg).setVisibility(View.VISIBLE);
+            if(attr.length == 1){
+                helper.setText(R.id.tv_nums,"");
+            }else {
+                helper.setText(R.id.tv_nums,"+"+(attr.length-1));
+            }
         }else {
-            ivBg.setVisibility(View.GONE);
+            helper.getView(R.id.rl_bg).setVisibility(View.GONE);
         }
         if("0".equals(item.getIsPraise())){
             //未点赞

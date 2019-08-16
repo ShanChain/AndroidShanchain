@@ -114,7 +114,8 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         mPresenter = new ArticleDetailPresenterImpl(this);
         mAdapter = new CommetListAdapter(this);
         etContent.setExpandState(ExpandableTextView.STATE_EXPAND);
-        initData();
+        mPresenter.queryArticleDetail(mSqureDataEntity.getId()+"");
+
     }
     //初始化数据
     private void initData(){
@@ -189,6 +190,12 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }else {
             mPresenter.deletePraiseToArticle(Integer.parseInt(userId),mSqureDataEntity.getId());
         }
+    }
+
+    //分享
+    @OnClick(R.id.tv_share)
+    void shareArticle(){
+        ToastUtils.showToast(this,"该功能暂未开放，敬请期待");
     }
 
     private void initListener(){
@@ -271,10 +278,10 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             etContentInput.setText("");
             hideKeyboard(etContentInput);
             mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
-
-            mSqureDataEntity.setReviceCount(mSqureDataEntity.getReviceCount()+1);
-            tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
-            tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
+            mPresenter.queryArticleDetail(mSqureDataEntity.getId()+"");
+//            mSqureDataEntity.setReviceCount(mSqureDataEntity.getReviceCount()+1);
+//            tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
+//            tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
         }else {
             ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
         }
@@ -345,6 +352,16 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             }
         }else {
             ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+        }
+    }
+
+    @Override
+    public void setQueryArticleDetailResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            mSqureDataEntity = SCJsonUtils.parseObj(data,SqureDataEntity.class);
+            initData();
         }
     }
 

@@ -35,7 +35,7 @@ public class MyGroupActivity extends BaseActivity {
     ImageView imBack;
     @Bind(R.id.im_search)
     ImageView imSearch;
-
+    private int sourceType = 1;
 
     private List<Fragment> fragmentList = new ArrayList();
 
@@ -51,6 +51,7 @@ public class MyGroupActivity extends BaseActivity {
     }
 
     private void initToolBar() {
+        sourceType = getIntent().getIntExtra("type",1);
         imBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +76,12 @@ public class MyGroupActivity extends BaseActivity {
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        mViewPager.setCurrentItem(0);
+        if(sourceType ==1){
+            mViewPager.setCurrentItem(0);
+        }else {
+            mViewPager.setCurrentItem(2);
+        }
+
     }
 
 

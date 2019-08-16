@@ -213,18 +213,16 @@ public class LoginActivity extends BaseActivity {
             LogUtils.e("当前用户id" + userId);
             String characterId = getCache(userId, Constants.CACHE_CHARACTER_ID);
             String characterInfo = getCache(userId, Constants.CACHE_CHARACTER_INFO);
-            String spaceId = getCache(userId, Constants.CACHE_SPACE_ID);
-            String spaceInfo = getCache(userId, Constants.CACHE_SPACE_INFO);
             String hxUserName = SCCacheUtils.getCacheHxUserName();
             String hxPwd = SCCacheUtils.getCacheHxPwd();
             String token = SCCacheUtils.getCacheToken();
-//            if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(spaceId) || TextUtils.isEmpty(spaceInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
             if (TextUtils.isEmpty(characterId) || TextUtils.isEmpty(characterInfo) || TextUtils.isEmpty(hxUserName) || TextUtils.isEmpty(hxPwd) || TextUtils.isEmpty(token)) {
                 checkServer();
             } else {
+                //基本不会执行这里的逻辑
                 closeProgress();
                 CharacterInfo characterInfo1 = JSONObject.parseObject(characterInfo, CharacterInfo.class);
-                registerJmUser(hxUserName, hxPwd);
+                registerJmUser(hxUserName, hxPwd,characterInfo1);
             }
 
         }
@@ -256,34 +254,28 @@ public class LoginActivity extends BaseActivity {
                                     return;
                                 }
                                 String character = JSONObject.parseObject(data).getString("characterInfo");
-                                RoleManager.switchRoleCacheCharacterInfo(character);
                                 if (TextUtils.isEmpty(character)) {
                                     closeProgress();
                                     ToastUtils.showToast(LoginActivity.this, R.string.login_failed);
                                     return;
                                 } else {
-                                    String isBindPwd = SCJsonUtils.parseString(character, "isBindPwd");
-                                    String allowNotify = SCJsonUtils.parseString(character, "allowNotify");
-//                                    if (allowNotify.equals("false")) {
-//                                        JPushInterface.stopPush(getApplicationContext());
-//                                    }
+                                    RoleManager.switchRoleCacheCharacterInfo(character);
                                     CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                                    if (characterInfo == null) {
+                                    String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
+                                    RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
+                                    if(hxBean == null){
                                         closeProgress();
                                         ToastUtils.showToast(LoginActivity.this, R.string.login_failed);
-                                    } else {
-                                        String hxAccount = JSONObject.parseObject(data).getString("hxAccount");
-                                        RegisterHxBean hxBean = JSONObject.parseObject(hxAccount, RegisterHxBean.class);
-                                        //注册/登录 极光IM账号
-                                        registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword());
-//                                        loginJm(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
-                                        int spaceId = characterInfo.getSpaceId();
-                                        int characterId = characterInfo.getCharacterId();
-                                        String jmUser = JSONObject.parseObject(hxAccount).getString("hxUserName");
-                                        String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
-                                        //缓存用户名和密码信息
-                                        RoleManager.switchJmRoleCache(String.valueOf(characterId), jmUser, jmPassword);
+                                        return;
                                     }
+                                    int characterId = characterInfo.getCharacterId();
+                                    String jmUser = hxBean.getHxUserName();
+                                    String jmPassword = hxBean.getHxPassword();
+                                    //缓存用户名和密码信息
+                                    RoleManager.switchJmRoleCache(String.valueOf(characterId), jmUser, jmPassword);
+                                    RoleManager.switchRoleCacheHx(jmUser, jmPassword);
+                                    //注册/登录 极光IM账号
+                                    registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
                                 }
 
                             } else {
@@ -303,135 +295,80 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    public void registerJmUser(final String jmUser, final String jmPassword) {
+    public void registerJmUser(final String jmUser, final String jmPassword,CharacterInfo characterInfo) {
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
         //是否第一次打开app
         JPushInterface.init(getApplicationContext());
         String registrationID = JPushInterface.getRegistrationID(this);
         LogUtils.d("JPushInterface", registrationID);
-        if (guided && !TextUtils.isEmpty(registrationID)) {
-            //登录极光账号
-//            showProgress();
-            JMessageClient.login(jmUser, jmPassword, new BasicCallback() {
+        //第一次打开app
+        if(guided){
+            if(TextUtils.isEmpty(registrationID)){
+                //注册极光账号
+                loginJm(jmUser,jmPassword,characterInfo,1);
+            }else {
+                //登陆极光
+                loginJm(jmUser,jmPassword,characterInfo,2);
+            }
+            startActivity(new Intent(mContext, GuideActivity.class));
+            finish();
+        }else {
+            if(TextUtils.isEmpty(registrationID)){
+                //注册极光账号
+                loginJm(jmUser,jmPassword,characterInfo,1);
+            }else {
+                //登陆极光
+                loginJm(jmUser,jmPassword,characterInfo,2);
+            }
+            startActivity(new Intent(mContext,FootPrintNewActivity.class));
+            finish();
+        }
+
+    }
+    //注册或者登陆极光
+    private void loginJm(String hxUserName, String hxPwd, final CharacterInfo characterInfo,int type) {
+        final long startTime = System.currentTimeMillis();
+        LogUtils.i("登录极光IM = 开始时间 = " + startTime);
+        if(type == 1){//注册极光
+            JMessageClient.register(hxUserName, hxPwd, new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
-                    int i1 = i;
-                    String s1 = s;
-                    LogUtils.d("返回码: " + i + " message: " + s1);
-                    if (i == 0) {
-                        LogUtils.d("极光IM############## 登录成功 ##############极光IM");
-                        closeProgress();
+                    if (i == 0 || s.equals("Success")) {
+                        LogUtils.d("极光IM############## Login注册成功 ##############极光IM,i: "+i+",s: "+s);
+                    } else {
+                        LogUtils.d("极光IM############## Login注册失败 ##############极光IM,i: "+i+",s: "+s);
+                    }
+                }
+            });
+        }else {
+            //登陆极光
+            JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0 || s.equals("Success")) {
+                        LogUtils.d("极光IM############## Login登录成功 ##############极光IM,i: "+i+",s: "+s);
                         UserInfo userInfo = JMessageClient.getMyInfo();
-                        LogUtils.d("极光账号: " + jmUser);
-                        LogUtils.d("极光DisplayName: " + userInfo.getDisplayName());
-                        LogUtils.d("极光Nickname: " + userInfo.getNickname());
-                        LogUtils.d("极光UserID: " + userInfo.getUserID());
-                        LogUtils.d("极光Signature: " + userInfo.getSignature());
-                        CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
-                        if (userInfo != null && characterInfo != null) {
+                        if (userInfo != null) {
                             userInfo.setNickname(characterInfo.getName());
                             userInfo.setSignature(characterInfo.getSignature());
                             JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
                                 @Override
                                 public void gotResult(int i, String s) {
-                                    String s1 = s;
-                                    int i1 = i;
                                 }
                             });
-
                             JMessageClient.updateMyInfo(UserInfo.Field.signature, userInfo, new BasicCallback() {
                                 @Override
                                 public void gotResult(int i, String s) {
-                                    String s1 = s;
-                                    int i1 = i;
                                 }
                             });
-
                         }
-
-//                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        Intent intent = new Intent(LoginActivity.this, FootPrintNewActivity.class);
-                        startActivity(intent);
-                        finish();
-
                     } else {
-                        LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-//                        ToastUtils.showToastLong(LoginActivity.this, "登录失败，请检查用户名密码");
-                        closeProgress();
+                        LogUtils.d("极光IM############## Login登录失败 ##############极光IM,i: "+i+",s: "+s);
+//                        ToastUtils.showToastLong(LoginActivity.this, getString(R.string.login_failed));
                     }
                 }
             });
-
-
-        } else {
-            //注册极光账号
-            ThreadUtils.runOnSubThread(new Runnable() {
-                @Override
-                public void run() {
-                    JMessageClient.register(jmUser, jmPassword, new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            if (i == 0 || s.equals("Success")) {
-                                LogUtils.d("极光IM############## 注册成功 ##############极光IM");
-                                RoleManager.switchRoleCacheHx(jmUser, jmPassword);
-                            } else {
-                                LogUtils.d("极光IM############## 注册失败 ##############极光IM");
-//                                ToastUtils.showToast(LoginActivity.this, "消息服务异常");
-
-                            }
-
-                        }
-                    });
-                }
-            });
-            startActivity(new Intent(mContext, GuideActivity.class));
-            finish();
         }
-
-    }
-
-    private void loginJm(String hxUserName, String hxPwd, final CharacterInfo characterInfo) {
-        final long startTime = System.currentTimeMillis();
-        LogUtils.i("登录极光IM = 开始时间 = " + startTime);
-        JMessageClient.login(hxUserName, hxPwd, new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                String ss = s;
-                if (s.equals("Success")) {
-                    LogUtils.d("极光IM############## 登录成功 ##############极光IM");
-                    UserInfo userInfo = JMessageClient.getMyInfo();
-                    if (userInfo != null) {
-                        userInfo.setNickname(characterInfo.getName());
-                        userInfo.setSignature(characterInfo.getSignature());
-                        JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                String s1 = s;
-                                int i1 = i;
-                            }
-                        });
-
-                        JMessageClient.updateMyInfo(UserInfo.Field.signature, userInfo, new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                String s1 = s;
-                                int i1 = i;
-                            }
-                        });
-                    }
-
-                    Intent intent = new Intent(LoginActivity.this, FootPrintNewActivity.class);
-                    startActivity(intent);
-                    finish();
-
-                } else {
-                    LogUtils.d("极光IM############## 登录失败 ##############极光IM");
-                    ToastUtils.showToastLong(LoginActivity.this, getString(R.string.login_failed));
-
-                }
-            }
-        });
-
     }
 
 
@@ -501,7 +438,7 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",2));
     }
 
-
+    //账号密码登陆
     private void login() {
         String account = mEtLoginAccount.getText().toString().trim();
         String pwd = mEtLoginPwd.getText().toString().trim();
@@ -510,10 +447,6 @@ public class LoginActivity extends BaseActivity {
             ToastUtils.showToast(this, R.string.passw_or_account_entity);
             return;
         }
-        /*if (!AccountUtils.isPhone(account)) {
-            ToastUtils.showToast(this, "账号格式不正确！");
-            return;
-        }*/
         //暂时处理下账号,如果是中国大陆号码，则不需要拼接前缀，其他的需要拼接前缀
         if(!"+86".equals(aAcount)){
             account = aAcount.substring(1,aAcount.length())+account;
@@ -570,7 +503,6 @@ public class LoginActivity extends BaseActivity {
                                     return;
                                 } else {
                                     if (getIntent().getStringExtra("wallet") != null) {
-
                                         Intent intent = new Intent(mContext, SCWebViewActivity.class);
                                         JSONObject obj = new JSONObject();
                                         obj.put("url", HttpApi.SEAT_WALLET);

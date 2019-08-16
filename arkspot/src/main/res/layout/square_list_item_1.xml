@@ -57,7 +57,7 @@
         android:orientation="vertical"
         android:gravity="center"
         android:layout_marginRight="10dp"
-        android:layout_marginLeft="70dp">
+        android:layout_marginLeft="65dp">
         <com.shanchain.shandata.widgets.ExpandableTextView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/et_content"
@@ -65,16 +65,31 @@
             android:layout_height="wrap_content"
             app:etv_MaxLinesOnShrink="4"
             />
-        <ImageView
-            android:id="@+id/im_bg"
+        <RelativeLayout
+            android:id="@+id/rl_bg"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:scaleType="centerCrop"/>
+            android:layout_height="130dp">
+            <ImageView
+                android:id="@+id/im_bg"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/tv_nums"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/white"
+                />
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="22dp"
             android:layout_marginTop="5dp"
-            android:gravity="center"
+            android:gravity="center|left"
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/ll_praise"
@@ -89,7 +104,7 @@
                     android:src="@mipmap/dianzan"/>
                 <TextView
                     android:id="@+id/tv_conin"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center|left"
                     android:layout_marginLeft="5dp"/>
@@ -97,23 +112,34 @@
             <ImageView
                 android:layout_width="@dimen/dimens_15dp"
                 android:layout_height="@dimen/dimens_15dp"
+                android:layout_marginLeft="20dp"
                 android:src="@mipmap/message_sqeare_icon"/>
             <TextView
                 android:id="@+id/tv_message"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
                 android:layout_marginLeft="5dp"/>
             <ImageView
                 android:layout_width="@dimen/dimens_15dp"
                 android:layout_height="@dimen/dimens_15dp"
+                android:layout_marginLeft="20dp"
                 android:src="@mipmap/squre_share_icon"/>
             <TextView
                 android:id="@+id/tv_share"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:gravity="center|left"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_create_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|right"/>
         </LinearLayout>
     </LinearLayout>
     <View

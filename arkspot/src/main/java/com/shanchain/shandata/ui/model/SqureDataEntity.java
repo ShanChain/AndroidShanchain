@@ -18,6 +18,7 @@ public class SqureDataEntity implements Serializable {
     int reviceCount;
     int collectCount;
     long createTime;
+    long updateTime;
     int isHot;
     int isRecommend;
     String listImg;
@@ -142,5 +143,13 @@ public class SqureDataEntity implements Serializable {
 
     public void setIsAttention(String isAttention) {
         this.isAttention = isAttention;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 }

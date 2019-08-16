@@ -137,28 +137,25 @@ public class MineFragment extends BaseFragment implements MineView {
 
     //设置用户基本信息
     private void initUserData(){
-        //设置头像
-        UserInfo userInfo = JMessageClient.getMyInfo();
-        if (userInfo != null && userInfo.getAvatarFile() != null) {
-            Glide.with(this)
-                    .load(userInfo.getAvatarFile().getAbsolutePath())
-                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
-                    .error(R.drawable.aurora_headicon_default))
-                    .into(ivUserHead);
-        } else {
-            Glide.with(this).load(SCCacheUtils.getCacheHeadImg())
-                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
-                            .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
-        }
-        if(userInfo!=null){
-            tvUsername.setText(userInfo.getNickname());
-            if(!TextUtils.isEmpty(userInfo.getSignature())){
-                tvUserdescipt.setText(userInfo.getSignature());
+        CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
+        if(characterInfo!=null){
+            String nikeName = characterInfo.getName() != null ? characterInfo.getName() : "";
+            String signature = characterInfo.getSignature() != null ? characterInfo.getSignature() : "";
+            final String headImg = characterInfo.getHeadImg() != null ? characterInfo.getHeadImg() : "";
+            if (!TextUtils.isEmpty(nikeName)) {
+                tvUsername.setText(nikeName);
             }else {
-//                tvUserdescipt.setText(getResources().getString(R.string.nothing_left));
+                tvUsername.setText(characterInfo.getUserId()+"");
+            }
+            if (!TextUtils.isEmpty(signature)) {
+                tvUserdescipt.setText(signature);
+            }
+            if (!TextUtils.isEmpty(headImg)) {
+                Glide.with(this).load(headImg)
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
             }
         }
-
     }
 
     //修改名称页面修改之后更新我的页面

@@ -184,8 +184,19 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             }
             //加入成功进入聊天室
             gotoMessageRoom(groupTeamBean);
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(), R.string.success_join_mining);
+                }
+            });
         }else {
-            ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
+                }
+            });
         }
     }
 
@@ -268,7 +279,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private void isJoinMiningTip(){
         standardDialog = new StandardDialog(getActivity());
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,"0.001"));
+        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,Constants.PAYFOR_MINING_MONEY));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override

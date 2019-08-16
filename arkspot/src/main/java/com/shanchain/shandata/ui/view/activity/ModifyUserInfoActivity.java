@@ -96,6 +96,7 @@ public class ModifyUserInfoActivity extends BaseActivity {
                     dataMap.put("signature",etInputSign.getText().toString().trim());
                 }
                 String modifyUser = JSONObject.toJSONString(dataMap);
+                LogUtils.d("----->>>Modifyuser:"+modifyUser);
                 SCHttpUtils.postWithUserId()
                         .url(HttpApi.MODIFY_CHARACTER)
                         .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
@@ -118,7 +119,6 @@ public class ModifyUserInfoActivity extends BaseActivity {
                                     String headImg = characterInfo.getHeadImg();
                                     String name = characterInfo.getName();
                                     String signature = characterInfo.getSignature();
-
                                     UserInfo jmUserInfo = JMessageClient.getMyInfo();
                                     if (jmUserInfo != null) {
                                         if (!TextUtils.isEmpty(name)) {

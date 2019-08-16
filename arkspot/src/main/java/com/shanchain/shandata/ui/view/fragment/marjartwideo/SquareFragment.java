@@ -42,6 +42,7 @@ import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.SquareView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -330,6 +331,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
             if(s.getId() == mSqureDataEntity.getId()){
                 if(type==0){
                     s.setIsPraise("1");
+                    s.setUpdateTime(new Date().getTime());
                     s.setPraiseCount(s.getPraiseCount()+1);
                 }else {
                     s.setIsPraise("0");

@@ -56,6 +56,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.shanchain.data.common.base.AppManager;
 import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.CommonCacheHelper;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -80,6 +81,7 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.receiver.MessageReceiver;
+import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.model.HotChatRoom;
@@ -149,6 +151,8 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     ImageView ivMyTeam;
     @Bind(R.id.im_person)
     ImageView imPerson;
+    @Bind(R.id.im_wk_rule)
+    ImageView imWkRule;
 
     private HomePresenter mHomePresenter;
     public static BaiduMap baiduMap;
@@ -192,7 +196,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                     break;
                 case 1002:
                     String filePath = (String) msg.obj;
-                    mHomePresenter.checkPasswordToServer(getActivity(),filePath,"0.001");
+                    mHomePresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接调用创建矿区接口
 //                    addCustomChatRoom();
                     break;
@@ -299,6 +303,12 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @OnClick(R.id.image_view_info)
+    void currentAddress(){
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
+        baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));//设置地图缩放级别
+        baiduMap.setMapStatus(mapStatusUpdate);
+    }
     //隐藏或者显示底部按钮
     @OnClick(R.id.img_view_hide)
     void hideView(){
@@ -324,13 +334,25 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     //我的小分队
     @OnClick(R.id.iv_my_team)
     void goToMyGroup(){
-        startActivity(new Intent(getActivity(), MyGroupActivity.class));
+        startActivity(new Intent(getActivity(), MyGroupActivity.class).putExtra("type",1));
     }
 
     @OnClick(R.id.im_person)
     void gotoMyGetGroup(){
-        startActivity(new Intent(getActivity(), PayforSuccessActivity.class));
+        startActivity(new Intent(getActivity(), MyGroupActivity.class).putExtra("type",2));
     }
+
+    @OnClick(R.id.im_wk_rule)//查看规则
+    void viewRule(){
+        Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
+        JSONObject obj = new JSONObject();
+        obj.put("url", HttpApi.BASE_URL+"/miningrule");
+//        obj.put("title", getString(R.string.user_agreement));
+        String webParams = obj.toJSONString();
+        intent.putExtra("webParams", webParams);
+        startActivity(intent);
+    }
+
 
     /**
      * 通知栏适配 - 定义通知栏渠道
@@ -501,6 +523,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             String data = JSONObject.parseObject(response).getString("data");
             coordinates = SCJsonUtils.parseObj(data, Coordinates.class);
+
             if(coordinates.getStatus() == 1 || coordinates.getStatus() == 2){//
                 //已创建的区域
                 if(!TextUtils.isEmpty(coordinates.getDiggingId())){
@@ -509,11 +532,16 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                     ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
                 }
             }else{
-                //弹出提示创建
-                if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
-                    //设置经纬度显示
-                    setCurrentAddress(coordinates);
+                if(TextUtils.isEmpty(coordinates.getRoomId())){
+                    //弹出提示创建
+                    if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
+                        //设置经纬度显示
+                        setCurrentAddress(coordinates);
+                    }
+                }else {
+                    ToastUtils.showToast(getActivity(), R.string.enter_with_black_area);
                 }
+
             }
         }
     }
@@ -819,7 +847,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private void createRoomPayforTip(){
         standardDialog = new StandardDialog(getActivity());
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_create_mining,"0.001"));
+        standardDialog.setStandardMsg(getString(R.string.payfor_create_mining, Constants.PAYFOR_MINING_MONEY));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override

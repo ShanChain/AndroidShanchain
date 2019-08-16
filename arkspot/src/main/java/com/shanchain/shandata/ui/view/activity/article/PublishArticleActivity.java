@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -23,12 +24,14 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
+import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.PhotoArticleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
@@ -77,7 +80,6 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
     private int sourceType = 0;
     private PhotoArticleAdapter mAdapter;
     private List<PhotoBean> mList = new ArrayList<>();
-    private final MyHandler mHandler = new MyHandler(this);
     private PublishArticlePresenter mArticlePresenter;
     private String content="";
     private String []attr;
@@ -103,7 +105,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         gvPhoto.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
-//        initEditeViewListener();
+        initEditeViewListener();
         setIAddPhotoCallback();
     }
 
@@ -136,7 +138,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
 
     //设置输入框监听
     private void initEditeViewListener(){
-        tvNumber.setText(getString(R.string.enter_400_words,"400"));
+        tvNumber.setText(getString(R.string.enter_400_words,"1000"));
         etContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -152,13 +154,13 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             public void afterTextChanged(Editable s) {
                 int count = etContent.getText().length();
                 if(count<=0){
-                    tvNumber.setText(getString(R.string.enter_400_words,"400"));
+                    tvNumber.setText(getString(R.string.enter_400_words,"1000"));
                 }
-                if(count >=400){
+                if(count >=1000){
                     tvNumber.setText(getString(R.string.enter_400_words,"0"));
                 }
-                if(0<count && count<400){
-                    tvNumber.setText(getString(R.string.enter_400_words,""+(400-count)));
+                if(0<count && count<1000){
+                    tvNumber.setText(getString(R.string.enter_400_words,""+(1000-count)));
                 }
             }
         });
@@ -184,6 +186,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             @Override
             public void deletePhoto(int position) {
                 mList.remove(position);
+                resetPhoteoList();
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -217,10 +220,15 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             if(TextUtils.isEmpty(mList.get(i).getUrl())){
                 mList.remove(i);
             }
-            continue;
+//            continue;
         }
-        if(mList.size()<9)
+        if(mList.size()<9) {
+            /*PhotoBean p = new PhotoBean();
+            p.setUrl("");*/
             mList.add(new PhotoBean());
+        }
+//        mAdapter.setList(mList);
+        mAdapter.notifyDataSetChanged();
     }
 
     private void comressImage(final String s){
@@ -250,7 +258,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                     mList.add(p);
                     bos.flush();
                     bos.close();
-                    mHandler.sendEmptyMessage(1);
+                    handler.sendEmptyMessage(1);
                 }catch (IOException e){
 
                 }
@@ -313,21 +321,20 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             String data = JSONObject.parseObject(response).getString("filenames");
             attr = data.substring(1,data.length()-1).split(",");
-            mHandler.sendEmptyMessage(2);
+            handler.sendEmptyMessage(2);
         }else {
-            ToastUtil.showToast(PublishArticleActivity.this, getString(R.string.images_upload_failed));
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(PublishArticleActivity.this, getString(R.string.images_upload_failed));
+                }
+            });
         }
     }
 
-    private class MyHandler extends Handler {
-        private final WeakReference<PublishArticleActivity> mActivity;
-
-        public MyHandler(PublishArticleActivity activity) {
-            mActivity = new WeakReference<PublishArticleActivity>(activity);
-        }
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            PublishArticleActivity activity = mActivity.get();
             switch (msg.what){
                 case 2:
                     String a="";
@@ -339,13 +346,17 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                             a.substring(0,a.length()-1));
                     break;
                 case 1:
-                    if (activity != null) {
-                        resetPhoteoList();
-                        mAdapter.notifyDataSetChanged();
-                    }
-                 break;
+                    resetPhoteoList();
+                    break;
             }
 
         }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
     }
 }

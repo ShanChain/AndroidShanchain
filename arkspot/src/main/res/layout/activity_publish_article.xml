@@ -49,6 +49,7 @@
         android:background="@color/white"
         android:padding="8dp"
         android:textSize="15sp"
+        android:maxLength="1000"
         android:textCursorDrawable="@null"
         android:hint="@string/share_y_opoint"
         android:gravity="left"/>
@@ -58,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text=""
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_gravity="right"
         android:layout_marginRight="5dp"
         />

@@ -71,7 +71,6 @@ public class GuideActivity extends BaseActivity {
     public void onClick() {
         PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE,true);
         readyGo(FootPrintNewActivity.class);
-//        readyGo(FootPrintActivity.class);
         finish();
     }
 

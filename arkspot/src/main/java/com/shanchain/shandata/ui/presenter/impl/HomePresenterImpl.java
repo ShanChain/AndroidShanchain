@@ -164,11 +164,16 @@ public class HomePresenterImpl implements HomePresenter {
         requestBody.put("longitude", myFocusPoint.longitude);
         requestBody.put("roomName", "" + roomName);
         requestBody.put("thumbnails", urlPath);
-        SCHttpUtils.postByBody(HttpApi.ADD_HOT_ROOM, JSONObject.toJSONString(requestBody), new SCHttpPostBodyCallBack(context, null) {
+        SCHttpUtils.postByBody(HttpApi.ADD_HOT_ROOM, JSONObject.toJSONString(requestBody), new SCHttpPostBodyNewCallBack(context, null) {
             @Override
             public void responseDoParse(String string) throws IOException {
                 mHomeView.showProgressEnd();
                 mHomeView.setCreateChatRoomResponse(string);
+            }
+
+            @Override
+            public void responseDoFaile(String string) throws IOException {
+                mHomeView.showProgressEnd();
             }
         });
 
@@ -222,7 +227,7 @@ public class HomePresenterImpl implements HomePresenter {
                 .addFormDataPart("memo","payMining")//挖矿支付标识
                 .setType(MultipartBody.FORM);
         RequestBody multiBody = multiBuilder.build();
-        LogUtils.d("------>>>>checkPassword para: "+SCCacheUtils.getCacheCharacterId()+"--"+userId+"---"+value);
+//        LogUtils.d("------>>>>checkPassword para: "+SCCacheUtils.getCacheCharacterId()+"--"+userId+"---"+value);
         SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyNewCallBack(mContext, null) {
             @Override
             public void responseDoParse(String string) throws IOException {
@@ -240,7 +245,6 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void addMiningRoom(String userId, String roomId) {
-        LogUtils.d("----->>>ADD_MINING_ROOM：userId "+userId+"-----roomId:"+roomId);
         SCHttpUtils.post()
                 .url(HttpApi.ADD_MINING_ROOM)
                 .addParams("createUser",userId)
@@ -261,7 +265,6 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void checkIsJoinMining(String userId, String diggingsId) {
-        LogUtils.d("----->>>diggingsId:"+diggingsId+"----userid:"+userId);
         SCHttpUtils.post()
                 .url(HttpApi.CHECK_ADD_MMINING_ROOM)
                 .addParams("userId",userId)

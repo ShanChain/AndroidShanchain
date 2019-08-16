@@ -407,7 +407,7 @@
     <string name="enter_400_words">还可以输入%s个字</string>
     <string name="enter_post_content">请输入发布内容</string>
     <string name="publish_failed">发布失败</string>
-    <string name="to_expand_hint">展开</string>
+    <string name="to_expand_hint">全文</string>
     <string name="to_shrink_hint">收起</string>
     <string name="enter_comment">请输入评论内容</string>
     <string name="detail_1">详情</string>
@@ -430,8 +430,8 @@
     <string name="my_mine">我的矿区</string>
     <string name="i_create">我创建的</string>
     <string name="i_joined">我加入的</string>
-    <string name="payfor_create_mining">支付%s个 SEAT 创建矿区</string>
-    <string name="payfor_add_mining">支付%s个 SEAT 加入矿区</string>
+    <string name="payfor_create_mining">您需要支付%s个 SEAT 的准备金创建矿区</string>
+    <string name="payfor_add_mining">您需要支付%s个 SEAT 的准备金加入矿区</string>
     <string name="wheel_seat">年轮座</string>
     <string name="bio_mining">仿生挖矿</string>
     <string name="just_a_minut">刚刚</string>
@@ -441,7 +441,7 @@
     <string name="befort_yest">前天</string>
     <string name="days_ago">天前</string>
     <string name="enter_key_w">请输入关键字</string>
-    <string name="add_minig">添加矿区</string>
+    <string name="add_minig">添加元矿区</string>
     <string name="enter_mine_name">输入矿区名称</string>
     <string name="enter_with_black_area">此区域已被锁定，请到空白区域创建</string>
     <string name="skip_mining_enter">跳过，直接进入矿区</string>
@@ -450,4 +450,7 @@
     <string name="join_to_wk">邀请三位好友即可开始您的挖矿之旅</string>
     <string name="create_y_code">您的专属邀请码已生成</string>
     <string name="payfor_success">支付成功</string>
+    <string name="creat_time">时间：%s</string>
+    <string name="room_exit_failed">该区域已存在聊天室，创建失败</string>
+    <string name="success_join_mining">加入矿区成功</string>
 </resources>

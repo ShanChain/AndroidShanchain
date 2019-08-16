@@ -39,8 +39,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initAPP();
-//        loginJm("weal","123456");
-
     }
 
     @Override
@@ -81,12 +79,9 @@ public class SplashActivity extends AppCompatActivity {
                 checkServer();
             } else {
                 loginJm(hxUserName, hxPwd, cacheCharacter);
-//                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                 Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
-//                Intent intent = new Intent(SplashActivity.this, MainEntranceActivity.class);
                 startActivity(intent);
                 finish();
-
             }
         } else {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -105,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
             public void gotResult(int i, String s) {
                 String ss = s;
                 if (s.equals("Success")) {
-                    LogUtils.d("极光IM############## 登录成功 ##############极光IM");
+                    LogUtils.d("极光IM##############SplashActivity 登录成功 ##############极光IM");
                     UserInfo userInfo = JMessageClient.getMyInfo();
                     if (userInfo != null) {
                         LogUtils.d("极光账号: " + hxUserName);
@@ -113,31 +108,10 @@ public class SplashActivity extends AppCompatActivity {
                         LogUtils.d("极光Nickname: " + userInfo.getNickname());
                         LogUtils.d("极光UserID: " + userInfo.getUserID());
                         LogUtils.d("极光Signature: " + userInfo.getSignature());
-                        userInfo.setNickname(characterInfo.getName());
-                        userInfo.setSignature(characterInfo.getSignature());
-                        /*JMessageClient.updateMyInfo(UserInfo.Field.nickname, userInfo, new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                String s1 = s;
-                                int i1 = i;
-                            }
-                        });
-
-                        JMessageClient.updateMyInfo(UserInfo.Field.signature, userInfo, new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                String s1 = s;
-                                int i1 = i;
-                            }
-                        });*/
-
                     }
-
                     Intent intent = new Intent(SplashActivity.this, FootPrintNewActivity.class);
-//                    Intent intent = new Intent(SplashActivity.this, MainEntranceActivity.class);
                     startActivity(intent);
                     finish();
-
                 } else {
                     LogUtils.d("极光IM############## 登录失败 ##############极光IM");
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
@@ -201,8 +175,6 @@ public class SplashActivity extends AppCompatActivity {
                                             String jmPassword = JSONObject.parseObject(hxAccount).getString("hxPassword");
                                             loginJm(jmUser, jmPassword, characterInfo);
                                         }
-
-
                                     }
 
                                 }

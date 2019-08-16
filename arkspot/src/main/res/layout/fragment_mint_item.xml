@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
     <View
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
     <View
@@ -86,8 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
 
@@ -117,8 +117,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
 
