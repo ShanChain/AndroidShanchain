@@ -113,6 +113,8 @@ public interface Constants {
     boolean SC_ENV_PRD = Boolean.valueOf(BuildConfig.ENV_PRD);
     String SC_HOST_TEST = BuildConfig.HOST_TEST;
     String SC_HOST_RELEASE = BuildConfig.HOST_RELEASE;
+    String SC_WALLET_RELEASE = BuildConfig.WALLET_RELEASE;
+    String SC_WALLET_TEST = BuildConfig.WALLET_TEST;
 
     /**************群成员配置信息**************/
     int GROUP_OWNER = 0;

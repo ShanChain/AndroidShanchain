@@ -22,6 +22,10 @@ public interface HttpApi {
      * 全局接口地址
      */
     String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+    /**
+     * 钱包，挖矿分享链接，规则等地址
+     */
+    String BASE_URL_WALLET = Constants.SC_ENV_PRD ? Constants.SC_WALLET_RELEASE : Constants.SC_WALLET_TEST;
 //    String BASE_URL = "http://95.169.24.11:8081"; //本地测试环境全局接口地址
 //    String BASE_URL = "http://api.qianqianshijie.com"; //生产环境全局接口地址
 //    String BASE_URL = "http://47.100.20.170";
@@ -579,7 +583,7 @@ public interface HttpApi {
     String PRIVACY_POLICY = "http://h5.qianqianshijie.com/privacy";
     /* 钱包地址 */
 //    String SEAT_WALLET = "http://m.qianqianshijie.com/wallet";//测试
-      String SEAT_WALLET = "http://h5.qianqianshijie.com/wallet";
+      String SEAT_WALLET = BASE_URL_WALLET+"/wallet";
     /* 获取钱包用户名密码 */
     String WALLET_GET_USE_PASSWORD = BASE_URL + "/wallet/api/wallet/2.0/hideInfo";
     /* 验证钱包密码 */
@@ -697,5 +701,6 @@ public interface HttpApi {
     String ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/insertSelective";
     //判断是否加入矿区接口
     String CHECK_ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/queryTDiggingJoinLogList";
+
 
 }

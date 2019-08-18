@@ -210,6 +210,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 cursor.close();
                 LogUtils.d("压缩前路径：",photoPath);
                 comressImage(photoPath);
+
                 break;
     }}
 
@@ -239,6 +240,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 String fileName = s.substring(s.lastIndexOf("/") + 1, s.length());
                 Bitmap bitmap= BitmapFactory.decodeFile(s);
                 Bitmap bm1=compress(bitmap);
+//                Bitmap bm1 = bitmapFactory(s);
                 try {
                     //要存到data目录下的文件夹名
                     String basePath = getApplication().getCacheDir() +"";
@@ -250,8 +252,8 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                         folder.mkdirs();
                     }
                     BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-                    bm1.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                    LogUtils.d("filename",fname);
+                    bm1.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                    LogUtils.d("filename :",fname+",filesize: "+myCaptureFile.length());
                     PhotoBean p = new PhotoBean();
                     p.setFileName(fileName);
                     p.setUrl(fname);
@@ -266,13 +268,13 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             }
         }).start();
     }
-    private static Bitmap compress(Bitmap image) {
 
+    private static Bitmap compress(Bitmap image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         // 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-        int options = 50;
-        while (baos.toByteArray().length / 1024 > 300) {
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {
             // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset();// 重置baos即清空baos
             // 这里压缩options%，把压缩后的数据存放到baos中
@@ -285,7 +287,6 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             if(options==0){
                 break;
             }
-
         }
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
         // 把压缩后的数据baos存放到ByteArrayInputStream中
@@ -358,5 +359,44 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
         handler = null;
+    }
+
+    public Bitmap bitmapFactory(String imagePath){
+        /*String[] filePathColumns = {MediaStore.Images.Media.DATA};
+        Cursor c = getContentResolver().query(imageUri, filePathColumns, null, null, null);
+        c.moveToFirst();
+        int columnIndex = c.getColumnIndex(filePathColumns[0]);
+        String imagePath = c.getString(columnIndex);
+        c.close();*/
+        // 配置压缩的参数
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true; //获取当前图片的边界大小，而不是将整张图片载入在内存中，避免内存溢出
+        BitmapFactory.decodeFile(imagePath, options);
+        options.inJustDecodeBounds = false;
+        ////inSampleSize的作用就是可以把图片的长短缩小inSampleSize倍，所占内存缩小inSampleSize的平方
+        options.inSampleSize = caculateSampleSize(options,500,50);
+        Bitmap bm = BitmapFactory.decodeFile(imagePath, options); // 解码文件
+        return bm;
+    }
+
+    /**
+     * 计算出所需要压缩的大小
+     * @param options
+     * @param reqWidth  我们期望的图片的宽，单位px
+     * @param reqHeight 我们期望的图片的高，单位px
+     * @return
+     */
+    private int caculateSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int sampleSize = 1;
+        int picWidth = options.outWidth;
+        int picHeight = options.outHeight;
+        if (picWidth > reqWidth || picHeight > reqHeight) {
+            int halfPicWidth = picWidth / 2;
+            int halfPicHeight = picHeight / 2;
+            while (halfPicWidth / sampleSize > reqWidth || halfPicHeight / sampleSize > reqHeight) {
+                sampleSize *= 2;
+            }
+        }
+        return sampleSize;
     }
 }

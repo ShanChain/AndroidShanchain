@@ -453,4 +453,6 @@
     <string name="creat_time">时间：%s</string>
     <string name="room_exit_failed">该区域已存在聊天室，创建失败</string>
     <string name="success_join_mining">加入矿区成功</string>
+    <string name="mining_nam_exant_10">矿区名称字数不超过10个</string>
+    <string name="have_not_perission">您没有权限进入该矿区</string>
 </resources>

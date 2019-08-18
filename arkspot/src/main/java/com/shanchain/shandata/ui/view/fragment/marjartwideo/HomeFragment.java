@@ -177,6 +177,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private MessageReceiver mMessageReceiver;
     private boolean isHide = true; //是否隐藏
     private boolean isClickMap = false;//是否是点击地图
+    private boolean isCreateMinig = true;//是否创建矿区
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -196,7 +197,13 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                     break;
                 case 1002:
                     String filePath = (String) msg.obj;
-                    mHomePresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
+                    if(isCreateMinig){
+                        //创建矿区
+                        mHomePresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
+                    }else {
+                        //加入矿区
+                        mHomePresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),coordinates.getDiggingId()+"");
+                    }
                     //由于验证钱包功能接口暂时不可用，这里先直接调用创建矿区接口
 //                    addCustomChatRoom();
                     break;
@@ -346,7 +353,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     void viewRule(){
         Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
         JSONObject obj = new JSONObject();
-        obj.put("url", HttpApi.BASE_URL+"/miningrule");
+        obj.put("url", HttpApi.BASE_URL_WALLET+"/miningrule");
 //        obj.put("title", getString(R.string.user_agreement));
         String webParams = obj.toJSONString();
         intent.putExtra("webParams", webParams);
@@ -421,6 +428,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
              */
             public boolean onMarkerClick(Marker marker) {
                 //点击了Marker,调用接口获取diggingsId（矿区id）
+                isClickMap = true;
                 myFocusPoint = marker.getPosition();
                 initCubeMap();
                 return true;
@@ -523,10 +531,10 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             String data = JSONObject.parseObject(response).getString("data");
             coordinates = SCJsonUtils.parseObj(data, Coordinates.class);
-
-            if(coordinates.getStatus() == 1 || coordinates.getStatus() == 2){//
+            if(coordinates.getStatus() == 1 || coordinates.getStatus() == 2){
                 //已创建的区域
                 if(!TextUtils.isEmpty(coordinates.getDiggingId())){
+                    //已创建的矿区判断自己是否有自己
                     mHomePresenter.checkIsJoinMining(SCCacheUtils.getCacheUserId(),coordinates.getDiggingId());
                 }else {
                     ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
@@ -632,23 +640,57 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
             String data = JSONObject.parseObject(response).getString("data");
             List<MiningRoomBeam> mList = JSONObject.parseArray(data, MiningRoomBeam.class);
-            if(mList.size()==0)return;
-            String userId = mList.get(0).getUserId();
-            if(SCCacheUtils.getCacheUserId().equals(userId)){//说明是自己创建的或者参与的
-                //直接进入聊天室
-                gotoMessageRoom();
-            }else {
-                if(coordinates.getStatus() ==2){
-                    ToastUtils.showToast(getActivity(), R.string.enter_with_black_area);
+            if(mList!=null && mList.size()>0){
+                String userId = mList.get(0).getUserId();
+                if(SCCacheUtils.getCacheUserId().equals(userId)){//说明是自己创建的或者参与的
+                    //直接进入聊天室
+                    gotoMessageRoom();
                 }else {
-                    //弹出提示创建
-                    if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
-                        //设置经纬度显示
-                        setCurrentAddress(coordinates);
+                    if(coordinates.getStatus() ==2){
+                        ToastUtils.showToast(getActivity(), R.string.enter_with_black_area);
+                    }else {
+                        //弹出创建提示
+                        if(!TextUtils.isEmpty(coordinates.getFocusLatitude()) && !TextUtils.isEmpty(coordinates.getFocusLongitude())){
+                            //设置经纬度显示
+                            setCurrentAddress(coordinates);
+                        }
                     }
                 }
-
+            }else {
+                if(coordinates.getStatus() == 2){
+                    ToastUtils.showToast(getActivity(), R.string.enter_with_black_area);
+                }else {
+                    //弹出提示加入矿区
+                    isCreateMinig = false;
+                    createRoomPayforTip();
+                }
             }
+        }
+    }
+
+    @Override
+    public void setAddMinigRoomResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            if (mShowPasswordDialog != null && mShowPasswordDialog.isShowing()) {
+                mShowPasswordDialog.dismiss();
+                mShowPasswordDialog.setPasswordBitmap(null);
+            }
+            //加入成功进入聊天室
+            gotoMessageRoom();
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(), R.string.success_join_mining);
+                }
+            });
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
+                }
+            });
         }
     }
 
@@ -760,15 +802,6 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 tvLocation.setText(langLocation + " °," + latLocation + " °");
             }
         });
-        /*Message roomMessage = new Message();
-        roomMessage.what = 1;
-        roomMessage.obj = langLocation + "°," + latLocation + "°";
-        try {
-            roomMessage.arg1 = Integer.valueOf(roomID);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        getRoomIdHandle.sendMessage(roomMessage);*/
         //绘制点击区域的虚线
         List cubeMapList = new ArrayList();
         if(coordas.getCoordinates().size()>0){
@@ -809,7 +842,6 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
      * 弹出提示创建矿区
      */
     private void drawCurrentAddress(){
-
         if(!isClickMap)return;
         //弹出显示添加元社区
         ThreadUtils.runOnMainThread(new Runnable() {
@@ -825,9 +857,14 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                             ToastUtils.showToast(getActivity(), R.string.enter_mine_name);
                             return;
                         }
+                        if(mScInputDialog.getEtContent().getText().length()>11){
+                            ToastUtils.showToast(getActivity(), R.string.mining_nam_exant_10);
+                            return;
+                        }
 //                        addCustomChatRoom(baiduMap, gpsLatLng);
                         mScInputDialog.dismiss();
                         //先支付
+                        isCreateMinig = true;
                         createRoomPayforTip();
 
                     }
@@ -847,7 +884,11 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private void createRoomPayforTip(){
         standardDialog = new StandardDialog(getActivity());
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_create_mining, Constants.PAYFOR_MINING_MONEY));
+        if(isCreateMinig){
+            standardDialog.setStandardMsg(getString(R.string.payfor_create_mining, Constants.PAYFOR_MINING_MONEY));
+        }else {
+            standardDialog.setStandardMsg(getString(R.string.payfor_add_mining, Constants.PAYFOR_MINING_MONEY));
+        }
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override

@@ -438,4 +438,6 @@
     <string name="creat_time">Time：%s</string>
     <string name="room_exit_failed">Chat room already exists in this area, creation failed</string>
     <string name="success_join_mining">Successfully joined the mine</string>
+    <string name="mining_nam_exant_10">The number of words in the mining area does not exceed 10</string>
+    <string name="have_not_perission">You do not have permission to enter the mine</string>
 </resources>

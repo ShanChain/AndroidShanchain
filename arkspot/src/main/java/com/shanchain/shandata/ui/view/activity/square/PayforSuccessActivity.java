@@ -117,7 +117,7 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
         shareBottomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
             @Override
             public void OnItemClick(CustomDialog dialog, View view) {
-                String shareUrl = HttpApi.BASE_URL+"/join?"+"inviteUserId="+shareBean.getInviteUserId()+"&diggingsId="+shareBean.getDiggingsId()
+                String shareUrl = HttpApi.BASE_URL_WALLET+"/join?"+"inviteUserId="+shareBean.getInviteUserId()+"&diggingsId="+shareBean.getDiggingsId()
                         +"&inviteCode="+shareBean.getInviteCode();
                 redPaperParams = new ShareParams();
                 redPaperParams.setTitle(getString(R.string.app_name));

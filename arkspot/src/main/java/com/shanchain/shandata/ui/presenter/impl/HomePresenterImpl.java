@@ -66,8 +66,6 @@ import static com.shanchain.data.common.base.Constants.SP_KEY_DEVICE_TOKEN;
  */
 public class HomePresenterImpl implements HomePresenter {
     private HomeView mHomeView;
-    private CustomDialog mCustomDialog;
-    private StandardDialog mStandardDialog;
     public HomePresenterImpl(HomeView homeView){
         this.mHomeView = homeView;
     }
@@ -279,6 +277,26 @@ public class HomePresenterImpl implements HomePresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         mHomeView.setCheckIsJoinMiningRsponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void insertMiningRoomByOther(String userId, String diggingsId) {
+        SCHttpUtils.post()
+                .url(HttpApi.ADD_MMINING_ROOM)
+                .addParams("userId",userId)
+                .addParams("diggingsId",diggingsId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setAddMinigRoomResponse(response);
                     }
                 });
     }

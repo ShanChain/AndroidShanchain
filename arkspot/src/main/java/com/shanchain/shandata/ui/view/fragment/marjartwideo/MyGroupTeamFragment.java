@@ -109,15 +109,20 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
 
-        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress);
+        getTeamData();
 
         initLoadMoreListener();
     }
 
+    //获取数据
+    private void getTeamData(){
+        pageIndex = 1;
+        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress);
+    }
+
     @Override
     public void onRefresh() {
-        pageIndex=1;
-        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress);
+        getTeamData();
 
     }
 
@@ -190,6 +195,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                     ToastUtils.showToast(getActivity(), R.string.success_join_mining);
                 }
             });
+            getTeamData();
         }else {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override
@@ -233,12 +239,11 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                     }else {
                         //不是自己创建的
                         //自己参与的
-                        if(groupTeamBean.getUserCount() >=4){//如果人数已满，则直接进入聊天室，但不能发言
+                        if(checkUserInMining(groupTeamBean)){
                             gotoMessageRoom(groupTeamBean);
-                        }else {//人数未满则弹窗提示支付进入
-                            //判断是否自己参与的
-                            if(checkUserInMining(groupTeamBean)){
-                                gotoMessageRoom(groupTeamBean);
+                        }else {
+                            if(groupTeamBean.getUserCount() >=4){//如果人数已满，则直接进入聊天室，但不能发言
+                                ToastUtils.showToast(getActivity(), R.string.have_not_perission);
                             }else {
                                 isJoinMiningTip();
                             }

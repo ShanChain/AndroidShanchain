@@ -19,6 +19,6 @@ public interface HomeView {
     void setCheckPasswResponse(String response);
     void setAddMiningRoomResponse(String response);
     void setCheckIsJoinMiningRsponse(String response);
-
+    void setAddMinigRoomResponse(String response);
 
 }

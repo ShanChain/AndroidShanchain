@@ -67,6 +67,7 @@ public class PublishArticlePresenterImpl implements PublishArticlePresenter {
         MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
         for(PhotoBean p:mList){
             if(new File(p.getUrl()).exists()){
+                LogUtils.d("------>file size:"+new File(p.getUrl()).length());
                 mbody.addFormDataPart("files",p.getFileName(), RequestBody.create(SCHttpUtils.FORM_DATA,new File(p.getUrl())));
             }
         }

@@ -105,7 +105,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!TextUtils.isEmpty(s)){
-                    mPresenter.queryGroupTeam("", "","",1, 30,Constants.pullRefress);
+                    mPresenter.queryGroupTeam("", "",s.toString(),1, 30,Constants.pullRefress);
                 }
             }
 

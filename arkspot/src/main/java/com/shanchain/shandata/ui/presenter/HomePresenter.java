@@ -28,4 +28,6 @@ public interface HomePresenter {
     void addMiningRoom(String userId,String roomId);
     //判断是否已加入矿区接口
     void checkIsJoinMining(String userId,String diggingsId);
+    //支付成功后调用加入矿区接口
+    void insertMiningRoomByOther(String userId,String diggingsId);
 }
