@@ -310,7 +310,7 @@ public class LoginActivity extends BaseActivity {
                 //登陆极光
                 loginJm(jmUser,jmPassword,characterInfo,2);
             }
-            startActivity(new Intent(mContext, GuideActivity.class));
+            startActivity(new Intent(mContext,FootPrintNewActivity.class));
             finish();
         }else {
             if(TextUtils.isEmpty(registrationID)){
@@ -320,7 +320,7 @@ public class LoginActivity extends BaseActivity {
                 //登陆极光
                 loginJm(jmUser,jmPassword,characterInfo,2);
             }
-            startActivity(new Intent(mContext,FootPrintNewActivity.class));
+            startActivity(new Intent(mContext, GuideActivity.class));
             finish();
         }
 

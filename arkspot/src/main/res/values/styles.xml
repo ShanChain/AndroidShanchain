@@ -10,7 +10,7 @@
     <!-- 启动页透明主题 -->
     <style name="AppStartTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@mipmap/splash</item>
+        <item name="android:windowBackground">@mipmap/splash_new</item>
     </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">

@@ -208,7 +208,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String photoPath = cursor.getString(columnIndex);  //获取照片路径
                 cursor.close();
-                LogUtils.d("压缩前路径：",photoPath);
+                LogUtils.d("压缩前路径：",photoPath+"------size :"+new File(photoPath).length()+"");
                 comressImage(photoPath);
 
                 break;
@@ -236,11 +236,12 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         new Thread(new Runnable() {
             @Override
             public void run() {
+                LogUtils.d("filename 压缩前大小: "+new File(s).length());
                 //图片压缩处理
                 String fileName = s.substring(s.lastIndexOf("/") + 1, s.length());
                 Bitmap bitmap= BitmapFactory.decodeFile(s);
-                Bitmap bm1=compress(bitmap);
-//                Bitmap bm1 = bitmapFactory(s);
+//                Bitmap bm1=compress(bitmap);
+                Bitmap bm1 = bitmapFactory(s);
                 try {
                     //要存到data目录下的文件夹名
                     String basePath = getApplication().getCacheDir() +"";
@@ -273,8 +274,8 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         // 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-        int options = 100;
-        while (baos.toByteArray().length / 1024 > 100) {
+        int options = 50;
+        while (baos.toByteArray().length / 1024 > 800) {
             // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset();// 重置baos即清空baos
             // 这里压缩options%，把压缩后的数据存放到baos中
@@ -374,7 +375,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         BitmapFactory.decodeFile(imagePath, options);
         options.inJustDecodeBounds = false;
         ////inSampleSize的作用就是可以把图片的长短缩小inSampleSize倍，所占内存缩小inSampleSize的平方
-        options.inSampleSize = caculateSampleSize(options,500,50);
+        options.inSampleSize = caculateSampleSize(options,800,800);
         Bitmap bm = BitmapFactory.decodeFile(imagePath, options); // 解码文件
         return bm;
     }

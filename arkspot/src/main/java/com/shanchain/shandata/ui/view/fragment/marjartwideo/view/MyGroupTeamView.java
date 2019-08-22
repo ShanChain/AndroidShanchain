@@ -10,5 +10,8 @@ public interface MyGroupTeamView {
     void showProgressEnd();
     void setQuearyMygoupTeamResponse(String response,int pullType);
     void setCheckPasswResponse(String response);
+    void setCheckPassFaile();
     void setAddMinigRoomResponse(String response);
+    void setdeleteDigiRoomIdResponse(String response);
+    void setUpdateMiningRoomResponse(String response);
 }

@@ -27,6 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 //import com.koushikdutta.async.http.AsyncHttpClient;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -409,7 +410,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                         standardDialog.setStandardTitle(" ");
 //                                        standardDialog.setStandardMsg("支付100个 SEAT 参与ARS活动\n" +
 //                                                "      (公测期间0.001个SEAT)");
-                                        standardDialog.setStandardMsg(getString(R.string.payfor_join,"0.001"));
+                                        standardDialog.setStandardMsg(getString(R.string.payfor_join, Constants.PAYFOR_MINING_MONEY));
 
                                         standardDialog.setSureText(getString(R.string.commit_payfor));
                                         standardDialog.setCallback(new Callback() {
@@ -794,7 +795,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 selectImage(getContext());
                                 break;
                             case R.id.tv_dialog_sure:
-                                payForARS(mPasswordFile, "0.001");
+                                payForARS(mPasswordFile, Constants.PAYFOR_MINING_MONEY);
                                 break;
                         }
                     }

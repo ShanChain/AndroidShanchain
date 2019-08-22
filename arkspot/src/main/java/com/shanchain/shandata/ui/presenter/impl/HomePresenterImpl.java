@@ -300,4 +300,23 @@ public class HomePresenterImpl implements HomePresenter {
                     }
                 });
     }
+
+    @Override
+    public void checkNameIsExit(String name) {
+        SCHttpUtils.post()
+                .url(HttpApi.CHECK_NAME_MMINING_ROOM)
+                .addParams("roomName",name)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setMiningNameExit(response);
+                    }
+                });
+    }
 }

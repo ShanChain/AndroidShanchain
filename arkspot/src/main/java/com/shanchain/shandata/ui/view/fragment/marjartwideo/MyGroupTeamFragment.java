@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,6 +37,8 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.GroupTeamAdapter;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
+import com.shanchain.shandata.ui.model.HotChatRoom;
+import com.shanchain.shandata.ui.model.InsertdiggingsBean;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.model.TDiggingJoinLogs;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
@@ -71,6 +74,8 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private StandardDialog standardDialog;
     private CustomDialog mShowPasswordDialog;
     private GroupTeamBean groupTeamBean;
+    private boolean isPaySuccess = false;//是否成功支付
+    private InsertdiggingsBean insertdiggingsBean;
     public static MyGroupTeamFragment getInstance() {
         MyGroupTeamFragment fragment = new MyGroupTeamFragment();
         return fragment;
@@ -82,7 +87,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             switch (msg.what){
                 case 1002:
                     String filePath = (String) msg.obj;
-                    mPresenter.checkPasswordToServer(getActivity(),filePath,"0.001");
+                    mPresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接加入矿区
 //                    enterMiningEoom();
                     break;
@@ -171,18 +176,63 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     public void setCheckPasswResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
-            if (mShowPasswordDialog != null) {
+            if (mShowPasswordDialog != null && mShowPasswordDialog.isShowing()) {
+                mShowPasswordDialog.setPasswordBitmap(null);
                 mShowPasswordDialog.dismiss();
             }
-            //支付成功调用加入矿区接口
-            enterMiningEoom();
+            //支付成功调用更新矿区接口
+            mPresenter.updateMiningRoomRecord(insertdiggingsBean.getId(),"1");
         }
+    }
+
+    @Override
+    public void setCheckPassFaile() {
+        if (mShowPasswordDialog != null && mShowPasswordDialog.isShowing()) {
+            mShowPasswordDialog.dismiss();
+            mShowPasswordDialog.setPasswordBitmap(null);
+        }
+        //删除加入记录
+
     }
 
     @Override
     public void setAddMinigRoomResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            insertdiggingsBean = SCJsonUtils.parseObj(data, InsertdiggingsBean.class);
+            //弹出支付图片框
+            showPasswordView();
+
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setdeleteDigiRoomIdResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setUpdateMiningRoomResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            isPaySuccess = true;
             if (mShowPasswordDialog != null && mShowPasswordDialog.isShowing()) {
                 mShowPasswordDialog.dismiss();
                 mShowPasswordDialog.setPasswordBitmap(null);
@@ -243,7 +293,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                             gotoMessageRoom(groupTeamBean);
                         }else {
                             if(groupTeamBean.getUserCount() >=4){//如果人数已满，则直接进入聊天室，但不能发言
-                                ToastUtils.showToast(getActivity(), R.string.have_not_perission);
+                                ToastUtils.showToast(getActivity(), R.string.mine_full);
                             }else {
                                 isJoinMiningTip();
                             }
@@ -252,6 +302,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 }
             }
         });
+
 
     }
 
@@ -290,30 +341,10 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             @Override
             public void invoke() {
                 standardDialog.dismiss();
-                ThreadUtils.runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //显示上传密码弹窗
-                        mShowPasswordDialog = new CustomDialog(getActivity(), true, 1.0,
-                                R.layout.dialog_bottom_wallet_password,
-                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                        mShowPasswordDialog.setPasswordBitmap(null);
-                        mShowPasswordDialog.show();
-                        mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                            @Override
-                            public void OnItemClick(CustomDialog dialog, View view) {
-                                switch (view.getId()) {
-                                    case R.id.iv_dialog_add_picture:
-                                        selectImage(getActivity());
-                                        break;
-                                    case R.id.tv_dialog_sure:
-                                        ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                });
+                //支付前插入矿区记录
+                enterMiningEoom("0");
+//                showPasswordView();
+
             }
         }, new Callback() {
             @Override
@@ -329,6 +360,41 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 msgTextView.setTextSize(18);
             }
         });
+
+    }
+    //支付密码弹窗
+    private void showPasswordView(){
+        //显示上传密码弹窗
+        mShowPasswordDialog = new CustomDialog(getActivity(), true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+        mShowPasswordDialog.setPasswordBitmap(null);
+        mShowPasswordDialog.show();
+        mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                switch (view.getId()) {
+                    case R.id.iv_dialog_add_picture:
+                        selectImage(getActivity());
+                        break;
+                    case R.id.tv_dialog_sure:
+                        ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                        break;
+                }
+            }
+        });
+        if(mShowPasswordDialog!=null){
+            mShowPasswordDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    LogUtils.d("----->>>Dismiss"+isPaySuccess+"---"+insertdiggingsBean.getId());
+                    //密码上传框消失时删除加入矿区记录表
+                    if(!isPaySuccess && insertdiggingsBean!=null){//未支付成功时密码框消失才删除
+                        mPresenter.deleteMiningRoomRecord(insertdiggingsBean.getId());
+                    }
+                }
+            });
+        }
 
     }
 
@@ -348,11 +414,10 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 cursor.close();
                 LogUtils.showLog("----->MyGroupTeamFragment: select image path is "+photoPath);
                 Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                final File mPasswordFile = new File(photoPath);
-                if (mShowPasswordDialog != null) {
+                /*if (mShowPasswordDialog != null) {
                     mShowPasswordDialog.dismiss();
                     mShowPasswordDialog.setPasswordBitmap(null);
-                }
+                }*/
                 mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getActivity(), true, 1.0,
                         R.layout.dialog_bottom_wallet_password,
                         new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
@@ -380,7 +445,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     }
 
     //支付成功后加入矿区
-    private void enterMiningEoom(){
-        mPresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),groupTeamBean.getId()+"");
+    private void enterMiningEoom(String isPay){
+        mPresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),groupTeamBean.getId()+"",isPay);
     }
 }

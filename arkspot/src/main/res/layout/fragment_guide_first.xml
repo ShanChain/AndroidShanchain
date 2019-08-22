@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/guide_frist"
+    android:background="@mipmap/guide_first_new"
     android:orientation="vertical">
 
     <TextView
@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="70dp"
-        android:text="添加新世界"
         android:textColor="@color/colorWhite"
         android:textSize="20sp"
         android:visibility="gone" />
@@ -20,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="25dp"
-        android:text="点击图标可添加属于自己的新世界"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_14"
         android:visibility="gone" />

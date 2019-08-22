@@ -1131,6 +1131,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
                 String photoPath = cursor.getString(columnIndex);
+                LogUtils.d("------>>>>BaseActivity path:"+photoPath);
 //            ToastUtils.showToastLong(mBusContext, "选择的图片途径：" + photoPath);
                 cursor.close();
                 final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);

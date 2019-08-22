@@ -27,6 +27,8 @@ public class GuideActivity extends BaseActivity {
     View mPointGuide2;
     @Bind(R.id.point_guide_3)
     View mPointGuide3;
+    @Bind(R.id.point_guide_4)
+    View mPointGuide4;
     @Bind(R.id.ll_guide_points)
     LinearLayout mLlGuidePoints;
     @Bind(R.id.btn_guide_join)
@@ -51,7 +53,7 @@ public class GuideActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 selectPoint(position);
-                if (position == 2){
+                if (position == 3){
                     mLlGuidePoints.setVisibility(View.GONE);
                     mBtnGuideJoin.setVisibility(View.VISIBLE);
                 }else {
@@ -80,16 +82,25 @@ public class GuideActivity extends BaseActivity {
                 mPointGuide1.setSelected(true);
                 mPointGuide2.setSelected(false);
                 mPointGuide3.setSelected(false);
+                mPointGuide4.setSelected(false);
                 break;
             case 1:
                 mPointGuide1.setSelected(false);
                 mPointGuide2.setSelected(true);
                 mPointGuide3.setSelected(false);
+                mPointGuide4.setSelected(false);
                 break;
             case 2:
                 mPointGuide1.setSelected(false);
                 mPointGuide2.setSelected(false);
                 mPointGuide3.setSelected(true);
+                mPointGuide4.setSelected(false);
+                break;
+            case 3:
+                mPointGuide1.setSelected(false);
+                mPointGuide2.setSelected(false);
+                mPointGuide3.setSelected(false);
+                mPointGuide4.setSelected(true);
                 break;
         }
     }

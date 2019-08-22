@@ -117,10 +117,10 @@ public class MineFragment extends BaseFragment implements MineView {
                     mMinePresenter.modifyUserInfo(obj);
                     break;
                 case 2:
-                    Intent intent=new Intent();
+                    /*Intent intent=new Intent();
                     intent.setAction("com.my.sentborad");
                     intent.putExtra("url",currentPath);
-                    getActivity().sendBroadcast(intent);
+                    getActivity().sendBroadcast(intent);*/
                     break;
             }
         }

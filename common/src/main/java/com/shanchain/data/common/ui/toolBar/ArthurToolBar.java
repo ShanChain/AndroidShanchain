@@ -459,6 +459,13 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
     }
 
     /**
+     * 设置标题图标是否可见
+     */
+    public void setFavoriteImageVisible(int visible){
+        mFavorite.setVisibility(visible);
+    }
+
+    /**
      * 时间：15:13
      * 描述: 设置聊天室信息是否显示
      */

@@ -135,6 +135,7 @@ public interface Constants {
     int SPAN_TYPE_TOPIC = 2;
 
     String SP_KEY_GUIDE = "sp_key_guide";
+    String SP_KEY_GUIDE_VIEW = "sp_key_guide_view";//提示引导页
 
     /**************上传的视频类型**************/
     String VIDEO_UPLOAD_DYNAMIC = "dynamic";

@@ -20,5 +20,5 @@ public interface HomeView {
     void setAddMiningRoomResponse(String response);
     void setCheckIsJoinMiningRsponse(String response);
     void setAddMinigRoomResponse(String response);
-
+    void setMiningNameExit(String response);
 }

@@ -30,4 +30,6 @@ public interface HomePresenter {
     void checkIsJoinMining(String userId,String diggingsId);
     //支付成功后调用加入矿区接口
     void insertMiningRoomByOther(String userId,String diggingsId);
+    //判断矿区名称是否重复
+    void checkNameIsExit(String name);
 }

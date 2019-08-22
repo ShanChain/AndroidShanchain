@@ -58,10 +58,29 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
             CircleImageView ci1 = helper.getView(R.id.iv_user_head1);
             CircleImageView ci2 = helper.getView(R.id.iv_user_head2);
             CircleImageView ci3 = helper.getView(R.id.iv_user_head3);
-            if(item.gettDiggingJoinLogs().size()>=3){
+            CircleImageView ci4 = helper.getView(R.id.iv_user_head4);
+            if(item.gettDiggingJoinLogs().size()>=4){
                 ci1.setVisibility(View.VISIBLE);
                 ci2.setVisibility(View.VISIBLE);
                 ci3.setVisibility(View.VISIBLE);
+                ci4.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(item.gettDiggingJoinLogs().get(0).getUserIcon())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ci1);
+                Glide.with(mContext).load(item.gettDiggingJoinLogs().get(1).getUserIcon())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ci2);
+                Glide.with(mContext).load(item.gettDiggingJoinLogs().get(2).getUserIcon())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ci3);
+                Glide.with(mContext).load(item.gettDiggingJoinLogs().get(3).getUserIcon())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ci4);
+            }else if(item.gettDiggingJoinLogs().size()==3){
+                ci1.setVisibility(View.VISIBLE);
+                ci2.setVisibility(View.VISIBLE);
+                ci3.setVisibility(View.VISIBLE);
+                ci4.setVisibility(View.GONE);
                 Glide.with(mContext).load(item.gettDiggingJoinLogs().get(0).getUserIcon())
                         .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                                 .error(R.drawable.aurora_headicon_default)).into(ci1);
@@ -75,6 +94,7 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
                 ci1.setVisibility(View.VISIBLE);
                 ci2.setVisibility(View.VISIBLE);
                 ci3.setVisibility(View.GONE);
+                ci4.setVisibility(View.GONE);
                 Glide.with(mContext).load(item.gettDiggingJoinLogs().get(0).getUserIcon())
                         .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                                 .error(R.drawable.aurora_headicon_default)).into(ci1);
@@ -85,6 +105,7 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
                 ci1.setVisibility(View.VISIBLE);
                 ci2.setVisibility(View.GONE);
                 ci3.setVisibility(View.GONE);
+                ci4.setVisibility(View.GONE);
                 Glide.with(mContext).load(item.gettDiggingJoinLogs().get(0).getUserIcon())
                         .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                                 .error(R.drawable.aurora_headicon_default)).into(ci1);
@@ -95,8 +116,4 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
 
     }
 
-
-    private void setUserIcon(BaseViewHolder helper, GroupTeamBean item){
-
-    }
 }

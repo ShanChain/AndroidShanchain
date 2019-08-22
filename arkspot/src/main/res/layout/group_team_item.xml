@@ -49,34 +49,43 @@
         android:layout_gravity="center|right"
         android:layout_marginRight="5dp">
         <cn.jiguang.imui.view.CircleImageView
-            android:id="@+id/iv_user_head3"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:id="@+id/iv_user_head4"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
-            android:layout_marginRight="-20dp"
+            android:layout_marginRight="-15dp"
+            android:visibility="gone"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:src="@drawable/aurora_headicon_default" />
+        <cn.jiguang.imui.view.CircleImageView
+            android:id="@+id/iv_user_head3"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="-15dp"
             android:visibility="gone"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:src="@drawable/aurora_headicon_default" />
         <cn.jiguang.imui.view.CircleImageView
             android:id="@+id/iv_user_head2"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
-            android:layout_marginRight="-20dp"
+            android:layout_marginRight="-15dp"
             android:visibility="gone"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:src="@drawable/aurora_headicon_default" />
         <cn.jiguang.imui.view.CircleImageView
             android:id="@+id/iv_user_head1"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:src="@drawable/aurora_headicon_default" />
     </LinearLayout>
     <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_gravity="center"
         android:src="@mipmap/abs_meet_btn_enter_default"/>
 </LinearLayout>

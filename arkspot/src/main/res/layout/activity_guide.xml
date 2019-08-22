@@ -29,7 +29,6 @@
         <View
             android:id="@+id/point_guide_2"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:background="@drawable/selector_guide_point"/>
@@ -38,6 +37,13 @@
             android:id="@+id/point_guide_3"
             android:layout_width="8dp"
             android:layout_height="8dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/selector_guide_point"/>
+        <View
+            android:id="@+id/point_guide_4"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/selector_guide_point"/>
     </LinearLayout>
 
@@ -46,7 +52,7 @@
         android:visibility="gone"
         android:id="@+id/btn_guide_join"
         android:background="@drawable/shape_bg_guide_btn"
-        android:text="加入元社区"
+        android:text="加入元矿区"
         android:textSize="14sp"
         android:textColor="@color/colorWhite"
         android:layout_alignParentBottom="true"

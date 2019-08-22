@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.shanchain.shandata.ui.view.fragment.GuideFragmentFirst;
+import com.shanchain.shandata.ui.view.fragment.GuideFragmentFour;
 import com.shanchain.shandata.ui.view.fragment.GuideFragmentSecond;
 import com.shanchain.shandata.ui.view.fragment.GuideFragmentThird;
 
@@ -31,13 +32,16 @@ public class GuidePagerAdapter extends FragmentPagerAdapter {
             case 2:
                 fragment = new GuideFragmentThird();
                 break;
+            case 3:
+                fragment = new GuideFragmentFour();
+                break;
         }
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
 }

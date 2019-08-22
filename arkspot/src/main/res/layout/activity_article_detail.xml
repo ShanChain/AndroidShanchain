@@ -86,6 +86,7 @@
             android:paddingBottom="3dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
+            android:maxLength="200"
             android:hint="@string/write_y_op"
             android:textSize="14sp"
             android:background="@drawable/content_inputstyle_shape"/>

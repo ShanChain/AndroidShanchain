@@ -108,7 +108,7 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
     //跳过直接进入矿区
     @OnClick(R.id.tv_go_mining)
     void gotoMining(){
-        startActivity(new Intent(PayforSuccessActivity.this,MyGroupActivity.class));
+        startActivity(new Intent(PayforSuccessActivity.this,MyGroupActivity.class).putExtra("type",2));
         finish();
     }
 

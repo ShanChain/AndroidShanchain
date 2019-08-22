@@ -105,11 +105,14 @@ import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.ConversationEntry;
 import com.shanchain.shandata.ui.model.Coordinates;
+import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.model.HotChatRoom;
 import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.MessageEntry;
 import com.shanchain.shandata.ui.model.MessageModel;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
+import com.shanchain.shandata.ui.model.SearchGroupTeamBeam;
+import com.shanchain.shandata.ui.model.SearchTeamBean;
 import com.shanchain.shandata.ui.model.UserEntry;
 import com.shanchain.shandata.ui.presenter.TaskPresenter;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
@@ -1771,46 +1774,80 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         roomNum = mTbMain.findViewById(R.id.mRoomNum);
         roomNum.setTextColor(getResources().getColor(R.color.colorViolet));
         relativeChatRoom = mTbMain.findViewById(R.id.relative_chatRoom);
-        //获取聊天室信息
-        final Set<Long> roomIds = new HashSet();
-        final long chatRoomId = Long.valueOf(roomId);
-        roomIds.add(chatRoomId);
-        ChatRoomManager.getChatRoomInfos(roomIds, new RequestCallback<List<ChatRoomInfo>>() {
-            @Override
-            public void gotResult(int i, String s, List<ChatRoomInfo> chatRoomInfos) {
-                if (i == 0) {
-                    int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
-                    memberCount = totalMember;
-                    if (roomName.equals("加密聊天社区")) {
-                        roomNum.setText("16968");
-                    } else {
-                        roomNum.setText("" + memberCount);
+        if(isHotChatRoom){//ARS点击过来的显示api的人数
+            //获取聊天室信息
+            final Set<Long> roomIds = new HashSet();
+            final long chatRoomId = Long.valueOf(roomId);
+            roomIds.add(chatRoomId);
+            ChatRoomManager.getChatRoomInfos(roomIds, new RequestCallback<List<ChatRoomInfo>>() {
+                @Override
+                public void gotResult(int i, String s, List<ChatRoomInfo> chatRoomInfos) {
+                    if (i == 0) {
+                        int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
+                        memberCount = totalMember;
+                        if (roomName.equals("加密聊天社区")) {
+                            roomNum.setText("16968");
+                        } else {
+                            roomNum.setText("" + memberCount);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }else {
+            //查询矿区人数接口
+            SCHttpUtils.post()
+                    .url(HttpApi.CHECK_MMINING_ROOM_NUMS)
+                    .addParams("roomId",roomId)
+                    .build()
+                    .execute(new SCHttpStringCallBack() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+
+                        }
+                        @Override
+                        public void onResponse(String response, int id) {
+                            String code = SCJsonUtils.parseCode(response);
+                            LogUtils.d("----->>>>",response);
+                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+                                String data = JSONObject.parseObject(response).getString("data");
+//                            String list = JSONObject.parseObject(data).getString("tDiggingJoinLogs");
+                                List<SearchGroupTeamBeam> mList = JSONObject.parseArray(data, SearchGroupTeamBeam.class);
+                                roomNum.setText(mList.get(0).gettDiggingJoinLogs().size()+"");
+                            }
+                        }
+                    });
+        }
+
+
+
+
 
         relativeChatRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                ToastUtils.showToast(MessageListActivity.this, "群成员列表");
 
-                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
+                /*Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
                 intent.putExtra("roomId", roomId);
                 intent.putExtra("count", memberCount);
-                startActivity(intent);
+                startActivity(intent);*/
             }
         });
 
+        if(!isHotChatRoom){
+            mTbMain.setFavoriteImageVisible(View.GONE);
+        }else {
+            mTbMain.setFavoriteImageVisible(View.VISIBLE);
+        }
         //分享社区
         mTbMain.setOnFavoriteClickListener(new ArthurToolBar.OnFavoriteClickListener() {
             @Override
             public void onFavoriteClick(View v) {
                 final HotChatRoom hotChatRoom = getIntent().getParcelableExtra("hotChatRoom");
                 if (isHotChatRoom == false) {
-                    EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
+                    /*EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
                     org.greenrobot.eventbus.EventBus.getDefault().post(eventMessage);
-                    finish();
+                    finish();*/
                 } else {
                     ThreadUtils.runOnSubThread(new Runnable() {
                         @Override
@@ -2002,7 +2039,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             @Override
             public void invoke() {
 //                readyGo(FootPrintActivity.class);
-                readyGo(FootPrintNewActivity.class);
+                finish();
             }
         }, new Callback() {
             @Override

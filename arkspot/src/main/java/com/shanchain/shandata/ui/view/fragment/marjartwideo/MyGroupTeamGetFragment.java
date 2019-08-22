@@ -178,7 +178,22 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     }
 
     @Override
+    public void setCheckPassFaile() {
+
+    }
+
+    @Override
     public void setAddMinigRoomResponse(String response) {
+
+    }
+
+    @Override
+    public void setdeleteDigiRoomIdResponse(String response) {
+
+    }
+
+    @Override
+    public void setUpdateMiningRoomResponse(String response) {
 
     }
 

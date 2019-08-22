@@ -25,4 +25,13 @@
         android:layout_alignParentBottom="true">
         <include layout="@layout/activity_new_foot_item"/>
     </LinearLayout>
+    <!-- 引导提示层 -->
+    <RelativeLayout
+        android:id="@+id/rl_tishi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+        <include layout="@layout/fragment_home_yd_view"/>
+    </RelativeLayout>
 </RelativeLayout>

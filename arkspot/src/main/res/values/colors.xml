@@ -85,5 +85,13 @@
     <color name="register_marjar_color_s">#5e73ea</color>
     <color name="colorTextBg_1">#b7f7f7f7</color>
     <color name="colorRed_send_d">#EE560B</color>
+
+
+    <!--黑色-->
+    <color name="colorBlack_home">#75000000</color>
+    <!--黑色-->
+    <color name="colorBlack_home_1">#36000000</color>
+    <color name="color_oval_home_s">#FFDFBB63</color>
+    <color name="color_oval_home_n">#FFA19271</color>
     <color name="colorRed_send_s">#DF6122</color>
 </resources>

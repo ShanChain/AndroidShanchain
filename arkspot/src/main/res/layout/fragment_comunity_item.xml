@@ -19,6 +19,7 @@
             android:id="@+id/iv_user_head"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:visibility="invisible"
             android:src="@drawable/aurora_headicon_default" />
         <LinearLayout
             android:layout_width="0dp"

@@ -702,5 +702,12 @@ public interface HttpApi {
     //判断是否加入矿区接口
     String CHECK_ADD_MMINING_ROOM = BASE_URL + "/probecoin/tDiggingJoinLog/queryTDiggingJoinLogList";
 
-
+    //判断矿区名称是否重复
+    String CHECK_NAME_MMINING_ROOM = BASE_URL + "/probecoin/hotChatRoom/queryHotChatRoomList";
+    //查询矿区人数接口
+    String CHECK_MMINING_ROOM_NUMS = BASE_URL + "/probecoin/tDiggings/queryTDiggingsList";
+    //删除加入矿区记录表
+    String DELETE_MMINING_ROOM_RECORD = BASE_URL + "/probecoin/tDiggingJoinLog/deleteByPrimaryKey";
+    //更新加入矿区记录支付标记
+    String UPDATE_MMINING_ROOM_RECORD = BASE_URL + "/probecoin/tDiggingJoinLog/updateByPrimaryKeySelective";
 }

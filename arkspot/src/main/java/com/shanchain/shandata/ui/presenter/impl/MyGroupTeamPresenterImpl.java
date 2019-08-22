@@ -94,16 +94,18 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
             @Override
             public void responseDoFaile(String string) throws IOException {
                 mTeamView.showProgressEnd();
+                mTeamView.setCheckPassFaile();
             }
         });
     }
 
     @Override
-    public void insertMiningRoomByOther(String userId, String diggingsId) {
+    public void insertMiningRoomByOther(String userId, String diggingsId,String isPay) {
         SCHttpUtils.post()
                 .url(HttpApi.ADD_MMINING_ROOM)
                 .addParams("userId",userId)
                 .addParams("diggingsId",diggingsId)
+                .addParams("isPay",isPay)
                 .build()
                 .execute(new SCHttpStringCallBack() {
                     @Override
@@ -114,6 +116,46 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         mTeamView.setAddMinigRoomResponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void deleteMiningRoomRecord(String id) {
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_MMINING_ROOM_RECORD)
+                .addParams("id",id)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mTeamView.setdeleteDigiRoomIdResponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void updateMiningRoomRecord(String id, String isPay) {
+        LogUtils.d("--->>>"+id+"----"+isPay);
+        SCHttpUtils.post()
+                .url(HttpApi.UPDATE_MMINING_ROOM_RECORD)
+                .addParams("id",id)
+                .addParams("isPay",isPay)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mTeamView.setUpdateMiningRoomResponse(response);
                     }
                 });
     }

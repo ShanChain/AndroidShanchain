@@ -117,6 +117,10 @@ import butterknife.OnClick;
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
+import zhy.com.highlight.HighLight;
+import zhy.com.highlight.interfaces.HighLightInterface;
+import zhy.com.highlight.position.OnTopPosCallback;
+import zhy.com.highlight.shape.RectLightShape;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;
@@ -178,7 +182,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private boolean isHide = true; //是否隐藏
     private boolean isClickMap = false;//是否是点击地图
     private boolean isCreateMinig = true;//是否创建矿区
-
+    private View mView;
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
@@ -213,7 +217,13 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     };
     @Override
     public View initView() {
-        return View.inflate(getActivity(), R.layout.activity_home_new, null);
+        mView = View.inflate(getActivity(), R.layout.activity_home_new, null);
+        return mView;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -230,6 +240,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         initBaiduMap();
         //注册自定义消息广播
         registerMessageReceiver();
+
     }
     //初始化数据
     private void setInitData(){
@@ -309,6 +320,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 
     @OnClick(R.id.image_view_info)
     void currentAddress(){
@@ -694,6 +706,22 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         }
     }
 
+    @Override
+    public void setMiningNameExit(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            List<GroupTeamBean> mList = JSONObject.parseArray(data,GroupTeamBean.class);
+            if(mList!=null && mList.size()>0){
+                ToastUtils.showToast(getActivity(), R.string.minig_name_exit);
+            }else {
+                //先支付
+                isCreateMinig = true;
+                createRoomPayforTip();
+            }
+        }
+    }
+
     //进入聊天室
     private void gotoMessageRoom(){
         if(TextUtils.isEmpty(coordinates.getRoomId()))return;
@@ -857,15 +885,16 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                             ToastUtils.showToast(getActivity(), R.string.enter_mine_name);
                             return;
                         }
-                        if(mScInputDialog.getEtContent().getText().length()>11){
+                        if(mScInputDialog.getEtContent().getText().length()>20){
                             ToastUtils.showToast(getActivity(), R.string.mining_nam_exant_10);
                             return;
                         }
 //                        addCustomChatRoom(baiduMap, gpsLatLng);
                         mScInputDialog.dismiss();
-                        //先支付
-                        isCreateMinig = true;
-                        createRoomPayforTip();
+
+                        //先判断矿区名称是否重复
+                        mHomePresenter.checkNameIsExit(mScInputDialog.getEtContent().getText().toString().trim());
+
 
                     }
                 }, new Callback() {//取消
@@ -1077,10 +1106,10 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 cursor.close();
                 LogUtils.showLog("----->HomeFragment: select image path is "+photoPath);
                  Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                if (mShowPasswordDialog != null) {
+                /*if (mShowPasswordDialog != null) {
                     mShowPasswordDialog.dismiss();
                     mShowPasswordDialog.setPasswordBitmap(null);
-                }
+                }*/
                 mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getContext(), true, 1.0,
                         R.layout.dialog_bottom_wallet_password,
                         new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});

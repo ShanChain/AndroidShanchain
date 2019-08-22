@@ -63,6 +63,7 @@ public class PublishArticlePresenterImpl implements PublishArticlePresenter {
 
     @Override
     public void uploadPhotoListToServer(List<PhotoBean> mList) {
+        mPublishArticleView.showProgressStart();
         OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
         MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
         for(PhotoBean p:mList){
@@ -80,10 +81,12 @@ public class PublishArticlePresenterImpl implements PublishArticlePresenter {
             @Override
             public void onFailure(Call call, IOException e) {
                 LogUtils.d("Resonse IOException: ", e.toString());
+                mPublishArticleView.showProgressEnd();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                mPublishArticleView.showProgressEnd();
                 String result = response.body().string();
                 LogUtils.d("Resonse: ", result);
                 mPublishArticleView.setPhotoListSuccess(result);

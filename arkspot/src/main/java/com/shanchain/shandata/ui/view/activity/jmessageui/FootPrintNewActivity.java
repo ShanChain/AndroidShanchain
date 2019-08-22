@@ -7,12 +7,21 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
+import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.FragmentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.CouponFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.HomeFragment;
@@ -26,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
+import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by WealChen
@@ -35,8 +48,16 @@ import butterknife.Bind;
 public class FootPrintNewActivity extends BaseActivity implements View.OnClickListener{
     @Bind(R.id.viewpager)
     CustomViewPager mViewpager;
-    /*@Bind(R.id.bottom_tab)
-    BottomTab bottomTab;*/
+    @Bind(R.id.rl_tishi)
+    RelativeLayout rlTishi;
+    @Bind(R.id.rl_view1)
+    RelativeLayout rlView1;
+    @Bind(R.id.rl_view2)
+    RelativeLayout rlView2;
+    @Bind(R.id.rl_view3)
+    RelativeLayout rlView3;
+    @Bind(R.id.tv_join)
+    TextView tvJoin;
     private LinearLayout ll0;
     private LinearLayout ll1;
     private LinearLayout ll2;
@@ -65,6 +86,39 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         initMap();
         initViews();
         initFragment();
+
+        initGaidView();
+    }
+    //显示引导页提示
+    private void initGaidView() {
+        boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW, false);
+        if(!guided){
+            rlTishi.setVisibility(View.VISIBLE);
+            PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
+        }else {
+            rlTishi.setVisibility(View.GONE);
+        }
+    }
+
+    //引导页第一张显示点击
+    @OnClick(R.id.rl_view1)
+    void view1(){
+        rlView1.setVisibility(View.GONE);
+        rlView3.setVisibility(View.GONE);
+        rlView2.setVisibility(View.VISIBLE);
+    }
+    //引导页第二张显示点击
+    @OnClick(R.id.rl_view2)
+    void view2(){
+        rlView1.setVisibility(View.GONE);
+        rlView2.setVisibility(View.GONE);
+        rlView3.setVisibility(View.VISIBLE);
+    }
+    //立即进入
+    @OnClick({R.id.tv_join,R.id.rl_view3})
+    void view3(){
+        rlTishi.setVisibility(View.GONE);
+        PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
     }
 
     /**
@@ -123,6 +177,8 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         tv4 = (TextView) findViewById(R.id.tv_news);
 
         initListener();
+        //极光用户登录状态监听
+        JMessageClient.registerEventReceiver(this);
     }
 
     private void initListener() {
@@ -167,9 +223,9 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_shouye:
-                /*changeState(0);
-                mViewpager.setCurrentItem(0);*/
-                ToastUtils.showToast(this,"该功能暂未开放，敬请期待");
+                changeState(0);
+                mViewpager.setCurrentItem(0);
+//                ToastUtils.showToast(this,"该功能暂未开放，敬请期待");
                 break;
             case R.id.ll_bankuai:
                 changeState(1);
@@ -222,6 +278,52 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
                 tv4.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
 
+        }
+    }
+
+    //监听用户登录状态
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+        UserInfo myInfo = event.getMyInfo();//获取当前被登出账号的信息
+        switch (reason) {
+            case user_password_change:
+                //用户密码在服务器端被修改
+                LogUtils.d("LoginStateChangeEvent", "用户密码在服务器端被修改");
+//                ToastUtils.showToast(mContext, "您的密码已被修改");
+                break;
+            case user_logout:
+                //用户换设备登录
+                LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
+                final StandardDialog standardDialog = new StandardDialog(FootPrintNewActivity.this);
+                standardDialog.setStandardTitle(getString(R.string.prompt));
+                standardDialog.setStandardMsg(getString(R.string.account_other_login));
+                standardDialog.setSureText(getString(R.string.re_login));
+                standardDialog.setCancelText(getString(R.string.str_cancel));
+                standardDialog.setCallback(new Callback() {//确定
+                    @Override
+                    public void invoke() {
+                        readyGo(LoginActivity.class);
+                        ActivityStackManager.getInstance().finishAllActivity();
+                    }
+                }, new Callback() {//取消
+                    @Override
+                    public void invoke() {
+                        readyGo(LoginActivity.class);
+                        ActivityStackManager.getInstance().finishAllActivity();
+                    }
+                });
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        ToastUtils.showToast(getApplicationContext(), "账号在其他设备上登录");
+                        standardDialog.show();
+                    }
+                });
+                standardDialog.setCanceledOnTouchOutside(false);
+                break;
+            case user_deleted:
+                //用户被删除
+                break;
         }
     }
 }

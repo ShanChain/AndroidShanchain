@@ -453,6 +453,12 @@
     <string name="creat_time">时间：%s</string>
     <string name="room_exit_failed">该区域已存在聊天室，创建失败</string>
     <string name="success_join_mining">加入矿区成功</string>
-    <string name="mining_nam_exant_10">矿区名称字数不超过10个</string>
+    <string name="mining_nam_exant_10">矿区名称字数不超过20个</string>
     <string name="have_not_perission">您没有权限进入该矿区</string>
+    <string name="minig_name_exit">该元矿区名称已存在</string>
+    <string name="enter_now">立即进入</string>
+    <string name="understant_check">有不明白可以随时查看规则说明!</string>
+    <string name="canjoin_mine_here">可加入矿区和我的矿区都在这里!</string>
+    <string name="click_map_create_mine">点击地图可直接创建元矿区!</string>
+    <string name="mine_full">该矿区人员已满</string>
 </resources>

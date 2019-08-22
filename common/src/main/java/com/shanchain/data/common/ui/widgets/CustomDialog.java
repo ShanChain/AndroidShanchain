@@ -214,7 +214,9 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     public void setPasswordBitmap(Bitmap passwordBitmap) {
         this.passwordBitmap = passwordBitmap;
     }
-
+    public Bitmap getPasswordBitmap(){
+        return passwordBitmap;
+    }
 
     public View getView(Context context, @IdRes int idRes) {
 //        context = getContext();
