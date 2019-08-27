@@ -121,5 +121,36 @@
             android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorTextBg"/>
+    <LinearLayout
+        android:id="@+id/ll_fanyong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/white"
+        android:padding="12dp">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/invation_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/yaoq_fanyong"/>
+        <Space
+            android:layout_width="@dimen/dimens_10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@mipmap/abs_meet_btn_enter_default"/>
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -265,6 +265,4 @@ dependencies {
     //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
-    //高亮提示库
-    implementation 'com.isanwenyu.highlight:highlight:1.8.0'
 }

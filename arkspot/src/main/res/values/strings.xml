@@ -461,4 +461,20 @@
     <string name="canjoin_mine_here">可加入矿区和我的矿区都在这里!</string>
     <string name="click_map_create_mine">点击地图可直接创建元矿区!</string>
     <string name="mine_full">该矿区人员已满</string>
+    <string name="yaoq_fanyong">邀请返佣</string>
+    <string name="cofy">复制</string>
+    <string name="rebate_rules">返佣规则</string>
+    <string name="invation_record">邀请记录</string>
+    <string name="rebate_record">返佣记录</string>
+    <string name="nums_invate">邀请人数</string>
+    <string name="get_rebate">获得返佣折合(￥)</string>
+    <string name="rebate_redio">我的返佣比例</string>
+    <string name="registration_time">注册时间</string>
+    <string name="invatee_phone">被邀请人号码</string>
+    <string name="state_1">状态</string>
+    <string name="login_other_device">账号已在其他设备上登录，请重新登录</string>
+    <string name="install_wechat">请先安装微信客户端</string>
+    <string name="install_qq">请先安装QQ客户端</string>
+    <string name="invation_copy">邀请码已复制</string>
+    <string name="invation_link_copy">链接已复制</string>
 </resources>

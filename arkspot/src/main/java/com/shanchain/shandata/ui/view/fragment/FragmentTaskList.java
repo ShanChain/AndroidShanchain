@@ -84,7 +84,6 @@ public class FragmentTaskList extends BaseFragment implements SwipeRefreshLayout
         }
         taskList.clear();
         taskPresenter = new TaskPresenterImpl(this);
-        LogUtils.d("-------ddd------",characterId+"---"+roomId);
         taskPresenter.initTask(characterId, roomId, page, size);
         srlTaskList.setOnRefreshListener(this);//下拉刷新
         initRecyclerView();

@@ -446,4 +446,20 @@
     <string name="canjoin_mine_here">Can join the mine and my mine is here!</string>
     <string name="click_map_create_mine">Click on the map to create a meta-mine area directly!</string>
     <string name="mine_full">The mine is full</string>
+    <string name="yaoq_fanyong">Invitation to return</string>
+    <string name="cofy">Cofy</string>
+    <string name="rebate_rules">Rebate rules</string>
+    <string name="invation_record">Invitation record</string>
+    <string name="rebate_record">Rebate record</string>
+    <string name="nums_invate">Number of invitees</string>
+    <string name="get_rebate">Get a rebate(￥)</string>
+    <string name="rebate_redio">Rebate ratio</string>
+    <string name="registration_time">Registration time</string>
+    <string name="invatee_phone">Invitee number</string>
+    <string name="state_1">state</string>
+    <string name="login_other_device">The account has been logged in on another device, please log in again</string>
+    <string name="install_wechat">Please install WeChat first</string>
+    <string name="install_qq">Please install the QQ client first</string>
+    <string name="invation_copy">Invitation code has been copied</string>
+    <string name="invation_link_copy">Invitation link has been copied</string>
 </resources>

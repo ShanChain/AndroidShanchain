@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -60,6 +62,11 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 
+import static com.shanchain.data.common.utils.SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor;
+import static com.shanchain.data.common.utils.SystemUtils.MIUISetStatusBarLightModeWithWhiteColor;
+import static com.shanchain.data.common.utils.SystemUtils.setImmersiveStatusBar_API21;
+import static com.shanchain.data.common.utils.SystemUtils.setStatusBarLightMode_API23;
+
 /**
  * Created by WealChen
  * Date : 2019/7/19
@@ -100,7 +107,6 @@ public class YCommunityFragment extends BaseFragment implements NavigationView.O
         YCommunityFragment fragment = new YCommunityFragment();
         return fragment;
     }
-
 
     //定义接受头像变更的广播
     public class MyBroadcastReceiver extends BroadcastReceiver {

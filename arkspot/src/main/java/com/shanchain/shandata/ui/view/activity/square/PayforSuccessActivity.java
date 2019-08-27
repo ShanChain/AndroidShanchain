@@ -18,11 +18,13 @@ import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.ui.model.ShareBean;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.utils.ManagerUtils;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.HashMap;
@@ -126,18 +128,30 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
                 redPaperParams.setImageUrl(shareBean.getRoomImage());
                 switch (view.getId()) {
                     case R.id.mRlWechat://微信
+                        if(!ManagerUtils.uninstallSoftware(PayforSuccessActivity.this,"com.tencent.mm")){
+                            ToastUtils.showToast(PayforSuccessActivity.this, R.string.install_wechat);
+                            return;
+                        }
                         showLoadingDialog();
                         redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
                         //调用分享接口share ，分享到微信平台。
                         JShareInterface.share(Wechat.Name, redPaperParams, shareListener);
                         break;
                     case R.id.mRlWeixinCircle://朋友圈
+                        if(!ManagerUtils.uninstallSoftware(PayforSuccessActivity.this,"com.tencent.mm")){
+                            ToastUtils.showToast(PayforSuccessActivity.this, R.string.install_wechat);
+                            return;
+                        }
                         showLoadingDialog();
                         redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
                         //调用分享接口share ，分享到朋友圈平台。
                         JShareInterface.share(WechatMoments.Name, redPaperParams, shareListener);
                         break;
                     case R.id.mRlQQ://QQ
+                        if(!ManagerUtils.uninstallSoftware(PayforSuccessActivity.this,"com.tencent.mobileqq")){
+                            ToastUtils.showToast(PayforSuccessActivity.this, R.string.install_qq);
+                            return;
+                        }
                         showLoadingDialog();
                         redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
                         //调用分享接口share ，分享到QQ平台。

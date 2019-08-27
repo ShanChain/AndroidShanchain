@@ -25,11 +25,14 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
 import com.baidu.mapapi.model.LatLng;
+import com.shanchain.data.common.base.ActivityStackManager;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
@@ -41,6 +44,8 @@ import com.shanchain.shandata.ui.model.PhotoBean;
 import com.shanchain.shandata.ui.presenter.PublishArticlePresenter;
 import com.shanchain.shandata.ui.presenter.impl.PublishArticlePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.view.PublishArticleView;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -57,6 +62,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
+import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by WealChen
@@ -90,6 +98,8 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
 
     @Override
     protected void initViewsAndEvents() {
+        //极光用户登录状态监听
+        JMessageClient.registerEventReceiver(this);
         sourceType = getIntent().getIntExtra("type",1);
         if(sourceType ==1){
             tvTitle.setText(getString(R.string.publish_essay));
@@ -357,9 +367,10 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         handler.removeCallbacksAndMessages(null);
         handler = null;
+        JMessageClient.unRegisterEventReceiver(this);
+        super.onDestroy();
     }
 
     public Bitmap bitmapFactory(String imagePath){
@@ -399,5 +410,42 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             }
         }
         return sampleSize;
+    }
+
+    //监听用户登录状态
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        LoginStateChangeEvent.Reason reason = event.getReason();//获取变更的原因
+        switch (reason) {
+            case user_logout:
+                //用户换设备登录
+                com.shanchain.data.common.utils.LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
+                final StandardDialog standardDialog = new StandardDialog(PublishArticleActivity.this);
+                standardDialog.setStandardTitle(getString(R.string.prompt));
+                standardDialog.setStandardMsg(getString(R.string.account_other_login));
+                standardDialog.setSureText(getString(R.string.re_login));
+                standardDialog.setCancelText(getString(R.string.str_cancel));
+                standardDialog.setCallback(new Callback() {//确定
+                    @Override
+                    public void invoke() {
+                        loginOut();
+                    }
+                }, new Callback() {//取消
+                    @Override
+                    public void invoke() {
+                        loginOut();
+                    }
+                });
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        standardDialog.show();
+                    }
+                });
+                standardDialog.setCanceledOnTouchOutside(false);
+                break;
+            case user_deleted:
+                //用户被删除
+                break;
+        }
     }
 }

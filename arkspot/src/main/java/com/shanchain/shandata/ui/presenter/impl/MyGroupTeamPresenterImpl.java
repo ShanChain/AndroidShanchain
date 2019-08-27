@@ -36,7 +36,7 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
         this.mTeamView = view;
     }
     @Override
-    public void queryGroupTeam(String joinUserId, String createUser,String searchString, int page, int size, final int pullType) {
+    public void queryGroupTeam(String joinUserId, String createUser,String searchString, int page, int size, final int pullType,int state) {
         mTeamView.showProgressStart();
         GetBuilder getBuilder =SCHttpUtils.getAndToken();
         getBuilder.url(HttpApi.QUERY_MY_GROUPTEAM);
@@ -48,6 +48,9 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
         }
         if(!TextUtils.isEmpty(searchString)){
             getBuilder.addParams("searchString",searchString);
+        }
+        if(state>0){
+            getBuilder.addParams("status",state+"");
         }
         getBuilder.addParams("pageNum",page+"");
         getBuilder.addParams("pageSize",size+"");

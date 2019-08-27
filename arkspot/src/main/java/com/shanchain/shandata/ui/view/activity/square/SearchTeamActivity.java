@@ -108,7 +108,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!TextUtils.isEmpty(s)){
-                    mPresenter.queryGroupTeam("", "",s.toString(),1, 30,Constants.pullRefress);
+                    mPresenter.queryGroupTeam("", "",s.toString(),1, 30,Constants.pullRefress,0);
                 }
             }
 
@@ -218,12 +218,6 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
 
     //支付密码弹窗
     private void showPasswordView(){
-        ThreadUtils.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
         //显示上传密码弹窗
         mShowPasswordDialog = new CustomDialog(SearchTeamActivity.this, true, 1.0,
                 R.layout.dialog_bottom_wallet_password,

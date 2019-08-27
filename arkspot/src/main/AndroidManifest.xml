@@ -587,6 +587,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.square.SearchTeamActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.mine.ReturnInvationActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

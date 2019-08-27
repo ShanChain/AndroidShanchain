@@ -41,7 +41,6 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
 
     @Override
     protected void convert(BaseViewHolder helper, final GroupTeamBean item) {
-//        LogUtils.d("------>>>GroupTeamAdapter"+item.toString());
         RoundImageView circleImageView = helper.getView(R.id.iv_avatar);
         Glide.with(mContext).load(item.getRoomImage())
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)

@@ -365,10 +365,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
 
                 break;
             case R.id.relative_logout:
-                JMessageClient.logout();
-                SCCacheUtils.clearCache();
-                readyGo(LoginActivity.class);
-                ActivityStackManager.getInstance().finishAllActivity();
+                loginOut();
                 break;
         }
     }

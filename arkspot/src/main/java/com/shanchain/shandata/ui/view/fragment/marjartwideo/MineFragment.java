@@ -46,6 +46,7 @@ import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.ui.view.activity.mine.ReturnInvationActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MineView;
@@ -228,6 +229,13 @@ public class MineFragment extends BaseFragment implements MineView {
     void setting(){
         startActivity(new Intent(getActivity(), SettingsActivity.class));
     }
+
+    //邀请返佣
+    @OnClick(R.id.ll_fanyong)
+    void invation(){
+        startActivity(new Intent(getActivity(), ReturnInvationActivity.class));
+    }
+
 
     //点击头像替换
     @OnClick(R.id.iv_user_head)

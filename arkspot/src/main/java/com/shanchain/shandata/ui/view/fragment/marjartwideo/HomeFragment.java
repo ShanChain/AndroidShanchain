@@ -117,10 +117,6 @@ import butterknife.OnClick;
 import cn.jpush.android.api.CustomPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
-import zhy.com.highlight.HighLight;
-import zhy.com.highlight.interfaces.HighLightInterface;
-import zhy.com.highlight.position.OnTopPosCallback;
-import zhy.com.highlight.shape.RectLightShape;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.shanchain.data.common.base.Constants.CACHE_DEVICE_TOKEN_STATUS;

@@ -45,6 +45,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.SetWalletPasswordActivity;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SystemUtils;
@@ -112,6 +113,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initWeb() {
+        showLoadingDialog();
 //        LogUtils.d("当前活动Activity",ActivityStackManager.getInstance().getCurrentActivity().getLocalClassName());
         mWbSc = findViewById(R.id.wb_sc);
 //        com.tencent.smtt.sdk.WebSettings settings = mWbSc.getSettings();
@@ -138,6 +140,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
                 sslErrorHandler.proceed();
+                closeLoadingDialog();
                 super.onReceivedSslError(webView, sslErrorHandler, sslError);
             }
 
@@ -192,6 +195,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
             public void onPageFinished(WebView webView, String s) {
 //            public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String s) {
                 LogUtils.d("webView加载完成：", "url:" + s);
+                closeLoadingDialog();
                 super.onPageFinished(webView, s);
             }
 
@@ -681,6 +685,17 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
             mUploadCallbackAboveL = filePathCallback;
             selectImage(RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP);
             return true;
+        }
+    }
+    private CustomDialog mCustomDialog;
+    protected void showLoadingDialog() {
+        mCustomDialog = new CustomDialog(this, 0.4, com.shanchain.shandata.R.layout.common_dialog_progress, null);
+        mCustomDialog.show();
+        mCustomDialog.setCanceledOnTouchOutside(false);
+    }
+    protected void closeLoadingDialog() {
+        if (mCustomDialog != null) {
+            mCustomDialog.dismiss();
         }
     }
 }

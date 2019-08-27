@@ -122,7 +122,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     //获取数据
     private void getTeamData(){
         pageIndex = 1;
-        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress);
+        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress,1);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mGroupTeamAdapter.getItemCount()){
                     pageIndex ++;
-                    mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pillLoadmore);
+                    mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pillLoadmore,1);
                 }
             }
 

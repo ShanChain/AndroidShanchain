@@ -157,6 +157,6 @@ public interface Constants {
     int pullRefress = 1;
     int pillLoadmore = 2;
 
-    String PAYFOR_MINING_MONEY = "0.001";
+    String PAYFOR_MINING_MONEY = "100";
 
 }

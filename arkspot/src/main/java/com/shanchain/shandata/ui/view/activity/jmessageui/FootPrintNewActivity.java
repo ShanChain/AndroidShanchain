@@ -302,14 +302,12 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
                 standardDialog.setCallback(new Callback() {//确定
                     @Override
                     public void invoke() {
-                        readyGo(LoginActivity.class);
-                        ActivityStackManager.getInstance().finishAllActivity();
+                        loginOut();
                     }
                 }, new Callback() {//取消
                     @Override
                     public void invoke() {
-                        readyGo(LoginActivity.class);
-                        ActivityStackManager.getInstance().finishAllActivity();
+                        loginOut();
                     }
                 });
                 ThreadUtils.runOnMainThread(new Runnable() {
@@ -325,5 +323,11 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
                 //用户被删除
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        JMessageClient.unRegisterEventReceiver(this);
+        super.onDestroy();
     }
 }

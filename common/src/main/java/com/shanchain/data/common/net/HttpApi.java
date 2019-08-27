@@ -576,7 +576,7 @@ public interface HttpApi {
     /* 好友关注 */
     String USE_FOCUS = BASE_URL + "/v1/focus/focus";
     //官网app下载
-    String APP_HOME = "https://marjar.app";
+    String APP_HOME = "http://marjar.app";
     //用户协议
     String USER_RULE = "http://h5.qianqianshijie.com/agreement";
     //隐私政策
@@ -710,4 +710,9 @@ public interface HttpApi {
     String DELETE_MMINING_ROOM_RECORD = BASE_URL + "/probecoin/tDiggingJoinLog/deleteByPrimaryKey";
     //更新加入矿区记录支付标记
     String UPDATE_MMINING_ROOM_RECORD = BASE_URL + "/probecoin/tDiggingJoinLog/updateByPrimaryKeySelective";
+
+    //返佣邀请数据获取
+    String GET_INVATION_USER_DATA = BASE_URL + "/probecoin/tDiggingAccount/getTDiggingAccountByUserId";
+    //获取邀请记录列表
+    String GET_INVATION_USER_LIST = BASE_URL + "/probecoin/tAccept/getPageTAccept";
 }

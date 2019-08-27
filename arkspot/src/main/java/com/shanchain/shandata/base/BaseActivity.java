@@ -483,20 +483,20 @@ public abstract class BaseActivity extends AppCompatActivity {
                 //用户换设备登录
                 LogUtils.d("LoginStateChangeEvent", "账号在其他设备上登录");
                 final StandardDialog standardDialog = new StandardDialog(mContext);
-                standardDialog.setStandardTitle("提示");
-                standardDialog.setStandardMsg("账号已在其他设备上登录，请重新登录");
-                standardDialog.setSureText("重新登录");
-                standardDialog.setCancelText("取消");
+                standardDialog.setStandardTitle(getResources().getString(R.string.prompt));
+                standardDialog.setStandardMsg(getString(R.string.login_other_device));
+                standardDialog.setSureText(getString(R.string.re_login));
+                standardDialog.setCancelText(getString(R.string.cancel));
                 standardDialog.setCallback(new com.shanchain.data.common.base.Callback() {//确定
                     @Override
                     public void invoke() {
-                        readyGo(LoginActivity.class);
-                        ActivityStackManager.getInstance().finishAllActivity();
+                        loginOut();
+
                     }
                 }, new com.shanchain.data.common.base.Callback() {//取消
                     @Override
                     public void invoke() {
-
+                        loginOut();
                     }
                 });
                 ThreadUtils.runOnMainThread(new Runnable() {
@@ -771,7 +771,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 解除网络状态监听器
         OkHttpUtils.getInstance().cancelTag(this);
         //极光消息解绑
-//        JMessageClient.unRegisterEventReceiver(this);
+        JMessageClient.unRegisterEventReceiver(this);
     }
 
     /**
@@ -1249,5 +1249,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             HomeActivity.latLng = myLatLng;
             getChatRoomInfo(myLatLng);
         }
+    }
+
+    //退出登录
+    public void loginOut(){
+        JMessageClient.logout();
+        SCCacheUtils.clearCache();
+        readyGo(LoginActivity.class);
+        ActivityStackManager.getInstance().finishAllActivity();
     }
 }

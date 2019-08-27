@@ -1,0 +1,270 @@
+package com.shanchain.shandata.ui.view.activity.mine;
+
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
+
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
+import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.TaskPagerAdapter;
+import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.ui.model.InvationBean;
+import com.shanchain.shandata.ui.presenter.ReturnInvationPresenter;
+import com.shanchain.shandata.ui.presenter.impl.ReturnInvationPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.mine.view.ReturnInvationView;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.InvationFragment;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.MyGroupTeamFragment;
+import com.shanchain.shandata.ui.view.fragment.marjartwideo.MyGroupTeamGetFragment;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.OnClick;
+
+/**
+ * Created by WealChen
+ * Date : 2019/8/22
+ * Describe :邀请返佣
+ */
+public class ReturnInvationActivity extends BaseActivity implements ArthurToolBar.OnRightClickListener,
+        ArthurToolBar.OnLeftClickListener, ReturnInvationView {
+    @Bind(R.id.tb_coupon)
+    ArthurToolBar toolBar;
+    @Bind(R.id.tv_invation_code)
+    TextView tvInvationCode;
+    @Bind(R.id.tv_fz_lilnk)
+    TextView tvFzLilnk;
+    @Bind(R.id.tv_invation_link)
+    TextView tvInvationLink;
+    @Bind(R.id.tv_fz_code)
+    TextView tvFzCode;
+    @Bind(R.id.tv_nums)
+    TextView tvNums;
+    @Bind(R.id.tv_money)
+    TextView tvMoney;
+    @Bind(R.id.tv_proportion)
+    TextView tvProportion;
+    @Bind(R.id.tab_task)
+    TabLayout tabTask;
+    @Bind(R.id.vp_invation)
+    ViewPager vpInvation;
+    private String imgURl;//图片的URL地址
+    private static final int SAVE_SUCCESS = 0;//保存图片成功
+    private static final int SAVE_FAILURE = 1;//保存图片失败
+    private static final int SAVE_BEGIN = 2;//开始保存图片
+
+    private InvationBean invationBean;
+    private ReturnInvationPresenter mPresenter;
+    private List<Fragment> fragmentList = new ArrayList();
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SAVE_BEGIN:
+                    ToastUtils.showToast(ReturnInvationActivity.this,"开始保存图片...");
+                    tvFzLilnk.setClickable(false);
+                    break;
+                case SAVE_SUCCESS:
+                    ToastUtils.showToast(ReturnInvationActivity.this,"图片保存成功,请到相册查找");
+                    tvFzLilnk.setClickable(true);
+                    break;
+                case SAVE_FAILURE:
+                    ToastUtils.showToast(ReturnInvationActivity.this,"图片保存失败,请稍后再试...");
+                    tvFzLilnk.setClickable(true);
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected int getContentViewLayoutID() {
+        return R.layout.activity_invation_return;
+    }
+
+    @Override
+    protected void initViewsAndEvents() {
+        initToolBar();
+        setFragment();
+    }
+
+    //初始化标题栏
+    private void initToolBar() {
+        toolBar.setTitleText(getResources().getString(R.string.yaoq_fanyong));
+        toolBar.setRightText(getString(R.string.rebate_rules));
+        toolBar.setOnLeftClickListener(this);
+        toolBar.setOnRightClickListener(this);
+
+        mPresenter = new ReturnInvationPresenterImpl(this);
+
+        mPresenter.getInvationDataFromUser(SCCacheUtils.getCacheUserId());
+    }
+
+    private void setFragment(){
+        String[] titles = {getString(R.string.invation_record), getString(R.string.rebate_record)};
+        fragmentList.add(InvationFragment.getInstance(1));
+        fragmentList.add(InvationFragment.getInstance(2));
+        TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager(), titles, fragmentList);
+        vpInvation.setOffscreenPageLimit(2);
+        vpInvation.setAdapter(adapter);
+        tabTask.setupWithViewPager(vpInvation);
+    }
+    //复制邀请码
+    @OnClick(R.id.tv_fz_code)
+    void fzInvateCode(){
+        ClipboardManager cmb = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        cmb.setText(invationBean.getUserId());
+        ToastUtils.showToast(this, R.string.invation_copy);
+    }
+
+    //复制邀链接
+    @OnClick(R.id.tv_fz_lilnk)
+    void fzInvateLink(){
+        tvFzLilnk.setClickable(false);//不可重复点击
+        //保存图片必须在子线程中操作，是耗时操作
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.obtainMessage(SAVE_BEGIN).sendToTarget();
+                Bitmap bp = returnBitMap(HttpApi.BASE_URL +File.separator+invationBean.getInviteCodeImg());
+                saveImageToPhotos(mContext, bp);
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void onLeftClick(View v) {
+        finish();
+    }
+
+    @Override
+    public void onRightClick(View v) {
+        //返佣规则
+
+    }
+
+    @Override
+    public void showProgressStart() {
+        showLoadingDialog();
+    }
+
+    @Override
+    public void showProgressEnd() {
+        closeLoadingDialog();
+    }
+
+    @Override
+    public void setInvationDataResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            invationBean = SCJsonUtils.parseObj(data,InvationBean.class);
+            if(invationBean!=null){
+                tvNums.setText(invationBean.getAcceptUserCount()+"");
+                tvMoney.setText(invationBean.getFrozenCoin());
+                tvProportion.setText(invationBean.getBrokerageCoin());
+                tvInvationCode.setText("邀请码:"+invationBean.getUserId());
+            }
+        }
+    }
+
+    @Override
+    public void setQuearyInvatRecordResponse(String response, int pullType) {
+
+    }
+
+    /**
+     * 将URL转化成bitmap形式
+     *
+     * @param url
+     * @return bitmap type
+     */
+    public final static Bitmap returnBitMap(String url) {
+        URL myFileUrl;
+        Bitmap bitmap = null;
+        try {
+            myFileUrl = new URL(url);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    /**
+     * 保存二维码到本地相册
+     */
+    private void saveImageToPhotos(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "marjar");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            mHandler.obtainMessage(SAVE_FAILURE).sendToTarget();
+            return;
+        }
+        // 最后通知图库更新
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri uri = Uri.fromFile(file);
+        intent.setData(uri);
+        context.sendBroadcast(intent);
+        mHandler.obtainMessage(SAVE_SUCCESS).sendToTarget();
+    }
+
+}
