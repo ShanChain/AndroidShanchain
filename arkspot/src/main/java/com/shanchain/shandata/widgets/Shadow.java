@@ -2,6 +2,9 @@ package com.shanchain.shandata.widgets;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
@@ -38,8 +41,25 @@ public class Shadow extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        /*canvas.clipRect(0, 0, screenWidth, screenHeitht);
+//        canvas.clipRect(getShadowRegionRect1(), Region.Op.DIFFERENCE);
+        Path mPath = new Path();
+        mPath.addCircle(screenWidth/2, screenHeitht/2, 150, Path.Direction.CCW);
+        canvas.clipPath(mPath,Region.Op.DIFFERENCE);
+        canvas.drawColor(0x60000000);
+        canvas.save();
+        canvas.restore();*/
+
         canvas.clipRect(0, 0, screenWidth, screenHeitht);
-        canvas.clipRect(getShadowRegionRect1(), Region.Op.DIFFERENCE);
+        Path mPath = new Path();
+        Paint paint = new Paint();
+        paint.setColor(Color.parseColor("#36748CA6"));
+        paint.setStrokeWidth(40);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawCircle(screenWidth/2,screenHeitht/2,150,paint);
+        mPath.addCircle(screenWidth/2, screenHeitht/2, 150, Path.Direction.CCW);
+
+        canvas.clipPath(mPath,Region.Op.DIFFERENCE);
         canvas.drawColor(0x60000000);
         canvas.save();
         canvas.restore();
