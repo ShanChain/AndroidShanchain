@@ -410,7 +410,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                         standardDialog.setStandardTitle(" ");
 //                                        standardDialog.setStandardMsg("支付100个 SEAT 参与ARS活动\n" +
 //                                                "      (公测期间0.001个SEAT)");
-                                        standardDialog.setStandardMsg(getString(R.string.payfor_join, Constants.PAYFOR_MINING_MONEY));
+                                        standardDialog.setStandardMsg(getString(R.string.payfor_join, HttpApi.PAYFOR_MINING_MONEY));
 
                                         standardDialog.setSureText(getString(R.string.commit_payfor));
                                         standardDialog.setCallback(new Callback() {
@@ -795,7 +795,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                 selectImage(getContext());
                                 break;
                             case R.id.tv_dialog_sure:
-                                payForARS(mPasswordFile, Constants.PAYFOR_MINING_MONEY);
+                                payForARS(mPasswordFile, HttpApi.PAYFOR_MINING_MONEY);
                                 break;
                         }
                     }

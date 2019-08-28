@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.mine;
 
+import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,19 +21,26 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.TaskPagerAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
 import com.shanchain.shandata.ui.model.InvationBean;
 import com.shanchain.shandata.ui.presenter.ReturnInvationPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ReturnInvationPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.mine.view.ReturnInvationView;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.InvationFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.MyGroupTeamFragment;
@@ -51,6 +59,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 /**
  * Created by WealChen
@@ -79,6 +88,8 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     TabLayout tabTask;
     @Bind(R.id.vp_invation)
     ViewPager vpInvation;
+    @Bind(R.id.tv_dengji)
+    TextView tvDengji;
     private String imgURl;//图片的URL地址
     private static final int SAVE_SUCCESS = 0;//保存图片成功
     private static final int SAVE_FAILURE = 1;//保存图片失败
@@ -171,7 +182,12 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     @Override
     public void onRightClick(View v) {
         //返佣规则
-
+        Intent intent = new Intent(ReturnInvationActivity.this, SCWebViewXYActivity.class);
+        JSONObject obj = new JSONObject();
+        obj.put("url", HttpApi.BASE_URL_WALLET+"/promotionaward");
+        String webParams = obj.toJSONString();
+        intent.putExtra("webParams", webParams);
+        startActivity(intent);
     }
 
     @Override
@@ -195,6 +211,9 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
                 tvMoney.setText(invationBean.getFrozenCoin());
                 tvProportion.setText(invationBean.getBrokerageCoin());
                 tvInvationCode.setText("邀请码:"+invationBean.getUserId());
+                tvDengji.setText(invationBean.getAccountLevel());
+            }else{
+                noDataTip();
             }
         }
     }
@@ -267,4 +286,32 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
         mHandler.obtainMessage(SAVE_SUCCESS).sendToTarget();
     }
 
+    //无数据弹窗提示
+    private void noDataTip(){
+        final StandardDialog standardDialog = new StandardDialog(ReturnInvationActivity.this);
+        standardDialog.setStandardTitle("提示");
+        standardDialog.setStandardMsg("您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
+        standardDialog.setSureText(getString(R.string.commit_payfor));
+        standardDialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                finish();
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                finish();
+            }
+        });
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                standardDialog.show();
+                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                msgTextView.setTextSize(18);
+            }
+        });
+    }
 }

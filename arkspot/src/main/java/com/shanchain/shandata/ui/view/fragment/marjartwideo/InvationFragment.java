@@ -79,6 +79,7 @@ public class InvationFragment extends BaseFragment implements SwipeRefreshLayout
         mAdapter.notifyDataSetChanged();
 
         getData();
+        initLoadMoreListener();
     }
 
     private void getData(){
@@ -139,5 +140,31 @@ public class InvationFragment extends BaseFragment implements SwipeRefreshLayout
                 refreshLayout.setVisibility(View.GONE);
             }
         }
+    }
+
+    //上拉加载监听
+    private void initLoadMoreListener() {
+        //上拉加载
+        recyclerViewCoupon.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (isLast) {
+                    return;
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mAdapter.getItemCount()) {
+                    pageIndex++;
+                    mPresenter.queryUserInvationRecord(SCCacheUtils.getCacheUserId(),pageIndex, Constants.pageSize,Constants.pillLoadmore);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 }

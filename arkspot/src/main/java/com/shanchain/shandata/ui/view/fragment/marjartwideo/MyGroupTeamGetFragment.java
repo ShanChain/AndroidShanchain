@@ -81,7 +81,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
 
-        getMyMiningData(currentType,Constants.pullRefress);
+
         initLoadMoreListener();
     }
 
@@ -92,6 +92,12 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         }else {
             mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "","",pageIndex, Constants.pageSize,pullType,0);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMyMiningData(currentType,Constants.pullRefress);
     }
 
     @Override
@@ -194,6 +200,11 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void setUpdateMiningRoomResponse(String response) {
+
+    }
+
+    @Override
+    public void setCheckUserHasWalletResponse(String response) {
 
     }
 

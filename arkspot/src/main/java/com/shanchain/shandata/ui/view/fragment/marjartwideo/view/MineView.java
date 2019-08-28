@@ -9,4 +9,5 @@ public interface MineView {
     void showProgressStart();
     void showProgressEnd();
     void updateUserInfoResponse(String response);
+    void setInvationDataResponse(String response);
 }

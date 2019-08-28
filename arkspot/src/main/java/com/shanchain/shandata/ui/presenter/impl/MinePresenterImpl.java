@@ -43,4 +43,21 @@ public class MinePresenterImpl implements MinePresenter {
                     }
                 });
     }
+
+    @Override
+    public void getInvationDataFromUser(String userId) {
+        SCHttpUtils.getNoToken()
+                .url(HttpApi.GET_INVATION_USER_DATA+"/"+userId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mMineView.setInvationDataResponse(response);
+                    }
+                });
+    }
 }

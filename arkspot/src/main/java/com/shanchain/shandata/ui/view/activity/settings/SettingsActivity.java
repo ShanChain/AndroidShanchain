@@ -127,6 +127,7 @@ public class SettingsActivity extends BaseActivity implements ArthurToolBar.OnLe
         }
         initCurrentUserStatus();
         isRealName();
+
     }
 
     private void initToolbar() {

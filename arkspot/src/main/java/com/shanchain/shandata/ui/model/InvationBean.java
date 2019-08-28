@@ -13,6 +13,7 @@ public class InvationBean implements Serializable {
     String frozenCoin;
     String brokerageCoin;
     String inviteCodeImg;
+    String accountLevel;
 
     public String getUserId() {
         return userId;
@@ -52,5 +53,21 @@ public class InvationBean implements Serializable {
 
     public void setInviteCodeImg(String inviteCodeImg) {
         this.inviteCodeImg = inviteCodeImg;
+    }
+
+    public String getAccountLevel() {
+        if("4".equals(accountLevel)){
+            return "社长";
+        }else if("2".equals(accountLevel)){
+            return "区长";
+        }else if("3".equals(accountLevel)){
+            return "厂长";
+        }else {
+            return "矿工";
+        }
+    }
+
+    public void setAccountLevel(String accountLevel) {
+        this.accountLevel = accountLevel;
     }
 }

@@ -3,7 +3,7 @@ project.ext {
     arkspot_name = '马甲App'
     CFG_RN_DEBUG = IS_DEV_ENV ? 'true' : 'false'
     /*CFG_ENV_PRD = project.hasProperty('isEnvPrd') ? project.isEnvPrd : (IS_DEV_ENV ? 'false' : 'true')*/
-    CFG_ENV_PRD = 'false'
+    CFG_ENV_PRD = 'true'
     CFG_HOST_RELEASE = 'http://api.qianqianshijie.com'
     CFG_HOST_TEST = 'http://test.qianqianshijie.com'
     CFG_WALLET_RELEASE = 'http://h5.qianqianshijie.com'

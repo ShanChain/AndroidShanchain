@@ -7,5 +7,5 @@ package com.shanchain.shandata.ui.presenter;
  */
 public interface MinePresenter {
     void modifyUserInfo(String modifyUserInfo);
-
+    void getInvationDataFromUser(String userId);
 }

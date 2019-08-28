@@ -17,4 +17,6 @@ public interface MyGroupTeamPresenter {
     void deleteMiningRoomRecord(String id);
     //支付成功更新插入矿区支付标记参数
     void updateMiningRoomRecord(String id,String isPay);
+    //判断用户是否有钱包账号
+    void checkUserHasWallet(Context context);
 }

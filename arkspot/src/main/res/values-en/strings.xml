@@ -455,7 +455,7 @@
     <string name="get_rebate">Get a rebate(￥)</string>
     <string name="rebate_redio">Rebate ratio</string>
     <string name="registration_time">Registration time</string>
-    <string name="invatee_phone">Invitee number</string>
+    <string name="invatee_phone">Invitee name</string>
     <string name="state_1">state</string>
     <string name="login_other_device">The account has been logged in on another device, please log in again</string>
     <string name="install_wechat">Please install WeChat first</string>

@@ -30,6 +30,8 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -38,11 +40,13 @@ import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.interfaces.IUpdateUserHeadCallback;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
+import com.shanchain.shandata.ui.model.InvationBean;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.presenter.MinePresenter;
 import com.shanchain.shandata.ui.presenter.impl.MinePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
+import com.shanchain.shandata.ui.view.activity.coupon.CreateCouponActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
@@ -132,6 +136,7 @@ public class MineFragment extends BaseFragment implements MineView {
     public void initData() {
         mMinePresenter = new MinePresenterImpl(this);
         initUserData();
+
     }
 
 
@@ -233,7 +238,8 @@ public class MineFragment extends BaseFragment implements MineView {
     //邀请返佣
     @OnClick(R.id.ll_fanyong)
     void invation(){
-        startActivity(new Intent(getActivity(), ReturnInvationActivity.class));
+        mMinePresenter.getInvationDataFromUser(SCCacheUtils.getCacheUserId());
+
     }
 
 
@@ -366,6 +372,32 @@ public class MineFragment extends BaseFragment implements MineView {
 
         }else {
             ToastUtils.showToast(getActivity(),getString(R.string.operation_failed));
+        }
+    }
+
+    @Override
+    public void setInvationDataResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            InvationBean invationBean = SCJsonUtils.parseObj(data, InvationBean.class);
+            if(invationBean!=null){
+                startActivity(new Intent(getActivity(), ReturnInvationActivity.class));
+            }else{
+                ThreadUtils.runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showToast(getActivity(),"您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
+                    }
+                });
+            }
+        }else{
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showToast(getActivity(),"您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
+                }
+            });
         }
     }
 }

@@ -21,4 +21,5 @@ public interface HomeView {
     void setCheckIsJoinMiningRsponse(String response);
     void setAddMinigRoomResponse(String response);
     void setMiningNameExit(String response);
+    void setCheckUserHasWalletResponse(String response);
 }

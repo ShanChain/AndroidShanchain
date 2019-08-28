@@ -13,6 +13,8 @@ public class InvationRecordBean implements Serializable {
     String createTime;
     String acceptUserName;
     int isActive;
+    String acceptUserMobile;
+    String userName;
 
     public String getAcceptUserName() {
         return acceptUserName;
@@ -52,5 +54,21 @@ public class InvationRecordBean implements Serializable {
 
     public void setIsActive(int isActive) {
         this.isActive = isActive;
+    }
+
+    public String getAcceptUserMobile() {
+        return acceptUserMobile;
+    }
+
+    public void setAcceptUserMobile(String acceptUserMobile) {
+        this.acceptUserMobile = acceptUserMobile;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

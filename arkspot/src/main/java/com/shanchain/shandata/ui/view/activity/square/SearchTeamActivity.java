@@ -23,6 +23,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
@@ -76,7 +77,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
             switch (msg.what){
                 case 1002:
                     String filePath = (String) msg.obj;
-                    mPresenter.checkPasswordToServer(SearchTeamActivity.this,filePath,Constants.PAYFOR_MINING_MONEY);
+                    mPresenter.checkPasswordToServer(SearchTeamActivity.this,filePath,HttpApi.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接加入矿区
 //                    enterMiningEoom();
                     break;
@@ -271,6 +272,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
                     ToastUtils.showToast(SearchTeamActivity.this, R.string.success_join_mining);
                 }
             });
+            finish();
         }else {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override
@@ -278,6 +280,15 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
                     ToastUtils.showToast(SearchTeamActivity.this,getResources().getString(R.string.operation_failed));
                 }
             });
+        }
+    }
+
+    @Override
+    public void setCheckUserHasWalletResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            //判断有钱包账号后插入矿区记录
+            enterMiningEoom("0");
         }
     }
 
@@ -310,14 +321,13 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
     private void isJoinMiningTip(){
         standardDialog = new StandardDialog(SearchTeamActivity.this);
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,Constants.PAYFOR_MINING_MONEY));
+        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining, HttpApi.PAYFOR_MINING_MONEY));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override
             public void invoke() {
                 standardDialog.dismiss();
-                //支付前插入矿区记录
-                enterMiningEoom("0");
+                mPresenter.checkUserHasWallet(SearchTeamActivity.this);
             }
         }, new Callback() {
             @Override

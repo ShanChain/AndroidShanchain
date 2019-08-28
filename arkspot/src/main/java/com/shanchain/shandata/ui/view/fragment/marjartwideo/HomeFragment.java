@@ -199,7 +199,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                     String filePath = (String) msg.obj;
                     if(isCreateMinig){
                         //创建矿区
-                        mHomePresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
+                        mHomePresenter.checkPasswordToServer(getActivity(),filePath,HttpApi.PAYFOR_MINING_MONEY);
                     }else {
                         //加入矿区
                         mHomePresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),coordinates.getDiggingId()+"");
@@ -718,6 +718,15 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         }
     }
 
+    @Override
+    public void setCheckUserHasWalletResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            //弹出支付密码弹窗
+            isShowPasswordDialog();
+        }
+    }
+
     //进入聊天室
     private void gotoMessageRoom(){
         if(TextUtils.isEmpty(coordinates.getRoomId()))return;
@@ -910,39 +919,17 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         standardDialog = new StandardDialog(getActivity());
         standardDialog.setStandardTitle(" ");
         if(isCreateMinig){
-            standardDialog.setStandardMsg(getString(R.string.payfor_create_mining, Constants.PAYFOR_MINING_MONEY));
+            standardDialog.setStandardMsg(getString(R.string.payfor_create_mining, HttpApi.PAYFOR_MINING_MONEY));
         }else {
-            standardDialog.setStandardMsg(getString(R.string.payfor_add_mining, Constants.PAYFOR_MINING_MONEY));
+            standardDialog.setStandardMsg(getString(R.string.payfor_add_mining, HttpApi.PAYFOR_MINING_MONEY));
         }
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override
             public void invoke() {
                 standardDialog.dismiss();
-                ThreadUtils.runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //显示上传密码弹窗
-                        mShowPasswordDialog = new CustomDialog(getContext(), true, 1.0,
-                                R.layout.dialog_bottom_wallet_password,
-                                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                        mShowPasswordDialog.setPasswordBitmap(null);
-                        mShowPasswordDialog.show();
-                        mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                            @Override
-                            public void OnItemClick(CustomDialog dialog, View view) {
-                                switch (view.getId()) {
-                                    case R.id.iv_dialog_add_picture:
-                                        selectImage(getActivity());
-                                        break;
-                                    case R.id.tv_dialog_sure:
-                                        ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                });
+                //判断是否有钱包
+                mHomePresenter.checkUserHasWallet(getActivity());
             }
         }, new Callback() {
             @Override
@@ -959,6 +946,32 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
             }
         });
 
+    }
+    //显示上传密码弹窗
+    private void isShowPasswordDialog(){
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                mShowPasswordDialog = new CustomDialog(getContext(), true, 1.0,
+                        R.layout.dialog_bottom_wallet_password,
+                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+                mShowPasswordDialog.setPasswordBitmap(null);
+                mShowPasswordDialog.show();
+                mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(CustomDialog dialog, View view) {
+                        switch (view.getId()) {
+                            case R.id.iv_dialog_add_picture:
+                                selectImage(getActivity());
+                                break;
+                            case R.id.tv_dialog_sure:
+                                ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                                break;
+                        }
+                    }
+                });
+            }
+        });
     }
 
 

@@ -470,7 +470,7 @@
     <string name="get_rebate">获得返佣折合(￥)</string>
     <string name="rebate_redio">我的返佣比例</string>
     <string name="registration_time">注册时间</string>
-    <string name="invatee_phone">被邀请人号码</string>
+    <string name="invatee_phone">被邀请人昵称</string>
     <string name="state_1">状态</string>
     <string name="login_other_device">账号已在其他设备上登录，请重新登录</string>
     <string name="install_wechat">请先安装微信客户端</string>

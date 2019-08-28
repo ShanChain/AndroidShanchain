@@ -58,6 +58,8 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     RelativeLayout rlView3;
     @Bind(R.id.tv_join)
     TextView tvJoin;
+    @Bind(R.id.rl_home_intro)
+    RelativeLayout rlView0;
     private LinearLayout ll0;
     private LinearLayout ll1;
     private LinearLayout ll2;
@@ -76,6 +78,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
 
     private FragmentAdapter fragmentAdapter;
     private List<Fragment> mFragmentList = new ArrayList<>();
+    private int sourceType = 0;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_foot_print_new;
@@ -83,6 +86,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void initViewsAndEvents() {
+        sourceType = getIntent().getIntExtra("type",0);
         initMap();
         initViews();
         initFragment();
@@ -100,12 +104,27 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    //引导页介绍页第一张显示点击
+    @OnClick(R.id.rl_home_intro)
+    void viewHome(){
+        rlView1.setVisibility(View.VISIBLE);
+        rlView3.setVisibility(View.GONE);
+        rlView2.setVisibility(View.GONE);
+        rlView0.setVisibility(View.GONE);
+    }
     //引导页第一张显示点击
     @OnClick(R.id.rl_view1)
     void view1(){
         rlView1.setVisibility(View.GONE);
         rlView3.setVisibility(View.GONE);
         rlView2.setVisibility(View.VISIBLE);
+        rlView0.setVisibility(View.GONE);
     }
     //引导页第二张显示点击
     @OnClick(R.id.rl_view2)
@@ -113,6 +132,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         rlView1.setVisibility(View.GONE);
         rlView2.setVisibility(View.GONE);
         rlView3.setVisibility(View.VISIBLE);
+        rlView0.setVisibility(View.GONE);
     }
     //立即进入
     @OnClick({R.id.tv_join,R.id.rl_view3})
@@ -135,6 +155,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         fragmentAdapter.setFragments(mFragmentList);
         mViewpager.setAdapter(fragmentAdapter);
         mViewpager.setOffscreenPageLimit(4);
+
         changeState(2);
         mViewpager.setCurrentItem(2);
         /*bottomTab.changeState(0);

@@ -26,9 +26,9 @@ public interface HttpApi {
      * 钱包，挖矿分享链接，规则等地址
      */
     String BASE_URL_WALLET = Constants.SC_ENV_PRD ? Constants.SC_WALLET_RELEASE : Constants.SC_WALLET_TEST;
-//    String BASE_URL = "http://95.169.24.11:8081"; //本地测试环境全局接口地址
-//    String BASE_URL = "http://api.qianqianshijie.com"; //生产环境全局接口地址
-//    String BASE_URL = "http://47.100.20.170";
+
+    //挖矿支付金额
+    String PAYFOR_MINING_MONEY = Constants.SC_ENV_PRD ? "100":"0.001";
 
     /**
      * 注册环信聊天用户

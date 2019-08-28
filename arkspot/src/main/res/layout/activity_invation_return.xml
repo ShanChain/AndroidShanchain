@@ -88,6 +88,41 @@
                 android:gravity="center"
                 android:background="@drawable/bg_btn_login_selector"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="0.6dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/colorTextBg"
+            android:layout_marginRight="5dp"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="旷工等级"/>
+            <TextView
+                android:id="@+id/tv_dengji"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:text=""
+                android:textColor="@color/login_marjar_color"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
 
     <View

@@ -3,13 +3,17 @@ package com.shanchain.shandata.ui.presenter.impl;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
 import com.shanchain.data.common.net.SCHttpPostBodyNewCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
 import com.zhy.http.okhttp.builder.GetBuilder;
@@ -159,6 +163,28 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
                     @Override
                     public void onResponse(String response, int id) {
                         mTeamView.setUpdateMiningRoomResponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void checkUserHasWallet(Context context) {
+        CustomDialog showPasswordDialog = new CustomDialog(context, true, 1.0,
+                R.layout.dialog_bottom_wallet_password,
+                new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
+        SCHttpUtils.getAndToken()
+                .url(HttpApi.WALLET_INFO)
+                .addParams("characterId", SCCacheUtils.getCacheCharacterId())
+                .addParams("userId", SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new SCHttpStringCallBack(context, showPasswordDialog) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mTeamView.setCheckUserHasWalletResponse(response);
                     }
                 });
     }

@@ -25,6 +25,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.SCInputDialog;
@@ -87,7 +88,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             switch (msg.what){
                 case 1002:
                     String filePath = (String) msg.obj;
-                    mPresenter.checkPasswordToServer(getActivity(),filePath,Constants.PAYFOR_MINING_MONEY);
+                    mPresenter.checkPasswordToServer(getActivity(),filePath,HttpApi.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接加入矿区
 //                    enterMiningEoom();
                     break;
@@ -114,7 +115,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
 
-        getTeamData();
+
 
         initLoadMoreListener();
     }
@@ -123,6 +124,12 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private void getTeamData(){
         pageIndex = 1;
         mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress,1);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getTeamData();
     }
 
     @Override
@@ -256,6 +263,15 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         }
     }
 
+    @Override
+    public void setCheckUserHasWalletResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            //判断有钱包账号后插入矿区记录
+            enterMiningEoom("0");
+        }
+    }
+
     //上拉加载监听
     private void initLoadMoreListener() {
         //上拉加载
@@ -335,15 +351,15 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private void isJoinMiningTip(){
         standardDialog = new StandardDialog(getActivity());
         standardDialog.setStandardTitle(" ");
-        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining,Constants.PAYFOR_MINING_MONEY));
+        standardDialog.setStandardMsg(getString(R.string.payfor_add_mining, HttpApi.PAYFOR_MINING_MONEY));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override
             public void invoke() {
                 standardDialog.dismiss();
-                //支付前插入矿区记录
-                enterMiningEoom("0");
-//                showPasswordView();
+
+                //支付前先判断是否有钱包
+                mPresenter.checkUserHasWallet(getActivity());
 
             }
         }, new Callback() {

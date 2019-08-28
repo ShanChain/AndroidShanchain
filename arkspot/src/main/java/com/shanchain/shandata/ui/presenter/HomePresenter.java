@@ -32,4 +32,6 @@ public interface HomePresenter {
     void insertMiningRoomByOther(String userId,String diggingsId);
     //判断矿区名称是否重复
     void checkNameIsExit(String name);
+    //判断用户是否有钱包账号
+    void checkUserHasWallet(Context context);
 }
