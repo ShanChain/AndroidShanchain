@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/bt_shit_web"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:text="切换数据"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+        android:background="@color/login_marjar_color"/>
+
+    <EditText
+        android:id="@+id/et_web"
+        android:layout_width="match_parent"
+        android:textColor="@color/login_marjar_color"
+        android:background="@null"
+        android:inputType="number"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:textCursorDrawable="@null"
+        android:layout_height="40dp" />
+
+    <EditText
+        android:id="@+id/et_wallet"
+        android:layout_width="match_parent"
+        android:textColor="@color/login_marjar_color"
+        android:background="@null"
+        android:inputType="number"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:textCursorDrawable="@null"
+        android:layout_height="40dp" />
+
+    <EditText
+        android:id="@+id/et_money"
+        android:layout_width="match_parent"
+        android:textColor="@color/login_marjar_color"
+        android:background="@null"
+        android:inputType="number"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:textCursorDrawable="@null"
+        android:layout_height="40dp" />
+
+</LinearLayout>

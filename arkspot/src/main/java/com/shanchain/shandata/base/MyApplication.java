@@ -159,6 +159,8 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
     private static DaoSession daoSession;
     private WebSocketManager mWebSocketManager;
 
+    //初始网络地址
+    private String baseUrl;
 
     @Override
     public void onCreate() {
@@ -683,4 +685,6 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
 //    public void onReceiveLocation(BDLocation bdLocation) {
 //
 //    }
+
+
 }

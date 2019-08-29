@@ -273,7 +273,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         tv3.setTextColor(getResources().getColor(R.color.white_btn_press));
         tv4.setTextColor(getResources().getColor(R.color.white_btn_press));
         iv0.setImageResource(R.mipmap.maya_c);
-        iv1.setImageResource(R.mipmap.sheqb_c);
+        iv1.setImageResource(R.mipmap.nianlunz_c);
         iv2.setImageResource(R.mipmap.midle_icon);
         iv3.setImageResource(R.mipmap.yuansq_c);
         iv4.setImageResource(R.mipmap.mine_c);
@@ -283,7 +283,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
                 tv0.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 1:
-                iv1.setImageResource(R.mipmap.sheqb_s);
+                iv1.setImageResource(R.mipmap.nianlunz_s);
                 tv1.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 2:

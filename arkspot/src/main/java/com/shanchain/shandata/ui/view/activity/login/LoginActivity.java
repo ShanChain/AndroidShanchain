@@ -82,14 +82,6 @@ import okhttp3.Call;
 
 import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
 
-//import com.tencent.tauth.Tencent;
-//import me.shaohui.shareutil.LoginUtil;
-//import me.shaohui.shareutil.login.LoginListener;
-//import me.shaohui.shareutil.login.LoginPlatform;
-//import me.shaohui.shareutil.login.LoginResult;
-//import me.shaohui.shareutil.login.result.BaseToken;
-//import me.shaohui.shareutil.login.result.BaseUser;
-
 
 public class LoginActivity extends BaseActivity {
 

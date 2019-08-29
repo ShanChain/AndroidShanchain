@@ -46,6 +46,8 @@ public class CouponFragment extends BaseFragment implements CounponListView,
     RecyclerView recyclerViewCoupon;
     @Bind(R.id.refresh_layout)
     SwipeRefreshLayout refreshLayoutArsgame;
+    @Bind(R.id.ll_notdata)
+    LinearLayout llNotdata;
     private View footerView;
     private String roomid;
     private int pageNo = 1;
@@ -155,7 +157,13 @@ public class CouponFragment extends BaseFragment implements CounponListView,
             }else {
                 couponListAdapter.addData(counpList);
             }
-
+            if(couponInfoList!=null && couponInfoList.size()>0){
+                llNotdata.setVisibility(View.GONE);
+                refreshLayoutArsgame.setVisibility(View.VISIBLE);
+            }else {
+                llNotdata.setVisibility(View.VISIBLE);
+                refreshLayoutArsgame.setVisibility(View.GONE);
+            }
         } else if (NetErrCode.UN_VERIFIED_CODE.equals(code)) {
             Intent intent = new Intent(getActivity(), VerifiedActivity.class);
             startActivity(intent);

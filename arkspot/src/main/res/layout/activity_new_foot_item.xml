@@ -46,7 +46,7 @@
                 <ImageView
                     android:id="@+id/iv_bankuai"
                     style="@style/BottomTabImgStyle"
-                    android:src="@mipmap/sheqb_c" />
+                    android:src="@mipmap/nianlunz_c" />
 
                 <TextView
                     android:id="@+id/tv_bankuai"

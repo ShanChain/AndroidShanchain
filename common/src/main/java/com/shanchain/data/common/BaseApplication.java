@@ -14,6 +14,7 @@ import com.shanchain.data.common.base.CommonConstants;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.NativePages;
 import com.shanchain.data.common.cache.BaseSqlDao;
+import com.shanchain.data.common.utils.PrefUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,10 +24,14 @@ import java.util.List;
  */
 
 public class BaseApplication extends Application implements ReactApplication {
-
+    private static BaseApplication inStanse;
+    public static BaseApplication getInstance(){
+        return inStanse;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
+        inStanse = this;
         AppManager.getInstance().setContext(getApplicationContext());
         NativePages.initAllowJumpPages(this);
         BaseSqlDao.getInstance().init(getApplicationContext(), CommonConstants.APP_CHACHE_DB,1);
@@ -60,5 +65,19 @@ public class BaseApplication extends Application implements ReactApplication {
 
     public ReactInstanceManager getReactInstanceManager(){
         return mReactNativeHost.getReactInstanceManager();
+    }
+
+    //获取全局网络地址
+    public String getBaseUrl(){
+        String baseUrl = PrefUtils.getString(inStanse, Constants.SP_KEY_BASE_PARA,Constants.SC_HOST_RELEASE);
+        return baseUrl;
+    }
+    //获取全局钱包地址
+    public String getBaseWalletUrl(){
+        String walletUrl = PrefUtils.getString(inStanse, Constants.SP_KEY_BASE_PARA_WALLET,Constants.SC_WALLET_RELEASE);
+        return walletUrl;
+    }
+    public String getMoneyPara(){
+        return PrefUtils.getString(this, Constants.SP_KEY_BASE_PARA_MONEY,Constants.PAYFOR_MINING_MONEY);
     }
 }

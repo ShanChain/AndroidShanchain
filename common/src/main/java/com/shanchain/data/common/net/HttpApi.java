@@ -1,5 +1,6 @@
 package com.shanchain.data.common.net;
 
+import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.Constants;
 
 /**
@@ -12,7 +13,8 @@ public interface HttpApi {
     /**
      * IM相关接口
      */
-    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+//    String BASE_URL_IM = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+    String BASE_URL_IM = BaseApplication.getInstance().getBaseUrl();
 //    String BASE_URL_IM = "http://95.169.24.11:8082"; //本地测试环境IM相关接口
 //    String BASE_URL_IM = "http://api.qianqianshijie.com"; //生产环境IM相关接口
 //    String BASE_URL_IM = "http://47.100.20.170";
@@ -21,14 +23,17 @@ public interface HttpApi {
     /**
      * 全局接口地址
      */
-    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+//    String BASE_URL = Constants.SC_ENV_PRD ? Constants.SC_HOST_RELEASE : Constants.SC_HOST_TEST;
+    String BASE_URL = BaseApplication.getInstance().getBaseUrl();
     /**
      * 钱包，挖矿分享链接，规则等地址
      */
-    String BASE_URL_WALLET = Constants.SC_ENV_PRD ? Constants.SC_WALLET_RELEASE : Constants.SC_WALLET_TEST;
+//    String BASE_URL_WALLET = Constants.SC_ENV_PRD ? Constants.SC_WALLET_RELEASE : Constants.SC_WALLET_TEST;
+    String BASE_URL_WALLET = BaseApplication.getInstance().getBaseWalletUrl();
 
     //挖矿支付金额
-    String PAYFOR_MINING_MONEY = Constants.SC_ENV_PRD ? "100":"0.001";
+//    String PAYFOR_MINING_MONEY = Constants.SC_ENV_PRD ? "100":"0.001";
+    String PAYFOR_MINING_MONEY = BaseApplication.getInstance().getMoneyPara();
 
     /**
      * 注册环信聊天用户

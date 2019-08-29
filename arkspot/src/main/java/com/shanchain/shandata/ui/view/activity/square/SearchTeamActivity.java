@@ -39,6 +39,7 @@ import com.shanchain.shandata.ui.model.InsertdiggingsBean;
 import com.shanchain.shandata.ui.model.TDiggingJoinLogs;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
 import com.shanchain.shandata.ui.presenter.impl.MyGroupTeamPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.basepara.BaseParaActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
 
@@ -108,8 +109,16 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!TextUtils.isEmpty(s)){
-                    mPresenter.queryGroupTeam("", "",s.toString(),1, 30,Constants.pullRefress,0);
+                String keyword = s.toString();
+                if(!TextUtils.isEmpty(keyword)){
+                    if("MJTEST".equals(keyword)){
+                        startActivity(new Intent(SearchTeamActivity.this, BaseParaActivity.class));
+                        return;
+                    }
+                    mPresenter.queryGroupTeam("", "",keyword,1, 30,Constants.pullRefress,0);
+                }else {
+                    mList.clear();
+                    mGroupTeamAdapter.notifyDataSetChanged();
                 }
             }
 

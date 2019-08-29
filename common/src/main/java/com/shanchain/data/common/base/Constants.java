@@ -136,6 +136,9 @@ public interface Constants {
 
     String SP_KEY_GUIDE = "sp_key_guide";
     String SP_KEY_GUIDE_VIEW = "sp_key_guide_view";//提示引导页
+    String SP_KEY_BASE_PARA = "sp_key_base_para";//全局网络地址
+    String SP_KEY_BASE_PARA_WALLET = "sp_key_base_para_wallet";//全局钱包地址
+    String SP_KEY_BASE_PARA_MONEY = "sp_key_base_para_money";
 
     /**************上传的视频类型**************/
     String VIDEO_UPLOAD_DYNAMIC = "dynamic";
@@ -157,6 +160,6 @@ public interface Constants {
     int pullRefress = 1;
     int pillLoadmore = 2;
 
-//    String PAYFOR_MINING_MONEY = "0.001";
+    String PAYFOR_MINING_MONEY = "100";
 
 }
