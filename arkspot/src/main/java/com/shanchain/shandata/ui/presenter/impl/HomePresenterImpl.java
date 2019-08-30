@@ -244,6 +244,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void addMiningRoom(String userId, String roomId) {
+//        LogUtils.d("------>>>userid:"+userId+"---"+roomId);
         SCHttpUtils.post()
                 .url(HttpApi.ADD_MINING_ROOM)
                 .addParams("createUser",userId)

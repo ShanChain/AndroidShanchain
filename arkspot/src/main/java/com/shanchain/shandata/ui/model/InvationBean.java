@@ -14,6 +14,7 @@ public class InvationBean implements Serializable {
     String brokerageCoin;
     String inviteCodeImg;
     String accountLevel;
+    String brokerageNotFrozenCoin;
 
     public String getUserId() {
         return userId;
@@ -69,5 +70,13 @@ public class InvationBean implements Serializable {
 
     public void setAccountLevel(String accountLevel) {
         this.accountLevel = accountLevel;
+    }
+
+    public String getBrokerageNotFrozenCoin() {
+        return brokerageNotFrozenCoin;
+    }
+
+    public void setBrokerageNotFrozenCoin(String brokerageNotFrozenCoin) {
+        this.brokerageNotFrozenCoin = brokerageNotFrozenCoin;
     }
 }

@@ -14,7 +14,7 @@
         android:gravity="center"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="@color/login_marjar_color">
+        android:background="@color/white">
         <cn.jiguang.imui.view.CircleImageView
             android:id="@+id/iv_user_head"
             android:layout_width="30dp"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="@color/white"
+            android:textStyle="bold"
             android:text="@string/squre"
             android:gravity="center"
             android:layout_gravity="center"/>

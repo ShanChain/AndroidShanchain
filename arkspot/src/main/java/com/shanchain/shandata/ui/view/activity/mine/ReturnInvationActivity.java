@@ -98,25 +98,6 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     private InvationBean invationBean;
     private ReturnInvationPresenter mPresenter;
     private List<Fragment> fragmentList = new ArrayList();
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SAVE_BEGIN:
-                    ToastUtils.showToast(ReturnInvationActivity.this,"开始保存图片...");
-                    tvFzLilnk.setClickable(false);
-                    break;
-                case SAVE_SUCCESS:
-                    ToastUtils.showToast(ReturnInvationActivity.this,"图片保存成功,请到相册查找");
-                    tvFzLilnk.setClickable(true);
-                    break;
-                case SAVE_FAILURE:
-                    ToastUtils.showToast(ReturnInvationActivity.this,"图片保存失败,请稍后再试...");
-                    tvFzLilnk.setClickable(true);
-                    break;
-            }
-        }
-    };
 
     @Override
     protected int getContentViewLayoutID() {
@@ -161,17 +142,10 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     //复制邀链接
     @OnClick(R.id.tv_fz_lilnk)
     void fzInvateLink(){
-        tvFzLilnk.setClickable(false);//不可重复点击
-        //保存图片必须在子线程中操作，是耗时操作
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.obtainMessage(SAVE_BEGIN).sendToTarget();
-                Bitmap bp = returnBitMap(HttpApi.BASE_URL +File.separator+invationBean.getInviteCodeImg());
-                saveImageToPhotos(mContext, bp);
-            }
-        }).start();
-
+        //显示图片二维码
+        if(invationBean!=null && !TextUtils.isEmpty(invationBean.getInviteCodeImg())){
+            startActivity(new Intent(ReturnInvationActivity.this,ViewImageActivity.class).putExtra("url",invationBean.getInviteCodeImg()));
+        }
     }
 
     @Override
@@ -209,7 +183,7 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
             if(invationBean!=null){
                 tvNums.setText(invationBean.getAcceptUserCount()+"");
                 tvMoney.setText(invationBean.getFrozenCoin());
-                tvProportion.setText(invationBean.getBrokerageCoin());
+                tvProportion.setText(invationBean.getBrokerageNotFrozenCoin());
                 tvInvationCode.setText("邀请码:"+invationBean.getUserId());
                 tvDengji.setText(invationBean.getAccountLevel());
             }else{
@@ -223,68 +197,6 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
 
     }
 
-    /**
-     * 将URL转化成bitmap形式
-     *
-     * @param url
-     * @return bitmap type
-     */
-    public final static Bitmap returnBitMap(String url) {
-        URL myFileUrl;
-        Bitmap bitmap = null;
-        try {
-            myFileUrl = new URL(url);
-            HttpURLConnection conn;
-            conn = (HttpURLConnection) myFileUrl.openConnection();
-            conn.setDoInput(true);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(is);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-
-    /**
-     * 保存二维码到本地相册
-     */
-    private void saveImageToPhotos(Context context, Bitmap bmp) {
-        // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "marjar");
-        if (!appDir.exists()) {
-            appDir.mkdir();
-        }
-        String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), fileName, null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            mHandler.obtainMessage(SAVE_FAILURE).sendToTarget();
-            return;
-        }
-        // 最后通知图库更新
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-        mHandler.obtainMessage(SAVE_SUCCESS).sendToTarget();
-    }
 
     //无数据弹窗提示
     private void noDataTip(){

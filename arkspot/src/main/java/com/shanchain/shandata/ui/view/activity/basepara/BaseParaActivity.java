@@ -48,19 +48,19 @@ public class BaseParaActivity extends BaseActivity {
         if(isProduct){
             PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA,Constants.SC_HOST_TEST);
             PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_WALLET,Constants.SC_WALLET_TEST);
-            PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_MONEY,"0.001");
+            PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_MONEY,etMoney.getText().toString().trim());
             isProduct = false;
             etWeb.setText(Constants.SC_HOST_TEST);
             etWallet.setText(Constants.SC_WALLET_TEST);
-            etMoney.setText("0.001");
+            etMoney.setText(etMoney.getText().toString().trim());
         }else {
             PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA,Constants.SC_HOST_RELEASE);
             PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_WALLET,Constants.SC_WALLET_RELEASE);
-            PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_MONEY,Constants.PAYFOR_MINING_MONEY);
+            PrefUtils.putString(this, Constants.SP_KEY_BASE_PARA_MONEY,etMoney.getText().toString().trim());
             isProduct = true;
             etWeb.setText(Constants.SC_HOST_RELEASE);
             etWallet.setText(Constants.SC_WALLET_RELEASE);
-            etMoney.setText(Constants.PAYFOR_MINING_MONEY);
+            etMoney.setText(etMoney.getText().toString().trim());
         }
     }
 

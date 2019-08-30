@@ -109,7 +109,7 @@
                 android:layout_gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="旷工等级"/>
+                android:text="矿工等级"/>
             <TextView
                 android:id="@+id/tv_dengji"
                 android:layout_width="70dp"
@@ -214,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="已发放金额"
+                android:text="返佣解冻金额"
 
                 />
         </LinearLayout>

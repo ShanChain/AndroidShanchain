@@ -184,8 +184,8 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
             if (mShowPasswordDialog != null && mShowPasswordDialog.isShowing()) {
-                mShowPasswordDialog.setPasswordBitmap(null);
-                mShowPasswordDialog.dismiss();
+                /*mShowPasswordDialog.setPasswordBitmap(null);
+                mShowPasswordDialog.dismiss();*/
             }
             //支付成功调用更新矿区接口
             mPresenter.updateMiningRoomRecord(insertdiggingsBean.getId(),"1");

@@ -591,7 +591,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.basepara.BaseParaActivity"
             android:screenOrientation="portrait"/>
-
+        <activity android:name=".ui.view.activity.mine.ViewImageActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

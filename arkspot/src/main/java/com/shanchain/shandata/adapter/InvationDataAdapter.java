@@ -36,7 +36,7 @@ public class InvationDataAdapter extends BaseQuickAdapter<InvationRecordBean,Bas
         if(!TextUtils.isEmpty(item.getCreateTime())){
             helper.setText(R.id.tv_register_time,item.getCreateTime().split(" ")[0]);
         }
-        helper.setText(R.id.tv_register_phone,item.getUserName());
+        helper.setText(R.id.tv_register_phone,item.getAcceptUserName());
         if(item.getIsActive() ==1){
             helper.setText(R.id.tv_state,"已激活");
         }else {

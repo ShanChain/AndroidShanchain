@@ -74,7 +74,7 @@ public class GVPhotoAdapter extends BaseAdapter {
         viewHolder.llRootview.setLayoutParams(layoutParams);
         String s = photoList.get(position).replaceAll("\\\\","");
         Glide.with(mContext).load(HttpApi.BASE_URL+s)
-                .apply(new RequestOptions().placeholder(R.drawable.squrea_bg_shape)
+                .apply(new RequestOptions().placeholder(R.mipmap.place_image_commen)
                         .error(R.drawable.squrea_bg_shape)).into(viewHolder.ivItem);
 
         return convertView;

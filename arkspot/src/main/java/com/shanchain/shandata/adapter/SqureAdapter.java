@@ -71,7 +71,7 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             String []attr = item.getListImg().replaceAll("\\\\","").split(",");
             Glide.with(mContext).load(HttpApi.BASE_URL+attr[0])
                     .apply(new RequestOptions()
-                            .placeholder(R.drawable.squrea_bg_shape)
+                            .placeholder(R.mipmap.place_image_commen)
                             .error(R.drawable.squrea_bg_shape)).into(ivBg);
             helper.getView(R.id.rl_bg).setVisibility(View.VISIBLE);
             if(attr.length == 1){
