@@ -45,6 +45,7 @@ import com.shanchain.shandata.ui.model.TDiggingJoinLogs;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
 import com.shanchain.shandata.ui.presenter.impl.MyGroupTeamPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.square.SearchTeamActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
 
 
@@ -77,6 +78,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     private GroupTeamBean groupTeamBean;
     private boolean isPaySuccess = false;//是否成功支付
     private InsertdiggingsBean insertdiggingsBean;
+    private String photoPath;
     public static MyGroupTeamFragment getInstance() {
         MyGroupTeamFragment fragment = new MyGroupTeamFragment();
         return fragment;
@@ -88,6 +90,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             switch (msg.what){
                 case 1002:
                     String filePath = (String) msg.obj;
+                    if(TextUtils.isEmpty(filePath))return;
                     mPresenter.checkPasswordToServer(getActivity(),filePath,HttpApi.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接加入矿区
 //                    enterMiningEoom();
@@ -114,8 +117,6 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         recyclerViewCoupon.setLayoutManager(layoutManager);
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
-
-
 
         initLoadMoreListener();
     }
@@ -198,7 +199,6 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             mShowPasswordDialog.dismiss();
             mShowPasswordDialog.setPasswordBitmap(null);
         }
-        //删除加入记录
 
     }
 
@@ -357,7 +357,6 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             @Override
             public void invoke() {
                 standardDialog.dismiss();
-
                 //支付前先判断是否有钱包
                 mPresenter.checkUserHasWallet(getActivity());
 
@@ -394,7 +393,14 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                         selectImage(getActivity());
                         break;
                     case R.id.tv_dialog_sure:
-                        ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                        if(mShowPasswordDialog.getPasswordBitmap() == null){
+                            ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                        }else {
+                            Message message = new Message();
+                            message.what = 1002;
+                            message.obj = photoPath;
+                            handler.sendMessage(message);
+                        }
                         break;
                 }
             }
@@ -403,7 +409,6 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
             mShowPasswordDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    LogUtils.d("----->>>Dismiss"+isPaySuccess+"---"+insertdiggingsBean.getId());
                     //密码上传框消失时删除加入矿区记录表
                     if(!isPaySuccess && insertdiggingsBean!=null){//未支付成功时密码框消失才删除
                         mPresenter.deleteMiningRoomRecord(insertdiggingsBean.getId());
@@ -426,36 +431,13 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
-                final String photoPath = cursor.getString(columnIndex);
+                photoPath = cursor.getString(columnIndex);
                 cursor.close();
                 LogUtils.showLog("----->MyGroupTeamFragment: select image path is "+photoPath);
                 Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                /*if (mShowPasswordDialog != null) {
-                    mShowPasswordDialog.dismiss();
-                    mShowPasswordDialog.setPasswordBitmap(null);
-                }*/
-                mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getActivity(), true, 1.0,
-                        R.layout.dialog_bottom_wallet_password,
-                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                mShowPasswordDialog.setPasswordBitmap(bitmap);
-                mShowPasswordDialog.show();
-                mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                    @Override
-                    public void OnItemClick(CustomDialog dialog, View view) {
-                        switch (view.getId()) {
-                            case R.id.iv_dialog_add_picture:
-                                selectImage(getActivity());
-                                break;
-                            case R.id.tv_dialog_sure:
-                                //去支付
-                                Message message = new Message();
-                                message.what = 1002;
-                                message.obj = photoPath;
-                                handler.sendMessage(message);
-                                break;
-                        }
-                    }
-                });
+                if(mShowPasswordDialog!=null){
+                    mShowPasswordDialog.setPasswordBitmap2(bitmap);
+                }
             }
         }
     }
@@ -463,5 +445,13 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     //支付成功后加入矿区
     private void enterMiningEoom(String isPay){
         mPresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),groupTeamBean.getId()+"",isPay);
+    }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
+        super.onDestroy();
+
     }
 }

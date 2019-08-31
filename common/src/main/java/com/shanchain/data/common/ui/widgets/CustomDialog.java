@@ -40,7 +40,7 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
     private Bitmap shareBitmap, passwordBitmap = null;
     private boolean isShow = false;
     private RelativeLayout relativeLayout, relativeAllText;
-
+    private TextView dialogSure;
     public CustomDialog(Context context, int layoutResID, int[] listenedItems) {
         super(context, R.style.dialog_custom); //dialog的样式
         this.context = context;
@@ -164,9 +164,9 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
                 relativeAllText.setVisibility(View.VISIBLE);
             }
         }
+        passwordView = findViewById(R.id.iv_dialog_add_picture);
+        dialogSure = findViewById(R.id.tv_dialog_sure);
         if (passwordBitmap != null) {
-            passwordView = findViewById(R.id.iv_dialog_add_picture);
-            TextView dialogSure = findViewById(R.id.tv_dialog_sure);
             passwordView.setImageBitmap(passwordBitmap);
             passwordView.setClickable(true);
             dialogSure.setBackground(this.getContext().getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
@@ -213,6 +213,16 @@ public class CustomDialog extends AlertDialog implements View.OnClickListener {
 
     public void setPasswordBitmap(Bitmap passwordBitmap) {
         this.passwordBitmap = passwordBitmap;
+
+    }
+    public void setPasswordBitmap2(Bitmap passwordBitmap) {
+        this.passwordBitmap = passwordBitmap;
+        if(null !=passwordBitmap){
+            passwordView.setImageBitmap(passwordBitmap);
+            passwordView.setClickable(true);
+            dialogSure.setBackground(this.getContext().getResources().getDrawable(R.drawable.common_shape_bg_btn_login));
+        }
+
     }
     public Bitmap getPasswordBitmap(){
         return passwordBitmap;

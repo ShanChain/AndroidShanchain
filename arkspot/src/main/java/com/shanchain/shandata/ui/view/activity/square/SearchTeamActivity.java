@@ -1,7 +1,11 @@
 package com.shanchain.shandata.ui.view.activity.square;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +13,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -72,12 +78,14 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
     private StandardDialog standardDialog;
     private boolean isPaySuccess = false;//是否成功支付
     private InsertdiggingsBean insertdiggingsBean;
+    private String photoPath;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1002:
                     String filePath = (String) msg.obj;
+                    if(TextUtils.isEmpty(filePath))return;
                     mPresenter.checkPasswordToServer(SearchTeamActivity.this,filePath,HttpApi.PAYFOR_MINING_MONEY);
                     //由于验证钱包功能接口暂时不可用，这里先直接加入矿区
 //                    enterMiningEoom();
@@ -239,10 +247,17 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
                     case R.id.iv_dialog_add_picture:
-                        selectImage(SearchTeamActivity.this);
+                        selectImage();
                         break;
                     case R.id.tv_dialog_sure:
-                        ToastUtils.showToast(SearchTeamActivity.this, R.string.upload_qr_code);
+                        if(mShowPasswordDialog.getPasswordBitmap() == null){
+                            ToastUtils.showToast(SearchTeamActivity.this, R.string.upload_qr_code);
+                        }else {
+                            Message message = new Message();
+                            message.what = 1002;
+                            message.obj = photoPath;
+                            handler.sendMessage(message);
+                        }
                         break;
                 }
             }
@@ -250,7 +265,6 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
         mShowPasswordDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-//                LogUtils.d("----->>>Dismiss"+isPaySuccess+"---"+insertdiggingsBean.getId());
                 //密码上传框消失时删除加入矿区记录表
                 if(!isPaySuccess && insertdiggingsBean!=null){//未支付成功时密码框消失才删除
                     mPresenter.deleteMiningRoomRecord(insertdiggingsBean.getId());
@@ -298,6 +312,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             //判断有钱包账号后插入矿区记录
             enterMiningEoom("0");
+
         }
     }
 
@@ -366,36 +381,13 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
-                final String photoPath = cursor.getString(columnIndex);
+                photoPath = cursor.getString(columnIndex);
                 cursor.close();
                 LogUtils.d("----->SearchActivity: select image path is "+photoPath);
                 Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                /*if (mShowPasswordDialog != null) {
-                    mShowPasswordDialog.dismiss();
-                    mShowPasswordDialog.setPasswordBitmap(null);
-                }*/
-                mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(SearchTeamActivity.this, true, 1.0,
-                        R.layout.dialog_bottom_wallet_password,
-                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                mShowPasswordDialog.setPasswordBitmap(bitmap);
-                mShowPasswordDialog.show();
-                mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                    @Override
-                    public void OnItemClick(CustomDialog dialog, View view) {
-                        switch (view.getId()) {
-                            case R.id.iv_dialog_add_picture:
-                                selectImage(SearchTeamActivity.this);
-                                break;
-                            case R.id.tv_dialog_sure:
-                                //去支付
-                                Message message = new Message();
-                                message.what = 1002;
-                                message.obj = photoPath;
-                                handler.sendMessage(message);
-                                break;
-                        }
-                    }
-                });
+                if(mShowPasswordDialog!=null){
+                    mShowPasswordDialog.setPasswordBitmap2(bitmap);
+                }
             }
         }
     }
@@ -403,5 +395,27 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
     //支付成功后加入矿区
     private void enterMiningEoom(String isPay){
         mPresenter.insertMiningRoomByOther(SCCacheUtils.getCacheUserId(),groupTeamBean.getId()+"",isPay);
+    }
+
+    /**
+     * 描述：打开相册
+     */
+    protected void selectImage() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK, null);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, NetErrCode.WALLET_PHOTO);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
+        super.onDestroy();
+
     }
 }

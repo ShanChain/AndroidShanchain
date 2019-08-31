@@ -179,6 +179,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private boolean isClickMap = false;//是否是点击地图
     private boolean isCreateMinig = true;//是否创建矿区
     private View mView;
+    private String photoPath;
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
@@ -965,7 +966,15 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                                 selectImage(getActivity());
                                 break;
                             case R.id.tv_dialog_sure:
-                                ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+//                                ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                                if(mShowPasswordDialog.getPasswordBitmap() == null){
+                                    ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                                }else {
+                                    Message message = new Message();
+                                    message.what = 1002;
+                                    message.obj = photoPath;
+                                    handler.sendMessage(message);
+                                }
                                 break;
                         }
                     }
@@ -1101,7 +1110,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getData() != null) {
             if (requestCode == NetErrCode.WALLET_PHOTO) {
                 Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
@@ -1111,15 +1120,14 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
-                final String photoPath = cursor.getString(columnIndex);
+                photoPath = cursor.getString(columnIndex);
                 cursor.close();
                 LogUtils.showLog("----->HomeFragment: select image path is "+photoPath);
                  Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                /*if (mShowPasswordDialog != null) {
-                    mShowPasswordDialog.dismiss();
-                    mShowPasswordDialog.setPasswordBitmap(null);
-                }*/
-                mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getContext(), true, 1.0,
+                if(mShowPasswordDialog!=null){
+                    mShowPasswordDialog.setPasswordBitmap2(bitmap);
+                }
+                /*mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getContext(), true, 1.0,
                         R.layout.dialog_bottom_wallet_password,
                         new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
                 mShowPasswordDialog.setPasswordBitmap(bitmap);
@@ -1140,7 +1148,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                                 break;
                         }
                     }
-                });
+                });*/
             }
         }
     }
