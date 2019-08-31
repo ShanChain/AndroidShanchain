@@ -90,10 +90,6 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     ViewPager vpInvation;
     @Bind(R.id.tv_dengji)
     TextView tvDengji;
-    private String imgURl;//图片的URL地址
-    private static final int SAVE_SUCCESS = 0;//保存图片成功
-    private static final int SAVE_FAILURE = 1;//保存图片失败
-    private static final int SAVE_BEGIN = 2;//开始保存图片
 
     private InvationBean invationBean;
     private ReturnInvationPresenter mPresenter;
@@ -184,7 +180,7 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
                 tvNums.setText(invationBean.getAcceptUserCount()+"");
                 tvMoney.setText(invationBean.getFrozenCoin());
                 tvProportion.setText(invationBean.getBrokerageNotFrozenCoin());
-                tvInvationCode.setText("邀请码:"+invationBean.getUserId());
+                tvInvationCode.setText(getString(R.string.invate_code_11,invationBean.getUserId()));
                 tvDengji.setText(invationBean.getAccountLevel());
             }else{
                 noDataTip();
@@ -201,8 +197,8 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
     //无数据弹窗提示
     private void noDataTip(){
         final StandardDialog standardDialog = new StandardDialog(ReturnInvationActivity.this);
-        standardDialog.setStandardTitle("提示");
-        standardDialog.setStandardMsg("您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
+        standardDialog.setStandardTitle(getString(R.string.prompt));
+        standardDialog.setStandardMsg(getString(R.string.have_mine_area));
         standardDialog.setSureText(getString(R.string.commit_payfor));
         standardDialog.setCallback(new Callback() {
             @Override

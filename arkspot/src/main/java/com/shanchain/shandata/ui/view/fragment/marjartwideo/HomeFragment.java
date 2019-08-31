@@ -180,6 +180,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     private boolean isCreateMinig = true;//是否创建矿区
     private View mView;
     private String photoPath;
+    private boolean isShowWalletTip = true;//是否显示钱包支付弹窗
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
@@ -238,7 +239,20 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         //注册自定义消息广播
         registerMessageReceiver();
 
+//        initWalletInfo();
+
     }
+
+    //提示是否有钱包
+    private void initWalletInfo(){
+        boolean guided = PrefUtils.getBoolean(getActivity(), Constants.SP_KEY_GUIDE_VIEW, false);
+        if(!guided){
+            //是否有钱包提示
+            isShowWalletTip = false;
+            mHomePresenter.checkUserHasWallet(getActivity());
+        }
+    }
+
     //初始化数据
     private void setInitData(){
         //每次进入主界面自动查询是否有补丁文件更新
@@ -723,8 +737,10 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     public void setCheckUserHasWalletResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-            //弹出支付密码弹窗
-            isShowPasswordDialog();
+            if(isShowWalletTip){
+                //弹出支付密码弹窗
+                isShowPasswordDialog();
+            }
         }
     }
 
@@ -930,6 +946,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
             public void invoke() {
                 standardDialog.dismiss();
                 //判断是否有钱包
+                isShowWalletTip = true;
                 mHomePresenter.checkUserHasWallet(getActivity());
             }
         }, new Callback() {

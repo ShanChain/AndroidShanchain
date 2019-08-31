@@ -42,6 +42,7 @@ import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.InvationBean;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
+import com.shanchain.shandata.ui.model.ShareBean;
 import com.shanchain.shandata.ui.presenter.MinePresenter;
 import com.shanchain.shandata.ui.presenter.impl.MinePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
@@ -52,6 +53,7 @@ import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.mine.ReturnInvationActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
+import com.shanchain.shandata.ui.view.activity.square.PayforSuccessActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MineView;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
@@ -239,6 +241,12 @@ public class MineFragment extends BaseFragment implements MineView {
     @OnClick(R.id.ll_fanyong)
     void invation(){
         mMinePresenter.getInvationDataFromUser(SCCacheUtils.getCacheUserId());
+        /*ShareBean shareBean = new ShareBean();
+        shareBean.setInviteCode("123456");
+        shareBean.setDiggingsId("11111");
+        shareBean.setInviteUserId("123654");
+        shareBean.setRoomImage("http://shanchain-picture.oss-cn-beijing.aliyuncs.com/dd1d89bf1cf54ddea767d9bc9fcb3358.jpg");
+        startActivity(new Intent(getActivity(), PayforSuccessActivity.class).putExtra("info",shareBean));*/
 
     }
 

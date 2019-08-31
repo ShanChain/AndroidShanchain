@@ -37,7 +37,7 @@
                 android:layout_gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="邀请码:"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/tv_fz_code"
                 android:layout_width="60dp"
@@ -73,7 +73,7 @@
                 android:layout_gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="邀请二维码"/>
+                android:text="@string/invate_code_1"/>
             <TextView
                 android:id="@+id/tv_fz_lilnk"
                 android:layout_width="70dp"
@@ -81,7 +81,7 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="保存图片"
+                android:text="@string/save_pic"
                 android:textSize="13sp"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
@@ -109,7 +109,7 @@
                 android:layout_gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="矿工等级"/>
+                android:text="@string/mine_gradle"/>
             <TextView
                 android:id="@+id/tv_dengji"
                 android:layout_width="70dp"
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="冻结金额"
+                android:text="@string/frozent_account"
                 />
         </LinearLayout>
         <View
@@ -214,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="返佣解冻金额"
+                android:text="@string/refunt_account"
 
                 />
         </LinearLayout>

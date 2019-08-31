@@ -462,4 +462,13 @@
     <string name="install_qq">Please install the QQ client first</string>
     <string name="invation_copy">Invitation code has been copied</string>
     <string name="invation_link_copy">Invitation link has been copied</string>
+    <string name="payfor_success_1">Payment completed</string>
+    <string name="invate_y_join">Invite you to join</string>
+    <string name="invate_code_1">Invitation QR code</string>
+    <string name="save_pic">Save picture</string>
+    <string name="mine_gradle">Miner grade</string>
+    <string name="frozent_account">Frozen amount</string>
+    <string name="refunt_account">Refund amount</string>
+    <string name="invate_code_11">Invitation code:%s</string>
+    <string name="have_mine_area">You have not yet become a bionic mining miner, please create or join the mining area first</string>
 </resources>

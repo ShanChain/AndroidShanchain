@@ -11,8 +11,8 @@ android {
         applicationId "com.shanchain.shandata"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 24
-        versionName "2.4.10"
+        versionCode 25
+        versionName "2.4.11"
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -127,6 +127,7 @@ android {
 //        javaMaxHeapSize "4g"//越大越好
 //        incremental true
 //    }
+
 }
 
 greendao {
@@ -145,7 +146,6 @@ dependencies {
     })
     implementation project(':common')
     implementation project(':chatinput')
-
     /*compile(name: 'AlivcPlayer', ext: 'aar')
              compile(name: 'AliyunVodPlayer', ext: 'aar')
              compile(name: 'AliyunVodPlayerView', ext: 'aar')*/

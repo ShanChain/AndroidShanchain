@@ -90,7 +90,7 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
         mTbRegister.setTitleTextColor(Color.BLACK);
         mTbRegister.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         mTbRegister.setOnLeftClickListener(this);
-        mTbRegister.setTitleText("支付完成");
+        mTbRegister.setTitleText(getString(R.string.payfor_success_1));
 
         shareBottomDialog = new CustomDialog(PayforSuccessActivity.this,
                 true, true, 1.0,
@@ -123,7 +123,7 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
                         +"&inviteCode="+shareBean.getInviteCode();
                 redPaperParams = new ShareParams();
                 redPaperParams.setTitle(getString(R.string.app_name));
-                redPaperParams.setText("邀请您一起加入");
+                redPaperParams.setText(getString(R.string.invate_y_join));
                 redPaperParams.setUrl(shareUrl);
                 redPaperParams.setImageUrl(shareBean.getRoomImage());
                 switch (view.getId()) {

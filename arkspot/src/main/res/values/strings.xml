@@ -477,4 +477,13 @@
     <string name="install_qq">请先安装QQ客户端</string>
     <string name="invation_copy">邀请码已复制</string>
     <string name="invation_link_copy">链接已复制</string>
+    <string name="payfor_success_1">支付完成</string>
+    <string name="invate_y_join">邀请您一起加入</string>
+    <string name="invate_code_1">邀请二维码</string>
+    <string name="save_pic">保存图片</string>
+    <string name="mine_gradle">矿工等级</string>
+    <string name="frozent_account">冻结金额</string>
+    <string name="refunt_account">返佣解冻金额</string>
+    <string name="invate_code_11">邀请码:%s</string>
+    <string name="have_mine_area">您还没有成为仿生挖矿矿工，请先去创建或者加入矿区</string>
 </resources>
