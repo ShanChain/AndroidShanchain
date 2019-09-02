@@ -696,6 +696,8 @@ public interface HttpApi {
     String DELETE_PRAISE_TITLE = BASE_URL + "/v1/praiseLog/delete";
     //查询某个帖子
     String QUERY_DETAIL_TITLE = BASE_URL + "/v1/invitation/getTInvitation";
+    //删除帖子回复
+    String DELETE_COMMENT_ARTICLE = BASE_URL + "/v1/reviceInv/deleteTReviceInv";
 
     //加入矿区表接口
     String ADD_MINING_ROOM = BASE_URL + "/probecoin/tDiggings/insertSelective";

@@ -21,11 +21,13 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CommetListAdapter;
 import com.shanchain.shandata.adapter.GVPhotoAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.interfaces.ICommentDeleteCallback;
 import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
@@ -149,6 +151,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }
         if(Integer.parseInt(userId) == mSqureDataEntity.getUserId()){
             tvAttention.setVisibility(View.GONE);
+
         }else {
             tvAttention.setVisibility(View.VISIBLE);
         }
@@ -199,6 +202,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
     }
 
     private void initListener(){
+        //关注
         mAdapter.setICommentPraiseCallback(new ICommentPraiseCallback() {
             @Override
             public void praiseToUser(CommentEntity item) {
@@ -215,6 +219,17 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
 
             }
         });
+
+        //删除自己的评论
+        mAdapter.setICommentDeleteCallback(new ICommentDeleteCallback() {
+            @Override
+            public void deleteComment(CommentEntity commentEntity) {
+                if(null != commentEntity){
+                    mPresenter.deleteComment(commentEntity.getId()+"");
+                }
+            }
+        });
+
 
         //点击图片查看大图
         gvPhoto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -351,7 +366,12 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                 ToastUtil.showToast(ArticleDetailActivity.this, R.string.unfollowed);
             }
         }else {
-            ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+                }
+            });
         }
     }
 
@@ -362,6 +382,28 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             String data = JSONObject.parseObject(response).getString("data");
             mSqureDataEntity = SCJsonUtils.parseObj(data,SqureDataEntity.class);
             initData();
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setDeleteCommentResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+                }
+            });
         }
     }
 

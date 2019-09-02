@@ -486,4 +486,5 @@
     <string name="refunt_account">返佣解冻金额</string>
     <string name="invate_code_11">邀请码:%s</string>
     <string name="have_mine_area">您还没有成为仿生挖矿矿工，请先去创建或者加入矿区</string>
+    <string name="delte">删除</string>
 </resources>

@@ -471,4 +471,6 @@
     <string name="refunt_account">Refund amount</string>
     <string name="invate_code_11">Invitation code:%s</string>
     <string name="have_mine_area">You have not yet become a bionic mining miner, please create or join the mining area first</string>
+    <string name="delte">Delete</string>
+
 </resources>

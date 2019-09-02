@@ -15,4 +15,5 @@ public interface ArticleDetailPresenter {
     void addAttentToCommentUser(int userId,int attentionUserId);
     void deleteAttentionCommentUser(int userId,int attentionUserId);
     void queryArticleDetail(String articleId);
+    void deleteComment(String commentId);
 }

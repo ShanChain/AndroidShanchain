@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,6 +33,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
+import com.shanchain.data.common.net.SCHttpPostBodyNewCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
@@ -54,6 +56,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CreateCouponActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.ui.view.activity.square.SearchTeamActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.HomeFragment;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.widgets.other.MyLoadMoreView;
@@ -434,7 +437,11 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                                                                         selectImage(getContext());
                                                                         break;
                                                                     case R.id.tv_dialog_sure:
-                                                                        ToastUtils.showToast(getContext(), R.string.upload_qr_code);
+                                                                        if(mShowPasswordDialog.getPasswordBitmap() == null){
+                                                                            ToastUtils.showToast(getActivity(), R.string.upload_qr_code);
+                                                                        }else {
+                                                                            payForARS(new File(photoPath), HttpApi.PAYFOR_MINING_MONEY);
+                                                                        }
                                                                         break;
                                                                 }
                                                             }
@@ -482,8 +489,6 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
     }
 
     private void payForARS(File file, String money) {
-        DecimalFormat decimalFormat = new DecimalFormat();
-        double payMoney = Double.parseDouble(money);
         //创建requestBody
         MediaType MEDIA_TYPE = MediaType.parse("image/*");
         RequestBody fileBody = MultipartBody.create(MEDIA_TYPE, file);
@@ -494,7 +499,7 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                 .addFormDataPart("value", "" + money)//支付金额
                 .setType(MultipartBody.FORM);
         RequestBody multiBody = multiBuilder.build();
-        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyCallBack(getContext(), null) {
+        SCHttpUtils.postByBody(HttpApi.PAY_FOR_ARS + "?token=" + SCCacheUtils.getCacheToken(), multiBody, new SCHttpPostBodyNewCallBack(getContext(), null) {
             @Override
             public void responseDoParse(String string) throws IOException {
                 LogUtils.d("----->>>ars: "+string);
@@ -511,6 +516,11 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                     final String dataString = JSONObject.toJSONString(dataMap);
                     WebSocketHandler.getDefault().send("" + dataString);
                 }
+            }
+
+            @Override
+            public void responseDoFaile(String string) throws IOException {
+
             }
         });
     }
@@ -760,10 +770,10 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
         refreshLayoutArsgame.setRefreshing(false);
     }
 
-
+    private String photoPath;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getData() != null) {
             if (requestCode == NetErrCode.WALLET_PHOTO) {
                 Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
@@ -773,34 +783,13 @@ public class MainARSGameFragment extends BaseFragment implements SwipeRefreshLay
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 //获取照片路径
-                String photoPath = cursor.getString(columnIndex);
-//            ToastUtils.showToastLong(getContext(), "选择的图片途径：" + photoPath);
+                photoPath = cursor.getString(columnIndex);
+                com.shanchain.data.common.utils.LogUtils.d("----->MainARS: select image path is "+photoPath);
                 cursor.close();
-                final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-                final File mPasswordFile = new File(photoPath);
-                if (mShowPasswordDialog != null) {
-                    mShowPasswordDialog.dismiss();
-                    mShowPasswordDialog.setPasswordBitmap(null);
+                Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+                if(mShowPasswordDialog!=null){
+                    mShowPasswordDialog.setPasswordBitmap2(bitmap);
                 }
-                mShowPasswordDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(getContext(), true, 1.0,
-                        R.layout.dialog_bottom_wallet_password,
-                        new int[]{R.id.iv_dialog_add_picture, R.id.tv_dialog_sure});
-                mShowPasswordDialog.setPasswordBitmap(bitmap);
-                mShowPasswordDialog.show();
-                mShowPasswordDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                    @Override
-                    public void OnItemClick(CustomDialog dialog, View view) {
-                        switch (view.getId()) {
-                            case R.id.iv_dialog_add_picture:
-                                selectImage(getContext());
-                                break;
-                            case R.id.tv_dialog_sure:
-                                payForARS(mPasswordFile, HttpApi.PAYFOR_MINING_MONEY);
-                                break;
-                        }
-                    }
-                });
-
             }
         }
     }

@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.ICommentDeleteCallback;
 import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
@@ -34,12 +35,16 @@ public class CommetListAdapter extends BaseAdapter {
     private List<CommentEntity> mList;
     private Context mContext;
     private ICommentPraiseCallback mICommentPraiseCallback;
+    private ICommentDeleteCallback mICommentDeleteCallback;
     public CommetListAdapter(Context context) {
         this.mContext = context;
         mList = new ArrayList<>();
     }
     public void setICommentPraiseCallback(ICommentPraiseCallback callback){
         this.mICommentPraiseCallback = callback;
+    }
+    public void setICommentDeleteCallback(ICommentDeleteCallback commentDeleteCallback){
+        this.mICommentDeleteCallback = commentDeleteCallback;
     }
     public void setList(List<CommentEntity> mList){
         if(mList!=null && mList.size()>0){
@@ -93,8 +98,10 @@ public class CommetListAdapter extends BaseAdapter {
             }
             if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == commentEntity.getSendUserId()){
                 viewHolder.tvAttention.setVisibility(View.GONE);
+                viewHolder.tvDelete.setVisibility(View.VISIBLE);
             }else {
                 viewHolder.tvAttention.setVisibility(View.VISIBLE);
+                viewHolder.tvDelete.setVisibility(View.GONE);
             }
 
             //关注
@@ -103,6 +110,16 @@ public class CommetListAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if(mICommentPraiseCallback!=null){
                         mICommentPraiseCallback.praiseToUser(commentEntity);
+                    }
+                }
+            });
+
+            //删除评论
+            viewHolder.tvDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mICommentDeleteCallback!=null){
+                        mICommentDeleteCallback.deleteComment(commentEntity);
                     }
                 }
             });
@@ -121,6 +138,8 @@ public class CommetListAdapter extends BaseAdapter {
         TextView tvAttention;
         @Bind(R.id.tv_comment)
         TextView tvComment;
+        @Bind(R.id.tv_delete)
+        TextView tvDelete;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
