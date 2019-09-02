@@ -127,7 +127,9 @@ android {
 //        javaMaxHeapSize "4g"//越大越好
 //        incremental true
 //    }
-
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 greendao {
@@ -265,4 +267,9 @@ dependencies {
     //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    //图片多选
+    implementation project(':galleryfinal')
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'top.zibin:Luban:1.1.8'
 }

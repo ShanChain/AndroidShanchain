@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,9 +21,14 @@ import com.baidu.mapapi.SDKInitializer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.soloader.SoLoader;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.shanchain.data.common.BaseApplication;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
+import com.shanchain.data.common.utils.DensityUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -35,6 +41,7 @@ import com.shanchain.shandata.ui.model.FriendEntry;
 import com.shanchain.shandata.ui.model.FriendRecommendEntry;
 import com.shanchain.shandata.ui.model.UserEntry;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
+import com.shanchain.shandata.utils.DisplayImageOptionsUtils;
 import com.shanchain.shandata.utils.Utils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.entry.ApplicationLike;
@@ -59,6 +66,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -91,7 +99,7 @@ import okhttp3.OkHttpClient;
 
 
 public class MyApplication extends BaseApplication implements IExceptionHandler {
-
+    private static MyApplication mInstance;
     private static Context mContext;
     private LocationClient locationClient;
     public static final int IMAGE_MESSAGE = 1;
@@ -161,11 +169,14 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
 
     //初始网络地址
     private String baseUrl;
-
+    public static MyApplication getInstance() {
+        return mInstance;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        mInstance = this;
         setSystemLanguge(mContext.getResources().getConfiguration().locale.getLanguage());
         SoLoader.init(this, /* native exopackage */ false);
         //加载ActiveAndroid配置文件
@@ -192,6 +203,7 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
         initBugly();//bugly崩溃日志上报
         //初始化WebSocket
 //        initWebSocket();
+        initImageLoader();
     }
 
     public String getSystemLanguge() {
@@ -686,5 +698,42 @@ public class MyApplication extends BaseApplication implements IExceptionHandler 
 //
 //    }
 
-
+    private String basePath;
+    /**
+     * 初始化 imageviewLodear  如果不初始化 则程序无法正常调用   使用时就会报错
+     */
+    private void initImageLoader() {
+        int memorySize = 10 * 1024 * 1024;
+        File cacheDir = initCacheDirPath();
+        int deviceWidth = DensityUtils.getScreenWidth(this);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                this).defaultDisplayImageOptions(DisplayImageOptionsUtils.buildDefaultAvatarOptions())
+                .memoryCacheExtraOptions(deviceWidth, deviceWidth)
+                .memoryCache(new LruMemoryCache(memorySize))
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .diskCacheSize(50 * 1024 * 1024)
+                .imageDownloader(new AuthImageDownloader(this))
+                .build();
+        ImageLoader.getInstance().init(config);
+    }
+    /**
+     * 初始化存储路径
+     *
+     * @return
+     */
+    public File initCacheDirPath() {
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            basePath = Environment.getExternalStorageDirectory().getPath()
+                    + File.separator + "marjar" + File.separator;
+        } else {
+            basePath = getCacheDir().getPath() + File.separator + "marjar"
+                    + File.separator;
+        }
+        File file = new File(basePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
 }

@@ -81,6 +81,10 @@ import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
 import static com.shanchain.data.common.cache.SCCacheUtils.getCache;
+import static com.shanchain.data.common.utils.SystemUtils.FlymeSetStatusBarLightModeWithWhiteColor;
+import static com.shanchain.data.common.utils.SystemUtils.MIUISetStatusBarLightModeWithWhiteColor;
+import static com.shanchain.data.common.utils.SystemUtils.setImmersiveStatusBar_API21;
+import static com.shanchain.data.common.utils.SystemUtils.setStatusBarLightMode_API23;
 
 
 public class LoginActivity extends BaseActivity {
@@ -167,7 +171,15 @@ public class LoginActivity extends BaseActivity {
     protected int getContentViewLayoutID() {
         return R.layout.activity_login;
     }
-
+    //根据颜色设置状态栏底色
+    private void initStatusBar(int colorId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setImmersiveStatusBar_API21(this, getResources().getColor(colorId));
+            setStatusBarLightMode_API23(this);
+        }
+        MIUISetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
+        FlymeSetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
+    }
     @Override
     protected void initViewsAndEvents() {
         String RegistrationID = JPushInterface.getRegistrationID(this);
@@ -175,9 +187,6 @@ public class LoginActivity extends BaseActivity {
         channel = MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL");
         LogUtils.d("appChannel", channel);
         btnDynamicLogin.setClickable(false);
-//        btnDynamicLogin.setBackground(getResources().getDrawable(R.drawable.shape_btn_bg_send_unenable));
-
-
 
     }
 

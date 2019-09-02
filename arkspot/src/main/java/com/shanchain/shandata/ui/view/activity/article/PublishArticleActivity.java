@@ -38,6 +38,7 @@ import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.PhotoArticleAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.interfaces.IAddPhotoCallback;
 import com.shanchain.shandata.interfaces.IDeletePhotoCallback;
 import com.shanchain.shandata.ui.model.PhotoBean;
@@ -46,6 +47,8 @@ import com.shanchain.shandata.ui.presenter.impl.PublishArticlePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.view.PublishArticleView;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.utils.FilePathUtils;
+import com.shanchain.shandata.utils.PhotoSelectHelper;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -62,9 +65,21 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.model.UserInfo;
+import io.reactivex.Flowable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import rx.Observable;
+import rx.Scheduler;
+import top.zibin.luban.Luban;
 
 /**
  * Created by WealChen
@@ -181,15 +196,8 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         mAdapter.setCallback(new IAddPhotoCallback() {
             @Override
             public void addPhoto() {
-                int requestCode = PhotoUtils.INTENT_SELECT;
-                if (ContextCompat.checkSelfPermission(PublishArticleActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(PublishArticleActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                    startActivityForResult(intent, requestCode);
-                }
+                selectImage();
+
             }
         });
         mAdapter.setIDeletePhotoCallback(new IDeletePhotoCallback() {
@@ -198,6 +206,33 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 mList.remove(position);
                 resetPhoteoList();
                 mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+    private static final int REQUEST_CODE_GALLERY = 0x112;
+    //galleryfinal多选图片
+    private void selectImage(){
+        final PhotoSelectHelper helper = new PhotoSelectHelper(this, false, 200);
+        helper.openGalleryMulti(REQUEST_CODE_GALLERY, 9-mList.size()+1, new GalleryFinal.OnHanlderResultCallback() {
+            @Override
+            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+                if (reqeustCode == REQUEST_CODE_GALLERY) {
+                    if(resultList != null && resultList.size()>0){
+                        //异步压缩
+                        List<String> s = new ArrayList<>();
+                        for (PhotoInfo p:resultList) {
+                            LogUtils.d("-----压缩前路径-----",p.getPhotoPath());
+                            s.add(p.getPhotoPath());
+                        }
+                        //鲁班压缩
+                        asyTaskLoadImages(s);
+                    }
+                }
+            }
+
+            @Override
+            public void onHanlderFailure(int requestCode, String errorMsg) {
+
             }
         });
     }
@@ -219,7 +254,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
                 String photoPath = cursor.getString(columnIndex);  //获取照片路径
                 cursor.close();
                 LogUtils.d("压缩前路径：",photoPath+"------size :"+new File(photoPath).length()+"");
-                comressImage(photoPath);
+//                comressImage(photoPath);
 
                 break;
     }}
@@ -240,70 +275,6 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         }
 //        mAdapter.setList(mList);
         mAdapter.notifyDataSetChanged();
-    }
-
-    private void comressImage(final String s){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LogUtils.d("filename 压缩前大小: "+new File(s).length());
-                //图片压缩处理
-                String fileName = s.substring(s.lastIndexOf("/") + 1, s.length());
-                Bitmap bitmap= BitmapFactory.decodeFile(s);
-//                Bitmap bm1=compress(bitmap);
-                Bitmap bm1 = bitmapFactory(s);
-                try {
-                    //要存到data目录下的文件夹名
-                    String basePath = getApplication().getCacheDir() +"";
-                    File folder = new File(basePath);
-                    String fname=basePath+File.separator+fileName;
-                    File myCaptureFile = new File(fname);
-                    if (!folder.exists() && !folder.isDirectory()) {
-                        LogUtils.d(".........", "创建");
-                        folder.mkdirs();
-                    }
-                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-                    bm1.compress(Bitmap.CompressFormat.JPEG, 80, bos);
-                    LogUtils.d("filename :",fname+",filesize: "+myCaptureFile.length());
-                    PhotoBean p = new PhotoBean();
-                    p.setFileName(fileName);
-                    p.setUrl(fname);
-                    mList.add(p);
-                    bos.flush();
-                    bos.close();
-                    handler.sendEmptyMessage(1);
-                }catch (IOException e){
-
-                }
-
-            }
-        }).start();
-    }
-
-    private static Bitmap compress(Bitmap image) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        // 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-        int options = 50;
-        while (baos.toByteArray().length / 1024 > 800) {
-            // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
-            baos.reset();// 重置baos即清空baos
-            // 这里压缩options%，把压缩后的数据存放到baos中
-            options -= 10;// 每次都减少10
-
-            if (options < 0) {
-                options= 0;
-            }
-            image.compress(Bitmap.CompressFormat.JPEG, options, baos);
-            if(options==0){
-                break;
-            }
-        }
-        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
-        // 把压缩后的数据baos存放到ByteArrayInputStream中
-        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);
-        // 把ByteArrayInputStream数据生成图片
-        return bitmap;
     }
 
     @Override
@@ -373,43 +344,29 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         super.onDestroy();
     }
 
-    public Bitmap bitmapFactory(String imagePath){
-        /*String[] filePathColumns = {MediaStore.Images.Media.DATA};
-        Cursor c = getContentResolver().query(imageUri, filePathColumns, null, null, null);
-        c.moveToFirst();
-        int columnIndex = c.getColumnIndex(filePathColumns[0]);
-        String imagePath = c.getString(columnIndex);
-        c.close();*/
-        // 配置压缩的参数
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true; //获取当前图片的边界大小，而不是将整张图片载入在内存中，避免内存溢出
-        BitmapFactory.decodeFile(imagePath, options);
-        options.inJustDecodeBounds = false;
-        ////inSampleSize的作用就是可以把图片的长短缩小inSampleSize倍，所占内存缩小inSampleSize的平方
-        options.inSampleSize = caculateSampleSize(options,800,800);
-        Bitmap bm = BitmapFactory.decodeFile(imagePath, options); // 解码文件
-        return bm;
-    }
 
-    /**
-     * 计算出所需要压缩的大小
-     * @param options
-     * @param reqWidth  我们期望的图片的宽，单位px
-     * @param reqHeight 我们期望的图片的高，单位px
-     * @return
-     */
-    private int caculateSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        int sampleSize = 1;
-        int picWidth = options.outWidth;
-        int picHeight = options.outHeight;
-        if (picWidth > reqWidth || picHeight > reqHeight) {
-            int halfPicWidth = picWidth / 2;
-            int halfPicHeight = picHeight / 2;
-            while (halfPicWidth / sampleSize > reqWidth || halfPicHeight / sampleSize > reqHeight) {
-                sampleSize *= 2;
-            }
-        }
-        return sampleSize;
+    //采用鲁班压缩算法+Rxjava压缩图片
+    private void asyTaskLoadImages(final List<String> list){
+        Flowable.just(list).subscribeOn(Schedulers.io())
+                .map(new Function<List<String>, List<File>>() {
+                    @Override
+                    public List<File> apply(List<String> strings) throws Exception {
+                        return Luban.with(PublishArticleActivity.this).load(list).setTargetDir(MyApplication.getInstance().initCacheDirPath().getAbsolutePath()).get();
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<File>>() {
+                    @Override
+                    public void accept(List<File> files) throws Exception {
+                        for (File s:files) {
+                            PhotoBean photoBean = new PhotoBean();
+                            photoBean.setUrl(s.getAbsolutePath());
+                            photoBean.setFileName(s.getName());
+                            mList.add(photoBean);
+                            LogUtils.d("-----压缩后的路径："+s.getAbsolutePath()+",压缩后的大小："+ FilePathUtils.getDataSize(s.length()));
+                        }
+                        resetPhoteoList();
+                    }
+                });
     }
 
     //监听用户登录状态

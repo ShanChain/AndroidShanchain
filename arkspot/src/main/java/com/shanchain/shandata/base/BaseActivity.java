@@ -31,6 +31,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -38,6 +39,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.common.AppTools;
 import com.baidu.mapapi.model.LatLng;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.AppManager;
@@ -57,6 +59,7 @@ import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.data.common.utils.VersionUtils;
@@ -351,6 +354,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         FlymeSetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
     }
 
+
+    //根据颜色设置状态栏底色
+    private void initStatusBar(int colorId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setImmersiveStatusBar_API21(this, getResources().getColor(colorId));
+            setStatusBarLightMode_API23(this);
+        }
+        MIUISetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
+        FlymeSetStatusBarLightModeWithWhiteColor(this, getWindow(), true);
+    }
+
+    protected void setStatusBarView(int id){
+        if(isLargeAndroidM()) {
+            View view = findViewById(id);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+            layoutParams.height = SystemUtils.getStatusBarHeight(this);
+            view.setLayoutParams(layoutParams);
+        }
+    }
+    public static boolean isLargeAndroidM(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return true;
+        return false;
+    }
     /**
      * 描述: 初始化Intent传值
      */
