@@ -472,5 +472,14 @@
     <string name="invate_code_11">Invitation code:%s</string>
     <string name="have_mine_area">You have not yet become a bionic mining miner, please create or join the mining area first</string>
     <string name="delte">Delete</string>
+    <string name="enter_feedback">Please enter feedback</string>
+    <string name="logout_account">Logout</string>
+    <string name="logout_not_reverse">After the account is logged out, it will not be recoverable</string>
+    <string name="delete_comment">Delete comment</string>
+    <string name="delete_this_comment">Delete this comment？</string>
+    <string name="delete_article_1">Delete essay</string>
+    <string name="weather_delete_ww">Whether to delete this essay?</string>
+    <string name="delete_success">Delete success</string>
+    <string name="name_or_code">Enter the name of the mine or the invitation code</string>
 
 </resources>

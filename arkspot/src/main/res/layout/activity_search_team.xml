@@ -37,8 +37,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
-                android:hint="@string/enter_key_w"
+                android:hint="@string/name_or_code"
                 android:textSize="14sp"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:gravity="center|left"
                 android:background="@null"/>
         </LinearLayout>

@@ -487,4 +487,13 @@
     <string name="invate_code_11">邀请码:%s</string>
     <string name="have_mine_area">您还没有成为仿生挖矿矿工，请先去创建或者加入矿区</string>
     <string name="delte">删除</string>
+    <string name="enter_feedback">请输入反馈内容</string>
+    <string name="logout_account">注销账号</string>
+    <string name="logout_not_reverse">账号注销后将不可恢复，是否继续注销？</string>
+    <string name="delete_comment">删除评论</string>
+    <string name="delete_this_comment">删除这条评论？</string>
+    <string name="delete_article_1">删除微文</string>
+    <string name="weather_delete_ww">是否删除这条微文?</string>
+    <string name="delete_success">删除成功</string>
+    <string name="name_or_code">请输入元矿区名称或邀请码</string>
 </resources>

@@ -48,8 +48,7 @@ public class PhotoSelectHelper {
                 .setCropWidth(mCropSize)
                 .setCropHeight(mCropSize)
                 .setCropReplaceSource(true)
-                .setEnableEdit(true)
-
+                .setEnableEdit(false)
                 .setEnablePreview(false)
                 .build();
 

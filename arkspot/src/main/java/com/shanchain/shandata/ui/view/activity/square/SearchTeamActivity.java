@@ -20,7 +20,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -109,30 +111,26 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
         initListener();
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String keyword = s.toString();
-                if(!TextUtils.isEmpty(keyword)){
-                    if("MJTEST".equals(keyword)){
-                        startActivity(new Intent(SearchTeamActivity.this, BaseParaActivity.class));
-                        return;
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    String keyword = etSearch.getText().toString().trim();
+                    if(!TextUtils.isEmpty(keyword)){
+                        if("MJTEST".equals(keyword)){
+                            startActivity(new Intent(SearchTeamActivity.this, BaseParaActivity.class));
+                        }else {
+                            mPresenter.queryGroupTeam("", "",keyword,1, 30,Constants.pullRefress,0);
+                        }
+                    }else {
+                        mList.clear();
+                        mGroupTeamAdapter.notifyDataSetChanged();
                     }
-                    mPresenter.queryGroupTeam("", "",keyword,1, 30,Constants.pullRefress,0);
-                }else {
-                    mList.clear();
-                    mGroupTeamAdapter.notifyDataSetChanged();
+                    return true;
+
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+                    return false;
             }
         });
     }

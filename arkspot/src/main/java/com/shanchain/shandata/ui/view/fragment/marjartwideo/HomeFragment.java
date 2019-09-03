@@ -903,7 +903,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 mScInputDialog.setCallback(new Callback() {//确定
                     @Override
                     public void invoke() {
-                        if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText())){
+                        if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText().toString().trim())){
                             ToastUtils.showToast(getActivity(), R.string.enter_mine_name);
                             return;
                         }

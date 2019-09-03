@@ -19,6 +19,7 @@ import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.ui.widgets.SCInputDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -108,6 +109,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     RelativeLayout relativeIdentity;
     @Bind(R.id.relative_bottom)
     RelativeLayout relativeBottom;
+    @Bind(R.id.relative_logout_account)
+    RelativeLayout relativeLogoutAccount;
 
     private AuthListener mAuthListener, removeAuthListener;
     private String accessToken, encryptOpenId, encryptToken16, name, imageUrl, thirdOpenId;
@@ -117,6 +120,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     private String salt;
     private String timestamp;
     private String mobile;
+    private StandardDialog standardDialog;
+    private SCInputDialog mScInputDialog;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -247,7 +252,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
         initData();
     }
 
-    @OnClick({R.id.relative_login_password, R.id.relative_bind_phone, R.id.relative_account, R.id.relative_qq, R.id.relative_facebook, R.id.relative_identity})
+    @OnClick({R.id.relative_login_password, R.id.relative_bind_phone, R.id.relative_account, R.id.relative_qq,
+            R.id.relative_facebook, R.id.relative_identity,R.id.relative_logout_account})
     public void onViewClicked(View view) {
         StandardDialog standardDialog = new StandardDialog(mContext);
         standardDialog.setStandardTitle(" ");
@@ -328,6 +334,9 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                 Bundle bundle1 = new Bundle();
                 bundle1.putBoolean("idcard", idcard);
                 readyGo(VerifiedActivity.class, bundle1);
+                break;
+            case R.id.relative_logout_account://注销账号
+                isLogoutTip();
                 break;
         }
     }
@@ -533,5 +542,62 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     @Override
     public void onLeftClick(View v) {
         finish();
+    }
+
+    //弹窗提示账户注销
+    private void isLogoutTip(){
+        standardDialog = new StandardDialog(this);
+        standardDialog.setStandardTitle(getString(R.string.logout_account));
+        standardDialog.setStandardMsg(getString(R.string.logout_not_reverse));
+        standardDialog.setSureText(getString(R.string.str_sure));
+        standardDialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                //弹窗提示输入密码
+                showEnterPassword();
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+            }
+        });
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                standardDialog.show();
+                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                msgTextView.setTextSize(18);
+            }
+        });
+    }
+
+    //弹窗提示输入密码
+    private void showEnterPassword(){
+        mScInputDialog = new SCInputDialog(this, "输入登陆密码",
+                "输入登陆密码");
+        mScInputDialog.setCallback(new Callback() {//确定
+            @Override
+            public void invoke() {
+                if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText())){
+                    ToastUtils.showToast(AccountSecurityActivity.this, "输入登陆密码");
+                    return;
+                }
+                if(mScInputDialog.getEtContent().getText().length()>20){
+                    ToastUtils.showToast(AccountSecurityActivity.this, R.string.mining_nam_exant_10);
+                    return;
+                }
+                mScInputDialog.dismiss();
+
+            }
+        }, new Callback() {//取消
+            @Override
+            public void invoke() {
+
+            }
+        });
+        //显示输入元社区弹窗
+        mScInputDialog.show();
     }
 }

@@ -17,9 +17,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -89,6 +91,8 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
     LinearLayout llNotdata;
     @Bind(R.id.im_zan)
     ImageView imZan;
+    @Bind(R.id.tv_delete)
+    TextView tvDelete;
     private SqureDataEntity mSqureDataEntity;
     private CommentEntity mCommentEntity;
     private ArticleDetailPresenter mPresenter;
@@ -155,6 +159,11 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }else {
             tvAttention.setVisibility(View.VISIBLE);
         }
+        if(mSqureDataEntity.getUserId() == Integer.parseInt(SCCacheUtils.getCacheUserId())){
+            tvDelete.setVisibility(View.VISIBLE);
+        }else {
+            tvDelete.setVisibility(View.GONE);
+        }
 
         mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
         initListener();
@@ -201,6 +210,12 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         ToastUtils.showToast(this,"该功能暂未开放，敬请期待");
     }
 
+    //删除帖子
+    @OnClick(R.id.tv_delete)
+    void deleteArticle(){
+        isDeleteArticleTip(mSqureDataEntity.getId()+"");
+    }
+
     private void initListener(){
         //关注
         mAdapter.setICommentPraiseCallback(new ICommentPraiseCallback() {
@@ -225,11 +240,10 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             @Override
             public void deleteComment(CommentEntity commentEntity) {
                 if(null != commentEntity){
-                    mPresenter.deleteComment(commentEntity.getId()+"");
+                    isDeleteCommentTip(commentEntity.getId()+"");
                 }
             }
         });
-
 
         //点击图片查看大图
         gvPhoto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -407,6 +421,22 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         }
     }
 
+    @Override
+    public void setDeleteEssayResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            ToastUtil.showToast(ArticleDetailActivity.this, R.string.delete_success);
+            finish();
+        }else {
+            ThreadUtils.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
+                }
+            });
+        }
+    }
+
     //详情关注用户后更新状态
     private void updateUserAttention(int type) {
         if(type==0){
@@ -461,5 +491,63 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             }
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    //弹窗提示删除评论
+    private void isDeleteCommentTip(final String id){
+        final StandardDialog standardDialog = new StandardDialog(this);
+        standardDialog.setStandardTitle(getString(R.string.delete_comment));
+        standardDialog.setStandardMsg(getString(R.string.delete_this_comment));
+        standardDialog.setSureText(getString(R.string.str_sure));
+        standardDialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                //删除评论
+                mPresenter.deleteComment(id);
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+            }
+        });
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                standardDialog.show();
+                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                msgTextView.setTextSize(18);
+            }
+        });
+    }
+
+    //弹窗提示删除微文
+    private void isDeleteArticleTip(final String id){
+        final StandardDialog standardDialog = new StandardDialog(this);
+        standardDialog.setStandardTitle(getString(R.string.delete_article_1));
+        standardDialog.setStandardMsg(getString(R.string.weather_delete_ww));
+        standardDialog.setSureText(getString(R.string.str_sure));
+        standardDialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                //删除
+                mPresenter.deleteEssay(id);
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+            }
+        });
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                standardDialog.show();
+                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                msgTextView.setTextSize(18);
+            }
+        });
     }
 }

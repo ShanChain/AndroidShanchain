@@ -41,6 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
+                    android:textColor="@color/login_marjar_color"
                     android:text="@string/delte"
                     android:textSize="14sp"/>
             </LinearLayout>

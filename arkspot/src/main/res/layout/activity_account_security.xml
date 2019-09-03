@@ -145,6 +145,41 @@
                 android:background="@color/colorBgGray"></View>
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/relative_logout_account"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_bind_phone"
+            android:background="@drawable/selector_click_bg_msg">
+
+            <TextView
+                android:id="@+id/tv_logout_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/logout_account"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+
+            <ImageView
+                android:id="@+id/iv_logout_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <RelativeLayout

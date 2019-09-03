@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.view.activity.square;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -125,7 +126,8 @@ public class PayforSuccessActivity extends BaseActivity implements ArthurToolBar
                 redPaperParams.setTitle(getString(R.string.app_name));
                 redPaperParams.setText(getString(R.string.invate_y_join));
                 redPaperParams.setUrl(shareUrl);
-                redPaperParams.setImageUrl(shareBean.getRoomImage());
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.app_logo);
+                redPaperParams.setImageData(bitmap);
                 switch (view.getId()) {
                     case R.id.mRlWechat://微信
                         if(!ManagerUtils.uninstallSoftware(PayforSuccessActivity.this,"com.tencent.mm")){

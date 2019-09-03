@@ -233,4 +233,22 @@ public class ArticleDetailPresenterImpl implements ArticleDetailPresenter {
                     }
                 });
     }
+
+    @Override
+    public void deleteEssay(String commentId) {
+        SCHttpUtils.post()
+                .url(HttpApi.DELETE_COMMENT_ESSAY)
+                .addParams("id", commentId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mArticleDetailView.setDeleteEssayResponse(response);
+                    }
+                });
+    }
 }
