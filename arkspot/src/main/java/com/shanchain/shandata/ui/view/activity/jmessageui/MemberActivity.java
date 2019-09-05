@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
@@ -29,15 +31,22 @@ import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.GroupMenberAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.interfaces.IChatGroupMenberCallback;
 import com.shanchain.shandata.ui.model.Members;
+import com.shanchain.shandata.ui.presenter.GroupMenberPresenter;
+import com.shanchain.shandata.ui.presenter.impl.GroupMenberPresenterImpl;
+import com.shanchain.shandata.ui.view.activity.jmessageui.view.GroupMenberView;
 import com.shanchain.shandata.widgets.dialog.CustomDialog;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
@@ -49,15 +58,13 @@ import cn.jpush.im.android.api.model.UserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 
-public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGARefreshLayoutDelegate {
-
-
+public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener , GroupMenberView {
     @Bind(R.id.tb_main)
     ArthurToolBar tbMain;
     @Bind(R.id.rv_message_list)
     RecyclerView rvMessageList;
-    @Bind(R.id.srl_message_list)
-    BGARefreshLayout srlMessageList;
+    @Bind(R.id.refresh_layout)
+    SwipeRefreshLayout refreshLayout;
     @Bind(R.id.tv)
     TextView tv;
     @Bind(R.id.tv_select_num)
@@ -79,7 +86,12 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
     private String photoUrlBase = "http://shanchain-picture.oss-cn-beijing.aliyuncs.com/";
     private boolean mIsOwner;
     private CustomDialog mDeleteMemberDialog;
-
+    private GroupMenberAdapter mGroupMenberAdapter;
+    private List<Members> mGroupList = new ArrayList<>();
+    private int pageIndex = 0;
+    private boolean isLast = false;
+    private GroupMenberPresenter mMenberPresenter;
+    private SCBottomDialog scBottomDialog;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_member;
@@ -90,178 +102,29 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
         count = intent.getIntExtra("count", 0);
-        srlMessageList.setDelegate(this);
-        srlMessageList.beginLoadingMore();
-        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
-        BGARefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(MemberActivity.this, true);//微博效果
-        srlMessageList.setRefreshViewHolder(refreshViewHolder);
-        // 设置正在加载更多时不显示加载更多控件
-        srlMessageList.setIsShowLoadingMoreView(true);
-        // 设置正在加载更多时的文本
-        refreshViewHolder.setLoadingMoreText("加载更多");
+        refreshLayout.setOnRefreshListener(this);
+        mMenberPresenter = new GroupMenberPresenterImpl(this);
+        mGroupMenberAdapter = new GroupMenberAdapter(R.layout.item_members_chat_room,mGroupList);
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
+                getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rvMessageList.setLayoutManager(layoutManager);
+        rvMessageList.setAdapter(mGroupMenberAdapter);
+        mGroupMenberAdapter.notifyDataSetChanged();
         initToolBar();
-        initData();
+        setListener();
+//        initData();
+        getGroupMenberList();
+        mMenberPresenter.checkIsGroupCreater(roomID);
+
+        initLoadMoreListener();
     }
 
-    private void initData() {
-        //获取群成员
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.CHAT_ROOM_MEMBER)
-                .addParams("roomId", roomID)
-                .addParams("count", count + "")
-                .addParams("page", page + "")
-                .addParams("size", size + "")
-                .addParams("token", SCCacheUtils.getCacheToken() + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("获取聊天成员失败");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String content = JSONObject.parseObject(data).getString("content");
-                            List<Members> membersList = JSONArray.parseArray(content, Members.class);
-                            chatRoomlist.addAll(membersList);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MemberActivity.this, LinearLayoutManager.VERTICAL, false);
-                            rvMessageList.setLayoutManager(linearLayoutManager);
-                            adapter = new BaseQuickAdapter<Members, BaseViewHolder>(R.layout.item_members_chat_room, chatRoomlist) {
-                                @Override
-                                protected void convert(final BaseViewHolder helper, final Members item) {
-                                    helper.setIsRecyclable(false);
-//                                    BaseViewHolder viewHolder;
-                                    final TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
-                                    //显示勾选按钮
-                                    if (editStatus == true) {
-                                        helper.getView(R.id.check_box).setVisibility(View.VISIBLE);
-                                        focus.setOnClickListener(null);
-                                    } else {
-                                        helper.getView(R.id.check_box).setVisibility(View.GONE);
-                                    }
-                                    JMessageClient.getUserInfo(item.getUsername(), new GetUserInfoCallback() {
-                                        @Override
-                                        public void gotResult(int i, String s, final UserInfo userInfo) {
-                                            String name = userInfo.getNickname() != null ? userInfo.getNickname() : userInfo.getUserName();
-                                            helper.setText(R.id.tv_item_contact_child_name, TextUtils.isEmpty(name) ? "" + userInfo.getDisplayName() : name);
-                                            final CircleImageView circleImageView = helper.getView(R.id.iv_item_contact_child_avatar);
-//                                            String avatar = photoUrlBase + userInfo.getAvatarFile().getAbsolutePath();
-                                            String avatar = photoUrlBase + userInfo.getAvatar();
-                                            userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                                                @Override
-                                                public void gotResult(int i, String s, Bitmap bitmap) {
-                                                    Bitmap bitmap1 = bitmap;
-                                                    if (bitmap != null) {
-                                                        circleImageView.setImageBitmap(bitmap);
-                                                    } else {
-                                                        circleImageView.setBackground(getResources().getDrawable(R.mipmap.aurora_headicon_default));
-                                                    }
-
-                                                }
-                                            });
-                                            focus.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
-                                                    DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
-                                                    defaultUser.setSignature(userInfo.getSignature());
-                                                    defaultUser.setHxUserId(userInfo.getUserName());
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putParcelable("userInfo", defaultUser);
-                                                    readyGo(SingerChatInfoActivity.class, bundle);
-                                                }
-                                            });
-                                        }
-                                    });
-                                    helper.setText(R.id.tv_item_contact_child_focus, "对话");
-                                }
-                            };
-                            rvMessageList.setAdapter(adapter);
-                            adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                                    ToastUtils.showToast(MemberActivity.this, "点击Item:" + position);
-                                    final ImageView checkBox = view.findViewById(R.id.check_box);
-                                    final Members item = (Members) adapter.getItem(position);
-                                    ThreadUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            checkBox.setImageResource(R.mipmap.ic_checked);
-                                            if (item.isSelect() == false) {
-                                                checkBox.setImageResource(R.mipmap.ic_checked);
-                                                selectCount++;
-                                                item.setSelect(true);
-                                                delMemberList.add(item);
-                                            } else {
-                                                checkBox.setImageResource(R.mipmap.ic_uncheck);
-                                                selectCount--;
-                                                item.setSelect(false);
-                                                if (delMemberList.size() > 0) {
-                                                    delMemberList.remove(item);
-                                                }
-                                            }
-//                                            ToastUtils.showToast(MemberActivity.this, "选择item数:" + selectCount);
-                                            tvSelectNum.setText("" + selectCount);
-                                            if (selectCount > 0) {
-                                                btnDelete.setTextColor(getResources().getColor(R.color.colorViolet));
-                                                //删除群成员操作
-                                                btnDelete.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-//                                                        ToastUtils.showToast(MemberActivity.this, "删除群成员" + selectCount + "个");
-                                                        //调用删除接口
-                                                        deleteMember(delMemberList);
-                                                        tvSelectNum.setText("" + 0);
-                                                    }
-                                                });
-                                            } else {
-                                                btnDelete.setTextColor(getResources().getColor(R.color.colorHint));
-                                                btnDelete.setOnClickListener(null);
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-
-                });
-        //判断是否为群主
-        SCHttpUtils.get()
-                .url(HttpApi.ROOM_OWNER)
-                .addParams("roomId", roomID)
-                .build()
-                .execute(new SCHttpStringCallBack(MemberActivity.this) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = SCJsonUtils.parseCode(response);
-                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                            String data = SCJsonUtils.parseData(response);
-                            mIsOwner = Boolean.parseBoolean(data);
-                            if (mIsOwner == true) {
-                                ThreadUtils.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tbMain.setRightText("管理");
-                                        tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
-                                    }
-                                });
-
-                            }
-                        }
-                    }
-                });
-
+    //获取群组成员
+    private void getGroupMenberList(){
+        mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
     }
+
 
     private void initToolBar() {
         tbMain.setTitleTextColor(getResources().getColor(R.color.colorTextDefault));
@@ -272,35 +135,31 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
         );
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         tbMain.getTitleView().setLayoutParams(layoutParams);
-        tbMain.setTitleText("群成员");
+        tbMain.setTitleText(getString(R.string.group_menber));
         if (mIsOwner == true) {
-            tbMain.setRightText("管理");
+            tbMain.setRightText(getString(R.string.Manager_1));
             tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
         }
         tbMain.setBackgroundColor(getResources().getColor(R.color.white));
         tbMain.setLeftImage(R.mipmap.abs_roleselection_btn_back_default);
         List<String> items = new ArrayList<>();
-        items.add("删除聊天室成员");
-        items.add("取消");
-        final SCBottomDialog scBottomDialog = new SCBottomDialog(MemberActivity.this);
+        items.add(getString(R.string.delete_group_menber));
+        items.add(getString(R.string.str_cancel));
+        scBottomDialog = new SCBottomDialog(MemberActivity.this);
         scBottomDialog.setItems(items);
         scBottomDialog.setCallback(new SCBottomDialog.BottomCallBack() {
             @Override
             public void btnClick(String btnValue) {
-                if (adapter == null) {
-                    return;
-                }
-                if (btnValue.equals("删除聊天室成员")) {
+                if (btnValue.equals(getString(R.string.delete_group_menber))) {
                     editStatus = true;
-                    adapter.notifyDataSetChanged();
+                    changeMenberState(true);
                     llMycollectionBottomDialog.setVisibility(View.VISIBLE);
-                    tbMain.setRightText("取消");
+                    tbMain.setRightText(getString(R.string.str_cancel));
                     scBottomDialog.dismiss();
-                } else if (btnValue.equals("取消")) {
+                } else if (btnValue.equals(getString(R.string.str_cancel))) {
                     editStatus = false;
-                    adapter.notifyDataSetChanged();
                     llMycollectionBottomDialog.setVisibility(View.GONE);
-                    tbMain.setRightText("管理");
+                    tbMain.setRightText(getString(R.string.Manager_1));
                     scBottomDialog.dismiss();
                 }
             }
@@ -315,116 +174,200 @@ public class MemberActivity extends BaseActivity implements BGARefreshLayout.BGA
             @Override
             public void onRightClick(final View v) {
                 //当前不是编辑模式，显示弹窗编辑
-                if (editStatus == false) {
+                if (!editStatus) {
                     scBottomDialog.show();
                 } else {
-                    editStatus = false;
-                    adapter.notifyDataSetChanged();
                     llMycollectionBottomDialog.setVisibility(View.GONE);
-                    tbMain.setRightText("管理");
+                    tbMain.setRightText(getString(R.string.Manager_1));
+                    editStatus = false;
+                    changeMenberState(false);
                 }
             }
         });
     }
 
-    private void deleteMember(final List<Members> delMemberList) {
+    //选择状态
+    private void setListener(){
+        mGroupMenberAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Members item = (Members) adapter.getItem(position);
+                for (Members m : mGroupList){
+                    if(m.getUsername().equals(item.getUsername())){
+                        if(m.isSelect()){
+                            m.setSelect(false);
+                        }else {
+                            m.setSelect(true);
+                        }
+                    }
+                }
+                mGroupMenberAdapter.notifyDataSetChanged();
+                List<Members> list = checkNumsFromGroupMenber();
+                tvSelectNum.setText("" + list.size());
+            }
+        });
+
+        mGroupMenberAdapter.setMenberCallback(new IChatGroupMenberCallback() {
+            @Override
+            public void chatUser(Members members) {
+                if(members == null)return;
+                JMessageClient.getUserInfo(members.getUsername(), new GetUserInfoCallback() {
+                    @Override
+                    public void gotResult(int i, String s, final UserInfo userInfo) {
+                        String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
+                        DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
+                        defaultUser.setSignature(userInfo.getSignature());
+                        defaultUser.setHxUserId(userInfo.getUserName());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("userInfo", defaultUser);
+                        readyGo(SingerChatInfoActivity.class, bundle);
+                    }
+                });
+            }
+        });
+    }
+
+    //删除成员
+    @OnClick(R.id.btn_delete)
+    void deleteGroupMenbers(){
+        List<Members> list = checkNumsFromGroupMenber();
+        if(list.size() == 0){
+            ToastUtils.showToast(this, R.string.delete_group_team_tip);
+            return;
+        }
         List<String> userNames = new ArrayList();
         String myUserName = JMessageClient.getMyInfo().getUserName();
-        for (int i = 0; i < delMemberList.size(); i++) {
-            userNames.add(delMemberList.get(i).getUsername());
-            if (userNames.contains("11111")) {
-                ToastUtils.showToast(MemberActivity.this, "不能删除系统成员");
-                return;
-            } else if (userNames.contains(myUserName)) {
-                ToastUtils.showToast(MemberActivity.this, "不能删除自己");
+        for (int i = 0; i < list.size(); i++) {
+            userNames.add(list.get(i).getUsername());
+            if (userNames.contains(myUserName)) {
+                ToastUtils.showToast(MemberActivity.this, R.string.delete_not_y);
                 return;
             }
         }
         String jArray = JSONArray.toJSONString(userNames);
-        SCHttpUtils.post()
-                .url(HttpApi.DELETE_ROOM_MEMBERS)
-                .addParams("roomId", roomID + "")
-                .addParams("jArray", jArray + "")
-                .build()
-                .execute(new SCHttpStringCallBack(MemberActivity.this) {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
+        mMenberPresenter.deleteGroupMenber(roomID,jArray);
 
-                    }
+    }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = SCJsonUtils.parseCode(response);
-                        String msg = SCJsonUtils.parseMsg(response);
-                        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
-                            ToastUtils.showToast(MemberActivity.this, "删除成功");
-                            if (chatRoomlist != null && delMemberList != null) {
-                                chatRoomlist.removeAll(delMemberList);
-                                adapter.notifyDataSetChanged();
-                                selectCount = 0;
 
-                                delMemberList.clear();
-                            }
-                        }
-                    }
-                });
+    @Override
+    public void onRefresh() {
+        pageIndex = 1;
+        getGroupMenberList();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
+    public void showProgressStart() {
+        showLoadingDialog();
     }
 
-    //刷新
     @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        if (chatRoomlist != null) {
-            chatRoomlist.clear();
-            initData();
+    public void showProgressEnd() {
+        closeLoadingDialog();
+    }
+
+    @Override
+    public void setGroupMenberResponse(String response,int pullType) {
+        refreshLayout.setRefreshing(false);
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            String content = JSONObject.parseObject(data).getString("content");
+            List<Members> membersList = JSONArray.parseArray(content, Members.class);
+            if(membersList!=null && membersList.size()>0){
+                for (int i = 0; i <membersList.size() ; i++) {
+                    if("11111".equals(membersList.get(i).getUsername())){
+                        membersList.remove(i);
+                    }
+                }
+            }
+            if(membersList.size()<Constants.pageSize){
+                isLast = true;
+            }else {
+                isLast = false;
+            }
+            if(pullType == Constants.pullRefress){
+                mGroupList.clear();
+                mGroupList.addAll(membersList);
+                rvMessageList.setAdapter(mGroupMenberAdapter);
+                mGroupMenberAdapter.notifyDataSetChanged();
+            }else {
+                mGroupMenberAdapter.addData(membersList);
+            }
+
         }
-        refreshLayout.endRefreshing();
     }
 
-    //加载
     @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(final BGARefreshLayout refreshLayout) {
-        page++;
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.CHAT_ROOM_MEMBER)
-                .addParams("roomId", roomID)
-                .addParams("count", count + "")
-                .addParams("page", page + "")
-                .addParams("size", size + "")
-                .addParams("token", SCCacheUtils.getCacheToken() + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("获取聊天成员失败");
-                    }
+    public void setCheckGroupCreateeResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
+            String data = SCJsonUtils.parseData(response);
+            mIsOwner = Boolean.parseBoolean(data);
+            if (mIsOwner == true) {
+                tbMain.setRightText(getString(R.string.Manager_1));
+                tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
+            }
+        }
+    }
 
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String content = JSONObject.parseObject(data).getString("content");
-                            String totalPages = JSONObject.parseObject(data).getString("totalPages");
-                            String totalElements = JSONObject.parseObject(data).getString("totalElements");
-                            String number = JSONObject.parseObject(data).getString("number");
-                            if (Integer.valueOf(number) <= Integer.valueOf(totalPages)) {
-                                List<Members> loadMore = JSONArray.parseArray(content, Members.class);
-                                adapter.addData(loadMore);
-                                adapter.notifyLoadMoreToLoading();
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                        refreshLayout.endLoadingMore();
-                    }
-                });
+    @Override
+    public void setDeleteGroupMenberResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (NetErrCode.SUC_CODE.equals(code) || NetErrCode.COMMON_SUC_CODE.equals(code)) {
+            ToastUtils.showToast(MemberActivity.this, getString(R.string.delete_success));
+            mGroupList.removeAll(delMemberList);
+            mGroupMenberAdapter.notifyDataSetChanged();
+        }else {
+            ToastUtils.showToast(MemberActivity.this, getString(R.string.operation_failed));
+        }
+    }
 
-        return false;
+    //改变列表状态
+    private void changeMenberState(boolean isEdite){
+        if(mGroupList.size() == 0)return;
+        for (int i = 0; i < mGroupList.size(); i++) {
+            mGroupList.get(i).setEdite(isEdite);
+        }
+        mGroupMenberAdapter.notifyDataSetChanged();
+    }
+    //判断选择几个
+    private List<Members> checkNumsFromGroupMenber(){
+        if(mGroupList.size()==0)return new ArrayList<>();
+        List<Members> members = new ArrayList<>();
+        for (int i = 0; i <mGroupList.size() ; i++) {
+            if(mGroupList.get(i).isSelect()){
+                members.add(mGroupList.get(i));
+            }
+        }
+        return members;
+    }
+
+    //上拉加载监听
+    private void initLoadMoreListener() {
+        //上拉加载
+        rvMessageList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (isLast) {
+                    return;
+                }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mGroupMenberAdapter.getItemCount()) {
+                    pageIndex++;
+                    mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pillLoadmore);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            }
+        });
+
     }
 }

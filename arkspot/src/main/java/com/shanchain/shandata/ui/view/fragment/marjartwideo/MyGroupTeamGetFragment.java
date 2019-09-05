@@ -110,6 +110,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     @OnClick(R.id.tv_create)
     void myCreate(){
         currentType = 1;
+        pageIndex = 1;
         changeBackgroup(currentType);
         getMyMiningData(currentType,Constants.pullRefress);
     }
@@ -118,6 +119,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     @OnClick(R.id.tv_join)
     void myJoined(){
         currentType = 2;
+        pageIndex = 1;
         changeBackgroup(currentType);
         getMyMiningData(currentType,Constants.pullRefress);
     }

@@ -439,6 +439,7 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(this,PhoneFrontActivity.class).putExtra("type",2));
     }
 
+    private String loginAcount;
     //账号密码登陆
     private void login() {
         String account = mEtLoginAccount.getText().toString().trim();
@@ -452,7 +453,7 @@ public class LoginActivity extends BaseActivity {
         if(!"+86".equals(aAcount)){
             account = aAcount.substring(1,aAcount.length())+account;
         }
-
+        loginAcount = account;
         String time = String.valueOf(System.currentTimeMillis());
         //加密后的账号
         String encryptAccount = Base64.encode(AESUtils.encrypt(account, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
@@ -490,6 +491,8 @@ public class LoginActivity extends BaseActivity {
                             if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                                 closeProgress();
                                 //登录成功
+                                //缓存手机号到本地
+                                PrefUtils.putString(mContext, Constants.SP_KEY_USER_ACCOUNT,loginAcount);
                                 String data = JSONObject.parseObject(response).getString("data");
                                 ResponseLoginBean loginBean = JSONObject.parseObject(data, ResponseLoginBean.class);
                                 //登录成功 在此缓存用户数据

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.vod.common.utils.ToastUtil;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -128,6 +129,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         if(mSqureDataEntity == null)return;
         Glide.with(mContext).load(mSqureDataEntity.getHeadIcon())
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                        .dontAnimate().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
         tvNickname.setText(mSqureDataEntity.getNickName());
         tvTime.setText(TimeUtils.friendlyTime1(this,new Date(mSqureDataEntity.getCreateTime())));
@@ -411,6 +413,9 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
+            mSqureDataEntity.setReviceCount(mSqureDataEntity.getReviceCount()-1);
+            tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
+            tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
         }else {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override

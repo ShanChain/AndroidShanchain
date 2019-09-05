@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.utils.DensityUtils;
@@ -75,6 +76,7 @@ public class GVPhotoAdapter extends BaseAdapter {
         String s = photoList.get(position).replaceAll("\\\\","");
         Glide.with(mContext).load(HttpApi.BASE_URL+s)
                 .apply(new RequestOptions().placeholder(R.mipmap.place_image_commen)
+                        .dontAnimate().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .error(R.drawable.squrea_bg_shape)).into(viewHolder.ivItem);
 
         return convertView;

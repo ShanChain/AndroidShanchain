@@ -22,7 +22,7 @@ public class CouponListPresenterImpl implements CouponListPresenter {
     }
     @Override
     public void getCounponList(String subuserId, int page, int size,final int pullType) {
-        mCounponListView.showProgressStart();
+//        mCounponListView.showProgressStart();
         SCHttpUtils.getAndToken()
                 .url(HttpApi.COUPONS_ALL_LIST)
                 .addParams("pageNo", page + "")
@@ -32,12 +32,12 @@ public class CouponListPresenterImpl implements CouponListPresenter {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        mCounponListView.showProgressEnd();
+//                        mCounponListView.showProgressEnd();
                     }
 
                     @Override
                     public void onResponse(String response, final int id) {
-                        mCounponListView.showProgressEnd();
+//                        mCounponListView.showProgressEnd();
                         mCounponListView.setCounponList(response,pullType);
                     }
                 });

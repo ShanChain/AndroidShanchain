@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.utils.LogUtils;
@@ -21,6 +23,7 @@ import com.shanchain.shandata.interfaces.ICheckBigPhotoCallback;
 import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.PhoneFrontBean;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
+import com.shanchain.shandata.utils.DisplayImageOptionsUtils;
 import com.shanchain.shandata.utils.TimeUtils;
 import com.shanchain.shandata.widgets.CustomGridView;
 
@@ -58,6 +61,7 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
         CircleImageView circleImageView = helper.getView(R.id.iv_user_head);
         Glide.with(mContext).load(item.getHeadIcon())
                 .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                        .dontAnimate().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .error(R.drawable.aurora_headicon_default)).into(circleImageView);
         helper.setText(R.id.tv_nickname,item.getNickName());
         helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(mContext,new Date(item.getUpdateTime())));
@@ -71,7 +75,7 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             String []attr = item.getListImg().replaceAll("\\\\","").split(",");
             Glide.with(mContext).load(HttpApi.BASE_URL+attr[0])
                     .apply(new RequestOptions()
-                            .placeholder(R.mipmap.place_image_commen)
+                            .placeholder(R.mipmap.place_image_commen).dontAnimate().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                             .error(R.drawable.squrea_bg_shape)).into(ivBg);
             helper.getView(R.id.rl_bg).setVisibility(View.VISIBLE);
             if(attr.length == 1){

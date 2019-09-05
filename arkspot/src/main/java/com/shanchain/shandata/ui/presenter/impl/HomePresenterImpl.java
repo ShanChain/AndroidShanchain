@@ -94,7 +94,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void getCurrentPoint(LatLng point) {
-        mHomeView.showProgressStart();
+//        mHomeView.showProgressStart();
         SCHttpUtils.get()
                 .url(HttpApi.CHAT_ROOM_INFO)
                 .addParams("longitude", point.longitude + "")
@@ -103,7 +103,7 @@ public class HomePresenterImpl implements HomePresenter {
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        mHomeView.showProgressEnd();
+//                        mHomeView.showProgressEnd();
                     }
 
                     @Override

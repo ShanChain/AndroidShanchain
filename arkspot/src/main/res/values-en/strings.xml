@@ -481,5 +481,15 @@
     <string name="weather_delete_ww">Whether to delete this essay?</string>
     <string name="delete_success">Delete success</string>
     <string name="name_or_code">Enter the name of the mine or the invitation code</string>
+    <string name="Manager_1">Manager</string>
+    <string name="group_menber">Group member</string>
+    <string name="delete_group_menber">Delete chat room members</string>
+    <string name="all_selete">All selete</string>
+    <string name="chosen">Chosen</string>
+    <string name="delete_group_team_tip">Please select a member to delete</string>
+    <string name="delete_not_y">Canot delete yourself</string>
+    <string name="feedback_success">Feedback success</string>
+    <string name="enter_pass_w_logout">Enter the login password</string>
+    <string name="logout_succss">Logout successful</string>
 
 </resources>

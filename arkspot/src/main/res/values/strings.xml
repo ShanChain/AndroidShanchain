@@ -496,4 +496,14 @@
     <string name="weather_delete_ww">是否删除这条微文?</string>
     <string name="delete_success">删除成功</string>
     <string name="name_or_code">请输入元矿区名称或邀请码</string>
+    <string name="Manager_1">管理</string>
+    <string name="group_menber">群成员</string>
+    <string name="delete_group_menber">删除聊天室成员</string>
+    <string name="all_selete">全选</string>
+    <string name="chosen">已选择</string>
+    <string name="delete_group_team_tip">请选择要删除的成员</string>
+    <string name="delete_not_y">不能删除自己</string>
+    <string name="feedback_success">反馈成功</string>
+    <string name="enter_pass_w_logout">输入登陆密码</string>
+    <string name="logout_succss">注销成功</string>
 </resources>

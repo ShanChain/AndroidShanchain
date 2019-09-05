@@ -19,8 +19,8 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-            android:id="@+id/srl_message_list"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -31,7 +31,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:background="@color/colorWhite"
                 android:padding="@dimen/dp_10" />
-        </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:text="已选择"
+                android:text="@string/chosen"
                 android:textColor="#1A1A1A"
                 android:textSize="14sp" />
 
@@ -82,10 +82,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/shape_click_bg"
+                android:background="@drawable/bg_btn_login_selector"
                 android:gravity="center"
-                android:text="删除"
-                android:textColor="@color/colorHint"
+                android:text="@string/delte"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:layout_toLeftOf="@+id/btn_delete"
                 android:background="@drawable/selector_click_bg_msg"
                 android:gravity="center"
-                android:text="全选"
+                android:text="@string/all_selete"
                 android:textColor="#000001"
                 android:textSize="14sp"
                 android:visibility="gone" />

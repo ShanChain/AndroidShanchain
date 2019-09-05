@@ -17,6 +17,7 @@ public class Members {
     private String mtime;
     private String ctime;
     private boolean isSelect;
+    private boolean isEdite;
 
     public String getUsername() {
         return username;
@@ -64,5 +65,13 @@ public class Members {
 
     public void setSelect(boolean select) {
         isSelect = select;
+    }
+
+    public boolean isEdite() {
+        return isEdite;
+    }
+
+    public void setEdite(boolean edite) {
+        isEdite = edite;
     }
 }

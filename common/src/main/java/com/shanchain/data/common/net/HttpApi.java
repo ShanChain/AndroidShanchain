@@ -724,4 +724,6 @@ public interface HttpApi {
     String GET_INVATION_USER_DATA = BASE_URL + "/probecoin/tDiggingAccount/getTDiggingAccountByUserId";
     //获取邀请记录列表
     String GET_INVATION_USER_LIST = BASE_URL + "/probecoin/tAccept/getPageTAccept";
+    //注销账号
+    String USER_LOGINOUT = BASE_URL + "/v1/user/login_close_account";
 }

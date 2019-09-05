@@ -21,7 +21,7 @@ public class SquarePresenterImpl implements SquarePresenter {
     }
     @Override
     public void getListData(String title, String userId,int page, int size, final int pullType) {
-        mSquareView.showProgressStart();
+//        mSquareView.showProgressStart();
         SCHttpUtils.post()
                 .url(HttpApi.INOVATION_LIST)
                 .addParams("currentPage", page + "")
@@ -32,12 +32,12 @@ public class SquarePresenterImpl implements SquarePresenter {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtils.d("TaskPresenterImpl", "查询任务失败");
-                        mSquareView.showProgressEnd();
+//                        mSquareView.showProgressEnd();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        mSquareView.showProgressEnd();
+//                        mSquareView.showProgressEnd();
                         mSquareView.setListDataResponse(response,pullType);
                     }
                 });

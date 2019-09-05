@@ -837,8 +837,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             @Override
             public void onUserHeadClick(View v) {
 //                ToastUtils.showToast(MessageListActivity.this,"头像按钮");
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                toggle.onDrawerOpened(drawer);
+                /*drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                toggle.onDrawerOpened(drawer);*/
+                //跳转聊天室人员列表
+                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
+                intent.putExtra("roomId", roomID);
+                intent.putExtra("count", memberCount);
+                startActivity(intent);
             }
         });
 
@@ -1812,16 +1817,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 String data = JSONObject.parseObject(response).getString("data");
 //                            String list = JSONObject.parseObject(data).getString("tDiggingJoinLogs");
                                 List<SearchGroupTeamBeam> mList = JSONObject.parseArray(data, SearchGroupTeamBeam.class);
+                                memberCount = mList.get(0).gettDiggingJoinLogs().size();
                                 roomNum.setText(mList.get(0).gettDiggingJoinLogs().size()+"");
                             }
                         }
                     });
         }
-
-
-
-
-
         relativeChatRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

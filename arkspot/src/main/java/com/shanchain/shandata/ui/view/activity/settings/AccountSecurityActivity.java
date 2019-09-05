@@ -11,7 +11,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.UserType;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.cache.SharedPreferencesUtils;
@@ -22,16 +25,20 @@ import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.SCInputDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
+import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
+import com.shanchain.data.common.utils.VersionUtils;
 import com.shanchain.data.common.utils.encryption.AESUtils;
 import com.shanchain.data.common.utils.encryption.Base64;
 import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 
 import java.util.List;
 
@@ -47,6 +54,8 @@ import cn.jiguang.share.android.utils.Logger;
 import cn.jiguang.share.facebook.Facebook;
 import cn.jiguang.share.qqmodel.QQ;
 import cn.jiguang.share.wechat.Wechat;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
 import okhttp3.Call;
 
 public class AccountSecurityActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
@@ -278,7 +287,6 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                     standardDialog.setCallback(new Callback() {
                         @Override
                         public void invoke() { //取消
-
                         }
                     }, new Callback() { //解绑
                         @Override
@@ -348,7 +356,6 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
             public void onComplete(Platform platform, int action, BaseResponseInfo data) {
                 Logger.dd(TAG, "onComplete:" + platform + ",action:" + action + ",data:" + data);
                 String toastMsg = null;
-
                 switch (action) {
                     case Platform.ACTION_AUTHORIZING:
                         if (data instanceof AccessTokenInfo) {        //授权信息
@@ -575,21 +582,16 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
 
     //弹窗提示输入密码
     private void showEnterPassword(){
-        mScInputDialog = new SCInputDialog(this, "输入登陆密码",
-                "输入登陆密码");
+        mScInputDialog = new SCInputDialog(this, getString(R.string.enter_pass_w_logout),
+                getString(R.string.enter_pass_w_logout));
         mScInputDialog.setCallback(new Callback() {//确定
             @Override
             public void invoke() {
-                if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText())){
-                    ToastUtils.showToast(AccountSecurityActivity.this, "输入登陆密码");
+                if(TextUtils.isEmpty(mScInputDialog.getEtContent().getText().toString().trim())){
+                    ToastUtils.showToast(AccountSecurityActivity.this, getString(R.string.enter_pass_w_logout));
                     return;
                 }
-                if(mScInputDialog.getEtContent().getText().length()>20){
-                    ToastUtils.showToast(AccountSecurityActivity.this, R.string.mining_nam_exant_10);
-                    return;
-                }
-                mScInputDialog.dismiss();
-
+                logoutUser(mScInputDialog.getEtContent().getText().toString().trim());
             }
         }, new Callback() {//取消
             @Override
@@ -597,7 +599,54 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
 
             }
         });
-        //显示输入元社区弹窗
+        //显示输入密码弹窗
         mScInputDialog.show();
+    }
+
+    private void logoutUser(String password){
+        String account = PrefUtils.getString(mContext, Constants.SP_KEY_USER_ACCOUNT,"");
+        if(TextUtils.isEmpty(account))return;
+        String time = String.valueOf(System.currentTimeMillis());
+        String localVersion = VersionUtils.getVersionName(mContext);
+        //加密后的账号
+        String encryptAccount = Base64.encode(AESUtils.encrypt(account, Base64.encode(UserType.USER_TYPE_MOBILE + time)));
+        //加密后的密码
+        String md5Pwd = MD5Utils.md5(password);
+        String passwordAccount = Base64.encode(AESUtils.encrypt(md5Pwd, Base64.encode(UserType.USER_TYPE_MOBILE + time + account)));
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.USER_LOGINOUT)
+                .addParams("deviceToken", JPushInterface.getRegistrationID(this))
+                .addParams("version", localVersion)
+                .addParams("os", "android")
+                .addParams("channel", "" + MyApplication.getAppMetaData(getApplicationContext(), "UMENG_CHANNEL"))
+                .addParams("Timestamp", time)
+                .addParams("encryptAccount", encryptAccount)
+                .addParams("encryptPassword", passwordAccount)
+                .addParams("userType", UserType.USER_TYPE_MOBILE)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            ToastUtils.showToast(AccountSecurityActivity.this, R.string.logout_succss);
+                            loginOut();
+                        }else {
+                            ToastUtils.showToast(AccountSecurityActivity.this, R.string.operation_failed);
+                        }
+                    }
+                });
+    }
+
+    //退出登录
+    public void loginOut(){
+        JMessageClient.logout();
+        SCCacheUtils.clearCache();
+        readyGo(LoginActivity.class);
+        ActivityStackManager.getInstance().finishAllActivity();
     }
 }

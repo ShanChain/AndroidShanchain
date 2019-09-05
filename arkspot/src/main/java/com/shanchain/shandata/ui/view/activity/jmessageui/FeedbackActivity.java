@@ -10,9 +10,14 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.common.utils.ToastUtil;
 import com.shanchain.data.common.net.HttpApi;
+import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
+import com.shanchain.data.common.utils.SCJsonUtils;
+import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
@@ -24,12 +29,17 @@ import com.shanchain.shandata.interfaces.IDeletePhotoCallback;
 import com.shanchain.shandata.ui.model.PhotoBean;
 import com.shanchain.shandata.ui.view.activity.article.PublishArticleActivity;
 import com.shanchain.shandata.utils.FilePathUtils;
+import com.shanchain.shandata.utils.ManagerUtils;
 import com.shanchain.shandata.utils.PhotoSelectHelper;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,10 +52,15 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import top.zibin.luban.Luban;
 
 public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
-
     @Bind(R.id.tb_main)
     ArthurToolBar tbMain;
     @Bind(R.id.edit_feedback)
@@ -57,6 +72,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
     private PhotoArticleAdapter mAdapter;
     private List<PhotoBean> mList = new ArrayList<>();
     private static final int REQUEST_CODE_GALLERY = 0x112;
+    private String fileList;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_feeback;
@@ -164,7 +180,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
                 mList.remove(i);
             }
         }
-        if(mList.size()<9) {
+        if(mList.size()<3) {
             mList.add(new PhotoBean());
         }
         mAdapter.notifyDataSetChanged();
@@ -172,26 +188,104 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
     @OnClick(R.id.btn_submit)
     void commitFeedback(){
         if (editFeedback.getText().toString().length() > 0) {
-            String dataString = "{\"title\":\"用户反馈\",\"disc\":\"" + editFeedback.getText().toString() + "\",\"type\":1}";
-            SCHttpUtils.postWithUserId()
-                    .url(HttpApi.USE_FEEDBACK)
-                    .addParams("dataString", dataString)
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            ToastUtils.showToast(FeedbackActivity.this, "反馈成功");
-                            finish();
-                        }
-                    });
+            for (int i = 0; i < mList.size(); i++) {
+                if(TextUtils.isEmpty(mList.get(i).getUrl())){
+                    mList.remove(i);
+                }
+            }
+            if(mList.size()>0){
+                //上传反馈图片
+                uploadImages();
+            }else {
+                commiteFeedback();
+            }
         } else {
             ToastUtils.showToast(FeedbackActivity.this, R.string.enter_feedback);
         }
+    }
+
+    //上传图片
+    private void uploadImages(){
+        showLoadingDialog();
+        OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
+        MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for(PhotoBean p:mList){
+            if(new File(p.getUrl()).exists()){
+                mbody.addFormDataPart("files",p.getFileName(), RequestBody.create(SCHttpUtils.FORM_DATA,new File(p.getUrl())));
+            }
+        }
+        RequestBody requestBody =mbody.build();
+        Request request = new Request.Builder()
+                .url(HttpApi.UPLOAD_IMAGE)
+                .post(requestBody)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.d("Resonse IOException: ", e.toString());
+                closeLoadingDialog();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                closeLoadingDialog();
+                String result = response.body().string();
+                LogUtils.d("Resonse: ", result);
+                String code = SCJsonUtils.parseCode(result);
+                if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                    String data = JSONObject.parseObject(result).getString("filenames");
+                    if(!TextUtils.isEmpty(data)){
+                        String attr [] = data.substring(1,data.length()-1).split(",");
+                        for (int i = 0; i < attr.length; i++) {
+                            String phth = attr[i].substring(1,attr[i].length()-1);
+                            fileList += phth+",";
+                        }
+                        commiteFeedback();
+                    }else {
+                        ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));;
+                    }
+                }else {
+                    ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));
+                }
+
+            }
+        });
+    }
+    //提交反馈
+    private void commiteFeedback(){
+        String phoneMode = ManagerUtils.getSystemModel()+"("+ManagerUtils.getSystemVersion()+")";
+        Map<String,String> map = new HashMap<>();
+        map.put("title","用户反馈");
+        map.put("disc",editFeedback.getText().toString()+"&&"+phoneMode);
+        map.put("type","1");
+        if(!TextUtils.isEmpty(fileList)){
+            map.put("listImg",fileList.substring(0,fileList.length()-1));
+        }else {
+            map.put("listImg","");
+        }
+        String dataJson = JSONObject.toJSONString(map);
+        LogUtils.d("------->>>"+dataJson);
+        SCHttpUtils.postWithUserId()
+                .url(HttpApi.USE_FEEDBACK)
+                .addParams("dataString", dataJson)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+                            ToastUtils.showToast(FeedbackActivity.this, R.string.feedback_success);
+                            finish();
+                        }else {
+                            ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));
+                        }
+                    }
+                });
     }
 
     @Override
