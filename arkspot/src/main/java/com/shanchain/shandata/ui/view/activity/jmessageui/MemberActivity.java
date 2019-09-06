@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
@@ -26,6 +27,7 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.SCBottomDialog;
+import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
@@ -92,6 +94,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
     private boolean isLast = false;
     private GroupMenberPresenter mMenberPresenter;
     private SCBottomDialog scBottomDialog;
+    private StandardDialog standardDialog;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_member;
@@ -245,14 +248,43 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
             }
         }
         String jArray = JSONArray.toJSONString(userNames);
-        mMenberPresenter.deleteGroupMenber(roomID,jArray);
+        isDeleteGroupMenberTip(jArray);
 
+    }
+
+    //弹窗提示删除用户
+    private void isDeleteGroupMenberTip(final String jArray){
+        standardDialog = new StandardDialog(this);
+        standardDialog.setStandardTitle(getString(R.string.delete_group_tip));
+        standardDialog.setStandardMsg(getString(R.string.is_delete_group_menber));
+        standardDialog.setSureText(getString(R.string.str_sure));
+        standardDialog.setCallback(new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+                //弹窗提示输入密码
+                mMenberPresenter.deleteGroupMenber(roomID,jArray);
+            }
+        }, new Callback() {
+            @Override
+            public void invoke() {
+                standardDialog.dismiss();
+            }
+        });
+        ThreadUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                standardDialog.show();
+                TextView msgTextView = standardDialog.findViewById(R.id.dialog_msg);
+                msgTextView.setTextSize(18);
+            }
+        });
     }
 
 
     @Override
     public void onRefresh() {
-        pageIndex = 1;
+        pageIndex = 0;
         getGroupMenberList();
     }
 
@@ -303,12 +335,12 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         String code = SCJsonUtils.parseCode(response);
         if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
             String data = SCJsonUtils.parseData(response);
-            mIsOwner = Boolean.parseBoolean(data);
+            /*mIsOwner = Boolean.parseBoolean(data);
             if (mIsOwner == true) {
                 tbMain.setRightText(getString(R.string.Manager_1));
                 tbMain.setRightTextColor(getResources().getColor(R.color.colorViolet));
 
-            }
+            }*/
         }
     }
 

@@ -52,6 +52,7 @@ import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MyMessageActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.mine.ReturnInvationActivity;
+import com.shanchain.shandata.ui.view.activity.settings.ClientListActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.square.PayforSuccessActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
@@ -102,6 +103,8 @@ public class MineFragment extends BaseFragment implements MineView {
     LinearLayout llMessage;
     @Bind(R.id.ll_setting)
     LinearLayout llSetting;
+    @Bind(R.id.ll_client)
+    LinearLayout llClient;
 
     private MinePresenter mMinePresenter;
     private String photoPath = "";
@@ -140,8 +143,6 @@ public class MineFragment extends BaseFragment implements MineView {
         initUserData();
 
     }
-
-
 
     //设置用户基本信息
     private void initUserData(){
@@ -264,6 +265,13 @@ public class MineFragment extends BaseFragment implements MineView {
             startActivityForResult(intent, requestCode);
         }
     }
+
+    //联系客服
+    @OnClick(R.id.ll_client)
+    void contactClient(){
+        startActivity(new Intent(getActivity(), ClientListActivity.class));
+    }
+
 
     @Override
     public void onDestroyView() {

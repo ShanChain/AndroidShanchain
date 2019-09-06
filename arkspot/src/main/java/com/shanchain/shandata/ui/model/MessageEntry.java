@@ -162,4 +162,24 @@ public class MessageEntry {
     }
 
 
+    @Override
+    public String toString() {
+        return "MessageEntry{" +
+                "id=" + id +
+                ", roomId='" + roomId + '\'' +
+                ", msgId='" + msgId + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", jgUserName='" + jgUserName + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", messageText='" + messageText + '\'' +
+                ", timeString=" + timeString +
+                ", messageType='" + messageType + '\'' +
+                ", fileFormat='" + fileFormat + '\'' +
+                ", mediaFilePath='" + mediaFilePath + '\'' +
+                ", duration=" + duration +
+                ", progress='" + progress + '\'' +
+                '}';
+    }
 }

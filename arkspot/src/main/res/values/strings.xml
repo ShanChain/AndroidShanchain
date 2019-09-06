@@ -506,4 +506,10 @@
     <string name="feedback_success">反馈成功</string>
     <string name="enter_pass_w_logout">输入登陆密码</string>
     <string name="logout_succss">注销成功</string>
+    <string name="delete_group_tip">删除群成员</string>
+    <string name="is_delete_group_menber">是否删除已选中的群成员?</string>
+    <string name="entrychat_room">加密聊天社区</string>
+    <string name="not_int_room">您不在该聊天室内</string>
+    <string name="contact_server_service">联系客服</string>
+    <string name="client_center">客服中心</string>
 </resources>

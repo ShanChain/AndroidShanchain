@@ -3,7 +3,6 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -36,12 +35,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -53,20 +49,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
 import com.alibaba.fastjson.JSONObject;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.UiSettings;
-import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -74,7 +62,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
-import com.lzy.imagepicker.view.CropImageView;
 import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.RoleManager;
@@ -85,7 +72,6 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
-import com.shanchain.data.common.ui.widgets.timepicker.SCTimePickerView;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
@@ -94,52 +80,34 @@ import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.AppsAdapter;
-import com.shanchain.shandata.adapter.DynamicImagesAdapter;
 import com.shanchain.shandata.adapter.ImagePickerAdapter;
 import com.shanchain.shandata.adapter.SimpleAppsGridView;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.db.ConversationEntryDao;
 import com.shanchain.shandata.db.MessageEntryDao;
-import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.ConversationEntry;
-import com.shanchain.shandata.ui.model.Coordinates;
-import com.shanchain.shandata.ui.model.GroupTeamBean;
-import com.shanchain.shandata.ui.model.HotChatRoom;
-import com.shanchain.shandata.ui.model.JmAccount;
 import com.shanchain.shandata.ui.model.MessageEntry;
-import com.shanchain.shandata.ui.model.MessageModel;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.SearchGroupTeamBeam;
-import com.shanchain.shandata.ui.model.SearchTeamBean;
-import com.shanchain.shandata.ui.model.UserEntry;
-import com.shanchain.shandata.ui.presenter.TaskPresenter;
-import com.shanchain.shandata.ui.view.activity.HomeActivity;
-import com.shanchain.shandata.ui.view.activity.ModifyUserInfoActivity;
-import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
+import com.shanchain.shandata.ui.presenter.MessageListPresenter;
+import com.shanchain.shandata.ui.presenter.impl.MessageListPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
+import com.shanchain.shandata.ui.view.activity.jmessageui.view.MessageListView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
-import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.DateUtils;
-import com.shanchain.shandata.utils.GlideImageLoader;
 import com.shanchain.shandata.utils.MyEmojiFilter;
-import com.shanchain.shandata.utils.MyOrientationListener;
 import com.shanchain.shandata.utils.RequestCode;
-import com.shanchain.shandata.utils.SelectDialog;
-import com.shanchain.shandata.widgets.GuideView;
 import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
 import com.shanchain.shandata.widgets.arcMenu.ArcMenu;
-import com.shanchain.shandata.widgets.dialog.CustomDialog;
 import com.shanchain.shandata.widgets.other.TipItem;
 import com.shanchain.shandata.widgets.other.TipView;
-import com.shanchain.shandata.widgets.photochoose.ChoosePhoto;
-import com.shanchain.shandata.widgets.photochoose.DialogCreator;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.pickerimage.PickImageActivity;
 import com.shanchain.shandata.widgets.pickerimage.utils.Extras;
@@ -152,7 +120,6 @@ import com.zhangke.websocket.SocketListener;
 import com.zhangke.websocket.WebSocketHandler;
 import com.zhangke.websocket.WebSocketManager;
 import com.zhangke.websocket.response.ErrorResponse;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -191,30 +158,17 @@ import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
-import cn.jiguang.share.android.api.JShareInterface;
-import cn.jiguang.share.android.api.PlatActionListener;
-import cn.jiguang.share.android.api.Platform;
-import cn.jiguang.share.android.api.ShareParams;
-import cn.jiguang.share.android.utils.Logger;
-import cn.jiguang.share.qqmodel.QQ;
-import cn.jiguang.share.wechat.Wechat;
-import cn.jiguang.share.wechat.WechatMoments;
-import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
-import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.callback.RequestCallback;
 import cn.jpush.im.android.api.content.CustomContent;
 import cn.jpush.im.android.api.content.FileContent;
 import cn.jpush.im.android.api.content.ImageContent;
-import cn.jpush.im.android.api.content.MediaContent;
-import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.content.VideoContent;
 import cn.jpush.im.android.api.content.VoiceContent;
-import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.event.ChatRoomMessageEvent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.LoginStateChangeEvent;
@@ -245,7 +199,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         SensorEventListener,
         ArthurToolBar.OnRightClickListener,
         NavigationView.OnNavigationItemSelectedListener,
-        ImagePickerAdapter.OnRecyclerViewItemClickListener {
+        ImagePickerAdapter.OnRecyclerViewItemClickListener ,
+        MessageListView {
 
 
     private final static String TAG = "MessageListActivity";
@@ -256,29 +211,12 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     public static final int IMAGE_PICKER = 1;
     public static final int REQUEST_CODE_SELECT = 100;
     public static final int REQUEST_CODE_PREVIEW = 101;
-    private UserInfo mMyInfo;
-    private ShareParams shareParams;
-    private com.shanchain.data.common.ui.widgets.CustomDialog shareChatRoomDialog;
-
     private ImagePickerAdapter adapter;
-    private ArrayList<ImageItem> selImageList = new ArrayList<>(); //当前选择的所有图片
-    private int maxImgCount = 1;               //允许选择图片最大数
     public static final String JPG = ".jpg";
     //百度地图
-    private LocationClient locationClient;
-    private BDLocationListener bdLocationListener;
-    private UiSettings uiSettings;
-    private MyOrientationListener myOrientationListener;
-    private Coordinates coordinates;
-    private List pointList = new ArrayList();
-    private List<Coordinates> coordinatesList;
-    private List roomList = new ArrayList();
-    private boolean isFirstLoc = true; // 是否首次定位
-    private int joinRoomId;
     private com.shanchain.data.common.ui.widgets.CustomDialog mDialog;
 
     private ArthurToolBar mTbMain;
-    private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
     private TextView userNikeView;
     private TextView tvUserSign;
@@ -291,9 +229,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
     private List<MyMessage> mData;
-    private ArrayList imgData;
-    private String formatDate;
-    private String imgUrl;
 
     private InputMethodManager mImm;
     private Window mWindow;
@@ -304,14 +239,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private PowerManager.WakeLock mWakeLock;
     private ArcMenu mArcMenu;
     private ArcMenu.OnMenuItemClickListener onMenuItemClickListener;
-    private Handler handler, messageHandler, dialogHandler;
-    private List<Conversation> conversationList;
-    private double seatRmbRate;
-    private TextView tvSeatRate;
-    private ChoosePhoto mChoosePhoto = new ChoosePhoto();
     private boolean mShowSoftInput = false;
     private boolean isRestartActivity = false;
-    private GuideView guideView;
     private int memberCount;
 
 
@@ -321,72 +250,16 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
      */
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
-    private ChatEventMessage chatEventMessage;
     private List<MyMessage> messageList = new ArrayList<>();
     private List<MyMessage> mEventMessageList = new ArrayList<>();
-    private Conversation chatRoomConversation, localConversation;
-    private List<Conversation> allRoomConversation;
+    private Conversation chatRoomConversation;
 
-    private TextView limitedTime;
-    private Thread addTaskThread;
-    private long timeStamp;
-    private TaskPresenter taskPresenter;
-    private SCTimePickerView scTimePickerView;
-    private SCTimePickerView.OnTimeSelectListener onTimeSelectListener;
-    private ChatEventMessage chatEventMessage1;
-    private MyMessage evenMyMessage = new MyMessage();
     private TextView roomNum;
     private RelativeLayout relativeChatRoom;
     private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
-    private DynamicImagesAdapter mImagesAdapter;
-    private Handler baiduHandler;
     private boolean isIn, isHotChatRoom;
     private String isSuper;
-    private GuideView guideView3;
-    private GuideView guideView2;
-    private File captureScreenFile;
-    private List imgList = new ArrayList();
-    private LatLng myLatLng;
-    private Bundle mBundle;
     private WebSocketManager mWebSocketManager;
-    private Handler shareHandler = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            closeLoadingDialog();
-            closeProgress();
-            String toastMsg = (String) msg.obj;
-            Toast.makeText(MessageListActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
-        }
-    };
-    private PlatActionListener mPlatActionListener = new PlatActionListener() {
-        @Override
-        public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
-            if (shareHandler != null) {
-                android.os.Message message = handler.obtainMessage();
-                message.obj = "分享成功";
-                shareHandler.sendMessage(message);
-            }
-        }
-
-        @Override
-        public void onError(Platform platform, int action, int errorCode, Throwable error) {
-            if (shareHandler != null) {
-                android.os.Message message = shareHandler.obtainMessage();
-                message.obj = "分享失败:" + (error != null ? error.getMessage() : "") + "---" + errorCode;
-                Logger.dd(TAG, message.obj + "");
-                shareHandler.sendMessage(message);
-            }
-        }
-
-        @Override
-        public void onCancel(Platform platform, int action) {
-            if (shareHandler != null) {
-                android.os.Message message = shareHandler.obtainMessage();
-                message.obj = "分享取消";
-                shareHandler.sendMessage(message);
-            }
-        }
-    };
     private List<Message> mMsgs;
     private MessageEntryDao mEntryDao;
     private List<MessageEntry> mMessageEntryList;
@@ -506,7 +379,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "接收到的bytes:");
         }
     };
-
+    private MessageListPresenter mPresenter;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_seting;
@@ -522,72 +395,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mArcMenu = findViewById(R.id.fbn_menu);
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
+        //注册相关的硬件服务
         registerProximitySensorListener();
         mArcMenu.setVisibility(View.GONE);
+
+        mPresenter = new MessageListPresenterImpl(this);
+
         initToolBar(roomID);
         initChatView();
-        initView();
         initEmojiData();
         initMsgAdapter();
-        initData(roomID);
-//        getChatRoomMessage(roomID); //获取聊天室历史消息
-        //必须执行在initView()方法之后；
-//        装载本地缓存消息
-//        ConversationEntry conversationEntry = new ConversationEntry();
-//        conversationEntry.setTargetName(roomID);
-//        ConversationEntryDao entryDao = MyApplication.getDaoSession().getConversationEntryDao();
-//        mIsHasRoom = entryDao.hasKey(conversationEntry);
+        initData();
         loadMessageData(roomID);
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
-//        initEmojiData();
-
-        //是否是超级用户
-        handler = new Handler() {
-            @Override
-            public void handleMessage(android.os.Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 1) {
-                    //加入聊天室按钮
-                    if (isIn == true || isSuper.equals("true")) {
-                        mChatView.isShowBtnInputJoin(false);
-                        mChatView.getChatInputView().setShowBottomMenu(true);
-//                        mArcMenu.setVisibility(View.VISIBLE);
-                        mArcMenu.setVisibility(View.GONE);
-                        xhsEmoticonsKeyBoard.getInputJoin().setVisibility(View.GONE);
-                        xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
-                        mChatView.setOnBtnInputClickListener(new ChatView.OnBtnInputClickListener() {
-                            @Override
-                            public void OnBtnInputClick(View view) {
-//                    String[] hxUserName = new String[]{SCCacheUtils.getCacheHxUserName()};
-//                    String jArray = JSONArray.toJSONString(hxUserName);
-//                    mChatView.isShowBtnInputJoin(false);
-//                    mChatView.getChatInputView().setShowBottomMenu(true);
-//                    mArcMenu.setVisibility(View.VISIBLE);
-//                    xhsEmoticonsKeyBoard.getInputJoin().setVisibility(View.GONE);
-                                if (isIn) {
-                                    ToastUtils.showToast(MessageListActivity.this, "您不在该聊天室区域内");
-                                }
-                                xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
-                            }
-                        });
-                    } else {
-                        ToastUtils.showToast(MessageListActivity.this, "您不在该聊天室区域内");
-                    }
-                }
-            }
-        };
-
-        dialogHandler = new Handler() {
-            @Override
-            public void handleMessage(android.os.Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 1) {
-                    ToastUtils.showToastLong(MessageListActivity.this, "任务发送失败，您的余额不足");
-                } else if (msg.what == 2) {
-                    ToastUtils.showToastLong(MessageListActivity.this, "任务发送失败，网络连接错误");
-                }
-            }
-        };
 
     }
 
@@ -607,31 +427,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        获取WebSocket管理对象
         WebSocketHandler.getDefault().addListener(mSocketListener);
         super.onCreate(savedInstanceState);
-    }
-
-    //显示遮罩层
-    private void setGuideView() {
-        // 使用图片
-        final ImageView iv = new ImageView(this);
-        iv.setImageResource(R.drawable.img_new_task_guide);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        iv.setLayoutParams(params);
-        guideView = GuideView.Builder
-                .newInstance(this)
-                .setTargetView(mArcMenu.findViewWithTag("fbutton"))//设置目标
-                .setCustomGuideView(null)
-                .setDirction(GuideView.Direction.LEFT_BOTTOM)
-                .setShape(GuideView.MyShape.CIRCULAR)   // 设置圆形显示区域，
-                .setBgColor(getResources().getColor(R.color.shadow))
-                .setOnclickListener(new GuideView.OnClickCallback() {
-                    @Override
-                    public void onClickedGuideView() {
-                        guideView.hide();
-//                        mArcMenu.toggleMenu(500);
-
-                    }
-                })
-                .build();
     }
 
     //进入聊天室
@@ -710,36 +505,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
     //初始化聊天数据
-    private void initData(final String roomID) {
-//        taskPresenter = new TaskPresenterImpl(this);
-        myLatLng = HomeActivity.latLng;
+    private void initData() {
         //获取是否是超级用户
-        showLoadingDialog();
-        SCHttpUtils.get()
-                .url(HttpApi.SUPER_USER + "?token=" + SCCacheUtils.getCacheToken())
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("####### USER_COORDINATE 请求失败 #######");
-                        closeLoadingDialog();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d("####### USER_COORDINATE 请求成功 #######");
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            LogUtils.d("-----dddd-----",data);
-                            isSuper = data;
-                            //极光消息监听注册
-                            JMessageClient.registerEventReceiver(MessageListActivity.this, 1000);
-                            handler.sendEmptyMessage(1);
-                        }
-                        closeLoadingDialog();
-                    }
-                });
+        mPresenter.checkUserIsSuper();
     }
 
     //进入下一层
@@ -785,196 +553,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             if (sureDialog != null) {
                 sureDialog.dismiss();
             }
-//            ThreadUtils.runOnMainThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ToastUtils.showToast(MessageListActivity.this, "进入下一层时间已过期");
-//                }
-//            });
         }
     }
 
-    private void initView() {
-        /*
-         * 初始化侧滑栏
-         * */
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
-            }
-
-            @Override
-            public void onDrawerOpened(@NonNull View drawerView) {
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-            }
-
-            @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
-                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-
-            }
-        });
-
-
-//        drawer.setStatusBarBackgroundColor(Color.parseColor("#00000"));
-        drawer.setStatusBarBackground(R.drawable.selector_bg_msg_send_theme);
-        toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        mTbMain.setOnUserHeadClickListener(new ArthurToolBar.OnUserHeadClickListener() {
-            @Override
-            public void onUserHeadClick(View v) {
-//                ToastUtils.showToast(MessageListActivity.this,"头像按钮");
-                /*drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                toggle.onDrawerOpened(drawer);*/
-                //跳转聊天室人员列表
-                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
-                intent.putExtra("roomId", roomID);
-                intent.putExtra("count", memberCount);
-                startActivity(intent);
-            }
-        });
-
-        View headView = navigationView.getHeaderView(0);
-        userNikeView = headView.findViewById(R.id.tv_nike_name);//用户昵称
-        tvUserSign = headView.findViewById(R.id.tv_user_sign);//用户签名
-        ivUserModify = headView.findViewById(R.id.iv_user_modify);//修改资料按钮
-        userHeadView = headView.findViewById(R.id.iv_user_head);//用户头像
-        recyclerView = findViewById(R.id.recyclerView);
-
-        initUserInfo();
-        //初始化图片选择器
-        pickImages();
-        initWidget();
-        userNikeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MessageListActivity.this, ModifyUserInfoActivity.class);
-                String nikeName = userNikeView.getText().toString();
-                String userSign = tvUserSign.getText().toString();
-                intent.putExtra("nikeName", nikeName);
-                intent.putExtra("userSign", userSign);
-                startActivity(intent);
-            }
-        });
-
-        userHeadView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //设置头像
-                selectImage();
-            }
-        });
-
-        //修改用户资料
-        ivUserModify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MessageListActivity.this, ModifyUserInfoActivity.class);
-                String charater = SCCacheUtils.getCacheCharacterInfo();
-                CharacterInfo characterInfo = JSONObject.parseObject(charater, CharacterInfo.class);
-                String headImg = characterInfo.getHeadImg();
-                String cacheHeadImg = SCCacheUtils.getCacheHeadImg();
-                intent.putExtra("headImg", SCCacheUtils.getCacheHeadImg());
-                startActivity(intent);
-            }
-        });
-
-//        RequestOptions options = new RequestOptions();
-//                    options.placeholder(R.mipmap.aurora_headicon_default);
-//                    Glide.with(MessageListActivity.this)
-//                            .load(headUrl)
-//                            .apply(options)
-//                            .into(userHeadView);
-        /*
-         * 悬浮按钮蒙层
-         * */
-//        mArcMenu.setOnMenuClickListener(new ArcMenu.OnMenuClickListener() {
-//            @Override
-//            public void onMenuClick(View view) {
-////                setGuideView();
-//                ToastUtils.showToastLong(MessageListActivity.this,"弹窗");
-//            }
-//        });
-        /*
-         * 初始化悬浮按钮
-         * */
-        onMenuItemClickListener = new ArcMenu.OnMenuItemClickListener() {
-            @Override
-            public void onClick(View view, int pos) {
-                mChatView.getChatInputView().setFocusable(false);
-                switch (view.getId()) {
-                    //马甲劵
-                    case R.id.linear_add_coupon:
-                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
-                        Intent couponIntent = new Intent(MessageListActivity.this, CouponListActivity.class);
-                        couponIntent.putExtra("roomId", roomID);
-                        startActivity(couponIntent);
-                        break;
-                    //查询任务
-                    case R.id.linear_add_query:
-                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
-                        Intent taskIntent = new Intent(MessageListActivity.this, TaskDetailActivity.class);
-                        taskIntent.putExtra("roomId", roomID);
-                        startActivity(taskIntent);
-                        break;
-                    //添加任务
-                    case R.id.linear_play:
-                        mArcMenu.getChildAt(0).findViewWithTag("circelText").setBackground(getResources().getDrawable(R.drawable.shape_guide_point_default));
-                        /*点亮活动信息*/
-                        SCHttpUtils.get()
-                                .url(HttpApi.LIGHT_ACTIVE)
-                                .addParams("token", SCCacheUtils.getCacheToken() + "")
-                                .build()
-                                .execute(new SCHttpStringCallBack() {
-                                    @Override
-                                    public void onError(Call call, Exception e, int id) {
-                                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求失败 #######");
-                                    }
-
-                                    @Override
-                                    public void onResponse(String response, int id) {
-                                        LogUtils.d("####### GET_LIGHT_ACTIVE 请求成功 #######");
-                                        String code = JSONObject.parseObject(response).getString("code");
-                                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                                            String data = JSONObject.parseObject(response).getString("data") != null ? JSONObject.parseObject(response).getString("data") : "暂无活动";
-                                            if (data.equals("暂无活动")) {
-                                                ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
-                                            } else {
-                                                String ruleDescribe = JSONObject.parseObject(data).getString("ruleDescribe");
-                                                String startTme = JSONObject.parseObject(data).getString("startTime");
-                                                String endTime = JSONObject.parseObject(data).getString("endTime");
-                                                if (System.currentTimeMillis() > Long.valueOf(endTime)) {
-                                                    ToastUtils.showToastLong(MessageListActivity.this, "新玩法开发中，敬请期待");
-                                                } else {
-                                                    finish();
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                        break;
-
-                }
-
-            }
-        };
-//        initTaskDialog();
-
-
-    }
 
     /*
      * 初始化输入框
@@ -1085,143 +666,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     }
 
-    private void initUserInfo() {
-        final Dialog dialog = DialogCreator.createLoadingDialog(MessageListActivity.this,
-                MessageListActivity.this.getString(R.string.jmui_loading));
-        String character = SCCacheUtils.getCacheCharacterInfo();
-        final CharacterInfo cacheCharacter = JSONObject.parseObject(character, CharacterInfo.class);
-        mMyInfo = JMessageClient.getMyInfo();
-        if (mMyInfo != null) {
-//            userNikeView.setText(mMyInfo.getNickname());
-//            SharePreferenceManager.setRegisterUsername(mMyInfo.getNickname());
-            userNikeView.setText("" + mMyInfo.getNickname());
-            tvUserSign.setText(mMyInfo.getSignature());
-            mMyInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                @Override
-                public void gotResult(int responseCode, String responseMessage, Bitmap avatarBitmap) {
-                    String s = responseMessage;
-                    if (responseCode == 0) {
-                        userHeadView.setImageBitmap(avatarBitmap);
-                    } else {
-                        userHeadView.setImageResource(R.mipmap.aurora_headicon_default);
-                    }
-                }
-            });
-        } else {
-            CharacterInfo characterInfo = JSONObject.parseObject(SCCacheUtils.getCacheCharacterInfo(), CharacterInfo.class);
-            if (characterInfo != null && characterInfo.getCharacterId() != 0) {
-                String nikeName = characterInfo.getName() != null ? characterInfo.getName() : "";
-                String signature = characterInfo.getSignature() != null ? characterInfo.getSignature() : "";
-                final String headImg = characterInfo.getHeadImg() != null ? characterInfo.getHeadImg() : "";
-                JmAccount jmUserInfo = new JmAccount();
-                if (!TextUtils.isEmpty(nikeName)) {
-                    userNikeView.setText(nikeName);
-                    jmUserInfo.setNickname(nikeName);//设置昵称
-                    JMessageClient.updateMyInfo(UserInfo.Field.nickname, jmUserInfo, new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            String s1 = s;
-                        }
-                    });
-                }
-                if (!TextUtils.isEmpty(signature)) {
-                    tvUserSign.setText(signature);
-                    jmUserInfo.setSignature(signature);//设置签名
-                    JMessageClient.updateMyInfo(UserInfo.Field.signature, jmUserInfo, new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            String s1 = s;
-                        }
-                    });
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!TextUtils.isEmpty(headImg)) {
-                            RequestOptions options = new RequestOptions();
-                            options.placeholder(R.mipmap.aurora_headicon_default);
-                            Glide.with(MessageListActivity.this).load(headImg).apply(options).into(userHeadView);
-                        }
-                    }
-                });
-            }
-        }
-
-    }
-
-    private void upLoad() {
-        showLoadingDialog();
-        List<String> imgSrc = new ArrayList<>();
-        imgSrc.add(mImgPath);
-        SCUploadImgHelper helper = new SCUploadImgHelper();
-        helper.setUploadListener(new SCUploadImgHelper.UploadListener() {
-            @Override
-            public void onUploadSuc(List<String> urls) {
-                closeLoadingDialog();
-                imgUrl = urls.get(0);
-            }
-
-            @Override
-            public void error() {
-                closeLoadingDialog();
-                LogUtils.i("oss上传失败");
-            }
-        });
-
-        helper.upLoadImg(mContext, imgSrc);
-    }
-
-    private void selectImage() {
-        int from = PickImageActivity.FROM_LOCAL;
-        int requestCode = PhotoUtils.INTENT_SELECT;
-        if (ContextCompat.checkSelfPermission(MessageListActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-        } else {
-//            PickImageActivity.start(MessageListActivity.this, requestCode, from, tempFile(), true, 1,
-//                    true, false, 0, 0);
-            Intent intent = new Intent(Intent.ACTION_PICK, null);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            startActivityForResult(intent, requestCode);
-        }
-    }
-
-    /**
-     * 描述： //上传用户头像
-     */
-    private void pickImages() {
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器
-        imagePicker.setShowCamera(true);  //显示拍照按钮
-        imagePicker.setCrop(true);        //允许裁剪（单选才有效）
-        imagePicker.setSaveRectangle(true); //是否按矩形区域保存
-        imagePicker.setSelectLimit(9);    //选中数量限制
-        imagePicker.setStyle(CropImageView.Style.RECTANGLE);  //裁剪框的形状
-        imagePicker.setFocusWidth(800);   //裁剪框的宽度。单位像素（圆形自动取宽高最小值）
-        imagePicker.setFocusHeight(800);  //裁剪框的高度。单位像素（圆形自动取宽高最小值）
-        imagePicker.setOutPutX(1000);//保存文件的宽度。单位像素
-        imagePicker.setOutPutY(1000);//保存文件的高度。单位像素
-        initWidget();
-    }
-
-    private void initWidget() {
-        selImageList = new ArrayList<>();
-        adapter = new ImagePickerAdapter(this, selImageList, maxImgCount);
-        adapter.setOnItemClickListener(this);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private SelectDialog showDialog(SelectDialog.SelectDialogListener listener, List<String> names) {
-        SelectDialog dialog = new SelectDialog(this, R.style.transparentFrameWindowStyle, listener, names);
-        if (!this.isFinishing()) {
-            dialog.show();
-        }
-        return dialog;
-    }
 
     @Override
     public void onItemClick(View view, int position) {
@@ -1498,279 +942,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     }
 
-    /*
-     * 初始化弹窗
-     *
-     * */
-    private void initTaskDialog() {
-        SCHttpUtils.get()
-                .url(HttpApi.GET_SEAT_CURRENCY)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String rate = JSONObject.parseObject(data).getString("rate");//汇率，获取当前汇率
-                            String currency = JSONObject.parseObject(data).getString("currency");
-
-                            seatRmbRate = Double.valueOf(rate);
-                        }
-                    }
-                });
-
-        final int[] idItems = new int[]{R.id.et_input_dialog_describe, R.id.et_input_dialog_bounty, R.id.dialog_select_task_time, R.id.btn_dialog_input_sure, R.id.iv_dialog_close};
-        final CustomDialog dialog = new CustomDialog(MessageListActivity.this, false, 1.0, R.layout.common_dialog_chat_room_task, idItems);
-        View layout = View.inflate(MessageListActivity.this, R.layout.common_dialog_chat_room_task, null);
-        dialog.setView(layout);
-        handler = new Handler() {
-            @Override
-            public void handleMessage(final android.os.Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case 1:
-                        dialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
-                            @Override
-                            public void OnItemClick(final CustomDialog dialog, View view) {
-                                final EditText describeEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_describe);
-                                final EditText bountyEditText = (EditText) dialog.getByIdView(R.id.et_input_dialog_bounty);
-                                bountyEditText.setFocusable(true);
-                                bountyEditText.setFocusableInTouchMode(true);
-                                bountyEditText.requestFocus();
-                                limitedTime = (TextView) dialog.getByIdView(R.id.dialog_select_task_time);
-                                tvSeatRate = (TextView) dialog.getByIdView(R.id.seatRate);
-                                tvSeatRate.setText("1 SEAT");
-                                //输入框监听
-                                bountyEditText.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                        if (s.toString().length() > 0) {
-                                            float bounty = Float.parseFloat(s.toString());
-                                            tvSeatRate.setText(("" + bounty / seatRmbRate) + " SEAT");
-                                            bountyEditText.setText("￥" + s.toString());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-
-                                    }
-                                });
-
-                                switch (view.getId()) {
-                                    case R.id.et_input_dialog_describe:
-                                        ToastUtils.showToast(MessageListActivity.this, "输入任务描述");
-                                        break;
-                                    case R.id.et_input_dialog_bounty:
-                                        ToastUtils.showToast(MessageListActivity.this, "输入赏金");
-                                        break;
-                                    case R.id.btn_dialog_input_sure:
-                                        showLoadingDialog();
-                                        releaseTask(dialog, describeEditText, bountyEditText, limitedTime);
-                                        break;
-                                    case R.id.iv_dialog_close:
-                                        dialog.dismiss();
-                                        break;
-                                    //选择时间
-                                    case R.id.dialog_select_task_time:
-                                        initPickerView();
-                                        scTimePickerView.setOnTimeSelectListener(onTimeSelectListener);
-                                        scTimePickerView.setOnCancelClickListener(new SCTimePickerView.OnCancelClickListener() {
-                                            @Override
-                                            public void onCancelClick(View v) {
-
-                                            }
-                                        });
-                                        scTimePickerView.show(limitedTime);
-                                        break;
-                                }
-                            }
-                        });
-                        dialog.show();
-                        break;
-                }
-            }
-        };
-    }
-
-    //初始化时间选择弹窗
-    private void initPickerView() {
-        SCTimePickerView.Builder builder = new SCTimePickerView.Builder(MessageListActivity.this);
-        Calendar selectedDate = Calendar.getInstance();
-        Calendar startDate = Calendar.getInstance();
-        int year = startDate.get(Calendar.YEAR);
-        startDate.set(year, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置起始年份
-        Calendar endDate = Calendar.getInstance();
-        endDate.set(year + 10, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DATE));//设置结束年份
-        builder.setType(new boolean[]{true, true, true, true, false, false})//设置显示年、月、日、时、分、秒
-                .setDecorView((ViewGroup) findViewById(android.R.id.content).getRootView())
-//                .setDecorView((ViewGroup) dialog.getWindow().getDecorView().getRootView())
-                .isCenterLabel(true)
-                .setLabel("年", "月", "日", "时", "分", "秒")
-                .setCancelText("清除")
-                .setCancelColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                .setSubmitText("完成")
-                .setRangDate(startDate, endDate)
-                .setSubCalSize(14)
-                .setTitleBgColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorWhite))
-                .setSubmitColor(MessageListActivity.this.getResources().getColor(com.shanchain.common.R.color.colorDialogBtn))
-                .isDialog(true)
-                .build();
-
-        scTimePickerView = new SCTimePickerView(builder);
-        scTimePickerView.setDate(Calendar.getInstance());
-
-        onTimeSelectListener = new SCTimePickerView.OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date, View v) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                formatDate = simpleDateFormat.format(date);
-                timeStamp = date.getTime();
-                LogUtils.d("SCTimePickerView", "点击了SCTimePickerView" + formatDate);
-                TextView clickView = (TextView) v;
-                clickView.setText(formatDate);
-                scTimePickerView.show(limitedTime);
-            }
-        };
-    }
-
-    /*
-     * 发布任务
-     *
-     * */
-    private void releaseTask(final CustomDialog dialog, EditText describeEditText, EditText bountyEditText, TextView textViewTime) {
-        if (TextUtils.isEmpty(describeEditText.getText().toString()) && TextUtils.isEmpty(bountyEditText.getText().toString()) && TextUtils.isEmpty(textViewTime.getText().toString())) {
-            ToastUtils.showToast(MessageListActivity.this, getResources().getString(R.string.toast_no_empty));
-        } else {
-            final String spaceId = SCCacheUtils.getCacheSpaceId();//获取当前的空间ID
-            final String bounty = bountyEditText.getText().toString();
-            final String dataString = describeEditText.getText().toString();
-            final String LimitedTtime = textViewTime.getText().toString();
-
-            final String characterId = SCCacheUtils.getCacheCharacterId();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            final String createTime = simpleDateFormat.format(LimitedTtime);
-            //向服务器请求添加任务
-//          taskPresenter.releaseTask(characterId, String.valueOf(roomID), bounty, dataString, timeStamp);
-
-            SCHttpUtils.postWithUserId()
-                    .url(HttpApi.CHAT_TASK_ADD)
-                    .addParams("authCode", SCCacheUtils.getCacheAuthCode() + "")
-                    .addParams("deviceToken", registrationId + "")
-                    .addParams("characterId", characterId + "")
-                    .addParams("price", bounty)
-                    .addParams("roomId", roomID + "")
-                    .addParams("dataString", dataString + "") //任务内容
-                    .addParams("time", timeStamp + "")
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtils.d("TaskPresenterImpl", "添加任务失败");
-                            chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                            MyMessage myMessage = new MyMessage(IMessage.MessageType.EVENT.ordinal());
-                            myMessage.setChatEventMessage(chatEventMessage1);
-                            mAdapter.addToStart(myMessage, true);
-                            closeLoadingDialog();
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            dialog.dismiss();
-                            closeLoadingDialog();
-                            String code = JSONObject.parseObject(response).getString("code");
-                            final String message = JSONObject.parseObject(response).getString("message");
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
-                                String data = JSONObject.parseObject(response).getString("data");
-                                String publishTime = JSONObject.parseObject(data).getString("PublishTime");
-                                String task = JSONObject.parseObject(data).getString("Task");
-                                chatEventMessage1 = JSONObject.parseObject(task, ChatEventMessage.class);
-                                Map customMap = new HashMap();
-                                customMap.put("taskId", chatEventMessage1.getTaskId() + "");
-                                customMap.put("bounty", chatEventMessage1.getBounty() + "");
-                                customMap.put("dataString", chatEventMessage1.getIntro());
-                                customMap.put("time", timeStamp + "");
-
-                                Message sendCustomMessage = chatRoomConversation.createSendCustomMessage(customMap);
-                                final MyMessage myMessage = new MyMessage();
-                                mAdapter.addToStart(myMessage, true);
-                                sendCustomMessage.setOnSendCompleteCallback(new BasicCallback() {
-                                    @Override
-                                    public void gotResult(int i, String s) {
-                                        String s1 = s;
-                                        if (0 == i) {
-                                            Toast.makeText(MessageListActivity.this, "发送任务消息成功", Toast.LENGTH_SHORT);
-                                            LogUtils.d("发送任务消息", "code: " + i + " 回调信息：" + s);
-                                            chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                                            myMessage.setChatEventMessage(chatEventMessage1);
-                                        } else {
-                                            chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-                                            myMessage.setChatEventMessage(chatEventMessage1);
-                                        }
-                                        MessageListActivity.this.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mAdapter.updateMessage(myMessage);
-                                            }
-                                        });
-                                    }
-                                });
-                                JMessageClient.sendMessage(sendCustomMessage);
-
-//                                chatEventMessage1.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-//                                mAdapter.addToStart(chatEventMessage1, true);
-                                dialog.dismiss();
-                            } else if (code.equals("10001")) {
-                                dialogHandler.sendEmptyMessage(1);
-                                dialog.dismiss();
-                                //余额不足
-                                dialogHandler.sendEmptyMessage(1);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MessageListActivity.this, "您的钱包余额不足", Toast.LENGTH_SHORT);
-
-                                    }
-                                });
-                            } else {
-                                dialogHandler.sendEmptyMessage(2);
-                                dialog.dismiss();
-                                dialogHandler.sendEmptyMessage(2);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MessageListActivity.this, "错误消息" + message, Toast.LENGTH_SHORT);
-                                    }
-                                });
-                            }
-                        }
-                    });
-        }
-    }
 
     private void initToolBar(final String roomId) {
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
         mTbMain.setTitleText(roomName);//聊天室名字
         mTbMain.setTitleTextSize(14);
-//        mTbMain.setLeftImage(R.mipmap.my_info);
         final UserInfo userInfo = JMessageClient.getMyInfo();
         if (userInfo != null && userInfo.getAvatarFile() != null) {
             mTbMain.setUserHeadImg(MessageListActivity.this, userInfo.getAvatarFile().getAbsolutePath());
         } else {
             mTbMain.setUserHeadImg(MessageListActivity.this, SCCacheUtils.getCacheHeadImg());
         }
-
         mTbMain.setFavoriteImage(R.mipmap.share);
         mTbMain.setRightImage(R.mipmap.fb_close);
         mTbMain.isShowChatRoom(true);
@@ -1790,7 +972,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     if (i == 0) {
                         int totalMember = chatRoomInfos.get(0).getTotalMemberCount();
                         memberCount = totalMember;
-                        if (roomName.equals("加密聊天社区")) {
+                        if (roomName.equals(getString(R.string.entrychat_room))) {
                             roomNum.setText("16968");
                         } else {
                             roomNum.setText("" + memberCount);
@@ -1800,167 +982,21 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             });
         }else {
             //查询矿区人数接口
-            SCHttpUtils.post()
-                    .url(HttpApi.CHECK_MMINING_ROOM_NUMS)
-                    .addParams("roomId",roomId)
-                    .build()
-                    .execute(new SCHttpStringCallBack() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-
-                        }
-                        @Override
-                        public void onResponse(String response, int id) {
-                            String code = SCJsonUtils.parseCode(response);
-                            LogUtils.d("----->>>>",response);
-                            if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
-                                String data = JSONObject.parseObject(response).getString("data");
-//                            String list = JSONObject.parseObject(data).getString("tDiggingJoinLogs");
-                                List<SearchGroupTeamBeam> mList = JSONObject.parseArray(data, SearchGroupTeamBeam.class);
-                                memberCount = mList.get(0).gettDiggingJoinLogs().size();
-                                roomNum.setText(mList.get(0).gettDiggingJoinLogs().size()+"");
-                            }
-                        }
-                    });
+            mPresenter.queryMineRoomNums(roomId);
         }
-        relativeChatRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                ToastUtils.showToast(MessageListActivity.this, "群成员列表");
-
-                /*Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
-                intent.putExtra("roomId", roomId);
-                intent.putExtra("count", memberCount);
-                startActivity(intent);*/
-            }
-        });
-
         if(!isHotChatRoom){
             mTbMain.setFavoriteImageVisible(View.GONE);
         }else {
             mTbMain.setFavoriteImageVisible(View.VISIBLE);
         }
-        //分享社区
-        mTbMain.setOnFavoriteClickListener(new ArthurToolBar.OnFavoriteClickListener() {
+        mTbMain.setOnUserHeadClickListener(new ArthurToolBar.OnUserHeadClickListener() {
             @Override
-            public void onFavoriteClick(View v) {
-                final HotChatRoom hotChatRoom = getIntent().getParcelableExtra("hotChatRoom");
-                if (isHotChatRoom == false) {
-                    /*EventMessage eventMessage = new EventMessage(RequestCode.SCREENSHOT);
-                    org.greenrobot.eventbus.EventBus.getDefault().post(eventMessage);
-                    finish();*/
-                } else {
-                    ThreadUtils.runOnSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Bitmap bitmap = ImageUtils.returnBitMap(hotChatRoom.getThumbnails());
-                            captureScreenFile = ImageUtils.saveUrlImgFile(
-                                    bitmap, "shareHotRoom.png");
-                            SCHttpUtils.postWithUserId()
-                                    .url(HttpApi.SHARE_CHAT_ROOM)
-                                    .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                                    .addParams("Img", hotChatRoom.getThumbnails() + "")
-                                    .addParams("id", roomID + "")
-                                    .build()
-                                    .execute(new StringCallback() {
-                                        @Override
-                                        public void onError(Call call, Exception e, int id) {
-                                            closeLoadingDialog();
-                                            LogUtils.d("网络异常");
-                                        }
-
-                                        @Override
-                                        public void onResponse(String response, int id) {
-                                            closeLoadingDialog();
-                                            String code = JSONObject.parseObject(response).getString("code");
-                                            if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                                                String data = JSONObject.parseObject(response).getString("data");
-                                                final String chatRoomShareType = JSONObject.parseObject(data).getString("ShareType");
-                                                String characterId = JSONObject.parseObject(data).getString("characterId");
-                                                final String intro = JSONObject.parseObject(data).getString("intro");
-                                                String background = JSONObject.parseObject(data).getString("background");
-                                                final String url = JSONObject.parseObject(data).getString("url");
-                                                final String title = JSONObject.parseObject(data).getString("title");
-                                                ThreadUtils.runOnMainThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        //分享参数
-                                                        shareParams = new ShareParams();
-                                                        shareChatRoomDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(MessageListActivity.this, true, true, 1.0, R.layout.layout_bottom_share, new int[]{R.id.share_image, R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
-                                                        shareChatRoomDialog.setViewId(R.id.share_image);
-                                                        shareChatRoomDialog.setShareBitmap(ImageUtils.getBitmapByFile(captureScreenFile));
-                                                        shareChatRoomDialog.show();
-                                                        shareChatRoomDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
-                                                            @Override
-                                                            public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
-                                                                switch (view.getId()) {
-                                                                    case R.id.mRlWechat:
-//                                                                    if (chatRoomShareType.equals("SHARE_WEBPAGE")) {
-                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
-                                                                        String absolutePath = captureScreenFile.getAbsolutePath();
-                                                                        shareParams.setImagePath(absolutePath);
-                                                                        shareParams.setText(hotChatRoom.getRoomName());
-                                                                        shareParams.setTitle(title);
-                                                                        shareParams.setUrl(url);
-                                                                        //调用分享接口share ，分享到微信平台。
-                                                                        JShareInterface.share(Wechat.Name, shareParams, mPlatActionListener);
-                                                                        closeLoadingDialog();
-//                                                                    }
-                                                                        break;
-                                                                    case R.id.mRlWeixinCircle:
-                                                                        shareParams.setShareType(Platform.SHARE_WEBPAGE);
-                                                                        shareParams.setImagePath(captureScreenFile.getAbsolutePath());
-                                                                        shareParams.setText(hotChatRoom.getRoomName());
-                                                                        shareParams.setTitle(title);
-                                                                        shareParams.setUrl(url);
-                                                                        //调用分享接口share ，分享到朋友圈平台。
-                                                                        JShareInterface.share(WechatMoments.Name, shareParams, mPlatActionListener);
-                                                                        break;
-                                                                    case R.id.mRlQQ:
-                                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                                            ToastUtils.showToastLong(MessageListActivity.this, "暂时不支持安卓8.0系统版本分享");
-                                                                        } else {
-                                                                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
-                                                                            shareParams.setImagePath(captureScreenFile.getAbsolutePath());
-                                                                            shareParams.setTitle(title);
-                                                                            shareParams.setText(hotChatRoom.getRoomName());
-                                                                            shareParams.setUrl(url);
-                                                                            //调用分享接口share ，分享到QQ平台。
-                                                                            JShareInterface.share(QQ.Name, shareParams, mPlatActionListener);
-                                                                        }
-                                                                        break;
-                                                                    case R.id.mRlWeibo:
-                                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                                            ToastUtils.showToastLong(MessageListActivity.this, "暂时不支持安卓8.0系统版本分享");
-                                                                        } else {
-                                                                            shareParams.setShareType(Platform.SHARE_WEBPAGE);
-                                                                            shareParams.setImagePath(captureScreenFile.getAbsolutePath());
-                                                                            shareParams.setText(hotChatRoom.getRoomName());
-                                                                            shareParams.setTitle(title);
-                                                                            shareParams.setUrl(url);
-                                                                            //调用分享接口share ，分享到新浪微博平台。
-                                                                            JShareInterface.share(SinaWeibo.Name, shareParams, mPlatActionListener);
-                                                                        }
-                                                                        break;
-                                                                    case R.id.share_close:
-                                                                        shareChatRoomDialog.dismiss();
-                                                                        break;
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                        }
-                    });
-
-
-                }
-
-//                Rect rect = new Rect()
-//                HomeActivity.baiduMap.snapshotScope();
+            public void onUserHeadClick(View v) {
+                //跳转聊天室人员列表
+                Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
+                intent.putExtra("roomId", roomID);
+                intent.putExtra("count", memberCount);
+                startActivity(intent);
             }
         });
     }
@@ -2158,6 +1194,54 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         return true;
     }
 
+    @Override
+    public void setQueryMineRoomNumsResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            List<SearchGroupTeamBeam> mList = JSONObject.parseArray(data, SearchGroupTeamBeam.class);
+            memberCount = mList.get(0).gettDiggingJoinLogs().size();
+            roomNum.setText(mList.get(0).gettDiggingJoinLogs().size()+"");
+        }
+    }
+
+    @Override
+    public void setCheckUserIsSuperResponse(String response) {
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            isSuper = data;
+            //极光消息监听注册
+            JMessageClient.registerEventReceiver(MessageListActivity.this, 1000);
+//            handler.sendEmptyMessage(1);
+            isSuperUser();
+
+        }
+    }
+
+    //是否超级用户
+    private void isSuperUser(){
+        //加入聊天室按钮
+        if (isIn == true || isSuper.equals("true")) {
+            mChatView.isShowBtnInputJoin(false);
+            mChatView.getChatInputView().setShowBottomMenu(true);
+            mArcMenu.setVisibility(View.GONE);
+            xhsEmoticonsKeyBoard.getInputJoin().setVisibility(View.GONE);
+            xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
+            mChatView.setOnBtnInputClickListener(new ChatView.OnBtnInputClickListener() {
+                @Override
+                public void OnBtnInputClick(View view) {
+                    if (isIn) {
+                        ToastUtils.showToast(MessageListActivity.this, R.string.not_int_room);
+                    }
+                    xhsEmoticonsKeyBoard.getXhsEmoticon().setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            ToastUtils.showToast(MessageListActivity.this, R.string.not_int_room);
+        }
+    }
+
     private class HeadsetDetectReceiver extends BroadcastReceiver {
 
         @Override
@@ -2185,129 +1269,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     }
 
 
-    //从服务器接口获取消息
-    private void getChatRoomMessage(String roomID) {
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.CHAT_ROOM_HISTORY_MESSAGE)
-                .addParams("roomId", roomID + "")
-                .addParams("timeStamp", System.currentTimeMillis() + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("网络错误");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            String total = JSONObject.parseObject(data).getString("total");
-                            String count = JSONObject.parseObject(data).getString("count");
-                            String cursor = JSONObject.parseObject(data).getString("cursor");
-                            LogUtils.d(TAG, "获取聊天室历史消息 total: " + total + " count: " + count + " cursor: " + cursor);
-                            String messages = JSONObject.parseObject(data).getString("messages");
-                            List<MessageModel> messageModels = JSONObject.parseArray(messages, MessageModel.class);
-                            for (int i = 0; i < messageModels.size(); i++) {
-                                final MessageModel messageModel = messageModels.get(i);
-//                                String mediaID = messageModel.getMsgBody().getMediaId();
-                                LogUtils.d("getMsgType", messageModel.getMsgType() + "");
-                                final MyMessage myMessage = new MyMessage(messageModel.getMsgBody().getText(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                                String fromId = messageModel.getFromId(); //
-                                String userName = JMessageClient.getMyInfo().getUserName();//用户名
-                                final int msgId = messageModel.getMsgId();
-                                if (i > 0) {
-                                    long messageTime = messageModel.getCreateTime();
-                                    long preTime = messageModels.get(i - 1).getCreateTime();
-                                    long diff = messageTime - preTime;
-                                    //显示消息时间间隔3分钟，3分钟内不显示发送消息的时间
-                                    if (diff > 3 * 60 * 1000) {
-                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                        String timeString = sdf.format(new Date(messageTime));
-                                        myMessage.setTimeString(timeString);
-                                    }
-                                }
-                                if (fromId.equals(userName)) {
-                                    myMessage.setType(IMessage.MessageType.SEND_TEXT.ordinal());
-                                    JMessageClient.getUserInfo(userName, new GetUserInfoCallback() {
-                                        @Override
-                                        public void gotResult(int i, String s, UserInfo userInfo) {
-                                            //获取头像
-                                            String avatar = userInfo.getAvatarFile().getAbsolutePath() != null ?
-                                                    userInfo.getAvatarFile().getAbsolutePath() : "";
-                                            String displayName = userInfo.getDisplayName() != null ?
-                                                    userInfo.getDisplayName() : userInfo.getUserName();
-                                            DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), displayName, avatar);
-                                            defaultUser.setSignature(userInfo.getSignature().length() > 0 ? userInfo.getSignature() : "该用户很懒，没有设置签名");
-                                            defaultUser.setHxUserId(userInfo.getUserName() + "");
-                                            myMessage.setUserInfo(defaultUser);
-                                            mAdapter.updateMessage(myMessage);
-                                            mAdapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                } else {
-                                    JMessageClient.getUserInfo(fromId, new GetUserInfoCallback() {
-                                        @Override
-                                        public void gotResult(int i, String s, UserInfo userInfo) {
-                                            //获取头像
-                                            String avatar = userInfo.getAvatarFile().getAbsolutePath() != null ?
-                                                    userInfo.getAvatarFile().getAbsolutePath() : "";
-                                            String displayName = userInfo.getDisplayName() != null ?
-                                                    userInfo.getDisplayName() : userInfo.getUserName();
-                                            DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), displayName, avatar);
-                                            defaultUser.setSignature(userInfo.getSignature().length() > 0 ? userInfo.getSignature() : "该用户很懒，没有设置签名");
-                                            defaultUser.setHxUserId(userInfo.getUserName() + "");
-                                            myMessage.setUserInfo(defaultUser);
-                                            mAdapter.updateMessage(myMessage);
-                                            mAdapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                }
-                                switch (messageModel.getMsgType()) {
-                                    case "text":
-                                        myMessage.setText(messageModel.getMsgBody().getText());
-                                        messageList.add(myMessage);
-                                        mAdapter.addToStart(myMessage, true);
-                                        break;
-                                    case "image":
-                                        String mediaID = messageModel.getMsgBody().getMediaId();
-                                        LogUtils.d("ImageMediaID", mediaID + "");
-//                                        mPathList.add(file.getAbsolutePath());
-//                                        mMsgIdList.add(messageModel.getMsgId() + "");
-//                                        myMessage.setMediaFilePath(mediaID);
-//                                        mAdapter.updateMessage(myMessage);
-//                                        mAdapter.notifyDataSetChanged();
-//                                        if (imageContent.getLocalPath() == null) {
-//                                            imageContent.downloadOriginImage(msg, new DownloadCompletionCallback() {
-//                                                @Override
-//                                                public void onComplete(int i, String s, File file) {
-//                                                    mPathList.add(file.getAbsolutePath());
-//                                                    mMsgIdList.add(imgMessage.getMsgId() + "");
-//                                                    imgMessage.setMediaFilePath(file.getAbsolutePath());
-//                                                    mAdapter.updateMessage(imgMessage);
-//                                                }
-//                                            });
-//                                        } else {
-//                                            mPathList.add(imageContent.getLocalPath());
-//                                            mMsgIdList.add(imgMessage.getMsgId() + "");
-//                                            imgMessage.setMediaFilePath(imageContent.getLocalThumbnailPath());
-//                                        }
-                                        break;
-                                    case "voice":
-                                        break;
-                                    case "video":
-                                        break;
-                                    case "custom":
-                                        break;
-                                    case "file":
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                });
-    }
 
     //从本地数据库读取聊天消息
     private void loadMessageData(String roomID) {
@@ -2316,6 +1277,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         messageList.clear();
         if (mMessageEntryList.size() != 0) {
             for (int i = 0; i < mMessageEntryList.size(); i++) {
+                LogUtils.d("----->>>>>",mMessageEntryList.get(i).toString());
                 MessageEntry messageEntry = mMessageEntryList.get(i);
                 final MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
                 //创建用户获取头像
@@ -2705,19 +1667,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         if (mMsgs.size() > 1) {
             mEventMessageList.clear();
         }
-        //加载消息
-        MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
-//        if (mConversationEntry.getMessageEntry() != null) {
-////            MessageEntry.deleteMessage(3);
-//            List<MessageEntry> entryList = mConversationEntry.getMessageEntry();
-//            for (int i = 0; i < entryList.size(); i++) {
-//                MessageEntry messageEntry = entryList.get(i);
-//                LogUtils.d("mConversationEntry", i + "本地缓存：" + messageEntry.getMessageId());
-////                DefaultUser defaultUser = new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar);
-////                defaultUser.setSignature(msg.getFromUser().getSignature().length() >= 0 ? msg.getFromUser().getSignature() : "该用户很懒，没有设置签名");
-////                defaultUser.setHxUserId(msg.getFromID() + "");
-//            }
-//        }
         //装载聊天消息
         for (int i = 0; i < mMsgs.size(); i++) {
             final Message msg = mMsgs.get(i);
@@ -4063,7 +3012,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         });
 
         //查看任务点击事件
-//        mAdapter.addToStart(evenMyMessage, true);
         mAdapter.setBtnEventTaskClickListener(new MsgListAdapter.OnBtnEventTaskClickListener<MyMessage>() {
             @Override
             public void TaskEventMessageClick(MyMessage message) {
@@ -4189,16 +3137,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     public void onResume() {
         super.onResume();
-        String character = SCCacheUtils.getCacheCharacterInfo();
-        final CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-        if (characterInfo != null && !isRestartActivity) {
-            if (!TextUtils.isEmpty(characterInfo.getName())) {
-                userNikeView.setText("" + characterInfo.getName());
-            }
-            if (!TextUtils.isEmpty(characterInfo.getSignature())) {
-                tvUserSign.setText("" + characterInfo.getSignature());
-            }
-        }
+
     }
 
     @Override
@@ -4211,7 +3150,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        addTaskThread.stop();
         mAdapter.getMediaPlayer().stop();
         EventBus.getDefault().unregister(this);
         JMessageClient.unRegisterEventReceiver(this);
