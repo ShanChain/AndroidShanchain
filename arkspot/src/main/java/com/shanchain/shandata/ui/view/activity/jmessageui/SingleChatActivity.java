@@ -227,7 +227,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         }
 
         initToolbar();
-        initData();
+//        initData();
 //        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
@@ -642,27 +642,6 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         });
     }
 
-    private void initData() {
-        SCHttpUtils.postWithUserId()
-                .url(HttpApi.USE_FOCUS)
-                .addParams("funsJmUserName", FORM_USER_ID)
-                .addParams("characterId", SCCacheUtils.getCacheCharacterId() + "")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("网络异常");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                        }
-                    }
-                });
-    }
 
     /*
      * 初始化输入框
@@ -1982,6 +1961,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
         mAdapter.setOnAvatarClickListener(new MsgListAdapter.OnAvatarClickListener<MyMessage>() {
             @Override
             public void onAvatarClick(MyMessage message) {
+                if(userInfo.getUserType()>0)return;//如果是客服账号，直接返回
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("userInfo", userInfo);
@@ -2007,6 +1987,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                 // MessageList 0.7.2 add this method, add messages chronologically.
 //                mAdapter.addToEndChronologically(list);
 //                mChatView.getPtrLayout().refreshComplete();
+                mChatView.getPtrLayout().refreshComplete();
             }
         }, 1500);
     }

@@ -13,6 +13,7 @@ public class DefaultUser implements IUser,Parcelable {
     private String avatar;
     private String signature;
     private String hxUserId;
+    private int userType;
 
     public DefaultUser(long id, String displayName, String avatar) {
         this.id = id;
@@ -56,6 +57,13 @@ public class DefaultUser implements IUser,Parcelable {
         this.avatar = avatar;
     }
 
+    public int getUserType() {
+        return userType;
+    }
+
+    public void setUserType(int userType) {
+        this.userType = userType;
+    }
 
     @Override
     public long getId() {
