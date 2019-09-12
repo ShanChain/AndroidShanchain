@@ -8,7 +8,7 @@ import android.content.Context;
  * Describe :
  */
 public interface MyGroupTeamPresenter {
-    void queryGroupTeam(String joinUserId,String createUser,String searchString,int page,int size,int pullType,int state);//查询矿区列表
+    void queryGroupTeam(String joinUserId,String createUser,String searchString,int page,int size,int pullType,int state,String isCreate);//查询矿区列表
     //验证密码图片
     void checkPasswordToServer(Context context, String file, String value);
     //调用加入矿区接口

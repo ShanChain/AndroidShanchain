@@ -38,9 +38,9 @@ public class InvationDataAdapter extends BaseQuickAdapter<InvationRecordBean,Bas
         }
         helper.setText(R.id.tv_register_phone,item.getAcceptUserName());
         if(item.getIsActive() ==1){
-            helper.setText(R.id.tv_state,"已激活");
+            helper.setText(R.id.tv_state, R.string.activated);
         }else {
-            helper.setText(R.id.tv_state,"未激活");
+            helper.setText(R.id.tv_state, R.string.inactivated);
         }
     }
 

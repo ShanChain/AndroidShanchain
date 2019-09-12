@@ -8,13 +8,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONObject;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.ClientListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingerChatInfoActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
+import com.shanchain.shandata.ui.view.activity.mine.ReturnInvationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,6 @@ public class ClientListActivity extends BaseActivity implements SwipeRefreshLayo
 
     private ClientListAdapter mListAdapter;
     private List<DefaultUser> mList = new ArrayList<>();
-    private String clientAttr[] = new String[]{"业务客服","技术客服1(优先)","技术客服2"};//测试
     /*private String clientName [] = new String[]{"156505544974000163e0aa65869682","154233182630000163e0aa658298481",""};//测试*/
     private String clientName [] = new String[]{"154260669669500163e0aa658733721","156585492702200163e04797928698242","154279401865600163e0479798782"};//正式
     @Override
@@ -56,13 +59,21 @@ public class ClientListActivity extends BaseActivity implements SwipeRefreshLayo
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewCoupon.setLayoutManager(layoutManager);
         recyclerViewCoupon.setAdapter(mListAdapter);
-
-        for (int i = 0; i <3; i++) {
-            DefaultUser defaultUser = new DefaultUser(i,clientAttr[i],"");
-            defaultUser.setHxUserId(clientName[i]);
-            defaultUser.setSignature("");
-            defaultUser.setUserType(1);
-            mList.add(defaultUser);
+        String clientAttr[] = new String[]{getResources().getString(R.string.bussiness_server),getResources().getString(R.string.technical_server_1),getResources().getString(R.string.technical_server_2)};//测试
+        for (int i = 0; i <4; i++) {
+            if(i==3){
+                DefaultUser defaultUser = new DefaultUser(i,getString(R.string.other_decrit),"");
+                defaultUser.setHxUserId("https://mp.weixin.qq.com/s/3jf9PIes_KHYNGyvHo96kA");
+                defaultUser.setSignature("");
+                defaultUser.setUserType(2);
+                mList.add(defaultUser);
+            }else {
+                DefaultUser defaultUser = new DefaultUser(i,clientAttr[i],"");
+                defaultUser.setHxUserId(clientName[i]);
+                defaultUser.setSignature("");
+                defaultUser.setUserType(1);
+                mList.add(defaultUser);
+            }
         }
         mListAdapter.notifyDataSetChanged();
 
@@ -70,11 +81,21 @@ public class ClientListActivity extends BaseActivity implements SwipeRefreshLayo
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 DefaultUser user = mListAdapter.getItem(position);
-                Intent intent = new Intent(ClientListActivity.this, SingleChatActivity.class);
-                Bundle bundle1 = new Bundle();
-                bundle1.putParcelable("userInfo", user);
-                intent.putExtras(bundle1);
-                startActivity(intent);
+                if(user.getUserType() == 1){
+                    Intent intent = new Intent(ClientListActivity.this, SingleChatActivity.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putParcelable("userInfo", user);
+                    intent.putExtras(bundle1);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(ClientListActivity.this, SCWebViewXYActivity.class);
+                    JSONObject obj = new JSONObject();
+                    obj.put("title",user.getDisplayName());
+                    obj.put("url", user.getHxUserId());
+                    String webParams = obj.toJSONString();
+                    intent.putExtra("webParams", webParams);
+                    startActivity(intent);
+                }
             }
         });
     }

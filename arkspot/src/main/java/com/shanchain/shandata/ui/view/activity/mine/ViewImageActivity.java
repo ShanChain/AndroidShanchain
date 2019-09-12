@@ -54,13 +54,13 @@ public class ViewImageActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SAVE_BEGIN:
-                    ToastUtils.showToast(ViewImageActivity.this,"开始保存图片...");
+                    ToastUtils.showToast(ViewImageActivity.this, R.string.start_save_picture);
                     break;
                 case SAVE_SUCCESS:
-                    ToastUtils.showToast(ViewImageActivity.this,"图片保存成功,请到相册查找");
+                    ToastUtils.showToast(ViewImageActivity.this, R.string.find_albulum_pic);
                     break;
                 case SAVE_FAILURE:
-                    ToastUtils.showToast(ViewImageActivity.this,"图片保存失败,请稍后再试...");
+                    ToastUtils.showToast(ViewImageActivity.this, R.string.pic_save_faile);
                     break;
             }
         }
@@ -85,7 +85,7 @@ public class ViewImageActivity extends BaseActivity {
         pvImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new MyDialog(ViewImageActivity.this).setTitle("保存图片到相册？")
+                new MyDialog(ViewImageActivity.this).setTitle(getString(R.string.save_pic_to_album))
                         .setLeftButton(getString(R.string.str_sure), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

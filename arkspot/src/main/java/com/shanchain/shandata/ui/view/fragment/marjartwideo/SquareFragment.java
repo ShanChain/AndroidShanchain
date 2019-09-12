@@ -80,6 +80,8 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     public void initData() {
         mSquarePresenter = new SquarePresenterImpl(this);
         mSqureAdapter = new SqureAdapter(R.layout.square_list_item_1,mList);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.not_data_footer_view, null);
+        mSqureAdapter.addFooterView(view);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));

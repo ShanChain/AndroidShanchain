@@ -3,7 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorTextBg"
     android:focusable="false">
 
     <LinearLayout
@@ -11,21 +10,26 @@
         android:layout_height="45dp"
         android:orientation="horizontal"
         android:gravity="center"
+        android:background="@color/white"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@color/login_marjar_color">
-        <ImageView
-            android:id="@+id/im_back"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@mipmap/back_white"/>
+        android:paddingRight="10dp">
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="@string/cancel"
+            />
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="@color/white"
             android:gravity="center"
             />
         <TextView
@@ -37,11 +41,13 @@
             android:layout_marginBottom="8dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:layout_marginRight="5dp"
             android:text="@string/publish"
-            android:background="@drawable/publish_text_shape"
             />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="@color/colorTextBg"/>
     <EditText
         android:id="@+id/et_content"
         android:layout_width="match_parent"
@@ -73,5 +79,5 @@
         android:scrollbars="none"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
-        android:numColumns="4"/>
+        android:numColumns="3"/>
 </LinearLayout>

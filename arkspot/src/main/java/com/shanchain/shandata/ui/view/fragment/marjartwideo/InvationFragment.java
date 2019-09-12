@@ -71,6 +71,8 @@ public class InvationFragment extends BaseFragment implements SwipeRefreshLayout
         mPresenter = new ReturnInvationPresenterImpl(this);
         refreshLayout.setOnRefreshListener(this);
         mAdapter = new InvationDataAdapter(R.layout.frament_invation_item,mRecordBeanList);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.not_data_footer_view, null);
+        mAdapter.addFooterView(view);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

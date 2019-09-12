@@ -277,6 +277,8 @@ public class LoginActivity extends BaseActivity {
                                     RoleManager.switchRoleCacheHx(jmUser, jmPassword);
                                     //注册/登录 极光IM账号
                                     registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
+                                    //注册极光推送
+                                    JPushInterface.setAlias(getApplicationContext(),1001,characterId+"");
                                 }
 
                             } else {

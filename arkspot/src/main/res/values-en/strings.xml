@@ -94,13 +94,13 @@
     <string name="str_register_hint_pwd_confirm">Please enter your password again (at least 6 bits)</string>
     <string name="str_register_agree">Agree to Terms of Service and Register</string>
     <string name="str_register_code_input">Please enter the SMS code</string>
-    <string name="str_register_code_obtain">Get SMS code</string>
+    <string name="str_register_code_obtain">SMS code</string>
     <string name="str_title_tb_login">Login MarJar</string>
     <string name="str_login_pwd">Please enter password</string>
     <string name="str_login_account">Please enter phone number</string>
     <string name="str_login_forget">Forget password？</string>
-    <string name="str_dynamic_login">SMS log in</string>
-    <string name="str_login_btn_login">Log in</string>
+    <string name="str_dynamic_login">SMS login</string>
+    <string name="str_login_btn_login">Login</string>
     <string name="str_login_btn_register">Sign up</string>
     <string name="str_dialog_logging">logging in</string>
     <string name="str_txt_login_third">Others</string>
@@ -416,7 +416,7 @@
     <string name="share_to">Share</string>
     <string name="payfor_create_mining">Pay %s SEAT to create a mine</string>
     <string name="payfor_add_mining">Pay %s SEAT to join a mine</string>
-    <string name="wheel_seat">Wheel seat</string>
+    <string name="wheel_seat">ARS</string>
     <string name="bio_mining">Bionic mining</string>
     <string name="just_a_minut">Just a moment ago</string>
     <string name="minutes_ago">Minutes ago</string>
@@ -497,5 +497,24 @@
     <string name="not_int_room">You are not in the chat room</string>
     <string name="contact_server_service">Contact Customer Service</string>
     <string name="client_center">Customer Service</string>
+    <string name="shez">President</string>
+    <string name="quz">District head</string>
+    <string name="changz">Factory manager</string>
+    <string name="kuangg">Miner</string>
+    <string name="password_error_1">Password error</string>
+    <string name="activated">Activated</string>
+    <string name="inactivated">Inactivated</string>
+    <string name="long_save_image">Long press to save the picture to the album</string>
+    <string name="start_save_picture">Start saving pictures...</string>
+    <string name="find_albulum_pic">The picture is saved successfully, please go to the album to find</string>
+    <string name="pic_save_faile">Image save failed</string>
+    <string name="save_pic_to_album">Save image to album？</string>
+    <string name="rule_decrip">Rule description</string>
+    <string name="not_mine_tip">You have not yet become a bionic mining miner, please create or join the mining area first</string>
+    <string name="bussiness_server">Business customer service</string>
+    <string name="technical_server_1">Technical customer service 1(priority)</string>
+    <string name="technical_server_2">Technical customer service 2</string>
+    <string name="other_decrit">Other instructions for use</string>
+    <string name="join_chat_room_failed">Joining chat room failed</string>
 
 </resources>

@@ -170,7 +170,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     /**
      * Specify custom message config, include view type, layout resource id, is send
-     * outgoing(according to layout) and custom view holder's {@link Class} object.
+     * outgoing(according to layout) and custom view holder's  object.
      *
      * @param viewType View type, must not set 0-12, otherwise will throw
      *                 IllegalArgumentException

@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -110,6 +111,8 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         mPresenter = new MyGroupTeamPresenterImpl(this);
         refreshLayout.setOnRefreshListener(this);
         mGroupTeamAdapter = new GroupTeamAdapter(R.layout.group_team_item,mList);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.not_data_footer_view, null);
+        mGroupTeamAdapter.addFooterView(view);
         mGroupTeamAdapter.setType(1);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
@@ -124,7 +127,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     //获取数据
     private void getTeamData(){
         pageIndex = 1;
-        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress,1);
+        mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pullRefress,1,"");
     }
 
     @Override
@@ -284,7 +287,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mGroupTeamAdapter.getItemCount()){
                     pageIndex ++;
-                    mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pillLoadmore,1);
+                    mPresenter.queryGroupTeam("","","",pageIndex, Constants.pageSize,Constants.pillLoadmore,1,"");
                 }
             }
 

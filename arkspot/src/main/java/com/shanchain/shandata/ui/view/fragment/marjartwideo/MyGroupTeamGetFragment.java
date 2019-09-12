@@ -73,6 +73,8 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         mPresenter = new MyGroupTeamPresenterImpl(this);
         refreshLayout.setOnRefreshListener(this);
         mGroupTeamAdapter = new GroupTeamAdapter(R.layout.group_team_item, mList);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.not_data_footer_view, null);
+        mGroupTeamAdapter.addFooterView(view);
         mGroupTeamAdapter.setType(2);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color), getResources().getColor(R.color.google_yellow));
@@ -88,9 +90,9 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     //获取我的矿区数据
     private void getMyMiningData(int type,int pullType){
         if(type ==1){
-            mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),"",pageIndex, Constants.pageSize,pullType,0);
+            mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),"",pageIndex, Constants.pageSize,pullType,0,"1");
         }else {
-            mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "","",pageIndex, Constants.pageSize,pullType,0);
+            mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "","",pageIndex, Constants.pageSize,pullType,0,"");
         }
     }
 

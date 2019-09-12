@@ -510,6 +510,25 @@
     <string name="is_delete_group_menber">是否删除已选中的群成员?</string>
     <string name="entrychat_room">加密聊天社区</string>
     <string name="not_int_room">您不在该聊天室内</string>
-    <string name="contact_server_service">联系客服</string>
+    <string name="contact_server_service">客服中心</string>
     <string name="client_center">客服中心</string>
+    <string name="shez">社长</string>
+    <string name="quz">区长</string>
+    <string name="changz">厂长</string>
+    <string name="kuangg">矿工</string>
+    <string name="password_error_1">密码错误</string>
+    <string name="activated">已激活</string>
+    <string name="inactivated">未激活</string>
+    <string name="long_save_image">长按保存图片至相册</string>
+    <string name="start_save_picture">开始保存图片...</string>
+    <string name="find_albulum_pic">图片保存成功,请到相册查找</string>
+    <string name="pic_save_faile">图片保存失败</string>
+    <string name="save_pic_to_album">保存图片到相册？</string>
+    <string name="rule_decrip">规则说明</string>
+    <string name="not_mine_tip">您还没有成为仿生挖矿矿工，请先去创建或者加入矿区</string>
+    <string name="bussiness_server">业务客服</string>
+    <string name="technical_server_1">技术客服1(优先)</string>
+    <string name="technical_server_2">技术客服2</string>
+    <string name="other_decrit">其他使用说明</string>
+    <string name="join_chat_room_failed">加入聊天室失败</string>
 </resources>

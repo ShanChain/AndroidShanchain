@@ -52,6 +52,8 @@ public final class CameraManager {
      */
     private int cameraType;
 
+    private Camera.Parameters parameters;
+
     private CameraManager(Application context) {
         this.context = context;
         isSupportFrontCamera = CameraUtils.isSupportFrontCamera();
@@ -84,6 +86,7 @@ public final class CameraManager {
         if (mCamera == null) {
             try {
                 mCamera = Camera.open(cameraFacing);//打开当前选中的摄像头
+                parameters = mCamera.getParameters();
                 mProfile = CamcorderProfile.get(cameraFacing, CamcorderProfile.QUALITY_HIGH);
                 mCamera.setDisplayOrientation(90);//默认竖直拍照
                 mCamera.setPreviewTexture(surfaceTexture);
@@ -417,7 +420,7 @@ public final class CameraManager {
         this.cameraType = cameraType;
         if (mCamera != null) {//拍摄视频时
             if (cameraFacing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                Camera.Parameters parameters = mCamera.getParameters();
+//                Camera.Parameters parameters = mCamera.getParameters();
                 List<String> focusModes = parameters.getSupportedFocusModes();
                 if (focusModes != null) {
                     if (cameraType == 0) {

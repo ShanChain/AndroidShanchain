@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.MyApplication;
@@ -331,6 +332,9 @@ public class RecordVoiceButton extends Button {
                             public void gotResult(int i, String s) {
                                 if (i == 0) {
                                     message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    /*if(mSendVoiceCallback!=null){
+                                        mSendVoiceCallback.sendVoice(message,true);
+                                    }*/
                                     ThreadUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -339,6 +343,9 @@ public class RecordVoiceButton extends Button {
                                     });
                                 } else {
                                     message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
+                                    /*if(mSendVoiceCallback!=null){
+                                        mSendVoiceCallback.sendVoice(message,true);
+                                    }*/
                                     ThreadUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -663,5 +670,13 @@ public class RecordVoiceButton extends Button {
                 }
             }
         }
+    }
+
+    interface SendVoiceCallback{
+        void sendVoice(MyMessage myMessage,boolean isScollow);
+    }
+    private SendVoiceCallback mSendVoiceCallback;
+    private void setSendVoiceCallback(SendVoiceCallback callback){
+        this.mSendVoiceCallback = callback;
     }
 }

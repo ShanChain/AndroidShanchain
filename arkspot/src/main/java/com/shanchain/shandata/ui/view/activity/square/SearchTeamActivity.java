@@ -121,7 +121,7 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
                         if("MJTEST".equals(keyword)){
                             startActivity(new Intent(SearchTeamActivity.this, BaseParaActivity.class));
                         }else {
-                            mPresenter.queryGroupTeam("", "",keyword,1, 30,Constants.pullRefress,0);
+                            mPresenter.queryGroupTeam("", "",keyword,1, 30,Constants.pullRefress,0,"");
                         }
                     }else {
                         mList.clear();

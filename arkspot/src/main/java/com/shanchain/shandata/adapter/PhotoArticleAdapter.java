@@ -78,7 +78,7 @@ public class PhotoArticleAdapter extends BaseAdapter {
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.llRootview.getLayoutParams();
-        int with = (int)((DensityUtils.getScreenWidth(mContext)-DensityUtils.dip2px(mContext,50))/4);
+        int with = (int)((DensityUtils.getScreenWidth(mContext)-DensityUtils.dip2px(mContext,40))/3);
         layoutParams.width = with;
         layoutParams.height = with;
         viewHolder.llRootview.setLayoutParams(layoutParams);

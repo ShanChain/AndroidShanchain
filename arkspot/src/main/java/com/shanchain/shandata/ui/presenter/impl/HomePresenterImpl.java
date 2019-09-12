@@ -285,6 +285,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void insertMiningRoomByOther(String userId, String diggingsId) {
+        mHomeView.showProgressStart();
         SCHttpUtils.post()
                 .url(HttpApi.ADD_MMINING_ROOM)
                 .addParams("userId",userId)
@@ -293,11 +294,12 @@ public class HomePresenterImpl implements HomePresenter {
                 .execute(new SCHttpStringCallBack() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        mHomeView.showProgressEnd();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        mHomeView.showProgressEnd();
                         mHomeView.setAddMinigRoomResponse(response);
                     }
                 });

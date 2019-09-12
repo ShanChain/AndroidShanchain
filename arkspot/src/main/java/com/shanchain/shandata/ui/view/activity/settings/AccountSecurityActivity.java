@@ -635,6 +635,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                             ToastUtils.showToast(AccountSecurityActivity.this, R.string.logout_succss);
                             loginOut();
+                        }else if("999996".equals(code)){
+                            ToastUtils.showToast(AccountSecurityActivity.this, R.string.password_error_1);
                         }else {
                             ToastUtils.showToast(AccountSecurityActivity.this, R.string.operation_failed);
                         }

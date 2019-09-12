@@ -131,6 +131,7 @@ public class MyReceiver extends BroadcastReceiver {
                 mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA) != null) {
                     JSONObject messageJson = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+                    LogUtils.d(TAG, "[MyReceiver] messageJson:"+messageJson);
                     if (!TextUtils.isEmpty(messageJson.toString()) && !messageJson.toString().equals("{}")) {
                         String jguserName = SCJsonUtils.parseString(messageJson.toString(), "jguserName");
                         String extra = SCJsonUtils.parseString(messageJson.toString(), "extra");

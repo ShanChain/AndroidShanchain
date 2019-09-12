@@ -14,7 +14,8 @@ public class InvationBean implements Serializable {
     String brokerageCoin;
     String inviteCodeImg;
     String accountLevel;
-    String brokerageNotFrozenCoin;
+    String brokerageNotFrozenCoin;//返佣解冻金币
+    String brokerageFrozenCoin;//返佣冻结金币
 
     public String getUserId() {
         return userId;
@@ -57,15 +58,7 @@ public class InvationBean implements Serializable {
     }
 
     public String getAccountLevel() {
-        if("4".equals(accountLevel)){
-            return "社长";
-        }else if("2".equals(accountLevel)){
-            return "区长";
-        }else if("3".equals(accountLevel)){
-            return "厂长";
-        }else {
-            return "矿工";
-        }
+        return accountLevel;
     }
 
     public void setAccountLevel(String accountLevel) {
@@ -78,5 +71,13 @@ public class InvationBean implements Serializable {
 
     public void setBrokerageNotFrozenCoin(String brokerageNotFrozenCoin) {
         this.brokerageNotFrozenCoin = brokerageNotFrozenCoin;
+    }
+
+    public String getBrokerageFrozenCoin() {
+        return brokerageFrozenCoin;
+    }
+
+    public void setBrokerageFrozenCoin(String brokerageFrozenCoin) {
+        this.brokerageFrozenCoin = brokerageFrozenCoin;
     }
 }

@@ -9,6 +9,10 @@
         app:leftImage="@mipmap/abs_roleselection_btn_back_default"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="15"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="@color/colorTextBg"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
@@ -17,6 +21,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_coupon"
             android:layout_width="match_parent"
+            android:background="@color/white"
             android:layout_height="wrap_content">
 
         </android.support.v7.widget.RecyclerView>

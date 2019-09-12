@@ -402,6 +402,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mPresenter = new MessageListPresenterImpl(this);
 
         initToolBar(roomID);
+
         initChatView();
         initEmojiData();
         initMsgAdapter();
@@ -499,7 +500,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 }
             });
         } else {
-            ToastUtils.showToast(MessageListActivity.this, "加入聊天室失败");
+            ToastUtils.showToast(MessageListActivity.this, R.string.join_chat_room_failed);
+            finish();
             closeLoadingDialog();
         }
     }
@@ -745,13 +747,15 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             case RequestCode.TAKE_VIDEO:
                 if (data != null) {
                     String path = data.getStringExtra("video");
+                    LogUtils.d("---->>>"+path);
                     long videoDuration = data.getLongExtra("duration", 0);
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                     message.setDuration(videoDuration);
                     File videoFile = new File(path);
                     try {
                         MediaMetadataRetriever media = new MediaMetadataRetriever();
-                        media.setDataSource(path);
+//                        media.setDataSource(path);
+                        media.setDataSource(this,Uri.parse(path));
                         Bitmap bitmap = media.getFrameAtTime();
                         VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
                         final Message msg = chatRoomConversation.createSendMessage(video);
@@ -2616,8 +2620,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 return true;
             }
         });
-        //发送语音
-        xhsEmoticonsKeyBoard.getBtnVoice().initConv(chatRoomConversation, mAdapter, mChatView);
 
         mChatView.setRecordVoiceListener(new RecordVoiceListener() {
             @Override
@@ -3071,6 +3073,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             }
         });
         mAdapter.getLayoutManager().scrollToPosition(0);
+
+        //发送语音
+        xhsEmoticonsKeyBoard.getBtnVoice().initConv(chatRoomConversation, mAdapter, mChatView);
     }
 
     private void loadNextPage() {

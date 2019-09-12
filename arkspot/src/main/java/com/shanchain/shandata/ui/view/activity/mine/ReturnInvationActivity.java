@@ -154,6 +154,7 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
         //返佣规则
         Intent intent = new Intent(ReturnInvationActivity.this, SCWebViewXYActivity.class);
         JSONObject obj = new JSONObject();
+        obj.put("title",getString(R.string.rule_decrip));
         obj.put("url", HttpApi.BASE_URL_WALLET+"/promotionaward");
         String webParams = obj.toJSONString();
         intent.putExtra("webParams", webParams);
@@ -178,10 +179,10 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
             invationBean = SCJsonUtils.parseObj(data,InvationBean.class);
             if(invationBean!=null){
                 tvNums.setText(invationBean.getAcceptUserCount()+"");
-                tvMoney.setText(invationBean.getFrozenCoin());
+                tvMoney.setText(invationBean.getBrokerageFrozenCoin());
                 tvProportion.setText(invationBean.getBrokerageNotFrozenCoin());
                 tvInvationCode.setText(getString(R.string.invate_code_11,invationBean.getUserId()));
-                tvDengji.setText(invationBean.getAccountLevel());
+                tvDengji.setText(changeData(invationBean.getAccountLevel()));
             }else{
                 noDataTip();
             }
@@ -193,6 +194,18 @@ public class ReturnInvationActivity extends BaseActivity implements ArthurToolBa
 
     }
 
+
+    private String changeData(String value){
+        if("4".equals(value)){
+            return getString(R.string.shez);
+        }else if("2".equals(value)){
+            return getString(R.string.quz);
+        }else if("3".equals(value)){
+            return getString(R.string.changz);
+        }else {
+            return getString(R.string.kuangg);
+        }
+    }
 
     //无数据弹窗提示
     private void noDataTip(){

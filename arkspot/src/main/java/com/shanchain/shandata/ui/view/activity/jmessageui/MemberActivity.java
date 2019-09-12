@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -108,6 +110,8 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         refreshLayout.setOnRefreshListener(this);
         mMenberPresenter = new GroupMenberPresenterImpl(this);
         mGroupMenberAdapter = new GroupMenberAdapter(R.layout.item_members_chat_room,mGroupList);
+        View view = LayoutInflater.from(this).inflate(R.layout.not_data_footer_view, null);
+        mGroupMenberAdapter.addFooterView(view);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

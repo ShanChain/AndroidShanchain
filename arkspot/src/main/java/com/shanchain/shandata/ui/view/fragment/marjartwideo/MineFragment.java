@@ -163,6 +163,11 @@ public class MineFragment extends BaseFragment implements MineView {
                 Glide.with(this).load(headImg)
                         .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                                 .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
+            }else {
+                UserInfo userInfo = JMessageClient.getMyInfo();
+                Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
             }
         }
     }
@@ -400,20 +405,10 @@ public class MineFragment extends BaseFragment implements MineView {
             if(invationBean!=null){
                 startActivity(new Intent(getActivity(), ReturnInvationActivity.class));
             }else{
-                ThreadUtils.runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(getActivity(),"您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
-                    }
-                });
+                ToastUtils.showToast(getActivity(), R.string.not_mine_tip);
             }
         }else{
-            ThreadUtils.runOnMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtils.showToast(getActivity(),"您还没有成为仿生挖矿矿工，请先去创建或者加入矿区");
-                }
-            });
+            ToastUtils.showToast(getActivity(), R.string.not_mine_tip);
         }
     }
 }

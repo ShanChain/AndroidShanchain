@@ -82,8 +82,8 @@ import top.zibin.luban.Luban;
  * Describe :发布文章
  */
 public class PublishArticleActivity extends BaseActivity implements PublishArticleView {
-    @Bind(R.id.im_back)
-    ImageView imBack;
+    @Bind(R.id.tv_cancle)
+    TextView tvCancle;
     @Bind(R.id.tv_title)
     TextView tvTitle;
     @Bind(R.id.tv_publish)
@@ -151,7 +151,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         }
     }
 
-    @OnClick(R.id.im_back)
+    @OnClick(R.id.tv_cancle)
     void finished(){
         finish();
     }

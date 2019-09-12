@@ -377,7 +377,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
         JSONObject obj = new JSONObject();
         obj.put("url", HttpApi.BASE_URL_WALLET+"/miningrule");
-//        obj.put("title", getString(R.string.user_agreement));
+        obj.put("title", getString(R.string.rule_decrip));
         String webParams = obj.toJSONString();
         intent.putExtra("webParams", webParams);
         startActivity(intent);
