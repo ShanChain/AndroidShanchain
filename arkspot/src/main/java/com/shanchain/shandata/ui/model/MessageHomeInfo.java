@@ -18,6 +18,7 @@ public class MessageHomeInfo implements Serializable{
     private String lastMsg;
     private int unRead;
     private boolean isTop;
+    private String jmName;
 
     private Conversation mJMConversation;
 
@@ -92,5 +93,13 @@ public class MessageHomeInfo implements Serializable{
 
     public void setHxUser(String hxUser) {
         this.hxUser = hxUser;
+    }
+
+    public String getJmName() {
+        return jmName;
+    }
+
+    public void setJmName(String jmName) {
+        this.jmName = jmName;
     }
 }

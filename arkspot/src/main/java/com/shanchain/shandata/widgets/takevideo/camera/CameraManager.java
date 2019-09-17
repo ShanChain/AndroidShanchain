@@ -108,7 +108,7 @@ public final class CameraManager {
     public void restartPreview() {
         if (mCamera == null) return;
         try {
-            Camera.Parameters parameters = mCamera.getParameters();
+            parameters = mCamera.getParameters();
             int zoom = parameters.getZoom();
             if (zoom > 0) {
                 parameters.setZoom(0);
@@ -125,7 +125,7 @@ public final class CameraManager {
     }
 
     private void initCameraParameters(int cameraId, int width, int height) {
-        Camera.Parameters parameters = mCamera.getParameters();
+//        parameters = mCamera.getParameters();
         if (cameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
             List<String> focusModes = parameters.getSupportedFocusModes();
             if (focusModes != null) {
@@ -240,18 +240,18 @@ public final class CameraManager {
      */
     public void handleZoom(boolean isZoomIn) {
         if (mCamera == null) return;
-        Camera.Parameters params = mCamera.getParameters();
-        if (params == null) return;
-        if (params.isZoomSupported()) {
-            int maxZoom = params.getMaxZoom();
-            int zoom = params.getZoom();
+//        Camera.Parameters params = mCamera.getParameters();
+        if (parameters == null) return;
+        if (parameters.isZoomSupported()) {
+            int maxZoom = parameters.getMaxZoom();
+            int zoom = parameters.getZoom();
             if (isZoomIn && zoom < maxZoom) {
                 zoom++;
             } else if (zoom > 0) {
                 zoom--;
             }
-            params.setZoom(zoom);
-            mCamera.setParameters(params);
+            parameters.setZoom(zoom);
+            mCamera.setParameters(parameters);
         } else {
             LogUtils.i("zoom not supported");
         }
@@ -298,7 +298,7 @@ public final class CameraManager {
             return;
         }
         if (mCamera != null) {
-            Camera.Parameters parameters = mCamera.getParameters();
+//            Camera.Parameters parameters = mCamera.getParameters();
             if (parameters != null) {
                 int newState = cameraFlash;
                 switch (cameraFlash) {
@@ -344,15 +344,27 @@ public final class CameraManager {
         mCamera.unlock();
         if (mMediaRecorder == null) {
             mMediaRecorder = new MediaRecorder();
-            mMediaRecorder.setOrientationHint(90);
+        }else{
+            mMediaRecorder.reset();
         }
+        mMediaRecorder.setOrientationHint(90);
         if (isCameraFrontFacing()) {
             mMediaRecorder.setOrientationHint(270);
         }
-        mMediaRecorder.reset();
         mMediaRecorder.setCamera(mCamera);
+        //视频源
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        //音频源
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        //声道
+        /*mMediaRecorder.setAudioChannels(1);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//视频输出格式
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//音频格式
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);//视频录制格式*/
+        //设置最大录制的大小60M 单位，字节
+//        mMediaRecorder.setMaxFileSize(60 * 1024 * 1024);
+        //再用44.1Hz采样率
+//        mMediaRecorder.setAudioEncodingBitRate(22050);
         mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setOutputFile(savePath);
         try {

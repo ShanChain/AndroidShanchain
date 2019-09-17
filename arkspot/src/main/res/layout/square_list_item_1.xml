@@ -26,6 +26,7 @@
                 android:id="@+id/tv_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/login_marjar_color"
                 android:textSize="16sp"/>
             <TextView
                 android:id="@+id/tv_time"
@@ -72,7 +73,7 @@
             <ImageView
                 android:id="@+id/im_bg"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"/>
             <TextView
                 android:id="@+id/tv_nums"

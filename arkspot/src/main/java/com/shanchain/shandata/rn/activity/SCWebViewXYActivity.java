@@ -87,7 +87,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scweb_view);
+        setContentView(R.layout.activity_scweb_view_new);
         ActivityStackManager.getInstance().addActivity(this);
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

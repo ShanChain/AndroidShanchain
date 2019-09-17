@@ -30,7 +30,6 @@ import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -198,7 +197,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         EasyPermissions.PermissionCallbacks,
         SensorEventListener,
         ArthurToolBar.OnRightClickListener,
-        NavigationView.OnNavigationItemSelectedListener,
         ImagePickerAdapter.OnRecyclerViewItemClickListener ,
         MessageListView {
 
@@ -747,22 +745,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             case RequestCode.TAKE_VIDEO:
                 if (data != null) {
                     String path = data.getStringExtra("video");
-                    LogUtils.d("---->>>"+path);
-                    long videoDuration = data.getLongExtra("duration", 0);
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
-                    message.setDuration(videoDuration);
                     File videoFile = new File(path);
                     try {
                         MediaMetadataRetriever media = new MediaMetadataRetriever();
-//                        media.setDataSource(path);
-                        media.setDataSource(this,Uri.parse(path));
-                        Bitmap bitmap = media.getFrameAtTime();
-                        VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
+                        media.setDataSource(videoFile.getAbsolutePath());
+                        Bitmap bitmap = media.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                        long videoDuration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                        VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) (videoDuration/1000));
                         final Message msg = chatRoomConversation.createSendMessage(video);
 //                            Message msg = chatRoomConversation.createSendFileMessage(videoFile, item.getFileName());
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
-                        message.setDuration(videoDuration);
+                        message.setDuration((videoDuration/1000));
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
                         mAdapter.addToStart(message, true);
@@ -948,6 +943,8 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
 
     private void initToolBar(final String roomId) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
         mTbMain.setTitleText(roomName);//聊天室名字
         mTbMain.setTitleTextSize(14);
@@ -1123,12 +1120,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 e.printStackTrace();
             }
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -1153,50 +1144,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         return super.onOptionsItemSelected(item);
     }
 
-    //侧滑栏按钮实现
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        if (id == R.id.nav_my_wallet) {
-            Intent intent = new Intent(mContext, com.shanchain.shandata.rn.activity.SCWebViewActivity.class);
-            JSONObject obj = new JSONObject();
-            obj.put("url", HttpApi.SEAT_WALLET);
-            obj.put("title", getResources().getString(R.string.nav_my_wallet));
-            String webParams = obj.toJSONString();
-            intent.putExtra("webParams", webParams);
-            startActivity(intent);
-        } else if (id == R.id.nav_my_coupon) {
-            Intent intent = new Intent(MessageListActivity.this, MyCouponListActivity.class);
-            intent.putExtra("roomId", roomID);
-            startActivity(intent);
-        } else if (id == R.id.nav_my_task) {
-            Intent intent = new Intent(MessageListActivity.this, TaskListActivity.class);
-            intent.putExtra("roomId", roomID);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_my_message) {
-            readyGo(MyMessageActivity.class);
-
-        } else if (id == R.id.nav_my_favorited) {
-//            readyGo(FootPrintActivity.class);
-            readyGo(FootPrintNewActivity.class);
-        } else if (id == R.id.real_identity) {
-//            readyGo(VerifiedActivity.class);
-
-        } else if (id == R.id.nav_setting) {
-            readyGo(SettingsActivity.class);
-        }
-//        else if (id == R.id.nav_logout) {
-//            JMessageClient.logout();
-//            readyGoThenKill(LoginActivity.class);
-//        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     @Override
     public void setQueryMineRoomNumsResponse(String response) {
@@ -1281,7 +1228,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         messageList.clear();
         if (mMessageEntryList.size() != 0) {
             for (int i = 0; i < mMessageEntryList.size(); i++) {
-                LogUtils.d("----->>>>>",mMessageEntryList.get(i).toString());
+//                LogUtils.d("----->>>>>",mMessageEntryList.get(i).toString());
                 MessageEntry messageEntry = mMessageEntryList.get(i);
                 final MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
                 //创建用户获取头像

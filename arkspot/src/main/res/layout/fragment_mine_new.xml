@@ -30,6 +30,7 @@
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/login_marjar_color"
                 android:textSize="16sp"/>
             <TextView
                 android:id="@+id/tv_userdescipt"
@@ -72,7 +73,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/setting_icon"/>
+            android:src="@mipmap/setting_icon_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,7 +103,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/icon_client"/>
+            android:src="@mipmap/icon_client_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

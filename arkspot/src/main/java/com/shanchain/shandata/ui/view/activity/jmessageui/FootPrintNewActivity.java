@@ -274,9 +274,9 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         tv4.setTextColor(getResources().getColor(R.color.white_btn_press));
         iv0.setImageResource(R.mipmap.maya_c);
         iv1.setImageResource(R.mipmap.nianlunz_c);
-        iv2.setImageResource(R.mipmap.midle_icon);
-        iv3.setImageResource(R.mipmap.yuansq_c);
-        iv4.setImageResource(R.mipmap.mine_c);
+        iv2.setImageResource(R.mipmap.midle_icon_c);
+        iv3.setImageResource(R.mipmap.squre_c);
+        iv4.setImageResource(R.mipmap.mine_new_c);
         switch (position) {
             case 0:
                 iv0.setImageResource(R.mipmap.majia_s);
@@ -287,15 +287,15 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
                 tv1.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 2:
-//                iv2.setImageResource(R.mipmap.sheqb_s);
+                iv2.setImageResource(R.mipmap.midle_icon);
                 tv2.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 3:
-                iv3.setImageResource(R.mipmap.yuansq_s);
+                iv3.setImageResource(R.mipmap.square_s);
                 tv3.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
             case 4:
-                iv4.setImageResource(R.mipmap.mine_s);
+                iv4.setImageResource(R.mipmap.mine_new_s);
                 tv4.setTextColor(getResources().getColor(R.color.login_marjar_color));
                 break;
 

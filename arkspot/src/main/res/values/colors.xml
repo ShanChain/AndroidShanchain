@@ -95,4 +95,5 @@
     <color name="color_oval_home_s">#FFDFBB63</color>
     <color name="color_oval_home_n">#FFA19271</color>
     <color name="colorRed_send_s">#DF6122</color>
+    <color name="text_color_n">#999999</color>
 </resources>

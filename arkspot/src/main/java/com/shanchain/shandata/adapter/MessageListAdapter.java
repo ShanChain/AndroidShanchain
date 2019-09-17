@@ -1,5 +1,6 @@
 package com.shanchain.shandata.adapter;//package com.shanchain.shandata.adapter;
 
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.utils.GlideUtils;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.model.MessageHomeInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.MessageListActivity;
@@ -21,11 +23,15 @@ import java.util.Date;
 import java.util.List;
 
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 //**
 // * Created by zhoujian on 2017/9/7.
@@ -40,9 +46,9 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, MessageHomeInfo item) {
+    protected void convert(final BaseViewHolder helper, final MessageHomeInfo item) {
         jmConversation = item.getJMConversation();
-        int unreadMsgCount = item.getUnRead();
+        final int unreadMsgCount = item.getUnRead();
         if (unreadMsgCount <= 0) {
             helper.setVisible(R.id.tv_item_msg_home_unread, false);
         } else if (unreadMsgCount <= 99 && unreadMsgCount > 0) {
@@ -68,13 +74,33 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
         //设置昵称
         helper.setText(R.id.tv_item_msg_home_name,item.getName() );
-//        GlideUtils.load(mContext, item.getImg(), (ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
-        RequestOptions options = new RequestOptions();
-        options.placeholder(R.mipmap.aurora_headicon_default);
-        Glide.with(mContext)
+        JMessageClient.getUserInfo(item.getJmName(), new GetUserInfoCallback() {
+            @Override
+            public void gotResult(int i, String s, UserInfo userInfo) {
+               final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
+                if(userInfo!=null){
+                    userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+                        @Override
+                        public void gotResult(int i, String s, Bitmap bitmap) {
+
+                            if (bitmap != null) {
+                                circleImageView.setImageBitmap(bitmap);
+                            } else {
+                                circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
+                            }
+                        }
+                    });
+                }else {
+                    circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
+                }
+            }
+        });
+
+
+        /*Glide.with(mContext)
                 .load(item.getImg())
                 .apply(options)
-                .into((ImageView) helper.getView(R.id.iv_item_msg_home_avatar));
+                .into((ImageView) helper.getView(R.id.iv_item_msg_home_avatar));*/
         /*if (jmConversation.isGroup()) {
             //会话是群组
 

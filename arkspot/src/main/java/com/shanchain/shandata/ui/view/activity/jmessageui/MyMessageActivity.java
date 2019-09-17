@@ -50,6 +50,7 @@ import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.EventNotificationContent;
 import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.enums.ConversationType;
@@ -181,7 +182,6 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
 
 
     private void initData() {
-        String hxusername = SCCacheUtils.getCacheHxUserName();
         conversationList = JMessageClient.getConversationList();
         if (conversationList == null) {
             return;
@@ -189,37 +189,22 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
         for (int i = 0; i < conversationList.size(); i++) {
             conversation = conversationList.get(i);
             if (conversation.getType() == ConversationType.single) {
+                LogUtils.d("----->>>>"+conversation.toJsonString());
                 final MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
                 messageHomeInfo.setJMConversation(conversation);
                 UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
-                String targetId = conversation.getTargetId();
-                String avatar = conversation.getAvatarFile() != null ? conversation.getAvatarFile().getAbsolutePath() : "";
-                DefaultUser defaultUser = new DefaultUser(0, userInfo.getNickname(), avatar);
-                defaultUser.setHxUserId(targetId);
                 messageHomeInfo.setName(userInfo.getNickname());
                 messageHomeInfo.setHxUser(conversation.getTargetId());
                 messageHomeInfo.setUnRead(conversation.getUnReadMsgCnt());
+                messageHomeInfo.setJmName(userInfo.getUserName());
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 conversation.getLastMsgDate();
                 messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
                 messageHomeInfo.isTop();
+//                messageHomeInfo.setImg(userInfo.getAvatar());
                 messageHomeInfo.setImg(conversation.getAvatarFile() == null ? "" : conversation.getAvatarFile().getAbsolutePath());
-//                if (!conversation.getTargetId().equals(mJguserName)) {
                 chatRoomlist.add(messageHomeInfo);
-//                }
 
-                /*String avatar = userInfo.getAvatarFile()!=null?userInfo.getAvatarFile().getAbsolutePath():userInfo.getAvatar();
-                DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(),avatar);
-                defaultUser.setHxUserId(String.valueOf(userInfo.getUserID()));
-                messageHomeInfo.setName(userInfo.getNickname());
-                messageHomeInfo.setHxUser(conversation.getTargetId());
-                messageHomeInfo.setUnRead(conversation.getUnReadMsgCnt());
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                conversation.getLastMsgDate();
-                messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
-                messageHomeInfo.isTop();
-                messageHomeInfo.setImg(conversation.getAvatarFile() == null ? "" : conversation.getAvatarFile().getAbsolutePath());
-                chatRoomlist.add(messageHomeInfo);*/
             }
         }
     }

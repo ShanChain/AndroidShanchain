@@ -15,7 +15,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/my_wallet_icon"/>
+            android:src="@mipmap/wallet_2"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,9 +43,9 @@
         android:layout_marginTop="1dp"
         android:padding="12dp">
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/maya_c"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/wallet_my_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,9 +73,9 @@
         android:layout_marginTop="1dp"
         android:padding="12dp">
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/sheqb_c"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/shequ_new_icon"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/my_message_icon"/>
+            android:src="@mipmap/my_message_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/invation_icon"/>
+            android:src="@mipmap/invation_new_icon"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

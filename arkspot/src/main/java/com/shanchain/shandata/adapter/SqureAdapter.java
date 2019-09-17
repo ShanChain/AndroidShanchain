@@ -99,7 +99,7 @@ public class SqureAdapter extends BaseQuickAdapter<SqureDataEntity,BaseViewHolde
             textView.setTextColor(mContext.getResources().getColor(R.color.login_marjar_color));
             textView.setText(mContext.getResources().getString(R.string.attention));
         }else {
-            textView.setBackgroundResource(R.drawable.squra_attention_y_shape);
+            textView.setBackgroundResource(R.drawable.squra_attent_shape);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
             textView.setText(mContext.getResources().getString(R.string.Concerned));
         }

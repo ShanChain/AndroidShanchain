@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.Constants;
@@ -37,17 +38,17 @@ import butterknife.OnClick;
  * Describe :马甲券界面
  */
 public class CouponFragment extends BaseFragment implements CounponListView,
-        ArthurToolBar.OnRightClickListener, SwipeRefreshLayout.OnRefreshListener{
+        ArthurToolBar.OnRightClickListener, SwipeRefreshLayout.OnRefreshListener,ArthurToolBar.OnLeftClickListener{
     @Bind(R.id.tb_coupon)
     ArthurToolBar toolBar;
-    @Bind(R.id.linear_add_coupon)
-    LinearLayout linearAddCoupon;
     @Bind(R.id.recycler_view_coupon)
     RecyclerView recyclerViewCoupon;
     @Bind(R.id.refresh_layout)
     SwipeRefreshLayout refreshLayoutArsgame;
     @Bind(R.id.ll_notdata)
     LinearLayout llNotdata;
+    @Bind(R.id.tv_create_new)
+    TextView tvCreateNew;
     private View footerView;
     private String roomid;
     private int pageNo = 1;
@@ -82,12 +83,14 @@ public class CouponFragment extends BaseFragment implements CounponListView,
     private void initToolBar() {
         toolBar.setTitleText(getResources().getString(R.string.nav_coupon));
         toolBar.setRightText(getString(R.string.my_));
-        toolBar.setLeftTitleLayoutView(View.INVISIBLE);
+//        toolBar.setLeftTitleLayoutView(View.VISIBLE);
         toolBar.setOnRightClickListener(this);
+        toolBar.setOnLeftClickListener(this);
 
         couponListAdapter = new CouponListAdapter(getActivity(), couponInfoList, new int[]{R.layout.item_coupon_one, R.layout.item_coupon_two});
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewCoupon.setLayoutManager(layoutManager);
+
         recyclerViewCoupon.setAdapter(couponListAdapter);
         couponListAdapter.notifyDataSetChanged();
 
@@ -100,20 +103,11 @@ public class CouponFragment extends BaseFragment implements CounponListView,
         mCouponListPresenter.getCounponList(subUserId,pageNo, Constants.pageSize,Constants.pullRefress);
     }
 
+
     @Override
     public void onRightClick(View v) {
         Intent intent = new Intent(getActivity(), MyCouponListActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * 添加马甲券
-     */
-    @OnClick(R.id.linear_add_coupon)
-    void addCoupon(){
-        Intent detailIntent = new Intent(getActivity(), CreateCouponActivity.class);
-        detailIntent.putExtra("roomId", roomid);
-        startActivity(detailIntent);
     }
 
     @Override
@@ -168,6 +162,8 @@ public class CouponFragment extends BaseFragment implements CounponListView,
             Intent intent = new Intent(getActivity(), VerifiedActivity.class);
             startActivity(intent);
             getActivity().finish();
+        }else {
+
         }
     }
 
@@ -203,5 +199,23 @@ public class CouponFragment extends BaseFragment implements CounponListView,
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
+    }
+    /**
+     * 添加马甲券
+     */
+    @Override
+    public void onLeftClick(View v) {
+        Intent detailIntent = new Intent(getActivity(), CreateCouponActivity.class);
+        detailIntent.putExtra("roomId", roomid);
+        startActivity(detailIntent);
+    }
+    /**
+     * 添加马甲券
+     */
+    @OnClick({R.id.tv_create_new})
+    void createMyNew(){
+        Intent detailIntent = new Intent(getActivity(), CreateCouponActivity.class);
+        detailIntent.putExtra("roomId", roomid);
+        startActivity(detailIntent);
     }
 }

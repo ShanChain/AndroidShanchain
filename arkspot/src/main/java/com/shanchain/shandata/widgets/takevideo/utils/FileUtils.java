@@ -49,7 +49,7 @@ public class FileUtils {
     /**
      * 缓存文件根目录名
      */
-    private static final String FILE_DIR = "you";
+    private static final String FILE_DIR = "shanchain";
     /**
      * 上传的照片文件路径
      */

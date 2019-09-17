@@ -409,7 +409,7 @@
     <string name="squre">Square</string>
     <string name="phone_right">Please enter the phone in the correct format</string>
     <string name="mining_area">Mining area</string>
-    <string name="can_join_mining">Can join the mining area</string>
+    <string name="can_join_mining">Can join the mining</string>
     <string name="my_mine">My mine</string>
     <string name="i_create">I created</string>
     <string name="i_joined">I joined</string>
@@ -516,5 +516,10 @@
     <string name="technical_server_2">Technical customer service 2</string>
     <string name="other_decrit">Other instructions for use</string>
     <string name="join_chat_room_failed">Joining chat room failed</string>
+    <string name="create_mj">Create</string>
+    <string name="not_data_1">No data</string>
+    <string name="create_my_cn">Create my Voucher</string>
+    <string name="rule_11">Rule</string>
+    <string name="change_location">Update location</string>
 
 </resources>

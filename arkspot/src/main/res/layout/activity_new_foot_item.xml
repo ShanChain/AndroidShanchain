@@ -72,7 +72,7 @@
                     android:id="@+id/iv_cause"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@mipmap/midle_icon" />
+                    android:src="@mipmap/midle_icon_c" />
                 <TextView
                     android:id="@+id/tv_cause"
                     style="@style/BottomTabTVStyle"
@@ -95,7 +95,7 @@
                 <ImageView
                     android:id="@+id/iv_squre"
                     style="@style/BottomTabImgStyle"
-                    android:src="@mipmap/yuansq_c" />
+                    android:src="@mipmap/squre_c" />
 
                 <TextView
                     android:id="@+id/tv_squre"
@@ -117,7 +117,7 @@
                 <ImageView
                     android:id="@+id/iv_news"
                     style="@style/BottomTabImgStyle"
-                    android:src="@mipmap/mine_c" />
+                    android:src="@mipmap/mine_new_c" />
 
                 <TextView
                     android:id="@+id/tv_news"

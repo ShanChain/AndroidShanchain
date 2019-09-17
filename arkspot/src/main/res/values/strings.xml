@@ -531,4 +531,9 @@
     <string name="technical_server_2">技术客服2</string>
     <string name="other_decrit">其他使用说明</string>
     <string name="join_chat_room_failed">加入聊天室失败</string>
+    <string name="create_mj">创建</string>
+    <string name="not_data_1">暂时还没数据呢</string>
+    <string name="create_my_cn">创建我的马甲券</string>
+    <string name="rule_11">规则</string>
+    <string name="change_location">更新定位</string>
 </resources>

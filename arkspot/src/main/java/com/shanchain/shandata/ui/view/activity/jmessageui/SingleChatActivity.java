@@ -2060,20 +2060,20 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             case RequestCode.TAKE_VIDEO:
                 if (data != null) {
                     String path = data.getStringExtra("video");
-                    long videoDuration = data.getLongExtra("duration", 0);
+//                    long videoDuration = data.getLongExtra("duration", 0);
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
-                    message.setDuration(videoDuration);
+//                    message.setDuration(videoDuration);
                     File videoFile = new File(path);
                     try {
                         MediaMetadataRetriever media = new MediaMetadataRetriever();
-                        media.setDataSource(path);
-                        Bitmap bitmap = media.getFrameAtTime();
-                        VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) videoDuration);
-//                        Message msg = mConv.createSendMessage(video);
+//                        media.setDataSource(path);
+                        media.setDataSource(videoFile.getAbsolutePath());
+                        Bitmap bitmap = media.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                        long videoDuration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                        VideoContent video = new VideoContent(bitmap, "mp4", videoFile, videoFile.getName(), (int) (videoDuration/1000));
                         final Message msg = mConv.createSendMessage(video);
-//                            Message msg = mConv.createSendFileMessage(videoFile, item.getFileName());
                         message.setMediaFilePath(path);
-                        message.setDuration(videoDuration);
+                        message.setDuration(videoDuration/1000);
                         String avatar = msg.getFromUser().getAvatarFile() != null ? msg.getFromUser().getAvatarFile().getAbsolutePath() : "";
                         message.setUserInfo(new DefaultUser(msg.getFromUser().getUserID(), msg.getFromUser().getNickname(), avatar));
                         //设置用户和消息体Extras参数

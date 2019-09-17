@@ -3,7 +3,9 @@
     android:id="@+id/rl_item_msg_home"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dimens_15dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="15dp"
     android:background="@drawable/shape_bg_even_msg">
 
     <RelativeLayout
@@ -27,11 +29,12 @@
 
         <cn.jiguang.imui.view.RoundImageView
             android:id="@+id/iv_item_msg_home_avatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="25dp"
             android:background="@null"/>
 
         <LinearLayout
@@ -43,17 +46,32 @@
             android:layout_toRightOf="@id/iv_item_msg_home_avatar"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_item_room_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimens_15dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:lines="1"
-                android:text=""
-                android:textColor="@color/colorTextDefault"
-                android:textSize="14sp" />
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_item_room_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimens_15dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text=""
+                    android:textColor="@color/login_marjar_color"
+                    android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tv_item_room_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimens_10dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text=""
+                    android:textColor="@color/colorTextDefault"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_item_member_num"
@@ -83,9 +101,10 @@
         <TextView
             android:id="@+id/bt_item_join"
             android:layout_width="80dp"
-            android:layout_height="40dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/shape_bg_msg_send_pressed"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/counpn_attent_shape"
             android:gravity="center"
             android:text="@string/enter_"
             android:textColor="@color/white"

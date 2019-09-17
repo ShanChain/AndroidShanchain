@@ -221,7 +221,6 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 JMessageClient.getUserInfo(members.getUsername(), new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, final UserInfo userInfo) {
-                        LogUtils.d("------>>"+userInfo.getUserName());
                         String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
                         DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
                         defaultUser.setSignature(userInfo.getSignature());

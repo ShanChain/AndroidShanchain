@@ -53,83 +53,28 @@ public class ARSGamneRoomAdapter extends BaseMultiItemQuickAdapter<HotChatRoom, 
             RoundImageView roundImageView = helper.getView(R.id.item_round_view);
             RoundImageView avatar = helper.getView(R.id.iv_item_msg_home_avatar);
             TextView roomName = helper.getView(R.id.tv_item_room_name);
+            TextView roomNums = helper.getView(R.id.tv_item_room_num);
             TextView roomNum = helper.getView(R.id.tv_item_member_num);
             TextView visitTime = helper.getView(R.id.tv_item_visit_time);
             TextView btnJoin = helper.getView(R.id.bt_item_join);
 
-            roomName.setText(item.getRoomName());
+            String arrt[] = item.getRoomName().split(" ");
+            roomNums.setText(arrt[0]);
+            roomName.setText(arrt[1]);
             roomNum.setText(item.getUserNum());
             RequestOptions options = new RequestOptions();
 //        options.placeholder(R.mipmap.empty_foot_print);
             Glide.with(mContext).load(item.getBackground()).apply(options).into(roundImageView);
             Glide.with(mContext).load(item.getThumbnails()).apply(options).into(avatar);
             if (item.isLitUp()) {
-                btnJoin.setBackground(mContext.getDrawable(R.drawable.shape_bg_msg_send_pressed));
-                helper.getView(R.id.relative_hot_room).setForeground(null);
+                btnJoin.setBackground(mContext.getDrawable(R.drawable.counpn_attent_shape));
+//                helper.getView(R.id.relative_hot_room).setForeground(null);
             } else {
-                btnJoin.setBackground(mContext.getDrawable(R.drawable.shape_bg_msg_send_default));
-                helper.getView(R.id.relative_hot_room).setForeground(mContext.getDrawable(R.color.colorArs));
+                btnJoin.setBackground(mContext.getDrawable(R.drawable.counpn_attent_shape_d));
+//                helper.getView(R.id.relative_hot_room).setForeground(mContext.getDrawable(R.color.colorArs));
             }
         }
     }
 
-    private void UpdateChatRoomNum(HotChatRoom item) {
-        //更新首页热门元社区列表
-        SCHttpUtils.post()
-                .url(HttpApi.CHAT_ROOM_LIST_UPDATE)
-                .addParams("roomId", item.getRoomId() + "")
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d(TAG, "网络异常");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtils.d(TAG, "刷新首页列表数据成功");
-                    }
-                });
-    }
-
-    private void isInBlacklist(String roomID, final HotChatRoom item) {
-        //判断是否在群黑名单里
-        SCHttpUtils.get()
-                .url(HttpApi.IS_BLACK_MEMBER)
-                .addParams("roomId", roomID)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = SCJsonUtils.parseCode(response);
-                        if (NetErrCode.COMMON_SUC_CODE.equals(code) || NetErrCode.SUC_CODE.equals(code)) {
-                            String data = SCJsonUtils.parseData(response);
-                            boolean isBlackMember = Boolean.valueOf(data);
-                            if (!isBlackMember) {
-                                Intent intent = new Intent(mContext, MessageListActivity.class);
-                                intent.putExtra("roomId", item.getRoomId());
-                                intent.putExtra("roomName", item.getRoomName());
-                                intent.putExtra("hotChatRoom", item);
-                                intent.putExtra("isHotChatRoom", true);
-//                                intent.putExtra("isInCharRoom", isIn);
-                                mContext.startActivity(intent);
-                            } else {
-                                ThreadUtils.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ToastUtils.showToast(mContext, "您已被该聊天室管理员删除");
-                                    }
-                                });
-                            }
-
-                        }
-                    }
-                });
-    }
 
 }

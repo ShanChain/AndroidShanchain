@@ -10,7 +10,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/tb_coupon"
         style="@style/style_toolbar"
-        app:leftImage="@mipmap/abs_roleselection_btn_back_default"
+        app:leftText="@string/create_mj"
         app:titleColor="@color/colorTextThree"
         app:titleTextSize="16"/>
 
@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
+        android:visibility="gone"
         android:background="@mipmap/linear_add_task">
 
         <TextView
@@ -55,6 +56,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
-        <include layout="@layout/not_data_item_view"/>
+        <include layout="@layout/counpion_item_nodata"/>
     </LinearLayout>
 </LinearLayout>

@@ -14,8 +14,21 @@
             android:id="@+id/map_view_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </com.baidu.mapapi.map.MapView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+            <include layout="@layout/home_item_icons"/>
+        </LinearLayout>
+
+
+
         <LinearLayout
             android:id="@+id/linear_reset_location"
             android:layout_width="wrap_content"
@@ -26,10 +39,10 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/shape_home_btn_bg"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/image_view_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -42,16 +55,15 @@
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:visibility="gone"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="40dp">
             <ImageView
-                android:id="@+id/im_wk_rule"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:src="@mipmap/mining_rule_icon"/>
             <ImageView
-                android:id="@+id/im_person"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="10dp"
@@ -59,7 +71,6 @@
                 android:src="@mipmap/person_icon"/>
 
             <ImageView
-                android:id="@+id/iv_my_team"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
