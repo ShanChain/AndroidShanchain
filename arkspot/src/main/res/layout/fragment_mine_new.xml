@@ -118,4 +118,42 @@
             android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorTextBg"/>
+    <LinearLayout
+        android:id="@+id/ll_adepart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/white"
+        android:padding="12dp">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/announcement_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/announcement"/>
+        <Space
+            android:layout_width="@dimen/dimens_10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/tv_new_has"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:background="@drawable/announcement_circle_shape"/>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@mipmap/abs_meet_btn_enter_default"/>
+    </LinearLayout>
 </LinearLayout>

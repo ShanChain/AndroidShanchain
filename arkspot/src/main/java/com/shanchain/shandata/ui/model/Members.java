@@ -18,6 +18,10 @@ public class Members {
     private String ctime;
     private boolean isSelect;
     private boolean isEdite;
+    private String userName;
+    private String userIcon;
+    private String hxUserName;
+    private int id;
 
     public String getUsername() {
         return username;
@@ -73,5 +77,37 @@ public class Members {
 
     public void setEdite(boolean edite) {
         isEdite = edite;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public void setUserIcon(String userIcon) {
+        this.userIcon = userIcon;
+    }
+
+    public String getHxUserName() {
+        return hxUserName;
+    }
+
+    public void setHxUserName(String hxUserName) {
+        this.hxUserName = hxUserName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

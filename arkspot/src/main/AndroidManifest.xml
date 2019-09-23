@@ -595,6 +595,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.view.activity.settings.ClientListActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.view.activity.article.CommentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DalioActivityTheme"/>
+        <activity android:name=".ui.view.activity.mine.QuestionDetailActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

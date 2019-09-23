@@ -79,7 +79,7 @@ public class MyGroupActivity extends BaseActivity {
         if(sourceType ==1){
             mViewPager.setCurrentItem(0);
         }else {
-            mViewPager.setCurrentItem(2);
+            mViewPager.setCurrentItem(1);
         }
 
     }

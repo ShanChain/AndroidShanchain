@@ -1,9 +1,12 @@
 package com.shanchain.shandata.ui.model;
 
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by zhoujian on 2017/9/7.
@@ -19,6 +22,8 @@ public class MessageHomeInfo implements Serializable{
     private int unRead;
     private boolean isTop;
     private String jmName;
+    private Bitmap avatarBitmap;
+    private UserInfo userInfo;
 
     private Conversation mJMConversation;
 
@@ -101,5 +106,21 @@ public class MessageHomeInfo implements Serializable{
 
     public void setJmName(String jmName) {
         this.jmName = jmName;
+    }
+
+    public Bitmap getAvatarBitmap() {
+        return avatarBitmap;
+    }
+
+    public void setAvatarBitmap(Bitmap avatarBitmap) {
+        this.avatarBitmap = avatarBitmap;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

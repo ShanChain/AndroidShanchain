@@ -89,4 +89,25 @@ public class GroupMenberPresenterImpl implements GroupMenberPresenter {
                     }
                 });
     }
+
+    @Override
+    public void getRoomMenbers(String roomId) {
+        mGroupMenberView.showProgressStart();
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.CHECK_ADD_MMINING_ROOM)
+                .addParams("diggingsId", roomId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        mGroupMenberView.showProgressEnd();
+                    }
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mGroupMenberView.showProgressEnd();
+                        mGroupMenberView.setGroupMenberListResponse(response);
+                    }
+
+                });
+    }
 }

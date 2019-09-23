@@ -29,10 +29,12 @@ public class ClientListAdapter extends BaseQuickAdapter<DefaultUser,BaseViewHold
     @Override
     protected void convert(BaseViewHolder helper, final DefaultUser item) {
         CircleImageView cv = helper.getView(R.id.iv_user_head);
-        if(item.getUserType() == 1){
-            cv.setVisibility(View.VISIBLE);
+        if(item.getId() == 1){
+            cv.setImageResource(R.mipmap.client_icon_w);
+        }else if(item.getId()==2){
+            cv.setImageResource(R.mipmap.client_icon_w);
         }else {
-            cv.setVisibility(View.GONE);
+            cv.setImageResource(R.mipmap.client_icon_m);
         }
         helper.setText(R.id.tv_user_name,item.getDisplayName());
     }

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.Constants;
@@ -15,6 +17,7 @@ import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.story.StoryTitleActivity;
@@ -33,9 +36,18 @@ import static com.shanchain.data.common.cache.SCCacheUtils.getCacheHxUserName;
 
 
 public class SplashActivity extends AppCompatActivity {
-
+    LinearLayout mLinearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String lan = MyApplication.systemLanguge;
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if("zh".equals(lan)){
+//            this.setTheme(R.style.AppStartTheme);
+            this.getWindow().getDecorView().setBackgroundResource(R.mipmap.splash_new);
+        }else {
+//            this.setTheme(R.style.AppStartThemeEn);
+            this.getWindow().getDecorView().setBackgroundResource(R.mipmap.splash_new_en);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initAPP();
@@ -54,6 +66,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void initAPP() {
+        mLinearLayout = findViewById(R.id.ll_rootview);
+        String lan = MyApplication.systemLanguge;
+        if("zh".equals(lan)){
+            mLinearLayout.setBackgroundResource(R.mipmap.splash_new);
+        }else {
+            mLinearLayout.setBackgroundResource(R.mipmap.splash_new_en);
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override

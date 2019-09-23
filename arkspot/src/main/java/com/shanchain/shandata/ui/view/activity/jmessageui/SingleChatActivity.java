@@ -915,7 +915,6 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
             mConv = Conversation.createSingleConversation(FORM_USER_ID);
         } else if (mConv != null) {
             mConvData = mConv.getAllMessage();
-
             MyMessage myMessage;
             for (int i = 0; i < mConvData.size(); i++) {
                 final Message msg = mConvData.get(i);
@@ -1065,6 +1064,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 //                    voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
                         if (videoContent.getVideoLocalPath() != null) {
                             videoMessage.setMediaFilePath(videoContent.getThumbLocalPath());
+                            LogUtils.d("---->>>message video local path: "+videoContent.getThumbLocalPath());
                             videoMessage.setDuration(videoContent.getDuration());
                         } else {
                             videoContent.downloadThumbImage(msg, new DownloadCompletionCallback() {
@@ -1079,7 +1079,7 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                                 @Override
                                 public void onComplete(int i, String s, File file) {
                                     videoMessage.setMediaFilePath(file.getAbsolutePath());
-
+                                    LogUtils.d("---->>>message video path: "+file.getAbsolutePath());
                                 }
                             });
                         }
@@ -1237,18 +1237,12 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
 
     // 接收聊天室消息
     public void onEventMainThread(MessageEvent event) {
-        Log.d("tag", "ChatRoomMessageEvent received .");
-//        mConv = JMessageClient.getSingleConversation(FORM_USER_NAME);
+        Log.d("tag", "ChatRoomMessageEvent received ."+event.getMessage().toJson());
         mConv = JMessageClient.getSingleConversation(FORM_USER_ID);
         if (mConv != null) {
             mConv.setUnReadMessageCnt(0);
         }
         mConvData = mConv.getAllMessage();
-        final Message evMsg = event.getMessage();
-        final MyMessage myMessage;
-//        showProgress();
-//        for (int i = 0; i < mConvData.size(); i++) {
-//            final Message msg = mConvData.get(i);
         final Message msg = event.getMessage();
         //这个页面仅仅展示聊天室会话的消息
 //            if (i > 47) {
@@ -2044,17 +2038,6 @@ public class SingleChatActivity extends BaseActivity implements View.OnTouchList
                             e.printStackTrace();
                         }
                     }
-
-                    /*ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
-                        @Override
-                        public void gotResult(int responseCode, String responseMessage, ImageContent imageContent) {
-                            if (responseCode == 0) {
-                                Message msg = mConv.createSendMessage(imageContent);
-//                                handleSendMsg(msg.getId());
-                                LogUtils.d("handleSendMsg", photoPath);
-                            }
-                        }
-                    });*/
                 }
                 break;
             case RequestCode.TAKE_VIDEO:

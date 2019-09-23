@@ -582,6 +582,12 @@ public class ArthurToolBar extends LinearLayout implements View.OnClickListener 
             Glide.with(context).load(url).into(userHeadImg);
         }
     }
+    public void setUserHeadImgDefault(int rid) { // 图标
+        if (null != userHeadImg) {
+            userHeadImg.setVisibility(VISIBLE);
+            userHeadImg.setImageResource(rid);
+        }
+    }
 
     /*
      * 获取头像菜单

@@ -52,7 +52,7 @@
         android:visibility="gone"
         android:id="@+id/btn_guide_join"
         android:background="@drawable/shape_bg_guide_btn"
-        android:text="加入元矿区"
+        android:text="@string/join_mine_1"
         android:textSize="14sp"
         android:textColor="@color/colorWhite"
         android:layout_alignParentBottom="true"

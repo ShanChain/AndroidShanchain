@@ -129,16 +129,18 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     //引导页第二张显示点击
     @OnClick(R.id.rl_view2)
     void view2(){
-        rlView1.setVisibility(View.GONE);
+        /*rlView1.setVisibility(View.GONE);
         rlView2.setVisibility(View.GONE);
         rlView3.setVisibility(View.VISIBLE);
-        rlView0.setVisibility(View.GONE);
+        rlView0.setVisibility(View.GONE);*/
+        PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
+        rlTishi.setVisibility(View.GONE);
     }
     //立即进入
     @OnClick({R.id.tv_join,R.id.rl_view3})
     void view3(){
-        rlTishi.setVisibility(View.GONE);
-        PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
+
+
     }
 
     /**

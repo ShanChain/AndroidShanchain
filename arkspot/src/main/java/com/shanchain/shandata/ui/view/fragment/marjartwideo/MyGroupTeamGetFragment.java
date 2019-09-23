@@ -240,7 +240,6 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 GroupTeamBean groupTeamBean = (GroupTeamBean) adapter.getItem(position);
                 if(groupTeamBean!=null){
-                    LogUtils.d("----->>enter room "+groupTeamBean.toString());
                     gotoMessageRoom(groupTeamBean);
                 }
             }
@@ -252,6 +251,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         Intent intent = new Intent(getActivity(), MessageListActivity.class);
         intent.putExtra("roomId", "" + groupTeamBean.getRoomId());
         intent.putExtra("roomName", "" + groupTeamBean.getRoomName());
+        intent.putExtra("digistId",groupTeamBean.getId()+"");
         startActivity(intent);
     }
 }

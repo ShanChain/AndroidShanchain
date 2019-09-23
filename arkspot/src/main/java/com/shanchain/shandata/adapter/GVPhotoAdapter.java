@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 public class GVPhotoAdapter extends BaseAdapter {
     private Context mContext;
     private List<String> photoList;
+    private int itemValue = 110;
 
     public GVPhotoAdapter(Context context) {
         this.mContext = context;
@@ -40,6 +41,14 @@ public class GVPhotoAdapter extends BaseAdapter {
         if(list!=null && list.size()>0){
             this.photoList = list;
         }
+    }
+
+    public int getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(int itemValue) {
+        this.itemValue = itemValue;
     }
 
     @Override
@@ -69,7 +78,7 @@ public class GVPhotoAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewHolder.llRootview.getLayoutParams();
-        int with = (int)((DensityUtils.getScreenWidth(mContext)-DensityUtils.dip2px(mContext,110))/3);
+        int with = (int)((DensityUtils.getScreenWidth(mContext)-DensityUtils.dip2px(mContext,itemValue))/3);
         layoutParams.width = with;
         layoutParams.height = with;
         viewHolder.llRootview.setLayoutParams(layoutParams);

@@ -11,15 +11,15 @@
         android:padding="5dp">
         <cn.jiguang.imui.view.CircleImageView
             android:id="@+id/iv_user_head"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:src="@drawable/aurora_headicon_default" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:gravity="center|left"
             android:orientation="vertical">
             <TextView
@@ -55,7 +55,7 @@
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingRight="5dp"
             android:gravity="center"
             android:textSize="14sp"
             android:textColor="@color/login_marjar_color"
@@ -69,14 +69,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="65dp">
+        >
         <com.shanchain.shandata.widgets.ExpandableTextView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:etv_MaxLinesOnShrink="4"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             />
         <com.shanchain.shandata.widgets.CustomGridView
             android:id="@+id/gv_photo"
@@ -84,13 +85,17 @@
             android:layout_height="wrap_content"
             android:horizontalSpacing="5dp"
             android:verticalSpacing="5dp"
-            android:numColumns="3"/>
+            android:numColumns="3"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp">
             <ImageView
                 android:id="@+id/im_zan"
                 android:layout_width="@dimen/dimens_15dp"

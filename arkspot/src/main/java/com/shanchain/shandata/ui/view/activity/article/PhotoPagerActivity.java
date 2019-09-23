@@ -48,6 +48,7 @@ public class PhotoPagerActivity extends BaseActivity {
     protected void initViewsAndEvents() {
         photoList = new ArrayList<>();
         photoList = getIntent().getStringArrayListExtra("list");
+        position = getIntent().getIntExtra("position",0);
 
         viewPager.setAdapter(new SamplePagerAdapter());
         viewPager.setCurrentItem(position);

@@ -39,6 +39,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseFragment;
 import com.shanchain.shandata.interfaces.IUpdateUserHeadCallback;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
+import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.InvationBean;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
@@ -105,6 +106,10 @@ public class MineFragment extends BaseFragment implements MineView {
     LinearLayout llSetting;
     @Bind(R.id.ll_client)
     LinearLayout llClient;
+    @Bind(R.id.ll_adepart)
+    LinearLayout llAdepart;
+    @Bind(R.id.tv_new_has)
+    TextView tvNewHas;
 
     private MinePresenter mMinePresenter;
     private String photoPath = "";
@@ -169,6 +174,11 @@ public class MineFragment extends BaseFragment implements MineView {
                         .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
                                 .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
             }
+        }else{
+            UserInfo userInfo = JMessageClient.getMyInfo();
+            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
+                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                            .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
         }
     }
 
@@ -275,6 +285,19 @@ public class MineFragment extends BaseFragment implements MineView {
     @OnClick(R.id.ll_client)
     void contactClient(){
         startActivity(new Intent(getActivity(), ClientListActivity.class));
+    }
+
+    //查看公告
+    @OnClick(R.id.ll_adepart)
+    void announcement(){
+        Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
+        JSONObject obj = new JSONObject();
+        obj.put("url", HttpApi.BASE_URL_WALLET+"/Announcement");
+        obj.put("title", getString(R.string.announcement));
+        obj.put("isTitle","1");
+        String webParams = obj.toJSONString();
+        intent.putExtra("webParams", webParams);
+        startActivity(intent);
     }
 
 

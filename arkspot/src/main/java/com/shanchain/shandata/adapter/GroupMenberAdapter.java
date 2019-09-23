@@ -17,6 +17,7 @@ import com.shanchain.shandata.interfaces.IChatGroupMenberCallback;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.model.Members;
 import com.shanchain.shandata.ui.view.activity.jmessageui.SingerChatInfoActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
 
 import java.util.List;
 
@@ -60,45 +61,20 @@ public class GroupMenberAdapter extends BaseQuickAdapter<Members,BaseViewHolder>
         }else {
             checkBox.setImageResource(R.mipmap.ic_uncheck);
         }
-        JMessageClient.getUserInfo(item.getUsername(), new GetUserInfoCallback() {
+        CircleImageView circleImageView = helper.getView(R.id.iv_item_contact_child_avatar);
+        Glide.with(mContext).load(item.getUserIcon())
+                .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                        .error(R.drawable.aurora_headicon_default)).into(circleImageView);
+        helper.setText(R.id.tv_item_contact_child_name, item.getUserName());
+        helper.setText(R.id.tv_item_contact_child_focus, R.string.dialogue_1);
+        focus.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void gotResult(int i, String s, final UserInfo userInfo) {
-                String name = userInfo.getNickname() != null ? userInfo.getNickname() : userInfo.getUserName();
-                helper.setText(R.id.tv_item_contact_child_name, TextUtils.isEmpty(name) ? "" + userInfo.getDisplayName() : name);
-                final CircleImageView circleImageView = helper.getView(R.id.iv_item_contact_child_avatar);
-//               String avatar = photoUrlBase + userInfo.getAvatarFile().getAbsolutePath();
-                String avatar = photoUrlBase + userInfo.getAvatar();
-                userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                    @Override
-                    public void gotResult(int i, String s, Bitmap bitmap) {
-                        Bitmap bitmap1 = bitmap;
-                        if (bitmap != null) {
-                            circleImageView.setImageBitmap(bitmap);
-                        } else {
-                            circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
-                        }
-
-                    }
-                });
-                focus.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(mMenberCallback!=null){
-                            mMenberCallback.chatUser(item);
-                        }
-                        String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
-                        DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
-                        defaultUser.setSignature(userInfo.getSignature());
-                        defaultUser.setHxUserId(userInfo.getUserName());
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("userInfo", defaultUser);
-//                        readyGo(SingerChatInfoActivity.class, bundle);
-                    }
-                });
+            public void onClick(View v) {
+                if(mMenberCallback!=null){
+                    mMenberCallback.chatUser(item);
+                }
             }
         });
-        helper.setText(R.id.tv_item_contact_child_focus, "对话");
-
     }
 
 }

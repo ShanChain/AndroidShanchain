@@ -27,7 +27,9 @@ import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.SqureAdapter;
 import com.shanchain.shandata.base.BaseFragment;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.interfaces.IAttentionCallback;
+import com.shanchain.shandata.interfaces.IChatByUserHeartCallback;
 import com.shanchain.shandata.interfaces.ICheckBigPhotoCallback;
 import com.shanchain.shandata.interfaces.IPraiseCallback;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
@@ -39,6 +41,9 @@ import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
 import com.shanchain.shandata.ui.view.activity.article.PhotoPagerActivity;
 import com.shanchain.shandata.ui.view.activity.article.PublishArticleActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.SquareView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +84,7 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     @Override
     public void initData() {
         mSquarePresenter = new SquarePresenterImpl(this);
-        mSqureAdapter = new SqureAdapter(R.layout.square_list_item_1,mList);
+        mSqureAdapter = new SqureAdapter(getActivity(),mList);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.not_data_footer_view, null);
         mSqureAdapter.addFooterView(view);
         refreshLayout.setOnRefreshListener(this);
@@ -93,13 +98,24 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         mSqureAdapter.notifyDataSetChanged();
 
         initLoadMoreListener();
+        mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
+    }
+
+    //发布微文之后刷新列表
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateDataFromPublish(String s){
+        ToastUtil.showToast(getActivity(),"in");
+        if("publish".equals(s)){
+            pageIndex = 0;
+            mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
+        }
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
+
     }
 
     //点击添加内容弹窗
@@ -307,6 +323,16 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
                                 .putExtra("list", arrayList));
                     }
                 }
+            }
+        });
+        //点击头像跳转单聊
+        mSqureAdapter.setChatCallback(new IChatByUserHeartCallback() {
+            @Override
+            public void chatByUserIcon(SqureDataEntity squreDataEntity) {
+                if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == squreDataEntity.getUserId()){
+                    ToastUtil.showToast(getActivity(),"自己不能和自己聊天");
+                }
+
             }
         });
     }

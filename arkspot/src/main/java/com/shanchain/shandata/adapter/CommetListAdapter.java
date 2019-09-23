@@ -92,7 +92,7 @@ public class CommetListAdapter extends BaseAdapter {
                 viewHolder.tvAttention.setTextColor(mContext.getResources().getColor(R.color.login_marjar_color));
                 viewHolder.tvAttention.setText(mContext.getResources().getString(R.string.attention));
             }else {
-                viewHolder.tvAttention.setBackgroundResource(R.drawable.squra_attention_y_shape);
+                viewHolder.tvAttention.setBackgroundResource(R.drawable.squra_attent_shape);
                 viewHolder.tvAttention.setTextColor(mContext.getResources().getColor(R.color.white));
                 viewHolder.tvAttention.setText(mContext.getResources().getString(R.string.Concerned));
             }

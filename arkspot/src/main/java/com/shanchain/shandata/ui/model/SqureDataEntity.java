@@ -1,5 +1,9 @@
 package com.shanchain.shandata.ui.model;
 
+import android.text.TextUtils;
+
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +11,7 @@ import java.io.Serializable;
  * Date : 2019/7/26
  * Describe :
  */
-public class SqureDataEntity implements Serializable {
+public class SqureDataEntity implements Serializable , MultiItemEntity {
     int id;
     int userId;
     String nickName;
@@ -151,5 +155,19 @@ public class SqureDataEntity implements Serializable {
 
     public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public int getItemType() {
+        if(TextUtils.isEmpty(getListImg())){
+            return 0;
+        }else {
+            String []attr = getListImg().replaceAll("\\\\","").split(",");
+            if(attr.length==1){
+                return 1;
+            }else {
+                return 2;
+            }
+        }
     }
 }

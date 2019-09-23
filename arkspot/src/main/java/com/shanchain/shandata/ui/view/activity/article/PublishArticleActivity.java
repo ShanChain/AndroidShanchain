@@ -53,6 +53,8 @@ import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -288,6 +290,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             ToastUtil.showToast(PublishArticleActivity.this,getString(R.string.publish_success));
             finish();
+            EventBus.getDefault().post("publish");//提醒广场列表更新
         }else {
             ToastUtil.showToast(PublishArticleActivity.this, getString(R.string.publish_failed));
         }

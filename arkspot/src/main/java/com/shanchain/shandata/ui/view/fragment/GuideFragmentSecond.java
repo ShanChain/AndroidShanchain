@@ -6,17 +6,34 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.base.MyApplication;
 
 /**
  * Created by zhoujian on 2017/12/4.
  */
 
 public class GuideFragmentSecond extends Fragment {
+    private View mView;
+    private LinearLayout mLinearLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.fragment_guide_second,null);
+        mView = inflater.inflate(R.layout.fragment_guide_second,null);
+        return  mView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mLinearLayout = mView.findViewById(R.id.ll_rootview);
+        String sta = MyApplication.systemLanguge;
+        if(sta.equals("zh")){
+            mLinearLayout.setBackgroundResource(R.mipmap.guide_second_new);
+        }else {
+            mLinearLayout.setBackgroundResource(R.mipmap.guide_second_en);
+        }
     }
 }

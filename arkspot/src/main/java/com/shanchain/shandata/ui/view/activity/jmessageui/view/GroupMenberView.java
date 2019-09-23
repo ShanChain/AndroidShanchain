@@ -9,6 +9,7 @@ public interface GroupMenberView {
     void showProgressStart();
     void showProgressEnd();
     void setGroupMenberResponse(String response,int pullType);
+    void setGroupMenberListResponse(String response);
     void setCheckGroupCreateeResponse(String response);
     void setDeleteGroupMenberResponse(String response);
 }

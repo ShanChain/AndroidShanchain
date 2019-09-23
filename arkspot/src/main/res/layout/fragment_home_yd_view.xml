@@ -8,6 +8,7 @@
         android:id="@+id/rl_home_intro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         >
         <ImageView
             android:layout_width="match_parent"
@@ -23,7 +24,7 @@
         android:id="@+id/rl_view1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         >
         <com.shanchain.shandata.widgets.Shadow
             android:layout_width="match_parent"
@@ -96,44 +97,24 @@
         android:visibility="gone"
         android:background="@color/colorBlack_home">
         <LinearLayout
-            android:id="@+id/ll_2_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="90dp">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:src="@mipmap/mining_rule_icon"/>
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/person_icon"/>
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:src="@mipmap/wa_kuang_icon" />
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+            <include layout="@layout/home_item_icons_guide"/>
         </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_zs_1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="150dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="100dp"
-            android:src="@mipmap/home_view_2_zs"/>
+            android:layout_marginRight="130dp"
+            android:src="@mipmap/home_view_2_zs_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,37 +158,17 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         android:background="@color/colorBlack_home">
-        <LinearLayout
-            android:id="@+id/ll_3_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="90dp">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:visibility="visible"
-                android:src="@mipmap/mining_rule_icon"/>
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center"
-                android:visibility="invisible"
-                android:src="@mipmap/person_icon"/>
 
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:visibility="invisible"
-                android:src="@mipmap/wa_kuang_icon" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+            <include layout="@layout/home_item_icons_guide_2"/>
         </LinearLayout>
+
         <ImageView
             android:id="@+id/iv_zs_2"
             android:layout_width="wrap_content"

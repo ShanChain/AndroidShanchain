@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.EventNotificationContent;
 import cn.jpush.im.android.api.enums.ContentType;
@@ -60,6 +62,7 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
     @Bind({R.id.tb_main})
@@ -104,9 +107,9 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
             }
         }
         initToolBar();
-        initData();
         initView();
         initRecyclerView();
+        initData();
         //注册自定义消息广播
 //        registerMessageReceiver();
     }
@@ -186,10 +189,11 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
         if (conversationList == null) {
             return;
         }
+        chatRoomlist.clear();
         for (int i = 0; i < conversationList.size(); i++) {
             conversation = conversationList.get(i);
             if (conversation.getType() == ConversationType.single) {
-                LogUtils.d("----->>>>"+conversation.toJsonString());
+//                LogUtils.d("----->>>>"+conversation.toJsonString());
                 final MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
                 messageHomeInfo.setJMConversation(conversation);
                 UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
@@ -201,12 +205,27 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
                 conversation.getLastMsgDate();
                 messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
                 messageHomeInfo.isTop();
-//                messageHomeInfo.setImg(userInfo.getAvatar());
-                messageHomeInfo.setImg(conversation.getAvatarFile() == null ? "" : conversation.getAvatarFile().getAbsolutePath());
                 chatRoomlist.add(messageHomeInfo);
-
             }
         }
+        messageListAdapter.notifyDataSetChanged();
+
+    }
+
+    Bitmap mBitmap;
+    private Bitmap getUserAvatarBitmap(UserInfo userInfo){
+        userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+            @Override
+            public void gotResult(int i, String s, Bitmap bitmap) {
+                LogUtils.d("-------->>>i:"+i+"----s: "+s+"----->>"+bitmap);
+                if (bitmap != null) {
+                    mBitmap =  bitmap;
+                } else {
+                    mBitmap = null;
+                }
+            }
+        });
+        return mBitmap;
     }
 
     private void initToolBar() {
@@ -238,11 +257,11 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     public void onResume() {
         isForeground = true;
-        if (messageListAdapter != null) {
+        /*if (messageListAdapter != null) {
             chatRoomlist.clear();
             initData();
             messageListAdapter.notifyDataSetChanged();
-        }
+        }*/
         super.onResume();
     }
 

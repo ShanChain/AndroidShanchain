@@ -348,6 +348,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         Intent intent = new Intent(getActivity(), MessageListActivity.class);
         intent.putExtra("roomId", "" + groupTeamBean.getRoomId());
         intent.putExtra("roomName", "" + groupTeamBean.getRoomName());
+        intent.putExtra("digistId",groupTeamBean.getId()+"");
         startActivity(intent);
     }
     //弹窗提示支付进入矿区

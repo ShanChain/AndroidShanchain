@@ -254,7 +254,18 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                 List<String> list = Arrays.asList(attrPhotos);
                 ArrayList<String> arrayList = new ArrayList<>(list);
                 startActivity(new Intent(ArticleDetailActivity.this,PhotoPagerActivity.class)
-                                        .putExtra("list", arrayList));
+                                        .putExtra("list", arrayList)
+                                        .putExtra("position",position));
+            }
+        });
+
+        clContentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CommentEntity commentEntity = (CommentEntity) mAdapter.getItem(position);
+                startActivity(new Intent(ArticleDetailActivity.this,CommentActivity.class)
+                                        .putExtra("info",commentEntity));
+                overridePendingTransition(R.anim.in_from_up,0);
             }
         });
     }
@@ -310,9 +321,6 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             hideKeyboard(etContentInput);
             mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
             mPresenter.queryArticleDetail(mSqureDataEntity.getId()+"");
-//            mSqureDataEntity.setReviceCount(mSqureDataEntity.getReviceCount()+1);
-//            tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
-//            tvContentNum.setText(getString(R.string.comment_nums,mSqureDataEntity.getReviceCount()+""));
         }else {
             ToastUtil.showToast(ArticleDetailActivity.this, R.string.operation_failed);
         }
@@ -449,7 +457,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             tvAttention.setTextColor(getResources().getColor(R.color.login_marjar_color));
             tvAttention.setText(getResources().getString(R.string.attention));
         }else {
-            tvAttention.setBackgroundResource(R.drawable.squra_attention_y_shape);
+            tvAttention.setBackgroundResource(R.drawable.squra_attent_shape);
             tvAttention.setTextColor(getResources().getColor(R.color.white));
             tvAttention.setText(getResources().getString(R.string.Concerned));
         }

@@ -361,13 +361,13 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         imgViewHide.setAnimation(shake);
     }
 
-    //我的小分队
-    @OnClick(R.id.iv_my_team)
+    //可加入矿区
+    @OnClick(R.id.im_person)
     void goToMyGroup(){
         startActivity(new Intent(getActivity(), MyGroupActivity.class).putExtra("type",1));
     }
-
-    @OnClick(R.id.im_person)
+    //我的小分队
+    @OnClick(R.id.iv_my_team)
     void gotoMyGetGroup(){
         startActivity(new Intent(getActivity(), MyGroupActivity.class).putExtra("type",2));
     }
@@ -750,6 +750,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         Intent intent = new Intent(getActivity(), MessageListActivity.class);
         intent.putExtra("roomId", "" + coordinates.getRoomId());
         intent.putExtra("roomName", "" + coordinates.getRoomName());
+        intent.putExtra("digistId",coordinates.getDiggingId());
         startActivity(intent);
     }
 

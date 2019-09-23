@@ -3,6 +3,7 @@ package com.shanchain.shandata.adapter;//package com.shanchain.shandata.adapter;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -74,15 +75,14 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
         //设置昵称
         helper.setText(R.id.tv_item_msg_home_name,item.getName() );
+        final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
         JMessageClient.getUserInfo(item.getJmName(), new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
-               final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
-                if(userInfo!=null){
+                if(userInfo!=null && !TextUtils.isEmpty(userInfo.getAvatar())){
                     userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
                         @Override
                         public void gotResult(int i, String s, Bitmap bitmap) {
-
                             if (bitmap != null) {
                                 circleImageView.setImageBitmap(bitmap);
                             } else {
@@ -95,23 +95,6 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
                 }
             }
         });
-
-
-        /*Glide.with(mContext)
-                .load(item.getImg())
-                .apply(options)
-                .into((ImageView) helper.getView(R.id.iv_item_msg_home_avatar));*/
-        /*if (jmConversation.isGroup()) {
-            //会话是群组
-
-            String groupImg = item.getImg();
-            GlideUtils.load(mContext,groupImg,(ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
-        } else {
-            //会话不是群组
-            helper.setText(R.id.tv_item_msg_home_name, item.getName());
-            String headImg = item.getImg();
-            GlideUtils.load(mContext, headImg, (ImageView) helper.getView(R.id.iv_item_msg_home_avatar),0);
-        }*/
 
     }
 }

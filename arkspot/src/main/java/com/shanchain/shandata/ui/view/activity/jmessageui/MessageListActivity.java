@@ -222,6 +222,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private ImageView userHeadView;
     private RecyclerView recyclerView;
     private String roomID;
+    private String digistId;
     private String newRoomId, roomName, mImgPath;
     private ArrayList<String> photos = new ArrayList<>();
     private ChatView mChatView;
@@ -417,6 +418,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         LogUtils.d("roomId", roomID + "");
 //        ToastUtils.showToast(MessageListActivity.this,""+roomID);
         roomName = intent.getStringExtra("roomName");
+        digistId = intent.getStringExtra("digistId");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
         isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
         JMessageClient.registerEventReceiver(this);
@@ -728,18 +730,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             e.printStackTrace();
                         }
                     }
-
-
-                    /*ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
-                        @Override
-                        public void gotResult(int responseCode, String responseMessage, ImageContent imageContent) {
-                            if (responseCode == 0) {
-                                Message msg = chatRoomConversation.createSendMessage(imageContent);
-//                                handleSendMsg(msg.getId());
-                                LogUtils.d("handleSendMsg", photoPath);
-                            }
-                        }
-                    });*/
                 }
                 break;
             case RequestCode.TAKE_VIDEO:
@@ -948,12 +938,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mTbMain = (ArthurToolBar) findViewById(R.id.tb_main);
         mTbMain.setTitleText(roomName);//聊天室名字
         mTbMain.setTitleTextSize(14);
-        final UserInfo userInfo = JMessageClient.getMyInfo();
+        /*final UserInfo userInfo = JMessageClient.getMyInfo();
         if (userInfo != null && userInfo.getAvatarFile() != null) {
             mTbMain.setUserHeadImg(MessageListActivity.this, userInfo.getAvatarFile().getAbsolutePath());
         } else {
             mTbMain.setUserHeadImg(MessageListActivity.this, SCCacheUtils.getCacheHeadImg());
-        }
+        }*/
+        mTbMain.setUserHeadImgDefault(R.mipmap.message_group_icon);
         mTbMain.setFavoriteImage(R.mipmap.share);
         mTbMain.setRightImage(R.mipmap.fb_close);
         mTbMain.isShowChatRoom(true);
@@ -997,6 +988,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 Intent intent = new Intent(MessageListActivity.this, MemberActivity.class);
                 intent.putExtra("roomId", roomID);
                 intent.putExtra("count", memberCount);
+                intent.putExtra("digistId",digistId);
                 startActivity(intent);
             }
         });
@@ -1101,14 +1093,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     @Override
     public void onBackPressed() {
         closeLoadingDialog();
-//        ChatRoomManager.leaveChatRoom(Long.valueOf(roomID), new BasicCallback() {
-//            @Override
-//            public void gotResult(int i, String s) {
-//                int i1 = i;
-//                String s1 = s;
-//                LogUtils.d("leaveChatRoom", "离开聊天室 code" + i);
-//            }
-//        });
         if (mShowSoftInput) {
             if (mImm != null) {
                 mImm.hideSoftInputFromWindow(xhsEmoticonsKeyBoard.getEtChat().getWindowToken(), 0);
@@ -1120,6 +1104,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 e.printStackTrace();
             }
         }
+        super.onBackPressed();
     }
 
     @Override
@@ -1228,7 +1213,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         messageList.clear();
         if (mMessageEntryList.size() != 0) {
             for (int i = 0; i < mMessageEntryList.size(); i++) {
-//                LogUtils.d("----->>>>>",mMessageEntryList.get(i).toString());
+                LogUtils.d("----->>>>>",mMessageEntryList.get(i).toString());
                 MessageEntry messageEntry = mMessageEntryList.get(i);
                 final MyMessage commonMessage = new MyMessage(IMessage.MessageType.RECEIVE_TEXT.ordinal());
                 //创建用户获取头像
@@ -1400,6 +1385,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             @Override
             public void onComplete(int i, String s, File file) {
                 messageEntry.setMediaFilePath(file.getAbsolutePath());
+                LogUtils.d("----->>>message video file path: "+file.getAbsolutePath());
                 entryDao.update(messageEntry);
             }
         });
@@ -1470,11 +1456,10 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 
     //本地存储聊天室消息
     private void localSaveMessage(List<Message> mMsgs) {
-
         mMessageEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
         for (int i = 0; i < mMsgs.size(); i++) {
             Message chatMessage = mMsgs.get(i);
-            //
+            LogUtils.d("------>>message info:"+chatMessage.toJson());
             if (!chatMessage.getTargetID().equals(roomID)) {
                 return;
             }
@@ -1602,14 +1587,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //        mEntryDao = MyApplication.getDaoSession().getMessageEntryDao();
         mMessageEntryList = mEntryDao._queryConversationEntry_MMessageEntryList(roomID);
         mMsgs = event.getMessages();
-        final MyMessage myMessage;
         //打印消息
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < mMsgs.size(); i++) {
                     Message msg = mMsgs.get(i);
-//                    LogUtils.d("ChatRoomMessageEvent message", "第" + i + "个" + msg.getContent().toJson().toString());
+                    LogUtils.d("ChatRoomMessageEvent message log", "第" + i + "个" + msg.toJson());
                 }
                 //本地存储聊天室消息
                 localSaveMessage(mMsgs);

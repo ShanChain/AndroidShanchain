@@ -29,6 +29,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -66,6 +67,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
     private ImageView mIvWebBack;
     private TextView mTvWebTbTitle;
     private WebView mWbSc;
+    private RelativeLayout rlTitle;
     //    private com.tencent.smtt.sdk.WebView mWbSc;
     //    private X5WebView mX5WebView;
     private String mTitle;
@@ -82,7 +84,8 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
     String compressPath = "";
     private TextView mMTextGo;
     private EditText mMEditUrl;
-    public static Activity mActivity;
+    private String isTitle = "0";
+//    public static Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-        mActivity = this;
+//        mActivity = this;
         initStatusBar();
         initView();
         Intent intent = getIntent();
@@ -104,6 +107,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
         } else {
             mTitle = webParams == null ? getResources().getString(R.string.nav_my_wallet) : JSONObject.parseObject(webParams).getString("title");
             mUrl = webParams != null ? JSONObject.parseObject(webParams).getString("url") : HttpApi.SEAT_WALLET;
+            isTitle = JSONObject.parseObject(webParams).getString("isTitle");
 //        mUrl = "http://m.qianqianshijie.com/wallet/Chargebond";
         }
         initWeb();
@@ -230,6 +234,12 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
 
         });
         mTvWebTbTitle.setText(mTitle);
+        LogUtils.d("webPararms"+isTitle);
+        if("1".equals(isTitle)){
+            rlTitle.setVisibility(View.GONE);
+        }else {
+            rlTitle.setVisibility(View.VISIBLE);
+        }
         /**
          * 防止token过期，获取最新token后再加载webView
          */
@@ -470,6 +480,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
         mIvWebBack = (ImageView) findViewById(R.id.iv_web_back);
         mTvWebTbTitle = (TextView) findViewById(R.id.tv_web_tb_title);
         mPbWeb = (ProgressBar) findViewById(R.id.pb_web);
+        rlTitle = findViewById(R.id.rl_title);
 //        mWbSc = (WebView) findViewById(R.id.wb_sc);
         mMTextGo = findViewById(R.id.text_go_url);
         mMEditUrl = findViewById(R.id.edit_url);

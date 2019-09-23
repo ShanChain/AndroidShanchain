@@ -82,6 +82,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
 
 
     private String roomID;
+    private String digistId;
     private boolean isSelect = false, editStatus;
     private BaseQuickAdapter adapter;
     private int page = 0, size = 10, count = 1, selectCount;
@@ -107,11 +108,13 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
         count = intent.getIntExtra("count", 0);
+        digistId = intent.getStringExtra("digistId");
+        LogUtils.d("------->>digistId:"+digistId);
         refreshLayout.setOnRefreshListener(this);
         mMenberPresenter = new GroupMenberPresenterImpl(this);
         mGroupMenberAdapter = new GroupMenberAdapter(R.layout.item_members_chat_room,mGroupList);
-        View view = LayoutInflater.from(this).inflate(R.layout.not_data_footer_view, null);
-        mGroupMenberAdapter.addFooterView(view);
+//        View view = LayoutInflater.from(this).inflate(R.layout.not_data_footer_view, null);
+//        mGroupMenberAdapter.addFooterView(view);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -129,7 +132,9 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
 
     //获取群组成员
     private void getGroupMenberList(){
-        mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
+//        mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
+
+        mMenberPresenter.getRoomMenbers(digistId);
     }
 
 
@@ -218,7 +223,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
             @Override
             public void chatUser(Members members) {
                 if(members == null)return;
-                JMessageClient.getUserInfo(members.getUsername(), new GetUserInfoCallback() {
+                JMessageClient.getUserInfo(members.getHxUserName(), new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, final UserInfo userInfo) {
                         String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
@@ -288,7 +293,6 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        pageIndex = 0;
         getGroupMenberList();
     }
 
@@ -331,6 +335,22 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 mGroupMenberAdapter.addData(membersList);
             }
 
+        }
+    }
+
+    @Override
+    public void setGroupMenberListResponse(String response) {
+        refreshLayout.setRefreshing(false);
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            List<Members> membersList = JSONArray.parseArray(data, Members.class);
+            if(membersList!=null && membersList.size()>0){
+                mGroupList.clear();
+                mGroupList.addAll(membersList);
+                rvMessageList.setAdapter(mGroupMenberAdapter);
+                mGroupMenberAdapter.notifyDataSetChanged();
+            }
         }
     }
 

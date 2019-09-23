@@ -447,7 +447,7 @@
     <string name="click_map_create_mine">Click on the map to create a meta-mine area directly!</string>
     <string name="mine_full">The mine is full</string>
     <string name="yaoq_fanyong">Invitation to return</string>
-    <string name="cofy">Cofy</string>
+    <string name="cofy">Copy</string>
     <string name="rebate_rules">Rebate rules</string>
     <string name="invation_record">Invitation record</string>
     <string name="rebate_record">Rebate record</string>
@@ -521,5 +521,29 @@
     <string name="create_my_cn">Create my Voucher</string>
     <string name="rule_11">Rule</string>
     <string name="change_location">Update location</string>
+    <string name="no_more_data">No more data</string>
+    <string name="join_mine_1">Join the mining</string>
+    <string name="dialogue_1">Dialogue</string>
+    <string name="Publish_1">Publish</string>
+    <string name="reply">Reply</string>
+    <string name="reply_nums">%Reply</string>
+    <string name="announcement">Announcement</string>
+    <string name="question_1">MarJar app video tutorial series</string>
+    <string name="question_2">Q: How to generate qr code wallet？</string>
+    <string name="question_3">Q: How to create your own mine?</string>
+    <string name="question_4">Q: How to join mining areas created by other users?</string>
+    <string name="question_5">Q: How to get invitation to return?</string>
+    <string name="question_6">Q: How to make coin earn interest？</string>
+    <string name="question_7">Q: How to deposit coin?</string>
+    <string name="question_8">Q: How to withdraw coin?</string>
+    <string name="question_detail_1">A: Click on the bottom navigation barmy wallet system will prompt you to create a wallet account, click OK, complete the account name setting and real name authentication according to the prompt operation, and upload the picture to generate the wallet two-dimensional code. Click to save the wallet two-dimensional code picture.</string>
+    <string name="question_detail_2">A: click on the navigation at the bottom of the bionic dig  click on the map for the mining area you want to create the lock area - pop-up input field name  enter complete qr code upload page, click ok to jump to purse upload wallet qr code click ok to create success and then click the map below my mine - I create list can view to create a successful mining area. Specific details can view the mining page rules.</string>
+    <string name="question_detail_3">A: click on the navigation bar at the bottom of the bionic dig  click to mining in mining area, can be added into the list of selected to join the mining area can be searched through the field name or invite code , click the rightmost cut into the first button will pop up you need to pay the 100 seat mining reserves, click ok button pop-up wallet qr code upload page, upload their own wallet qr code click ok to join after the success can be in my - I joined the list of the mining area to see success in mining area. Specific details can view the mining page rules.</string>
+    <string name="question_detail_4">A: Click on my Invitation Return function in the bottom navigation bar, go to the Invitation Return page, click Save/View Pictures to save your Invitation Sharing Code - Share your Invitation Sharing Code to unregistered users after registration and dig effectively, after reaching a certain number of users, you can get the corresponding commission, for specific reference. See the Return Rules in the upper left corner of the Invitation Return page.</string>
+    <string name="question_detail_5">A: click on the navigation bar at the bottom of the my  my wallet,click on money to dig, enter the need to read for the first time cash mining conditions and click on consent to enter their money to dig at the bottom of the page select you want to lock up the currency click to lock up, enter lock warehouse number and select the contract deadline, click on the submit to contract period after the system will automatically return the currency and the corresponding interest coin locked storehouse.</string>
+    <string name="question_detail_6">A: click on the bottom navigation bar of my  my wallet page recharge coin ,select recharge (purchase SEAT coin through alipay platform) or recharge coin (transfer from other wallets to other digital currencies)  click now to recharge, and operate according to the corresponding operation process.</string>
+    <string name="question_detail_7">A: click on the bottom navigation bar of my  my wallet page coin ,select transfer (transfer SEAT to other vest wallet account) or withdraw coin (withdraw other digital currency) click now, and operate according to the corresponding operation process.</string>
+    <string name="fap_vedio">FAQ and video tutorial</string>
+
 
 </resources>
