@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -69,10 +70,12 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     ArthurToolBar toolBar;
     @Bind(R.id.rv_message_list)
     RecyclerView rvMessageList;
+    @Bind(R.id.ll_notdata)
+    LinearLayout llNotdata;
 
-    private List<MessageHomeInfo> chatRoomlist = new ArrayList<>();
+//    private List<MessageHomeInfo> chatRoomlist = new ArrayList<>();
 
-    List<Conversation> conversationList;
+//    List<Conversation> conversationList = new ArrayList<>();
     private Conversation conversation;
     private MessageListAdapter messageListAdapter;
     public static boolean isForeground = false;
@@ -107,41 +110,54 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
             }
         }
         initToolBar();
-        initView();
-        initRecyclerView();
-        initData();
+//        initView();
+//        initRecyclerView();
+//        initData();
         //注册自定义消息广播
 //        registerMessageReceiver();
     }
 
-    private void initView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyMessageActivity.this, LinearLayoutManager.VERTICAL, false);
-        rvMessageList.setLayoutManager(linearLayoutManager);
-        rvMessageList.setAdapter(new BaseQuickAdapter<MessageHomeInfo, BaseViewHolder>(R.layout.item_members_chat_room, chatRoomlist) {
-            @Override
-            protected void convert(BaseViewHolder helper, MessageHomeInfo item) {
-                helper.setText(R.id.tv_item_contact_child_name, item.getJMConversation().getTargetId());
-                helper.setText(R.id.tv_item_contact_child_focus, R.string.dialogue);
-                helper.setText(R.id.tv_item_contact_child_des, "" + item.getJMConversation().getLatestText());
-            }
-
-        });
-    }
 
     private void initRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMessageList.setLayoutManager(layoutManager);
+        final List<MessageHomeInfo> chatRoomlist = new ArrayList<>();
+        List<Conversation> conversationList = JMessageClient.getConversationList();
+        if(conversationList!=null && conversationList.size()>0){
+            llNotdata.setVisibility(View.GONE);
+            rvMessageList.setVisibility(View.VISIBLE);
+            for (int i = 0; i < conversationList.size(); i++) {
+                conversation = conversationList.get(i);
+                if (conversation.getType() == ConversationType.single) {
+                    LogUtils.d("----->>>>"+conversation.toJsonString());
+                    final MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
+                    messageHomeInfo.setJMConversation(conversation);
+                    UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
+                    messageHomeInfo.setName(userInfo.getNickname());
+                    messageHomeInfo.setHxUser(conversation.getTargetId());
+                    messageHomeInfo.setUnRead(conversation.getUnReadMsgCnt());
+                    messageHomeInfo.setJmName(userInfo.getUserName());
+                    conversation.getLastMsgDate();
+                    messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
+                    messageHomeInfo.isTop();
+                    messageHomeInfo.setUserInfo(userInfo);
+                    chatRoomlist.add(messageHomeInfo);
+                }
+            }
+        }else {
+            llNotdata.setVisibility(View.VISIBLE);
+            rvMessageList.setVisibility(View.GONE);
+        }
+
         if (chatRoomlist.size() > 1) {
             rvMessageList.addItemDecoration(new RecyclerViewDivider(mActivity));
         }
         messageListAdapter = new MessageListAdapter(R.layout.item_msg_home, chatRoomlist);
-        View headView = LayoutInflater.from(MyMessageActivity.this).inflate(R.layout.item_msg_home, null, false);
-//        messageListAdapter.addHeaderView(headView);
         rvMessageList.setAdapter(messageListAdapter);
+        messageListAdapter.notifyDataSetChanged();
         messageListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                Intent intent = new Intent(mActivity, SingleChatActivity.class);
                 MessageHomeInfo messageHomeInfo = chatRoomlist.get(position);
                 messageHomeInfo.setUnRead(0);
                 Conversation conversation = messageHomeInfo.getJMConversation();
@@ -153,64 +169,24 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
                 bundle.putParcelable("userInfo", defaultUser);
                 if (messageHomeInfo.getHxUser().equals("123456") || messageHomeInfo.getHxUser().equals(mJguserName)) {
                     messageHomeInfo.setTop(true);
-//                    readyGo(SingerChatInfoActivity.class, bundle);
                 }
                 readyGo(SingleChatActivity.class, bundle);
             }
         });
-
-        messageListAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                //showDialog(position);
-                return true;
-            }
-        });
-
     }
 
     public void onEvent(MessageEvent event) {
-        final Message message = event.getMessage();
         ThreadUtils.runOnMainThread(new Runnable() {
             @Override
             public void run() {
                 if (messageListAdapter != null) {
-                    chatRoomlist.clear();
-                    initData();
+                    initRecyclerView();
                     messageListAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
 
-
-    private void initData() {
-        conversationList = JMessageClient.getConversationList();
-        if (conversationList == null) {
-            return;
-        }
-        chatRoomlist.clear();
-        for (int i = 0; i < conversationList.size(); i++) {
-            conversation = conversationList.get(i);
-            if (conversation.getType() == ConversationType.single) {
-//                LogUtils.d("----->>>>"+conversation.toJsonString());
-                final MessageHomeInfo messageHomeInfo = new MessageHomeInfo();
-                messageHomeInfo.setJMConversation(conversation);
-                UserInfo userInfo = (UserInfo) conversation.getTargetInfo();
-                messageHomeInfo.setName(userInfo.getNickname());
-                messageHomeInfo.setHxUser(conversation.getTargetId());
-                messageHomeInfo.setUnRead(conversation.getUnReadMsgCnt());
-                messageHomeInfo.setJmName(userInfo.getUserName());
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                conversation.getLastMsgDate();
-                messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
-                messageHomeInfo.isTop();
-                chatRoomlist.add(messageHomeInfo);
-            }
-        }
-        messageListAdapter.notifyDataSetChanged();
-
-    }
 
     Bitmap mBitmap;
     private Bitmap getUserAvatarBitmap(UserInfo userInfo){
@@ -257,11 +233,8 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
     @Override
     public void onResume() {
         isForeground = true;
-        /*if (messageListAdapter != null) {
-            chatRoomlist.clear();
-            initData();
-            messageListAdapter.notifyDataSetChanged();
-        }*/
+//        initData();
+        initRecyclerView();
         super.onResume();
     }
 

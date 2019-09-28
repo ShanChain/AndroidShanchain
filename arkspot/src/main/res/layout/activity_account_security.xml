@@ -385,7 +385,49 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorBgGray"></View>
         </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/relative_kyc"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/relative_identity"
+            android:background="@drawable/selector_click_bg_msg">
 
+            <TextView
+                android:id="@+id/tv_kyc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:text="@string/kyc_identify"
+                android:textColor="@color/colorTextDefault"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/tv_identity_kyc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/iv_update_yc"
+                android:text="@string/uncertified"
+                android:textColor="@color/colorHint" />
+
+            <ImageView
+                android:id="@+id/iv_update_yc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimens_20dp"
+                android:background="@mipmap/abs_meet_btn_enter_default" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBgGray"></View>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

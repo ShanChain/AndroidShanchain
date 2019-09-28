@@ -65,12 +65,20 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_message_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
         android:background="@color/colorWhite"
-        android:paddingTop="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_10">
-
     </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/ll_notdata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <include layout="@layout/not_data_item_view"/>
+    </LinearLayout>
+
+
 </LinearLayout>

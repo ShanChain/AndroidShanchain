@@ -52,7 +52,7 @@
         android:layout_marginRight="@dimen/dimens_15dp"
         android:drawableTop="@mipmap/abs_contactperson_btn_attention_default"
         android:drawablePadding="5dp"
-        android:text="对话"
+        android:text="@string/dialogue"
         android:textColor="@color/colorActive"
         android:textSize="12sp" />
 

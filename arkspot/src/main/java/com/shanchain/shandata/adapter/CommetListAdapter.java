@@ -86,6 +86,11 @@ public class CommetListAdapter extends BaseAdapter {
             viewHolder.tvNickname.setText(commentEntity.getSendNickName());
             viewHolder.tvTime.setText(TimeUtils.friendlyTime1(mContext,new Date(commentEntity.getCreateTime())));
             viewHolder.tvComment.setText(commentEntity.getContent());
+            if(commentEntity.getReviceCount() == 0){
+                viewHolder.tvRenums.setText(mContext.getString(R.string.reply));
+            }else {
+                viewHolder.tvRenums.setText(mContext.getString(R.string.reply_nums,commentEntity.getReviceCount()+""));
+            }
             if("0".equals(commentEntity.getIsAttention())){
                 //未关注
                 viewHolder.tvAttention.setBackgroundResource(R.drawable.squra_attention_n_shape);
@@ -98,10 +103,10 @@ public class CommetListAdapter extends BaseAdapter {
             }
             if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == commentEntity.getSendUserId()){
                 viewHolder.tvAttention.setVisibility(View.GONE);
-                viewHolder.tvDelete.setVisibility(View.VISIBLE);
+                viewHolder.llDelete.setVisibility(View.VISIBLE);
             }else {
                 viewHolder.tvAttention.setVisibility(View.VISIBLE);
-                viewHolder.tvDelete.setVisibility(View.GONE);
+                viewHolder.llDelete.setVisibility(View.GONE);
             }
 
             //关注
@@ -140,6 +145,10 @@ public class CommetListAdapter extends BaseAdapter {
         TextView tvComment;
         @Bind(R.id.tv_delete)
         TextView tvDelete;
+        @Bind(R.id.tv_renums)
+        TextView tvRenums;
+        @Bind(R.id.ll_delete)
+        LinearLayout llDelete;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

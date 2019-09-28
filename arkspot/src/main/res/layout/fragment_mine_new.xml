@@ -53,16 +53,26 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="20dp" />
-
-    <include layout="@layout/fragment_mint_item"/>
-
-    <Space
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        />
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
-    <LinearLayout
+
+        <include layout="@layout/fragment_mint_item"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            />
+
+
+        <LinearLayout
         android:id="@+id/ll_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,11 +98,11 @@
             android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
-    <View
+        <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorTextBg"/>
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/ll_client"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -119,11 +129,11 @@
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
 
-    <View
+        <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorTextBg"/>
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/ll_adepart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -156,4 +166,6 @@
             android:layout_height="15dp"
             android:src="@mipmap/abs_meet_btn_enter_default"/>
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -97,4 +97,7 @@
     <color name="colorRed_send_s">#DF6122</color>
     <color name="text_color_n">#999999</color>
     <color name="text_color_b">#F5F5F5</color>
+    <color name="kyc_state_bg_s">#6DC4F8</color>
+    <color name="kyc_state_bg_f">#F53B62</color>
+
 </resources>

@@ -202,6 +202,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }        //获取极光推送绑定的设备号
         registrationId = JPushInterface.getRegistrationID(getApplicationContext());
+        LogUtils.d("------->>>registrationId:"+registrationId);
         // 添加Activity入栈
         ActivityManager.getInstance().addActivity(this);
         ActivityStackManager.getInstance().addActivity(this);

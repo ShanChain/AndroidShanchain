@@ -70,5 +70,6 @@
     <string name="take_photo">拍照</string>
     <string name="share_to">分享到</string>
     <string name="password_error">密码错误</string>
+    <string name="click_retry">点击重试</string>
 
 </resources>

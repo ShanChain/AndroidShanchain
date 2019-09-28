@@ -39,7 +39,7 @@ public class QuestionDetailActivity extends BaseActivity implements ArthurToolBa
     }
 
     private void initToolBar() {
-        tbAbout.setTitleText("FAQ");
+        tbAbout.setTitleText(getString(R.string.answer_questions));
         tbAbout.setTitleTextColor(Color.BLACK);
         tbAbout.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         tbAbout.setOnLeftClickListener(this);

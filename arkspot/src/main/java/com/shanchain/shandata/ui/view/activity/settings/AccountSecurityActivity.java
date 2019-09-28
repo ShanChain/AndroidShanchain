@@ -1,5 +1,6 @@
 package com.shanchain.shandata.ui.view.activity.settings;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +37,7 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
+import com.shanchain.shandata.ui.model.PasspostBean;
 import com.shanchain.shandata.ui.view.activity.jmessageui.VerifiedActivity;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
@@ -120,6 +122,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     RelativeLayout relativeBottom;
     @Bind(R.id.relative_logout_account)
     RelativeLayout relativeLogoutAccount;
+    @Bind(R.id.tv_identity_kyc)
+    TextView tvIdentityKyc;
 
     private AuthListener mAuthListener, removeAuthListener;
     private String accessToken, encryptOpenId, encryptToken16, name, imageUrl, thirdOpenId;
@@ -131,6 +135,7 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     private String mobile;
     private StandardDialog standardDialog;
     private SCInputDialog mScInputDialog;
+    private PasspostBean passpostBean;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -167,7 +172,8 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
         tvMajaId.setText(SCCacheUtils.getCacheUserId() + "");
         initCurrentUserStatus();
         isRealName();
-        initData();
+//        initData();
+
     }
 
     private void initData() {
@@ -245,7 +251,7 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
 
     private void initToolbar() {
         ArthurToolBar arthurToolBar = findViewById(R.id.tb_setting);
-        arthurToolBar.setTitleText("");
+        arthurToolBar.setTitleText(getString(R.string.settings_account_security));
         arthurToolBar.setOnLeftClickListener(this);
     }
 
@@ -259,10 +265,11 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
     public void onResume() {
         super.onResume();
         initData();
+        checkKYCInfo();
     }
 
     @OnClick({R.id.relative_login_password, R.id.relative_bind_phone, R.id.relative_account, R.id.relative_qq,
-            R.id.relative_facebook, R.id.relative_identity,R.id.relative_logout_account})
+            R.id.relative_facebook, R.id.relative_identity,R.id.relative_logout_account,R.id.relative_kyc})
     public void onViewClicked(View view) {
         StandardDialog standardDialog = new StandardDialog(mContext);
         standardDialog.setStandardTitle(" ");
@@ -345,6 +352,14 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
                 break;
             case R.id.relative_logout_account://注销账号
                 isLogoutTip();
+                break;
+            case R.id.relative_kyc://kyc认证
+                if(passpostBean == null){
+                    startActivity(new Intent(this,KYCCertificatActivity.class));
+                }else {
+                    startActivity(new Intent(AccountSecurityActivity.this,KYCCertifitStateActivity.class).putExtra("info",passpostBean));
+                }
+
                 break;
         }
     }
@@ -651,4 +666,40 @@ public class AccountSecurityActivity extends BaseActivity implements ArthurToolB
         readyGo(LoginActivity.class);
         ActivityStackManager.getInstance().finishAllActivity();
     }
+
+    //查询用户kyc认证信息
+    private void checkKYCInfo(){
+        SCHttpUtils.post()
+                .url(HttpApi.USER_PASSPORT_QUERY)
+                .addParams("userId", SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+//                        mGroupMenberView.showProgressEnd();
+                    }
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = SCJsonUtils.parseCode(response);
+                        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            List<PasspostBean> mList = JSONObject.parseArray(data,PasspostBean.class);
+                            if(mList !=null && mList.size()>0){
+                                passpostBean = mList.get(0);
+                                if(passpostBean.getRealStatus() == 0){
+                                    tvIdentityKyc.setText(R.string.under_review);
+                                }else if(passpostBean.getRealStatus() == 1){
+                                    tvIdentityKyc.setText(R.string.certified);
+                                }else {
+                                    tvIdentityKyc.setText(R.string.rejected);
+                                }
+                            }else {
+                                tvIdentityKyc.setText(getString(R.string.uncertified));
+                            }
+                        }
+                    }
+
+                });
+    }
+
 }

@@ -279,6 +279,7 @@ public class LoginActivity extends BaseActivity {
                                     registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
                                     //注册极光推送
                                     JPushInterface.setAlias(getApplicationContext(),1001,characterId+"");
+                                    com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("---->>hxuserid: "+characterId);
                                 }
 
                             } else {
@@ -521,8 +522,13 @@ public class LoginActivity extends BaseActivity {
                                 }
                                 checkCache();
                             } else if (TextUtils.equals(code, NetErrCode.LOGIN_ERR_CODE)) {
-                                ToastUtils.showToast(mContext, R.string.ac_ps_wrong);
-                                closeProgress();
+                                ThreadUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showToast(mContext, R.string.ac_ps_wrong);
+                                        closeProgress();
+                                    }
+                                });
                             } else {
                                 ToastUtils.showToast(mContext, getString(R.string.network_wrong));
                                 closeProgress();

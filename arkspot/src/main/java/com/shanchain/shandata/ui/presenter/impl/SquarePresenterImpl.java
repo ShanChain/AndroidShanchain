@@ -130,4 +130,21 @@ public class SquarePresenterImpl implements SquarePresenter {
                     }
                 });
     }
+
+    @Override
+    public void getUserHxid(String userId) {
+        SCHttpUtils.getNoToken()
+                .url(HttpApi.USER_IM_ID+"/"+userId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSquareView.setHxUseridResponse(response);
+                    }
+                });
+    }
 }

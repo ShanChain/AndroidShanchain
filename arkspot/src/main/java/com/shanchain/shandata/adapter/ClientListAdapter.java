@@ -32,7 +32,7 @@ public class ClientListAdapter extends BaseQuickAdapter<DefaultUser,BaseViewHold
         if(item.getId() == 1){
             cv.setImageResource(R.mipmap.client_icon_w);
         }else if(item.getId()==2){
-            cv.setImageResource(R.mipmap.client_icon_w);
+            cv.setImageResource(R.mipmap.client_icon_m);
         }else {
             cv.setImageResource(R.mipmap.client_icon_m);
         }

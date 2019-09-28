@@ -3,6 +3,7 @@ package com.shanchain.shandata.ui.view.fragment.marjartwideo;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,8 @@ import com.shanchain.shandata.ui.presenter.impl.SquarePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
 import com.shanchain.shandata.ui.view.activity.article.PhotoPagerActivity;
 import com.shanchain.shandata.ui.view.activity.article.PublishArticleActivity;
+import com.shanchain.shandata.ui.view.activity.jmessageui.SingleChatActivity;
+import com.shanchain.shandata.ui.view.activity.settings.ClientListActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.SquareView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +55,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jiguang.imui.model.DefaultUser;
 
 /**
  * Created by WealChen
@@ -104,7 +108,6 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
     //发布微文之后刷新列表
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateDataFromPublish(String s){
-        ToastUtil.showToast(getActivity(),"in");
         if("publish".equals(s)){
             pageIndex = 0;
             mSquarePresenter.getListData("",userId,pageIndex, Constants.pageSize,Constants.pullRefress);
@@ -249,6 +252,25 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
         }
     }
 
+    @Override
+    public void setHxUseridResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            String hxUser = JSONObject.parseObject(data).getString("hxUserName");
+            if(!TextUtils.isEmpty(hxUser)){
+                DefaultUser defaultUser = new DefaultUser(1,hxUser,"");
+                defaultUser.setHxUserId(hxUser);
+                Intent intent = new Intent(getActivity(), SingleChatActivity.class);
+                Bundle bundle1 = new Bundle();
+                bundle1.putParcelable("userInfo", defaultUser);
+                intent.putExtras(bundle1);
+                startActivity(intent);
+
+            }
+        }
+    }
+
     //相关监听
     private void initLoadMoreListener() {
         //上拉加载
@@ -330,9 +352,10 @@ public class SquareFragment extends BaseFragment implements SwipeRefreshLayout.O
             @Override
             public void chatByUserIcon(SqureDataEntity squreDataEntity) {
                 if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == squreDataEntity.getUserId()){
-                    ToastUtil.showToast(getActivity(),"自己不能和自己聊天");
+//                    ToastUtil.showToast(getActivity(),"自己不能和自己聊天");
+                    return;
                 }
-
+                mSquarePresenter.getUserHxid(squreDataEntity.getUserId()+"");
             }
         });
     }

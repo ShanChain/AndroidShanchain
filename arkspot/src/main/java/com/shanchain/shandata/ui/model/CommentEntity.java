@@ -14,10 +14,14 @@ public class CommentEntity implements Serializable {
     int invitationId;
     int sendUserId;
     int toUserId;
+    int parentId;
+    int replyId;
     long updateTime;
     String sendNickName;
     String sendHeadIcon;
+    String toNickName;
     String isAttention;
+    int reviceCount;
 
     public int getId() {
         return id;
@@ -97,5 +101,56 @@ public class CommentEntity implements Serializable {
 
     public void setIsAttention(String isAttention) {
         this.isAttention = isAttention;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(int replyId) {
+        this.replyId = replyId;
+    }
+
+    public String getToNickName() {
+        return toNickName;
+    }
+
+    public void setToNickName(String toNickName) {
+        this.toNickName = toNickName;
+    }
+
+    public int getReviceCount() {
+        return reviceCount;
+    }
+
+    public void setReviceCount(int reviceCount) {
+        this.reviceCount = reviceCount;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentEntity{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", createTime=" + createTime +
+                ", invitationId=" + invitationId +
+                ", sendUserId=" + sendUserId +
+                ", toUserId=" + toUserId +
+                ", parentId=" + parentId +
+                ", replyId=" + replyId +
+                ", updateTime=" + updateTime +
+                ", sendNickName='" + sendNickName + '\'' +
+                ", sendHeadIcon='" + sendHeadIcon + '\'' +
+                ", toNickName='" + toNickName + '\'' +
+                ", isAttention='" + isAttention + '\'' +
+                '}';
     }
 }

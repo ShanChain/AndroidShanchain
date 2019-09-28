@@ -52,7 +52,7 @@ public class ClientListActivity extends BaseActivity implements SwipeRefreshLayo
     private List<QuestionBean> mQuestionBeanList = new ArrayList<>();
     private List<DefaultUser> mList = new ArrayList<>();
     /*private String clientName [] = new String[]{"156505544974000163e0aa65869682","154233182630000163e0aa658298481",""};//测试*/
-    private String clientName [] = new String[]{"154260669669500163e0aa658733721","156585492702200163e04797928698242","154279401865600163e0479798782"};//正式
+    private String clientName [] = new String[]{"156585492702200163e04797928698242","154279401865600163e0479798782","154260669669500163e0aa658733721"};//正式
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_client_service;
@@ -68,7 +68,7 @@ public class ClientListActivity extends BaseActivity implements SwipeRefreshLayo
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewCoupon.setLayoutManager(layoutManager);
         recyclerViewCoupon.setAdapter(mListAdapter);
-        String clientAttr[] = new String[]{getResources().getString(R.string.bussiness_server),getResources().getString(R.string.technical_server_1),getResources().getString(R.string.technical_server_2)};//测试
+        String clientAttr[] = new String[]{getResources().getString(R.string.technical_server_1),getResources().getString(R.string.technical_server_2),getResources().getString(R.string.bussiness_server)};//测试
         for (int i = 0; i <3; i++) {
             DefaultUser defaultUser = new DefaultUser(i,clientAttr[i],"");
             defaultUser.setHxUserId(clientName[i]);

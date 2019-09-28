@@ -242,7 +242,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
                         }
                         commiteFeedback();
                     }else {
-                        ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));;
+                        ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));
                     }
                 }else {
                     ToastUtil.showToast(FeedbackActivity.this, getString(R.string.images_upload_failed));

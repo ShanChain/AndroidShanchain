@@ -76,7 +76,23 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         //设置昵称
         helper.setText(R.id.tv_item_msg_home_name,item.getName() );
         final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
-        JMessageClient.getUserInfo(item.getJmName(), new GetUserInfoCallback() {
+        LogUtils.d("--->>>message list bitmap:"+item.getAvatarBitmap());
+        /*if(item.getAvatarBitmap()==null){
+            circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
+        }else {
+            circleImageView.setImageBitmap(item.getAvatarBitmap());
+        }*/
+        item.getUserInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
+            @Override
+            public void gotResult(int i, String s, Bitmap bitmap) {
+                if (bitmap != null) {
+                    circleImageView.setImageBitmap(bitmap);
+                } else {
+                    circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
+                }
+            }
+        });
+        /*JMessageClient.getUserInfo(item.getJmName(), new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
                 if(userInfo!=null && !TextUtils.isEmpty(userInfo.getAvatar())){
@@ -94,7 +110,7 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
                     circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
                 }
             }
-        });
+        });*/
 
     }
 }

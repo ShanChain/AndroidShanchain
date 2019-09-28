@@ -8,7 +8,7 @@
         android:id="@+id/rl_home_intro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         >
         <ImageView
             android:layout_width="match_parent"
@@ -94,13 +94,13 @@
         android:id="@+id/rl_view2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/colorBlack_home">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="70dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp">
             <include layout="@layout/home_item_icons_guide"/>

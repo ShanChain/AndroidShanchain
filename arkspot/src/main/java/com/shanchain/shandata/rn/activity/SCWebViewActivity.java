@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -42,6 +43,7 @@ import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
+import com.shanchain.data.common.net.NetworkUtils;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.SetWalletPasswordActivity;
@@ -67,10 +69,8 @@ import okhttp3.Call;
 public class SCWebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView mIvWebBack;
-    private TextView mTvWebTbTitle;
+    private TextView mTvWebTbTitle,tvRetry;
     private WebView mWbSc;
-    //    private com.tencent.smtt.sdk.WebView mWbSc;
-    //    private X5WebView mX5WebView;
     private String mTitle;
     private String mUrl;
     private String token, characterId, userId;
@@ -83,8 +83,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private final int RESULT_CODE_PICK_FROM_ALBUM_ABOVE_LOLLILOP = 2;
     private String url = "";//这里添加含有图片上传功能的H5页面访问地址即可。
     String compressPath = "";
-    private TextView mMTextGo;
-    private EditText mMEditUrl;
     public static Activity mActivity;
 
     @Override
@@ -107,16 +105,13 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         } else {
             mTitle = webParams == null ? getResources().getString(R.string.nav_my_wallet) : JSONObject.parseObject(webParams).getString("title");
             mUrl = webParams != null ? JSONObject.parseObject(webParams).getString("url") : HttpApi.SEAT_WALLET;
-//        mUrl = "http://m.qianqianshijie.com/wallet/Chargebond";
         }
+
         initWeb();
     }
 
     private void initWeb() {
-        showLoadingDialog();
-//        LogUtils.d("当前活动Activity",ActivityStackManager.getInstance().getCurrentActivity().getLocalClassName());
         mWbSc = findViewById(R.id.wb_sc);
-//        com.tencent.smtt.sdk.WebSettings settings = mWbSc.getSettings();
         WebSettings settings = mWbSc.getSettings();
         settings.setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false
         settings.setJavaScriptEnabled(true);//是否允许JavaScript脚本运行，默认为false。设置true时，会提醒可能造成XSS漏洞
@@ -126,16 +121,26 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         settings.setLoadWithOverviewMode(true);//和setUseWideViewPort(true)一起解决网页自适应问题
         settings.setAppCacheEnabled(true);//是否使用缓存
         settings.setDomStorageEnabled(true);//开启本地DOM存储
-//        settings.setLayoutAlgorithm(com.tencent.smtt.sdk.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
         settings.setLoadsImagesAutomatically(true); // 加载图片
         settings.setMediaPlaybackRequiresUserGesture(false);//播放音频，多媒体需要用户手动？设置为false为可自动播放
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWbSc.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-//        mWbSc.setWebViewClient(new com.tencent.smtt.sdk.WebViewClient());
         mWbSc.setWebChromeClient(new MyWebChromeClient());
         mWbSc.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                LogUtils.d("webView加载失败：", "WebResourceError error:" + error.toString());
+                closeLoadingDialog();
+            }
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                LogUtils.d("webView加载失败：", "errorCode:" + errorCode);
+                closeLoadingDialog();
+            }
 
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
@@ -146,9 +151,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest request) {
-//            public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView webView, com.tencent.smtt.export.external.interfaces.WebResourceRequest request) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    Map headers = request.getRequestHeaders();
                     String urlPath = request.getUrl().getPath();
                     String loadUrl = request.getUrl().toString();
                     String url = webView.getUrl();
@@ -168,7 +171,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     }
                     if (loadUrl.contains("comfirm=true")) {
                         mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
-//                    mWbSc.reload();
                         LogUtils.d("comfirm", url + "");
                         return true;
                     }
@@ -184,25 +186,19 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 }
                 return false;
             }
-
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//            public void onPageStarted(com.tencent.smtt.sdk.WebView view, String s, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                showLoadingDialog();
             }
-
             @Override
             public void onPageFinished(WebView webView, String s) {
-//            public void onPageFinished(com.tencent.smtt.sdk.WebView webView, String s) {
                 LogUtils.d("webView加载完成：", "url:" + s);
                 closeLoadingDialog();
                 super.onPageFinished(webView, s);
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//            public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView view, String url) {
-//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 if (url.contains("toPwd=true")) {
                     Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
                     startActivity(intent);
@@ -214,7 +210,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     return true;
                 } else if (url.contains("comfirm=true")) {
                     mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
-//                    mWbSc.reload();
                     LogUtils.d("comfirm", url + "");
                     return true;
                 } else if (url.contains("toLogin=true")) {
@@ -226,105 +221,16 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     LogUtils.d("toLogin", url + "");
                     return true;
                 } else {
-//                }
-//                mWbSc.loadUrl("http://www.baidu.com");
                     mWbSc.loadUrl(url);
                     return false;
                 }
             }
-
-            //            @Override
-//            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-//            public com.tencent.smtt.export.external.interfaces.WebResourceResponse shouldInterceptRequest(com.tencent.smtt.sdk.WebView view, String url) {
-//                if (url.contains("toPwd=true")) {
-//                    Intent intent = new Intent(SCWebViewActivity.this, SetWalletPasswordActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else if (url.contains("toPrev=true")) {
-//                    LogUtils.d("toPrev", url + "");
-//                    finish();
-//                } else if (url.contains("comfirm=true")) {
-//                    mWbSc.loadUrl(mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId"));
-////                    mWbSc.reload();
-//                    LogUtils.d("comfirm", url + "");
-//                } else if (url.contains("toLogin=true")) {
-//                    String url1 = url;
-//                    Intent intent = new Intent(SCWebViewActivity.this, LoginActivity.class);
-//                    intent.putExtra("wallet", "wallet");
-//                    startActivity(intent);
-//                    finish();
-//                    LogUtils.d("toLogin", url + "");
-//                } else {
-//                    mWbSc.loadUrl(url);
-//                }
-//                return super.shouldInterceptRequest(view, url);
-//            }
         });
         mTvWebTbTitle.setText(mTitle);
-//        if (mTitle.equals("交易推送")) {
-//            mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=JPush"+ "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");;
-//        } else {
-//            mUrl = mUrl + "?token=" + SCCacheUtils.getCacheToken() + "&characterId=" + SCCacheUtils.getCacheCharacterId() + "&userId=" + SCCacheUtils.getCacheUserId() + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
-//        }
-//        mWbSc.loadUrl("http://www.baidu.com");//加载url
-//        mWbSc.loadUrl(mUrl);//加载url
-        /**
-         * 防止token过期，获取最新token后再加载webView
-         */
-        SCHttpUtils.postWithUserId()
-                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
-                .url(HttpApi.CHARACTER_GET_CURRENT)
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtils.d("网络错误");
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = JSONObject.parseObject(response).getString("code");
-                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
-                            String data = JSONObject.parseObject(response).getString("data");
-                            if (TextUtils.isEmpty(data)) {
-                                return;
-                            }
-                            String character = JSONObject.parseObject(data).getString("characterInfo");
-                            token = SCCacheUtils.getCacheToken();
-                            CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
-                            characterId = String.valueOf(characterInfo.getCharacterId());
-                            userId = SCCacheUtils.getCacheUserId();
-                            map = new HashMap<String, String>();
-                            map.put("token", token + "");
-                            map.put("JPush", "JPush");
-                            map.put("characterId", characterId + "");
-                            map.put("userId", userId + "");
-                            map.put("channel", "" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL"));
-                            if (mTitle.equals("交易推送")) {
-                                mUrl = mUrl + "&token=" + map.get("token") + "&JPush=" + map.get("JPush") + "&channel=" + map.get("channel");
-                            } else {
-                                mUrl = mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId") + "&channel=" + map.get("channel");
-                            }
-//                            mUrl = "http://www.baidu.com";
-                            mWbSc.loadUrl(mUrl);
-                            LogUtils.d("httpUrl", "" + mWbSc.getUrl() + " getOriginalUrl:" + mWbSc.getOriginalUrl());
-                            LogUtils.d("httpTitle", "" + mTitle);
-                        } else {
-                            if (mTitle.equals("交易推送")) {
-                                mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=" + map.get("JPush") + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
-                            } else {
-                                mUrl = mUrl + "?token=" + SCCacheUtils.getCacheToken() + "&characterId=" + SCCacheUtils.getCacheCharacterId() + "&userId=" + SCCacheUtils.getCacheUserId() + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
-                            }
-                            mWbSc.loadUrl(mUrl);
-                        }
-                    }
-                });
-        LogUtils.d("mUrl", "" + mWbSc.getUrl());
-        LogUtils.d("mTitle", "" + mTitle);
+        getDataStart();
 
         //下载监听
         mWbSc.setDownloadListener(new android.webkit.DownloadListener()
-
         {
             @Override
             public void onDownloadStart(String url, String userAgent, String
@@ -332,14 +238,11 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
-
         mWbSc.setOnLongClickListener(new View.OnLongClickListener()
-
         {
             @Override
             public boolean onLongClick(View v) {
                 WebView.HitTestResult result = mWbSc.getHitTestResult();
-//                com.tencent.smtt.sdk.WebView.HitTestResult result = mWbSc.getHitTestResult();
                 if (null == result)
                     return false;
                 int type = result.getType();
@@ -357,31 +260,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                     case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE: // 带有链接的图片类型
                     case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
                         final String url = result.getExtra();
-//                        ToastUtils.showToastLong(SCWebViewActivity.this, "" + url);
-//                        if (url.indexOf("data:image/*;base64,") != -1) {
-//                            byte[] bitmapArray = Base64.decode(url.split(",")[1], Base64.DEFAULT);
-//                            ToastUtils.showToastLong(SCWebViewActivity.this, "Base64字符串：");
-//                            //使用io流保存图片
-//                            FileOutputStream fos = null;
-//                            File passwordImage = null;
-//                            String filename = ImageUtils.getTempFileName();
-//                            try {
-//                                if (filename != null) {
-//                                    String appPath = getApplicationContext().getFilesDir().getAbsolutePath();//app文件路径
-//                                    String filePath = ImageUtils.getSDPath() + "/shanchain/" + filename;
-//                                    passwordImage = new File(filePath);
-//                                    fos = new FileOutputStream(passwordImage);
-//                                    fos.write(bitmapArray);
-//                                    fos.flush();
-//                                    fos.close();
-//                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            } finally {
-//                                displayToGallery(SCWebViewActivity.this, passwordImage);
-//
-//                            }
-//                        }
                         StandardDialog standardDialog = new StandardDialog(SCWebViewActivity.this);
                         standardDialog.setStandardTitle("是否保存图片");
                         standardDialog.setSureText("保存");
@@ -420,6 +298,71 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 return false;
             }
         });
+    }
+    /**
+     * 防止token过期，获取最新token后再加载webView
+     */
+    private void getUserToken(){
+        SCHttpUtils.postWithUserId()
+                .addParams("characterId", "" + SCCacheUtils.getCacheCharacterId())
+                .url(HttpApi.CHARACTER_GET_CURRENT)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtils.d("网络错误 id: "+id);
+                        ToastUtils.showToast(SCWebViewActivity.this,com.shanchain.shandata.R.string.not_netword_againt_retry);
+                    }
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String code = JSONObject.parseObject(response).getString("code");
+                        if (code.equals(NetErrCode.COMMON_SUC_CODE)) {
+                            String data = JSONObject.parseObject(response).getString("data");
+                            if (TextUtils.isEmpty(data)) {
+                                return;
+                            }
+                            String character = JSONObject.parseObject(data).getString("characterInfo");
+                            token = SCCacheUtils.getCacheToken();
+                            CharacterInfo characterInfo = JSONObject.parseObject(character, CharacterInfo.class);
+                            characterId = String.valueOf(characterInfo.getCharacterId());
+                            userId = SCCacheUtils.getCacheUserId();
+                            map = new HashMap<String, String>();
+                            map.put("token", token + "");
+                            map.put("JPush", "JPush");
+                            map.put("characterId", characterId + "");
+                            map.put("userId", userId + "");
+                            map.put("channel", "" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL"));
+                            if (mTitle.equals("交易推送")) {
+                                mUrl = mUrl + "&token=" + map.get("token") + "&JPush=" + map.get("JPush") + "&channel=" + map.get("channel");
+                            } else {
+                                mUrl = mUrl + "?token=" + map.get("token") + "&characterId=" + map.get("characterId") + "&userId=" + map.get("userId") + "&channel=" + map.get("channel");
+                            }
+//                            mUrl = "http://www.baidu.com";
+                            mWbSc.loadUrl(mUrl);
+                            LogUtils.d("httpUrl", "" + mWbSc.getUrl() + " getOriginalUrl:" + mWbSc.getOriginalUrl());
+                            LogUtils.d("httpTitle", "" + mTitle);
+                        } else {
+                            if (mTitle.equals("交易推送")) {
+                                mUrl = mUrl + "&token=" + SCCacheUtils.getCacheToken() + "&JPush=" + map.get("JPush") + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
+                            } else {
+                                mUrl = mUrl + "?token=" + SCCacheUtils.getCacheToken() + "&characterId=" + SCCacheUtils.getCacheCharacterId() + "&userId=" + SCCacheUtils.getCacheUserId() + "&channel=" + MyApplication.getAppMetaData(SCWebViewActivity.this, "UMENG_CHANNEL");
+                            }
+                            mWbSc.loadUrl(mUrl);
+                        }
+                    }
+                });
+    }
+
+    private void getDataStart(){
+        if(NetworkUtils.isNetworkConnected(SCWebViewActivity.this)){
+            tvRetry.setVisibility(View.GONE);
+            mWbSc.setVisibility(View.VISIBLE);
+            getUserToken();
+        }else {
+            tvRetry.setVisibility(View.VISIBLE);
+            mWbSc.setVisibility(View.GONE);
+            ToastUtils.showToast(SCWebViewActivity.this,com.shanchain.shandata.R.string.not_netword_againt_retry);
+        }
     }
 
     public static void displayToGallery(Context context, File photoFile) {
@@ -501,8 +444,6 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (null != data) {
-//            LogUtils.d("" + data.getData().getPath());
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RESULT_CODE_PICK_FROM_ALBUM_BELLOW_LOLLILOP:
@@ -520,21 +461,9 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
                 if (mUploadCallbackAboveL == null) {
                     return;
                 }
-//                    try {
-//                        uri = afterChosePic(data);
-//                        if (uri == null) {
                 mUploadCallbackAboveL.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
                 mUploadCallbackAboveL = null;
-//                            break;
-//                        }
-//                        if (mUploadCallbackAboveL != null && uri != null) {
-//                            mUploadCallbackAboveL.onReceiveValue(new Uri[]{uri});
-//                            mUploadCallbackAboveL = null;
-//                        }
-//                    } catch (Exception e) {
-//                        mUploadCallbackAboveL = null;
-//                        e.printStackTrace();
-//                    }
+
                 break;
 //            }
         }
@@ -554,19 +483,15 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
         mIvWebBack = (ImageView) findViewById(R.id.iv_web_back);
         mTvWebTbTitle = (TextView) findViewById(R.id.tv_web_tb_title);
+        tvRetry = findViewById(R.id.tv_reload);
         mPbWeb = (ProgressBar) findViewById(R.id.pb_web);
-//        mWbSc = (WebView) findViewById(R.id.wb_sc);
-        mMTextGo = findViewById(R.id.text_go_url);
-        mMEditUrl = findViewById(R.id.edit_url);
         mWbSc = (WebView) findViewById(R.id.wb_sc);
-//        mWbSc = (com.tencent.smtt.sdk.WebView) findViewById(R.id.wb_sc);
         mIvWebBack.setOnClickListener(this);
-        mMTextGo.setOnClickListener(new View.OnClickListener() {
+
+        tvRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mMEditUrl.getText().toString() != null) {
-                    mWbSc.loadUrl(mMEditUrl.getText().toString());
-                }
+                getDataStart();
             }
         });
 
@@ -694,7 +619,7 @@ public class SCWebViewActivity extends AppCompatActivity implements View.OnClick
         mCustomDialog.setCanceledOnTouchOutside(false);
     }
     protected void closeLoadingDialog() {
-        if (mCustomDialog != null) {
+        if (mCustomDialog != null && mCustomDialog.isShowing()) {
             mCustomDialog.dismiss();
         }
     }

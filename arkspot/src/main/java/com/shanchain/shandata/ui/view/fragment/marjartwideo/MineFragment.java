@@ -292,7 +292,7 @@ public class MineFragment extends BaseFragment implements MineView {
     void announcement(){
         Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
         JSONObject obj = new JSONObject();
-        obj.put("url", HttpApi.BASE_URL_WALLET+"/Announcement");
+        obj.put("url", HttpApi.BASE_URL_WALLET+"/Announcement?back=APP");
         obj.put("title", getString(R.string.announcement));
         obj.put("isTitle","1");
         String webParams = obj.toJSONString();

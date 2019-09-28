@@ -84,14 +84,22 @@ public class CommetSecondListAdapter extends BaseAdapter {
                             .error(R.drawable.aurora_headicon_default)).into(viewHolder.ivUserHead1);
             viewHolder.tvNickname.setText(commentEntity.getSendNickName());
             viewHolder.tvTime.setText(TimeUtils.friendlyTime1(mContext,new Date(commentEntity.getCreateTime())));
-            viewHolder.tvComment.setText(commentEntity.getContent());
+            if(commentEntity.getParentId() == commentEntity.getReplyId()){
+                viewHolder.tvComment.setText(commentEntity.getContent());
+            }else {
+                viewHolder.tvComment.setText(commentEntity.getContent()+"//@"+commentEntity.getToNickName());
+                viewHolder.tvComment.setText(mContext.getString(R.string.reply)+" "+commentEntity.getToNickName()+": "+commentEntity.getContent());
+            }
+
 
             if(Integer.parseInt(SCCacheUtils.getCacheUserId()) == commentEntity.getSendUserId()){
-                viewHolder.tvAttention.setVisibility(View.GONE);
+//                viewHolder.tvAttention.setVisibility(View.GONE);
                 viewHolder.tvDelete.setVisibility(View.VISIBLE);
+                viewHolder.tvRenums.setVisibility(View.GONE);
             }else {
-                viewHolder.tvAttention.setVisibility(View.VISIBLE);
+//                viewHolder.tvAttention.setVisibility(View.VISIBLE);
                 viewHolder.tvDelete.setVisibility(View.GONE);
+                viewHolder.tvRenums.setVisibility(View.VISIBLE);
             }
 
             //删除评论

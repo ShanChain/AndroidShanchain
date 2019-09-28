@@ -726,4 +726,12 @@ public interface HttpApi {
     String GET_INVATION_USER_LIST = BASE_URL + "/probecoin/tAccept/getPageTAccept";
     //注销账号
     String USER_LOGINOUT = BASE_URL + "/v1/user/login_close_account";
+    //获取用户hxUserid
+    String USER_IM_ID = BASE_URL + "/probecoin/user/getUserById";
+    //提交用户认证信息
+    String USER_PASSPORT_INFO = BASE_URL + "/probecoin/tUserAuthentication/insertSelective";
+    //查询用户KYC认证信息
+    String USER_PASSPORT_QUERY = BASE_URL + "/probecoin/tUserAuthentication/queryTUserAuthenticationList";
+    //修改用户认证信息
+    String UPDATE_USER_PASSPORT_INFO = BASE_URL + "/probecoin/tUserAuthentication/updateByPrimaryKeySelective";
 }

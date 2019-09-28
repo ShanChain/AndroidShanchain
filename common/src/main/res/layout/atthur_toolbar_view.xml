@@ -23,7 +23,6 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/aurora_headicon_default"
         android:visibility="gone" />
 
     <!-- 中间标题 -->

@@ -43,6 +43,8 @@ import com.shanchain.shandata.widgets.CustomListView;
 import com.shanchain.shandata.widgets.ExpandableTextView;
 import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -167,9 +169,16 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             tvDelete.setVisibility(View.GONE);
         }
 
-        mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
+
         initListener();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getAllArticleComment(Integer.parseInt(userId),mSqureDataEntity.getId(),0,1000);
+    }
+
     //发表评论
     @OnClick(R.id.tv_send)
     void addComment(){
@@ -440,6 +449,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
             ToastUtil.showToast(ArticleDetailActivity.this, R.string.delete_success);
             finish();
+            EventBus.getDefault().post("publish");//提醒广场列表更新
         }else {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override

@@ -989,6 +989,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 intent.putExtra("roomId", roomID);
                 intent.putExtra("count", memberCount);
                 intent.putExtra("digistId",digistId);
+                intent.putExtra("isHotChatRoom",isHotChatRoom);
                 startActivity(intent);
             }
         });

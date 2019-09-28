@@ -98,6 +98,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
     private GroupMenberPresenter mMenberPresenter;
     private SCBottomDialog scBottomDialog;
     private StandardDialog standardDialog;
+    private boolean isHotChatRoom;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_member;
@@ -109,7 +110,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         roomID = intent.getStringExtra("roomId");
         count = intent.getIntExtra("count", 0);
         digistId = intent.getStringExtra("digistId");
-        LogUtils.d("------->>digistId:"+digistId);
+        isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
         refreshLayout.setOnRefreshListener(this);
         mMenberPresenter = new GroupMenberPresenterImpl(this);
         mGroupMenberAdapter = new GroupMenberAdapter(R.layout.item_members_chat_room,mGroupList);
@@ -127,14 +128,20 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         getGroupMenberList();
         mMenberPresenter.checkIsGroupCreater(roomID);
 
-        initLoadMoreListener();
+        if(isHotChatRoom){
+            initLoadMoreListener();
+        }
+
     }
 
     //获取群组成员
     private void getGroupMenberList(){
-//        mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
+        if(isHotChatRoom){
+            mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
+        }else {
+            mMenberPresenter.getRoomMenbers(digistId);
+        }
 
-        mMenberPresenter.getRoomMenbers(digistId);
     }
 
 

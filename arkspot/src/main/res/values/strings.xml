@@ -62,7 +62,7 @@
     <string name="verified_name">姓名：</string>
     <string name="verified_code">身份证号：</string>
     <string name="verified_name_hint">请输入真实姓名</string>
-    <string name="verified_code_hint">请输入真实身份证号</string>
+    <string name="verified_code_hint">请输入身份证号</string>
     <string name="verified_button_sure">认证</string>
 
     <string name="woman">女</string>
@@ -551,14 +551,41 @@
     <string name="question_6">Q: 如何能够币生币？</string>
     <string name="question_7">Q: 如何充币？</string>
     <string name="question_8">Q: 如何提币？</string>
-    <string name="question_detail_1">A：点击底部导航栏我的  我的钱包系统会提示您去创建钱包账户，点击确定，按提示操作完成账户名称的设置和实名认证并上传图片生成钱包二维码点击保存钱包二维码图片即可。</string>
-    <string name="question_detail_2">A: 点击底部导航仿生挖矿  单击地图上您要创建矿区的非锁定区域，弹出输入矿区名称  输入完成点击确定跳转到钱包二维码上传页面，上传钱包二维码点击确定即可，创建成功后点击地图下面我的矿区—我创建的列表即可查看创建成功的矿区。具体细则可查看矿区页面的规则内容。</string>
-    <string name="question_detail_3">A: 点击底部导航栏仿生挖矿 单击可加入矿区，进入到可加入矿区列表  选中要加入的矿区（可通过矿区名称或邀请码搜索），点击最右边的进入剪头按钮会弹出您需要支付100seat的挖矿准备金，点击确定按钮弹出钱包二维码上传页面，上传自己的钱包二维码点击确定即可，加入成功后可在我的—我加入的矿区列表查看成功加入的矿区。具体细则可查看矿区页面的规则内容。</string>
-    <string name="question_detail_4">A: 点击底部导航栏我的  邀请返佣功能，进入到邀请返佣页面  点击保存/查看图片保存自己的邀请分享码—将自己的邀请分享码分享给未注册过的用户注册后并进行有效挖矿，达到一定人数后可获取相对应的佣金，具体可查看邀请返佣页面左上角的返佣规则。</string>
-    <string name="question_detail_5">A: 点击底部导航栏我的  我的钱包，点击持币挖矿，首次进入需要阅读持币挖矿细则并点击底部同意方可进入持币挖矿页面  选中您要锁仓的币种点击去锁仓，输入锁仓数量并选择合约期限点击提交即可，达到合约期限后系统会自动返还被锁仓的币和对应利息币。</string>
-    <string name="question_detail_6">A：点击底部导航栏我的  我的钱包页面的充币  选择充值（通过支付宝平台购买SEAT币）或者充币（从其他钱包转入其他数字货币）  点击现在去充，按相应的操作流程操作即可。</string>
-    <string name="question_detail_7">A：点击底部导航栏我的  我的钱包页面的提币  选择转账（向其他马甲钱包账户转出SEAT）或者提币（提取其他数字货币）  点击现在就去，按相应的操作流程操作即可。</string>
+    <string name="question_detail_1">A：点击底部导航栏我的 \u2192 我的钱包系统会提示您去创建钱包账户，点击确定，按提示操作完成账户名称的设置和实名认证并上传图片生成钱包二维码点击保存钱包二维码图片即可。</string>
+    <string name="question_detail_2">A: 点击底部导航仿生挖矿 \u2192 单击地图上您要创建矿区的非锁定区域，弹出输入矿区名称 \u2192 输入完成点击确定跳转到钱包二维码上传页面，上传钱包二维码点击确定即可，创建成功后点击地图下面我的矿区—我创建的列表即可查看创建成功的矿区。具体细则可查看矿区页面的规则内容。</string>
+    <string name="question_detail_3">A: 点击底部导航栏仿生挖矿 \u2192 单击可加入矿区，进入到可加入矿区列表 \u2192 选中要加入的矿区（可通过矿区名称或邀请码搜索），点击最右边的进入剪头按钮会弹出您需要支付100seat的挖矿准备金，点击确定按钮弹出钱包二维码上传页面，上传自己的钱包二维码点击确定即可，加入成功后可在我的—我加入的矿区列表查看成功加入的矿区。具体细则可查看矿区页面的规则内容。</string>
+    <string name="question_detail_4">A: 点击底部导航栏我的 \u2192 邀请返佣功能，进入到邀请返佣页面 \u2192 点击保存/查看图片保存自己的邀请分享码—将自己的邀请分享码分享给未注册过的用户注册后并进行有效挖矿，达到一定人数后可获取相对应的佣金，具体可查看邀请返佣页面左上角的返佣规则。</string>
+    <string name="question_detail_5">A: 点击底部导航栏我的 \u2192 我的钱包，点击持币挖矿，首次进入需要阅读持币挖矿细则并点击底部同意方可进入持币挖矿页面 \u2192 选中您要锁仓的币种点击去锁仓，输入锁仓数量并选择合约期限点击提交即可，达到合约期限后系统会自动返还被锁仓的币和对应利息币。</string>
+    <string name="question_detail_6">A：点击底部导航栏我的 \u2192 我的钱包页面的充币 \u2192 选择充值（通过支付宝平台购买SEAT币）或者充币（从其他钱包转入其他数字货币） \u2192 点击现在去充，按相应的操作流程操作即可。</string>
+    <string name="question_detail_7">A：点击底部导航栏我的 \u2192 我的钱包页面的提币 \u2192 选择转账（向其他马甲钱包账户转出SEAT）或者提币（提取其他数字货币） \u2192 点击现在就去，按相应的操作流程操作即可。</string>
     <string name="fap_vedio">常见问题及视频教程</string>
+    <string name="answer_questions">常见问题及解答</string>
+    <string name="not_netword_againt_retry">暂无网络，请检查再试</string>
+    <string name="kyc_identify">KYC认证</string>
+    <string name="under_review">审核中</string>
+    <string name="rejected">已拒绝</string>
+    <string name="real_name_2">姓名</string>
+    <string name="passpost_s">护照</string>
+    <string name="photo_info">证件照片信息</string>
+    <string name="kyc_review_ing">KYC认证审核中</string>
+    <string name="kyc_certifit_success">KYC认证成功</string>
+    <string name="certifit_failed">认证失败</string>
+    <string name="reson_for_faile">失败原因:</string>
+    <string name="recertification">重新认证</string>
+    <string name="id_front_p">身份证正面照片</string>
+    <string name="id_reverse_p">身份证反面照片</string>
+    <string name="id_p_hand">手持身份证照片</string>
+    <string name="passport_photo">护照照片</string>
+    <string name="hand_pass_p">手持护照照片</string>
+    <string name="enter_you_passp">请输入护照信息</string>
+    <string name="kyv_certifit_i">进行KYC认证</string>
+    <string name="upload_front_p">请上传身份证正面照片</string>
+    <string name="upload_reverse_p">请上传身份证反面照片</string>
+    <string name="upload_h_p">请上传手持身份证照片</string>
+    <string name="upload_pass_p">请上传护照照片</string>
+    <string name="upload_h_p_p">请上传手持护照照片</string>
+    <string name="commit_success_1">提交成功</string>
+    <string name="all_comment">全部评论</string>
 
 
 </resources>

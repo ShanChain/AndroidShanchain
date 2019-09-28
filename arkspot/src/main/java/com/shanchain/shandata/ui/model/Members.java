@@ -22,6 +22,7 @@ public class Members {
     private String userIcon;
     private String hxUserName;
     private int id;
+    private int userId;
 
     public String getUsername() {
         return username;
@@ -109,5 +110,13 @@ public class Members {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

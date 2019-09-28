@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.interfaces.IChatGroupMenberCallback;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
@@ -49,6 +50,11 @@ public class GroupMenberAdapter extends BaseQuickAdapter<Members,BaseViewHolder>
 //        helper.setIsRecyclable(false);
         final TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
         ImageView checkBox = helper.getView(R.id.check_box);
+        if(Integer.parseInt(SCCacheUtils.getCacheUserId())== item.getUserId()){
+            focus.setVisibility(View.INVISIBLE);
+        }else {
+            focus.setVisibility(View.VISIBLE);
+        }
         //显示勾选按钮
         if (item.isEdite()) {
             helper.getView(R.id.check_box).setVisibility(View.VISIBLE);

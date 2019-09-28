@@ -11,4 +11,5 @@ public interface SquarePresenter {
     void deleteAttentionUser(int userId,int attentionUserId);
     void addPraiseToArticle(int userId,int invitationId);
     void deletePraiseToArticle(int userId,int invitationId);
+    void getUserHxid(String userId);
 }

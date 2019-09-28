@@ -5,7 +5,8 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:id="@+id/ll_rootview">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -134,26 +135,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorTextDefault"
-            android:text="全部评论"
+            android:text="@string/all_comment"
             android:layout_marginLeft="10dp"/>
     </LinearLayout>
-    <com.shanchain.shandata.widgets.CustomListView
+    <ListView
         android:id="@+id/cl_content_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:dividerHeight="0.8dp"
         android:divider="@color/colorBtnBg"/>
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:padding="5dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-        <EditText
+        <com.shanchain.shandata.widgets.TextEditTextView
             android:id="@+id/et_content_input"
             android:layout_width="0dp"
             android:layout_height="match_parent"
