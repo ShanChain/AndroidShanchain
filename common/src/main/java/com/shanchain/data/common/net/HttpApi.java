@@ -734,4 +734,6 @@ public interface HttpApi {
     String USER_PASSPORT_QUERY = BASE_URL + "/probecoin/tUserAuthentication/queryTUserAuthenticationList";
     //修改用户认证信息
     String UPDATE_USER_PASSPORT_INFO = BASE_URL + "/probecoin/tUserAuthentication/updateByPrimaryKeySelective";
+    //获取公告数量
+    String NOTIFICAT_NUMS = BASE_URL + "/wallet/api/notice/notice/listPage";
 }

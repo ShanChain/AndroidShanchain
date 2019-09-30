@@ -201,7 +201,7 @@
     <string name="number_s">Numbers:</string>
     <string name="real_idf">*Real Identity</string>
     <string name="change">Replace </string>
-    <string name="my_">My</string>
+    <string name="my_">Me</string>
     <string name="Loading">Loading...</string>
     <string name="enter_">Go</string>
     <string name="enter_nn">Please enter a nickname</string>
@@ -526,7 +526,7 @@
     <string name="dialogue_1">Dialogue</string>
     <string name="Publish_1">Publish</string>
     <string name="reply">Reply</string>
-    <string name="reply_nums">%Reply</string>
+    <string name="reply_nums">%s Reply</string>
     <string name="announcement">Announcement</string>
     <string name="question_1">MarJar app video tutorial series</string>
     <string name="question_2">Q: How to generate qr code wallet？</string>
@@ -572,5 +572,6 @@
     <string name="upload_h_p_p">Please upload a handheld passport photo</string>
     <string name="commit_success_1">Submitted successfully</string>
     <string name="all_comment">All comments</string>
+    <string name="sto_pre_order">STO</string>
 
 </resources>

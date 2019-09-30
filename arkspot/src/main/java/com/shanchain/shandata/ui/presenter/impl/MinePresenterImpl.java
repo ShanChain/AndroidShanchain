@@ -60,4 +60,21 @@ public class MinePresenterImpl implements MinePresenter {
                     }
                 });
     }
+
+    @Override
+    public void getNotificatNums() {
+        SCHttpUtils.getNoToken()
+                .url(HttpApi.NOTIFICAT_NUMS)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mMineView.setNotificatResponse(response);
+                    }
+                });
+    }
 }

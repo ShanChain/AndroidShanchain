@@ -8,16 +8,16 @@
         android:id="@+id/rl_home_intro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         >
         <ImageView
+            android:id="@+id/im_first"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="false"
             android:focusable="false"
             android:scaleType="centerCrop"
-            android:visibility="visible"
-            android:src="@mipmap/home_page_intro"/>
+            android:visibility="visible"/>
     </RelativeLayout>
 
     <RelativeLayout

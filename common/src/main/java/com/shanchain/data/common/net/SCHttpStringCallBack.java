@@ -62,20 +62,10 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
         switch (code) {
             case NetErrCode.COMMON_SUC_CODE:
                 if (mContext != null) {
-//                    ThreadUtils.runOnMainThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                           ToastUtils.showToastLong(mContext, "全局处理,成功");
-//                        }
-//                    });
                 }
                 break;
             case NetErrCode.COMMON_TOKEN_OVERDUE_CODE:
                 if (mContext != null) {
-//                    Class clazz = Class.forName("com.shanchain.shandata.ui.view.activity.login.LoginActivity");
-//                    Intent intent = new Intent(mContext, clazz);
-//                    mContext.startActivity(intent);
-//                    ActivityStackManager.getInstance().finishAllActivity();
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
@@ -236,30 +226,9 @@ public abstract class SCHttpStringCallBack extends Callback<String> {
                 }
                 break;
             default:
-//                closeLoadingDialog();
                 break;
         }
         return result;
     }
-
-    //打开相册
-    private void selectImage() {
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CAMERA}, 100);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_PICK, null);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            Activity activity = (Activity) mContext;
-            activity.startActivityForResult(intent, NetErrCode.WALLET_PHOTO);
-        }
-    }
-
-
-//    protected void closeLoadingDialog() {
-//        if (dialog != null) {
-//            dialog.dismiss();
-//        }
-//    }
 
 }

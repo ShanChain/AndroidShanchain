@@ -21,8 +21,10 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.FragmentAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
 import com.shanchain.shandata.ui.view.fragment.MainARSGameFragment;
+import com.shanchain.shandata.ui.view.fragment.STOFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.CouponFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.HomeFragment;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.MineFragment;
@@ -60,6 +62,8 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     TextView tvJoin;
     @Bind(R.id.rl_home_intro)
     RelativeLayout rlView0;
+    @Bind(R.id.im_first)
+    ImageView imFirst;
     private LinearLayout ll0;
     private LinearLayout ll1;
     private LinearLayout ll2;
@@ -98,6 +102,11 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW, false);
         if(!guided){
             rlTishi.setVisibility(View.VISIBLE);
+            if("zh".equals(MyApplication.getInstance().getSystemLanguge())){
+                imFirst.setBackgroundResource(R.mipmap.home_page_intro_1);
+            }else {
+                imFirst.setBackgroundResource(R.mipmap.home_page_intro_2);
+            }
             PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
         }else {
             rlTishi.setVisibility(View.GONE);
@@ -148,7 +157,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
      */
     private void initFragment() {
         mFragmentList.add(CouponFragment.newInstance());
-        mFragmentList.add(MainARSGameFragment.newInstance());
+        mFragmentList.add(STOFragment.newInstance());
         mFragmentList.add(HomeFragment.newInstance());
         mFragmentList.add(YCommunityFragment.newInstance());
         mFragmentList.add(MineFragment.newInstance());

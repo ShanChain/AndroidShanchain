@@ -76,7 +76,6 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         //设置昵称
         helper.setText(R.id.tv_item_msg_home_name,item.getName() );
         final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
-        LogUtils.d("--->>>message list bitmap:"+item.getAvatarBitmap());
         /*if(item.getAvatarBitmap()==null){
             circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
         }else {

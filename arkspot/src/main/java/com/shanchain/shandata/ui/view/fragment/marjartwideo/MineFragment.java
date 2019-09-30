@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.cache.SharedPreferencesUtils;
@@ -31,6 +32,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.utils.PrefUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.SCUploadImgHelper;
 import com.shanchain.data.common.utils.ThreadUtils;
@@ -147,6 +149,12 @@ public class MineFragment extends BaseFragment implements MineView {
         mMinePresenter = new MinePresenterImpl(this);
         initUserData();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMinePresenter.getNotificatNums();
     }
 
     //设置用户基本信息
@@ -290,6 +298,8 @@ public class MineFragment extends BaseFragment implements MineView {
     //查看公告
     @OnClick(R.id.ll_adepart)
     void announcement(){
+        PrefUtils.putInt(getActivity(), Constants.SP_KEY_NOT_ACOUNT,notCount);
+        tvNewHas.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(), SCWebViewXYActivity.class);
         JSONObject obj = new JSONObject();
         obj.put("url", HttpApi.BASE_URL_WALLET+"/Announcement?back=APP");
@@ -433,5 +443,22 @@ public class MineFragment extends BaseFragment implements MineView {
         }else{
             ToastUtils.showToast(getActivity(), R.string.not_mine_tip);
         }
+    }
+    private int notCount = 0;
+    @Override
+    public void setNotificatResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.SUC_CODE)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            String count = JSONObject.parseObject(data).getString("count");
+            if(!TextUtils.isEmpty(count)){
+                notCount = Integer.parseInt(count);
+            }
+        }
+        int oldCount = PrefUtils.getInt(getActivity(),Constants.SP_KEY_NOT_ACOUNT,0);
+        if(notCount>oldCount){
+            tvNewHas.setVisibility(View.VISIBLE);
+        }
+
     }
 }

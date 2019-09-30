@@ -26,6 +26,7 @@ import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CommetSecondListAdapter;
 import com.shanchain.shandata.base.BaseActivity;
+import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.interfaces.IReplyCommentCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
 import com.shanchain.shandata.ui.presenter.CommentPresenter;
@@ -77,6 +78,7 @@ public class CommentActivity extends BaseActivity implements CommentView/*, View
     ImageView imBack;
     @Bind(R.id.tv_reply_num)
     TextView tvReplyNum;
+
 
     private CommentEntity commentEntity;
     private CommentPresenter mCommentPresenter;
@@ -243,18 +245,23 @@ public class CommentActivity extends BaseActivity implements CommentView/*, View
             String listdata = JSONObject.parseObject(data).getString("content");
             if(TextUtils.isEmpty(listdata)){
                 /*clContentList.setVisibility(View.GONE);
-                llNotdata.setVisibility(View.VISIBLE);*/
+                tvNotdata.setVisibility(View.VISIBLE);*/
+                tvReplyNum.setText(getString(R.string.reply_nums,"0"));
                 return;
             }
             mList.clear();
             mList = JSONObject.parseArray(listdata,CommentEntity.class);
             if(mList!=null && mList.size()>0){
-                clContentList.setVisibility(View.VISIBLE);
-                /*llNotdata.setVisibility(View.GONE);*/
+                /*clContentList.setVisibility(View.VISIBLE);
+                tvNotdata.setVisibility(View.GONE);*/
                 mListAdapter.setList(mList);
                 clContentList.setAdapter(mListAdapter);
                 mListAdapter.notifyDataSetChanged();
                 tvReplyNum.setText(getString(R.string.reply_nums,mList.size()+""));
+            }else {
+                /*clContentList.setVisibility(View.GONE);
+                llNotdata.setVisibility(View.VISIBLE);*/
+                tvReplyNum.setText(getString(R.string.reply_nums,"0"));
             }
 
         }

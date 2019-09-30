@@ -35,6 +35,7 @@ import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
 import com.shanchain.shandata.R;
+import com.shanchain.shandata.adapter.GroupARSMenberAdapter;
 import com.shanchain.shandata.adapter.GroupMenberAdapter;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.interfaces.IChatGroupMenberCallback;
@@ -92,6 +93,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
     private boolean mIsOwner;
     private CustomDialog mDeleteMemberDialog;
     private GroupMenberAdapter mGroupMenberAdapter;
+    private GroupARSMenberAdapter mGroupARSMenberAdapter;
     private List<Members> mGroupList = new ArrayList<>();
     private int pageIndex = 0;
     private boolean isLast = false;
@@ -120,24 +122,25 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 getResources().getColor(R.color.register_marjar_color),getResources().getColor(R.color.google_yellow));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMessageList.setLayoutManager(layoutManager);
-        rvMessageList.setAdapter(mGroupMenberAdapter);
-        mGroupMenberAdapter.notifyDataSetChanged();
+        if(!isHotChatRoom){
+            rvMessageList.setAdapter(mGroupMenberAdapter);
+            mGroupMenberAdapter.notifyDataSetChanged();
+        }
         initToolBar();
-        setListener();
 //        initData();
         getGroupMenberList();
         mMenberPresenter.checkIsGroupCreater(roomID);
-
-        if(isHotChatRoom){
+        setListener();
+        /*if(isHotChatRoom){
             initLoadMoreListener();
-        }
+        }*/
 
     }
 
     //获取群组成员
     private void getGroupMenberList(){
         if(isHotChatRoom){
-            mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", Constants.pageSize+"",Constants.pullRefress);
+            mMenberPresenter.getGroupMenberList(roomID,count+"",pageIndex+"", "100",Constants.pullRefress);
         }else {
             mMenberPresenter.getRoomMenbers(digistId);
         }
@@ -225,7 +228,25 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 tvSelectNum.setText("" + list.size());
             }
         });
-
+        mGroupARSMenberAdapter.setMenberCallback(new IChatGroupMenberCallback() {
+            @Override
+            public void chatUser(Members members) {
+                if(members == null)return;
+                JMessageClient.getUserInfo(members.getUserName(), new GetUserInfoCallback() {
+                    @Override
+                    public void gotResult(int i, String s, final UserInfo userInfo) {
+                        LogUtils.d("------>>>i:"+i+"---s:"+s+"----"+userInfo.toJson());
+                        String avatar = userInfo.getAvatarFile() != null ? userInfo.getAvatarFile().getAbsolutePath() : "";
+                        DefaultUser defaultUser = new DefaultUser(userInfo.getUserID(), userInfo.getNickname(), avatar);
+                        defaultUser.setSignature(userInfo.getSignature());
+                        defaultUser.setHxUserId(userInfo.getUserName());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("userInfo", defaultUser);
+                        readyGo(SingerChatInfoActivity.class, bundle);
+                    }
+                });
+            }
+        });
         mGroupMenberAdapter.setMenberCallback(new IChatGroupMenberCallback() {
             @Override
             public void chatUser(Members members) {
@@ -244,6 +265,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 });
             }
         });
+
     }
 
     //删除成员
@@ -327,8 +349,12 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                         membersList.remove(i);
                     }
                 }
+                mGroupARSMenberAdapter = new GroupARSMenberAdapter(R.layout.item_members_chat_room,membersList);
+                rvMessageList.setAdapter(mGroupARSMenberAdapter);
+                mGroupARSMenberAdapter.notifyDataSetChanged();
+
             }
-            if(membersList.size()<Constants.pageSize){
+            /*if(membersList.size()<Constants.pageSize){
                 isLast = true;
             }else {
                 isLast = false;
@@ -340,7 +366,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 mGroupMenberAdapter.notifyDataSetChanged();
             }else {
                 mGroupMenberAdapter.addData(membersList);
-            }
+            }*/
 
         }
     }

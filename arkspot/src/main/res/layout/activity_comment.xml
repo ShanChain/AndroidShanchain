@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/colorTextDefault"
-            android:text="0回复"/>
+            />
         <ImageView
             android:id="@+id/im_back"
             android:layout_width="20dp"

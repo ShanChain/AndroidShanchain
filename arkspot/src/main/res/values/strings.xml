@@ -586,6 +586,7 @@
     <string name="upload_h_p_p">请上传手持护照照片</string>
     <string name="commit_success_1">提交成功</string>
     <string name="all_comment">全部评论</string>
+    <string name="sto_pre_order">STO</string>
 
 
 </resources>

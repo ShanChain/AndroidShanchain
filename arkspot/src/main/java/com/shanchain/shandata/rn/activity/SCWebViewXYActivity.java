@@ -130,6 +130,7 @@ public class SCWebViewXYActivity extends AppCompatActivity implements View.OnCli
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
         settings.setLoadsImagesAutomatically(true); // 加载图片
         settings.setMediaPlaybackRequiresUserGesture(false);//播放音频，多媒体需要用户手动？设置为false为可自动播放
+        mWbSc.setLayerType(View.LAYER_TYPE_HARDWARE, null);//播放视频添加硬件加速
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWbSc.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
