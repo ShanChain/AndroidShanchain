@@ -799,23 +799,23 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                                 roomList.add(point);//未转换的坐标
 
                             }
-                        }
-                        //
-                        double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
-                        double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
-                        LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
-                        // 将GPS设备采集的原始GPS坐标转换成百度坐标
-                        coordinateConverter.from(CoordinateConverter.CoordType.GPS);
-                        coordinateConverter.coord(indexPoint);
-                        LatLng firstLatLng = coordinateConverter.convert();
+
+                            double firstLatitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLatitude());
+                            double firstLongitude = Double.parseDouble(coordinatesList.get(i).getCoordinates().get(0).getLongitude());
+                            LatLng indexPoint = new LatLng(firstLatitude, firstLongitude);
+                            // 将GPS设备采集的原始GPS坐标转换成百度坐标
+                            coordinateConverter.from(CoordinateConverter.CoordType.GPS);
+                            coordinateConverter.coord(indexPoint);
+                            LatLng firstLatLng = coordinateConverter.convert();
 //                                roomList.add(firstLatLng);
-                        //绘制虚线（需要多添加一个起点坐标，形成矩形）
-                        roomList.add(indexPoint);
-                        OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
-                                .color(0xAA121518).points(roomList);
-                        Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
-                        roomPolyline.setDottedLine(true);
-                        roomList.clear();
+                            //绘制虚线（需要多添加一个起点坐标，形成矩形）
+                            roomList.add(indexPoint);
+                            OverlayOptions roomOoPolyline = new PolylineOptions().width(4)
+                                    .color(0xAA121518).points(roomList);
+                            Polyline roomPolyline = (Polyline) baiduMap.addOverlay(roomOoPolyline);
+                            roomPolyline.setDottedLine(true);
+                            roomList.clear();
+                        }
                     }
                 }
             }

@@ -140,6 +140,7 @@ public class MyMessageActivity extends BaseActivity implements ArthurToolBar.OnL
                     conversation.getLastMsgDate();
                     messageHomeInfo.setTime(conversation.getLastMsgDate() + "");
                     messageHomeInfo.isTop();
+                    messageHomeInfo.setMessageType(conversation.getLatestType().ordinal());
                     messageHomeInfo.setUserInfo(userInfo);
                     chatRoomlist.add(messageHomeInfo);
                 }

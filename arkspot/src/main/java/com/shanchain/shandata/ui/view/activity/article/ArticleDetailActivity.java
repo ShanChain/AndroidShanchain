@@ -23,6 +23,7 @@ import com.shanchain.data.common.cache.SCCacheUtils;
 import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
+import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.data.common.utils.SCJsonUtils;
 import com.shanchain.data.common.utils.ThreadUtils;
 import com.shanchain.data.common.utils.ToastUtils;
@@ -37,11 +38,11 @@ import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.presenter.ArticleDetailPresenter;
 import com.shanchain.shandata.ui.presenter.impl.ArticleDetailPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.view.ArticleDetailView;
+import com.shanchain.shandata.utils.EmojiUtils;
 import com.shanchain.shandata.utils.TimeUtils;
 import com.shanchain.shandata.widgets.CustomGridView;
 import com.shanchain.shandata.widgets.CustomListView;
 import com.shanchain.shandata.widgets.ExpandableTextView;
-import com.shanchain.shandata.widgets.takevideo.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -123,6 +124,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
         mPresenter = new ArticleDetailPresenterImpl(this);
         mAdapter = new CommetListAdapter(this);
         etContent.setExpandState(ExpandableTextView.STATE_EXPAND);
+//        LogUtils.d("------>>article detail id: "+mSqureDataEntity.getId());
         mPresenter.queryArticleDetail(mSqureDataEntity.getId()+"");
 
     }
@@ -135,7 +137,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
                         .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
         tvNickname.setText(mSqureDataEntity.getNickName());
         tvTime.setText(TimeUtils.friendlyTime1(this,new Date(mSqureDataEntity.getCreateTime())));
-        etContent.setText(mSqureDataEntity.getContent());
+        etContent.setText(EmojiUtils.utf8ToString(mSqureDataEntity.getContent()));
         tvConin.setText(mSqureDataEntity.getPraiseCount()+"");
         tvMessage.setText(mSqureDataEntity.getReviceCount()+"");
         tvShare.setText(getString(R.string.share_1));
@@ -187,7 +189,7 @@ public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar
             ToastUtils.showToast(ArticleDetailActivity.this, getResources().getString(R.string.enter_comment));
             return;
         }
-        mPresenter.addComment(mSqureDataEntity.getId(),comment,Integer.parseInt(userId),
+        mPresenter.addComment(mSqureDataEntity.getId(),EmojiUtils.stringToUtf8(comment),Integer.parseInt(userId),
                 mSqureDataEntity.getUserId());
     }
 

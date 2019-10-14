@@ -428,8 +428,8 @@
     <string name="mining_area">矿区</string>
     <string name="can_join_mining">可加入矿区</string>
     <string name="my_mine">我的矿区</string>
-    <string name="i_create">我创建的</string>
-    <string name="i_joined">我加入的</string>
+    <string name="i_create">我创建的%s</string>
+    <string name="i_joined">我加入的%s</string>
     <string name="payfor_create_mining">您需要支付%s个 SEAT 的准备金创建矿区</string>
     <string name="payfor_add_mining">您需要支付%s个 SEAT 的准备金加入矿区</string>
     <string name="wheel_seat">年轮座</string>
@@ -587,6 +587,8 @@
     <string name="commit_success_1">提交成功</string>
     <string name="all_comment">全部评论</string>
     <string name="sto_pre_order">STO</string>
-
+    <string name="message_file">[视频]</string>
+    <string name="message_image">[图片]</string>
+    <string name="message_voice">[语音]</string>
 
 </resources>

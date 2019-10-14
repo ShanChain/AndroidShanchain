@@ -57,6 +57,8 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     private int pageIndex = 1;
     private boolean isLast = false;
     private int currentType = 1;//1我创建的矿区；2我加入的矿区
+    private String createCount = "0";
+    private String jointCount = "0";
 
     public static MyGroupTeamGetFragment getInstance() {
         MyGroupTeamGetFragment fragment = new MyGroupTeamGetFragment();
@@ -158,12 +160,18 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
             String data = JSONObject.parseObject(response).getString("data");
             String list = JSONObject.parseObject(data).getString("list");
+            if(currentType ==1){
+                createCount = JSONObject.parseObject(data).getString("total");
+            }else {
+                jointCount = JSONObject.parseObject(data).getString("total");
+            }
             List<GroupTeamBean> listDara = JSONObject.parseArray(list,GroupTeamBean.class);
             if(listDara.size()<Constants.pageSize){
                 isLast = true;
             }else {
                 isLast = false;
             }
+            setCountType();//显示数量
             if(pullType == Constants.pullRefress){
                 mList.clear();
                 mList.addAll(listDara);
@@ -179,6 +187,19 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
                 llNotdata.setVisibility(View.VISIBLE);
                 refreshLayout.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void setCountType(){
+        if("0".equals(createCount)){
+            tvCreate.setText(getString(R.string.i_create," "));
+        }else {
+            tvCreate.setText(getString(R.string.i_create,"("+createCount+")"));
+        }
+        if("0".equals(jointCount)){
+            tvJoin.setText(getString(R.string.i_joined," "));
+        }else {
+            tvJoin.setText(getString(R.string.i_joined,"("+jointCount+")"));
         }
     }
 

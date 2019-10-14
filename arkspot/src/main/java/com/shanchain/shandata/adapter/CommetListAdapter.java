@@ -16,6 +16,7 @@ import com.shanchain.shandata.interfaces.ICommentDeleteCallback;
 import com.shanchain.shandata.interfaces.ICommentPraiseCallback;
 import com.shanchain.shandata.ui.model.CommentEntity;
 import com.shanchain.shandata.ui.model.SqureDataEntity;
+import com.shanchain.shandata.utils.EmojiUtils;
 import com.shanchain.shandata.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class CommetListAdapter extends BaseAdapter {
                             .error(R.drawable.aurora_headicon_default)).into(viewHolder.ivUserHead1);
             viewHolder.tvNickname.setText(commentEntity.getSendNickName());
             viewHolder.tvTime.setText(TimeUtils.friendlyTime1(mContext,new Date(commentEntity.getCreateTime())));
-            viewHolder.tvComment.setText(commentEntity.getContent());
+            viewHolder.tvComment.setText(EmojiUtils.utf8ToString(commentEntity.getContent()));
             if(commentEntity.getReviceCount() == 0){
                 viewHolder.tvRenums.setText(mContext.getString(R.string.reply));
             }else {

@@ -198,7 +198,18 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
-
+        <provider
+            android:name="cn.jpush.im.android.helpers.ipc.IMProvider"
+            android:authorities="com.shanchain.shandata.IMProvider"
+            android:exported="false" />
+        <!-- Since JCore2.0.0 Required SDK核心功能-->
+        <!-- 这个Service要继承JCommonService -->
+        <service android:name="com.shanchain.shandata.service.XService"
+            android:process=":pushcore">
+            <intent-filter>
+                <action android:name="cn.jiguang.user.service.action" />
+            </intent-filter>
+        </service>
         <!-- 推送自定义消息 -->
         <!-- <receiver android:name=".receiver.CustomMessageReceiver"> -->
         <!-- <intent-filter> -->

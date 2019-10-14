@@ -33,6 +33,7 @@ import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
 import com.shanchain.shandata.ui.view.activity.article.PhotoPagerActivity;
 import com.shanchain.shandata.utils.DisplayImageOptionsUtils;
+import com.shanchain.shandata.utils.EmojiUtils;
 import com.shanchain.shandata.utils.TimeUtils;
 import com.shanchain.shandata.widgets.CustomGridView;
 
@@ -90,7 +91,7 @@ public class SqureAdapter extends BaseMultiItemQuickAdapter<SqureDataEntity,Base
         helper.setText(R.id.tv_nickname,item.getNickName());
         helper.setText(R.id.tv_time, TimeUtils.friendlyTime1(mContext,new Date(item.getUpdateTime())));
         helper.setText(R.id.tv_create_time,TimeUtils.formatTimeMonth((item.getCreateTime()/1000)+""));
-        helper.setText(R.id.et_content,item.getContent());
+        helper.setText(R.id.et_content, EmojiUtils.utf8ToString(item.getContent()));
         helper.setText(R.id.tv_conin,item.getPraiseCount()+"");
         helper.setText(R.id.tv_message,item.getReviceCount()+"");
         helper.setText(R.id.tv_share,item.getCollectCount()+"");

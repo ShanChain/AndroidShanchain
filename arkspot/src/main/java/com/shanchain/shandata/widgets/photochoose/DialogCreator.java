@@ -25,6 +25,8 @@ import com.shanchain.shandata.utils.SharePreferenceManager;
 import com.shanchain.shandata.utils.entity.Event;
 import com.shanchain.shandata.utils.entity.EventType;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,6 @@ import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.api.options.MessageSendingOptions;
-import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 
 

@@ -72,7 +72,7 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
     private PhotoArticleAdapter mAdapter;
     private List<PhotoBean> mList = new ArrayList<>();
     private static final int REQUEST_CODE_GALLERY = 0x112;
-    private String fileList;
+    private String fileList = "";
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_feeback;
@@ -234,11 +234,11 @@ public class FeedbackActivity extends BaseActivity implements ArthurToolBar.OnLe
                 String code = SCJsonUtils.parseCode(result);
                 if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE)) {
                     String data = JSONObject.parseObject(result).getString("filenames");
-                    if(!TextUtils.isEmpty(data)){
-                        String attr [] = data.substring(1,data.length()-1).split(",");
-                        for (int i = 0; i < attr.length; i++) {
-                            String phth = attr[i].substring(1,attr[i].length()-1);
-                            fileList += phth+",";
+                    List<String> list = JSONObject.parseArray(data,String.class);
+                    if(list!=null && list.size()>0){
+                        for (int i = 0; i < list.size(); i++) {
+                            String s = list.get(i);
+                            fileList += s+",";
                         }
                         commiteFeedback();
                     }else {

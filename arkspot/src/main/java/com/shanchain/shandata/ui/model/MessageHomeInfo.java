@@ -24,6 +24,7 @@ public class MessageHomeInfo implements Serializable{
     private String jmName;
     private Bitmap avatarBitmap;
     private UserInfo userInfo;
+    private int messageType;
 
     private Conversation mJMConversation;
 
@@ -122,5 +123,13 @@ public class MessageHomeInfo implements Serializable{
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public int getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(int messageType) {
+        this.messageType = messageType;
     }
 }

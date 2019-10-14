@@ -72,15 +72,32 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
         Message JmMessage =  jmConversation.getLatestMessage();
         //设置最近一条消息
 //        TextContent messageContent = (TextContent) JmMessage.getContent();
-        helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
+        LogUtils.d("----->>>>message type:"+item.getMessageType());
+        switch (item.getMessageType()){
+            case 8://文件类型
+                helper.setText(R.id.tv_item_msg_home_last, R.string.message_file);
+                break;
+            case 0://文本
+                helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
+                break;
+            case 1://图片
+                helper.setText(R.id.tv_item_msg_home_last, R.string.message_image);
+                break;
+            case 2://语音
+                helper.setText(R.id.tv_item_msg_home_last, R.string.message_voice);
+                break;
+            case 4://视频
+                helper.setText(R.id.tv_item_msg_home_last, R.string.message_file);
+                break;
+            default:
+                helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
+                break;
+
+        }
+//        helper.setText(R.id.tv_item_msg_home_last,item.getJMConversation().getLatestText());
         //设置昵称
         helper.setText(R.id.tv_item_msg_home_name,item.getName() );
         final CircleImageView circleImageView = helper.getView(R.id.iv_item_msg_home_avatar);
-        /*if(item.getAvatarBitmap()==null){
-            circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
-        }else {
-            circleImageView.setImageBitmap(item.getAvatarBitmap());
-        }*/
         item.getUserInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
             @Override
             public void gotResult(int i, String s, Bitmap bitmap) {
@@ -91,25 +108,6 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageHomeInfo, BaseVi
                 }
             }
         });
-        /*JMessageClient.getUserInfo(item.getJmName(), new GetUserInfoCallback() {
-            @Override
-            public void gotResult(int i, String s, UserInfo userInfo) {
-                if(userInfo!=null && !TextUtils.isEmpty(userInfo.getAvatar())){
-                    userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                        @Override
-                        public void gotResult(int i, String s, Bitmap bitmap) {
-                            if (bitmap != null) {
-                                circleImageView.setImageBitmap(bitmap);
-                            } else {
-                                circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
-                            }
-                        }
-                    });
-                }else {
-                    circleImageView.setBackground(mContext.getResources().getDrawable(R.mipmap.aurora_headicon_default));
-                }
-            }
-        });*/
 
     }
 }

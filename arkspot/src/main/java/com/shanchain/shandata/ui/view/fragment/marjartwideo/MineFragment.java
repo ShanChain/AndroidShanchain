@@ -184,9 +184,14 @@ public class MineFragment extends BaseFragment implements MineView {
             }
         }else{
             UserInfo userInfo = JMessageClient.getMyInfo();
-            Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
-                    .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
-                            .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
+            if(userInfo!=null && !TextUtils.isEmpty(userInfo.getAvatarFile().getAbsolutePath())){
+                Glide.with(this).load(userInfo.getAvatarFile().getAbsolutePath())
+                        .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default)
+                                .error(R.drawable.aurora_headicon_default)).into(ivUserHead);
+            }else {
+                ivUserHead.setImageResource(R.drawable.aurora_headicon_default);
+            }
+
         }
     }
 

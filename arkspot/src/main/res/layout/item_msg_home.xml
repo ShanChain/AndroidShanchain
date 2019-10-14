@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimens_15dp"
-        android:background="@mipmap/abs_home_btn_news_default" />
+        android:background="@mipmap/aurora_headicon_default" />
 
     <TextView
         android:id="@+id/tv_item_msg_home_unread"

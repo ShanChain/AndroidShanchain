@@ -20,8 +20,10 @@ import com.shanchain.data.common.utils.SystemUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.push.ExampleUtil;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
+import com.shanchain.shandata.ui.model.SqureDataEntity;
 import com.shanchain.shandata.ui.view.activity.HomeActivity;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
+import com.shanchain.shandata.ui.view.activity.article.ArticleDetailActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponDetailsActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.CouponListActivity;
 import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
@@ -200,6 +202,15 @@ public class MyReceiver extends BroadcastReceiver {
                                 }
                                 Intent [] intents = new Intent[]{mainIntent,i};
                                 context.startActivities(intents);
+                            }
+                        }else if(!TextUtils.isEmpty(sysPage) && sysPage.equals("reviceList")){
+                            String reciveId = SCJsonUtils.parseString(messageJson.toString(), "extra");
+                            if(!TextUtils.isEmpty(reciveId)){
+                                SqureDataEntity s = new SqureDataEntity();
+                                s.setId(Integer.parseInt(reciveId));
+                                context.startActivity(new Intent(context, ArticleDetailActivity.class).putExtra("info",s));
+                            }else {
+                                context.startActivity(new Intent(context,FootPrintNewActivity.class));
                             }
                         }
                     }

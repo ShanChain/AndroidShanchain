@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,6 +45,7 @@ import com.shanchain.data.common.utils.encryption.MD5Utils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.BaseActivity;
 import com.shanchain.shandata.base.MyApplication;
+import com.shanchain.shandata.push.ExampleUtil;
 import com.shanchain.shandata.rn.activity.SCWebViewActivity;
 import com.shanchain.shandata.ui.model.CharacterInfo;
 import com.shanchain.shandata.ui.model.LoginUserInfoBean;
@@ -60,6 +62,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,6 +78,7 @@ import cn.jiguang.share.qqmodel.QQ;
 import cn.jiguang.share.wechat.Wechat;
 import cn.jiguang.share.weibo.SinaWeibo;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
@@ -137,7 +141,7 @@ public class LoginActivity extends BaseActivity {
     TextView tvPhoneQ1;
     @Bind(R.id.tv_phone_q_2)
     TextView tvPhoneQ2;
-
+    private String TAG = this.getClass().getSimpleName();
     private ProgressDialog mDialog;
     private List<String> dataList = new ArrayList<String>();
 
@@ -278,8 +282,9 @@ public class LoginActivity extends BaseActivity {
                                     //注册/登录 极光IM账号
                                     registerJmUser(hxBean.getHxUserName(), hxBean.getHxPassword(),characterInfo);
                                     //注册极光推送
-                                    JPushInterface.setAlias(getApplicationContext(),1001,characterId+"");
+//                                    JPushInterface.setAlias(getApplicationContext(),1001,characterId+"");
                                     com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("---->>hxuserid: "+characterId);
+                                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, characterId+""));
                                 }
 
                             } else {
@@ -296,8 +301,50 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
                 });
-
     }
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs ;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    Log.i(TAG, logs);
+                    // 建议这里往 SharePreference 里写一个成功设置的状态。成功设置一次后，以后不必再次设置了。
+                    break;
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    Log.i(TAG, logs);
+                    // 延迟 60 秒来调用 Handler 设置别名
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 800);
+                    break;
+                default:
+                    logs = "Failed with errorCode = " + code;
+                    Log.e(TAG, logs);
+            }
+            Log.e(TAG, "---jpush code: "+code);
+//            ExampleUtil.showToast(logs, getApplicationContext());
+        }
+    };
+    private static final int MSG_SET_ALIAS = 1001;
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_SET_ALIAS:
+                    Log.d(TAG, "Set alias in handler.");
+                    // 调用 JPush 接口来设置别名。
+                    JPushInterface.setAliasAndTags(getApplicationContext(),
+                            (String) msg.obj,
+                            null,
+                            mAliasCallback);
+                    break;
+                default:
+                    Log.i(TAG, "Unhandled msg - " + msg.what);
+            }
+        }
+    };
 
     public void registerJmUser(final String jmUser, final String jmPassword,CharacterInfo characterInfo) {
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE, false);
@@ -960,4 +1007,9 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
+    }
 }

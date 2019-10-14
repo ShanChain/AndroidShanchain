@@ -43,6 +43,7 @@ import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
 import com.shanchain.shandata.ui.view.fragment.view.TaskView;
 import com.shanchain.shandata.utils.ViewAnimUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -56,7 +57,6 @@ import butterknife.ButterKnife;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jpush.im.android.api.event.MessageEvent;
-import cn.jpush.im.android.eventbus.EventBus;
 import okhttp3.Call;
 
 

@@ -2,7 +2,6 @@ package com.shanchain.shandata.ui.view.activity.jmessageui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -32,7 +31,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -61,7 +59,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImagePreviewDelActivity;
-import com.shanchain.data.common.base.ActivityStackManager;
 import com.shanchain.data.common.base.Callback;
 import com.shanchain.data.common.base.RoleManager;
 import com.shanchain.data.common.cache.SCCacheUtils;
@@ -92,14 +89,10 @@ import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.SearchGroupTeamBeam;
 import com.shanchain.shandata.ui.presenter.MessageListPresenter;
 import com.shanchain.shandata.ui.presenter.impl.MessageListPresenterImpl;
-import com.shanchain.shandata.ui.view.activity.coupon.MyCouponListActivity;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.MessageListView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
-import com.shanchain.shandata.ui.view.activity.settings.SettingsActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
-import com.shanchain.shandata.ui.view.activity.tasklist.TaskListActivity;
-import com.shanchain.shandata.utils.CountDownTimeUtils;
 import com.shanchain.shandata.utils.DateUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.RequestCode;
@@ -114,25 +107,19 @@ import com.shanchain.shandata.widgets.pickerimage.utils.StorageType;
 import com.shanchain.shandata.widgets.pickerimage.utils.StorageUtil;
 import com.shanchain.shandata.widgets.pickerimage.utils.StringUtil;
 import com.shanchain.shandata.widgets.takevideo.CameraActivity;
-import com.zhangke.websocket.SimpleListener;
-import com.zhangke.websocket.SocketListener;
-import com.zhangke.websocket.WebSocketHandler;
-import com.zhangke.websocket.WebSocketManager;
-import com.zhangke.websocket.response.ErrorResponse;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -176,7 +163,6 @@ import cn.jpush.im.android.api.model.ChatRoomInfo;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -258,126 +244,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private XhsEmoticonsKeyBoard xhsEmoticonsKeyBoard;
     private boolean isIn, isHotChatRoom;
     private String isSuper;
-    private WebSocketManager mWebSocketManager;
     private List<Message> mMsgs;
     private MessageEntryDao mEntryDao;
     private List<MessageEntry> mMessageEntryList;
     private boolean mIsHasRoom;
     private MessageEntryDao mMessageEntryDao;
     private com.shanchain.data.common.ui.widgets.CustomDialog sureDialog;
-    //webSocket监听
-    private SocketListener mSocketListener = new SimpleListener() {
-        @Override
-        public <T> void onMessage(final String message, T data) {
-//                super.onMessage(message, data);
-            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "接收到的message:" + message);
-            String webSocketCode = SCJsonUtils.parseString(message, "code");
-            String webSocketData = SCJsonUtils.parseString(message, "data");
-            String type = SCJsonUtils.parseString(message, "type");
-            if ("00000000".equals(webSocketCode)) {
-                switch (type) {
-                    case "ARSPaySuccess"://支付成功进入首层
-                        String userId = SCJsonUtils.parseString(webSocketData, "userId");
-                        if (userId.equals(SCCacheUtils.getCacheUserId())) {
 
-                        }
-                        break;
-                    case "makeSure"://确认进入下一层
-//                        if (sureDialog != null) {
-//                            sureDialog.dismiss();
-//                        }
-//                        String joinNextUse = SCJsonUtils.parseString(webSocketData, "userId");
-//                        if (joinNextUse.equals(SCCacheUtils.getCacheUserId())) {
-//                            showLoadingDialog(false);
-//                            String s = SCCacheUtils.getCacheUserId();
-//                            enterNextRoom();
-//                        }
-                        break;
-                    case "confirmNum":
-                        String num = SCJsonUtils.parseString(webSocketData, "num");
-                        String confirmString = SCJsonUtils.parseString(webSocketData, "confirmList");
-                        List<String> confirmList = SCJsonUtils.parseArr(confirmString, String.class);
-                        //是否点击确认
-                        isConfirm(num, confirmList);
-                        break;
-                    case "SysMessage": //显示确认进入
-                        final String endTime = SCJsonUtils.parseString(webSocketData, "endTime");
-                        String list = SCJsonUtils.parseString(webSocketData, "list");
-                        List<String> users = SCJsonUtils.parseArr(list, String.class);
-                        final long overTime = Long.valueOf(endTime);//结束时间
-                        final long currentTime = System.currentTimeMillis(); //当前系统时间
-                        if (users.indexOf("" + SCCacheUtils.getCacheUserId()) != -1) {
-                            ThreadUtils.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Activity topActivity = ActivityStackManager.getInstance().getTopActivity();
-                                    sureDialog = new com.shanchain.data.common.ui.widgets.CustomDialog(topActivity, false, 1.0,
-                                            R.layout.common_dialog_costom, new int[]{R.id.btn_dialog_task_detail_sure});
-                                    sureDialog.setDialogTitle("下一层元社区已开启");
-                                    sureDialog.setMessageContent("点击确认进入元社区，否则您将被踢出聊天室");
-                                    sureDialog.setSureText(getString(R.string.str_sure));
-                                    sureDialog.setMessageContentSize(16);
-                                    sureDialog.show();
-                                    sureDialog.setCanceledOnTouchOutside(false);
-                                    if (currentTime < overTime) {
-                                        TextView countDown = sureDialog.findViewById(R.id.text_count_down);
-                                        CountDownTimeUtils countDownTimeUtils = new CountDownTimeUtils(countDown, "确认倒计时：", overTime - currentTime, 1000);
-                                        countDownTimeUtils.setContext(MessageListActivity.this);
-                                        countDownTimeUtils.start();
-                                    }
-                                    sureDialog.setOnItemClickListener(new com.shanchain.data.common.ui.widgets.CustomDialog.OnItemClickListener() {
-                                        @Override
-                                        public void OnItemClick(com.shanchain.data.common.ui.widgets.CustomDialog dialog, View view) {
-                                            switch (view.getId()) {
-                                                case R.id.btn_dialog_task_detail_sure:
-                                                    Map dataMap = new HashMap();
-                                                    dataMap.put("userId", SCCacheUtils.getCacheUserId());
-                                                    dataMap.put("charcterId", SCCacheUtils.getCacheCharacterId());
-                                                    dataMap.put("type", "makeSure");
-                                                    final String dataString = JSONObject.toJSONString(dataMap);
-                                                    WebSocketHandler.getDefault().send(dataString);
-                                                    if (currentTime > overTime) {
-                                                        sureDialog.dismiss();
-                                                        ThreadUtils.runOnMainThread(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                ToastUtils.showToast(MessageListActivity.this, "进入下一层时间已过期");
-                                                            }
-                                                        });
-                                                    } else {
-                                                        //进入下一层
-                                                        showLoadingDialog(false);
-                                                        enterNextRoom();
-                                                        sureDialog.dismiss();
-                                                    }
-
-                                                    break;
-                                                case R.id.linear_layout:
-
-                                                    break;
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        break;
-                }
-            }
-        }
-
-        @Override
-        public void onSendDataError(ErrorResponse errorResponse) {
-            super.onSendDataError(errorResponse);
-            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "发送消息失败:" + errorResponse.toString());
-        }
-
-        @Override
-        public <T> void onMessage(ByteBuffer bytes, T data) {
-            super.onMessage(bytes, data);
-            com.shanchain.shandata.widgets.takevideo.utils.LogUtils.d("WebSocketHandler", "接收到的bytes:");
-        }
-    };
     private MessageListPresenter mPresenter;
     @Override
     protected int getContentViewLayoutID() {
@@ -416,17 +289,14 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomId");
         LogUtils.d("roomId", roomID + "");
-//        ToastUtils.showToast(MessageListActivity.this,""+roomID);
         roomName = intent.getStringExtra("roomName");
         digistId = intent.getStringExtra("digistId");
 //        isIn = intent.getBooleanExtra("isInCharRoom", true);
         isHotChatRoom = intent.getBooleanExtra("isHotChatRoom", false);
-        JMessageClient.registerEventReceiver(this);
+//        JMessageClient.registerEventReceiver(this);
         //进入聊天室
         showLoadingDialog();
         enterChatRoom();
-//        获取WebSocket管理对象
-        WebSocketHandler.getDefault().addListener(mSocketListener);
         super.onCreate(savedInstanceState);
     }
 
@@ -511,53 +381,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         //获取是否是超级用户
         mPresenter.checkUserIsSuper();
     }
-
-    //进入下一层
-    private void enterNextRoom() {
-        SCHttpUtils.post()
-                .url(HttpApi.ENTER_NEXT_CHAT_ROOM)
-                .addParams("userId", "" + SCCacheUtils.getCacheUserId())
-                .addParams("subuserId", "" + SCCacheUtils.getCacheCharacterId())
-                .build()
-                .execute(new SCHttpStringCallBack() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        closeLoadingDialog();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        String code = SCJsonUtils.parseCode(response);
-                        LogUtils.d("进入下一层", "response:" + response);
-                        closeLoadingDialog();
-                        ThreadUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtils.showToast(MessageListActivity.this, "已进入下一层房间");
-                            }
-                        });
-                        if (sureDialog != null) {
-                            sureDialog.dismiss();
-                        }
-                    }
-                });
-    }
-
-    //是否点击确认
-    private void isConfirm(String num, List<String> confirmList) {
-        if (!num.equals("0")) {
-            if (confirmList.indexOf(SCCacheUtils.getCacheUserId()) != -1) {
-                if (sureDialog != null) {
-                    sureDialog.dismiss();
-                }
-            }
-        } else {
-            if (sureDialog != null) {
-                sureDialog.dismiss();
-            }
-        }
-    }
-
 
     /*
      * 初始化输入框
@@ -1302,6 +1125,22 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                         } else {
                             commonMessage.setType(IMessage.MessageType.RECEIVE_FILE.ordinal());
                         }
+                        /*if(TextUtils.isEmpty(messageEntry.getFileFormat())){
+                            commonMessage.setType(IMessage.MessageType.RECEIVE_FILE.ordinal());
+                            long fileId4 = messageEntry.getUserId();
+                            long currentFileId4 = JMessageClient.getMyInfo().getUserID();
+                            if (currentFileId4 == fileId4) {
+                                commonMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                            }
+                            if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                                commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
+                                commonMessage.setDuration(messageEntry.getDuration());
+                            }
+                            messageList.add(commonMessage);
+                            mAdapter.addToStart(commonMessage, true);
+                        }else {
+
+                        }*/
                         loadFileTypeMessage(messageEntry, commonMessage);
                         break;
                     default:
@@ -1324,8 +1163,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                     commonMessage.setMediaFilePath(messageEntry.getMediaFilePath() + "");
                     mPathList.add(messageEntry.getMediaFilePath());
                     mMsgIdList.add(commonMessage.getMsgId() + "");
-                } else {
-
                 }
 
                 break;
@@ -1339,8 +1176,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
                     commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
                     commonMessage.setDuration(messageEntry.getDuration());
-                } else {
-
                 }
                 break;
             case "png":
@@ -1368,90 +1203,109 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
                     commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
                     commonMessage.setDuration(messageEntry.getDuration());
-                } else {
-
                 }
             default:
-                messageList.add(commonMessage);
-                mAdapter.addToStart(commonMessage, true);
+                commonMessage.setType(IMessage.MessageType.RECEIVE_FILE.ordinal());
+                long fileId4 = messageEntry.getUserId();
+                long currentFileId4 = JMessageClient.getMyInfo().getUserID();
+                if (currentFileId4 == fileId4) {
+                    commonMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
+                }
+                if (!TextUtils.isEmpty(messageEntry.getMediaFilePath())) {
+                    commonMessage.setMediaFilePath(messageEntry.getMediaFilePath());
+                    commonMessage.setDuration(messageEntry.getDuration());
+                }
                 break;
         }
+        messageList.add(commonMessage);
+        mAdapter.addToStart(commonMessage, true);
     }
 
     //保存文件消息
     private void localSaveFileMessage(Message message, final MessageEntry messageEntry, final MessageEntryDao entryDao) {
         entryDao.insertOrReplace(messageEntry);
         FileContent fileContent = (FileContent) message.getContent();
-        fileContent.downloadFile(message, new DownloadCompletionCallback() {
-            @Override
-            public void onComplete(int i, String s, File file) {
-                messageEntry.setMediaFilePath(file.getAbsolutePath());
-                LogUtils.d("----->>>message video file path: "+file.getAbsolutePath());
-                entryDao.update(messageEntry);
+        if(TextUtils.isEmpty(fileContent.getFormat())){
+            fileContent.downloadFile(message, new DownloadCompletionCallback() {
+                @Override
+                public void onComplete(int i, String s, File file) {
+                    messageEntry.setMediaFilePath(file.getAbsolutePath());
+                    LogUtils.d("----->>>message video file path: "+file.getAbsolutePath());
+                    //获取文件的时长
+                    MediaMetadataRetriever media = new MediaMetadataRetriever();
+                    media.setDataSource(file.getAbsolutePath());
+                    String duration = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    LogUtils.d("---->>>message file duration: "+duration);
+                    if(!TextUtils.isEmpty(duration)){
+                        messageEntry.setDuration(Long.parseLong(duration)/1000);
+                    }
+                }
+            });
+        }else {
+            switch (fileContent.getFormat()) {
+                case "jpg":
+                    final ImageContent imageContent = (ImageContent) message.getContent();
+                    messageEntry.setFileFormat("jpg");
+                    if (imageContent.getLocalPath() == null) {
+                        imageContent.downloadOriginImage(message, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                messageEntry.setMediaFilePath(file.getAbsolutePath());
+                            }
+                        });
+                    } else {
+                        messageEntry.setMediaFilePath(imageContent.getLocalPath());
+                    }
+                    break;
+                case "png":
+                    final ImageContent pngContent = (ImageContent) message.getContent();
+                    messageEntry.setFileFormat("png");
+                    if (pngContent.getLocalPath() == null) {
+                        pngContent.downloadOriginImage(message, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                messageEntry.setMediaFilePath(file.getAbsolutePath());
+                            }
+                        });
+                    } else {
+                        messageEntry.setMediaFilePath(pngContent.getLocalPath());
+                    }
+                    break;
+                case "mp4":
+                    final VoiceContent voiceContent = (VoiceContent) message.getContent();
+                    messageEntry.setFileFormat("mp4");
+                    if (voiceContent.getLocalPath() != null) {
+                        messageEntry.setMediaFilePath(voiceContent.getLocalPath());
+                        messageEntry.setDuration(voiceContent.getDuration());
+                    } else {
+                        voiceContent.downloadVoiceFile(message, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                messageEntry.setMediaFilePath(file.getAbsolutePath());
+                                messageEntry.setDuration(voiceContent.getDuration());
+                            }
+                        });
+                    }
+                    break;
+                case "mp3":
+                    final VideoContent videoContent = (VideoContent) message.getContent();
+                    messageEntry.setFileFormat("mp3");
+                    if (videoContent.getVideoLocalPath() != null) {
+                        messageEntry.setMediaFilePath(videoContent.getVideoLocalPath());
+                        messageEntry.setDuration(videoContent.getDuration());
+                    } else {
+                        videoContent.downloadVideoFile(message, new DownloadCompletionCallback() {
+                            @Override
+                            public void onComplete(int i, String s, File file) {
+                                messageEntry.setMediaFilePath(file.getAbsolutePath());
+                                messageEntry.setDuration(videoContent.getDuration());
+                            }
+                        });
+                    }
+                    break;
             }
-        });
-        switch (fileContent.getFormat()) {
-            case "jpg":
-                final ImageContent imageContent = (ImageContent) message.getContent();
-                messageEntry.setFileFormat("jpg");
-                if (imageContent.getLocalPath() == null) {
-                    imageContent.downloadOriginImage(message, new DownloadCompletionCallback() {
-                        @Override
-                        public void onComplete(int i, String s, File file) {
-                            messageEntry.setMediaFilePath(file.getAbsolutePath());
-                        }
-                    });
-                } else {
-                    messageEntry.setMediaFilePath(imageContent.getLocalPath());
-                }
-                break;
-            case "png":
-                final ImageContent pngContent = (ImageContent) message.getContent();
-                messageEntry.setFileFormat("png");
-                if (pngContent.getLocalPath() == null) {
-                    pngContent.downloadOriginImage(message, new DownloadCompletionCallback() {
-                        @Override
-                        public void onComplete(int i, String s, File file) {
-                            messageEntry.setMediaFilePath(file.getAbsolutePath());
-                        }
-                    });
-                } else {
-                    messageEntry.setMediaFilePath(pngContent.getLocalPath());
-                }
-                break;
-            case "mp4":
-                final VoiceContent voiceContent = (VoiceContent) message.getContent();
-                messageEntry.setFileFormat("mp4");
-                if (voiceContent.getLocalPath() != null) {
-                    messageEntry.setMediaFilePath(voiceContent.getLocalPath());
-                    messageEntry.setDuration(voiceContent.getDuration());
-                } else {
-                    voiceContent.downloadVoiceFile(message, new DownloadCompletionCallback() {
-                        @Override
-                        public void onComplete(int i, String s, File file) {
-                            messageEntry.setMediaFilePath(file.getAbsolutePath());
-                            messageEntry.setDuration(voiceContent.getDuration());
-                        }
-                    });
-                }
-                break;
-            case "mp3":
-                final VideoContent videoContent = (VideoContent) message.getContent();
-                messageEntry.setFileFormat("mp3");
-                if (videoContent.getVideoLocalPath() != null) {
-                    messageEntry.setMediaFilePath(videoContent.getVideoLocalPath());
-                    messageEntry.setDuration(videoContent.getDuration());
-                } else {
-                    videoContent.downloadVideoFile(message, new DownloadCompletionCallback() {
-                        @Override
-                        public void onComplete(int i, String s, File file) {
-                            messageEntry.setMediaFilePath(file.getAbsolutePath());
-                            messageEntry.setDuration(videoContent.getDuration());
-                        }
-                    });
-                }
-                break;
         }
+        entryDao.update(messageEntry);
 
     }
 
@@ -1858,7 +1712,22 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                                 fileMessage.setType(IMessage.MessageType.SEND_VIDEO.ordinal());
                                 fileMessage.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             }
-                            fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
+//                            fileMessage.setMediaFilePath(VideoMediaID + ".mp4");
+                            fileContent.downloadFile(msg, new DownloadCompletionCallback() {
+                                @Override
+                                public void onComplete(int i, String s, File file) {
+                                    fileMessage.setMediaFilePath(file.getAbsolutePath());
+                                    LogUtils.d("---->>>even message file path: "+"i="+i+":s="+s+"----"+file.getAbsolutePath());
+                                    //获取文件的时长
+                                    MediaMetadataRetriever media = new MediaMetadataRetriever();
+                                    media.setDataSource(file.getAbsolutePath());
+                                    String duration = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                                    LogUtils.d("---->>>message file duration: "+duration);
+                                    if(!TextUtils.isEmpty(duration)){
+                                        fileMessage.setDuration(Long.parseLong(duration)/1000);
+                                    }
+                                }
+                            });
                         } else {
                             switch (fileContent.getFormat()) {
                                 case "jpg":
@@ -2157,6 +2026,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //    }
 
     //聊天室输入框多功能界面
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(AppsAdapter.ImageEvent event) {
         Intent intent;
         if (event.getContext() != MessageListActivity.this) {
@@ -2296,21 +2166,15 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             String timeString = DateUtils.formatFriendly(new Date(messageTime));
 //                      message.setTimeString(timeString);
                         }
-//                      message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         msg.getServerMessageId();
                         mAdapter.addToStart(message, true);
                         msg.setOnSendCompleteCallback(new BasicCallback() {
                             @Override
                             public void gotResult(int i, String s) {
                                 if (i == 0) {
-//                                    List<Message> allMessages = chatRoomConversation.getAllMessage();
-//                                    localSaveMessage(allMessages);
                                     List<Message> lastMessage = new ArrayList<Message>();
                                     lastMessage.add(msg);
                                     localSaveMessage(lastMessage);
-//                                long msgId = msg.getServerMessageId();
-//                                TextContent textContent = (TextContent) msg.getContent();
-//                                LogUtils.d("发送消息的ID:", msgId + "" + textContent.getText());
                                     message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                 } else {
                                     message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
@@ -2337,9 +2201,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                             ToastUtils.showToast(MessageListActivity.this, "聊天服务器未初始化，请重试");
                         }
                     });
-//                    message.setMessageStatus(IMessage.MessageStatus.SEND_FAILED);
-//                    mAdapter.addToStart(message, true);
-//                    xhsEmoticonsKeyBoard.getEtChat().setText("");
                     enterChatRoom();
                 }
             }
@@ -2348,11 +2209,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mChatView.setMenuClickListener(new OnMenuClickListener() {
             @Override
             public boolean onSendTextMessage(final CharSequence input) {
-
-//                chatRoomConversation = JMessageClient.getChatRoomConversation(Long.valueOf(roomID));
-//                if (null == chatRoomConversation) {
-//                    chatRoomConversation = Conversation.createChatRoomConversation(Long.valueOf(roomID));
-//                }
                 final String inputString;
                 inputString = input.toString();
                 if (inputString.length() > 0 && chatRoomConversation != null) {
@@ -3097,7 +2953,9 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
 //                LogUtils.d("leaveChatRoom", "离开聊天室");
 //            }
 //        });
-        WebSocketHandler.getDefault().removeListener(mSocketListener);
+        /*if(mSocketListener!=null){
+            WebSocketHandler.getDefault().removeListener(mSocketListener);
+        }*/
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
     }

@@ -1,44 +1,30 @@
 package com.shanchain.shandata.ui.view.fragment;
 
-import android.app.ProgressDialog;
-import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shanchain.data.common.base.Constants;
 import com.shanchain.data.common.cache.SCCacheUtils;
-import com.shanchain.data.common.net.HttpApi;
 import com.shanchain.data.common.net.NetErrCode;
-import com.shanchain.data.common.net.SCHttpUtils;
-import com.shanchain.data.common.utils.LogUtils;
 import com.shanchain.shandata.R;
 import com.shanchain.shandata.adapter.CouponListAdapter;
 import com.shanchain.shandata.base.BaseFragment;
-import com.shanchain.shandata.ui.model.CouponInfo;
 import com.shanchain.shandata.ui.model.CouponSubInfo;
 import com.shanchain.shandata.ui.presenter.CouponListPresenter;
 import com.shanchain.shandata.ui.presenter.impl.CouponListPresenterImpl;
-import com.shanchain.shandata.ui.view.activity.coupon.MyCreateDetailsActivity;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.CounponListView;
-import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
-import cn.jpush.im.android.eventbus.EventBus;
-import okhttp3.Call;
 
 
 /**

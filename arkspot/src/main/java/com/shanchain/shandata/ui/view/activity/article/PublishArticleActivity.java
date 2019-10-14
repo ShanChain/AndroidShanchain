@@ -47,6 +47,7 @@ import com.shanchain.shandata.ui.presenter.impl.PublishArticlePresenterImpl;
 import com.shanchain.shandata.ui.view.activity.article.view.PublishArticleView;
 import com.shanchain.shandata.ui.view.activity.jmessageui.FootPrintNewActivity;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.utils.EmojiUtils;
 import com.shanchain.shandata.utils.FilePathUtils;
 import com.shanchain.shandata.utils.PhotoSelectHelper;
 import com.shanchain.shandata.widgets.photochoose.PhotoUtils;
@@ -149,7 +150,7 @@ public class PublishArticleActivity extends BaseActivity implements PublishArtic
             mArticlePresenter.uploadPhotoListToServer(mList);
         }else {
             //没有图片直接发布
-            mArticlePresenter.addArticleNoPictrue(Integer.parseInt(SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER)),content.length()>10 ? content.substring(0,10):content,content,"");
+            mArticlePresenter.addArticleNoPictrue(Integer.parseInt(SCCacheUtils.getCache("0", Constants.CACHE_CUR_USER)),"", EmojiUtils.stringToUtf8(content),"");
         }
     }
 

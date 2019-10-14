@@ -12,9 +12,9 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.ui.model.AppBean;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
 
-import cn.jpush.im.android.eventbus.EventBus;
+import java.util.ArrayList;
 
 public class AppsAdapter extends BaseAdapter {
 

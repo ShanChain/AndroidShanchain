@@ -27,6 +27,8 @@ import com.shanchain.shandata.widgets.other.FriendInfoView;
 import com.shanchain.shandata.widgets.photochoose.DialogCreator;
 import com.shanchain.shandata.widgets.photochoose.HandleResponseCode;
 
+import org.greenrobot.eventbus.EventBus;
+
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
@@ -34,7 +36,6 @@ import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.eventbus.EventBus;
 
 /**
  * Created by ${chenyn} on 2017/3/22.

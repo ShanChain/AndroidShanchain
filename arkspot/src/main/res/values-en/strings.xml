@@ -411,8 +411,8 @@
     <string name="mining_area">Mining area</string>
     <string name="can_join_mining">Can join the mining</string>
     <string name="my_mine">My mine</string>
-    <string name="i_create">I created</string>
-    <string name="i_joined">I joined</string>
+    <string name="i_create">I created %s</string>
+    <string name="i_joined">I joined %s</string>
     <string name="share_to">Share</string>
     <string name="payfor_create_mining">Pay %s SEAT to create a mine</string>
     <string name="payfor_add_mining">Pay %s SEAT to join a mine</string>
@@ -573,5 +573,7 @@
     <string name="commit_success_1">Submitted successfully</string>
     <string name="all_comment">All comments</string>
     <string name="sto_pre_order">STO</string>
-
+    <string name="message_file">[Video]</string>
+    <string name="message_image">[Image]</string>
+    <string name="message_voice">[Voice]</string>
 </resources>

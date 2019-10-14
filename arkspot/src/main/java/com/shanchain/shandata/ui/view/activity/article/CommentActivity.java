@@ -33,6 +33,7 @@ import com.shanchain.shandata.ui.presenter.CommentPresenter;
 import com.shanchain.shandata.ui.presenter.impl.CommentPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.MainActivity;
 import com.shanchain.shandata.ui.view.activity.article.view.CommentView;
+import com.shanchain.shandata.utils.EmojiUtils;
 import com.shanchain.shandata.utils.TimeUtils;
 import com.shanchain.shandata.widgets.CustomListView;
 import com.shanchain.shandata.widgets.SoftKeyboardStateHelper;
@@ -123,7 +124,7 @@ public class CommentActivity extends BaseActivity implements CommentView/*, View
                         .error(R.drawable.aurora_headicon_default)).into(ivUserHead1);
         tvNickname.setText(commentEntity.getSendNickName());
         tvTime.setText(TimeUtils.friendlyTime1(this,new Date(commentEntity.getCreateTime())));
-        tvComment.setText(commentEntity.getContent());
+        tvComment.setText(EmojiUtils.utf8ToString(commentEntity.getContent()));
         if("0".equals(commentEntity.getIsAttention())){
             //未关注
             tvAttention.setBackgroundResource(R.drawable.squra_attention_n_shape);
@@ -207,6 +208,7 @@ public class CommentActivity extends BaseActivity implements CommentView/*, View
             ToastUtils.showToast(CommentActivity.this, getResources().getString(R.string.enter_comment));
             return;
         }
+        comment = EmojiUtils.stringToUtf8(comment);
         if(enterType ==0){
             mCommentPresenter.addCommentUser(Integer.parseInt(userId),commentEntity.getSendUserId(),
                     commentEntity.getInvitationId(),commentEntity.getId(),commentEntity.getId(),comment);

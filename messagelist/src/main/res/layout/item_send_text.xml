@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:textAlignment="textEnd"
+            android:visibility="invisible"
             style="@style/aurora_msgitem_sender_display_name_style"
             android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
             android:layout_toStartOf="@+id/aurora_iv_msgitem_avatar"/>
@@ -62,7 +63,7 @@
             android:textColorLink="#157BFB"
             android:padding="5dp"
             android:paddingRight="20dp"
-            android:text="asdf"/>
+            android:text=""/>
 
         <cn.jiguang.imui.view.RoundImageView
             android:id="@+id/aurora_iv_msgitem_avatar"

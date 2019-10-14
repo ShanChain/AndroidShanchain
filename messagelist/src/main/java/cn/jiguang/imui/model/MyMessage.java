@@ -159,4 +159,22 @@ public class MyMessage implements IMessage {
     public String getMediaFilePath() {
         return mediaFilePath;
     }
+
+    @Override
+    public String toString() {
+        return "MyMessage{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", timeString='" + timeString + '\'' +
+                ", type=" + type +
+                ", hxUserName='" + hxUserName + '\'' +
+                ", user=" + user +
+                ", defaultUser=" + defaultUser +
+                ", mediaFilePath='" + mediaFilePath + '\'' +
+                ", duration=" + duration +
+                ", progress='" + progress + '\'' +
+                ", chatEventMessage=" + chatEventMessage +
+                ", mMsgStatus=" + mMsgStatus +
+                '}';
+    }
 }
