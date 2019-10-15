@@ -417,14 +417,8 @@
         <activity android:name=".ui.view.activity.chat.SceneDetailsActivity" />
         <activity android:name=".ui.view.activity.chat.SceneNumbersActivity" />
         <activity android:name=".ui.view.activity.chat.AnnouncementActivity" />
-        <activity
-            android:name=".ui.view.activity.chat.AddAnnouncementActivity"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ui.view.activity.chat.AnnouncementDetailsActivity">
-            <meta-data
-                android:name="page_flag"
-                android:value="page_notice" />
-        </activity>
+
+
         <activity android:name=".ui.view.activity.chat.EditSceneActivity" />
         <activity android:name=".ui.view.activity.chat.MeetPersonActivity" />
         <activity android:name=".ui.view.activity.chat.FindSceneActivity" />

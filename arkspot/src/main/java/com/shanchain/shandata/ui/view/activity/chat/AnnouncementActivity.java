@@ -60,8 +60,8 @@ public class AnnouncementActivity extends BaseActivity implements ArthurToolBar.
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(AnnouncementActivity.this,AnnouncementDetailsActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(AnnouncementActivity.this,AnnouncementDetailsActivity.class);
+                startActivity(intent);*/
             }
         });
 
@@ -143,8 +143,8 @@ public class AnnouncementActivity extends BaseActivity implements ArthurToolBar.
             public void OnItemClick(CustomDialog dialog, View view) {
                 switch (view.getId()) {
                     case R.id.tv_dialog_add_announcement:
-                        Intent intent = new Intent(AnnouncementActivity.this, AddAnnouncementActivity.class);
-                        startActivity(intent);
+                        /*Intent intent = new Intent(AnnouncementActivity.this, AddAnnouncementActivity.class);
+                        startActivity(intent);*/
                         customDialog.dismiss();
                         break;
                     case R.id.tv_dialog_cancel:
