@@ -59,8 +59,8 @@ import cn.jiguang.imui.view.CircleImageView;
 /**
  * Created by WealChen
  * Date : 2019/7/29
- * Describe :
- */
+ * Describe :微文详情
+ * */
 public class ArticleDetailActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener,
         ArticleDetailView {
     @Bind(R.id.tb_task_comment)

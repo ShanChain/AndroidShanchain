@@ -1,18 +1,18 @@
 apply plugin: 'com.android.application'
 apply from: "${project.rootDir}/config.gradle"
 apply plugin: 'org.greenrobot.greendao'
-
+apply from: 'tinkerpatch.gradle'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '28.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.shanchain.shandata"
-        minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 28
-        versionName "2.5.1"
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -141,64 +141,44 @@ greendao {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    //noinspection GradleCompatible
-    implementation 'com.android.support:support-v4:27.1.0'
+    implementation rootProject.ext.librarys['surportV4']
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation rootProject.ext.testLibrarys['junit']
     implementation project(':common')
     implementation project(':chatinput')
-    /*compile(name: 'AlivcPlayer', ext: 'aar')
-             compile(name: 'AliyunVodPlayer', ext: 'aar')
-             compile(name: 'AliyunVodPlayerView', ext: 'aar')*/
     implementation 'com.lzy.widget:imagepicker:0.6.1'
 
-    //    implementation 'me.shaohui.shareutil:shareutil:1.3.8'//三方分享登录组件
-
     //facebook登录授权
-    implementation 'com.facebook.android:facebook-login:4.33.0'
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
-    implementation 'com.jaeger.ninegridimageview:library:1.1.0'
-    implementation 'com.android.support:cardview-v7:27.1.0'
+    implementation rootProject.ext.librarys['facebookLogin']
+    implementation rootProject.ext.librarys['supportV7']
 
+    implementation rootProject.ext.librarys['supportConstraint']
+    implementation rootProject.ext.librarys['supportDesign']
+
+    implementation rootProject.ext.librarys['eventbus']
+    implementation rootProject.ext.librarys['buttonNavigation']
+    implementation rootProject.ext.librarys['ninegridimageview']
+    implementation rootProject.ext.librarys['supportCardview']
     //butterknife 插件
     annotationProcessor 'com.jakewharton:butterknife:7.0.1'
-    implementation 'com.jakewharton:butterknife:7.0.1'
-
-    //    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
-    implementation 'de.hdodenhof:circleimageview:2.1.0'
-    implementation 'com.gjiazhe:wavesidebar:1.3'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'cn.bingoogolapple:bga-refreshlayout:1.1.8'
-    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    //webSocketDemo依赖
-    implementation 'com.github.0xZhangKe:WebSocketDemo:3.0.1'
-    //androidasync  WebSocket
-//    implementation 'com.koushikdutta.async:androidasync:2.+'
-    //greendao依赖
-    implementation 'org.greenrobot:greendao:3.2.2'
-
-    //    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
-
-    //    implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
-
-    //防止界面崩溃
-    implementation 'com.tonystark.android:defense_crash:2.0.0'
-
-    //生成/扫描 二维码
-    implementation 'cn.yipianfengye.android:zxing-library:2.2'
-
+    implementation rootProject.ext.librarys['butterknife']
+    implementation rootProject.ext.librarys['circleimageview']
+    implementation rootProject.ext.librarys['wavesidebar']
+    implementation rootProject.ext.librarys['picasso']
+    implementation rootProject.ext.librarys['refreshlayout']
+    implementation rootProject.ext.librarys['activeandroid']
+    implementation rootProject.ext.librarys['webSocketDemo']
+    implementation rootProject.ext.librarys['greendao']
+    implementation rootProject.ext.librarys['defenseCrash']
+    implementation rootProject.ext.librarys['zxing']
     /* 友盟SDK依赖 */
-    implementation 'com.umeng.sdk:common:latest.integration'
-    implementation 'com.umeng.sdk:analytics:latest.integration'
-    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
-    implementation 'cjt.library.wheel:camera:1.1.9'
-    implementation 'pub.devrel:easypermissions:0.4.0'
-
+    implementation rootProject.ext.librarys['umengCommon']
+    implementation rootProject.ext.librarys['umengAnalytics']
+    implementation rootProject.ext.librarys['photoView']
+    implementation rootProject.ext.librarys['wheel']
+    implementation rootProject.ext.librarys['easypermissions']
     // 若使用annotation需要单独引用,对于tinker的其他库都无需再引用
     annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:1.9.11") {
         changing = true
@@ -207,69 +187,51 @@ dependencies {
     implementation('com.tinkerpatch.sdk:tinkerpatch-android-sdk:1.2.11') {
         changing = true
     }
-
     /* 极光SDK依赖 */
-
-    //此处以JPush 3.1.6 版本为例。
-    implementation 'cn.jiguang.sdk:jpush:3.1.7'
-
+    //此处以JPush 3.1.7 版本为例。
+    implementation rootProject.ext.librarys['jpush']
     // 此处以JMessage 2.7.0 版本。  2.9.0
-    implementation 'cn.jiguang.sdk:jmessage:2.9.0'
-
+    implementation rootProject.ext.librarys['jmessage']
     // 此处以JCore 1.2.6 版本。  2.0.0
-    implementation 'cn.jiguang.sdk:jcore:2.0.0'
-
+    implementation rootProject.ext.librarys['jcore']
     // 此处以JShare 1.6.0 版本为例，具体版本请参考压缩包libs的jar包版本。
-    implementation 'cn.jiguang.sdk:jshare:1.6.0'
-    implementation 'cn.jiguang.sdk:jshare-qqmodel:1.6.0'
-
+    implementation rootProject.ext.librarys['jshare']
+    implementation rootProject.ext.librarys['jshareQqmodel']
     // 此处以jshare-sinamodel1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
-    implementation 'cn.jiguang.sdk:jshare-sinamodel:1.6.0'
-
-    //    implementation 'cn.jiguang.sdk:jshare-wechatmodel:1.6.1'
-
-    // 此处以jshare-facebookmodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
-
-    //    implementation 'cn.jiguang.sdk:jshare-facebookmodel:1.6.0'
-
-    //    implementation 'cn.jiguang.sdk:jshare-twittermodel:1.6.0'  // 此处以jshare-twittermodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
-
-    //    implementation 'cn.jiguang.sdk:jshare-jchatpromodel:1.6.0'
-
-    // 此处以jshare-twittermodel 1.6.0  版本为例，具体版本请参考压缩包libs的jar包版本。
-
+    implementation rootProject.ext.librarys['jshareSinamodel']
     /* 其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0 */
-    implementation 'com.tencent.bugly:crashreport:latest.release'
-    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
-
+    implementation rootProject.ext.librarys['buglyCrashreport']
+    implementation rootProject.ext.librarys['buglyNativecrashreport']
     /*react native依赖*/
-    implementation 'com.facebook.react:react-native:+'
-    implementation 'com.github.baserecycleradapter:library:1.1.0'
+    implementation rootProject.ext.librarys['reactNative']
+    implementation rootProject.ext.librarys['baserecycleradapter']
+    implementation rootProject.ext.librarys['stetho']
+    implementation rootProject.ext.librarys['stethoOkhttp3']
+    implementation rootProject.ext.librarys['leakcanaryAndroid']
+    implementation rootProject.ext.librarys['BaseRecyclerViewAdapterHelper']
+    implementation rootProject.ext.librarys['rxjava2']
+    implementation rootProject.ext.librarys['rxAndroid']
+    implementation rootProject.ext.librarys['luban']
+    implementation rootProject.ext.librarys.rxlifecycle
+    implementation rootProject.ext.librarys.rxlifecycleAndroid
+    implementation rootProject.ext.librarys.rxlifecycleComponents
+    implementation rootProject.ext.librarys.okhttp
+    implementation rootProject.ext.librarys.okhttpLog
+    implementation rootProject.ext.librarys.okhttpPublicParams
+    implementation rootProject.ext.librarys.retrofit
+    implementation rootProject.ext.librarys.retrofitConverter
+    implementation rootProject.ext.librarys.retrofitAdapter
+    implementation rootProject.ext.librarys.gson
 
     // From node_modules
-
-    /*react native调试依赖*/
-    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
-    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    testImplementation 'junit:junit:4.12'
-    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation files('libs/universal-image-loader-1.9.5.jar')
     implementation files('libs/jshare-wechat-android-1.6.1.jar')
     implementation files('libs/umeng_social_api.jar')
     implementation files('libs/umeng_social_net.jar')
     implementation files('libs/umeng_social_tool.jar')
-
-    //buildTinker.gradle是专门为Tinker配置和生成拆分包而写的
-    implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
-    apply from: 'tinkerpatch.gradle'
-
-    //    implementation files('libs/jshare-facebook-android-1.6.1.jar')
-
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
     //图片多选
     implementation project(':galleryfinal')
-    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'top.zibin:Luban:1.1.8'
+    //buildTinker.gradle是专门为Tinker配置和生成拆分包而写的
+    implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1310_43612_sharewithdownload_withoutGame_obfs_20180706_163319.jar')
+
 }

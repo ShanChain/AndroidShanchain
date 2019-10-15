@@ -52,8 +52,7 @@ import cn.jiguang.imui.view.CircleImageView;
 /**
  * Created by WealChen
  * Date : 2019/9/20
- * Describe :
- */
+ * Describe :二级评论界面 */
 public class CommentActivity extends BaseActivity implements CommentView/*, View.OnLayoutChangeListener*/ {
     @Bind(R.id.iv_user_head1)
     CircleImageView ivUserHead1;
