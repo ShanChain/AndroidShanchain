@@ -15,8 +15,7 @@ import uk.co.senab.photoview.PhotoView;
 /**
  * Created by WealChen
  * Date : 2019/9/27
- * Describe :
- */
+ * Describe :查看单张图片 */
 public class PhotoVSingleActivity extends BaseActivity {
     @Bind(R.id.pv_photo)
     PhotoView pvPhoto;

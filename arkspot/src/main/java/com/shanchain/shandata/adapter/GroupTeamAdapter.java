@@ -51,7 +51,7 @@ public class GroupTeamAdapter extends BaseQuickAdapter<GroupTeamBean,BaseViewHol
             helper.setText(R.id.tv_title,"我的小分队");
         }
         helper.setText(R.id.tv_person_nums,item.getUserCount()+"");
-
+        helper.setText(R.id.tv_create_time,mContext.getString(R.string.create_time_mine,item.getCreateTime().split(" ")[0]));
         if(type ==2){
             helper.getView(R.id.ll_userList).setVisibility(View.VISIBLE);
             CircleImageView ci1 = helper.getView(R.id.iv_user_head1);

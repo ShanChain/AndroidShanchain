@@ -35,6 +35,9 @@ import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 
+/**
+ * 修改用户资料
+ */
 public class ModifyUserInfoActivity extends BaseActivity {
 
     @Bind(R.id.et_input_nike_name)

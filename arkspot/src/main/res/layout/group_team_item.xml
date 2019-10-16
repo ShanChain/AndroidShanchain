@@ -27,11 +27,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:gravity="center"
+            android:layout_marginTop="2dp">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/my_info"/>
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@mipmap/mine_user"/>
             <TextView
                 android:id="@+id/tv_person_nums"
                 android:layout_width="wrap_content"
@@ -39,7 +40,11 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="16sp"/>
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/tv_create_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_userList"

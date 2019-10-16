@@ -576,4 +576,6 @@
     <string name="message_file">[Video]</string>
     <string name="message_image">[Image]</string>
     <string name="message_voice">[Voice]</string>
+    <string name="has_nums">Nums:</string>
+    <string name="create_time_mine">Create time:%s</string>
 </resources>

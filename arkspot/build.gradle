@@ -148,7 +148,7 @@ dependencies {
     implementation rootProject.ext.testLibrarys['junit']
     implementation project(':common')
     implementation project(':chatinput')
-    implementation 'com.lzy.widget:imagepicker:0.6.1'
+    implementation rootProject.ext.librarys.imagepicker
 
     //facebook登录授权
     implementation rootProject.ext.librarys['facebookLogin']

@@ -72,6 +72,7 @@ ext{
             leakcanaryAndroid:              "com.squareup.leakcanary:leakcanary-android:1.5.1",
             BaseRecyclerViewAdapterHelper:  "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30",
             luban:                          "top.zibin:Luban:1.1.8",
+            imagepicker:                    "com.lzy.widget:imagepicker:0.6.1",
 
             //okhttp3
             okhttp:                         "com.squareup.okhttp3:okhttp:3.6.0",

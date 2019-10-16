@@ -590,5 +590,7 @@
     <string name="message_file">[视频]</string>
     <string name="message_image">[图片]</string>
     <string name="message_voice">[语音]</string>
+    <string name="has_nums">已加入人数:</string>
+    <string name="create_time_mine">创建时间:%s</string>
 
 </resources>

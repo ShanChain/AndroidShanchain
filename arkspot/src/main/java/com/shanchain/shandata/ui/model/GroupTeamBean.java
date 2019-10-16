@@ -20,6 +20,7 @@ public class GroupTeamBean implements Serializable {
     String level;
     String roomImage;
     String createUser;
+    String createTime;
 //    String tDiggingJoinLogs;
     List<TDiggingJoinLogs> tDiggingJoinLogs;
 
@@ -118,6 +119,14 @@ public class GroupTeamBean implements Serializable {
 
     public void settDiggingJoinLogs(List<TDiggingJoinLogs> tDiggingJoinLogs) {
         this.tDiggingJoinLogs = tDiggingJoinLogs;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
     @Override

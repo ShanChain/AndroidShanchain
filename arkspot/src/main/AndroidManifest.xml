@@ -413,20 +413,13 @@
                 android:name="page_flag"
                 android:value="page_contact" />
         </activity>
-        <activity android:name=".ui.view.activity.chat.CreateDramaActivity" />
-        <activity android:name=".ui.view.activity.chat.SceneDetailsActivity" />
         <activity android:name=".ui.view.activity.chat.SceneNumbersActivity" />
-        <activity android:name=".ui.view.activity.chat.AnnouncementActivity" />
 
 
         <activity android:name=".ui.view.activity.chat.EditSceneActivity" />
         <activity android:name=".ui.view.activity.chat.MeetPersonActivity" />
         <activity android:name=".ui.view.activity.chat.FindSceneActivity" />
-        <activity android:name=".ui.view.activity.mine.PraisedActivity">
-            <meta-data
-                android:name="page_flag"
-                android:value="page_praised" />
-        </activity>
+
         <activity android:name=".ui.view.activity.mine.MyCommentsActivity">
             <meta-data
                 android:name="page_flag"
@@ -463,11 +456,7 @@
             android:name=".ui.view.activity.story.ForwardingActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.view.activity.story.ChainActivity" />
-        <activity android:name=".ui.view.activity.mine.MyStoryActivity">
-            <meta-data
-                android:name="page_flag"
-                android:value="page_my_story" />
-        </activity>
+
         <activity android:name=".ui.view.activity.chat.ChatAtActivity" />
         <activity
             android:name=".ui.view.activity.login.GuideActivity"
@@ -570,7 +559,6 @@
         <activity android:name=".ui.view.activity.jmessageui.FriendInfoActivity" />
         <activity android:name=".ui.view.activity.jmessageui.PersonalActivity" />
         <!-- <activity android:name=".rn.activity.X5WebViewActivity" /> -->
-        <activity android:name=".ui.view.activity.MainEntranceActivity"></activity>
 
         <activity android:name=".ui.view.activity.login.PhoneFrontActivity"
             android:screenOrientation="portrait"/>

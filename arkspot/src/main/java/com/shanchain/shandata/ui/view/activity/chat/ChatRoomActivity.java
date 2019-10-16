@@ -263,8 +263,8 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
             case R.id.iv_chat_against_drama:
                 //对戏模式下大戏(只有管理员可以创建)
 
-                Intent intent = new Intent(this, CreateDramaActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(this, CreateDramaActivity.class);
+                startActivity(intent);*/
 
                 break;
             case R.id.iv_chat_against_scene:
@@ -383,13 +383,13 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     @Override
     public void onRightClick(View v) {
         //群信息或者好友信息
-        Intent intent = new Intent(this, SceneDetailsActivity.class);
+        /*Intent intent = new Intent(this, SceneDetailsActivity.class);
         intent.putExtra("isGroup", mIsGroup);
         if (mIsGroup) {
             intent.putExtra("", "");
         }
         intent.putExtra("toChatName", toChatName);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
 
@@ -489,10 +489,10 @@ public class ChatRoomActivity extends BaseActivity implements ArthurToolBar.OnLe
     }
 
     private void goFriendHomePage(String characterId) {
-        Intent intent = new Intent(mContext, FriendHomeActivity.class);
+        /*Intent intent = new Intent(mContext, FriendHomeActivity.class);
         int character = Integer.parseInt(characterId);
         intent.putExtra("characterId", character);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     /**

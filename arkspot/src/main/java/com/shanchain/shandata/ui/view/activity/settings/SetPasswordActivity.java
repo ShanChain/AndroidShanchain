@@ -36,9 +36,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+/**
+ * 设置登陆密码
+ */
 public class SetPasswordActivity extends BaseActivity implements ArthurToolBar.OnLeftClickListener {
-
-
     @Bind(R.id.tb_setting)
     ArthurToolBar tbSetting;
     @Bind(R.id.tv_set_password)
