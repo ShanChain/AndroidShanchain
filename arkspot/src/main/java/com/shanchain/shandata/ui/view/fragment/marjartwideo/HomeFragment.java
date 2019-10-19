@@ -66,6 +66,7 @@ import com.shanchain.data.common.net.SCHttpPostBodyCallBack;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.widgets.CustomDialog;
+import com.shanchain.data.common.ui.widgets.SCCheckInDialog;
 import com.shanchain.data.common.ui.widgets.SCInputDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.ImageUtils;
@@ -82,6 +83,7 @@ import com.shanchain.shandata.base.MyApplication;
 import com.shanchain.shandata.event.EventMessage;
 import com.shanchain.shandata.receiver.MessageReceiver;
 import com.shanchain.shandata.rn.activity.SCWebViewXYActivity;
+import com.shanchain.shandata.ui.model.CheckInBean;
 import com.shanchain.shandata.ui.model.Coordinates;
 import com.shanchain.shandata.ui.model.GroupTeamBean;
 import com.shanchain.shandata.ui.model.HotChatRoom;
@@ -106,7 +108,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -238,20 +242,12 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         initBaiduMap();
         //注册自定义消息广播
         registerMessageReceiver();
+        //登陆打卡
+        checkIsCheckIn();
 
-//        initWalletInfo();
 
     }
 
-    //提示是否有钱包
-    private void initWalletInfo(){
-        boolean guided = PrefUtils.getBoolean(getActivity(), Constants.SP_KEY_GUIDE_VIEW, false);
-        if(!guided){
-            //是否有钱包提示
-            isShowWalletTip = false;
-            mHomePresenter.checkUserHasWallet(getActivity());
-        }
-    }
 
     //初始化数据
     private void setInitData(){
@@ -293,6 +289,20 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         filter.addAction(MessageReceiver.MESSAGE_RECEIVED_ACTION);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
+    }
+    //判断是否已签到
+    private void checkIsCheckIn(){
+        //首次登陆打卡
+        String current = PrefUtils.getString(getActivity(), Constants.SP_KEY_CHECKIN,"");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        if(TextUtils.isEmpty(current)){
+            mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
+        }else {
+            LogUtils.d("------>>>month: "+current+"---"+sdf.format(new Date()));
+            if(!sdf.format(new Date()).equals(current)){
+                mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
+            }
+        }
     }
 
     @Override
@@ -381,6 +391,12 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         String webParams = obj.toJSONString();
         intent.putExtra("webParams", webParams);
         startActivity(intent);
+    }
+
+    //打卡记录
+    @OnClick(R.id.iv_my_record)
+    void goToCheckIn(){
+        mHomePresenter.queryMonthCheckinRecord("true");
     }
 
 
@@ -741,6 +757,34 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
                 //弹出支付密码弹窗
                 isShowPasswordDialog();
             }
+        }
+    }
+
+    @Override
+    public void setInsertCheckinResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_login_days)+",1");
+            checkInDialog.show();
+            PrefUtils.putString(getActivity(), Constants.SP_KEY_CHECKIN,new SimpleDateFormat("yyyy/MM/dd").format(new Date()));
+        }
+    }
+
+    @Override
+    public void setQueryMonthCheckinRecordResponse(String response) {
+        String code = SCJsonUtils.parseCode(response);
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            List<CheckInBean> mList = JSONObject.parseArray(data,CheckInBean.class);
+            if(mList!=null && mList.size()>0){
+                SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_month_login_days)+","+mList.get(0).getContinuousDays());
+                checkInDialog.show();
+            }else {
+                SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_month_login_days)+",0");
+                checkInDialog.show();
+            }
+        }else {
+            ToastUtils.showToast(getActivity(),getResources().getString(R.string.operation_failed));
         }
     }
 
@@ -1172,4 +1216,9 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
 }

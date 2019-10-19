@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -67,6 +68,7 @@ import com.shanchain.data.common.net.NetErrCode;
 import com.shanchain.data.common.net.SCHttpStringCallBack;
 import com.shanchain.data.common.net.SCHttpUtils;
 import com.shanchain.data.common.ui.toolBar.ArthurToolBar;
+import com.shanchain.data.common.ui.widgets.CustomDialog;
 import com.shanchain.data.common.ui.widgets.StandardDialog;
 import com.shanchain.data.common.utils.ImageUtils;
 import com.shanchain.data.common.utils.LogUtils;
@@ -87,13 +89,16 @@ import com.shanchain.shandata.ui.model.ConversationEntry;
 import com.shanchain.shandata.ui.model.MessageEntry;
 import com.shanchain.shandata.ui.model.ModifyUserInfo;
 import com.shanchain.shandata.ui.model.SearchGroupTeamBeam;
+import com.shanchain.shandata.ui.model.ShareBean;
 import com.shanchain.shandata.ui.presenter.MessageListPresenter;
 import com.shanchain.shandata.ui.presenter.impl.MessageListPresenterImpl;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.ChatView;
 import com.shanchain.shandata.ui.view.activity.jmessageui.view.MessageListView;
 import com.shanchain.shandata.ui.view.activity.login.LoginActivity;
+import com.shanchain.shandata.ui.view.activity.square.PayforSuccessActivity;
 import com.shanchain.shandata.ui.view.activity.tasklist.TaskDetailActivity;
 import com.shanchain.shandata.utils.DateUtils;
+import com.shanchain.shandata.utils.ManagerUtils;
 import com.shanchain.shandata.utils.MyEmojiFilter;
 import com.shanchain.shandata.utils.RequestCode;
 import com.shanchain.shandata.widgets.XhsEmoticonsKeyBoard;
@@ -120,6 +125,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -144,6 +150,14 @@ import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jiguang.imui.model.ChatEventMessage;
 import cn.jiguang.imui.model.DefaultUser;
 import cn.jiguang.imui.model.MyMessage;
+import cn.jiguang.share.android.api.JShareInterface;
+import cn.jiguang.share.android.api.PlatActionListener;
+import cn.jiguang.share.android.api.Platform;
+import cn.jiguang.share.android.api.ShareParams;
+import cn.jiguang.share.android.utils.Logger;
+import cn.jiguang.share.qqmodel.QQ;
+import cn.jiguang.share.wechat.Wechat;
+import cn.jiguang.share.wechat.WechatMoments;
 import cn.jpush.im.android.api.ChatRoomManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.DownloadCompletionCallback;
@@ -183,6 +197,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         EasyPermissions.PermissionCallbacks,
         SensorEventListener,
         ArthurToolBar.OnRightClickListener,
+        ArthurToolBar.OnFavoriteClickListener,
         ImagePickerAdapter.OnRecyclerViewItemClickListener ,
         MessageListView {
 
@@ -250,8 +265,19 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
     private boolean mIsHasRoom;
     private MessageEntryDao mMessageEntryDao;
     private com.shanchain.data.common.ui.widgets.CustomDialog sureDialog;
-
+    private CustomDialog shareBottomDialog;
+    private ShareParams redPaperParams;
     private MessageListPresenter mPresenter;
+    private SearchGroupTeamBeam mSearchGroupTeamBeam;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            String toastMsg = (String) msg.obj;
+            Toast.makeText(MessageListActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
+            closeLoadingDialog();
+            shareBottomDialog.dismiss();
+        }
+    };
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_seting;
@@ -279,6 +305,7 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         initEmojiData();
         initMsgAdapter();
         initData();
+        initShareListener();
         loadMessageData(roomID);
         mArcMenu.setOnMenuItemClickListener(onMenuItemClickListener);
 
@@ -772,11 +799,13 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         mTbMain.setRightImage(R.mipmap.fb_close);
         mTbMain.isShowChatRoom(true);
         mTbMain.setOnRightClickListener(this);
+        mTbMain.setOnFavoriteClickListener(this);
         mTbMain.isShowChatRoom(true);//显示聊天室成员信息
         roomNum = mTbMain.findViewById(R.id.mRoomNum);
         roomNum.setTextColor(getResources().getColor(R.color.colorViolet));
         relativeChatRoom = mTbMain.findViewById(R.id.relative_chatRoom);
         if(isHotChatRoom){//ARS点击过来的显示api的人数
+//            mTbMain.setFavoriteImageVisible(View.VISIBLE);
             //获取聊天室信息
             final Set<Long> roomIds = new HashSet();
             final long chatRoomId = Long.valueOf(roomId);
@@ -799,11 +828,6 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
             //查询矿区人数接口
             mPresenter.queryMineRoomNums(roomId);
         }
-        if(!isHotChatRoom){
-            mTbMain.setFavoriteImageVisible(View.GONE);
-        }else {
-            mTbMain.setFavoriteImageVisible(View.VISIBLE);
-        }
         mTbMain.setOnUserHeadClickListener(new ArthurToolBar.OnUserHeadClickListener() {
             @Override
             public void onUserHeadClick(View v) {
@@ -814,6 +838,103 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
                 intent.putExtra("digistId",digistId);
                 intent.putExtra("isHotChatRoom",isHotChatRoom);
                 startActivity(intent);
+            }
+        });
+        //初始化分享配置
+        shareBottomDialog = new CustomDialog(MessageListActivity.this,
+                true, true, 1.0,
+                R.layout.layout_bottom_share, new int[]{R.id.share_image,
+                R.id.mRlWechat, R.id.mRlWeixinCircle, R.id.mRlQQ, R.id.mRlWeibo, R.id.share_close});
+        shareBottomDialog.setCanceledOnTouchOutside(true);
+    }
+
+
+    private PlatActionListener shareListener = new PlatActionListener() {
+        @Override
+        public void onComplete(Platform platform, int action, HashMap<String, Object> data) {
+            if (handler != null) {
+                android.os.Message message = handler.obtainMessage();
+                message.obj = "分享成功";
+                handler.sendMessage(message);
+            }
+
+        }
+
+        @Override
+        public void onError(Platform platform, int action, int errorCode, Throwable error) {
+            Logger.e(TAG, "error:" + errorCode + ",msg:" + error);
+            if (handler != null) {
+                android.os.Message message = handler.obtainMessage();
+                message.obj = "分享失败:" + error.getMessage() + "---" + errorCode;
+                handler.sendMessage(message);
+            }
+        }
+
+        @Override
+        public void onCancel(Platform platform, int action) {
+            if (handler != null) {
+                android.os.Message message = handler.obtainMessage();
+                message.obj = "分享取消";
+                handler.sendMessage(message);
+            }
+        }
+    };
+    //分享监听
+    private void initShareListener(){
+        shareBottomDialog.setOnItemClickListener(new CustomDialog.OnItemClickListener() {
+            @Override
+            public void OnItemClick(CustomDialog dialog, View view) {
+                String shareUrl = HttpApi.BASE_URL_WALLET+"/join?"+"inviteUserId="+mSearchGroupTeamBeam.getCreateUser()+"&diggingsId="+digistId
+                        +"&inviteCode="+mSearchGroupTeamBeam.getInviteCode();
+                redPaperParams = new ShareParams();
+                redPaperParams.setTitle(getString(R.string.app_name));
+                redPaperParams.setText(getString(R.string.invate_y_join));
+                redPaperParams.setUrl(shareUrl);
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.app_logo);
+                redPaperParams.setImageData(bitmap);
+                switch (view.getId()) {
+                    case R.id.mRlWechat://微信
+                        if(!ManagerUtils.uninstallSoftware(MessageListActivity.this,"com.tencent.mm")){
+                            ToastUtils.showToast(MessageListActivity.this, R.string.install_wechat);
+                            return;
+                        }
+                        showLoadingDialog();
+                        redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                        //调用分享接口share ，分享到微信平台。
+                        JShareInterface.share(Wechat.Name, redPaperParams, shareListener);
+                        break;
+                    case R.id.mRlWeixinCircle://朋友圈
+                        if(!ManagerUtils.uninstallSoftware(MessageListActivity.this,"com.tencent.mm")){
+                            ToastUtils.showToast(MessageListActivity.this, R.string.install_wechat);
+                            return;
+                        }
+                        showLoadingDialog();
+                        redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                        //调用分享接口share ，分享到朋友圈平台。
+                        JShareInterface.share(WechatMoments.Name, redPaperParams, shareListener);
+                        break;
+                    case R.id.mRlQQ://QQ
+                        if(!ManagerUtils.uninstallSoftware(MessageListActivity.this,"com.tencent.mobileqq")){
+                            ToastUtils.showToast(MessageListActivity.this, R.string.install_qq);
+                            return;
+                        }
+                        showLoadingDialog();
+                        redPaperParams.setShareType(Platform.SHARE_WEBPAGE);
+                        //调用分享接口share ，分享到QQ平台。
+                        JShareInterface.share(QQ.Name, redPaperParams, shareListener);
+                        break;
+                    case R.id.share_close:
+                        shareBottomDialog.dismiss();
+                        break;
+
+                }
+            }
+        });
+
+        shareBottomDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                closeLoadingDialog();
             }
         });
     }
@@ -960,8 +1081,17 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
             String data = JSONObject.parseObject(response).getString("data");
             List<SearchGroupTeamBeam> mList = JSONObject.parseArray(data, SearchGroupTeamBeam.class);
-            memberCount = mList.get(0).gettDiggingJoinLogs().size();
-            roomNum.setText(mList.get(0).gettDiggingJoinLogs().size()+"");
+            mSearchGroupTeamBeam = mList.get(0);
+            if(mSearchGroupTeamBeam == null)return;
+            memberCount = mSearchGroupTeamBeam.gettDiggingJoinLogs().size();
+            roomNum.setText(mSearchGroupTeamBeam.gettDiggingJoinLogs().size()+"");
+            if(!TextUtils.isEmpty(mSearchGroupTeamBeam.getCreateUser()) &&
+                    SCCacheUtils.getCacheUserId().equals(mSearchGroupTeamBeam.getCreateUser()) &&
+                    mSearchGroupTeamBeam.gettDiggingJoinLogs().size()<4){
+                mTbMain.setFavoriteImageVisible(View.VISIBLE);
+            }else {
+                mTbMain.setFavoriteImageVisible(View.GONE);
+            }
         }
     }
 
@@ -1000,6 +1130,11 @@ public class MessageListActivity extends BaseActivity implements View.OnTouchLis
         } else {
             ToastUtils.showToast(MessageListActivity.this, R.string.not_int_room);
         }
+    }
+
+    @Override
+    public void onFavoriteClick(View v) {
+        shareBottomDialog.show();
     }
 
     private class HeadsetDetectReceiver extends BroadcastReceiver {

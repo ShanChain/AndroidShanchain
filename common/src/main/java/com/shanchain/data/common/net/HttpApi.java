@@ -736,4 +736,8 @@ public interface HttpApi {
     String UPDATE_USER_PASSPORT_INFO = BASE_URL + "/probecoin/tUserAuthentication/updateByPrimaryKeySelective";
     //获取公告数量
     String NOTIFICAT_NUMS = BASE_URL + "/wallet/api/notice/notice/listPage";
+    //插入打卡记录
+    String INSERTCHECKIN = BASE_URL +"/probecoin/tCardLog/insertSelective";
+    //查询本月打卡记录
+    String QUERY_MONTH_CHECKIN = BASE_URL +"/probecoin/tCardLog/queryTCardLogList";
 }

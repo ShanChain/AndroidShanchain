@@ -345,4 +345,41 @@ public class HomePresenterImpl implements HomePresenter {
                     }
                 });
     }
+
+    @Override
+    public void insertCheckinRecord(String userId) {
+        SCHttpUtils.postNoToken()
+                .url(HttpApi.INSERTCHECKIN)
+                .addParams("userId", userId)
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setInsertCheckinResponse(response);
+                    }
+                });
+    }
+
+    @Override
+    public void queryMonthCheckinRecord(String querymonth) {
+        SCHttpUtils.post()
+                .url(HttpApi.QUERY_MONTH_CHECKIN)
+                .addParams("querymonth",querymonth)
+                .addParams("userId", SCCacheUtils.getCacheUserId())
+                .build()
+                .execute(new SCHttpStringCallBack() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mHomeView.setQueryMonthCheckinRecordResponse(response);
+                    }
+                });
+    }
 }

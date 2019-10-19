@@ -592,5 +592,9 @@
     <string name="message_voice">[语音]</string>
     <string name="has_nums">已加入人数:</string>
     <string name="create_time_mine">创建时间:%s</string>
+    <string name="check_in">签到</string>
+    <string name="check_in_success">登陆签到成功</string>
+    <string name="current_login_days">当前登陆天数: </string>
+    <string name="current_month_login_days">本月连续登陆天数: </string>
 
 </resources>

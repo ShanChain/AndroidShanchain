@@ -13,6 +13,8 @@ public class SearchGroupTeamBeam implements Serializable {
     String name;
     String roomId;
     String roomName;
+    String createUser;
+    String inviteCode;
     List<SearchTeamBean> tDiggingJoinLogs;
 
     public String getId() {
@@ -53,5 +55,21 @@ public class SearchGroupTeamBeam implements Serializable {
 
     public void settDiggingJoinLogs(List<SearchTeamBean> tDiggingJoinLogs) {
         this.tDiggingJoinLogs = tDiggingJoinLogs;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 }

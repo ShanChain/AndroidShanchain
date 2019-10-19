@@ -49,7 +49,7 @@ public class GroupMenberAdapter extends BaseQuickAdapter<Members,BaseViewHolder>
     @Override
     protected void convert(final BaseViewHolder helper, final Members item) {
 //        helper.setIsRecyclable(false);
-        final TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
+        TextView focus = helper.getView(R.id.tv_item_contact_child_focus);
         ImageView checkBox = helper.getView(R.id.check_box);
         if(Integer.parseInt(SCCacheUtils.getCacheUserId())== item.getUserId()){
             focus.setVisibility(View.INVISIBLE);

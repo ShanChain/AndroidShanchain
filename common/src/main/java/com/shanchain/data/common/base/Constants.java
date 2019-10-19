@@ -141,6 +141,7 @@ public interface Constants {
     String SP_KEY_BASE_PARA_MONEY = "sp_key_base_para_money";
     String SP_KEY_USER_ACCOUNT = "sp_key_user_account";//用户手机号
     String SP_KEY_NOT_ACOUNT = "sp_key_not_acount";//公告数量
+    String SP_KEY_CHECKIN = "sp_key_checkin";//签到记录
 
     /**************上传的视频类型**************/
     String VIDEO_UPLOAD_DYNAMIC = "dynamic";

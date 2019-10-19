@@ -34,4 +34,6 @@
     <color name="colorPopBg">#5000</color>
     <!--黑色-->
     <color name="colorBlack">#000</color>
+
+    <color name="login_marjar_color_commor">#a260e6</color>
 </resources>

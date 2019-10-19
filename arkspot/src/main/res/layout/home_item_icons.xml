@@ -97,4 +97,27 @@
             android:gravity="center"
             android:text="@string/my_mine"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/iv_my_record"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/check_in_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_marjar_color"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/check_in"/>
+    </LinearLayout>
 </LinearLayout>

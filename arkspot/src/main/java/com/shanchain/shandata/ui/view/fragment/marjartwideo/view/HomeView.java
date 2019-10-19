@@ -22,4 +22,6 @@ public interface HomeView {
     void setAddMinigRoomResponse(String response);
     void setMiningNameExit(String response);
     void setCheckUserHasWalletResponse(String response);
+    void setInsertCheckinResponse(String response);
+    void setQueryMonthCheckinRecordResponse(String response);
 }

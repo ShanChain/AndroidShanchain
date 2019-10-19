@@ -95,6 +95,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
     private GroupMenberAdapter mGroupMenberAdapter;
     private GroupARSMenberAdapter mGroupARSMenberAdapter;
     private List<Members> mGroupList = new ArrayList<>();
+    private List<Members> membersList = new ArrayList<>();
     private int pageIndex = 0;
     private boolean isLast = false;
     private GroupMenberPresenter mMenberPresenter;
@@ -116,6 +117,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         refreshLayout.setOnRefreshListener(this);
         mMenberPresenter = new GroupMenberPresenterImpl(this);
         mGroupMenberAdapter = new GroupMenberAdapter(R.layout.item_members_chat_room,mGroupList);
+        mGroupARSMenberAdapter = new GroupARSMenberAdapter(R.layout.item_members_chat_room,membersList);
 //        View view = LayoutInflater.from(this).inflate(R.layout.not_data_footer_view, null);
 //        mGroupMenberAdapter.addFooterView(view);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.login_marjar_color),
@@ -129,7 +131,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         initToolBar();
 //        initData();
         getGroupMenberList();
-        mMenberPresenter.checkIsGroupCreater(roomID);
+//        mMenberPresenter.checkIsGroupCreater(roomID);
         setListener();
         /*if(isHotChatRoom){
             initLoadMoreListener();
@@ -213,7 +215,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         mGroupMenberAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Members item = (Members) adapter.getItem(position);
+                /*Members item = (Members) adapter.getItem(position);
                 for (Members m : mGroupList){
                     if(m.getUsername().equals(item.getUsername())){
                         if(m.isSelect()){
@@ -225,13 +227,13 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                 }
                 mGroupMenberAdapter.notifyDataSetChanged();
                 List<Members> list = checkNumsFromGroupMenber();
-                tvSelectNum.setText("" + list.size());
+                tvSelectNum.setText("" + list.size());*/
             }
         });
         mGroupARSMenberAdapter.setMenberCallback(new IChatGroupMenberCallback() {
             @Override
             public void chatUser(Members members) {
-                if(members == null)return;
+//                if(members == null)return;
                 JMessageClient.getUserInfo(members.getUserName(), new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, final UserInfo userInfo) {
@@ -250,7 +252,7 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
         mGroupMenberAdapter.setMenberCallback(new IChatGroupMenberCallback() {
             @Override
             public void chatUser(Members members) {
-                if(members == null)return;
+//                if(members == null)return;
                 JMessageClient.getUserInfo(members.getHxUserName(), new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, final UserInfo userInfo) {
@@ -349,7 +351,6 @@ public class MemberActivity extends BaseActivity implements SwipeRefreshLayout.O
                         membersList.remove(i);
                     }
                 }
-                mGroupARSMenberAdapter = new GroupARSMenberAdapter(R.layout.item_members_chat_room,membersList);
                 rvMessageList.setAdapter(mGroupARSMenberAdapter);
                 mGroupARSMenberAdapter.notifyDataSetChanged();
 

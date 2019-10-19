@@ -34,4 +34,9 @@ public interface HomePresenter {
     void checkNameIsExit(String name);
     //判断用户是否有钱包账号
     void checkUserHasWallet(Context context);
+
+    //插入打卡记录
+    void insertCheckinRecord(String userId);
+    //查询当前月份打卡记录
+    void queryMonthCheckinRecord(String querymonth);
 }
