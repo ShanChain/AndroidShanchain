@@ -24,7 +24,7 @@ ext{
     applicationId="com.shanchain.shandata"
     compileSdkVersion=27
     buildToolsVersion="28.0.3"
-    minSdkVersion=27
+    minSdkVersion=19
     targetSdkVersion=27
     versionCode=28
     versionName="2.5.1"

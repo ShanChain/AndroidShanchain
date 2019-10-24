@@ -299,9 +299,15 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
             mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
         }else {
             LogUtils.d("------>>>month: "+current+"---"+sdf.format(new Date()));
-            if(!sdf.format(new Date()).equals(current)){
+            String attr[] = current.split(",");
+            if(SCCacheUtils.getCacheUserId().equals(attr[1])){
+                if(!sdf.format(new Date()).equals(attr[0])){
+                    mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
+                }
+            }else {
                 mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
             }
+
         }
     }
 
@@ -766,8 +772,8 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
             SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_login_days)+",1");
             checkInDialog.show();
-            PrefUtils.putString(getActivity(), Constants.SP_KEY_CHECKIN,new SimpleDateFormat("yyyy/MM/dd").format(new Date()));
         }
+        PrefUtils.putString(getActivity(), Constants.SP_KEY_CHECKIN,new SimpleDateFormat("yyyy/MM/dd").format(new Date())+","+SCCacheUtils.getCacheUserId());
     }
 
     @Override
@@ -777,7 +783,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
             String data = JSONObject.parseObject(response).getString("data");
             List<CheckInBean> mList = JSONObject.parseArray(data,CheckInBean.class);
             if(mList!=null && mList.size()>0){
-                SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_month_login_days)+","+mList.get(0).getContinuousDays());
+                SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_record),getString(R.string.current_month_login_days)+","+mList.get(0).getContinuousDays());
                 checkInDialog.show();
             }else {
                 SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_month_login_days)+",0");

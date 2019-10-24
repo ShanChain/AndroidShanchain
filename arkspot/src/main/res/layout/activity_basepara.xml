@@ -43,7 +43,7 @@
         android:background="@null"
         android:inputType=""
         android:digits=".01"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:textCursorDrawable="@null"

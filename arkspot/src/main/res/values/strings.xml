@@ -595,6 +595,7 @@
     <string name="check_in">签到</string>
     <string name="check_in_success">登陆签到成功</string>
     <string name="current_login_days">当前登陆天数: </string>
-    <string name="current_month_login_days">本月连续登陆天数: </string>
+    <string name="current_month_login_days">连续打卡天数: </string>
+    <string name="check_in_record">打卡记录</string>
 
 </resources>

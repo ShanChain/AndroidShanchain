@@ -581,5 +581,6 @@
     <string name="check_in">Check in</string>
     <string name="check_in_success">Login to sign in successfully</string>
     <string name="current_login_days">Current login days: </string>
-    <string name="current_month_login_days">Number of consecutive landings this month: </string>
+    <string name="current_month_login_days">Number of consecutive landings: </string>
+    <string name="check_in_record">Login record</string>
 </resources>

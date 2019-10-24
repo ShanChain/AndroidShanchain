@@ -228,6 +228,7 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
     public void setdeleteDigiRoomIdResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            getTeamData();
         }else {
             ThreadUtils.runOnMainThread(new Runnable() {
                 @Override

@@ -85,7 +85,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         recyclerViewCoupon.setAdapter(mGroupTeamAdapter);
         mGroupTeamAdapter.notifyDataSetChanged();
 
-
+        getMyMiningData(currentType,Constants.pullRefress);
         initLoadMoreListener();
     }
 
@@ -101,7 +101,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     @Override
     public void onResume() {
         super.onResume();
-        getMyMiningData(currentType,Constants.pullRefress);
+
     }
 
     @Override
@@ -171,7 +171,6 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
             }else {
                 isLast = false;
             }
-            setCountType();//显示数量
             if(pullType == Constants.pullRefress){
                 mList.clear();
                 mList.addAll(listDara);
@@ -179,6 +178,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
                 mGroupTeamAdapter.notifyDataSetChanged();
             }else {
                 mGroupTeamAdapter.addData(listDara);
+
             }
             if(mList!=null && mList.size()>0){
                 llNotdata.setVisibility(View.GONE);
@@ -187,6 +187,12 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
                 llNotdata.setVisibility(View.VISIBLE);
                 refreshLayout.setVisibility(View.GONE);
             }
+            if(currentType ==1){
+                createCount = mGroupTeamAdapter.getItemCount()+"";
+            }else {
+                jointCount = mGroupTeamAdapter.getItemCount()+"";
+            }
+            setCountType();//显示数量
         }
     }
 

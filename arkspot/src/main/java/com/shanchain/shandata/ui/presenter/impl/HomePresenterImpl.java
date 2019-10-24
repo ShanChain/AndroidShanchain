@@ -42,7 +42,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -368,7 +370,7 @@ public class HomePresenterImpl implements HomePresenter {
     public void queryMonthCheckinRecord(String querymonth) {
         SCHttpUtils.post()
                 .url(HttpApi.QUERY_MONTH_CHECKIN)
-                .addParams("querymonth",querymonth)
+                .addParams("loginDate",new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
                 .addParams("userId", SCCacheUtils.getCacheUserId())
                 .build()
                 .execute(new SCHttpStringCallBack() {
