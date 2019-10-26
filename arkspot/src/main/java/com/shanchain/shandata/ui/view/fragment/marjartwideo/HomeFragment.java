@@ -292,8 +292,9 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     }
     //判断是否已签到
     private void checkIsCheckIn(){
+        mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
         //首次登陆打卡
-        String current = PrefUtils.getString(getActivity(), Constants.SP_KEY_CHECKIN,"");
+        /*String current = PrefUtils.getString(getActivity(), Constants.SP_KEY_CHECKIN,"");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         if(TextUtils.isEmpty(current)){
             mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
@@ -307,8 +308,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
             }else {
                 mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
             }
-
-        }
+        }*/
     }
 
     @Override
