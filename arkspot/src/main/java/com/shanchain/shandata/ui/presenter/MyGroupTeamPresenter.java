@@ -19,4 +19,6 @@ public interface MyGroupTeamPresenter {
     void updateMiningRoomRecord(String id,String isPay);
     //判断用户是否有钱包账号
     void checkUserHasWallet(Context context);
+    //获取我创建的或者我加入的矿区总数,0我创建的，1我加入的
+    void getMyTeamAllNums(int type);
 }

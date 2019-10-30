@@ -93,8 +93,10 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     private void getMyMiningData(int type,int pullType){
         if(type ==1){
             mPresenter.queryGroupTeam("", SCCacheUtils.getCacheUserId(),"",pageIndex, Constants.pageSize,pullType,0,"1");
+            mPresenter.getMyTeamAllNums(0);
         }else {
             mPresenter.queryGroupTeam(SCCacheUtils.getCacheUserId(), "","",pageIndex, Constants.pageSize,pullType,0,"");
+            mPresenter.getMyTeamAllNums(1);
         }
     }
 
@@ -160,11 +162,6 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
             String data = JSONObject.parseObject(response).getString("data");
             String list = JSONObject.parseObject(data).getString("list");
-            if(currentType ==1){
-                createCount = JSONObject.parseObject(data).getString("total");
-            }else {
-                jointCount = JSONObject.parseObject(data).getString("total");
-            }
             List<GroupTeamBean> listDara = JSONObject.parseArray(list,GroupTeamBean.class);
             if(listDara.size()<Constants.pageSize){
                 isLast = true;
@@ -187,12 +184,7 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
                 llNotdata.setVisibility(View.VISIBLE);
                 refreshLayout.setVisibility(View.GONE);
             }
-            if(currentType ==1){
-                createCount = mGroupTeamAdapter.getItemCount()+"";
-            }else {
-                jointCount = mGroupTeamAdapter.getItemCount()+"";
-            }
-            setCountType();//显示数量
+//            setCountType();//显示数量
         }
     }
 
@@ -237,6 +229,21 @@ public class MyGroupTeamGetFragment extends BaseFragment implements SwipeRefresh
     @Override
     public void setCheckUserHasWalletResponse(String response) {
 
+    }
+
+    @Override
+    public void setTeamAllNumsResponse(String response) {
+        String code = JSONObject.parseObject(response).getString("code");
+        if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
+            String data = JSONObject.parseObject(response).getString("data");
+            if(TextUtils.isEmpty(data))return;
+            if(currentType ==1){
+                createCount = data;
+            }else {
+                jointCount = data;
+            }
+            setCountType();
+        }
     }
 
     //上拉加载监听

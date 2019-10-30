@@ -314,6 +314,11 @@ public class SearchTeamActivity extends BaseActivity implements MyGroupTeamView 
         }
     }
 
+    @Override
+    public void setTeamAllNumsResponse(String response) {
+
+    }
+
     //进入聊天室
     private void gotoMessageRoom(GroupTeamBean groupTeamBean){
         if(TextUtils.isEmpty(groupTeamBean.getRoomId()))return;

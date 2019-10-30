@@ -740,4 +740,6 @@ public interface HttpApi {
     String INSERTCHECKIN = BASE_URL +"/probecoin/tCardLog/insertSelective";
     //查询本月打卡记录
     String QUERY_MONTH_CHECKIN = BASE_URL +"/probecoin/tCardLog/queryTCardLogList";
+    //获取我创建的或者我加入的社区总数
+    String GET_MY_TEAMALLNUMS = BASE_URL +"/probecoin/tDiggings/queryTDiggingsCount";
 }

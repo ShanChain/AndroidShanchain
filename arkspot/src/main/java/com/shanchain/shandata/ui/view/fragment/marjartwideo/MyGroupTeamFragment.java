@@ -276,6 +276,11 @@ public class MyGroupTeamFragment extends BaseFragment implements SwipeRefreshLay
         }
     }
 
+    @Override
+    public void setTeamAllNumsResponse(String response) {
+
+    }
+
     //上拉加载监听
     private void initLoadMoreListener() {
         //上拉加载

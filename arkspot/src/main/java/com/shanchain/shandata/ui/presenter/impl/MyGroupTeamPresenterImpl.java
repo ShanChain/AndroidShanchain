@@ -17,6 +17,7 @@ import com.shanchain.shandata.R;
 import com.shanchain.shandata.ui.presenter.MyGroupTeamPresenter;
 import com.shanchain.shandata.ui.view.fragment.marjartwideo.view.MyGroupTeamView;
 import com.zhy.http.okhttp.builder.GetBuilder;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.request.RequestCall;
 
 import java.io.File;
@@ -190,5 +191,28 @@ public class MyGroupTeamPresenterImpl implements MyGroupTeamPresenter {
                         mTeamView.setCheckUserHasWalletResponse(response);
                     }
                 });
+    }
+
+    @Override
+    public void getMyTeamAllNums(int type) {
+        PostFormBuilder formBuilder = SCHttpUtils.postNoToken();
+        formBuilder.url(HttpApi.GET_MY_TEAMALLNUMS);
+        if(type == 0){
+            formBuilder.addParams("createUser",SCCacheUtils.getCacheUserId());
+        }else {
+            formBuilder.addParams("joinUserId",SCCacheUtils.getCacheUserId());
+        }
+        RequestCall build = formBuilder.build();
+        build.execute(new SCHttpStringCallBack() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                mTeamView.setTeamAllNumsResponse(response);
+            }
+        });
     }
 }

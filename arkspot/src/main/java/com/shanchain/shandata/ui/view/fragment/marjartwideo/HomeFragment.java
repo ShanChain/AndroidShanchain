@@ -293,22 +293,6 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     //判断是否已签到
     private void checkIsCheckIn(){
         mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
-        //首次登陆打卡
-        /*String current = PrefUtils.getString(getActivity(), Constants.SP_KEY_CHECKIN,"");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        if(TextUtils.isEmpty(current)){
-            mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
-        }else {
-            LogUtils.d("------>>>month: "+current+"---"+sdf.format(new Date()));
-            String attr[] = current.split(",");
-            if(SCCacheUtils.getCacheUserId().equals(attr[1])){
-                if(!sdf.format(new Date()).equals(attr[0])){
-                    mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
-                }
-            }else {
-                mHomePresenter.insertCheckinRecord(SCCacheUtils.getCacheUserId());
-            }
-        }*/
     }
 
     @Override
@@ -770,7 +754,9 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     public void setInsertCheckinResponse(String response) {
         String code = SCJsonUtils.parseCode(response);
         if (TextUtils.equals(code, NetErrCode.COMMON_SUC_CODE_NEW)) {
-            SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_login_days)+",1");
+            String data = JSONObject.parseObject(response).getString("data");
+            String currentDate = JSONObject.parseObject(data).getString("continuousDays");
+            SCCheckInDialog checkInDialog = new SCCheckInDialog(getActivity(),getActivity().getResources().getString(R.string.check_in_success),getString(R.string.current_login_days)+","+currentDate);
             checkInDialog.show();
         }
         PrefUtils.putString(getActivity(), Constants.SP_KEY_CHECKIN,new SimpleDateFormat("yyyy/MM/dd").format(new Date())+","+SCCacheUtils.getCacheUserId());

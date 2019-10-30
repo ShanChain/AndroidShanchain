@@ -15,4 +15,5 @@ public interface MyGroupTeamView {
     void setdeleteDigiRoomIdResponse(String response);
     void setUpdateMiningRoomResponse(String response);
     void setCheckUserHasWalletResponse(String response);
+    void setTeamAllNumsResponse(String response);
 }
