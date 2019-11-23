@@ -607,7 +607,7 @@ public class HomeFragment extends BaseFragment implements PermissionInterface, H
     public void setUploadImageToOSSResponse(String url, boolean isSucess,LatLng point) {
         LogUtils.d("--->> oss issuccess: "+isSucess);
         if(isSucess){
-            Message message = new Message();
+            Message message = Message.obtain();
             Bundle bundle = new Bundle();
             bundle.putString("url",url);
             bundle.putParcelable("point",point);

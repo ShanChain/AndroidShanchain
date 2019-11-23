@@ -102,11 +102,16 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
         boolean guided = PrefUtils.getBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW, false);
         if(!guided){
             rlTishi.setVisibility(View.VISIBLE);
-            if("zh".equals(MyApplication.getInstance().getSystemLanguge())){
+            rlView1.setVisibility(View.VISIBLE);
+            rlView3.setVisibility(View.GONE);
+            rlView2.setVisibility(View.GONE);
+            rlView0.setVisibility(View.GONE);
+            /*if("zh".equals(MyApplication.getInstance().getSystemLanguge())){
                 imFirst.setBackgroundResource(R.mipmap.home_page_intro_1);
             }else {
                 imFirst.setBackgroundResource(R.mipmap.home_page_intro_2);
-            }
+            }*/
+
             PrefUtils.putBoolean(mContext, Constants.SP_KEY_GUIDE_VIEW,true);
         }else {
             rlTishi.setVisibility(View.GONE);
@@ -122,10 +127,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
     //引导页介绍页第一张显示点击
     @OnClick(R.id.rl_home_intro)
     void viewHome(){
-        rlView1.setVisibility(View.VISIBLE);
-        rlView3.setVisibility(View.GONE);
-        rlView2.setVisibility(View.GONE);
-        rlView0.setVisibility(View.GONE);
+
     }
     //引导页第一张显示点击
     @OnClick(R.id.rl_view1)
@@ -157,7 +159,7 @@ public class FootPrintNewActivity extends BaseActivity implements View.OnClickLi
      */
     private void initFragment() {
         mFragmentList.add(CouponFragment.newInstance());
-        mFragmentList.add(STOFragment.newInstance());
+        mFragmentList.add(MainARSGameFragment.newInstance());
         mFragmentList.add(HomeFragment.newInstance());
         mFragmentList.add(YCommunityFragment.newInstance());
         mFragmentList.add(MineFragment.newInstance());

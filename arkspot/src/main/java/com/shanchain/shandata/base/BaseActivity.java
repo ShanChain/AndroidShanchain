@@ -1025,27 +1025,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     //下载APK版本
     private void downLoadApk(String url) {
-        DownloadManager manager;
-//        manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        /*DownloadManager.Query query = new DownloadManager.Query();
-        query.setFilterById(downloadId);
-        query.setFilterByStatus(DownloadManager.STATUS_RUNNING);//正在下载
-        Cursor c = manager.query(query);
-        if (c.moveToNext()) {
-        } else {
-            DownloadManager.Request down = new DownloadManager.Request(Uri.parse(url));
-            down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-            down.setVisibleInDownloadsUi(true);
-            down.setTitle("马甲App");
-            down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-//            //down.setDestinationInExternalFilesDir(this, null, "arkspot-release.apk");
-//            String filePath = getCacheDir().getAbsoluteFile() + "arkspot-release.apk";
-//            File apkFile = new File(filePath);
-//            Uri.withAppendedPath(Uri.fromFile(getCacheDir()),"arkspot-release.apk");
-            down.setDestinationUri(Uri.withAppendedPath(Uri.fromFile(getExternalCacheDir()), "arkspot-release.apk"));
-            downloadId = manager.enqueue(down);
-        }*/
-
         UpdateAppBean updateAppBean = new UpdateAppBean();
         //设置 apk 的下载地址
         updateAppBean.setApkFileUrl(url);

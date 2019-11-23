@@ -51,7 +51,7 @@
                 <TextView
                     android:id="@+id/tv_bankuai"
                     style="@style/BottomTabTVStyle"
-                    android:text="@string/sto_pre_order"
+                    android:text="@string/wheel_seat"
                     android:textSize="10sp" />
 
             </LinearLayout>

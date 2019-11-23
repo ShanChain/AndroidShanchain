@@ -38,8 +38,10 @@
     <!-- 应用角标 -->
     <uses-permission android:name=" com.huawei.android.launcher.permission.CHANGE_BADGE" />
     <!-- SD卡读写操作 -->
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <!-- SD卡获取日志打印信息 -->
     <uses-permission
         android:name="android.permission.READ_LOGS"
